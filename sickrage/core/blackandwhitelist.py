@@ -39,7 +39,7 @@ class BlackAndWhiteList(object):
         """
         Builds black and whitelist
         """
-        sickrage.srCore.srLogger.debug('Building black and white list for ' + str(self.show_id))
+        sickrage.app.srLogger.debug('Building black and white list for ' + str(self.show_id))
         self.blacklist = self._load_list('blacklist')
         self.whitelist = self._load_list('whitelist')
 
@@ -51,7 +51,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            sickrage.srCore.mainDB.db.insert({
+            sickrage.app.mainDB.db.insert({
                 '_t': table,
                 'show_id': self.show_id,
                 'keywork': value
@@ -66,7 +66,7 @@ class BlackAndWhiteList(object):
         self._del_all_keywords('blacklist')
         self._add_keywords('blacklist', values)
         self.blacklist = values
-        sickrage.srCore.srLogger.debug('Blacklist set to: %s' % self.blacklist)
+        sickrage.app.srLogger.debug('Blacklist set to: %s' % self.blacklist)
 
     def set_white_keywords(self, values):
         """
@@ -77,7 +77,7 @@ class BlackAndWhiteList(object):
         self._del_all_keywords('whitelist')
         self._add_keywords('whitelist', values)
         self.whitelist = values
-        sickrage.srCore.srLogger.debug('Whitelist set to: %s' % self.whitelist)
+        sickrage.app.srLogger.debug('Whitelist set to: %s' % self.whitelist)
 
     def _del_all_keywords(self, table):
         """
@@ -86,7 +86,7 @@ class BlackAndWhiteList(object):
         :param table: database table remove keywords from
         """
         try:
-            sickrage.srCore.mainDB.db.delete(sickrage.srCore.mainDB.db.get(table, self.show_id, with_doc=True)['doc'])
+            sickrage.app.mainDB.db.delete(sickrage.app.mainDB.db.get(table, self.show_id, with_doc=True)['doc'])
         except RecordNotFound:
             pass
 
@@ -99,10 +99,10 @@ class BlackAndWhiteList(object):
         :return: keywords in list
         """
         groups = []
-        for result in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many(table, self.show_id, with_doc=True)]:
+        for result in [x['doc'] for x in sickrage.app.mainDB.db.get_many(table, self.show_id, with_doc=True)]:
             groups.append(result['keyword'])
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             'BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
 
         return groups
@@ -117,7 +117,7 @@ class BlackAndWhiteList(object):
 
         if self.whitelist or self.blacklist:
             if not result.release_group:
-                sickrage.srCore.srLogger.debug('Failed to detect release group')
+                sickrage.app.srLogger.debug('Failed to detect release group')
                 return False
 
             if result.release_group.lower() in [x.lower() for x in self.whitelist]:
@@ -131,7 +131,7 @@ class BlackAndWhiteList(object):
             else:
                 black_result = True
 
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.srLogger.debug(
                 'Whitelist check passed: %s. Blacklist check passed: %s' % (white_result, black_result))
 
             if white_result and black_result:
@@ -139,7 +139,7 @@ class BlackAndWhiteList(object):
             else:
                 return False
         else:
-            sickrage.srCore.srLogger.debug('No Whitelist and  Blacklist defined')
+            sickrage.app.srLogger.debug('No Whitelist and  Blacklist defined')
             return True
 
 
@@ -156,14 +156,14 @@ def short_group_names(groups):
     """
     groups = groups.split(",")
     shortGroupList = []
-    if sickrage.srCore.ADBA_CONNECTION:
+    if sickrage.app.ADBA_CONNECTION:
         for groupName in groups:
             try:
-                group = sickrage.srCore.ADBA_CONNECTION.group(gname=groupName)
+                group = sickrage.app.ADBA_CONNECTION.group(gname=groupName)
             except AniDBCommandTimeoutError:
-                sickrage.srCore.srLogger.debug("Timeout while loading group from AniDB. Trying next group")
+                sickrage.app.srLogger.debug("Timeout while loading group from AniDB. Trying next group")
             except Exception:
-                sickrage.srCore.srLogger.debug("Failed while loading group from AniDB. Trying next group")
+                sickrage.app.srLogger.debug("Failed while loading group from AniDB. Trying next group")
             else:
                 for line in group.datalines:
                     if line["shortname"]:

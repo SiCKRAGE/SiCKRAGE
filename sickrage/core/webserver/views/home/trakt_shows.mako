@@ -9,7 +9,7 @@
 %>
 
 <%block name="metas">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.srCore.srConfig.SORT_ARTICLE}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.srConfig.SORT_ARTICLE}">
 </%block>
 <%block name="content">
     <div class="row">

@@ -37,5 +37,5 @@ class srPostProcessor(object):
         """
 
         self.amActive = True
-        sickrage.srCore.POSTPROCESSORQUEUE.put(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR, force=force)
+        sickrage.app.POSTPROCESSORQUEUE.put(sickrage.app.srConfig.TV_DOWNLOAD_DIR, force=force)
         self.amActive = False

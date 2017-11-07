@@ -48,7 +48,7 @@ class ShazbatProvider(TorrentProvider):
         if not self.passkey:
             self._check_auth()
         elif not (data['entries'] and data['feed']):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
 
         return True
@@ -57,7 +57,7 @@ class ShazbatProvider(TorrentProvider):
 class ShazbatCache(TVCache):
     def _get_rss_data(self):
         rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
-        sickrage.srCore.srLogger.debug("Cache update URL: %s" % rss_url)
+        sickrage.app.srLogger.debug("Cache update URL: %s" % rss_url)
 
         return self.getRSSFeed(rss_url)
 

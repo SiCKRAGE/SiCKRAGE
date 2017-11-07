@@ -40,10 +40,10 @@ class DelugeAPI(GenericClient):
                                 "id": 1})
 
         try:
-            self.response = sickrage.srCore.srWebSession.post(self.url,
+            self.response = sickrage.app.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
-                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                              verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
         except Exception:
             return None
 
@@ -54,10 +54,10 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = sickrage.srCore.srWebSession.post(self.url,
+            self.response = sickrage.app.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
-                                                              verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                              verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
 
         except Exception:
             return None
@@ -69,18 +69,18 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url,
+                self.response = sickrage.app.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
 
             hosts = self.response.json()['result']
             if not hosts:
-                sickrage.srCore.srLogger.warning(self.name + ': WebUI does not contain daemons')
+                sickrage.app.srLogger.warning(self.name + ': WebUI does not contain daemons')
                 return None
 
             post_data = json.dumps({"method": "web.connect",
@@ -88,11 +88,11 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url,
+                self.response = sickrage.app.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -102,18 +102,18 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url,
+                self.response = sickrage.app.srWebSession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
 
             connected = self.response.json()['result']
             if not connected:
-                sickrage.srCore.srLogger.warning(self.name + ': WebUI could not connect to daemon')
+                sickrage.app.srLogger.warning(self.name + ': WebUI could not connect to daemon')
                 return None
 
         return self.auth
@@ -144,11 +144,11 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.srCore.srConfig.TORRENT_LABEL
+        label = sickrage.app.srConfig.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.srCore.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
         if ' ' in label:
-            sickrage.srCore.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.app.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -162,14 +162,14 @@ class DelugeAPI(GenericClient):
 
             if labels is not None:
                 if label not in labels:
-                    sickrage.srCore.srLogger.debug(
+                    sickrage.app.srLogger.debug(
                         self.name + ': ' + label + " label does not exist in Deluge we must add it")
                     post_data = json.dumps({"method": 'label.add',
                                             "params": [label],
                                             "id": 4})
 
                     self._request(method='post', data=post_data, headers=self.headers)
-                    sickrage.srCore.srLogger.debug(self.name + ': ' + label + " label added to Deluge")
+                    sickrage.app.srLogger.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
                 post_data = json.dumps({"method": 'label.set_torrent',
@@ -177,9 +177,9 @@ class DelugeAPI(GenericClient):
                                         "id": 5})
 
                 self._request(method='post', data=post_data, headers=self.headers)
-                sickrage.srCore.srLogger.debug(self.name + ': ' + label + " label added to torrent")
+                sickrage.app.srLogger.debug(self.name + ': ' + label + " label added to torrent")
             else:
-                sickrage.srCore.srLogger.debug(self.name + ': ' + "label plugin not detected")
+                sickrage.app.srLogger.debug(self.name + ': ' + "label plugin not detected")
                 return False
 
         return not self.response.json()['error']
@@ -209,7 +209,7 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_path(self, result):
 
-        if sickrage.srCore.srConfig.TORRENT_PATH:
+        if sickrage.app.srConfig.TORRENT_PATH:
             post_data = json.dumps({"method": "core.set_torrent_move_completed",
                                     "params": [result.hash, True],
                                     "id": 7})
@@ -217,7 +217,7 @@ class DelugeAPI(GenericClient):
             self._request(method='post', data=post_data, headers=self.headers)
 
             post_data = json.dumps({"method": "core.set_torrent_move_completed_path",
-                                    "params": [result.hash, sickrage.srCore.srConfig.TORRENT_PATH],
+                                    "params": [result.hash, sickrage.app.srConfig.TORRENT_PATH],
                                     "id": 8})
 
             self._request(method='post', data=post_data, headers=self.headers)
@@ -228,7 +228,7 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.srCore.srConfig.TORRENT_PAUSED:
+        if sickrage.app.srConfig.TORRENT_PAUSED:
             post_data = json.dumps({"method": "core.pause_torrent",
                                     "params": [[result.hash]],
                                     "id": 9})

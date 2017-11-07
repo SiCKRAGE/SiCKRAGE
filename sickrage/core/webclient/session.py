@@ -72,21 +72,21 @@ class srSession(cfscrape.CloudflareScraper):
         if proxies is None: proxies = {}
 
         headers['Accept-Encoding'] = 'gzip, deflate'
-        headers["User-Agent"] = sickrage.srCore.USER_AGENT
+        headers["User-Agent"] = sickrage.app.USER_AGENT
 
         # request session ssl verify
-        if sickrage.srCore.srConfig.SSL_VERIFY:
+        if sickrage.app.srConfig.SSL_VERIFY:
             try:
                 verify = certifi.where()
             except:
                 pass
 
         # request session proxies
-        if 'Referer' not in headers and sickrage.srCore.srConfig.PROXY_SETTING:
-            sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
-            scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
-            address = ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING),
-                       sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
+        if 'Referer' not in headers and sickrage.app.srConfig.PROXY_SETTING:
+            sickrage.app.srLogger.debug("Using global proxy: " + sickrage.app.srConfig.PROXY_SETTING)
+            scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
+            address = ('http://{}'.format(sickrage.app.srConfig.PROXY_SETTING),
+                       sickrage.app.srConfig.PROXY_SETTING)[scheme]
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
@@ -112,12 +112,12 @@ class srSession(cfscrape.CloudflareScraper):
             response.raise_for_status()
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
-                sickrage.srCore.srLogger.info(
+                sickrage.app.srLogger.info(
                     "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
                         e.request.url, ssl.OPENSSL_VERSION))
 
-            if sickrage.srCore.srConfig.SSL_VERIFY:
-                sickrage.srCore.srLogger.info(
+            if sickrage.app.srConfig.SSL_VERIFY:
+                sickrage.app.srLogger.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
                         e.request.url))
         except Exception:
@@ -138,7 +138,7 @@ class srSession(cfscrape.CloudflareScraper):
 
             chmodAsParent(filename)
         except Exception as e:
-            sickrage.srCore.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
+            sickrage.app.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
             remove_file_failed(filename)
             return False
 

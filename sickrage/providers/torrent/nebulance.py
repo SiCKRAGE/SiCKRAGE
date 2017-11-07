@@ -47,7 +47,7 @@ class NebulanceProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -58,14 +58,14 @@ class NebulanceProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['base_url'], params={'page': 'login'},
+            response = sickrage.app.srWebSession.post(self.urls['base_url'], params={'page': 'login'},
                                                          data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username Incorrect', response) or re.search('Password Incorrect', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -86,16 +86,16 @@ class NebulanceProvider(TorrentProvider):
         for mode in search_strings.keys():
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -121,7 +121,7 @@ class NebulanceProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 1:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for torrent_row in torrent_rows:
@@ -145,10 +145,10 @@ class NebulanceProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

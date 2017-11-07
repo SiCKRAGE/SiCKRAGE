@@ -49,18 +49,18 @@ class synoIndexNotifier(srNotifiers):
         self.moveObject(old_file, new_file)
 
     def moveObject(self, old_path, new_path):
-        if sickrage.srCore.srConfig.USE_SYNOINDEX:
+        if sickrage.app.srConfig.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', '-N', os.path.abspath(new_path),
                              os.path.abspath(old_path)]
-            sickrage.srCore.srLogger.debug("Executing command " + str(synoindex_cmd))
-            sickrage.srCore.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.app.srLogger.debug("Executing command " + str(synoindex_cmd))
+            sickrage.app.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.PROG_DIR)
                 out, err = p.communicate()
-                sickrage.srCore.srLogger.debug("Script result: " + str(out))
+                sickrage.app.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.srCore.srLogger.warning("Unable to run synoindex: {}".format(e))
+                sickrage.app.srLogger.warning("Unable to run synoindex: {}".format(e))
 
     def deleteFolder(self, cur_path):
         self.makeObject('-D', cur_path)
@@ -75,14 +75,14 @@ class synoIndexNotifier(srNotifiers):
         self.makeObject('-a', cur_file)
 
     def makeObject(self, cmd_arg, cur_path):
-        if sickrage.srCore.srConfig.USE_SYNOINDEX:
+        if sickrage.app.srConfig.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', cmd_arg, os.path.abspath(cur_path)]
-            sickrage.srCore.srLogger.debug("Executing command " + str(synoindex_cmd))
-            sickrage.srCore.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
+            sickrage.app.srLogger.debug("Executing command " + str(synoindex_cmd))
+            sickrage.app.srLogger.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))
             try:
                 p = subprocess.Popen(synoindex_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                      cwd=sickrage.PROG_DIR)
                 out, err = p.communicate()
-                sickrage.srCore.srLogger.debug("Script result: " + str(out))
+                sickrage.app.srLogger.debug("Script result: " + str(out))
             except OSError as e:
-                sickrage.srCore.srLogger.warning("Unable to run synoindex: {}".format(e))
+                sickrage.app.srLogger.warning("Unable to run synoindex: {}".format(e))

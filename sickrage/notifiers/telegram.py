@@ -53,10 +53,10 @@ class TelegramNotifier(srNotifiers):
 
         :returns: True if the message succeeded, False otherwise
         """
-        id = sickrage.srCore.srConfig.TELEGRAM_ID or id
-        api_key = sickrage.srCore.srConfig.TELEGRAM_APIKEY or api_key
+        id = sickrage.app.srConfig.TELEGRAM_ID or id
+        api_key = sickrage.app.srConfig.TELEGRAM_APIKEY or api_key
 
-        sickrage.srCore.srLogger.debug('Telegram in use with API KEY: {}'.format(api_key))
+        sickrage.app.srLogger.debug('Telegram in use with API KEY: {}'.format(api_key))
 
         message = '{} : {}'.format(title.encode(), msg.encode())
         payload = urllib.parse.urlencode({'chat_id': id, 'text': message})
@@ -83,7 +83,7 @@ class TelegramNotifier(srNotifiers):
         except Exception as e:
             message = 'Error while sending Telegram message: {} '.format(e.message)
         finally:
-            sickrage.srCore.srLogger.info(message)
+            sickrage.app.srLogger.info(message)
             return success, message
 
     def _notify_snatch(self, ep_name, title=None):
@@ -96,7 +96,7 @@ class TelegramNotifier(srNotifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
-        if sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSNATCH:
+        if sickrage.app.srConfig.TELEGRAM_NOTIFY_ONSNATCH:
             self._notify_telegram(title, ep_name)
 
     def _notify_download(self, ep_name, title=None):
@@ -109,7 +109,7 @@ class TelegramNotifier(srNotifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
-        if sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD:
             self._notify_telegram(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=None):
@@ -123,7 +123,7 @@ class TelegramNotifier(srNotifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
-        if sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_telegram(title, '{}: {}'.format(ep_name, lang))
 
     def _notify_version_update(self, new_version='??'):
@@ -132,7 +132,7 @@ class TelegramNotifier(srNotifiers):
 
         :param new_version: The new version available from git
         """
-        if sickrage.srCore.srConfig.USE_TELEGRAM:
+        if sickrage.app.srConfig.USE_TELEGRAM:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_telegram(title, update_text + new_version)
@@ -143,7 +143,7 @@ class TelegramNotifier(srNotifiers):
 
         :param ipaddress: The ip address the login is originating from
         """
-        if sickrage.srCore.srConfig.USE_TELEGRAM:
+        if sickrage.app.srConfig.USE_TELEGRAM:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notify_telegram(title, update_text.format(ipaddress))
@@ -161,10 +161,10 @@ class TelegramNotifier(srNotifiers):
         :returns: the message to send
         """
 
-        if not (force or sickrage.srCore.srConfig.USE_TELEGRAM):
-            sickrage.srCore.srLogger.debug('Notification for Telegram not enabled, skipping this notification')
+        if not (force or sickrage.app.srConfig.USE_TELEGRAM):
+            sickrage.app.srLogger.debug('Notification for Telegram not enabled, skipping this notification')
             return False, 'Disabled'
 
-        sickrage.srCore.srLogger.debug('Sending a Telegram message for {}'.format(message))
+        sickrage.app.srLogger.debug('Sending a Telegram message for {}'.format(message))
 
         return self._send_telegram_msg(title, message, id, api_key)

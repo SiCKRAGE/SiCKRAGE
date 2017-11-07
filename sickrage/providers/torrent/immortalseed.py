@@ -66,12 +66,12 @@ class ImmortalseedProvider(TorrentProvider):
 
     def _check_auth_from_data(self, data):
         if not self.passkey:
-            sickrage.srCore.srLogger.warning('Invalid passkey. Check your settings')
+            sickrage.app.srLogger.warning('Invalid passkey. Check your settings')
 
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -79,13 +79,13 @@ class ImmortalseedProvider(TorrentProvider):
             'password': self.password,
         }
 
-        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
+        response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params).text
         if not response:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider")
+            sickrage.app.srLogger.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect!', response):
-            sickrage.srCore.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.app.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -105,17 +105,17 @@ class ImmortalseedProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
+                    sickrage.app.srLogger.debug("Search string: {0}".format(search_string))
                     search_params['keywords'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -143,7 +143,7 @@ class ImmortalseedProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             labels = [process_column_header(label) for label in torrent_rows[0]('td')]
@@ -170,11 +170,11 @@ class ImmortalseedProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results
 

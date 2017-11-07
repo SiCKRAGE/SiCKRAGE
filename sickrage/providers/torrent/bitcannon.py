@@ -49,7 +49,7 @@ class BitCannonProvider(TorrentProvider):
         search_url = self.urls["search"]
         if self.custom_url:
             if not validate_url(self.custom_url):
-                sickrage.srCore.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
+                sickrage.app.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
                 return results
             search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
@@ -60,17 +60,17 @@ class BitCannonProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
+            sickrage.app.srLogger.debug('Search mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 search_params['q'] = search_string
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
+                    data = sickrage.app.srWebSession.get(search_url, params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    sickrage.app.srLogger.debug('No data returned from provider')
 
         return results
 
@@ -105,7 +105,7 @@ class BitCannonProvider(TorrentProvider):
                 # Filter unseeded torrent
                 if seeders < min(self.minseed, 1):
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the minimum  "
+                        sickrage.app.srLogger.debug("Discarding torrent because it doesn't meet the minimum  "
                                                        "seeders: {0}. Seeders: {1}".format(title, seeders))
                     continue
 
@@ -120,11 +120,11 @@ class BitCannonProvider(TorrentProvider):
                     'pubdate': None,
                 }
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                    sickrage.app.srLogger.debug('Found result: {}'.format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error('Failed parsing provider')
+                sickrage.app.srLogger.error('Failed parsing provider')
 
         return results
 
@@ -134,7 +134,7 @@ class BitCannonProvider(TorrentProvider):
                     data.pop('status', 200) != 401,
                     data.pop('message', '') != 'Invalid API key']):
 
-            sickrage.srCore.srLogger.warning('Invalid api key. Check your settings')
+            sickrage.app.srLogger.warning('Invalid api key. Check your settings')
             return False
 
         return True

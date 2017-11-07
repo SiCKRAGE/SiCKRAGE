@@ -86,13 +86,13 @@ def ss(var):
     var = to_unicode(var)
 
     try:
-        var = var.encode(sickrage.srCore.SYS_ENCODING)
+        var = var.encode(sickrage.app.SYS_ENCODING)
     except Exception:
         try:
             var = var.encode('utf-8')
         except Exception:
             try:
-                var = var.encode(sickrage.srCore.SYS_ENCODING, 'replace')
+                var = var.encode(sickrage.app.SYS_ENCODING, 'replace')
             except Exception:
                 try:
                     var = var.encode('utf-8', 'ignore')
@@ -132,13 +132,13 @@ def to_unicode(var):
                     var = six.text_type(var, 'latin-1')
                 except Exception:
                     try:
-                        var = six.text_type(var, sickrage.srCore.SYS_ENCODING)
+                        var = six.text_type(var, sickrage.app.SYS_ENCODING)
                     except Exception:
                         try:
                             # Chardet can be wrong, so try it last
                             var = six.text_type(var, detect(var).get('encoding'))
                         except Exception:
-                            var = six.text_type(var, sickrage.srCore.SYS_ENCODING, 'replace')
+                            var = six.text_type(var, sickrage.app.SYS_ENCODING, 'replace')
 
     return var
 

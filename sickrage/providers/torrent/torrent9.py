@@ -49,13 +49,13 @@ class Torrent9Provider(TorrentProvider):
         results = []
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode == 'Season':
                     search_string = re.sub(r'(.*)S0?', r'\1Saison ', search_string)
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format
+                    sickrage.app.srLogger.debug("Search string: {0}".format
                                                    (search_string))
 
                     search_string = search_string.replace('.', '-').replace(' ', '-')
@@ -66,10 +66,10 @@ class Torrent9Provider(TorrentProvider):
                     search_url = self.urls['rss']
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.app.srWebSession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -104,10 +104,10 @@ class Torrent9Provider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

@@ -92,7 +92,7 @@ class BaseHandler(RequestHandler):
 
         # template settings
         self.mako_lookup = TemplateLookup(
-            directories=[sickrage.srCore.srConfig.GUI_VIEWS_DIR],
+            directories=[sickrage.app.srConfig.GUI_VIEWS_DIR],
             module_directory=os.path.join(sickrage.CACHE_DIR, 'mako'),
             filesystem_checks=True,
             strict_undefined=True,
@@ -103,18 +103,18 @@ class BaseHandler(RequestHandler):
         )
 
     def get_user_locale(self):
-        return tornado.locale.get(sickrage.srCore.srConfig.GUI_LANG)
+        return tornado.locale.get(sickrage.app.srConfig.GUI_LANG)
 
     def prepare(self):
-        if not self.request.full_url().startswith(sickrage.srCore.srConfig.WEB_ROOT):
-            self.redirect("{}{}".format(sickrage.srCore.srConfig.WEB_ROOT, self.request.full_url()))
+        if not self.request.full_url().startswith(sickrage.app.srConfig.WEB_ROOT):
+            self.redirect("{}{}".format(sickrage.app.srConfig.WEB_ROOT, self.request.full_url()))
 
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
         if status_code == 404:
             url = self.request.uri
-            if sickrage.srCore.srConfig.WEB_ROOT and self.request.uri.startswith(sickrage.srCore.srConfig.WEB_ROOT):
-                url = url[len(sickrage.srCore.srConfig.WEB_ROOT) + 1:]
+            if sickrage.app.srConfig.WEB_ROOT and self.request.uri.startswith(sickrage.app.srConfig.WEB_ROOT):
+                url = url[len(sickrage.app.srConfig.WEB_ROOT) + 1:]
 
             if url[:3] != 'api':
                 return self.finish(self.render(
@@ -148,11 +148,11 @@ class BaseHandler(RequestHandler):
                                </html>""".format(error=error,
                                                  traceback=trace_info,
                                                  request=request_info,
-                                                 webroot=sickrage.srCore.srConfig.WEB_ROOT))
+                                                 webroot=sickrage.app.srConfig.WEB_ROOT))
 
     def redirect(self, url, permanent=False, status=None):
-        if not url.startswith(sickrage.srCore.srConfig.WEB_ROOT):
-            url = sickrage.srCore.srConfig.WEB_ROOT + url
+        if not url.startswith(sickrage.app.srConfig.WEB_ROOT):
+            url = sickrage.app.srConfig.WEB_ROOT + url
             permanent = True
 
         super(BaseHandler, self).redirect(url, permanent, status)
@@ -168,16 +168,16 @@ class BaseHandler(RequestHandler):
             'submenu': "",
             'controller': "home",
             'action': "index",
-            'srPID': sickrage.srCore.PID,
-            'srHttpsEnabled': sickrage.srCore.srConfig.ENABLE_HTTPS or bool(
+            'srPID': sickrage.app.PID,
+            'srHttpsEnabled': sickrage.app.srConfig.ENABLE_HTTPS or bool(
                 self.request.headers.get('X-Forwarded-Proto') == 'https'),
             'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
-            'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.srCore.srConfig.WEB_PORT),
-            'srHttpsPort': sickrage.srCore.srConfig.WEB_PORT,
-            'srHandleReverseProxy': sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY,
-            'srThemeName': sickrage.srCore.srConfig.THEME_NAME,
-            'srDefaultPage': sickrage.srCore.srConfig.DEFAULT_PAGE,
-            'srWebRoot': sickrage.srCore.srConfig.WEB_ROOT,
+            'srHttpPort': self.request.headers.get('X-Forwarded-Port', sickrage.app.srConfig.WEB_PORT),
+            'srHttpsPort': sickrage.app.srConfig.WEB_PORT,
+            'srHandleReverseProxy': sickrage.app.srConfig.HANDLE_REVERSE_PROXY,
+            'srThemeName': sickrage.app.srConfig.THEME_NAME,
+            'srDefaultPage': sickrage.app.srConfig.DEFAULT_PAGE,
+            'srWebRoot': sickrage.app.srConfig.WEB_ROOT,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
@@ -239,25 +239,25 @@ class LoginHandler(BaseHandler):
         self.finish(self.auth())
 
     def auth(self):
-        if self.get_current_user(): return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+        if self.get_current_user(): return self.redirect("/{}/".format(sickrage.app.srConfig.DEFAULT_PAGE))
 
         username = self.get_argument('username', '')
         password = self.get_argument('password', '')
 
-        if username == sickrage.srCore.srConfig.WEB_USERNAME and password == sickrage.srCore.srConfig.WEB_PASSWORD:
+        if username == sickrage.app.srConfig.WEB_USERNAME and password == sickrage.app.srConfig.WEB_PASSWORD:
             srNotifiers.notify_login(self.request.remote_ip)
 
             remember_me = int(self.get_argument('remember_me', default=0))
 
             self.set_secure_cookie('user',
-                                   json_encode(sickrage.srCore.srConfig.API_KEY),
+                                   json_encode(sickrage.app.srConfig.API_KEY),
                                    expires_days=30 if remember_me > 0 else None)
 
-            sickrage.srCore.srLogger.debug('User logged into the SiCKRAGE web interface')
+            sickrage.app.srLogger.debug('User logged into the SiCKRAGE web interface')
 
-            return self.redirect("/{}/".format(sickrage.srCore.srConfig.DEFAULT_PAGE))
+            return self.redirect("/{}/".format(sickrage.app.srConfig.DEFAULT_PAGE))
         elif username and password:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
                     self.request.remote_ip)
             )
@@ -283,7 +283,7 @@ class LogoutHandler(BaseHandler):
 
 class CalendarHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
-        if sickrage.srCore.srConfig.CALENDAR_UNPROTECTED:
+        if sickrage.app.srConfig.CALENDAR_UNPROTECTED:
             self.write(self.calendar())
         else:
             self.calendar_auth()
@@ -302,7 +302,7 @@ class CalendarHandler(BaseHandler):
 
         utc = dateutil.tz.gettz('GMT')
 
-        sickrage.srCore.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
+        sickrage.app.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
 
         # Create a iCal string
         ical = 'BEGIN:VCALENDAR\r\n'
@@ -316,11 +316,11 @@ class CalendarHandler(BaseHandler):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
+        for show in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
                      if x['doc']['status'].lower() in ['continuing', 'returning series']
                      and x['doc']['paused'] != 1]:
             for episode in [x['doc'] for x in
-                            sickrage.srCore.mainDB.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
+                            sickrage.app.mainDB.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
                             past_date <= x['doc']['airdate'] < future_date]:
 
                 air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
@@ -335,7 +335,7 @@ class CalendarHandler(BaseHandler):
                 ical += 'DTEND:' + air_date_time_end.strftime(
                     "%Y%m%d") + 'T' + air_date_time_end.strftime(
                     "%H%M%S") + 'Z\r\n'
-                if sickrage.srCore.srConfig.CALENDAR_ICONS:
+                if sickrage.app.srConfig.CALENDAR_ICONS:
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
@@ -367,7 +367,7 @@ class WebRoot(WebHandler):
         super(WebRoot, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
     def robots_txt(self):
         """ Keep web crawlers out """
@@ -376,7 +376,7 @@ class WebRoot(WebHandler):
 
     def messages_json(self):
         """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.json """
-        locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.srCore.srConfig.GUI_LANG, 'LC_MESSAGES/messages.json')
+        locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.srConfig.GUI_LANG, 'LC_MESSAGES/messages.json')
         if os.path.isfile(locale_file):
             self.set_header('Content-Type', 'application/json')
             with io.open(locale_file, 'r', encoding='utf8') as f:
@@ -384,12 +384,12 @@ class WebRoot(WebHandler):
 
     def apibuilder(self):
         def titler(x):
-            return (remove_article(x), x)[not x or sickrage.srCore.srConfig.SORT_ARTICLE]
+            return (remove_article(x), x)[not x or sickrage.app.srConfig.SORT_ARTICLE]
 
-        shows = sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
+        shows = sorted(sickrage.app.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        for result in sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)],
+        for result in sorted([x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)],
                              key=lambda d: (d['season'], d['episode'])):
 
             if result['showid'] not in episodes:
@@ -400,8 +400,8 @@ class WebRoot(WebHandler):
 
             episodes[result['showid']][result['season']].append(result['episode'])
 
-        if len(sickrage.srCore.srConfig.API_KEY) == 32:
-            apikey = sickrage.srCore.srConfig.API_KEY
+        if len(sickrage.app.srConfig.API_KEY) == 32:
+            apikey = sickrage.app.srConfig.API_KEY
         else:
             apikey = _('API Key not generated')
 
@@ -421,7 +421,7 @@ class WebRoot(WebHandler):
         if layout not in ('poster', 'small', 'banner', 'simple', 'coverflow'):
             layout = 'poster'
 
-        sickrage.srCore.srConfig.HOME_LAYOUT = layout
+        sickrage.app.srConfig.HOME_LAYOUT = layout
 
         # Don't redirect to default page so user can see new layout
         return self.redirect("/home/")
@@ -432,27 +432,27 @@ class WebRoot(WebHandler):
         if sort not in ('name', 'date', 'network', 'progress'):
             sort = 'name'
 
-        sickrage.srCore.srConfig.POSTER_SORTBY = sort
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.POSTER_SORTBY = sort
+        sickrage.app.srConfig.save()
 
     @staticmethod
     def setPosterSortDir(direction):
 
-        sickrage.srCore.srConfig.POSTER_SORTDIR = int(direction)
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.POSTER_SORTDIR = int(direction)
+        sickrage.app.srConfig.save()
 
     def setHistoryLayout(self, layout):
 
         if layout not in ('compact', 'detailed'):
             layout = 'detailed'
 
-        sickrage.srCore.srConfig.HISTORY_LAYOUT = layout
+        sickrage.app.srConfig.HISTORY_LAYOUT = layout
 
         return self.redirect("/history/")
 
     def toggleDisplayShowSpecials(self, show):
 
-        sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS = not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS
+        sickrage.app.srConfig.DISPLAY_SHOW_SPECIALS = not sickrage.app.srConfig.DISPLAY_SHOW_SPECIALS
 
         return self.redirect("/home/displayShow?show=" + show)
 
@@ -461,15 +461,15 @@ class WebRoot(WebHandler):
             layout = 'banner'
 
         if layout == 'calendar':
-            sickrage.srCore.srConfig.COMING_EPS_SORT = 'date'
+            sickrage.app.srConfig.COMING_EPS_SORT = 'date'
 
-        sickrage.srCore.srConfig.COMING_EPS_LAYOUT = layout
+        sickrage.app.srConfig.COMING_EPS_LAYOUT = layout
 
         return self.redirect("/schedule/")
 
     def toggleScheduleDisplayPaused(self):
 
-        sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED = not sickrage.srCore.srConfig.COMING_EPS_DISPLAY_PAUSED
+        sickrage.app.srConfig.COMING_EPS_DISPLAY_PAUSED = not sickrage.app.srConfig.COMING_EPS_DISPLAY_PAUSED
 
         return self.redirect("/schedule/")
 
@@ -477,10 +477,10 @@ class WebRoot(WebHandler):
         if sort not in ('date', 'network', 'show'):
             sort = 'date'
 
-        if sickrage.srCore.srConfig.COMING_EPS_LAYOUT == 'calendar':
+        if sickrage.app.srConfig.COMING_EPS_LAYOUT == 'calendar':
             sort = 'date'
 
-        sickrage.srCore.srConfig.COMING_EPS_SORT = sort
+        sickrage.app.srConfig.COMING_EPS_SORT = sort
 
         return self.redirect("/schedule/")
 
@@ -489,7 +489,7 @@ class WebRoot(WebHandler):
         next_week1 = datetime.datetime.combine(next_week,
                                                datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories,
-                                                     sickrage.srCore.srConfig.COMING_EPS_SORT,
+                                                     sickrage.app.srConfig.COMING_EPS_SORT,
                                                      False)
         today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
 
@@ -497,7 +497,7 @@ class WebRoot(WebHandler):
         if layout and layout in ('poster', 'banner', 'list', 'calendar'):
             layout = layout
         else:
-            layout = sickrage.srCore.srConfig.COMING_EPS_LAYOUT
+            layout = sickrage.app.srConfig.COMING_EPS_LAYOUT
 
         return self.render(
             'schedule.mako',
@@ -522,21 +522,21 @@ class GoogleAuth(WebHandler):
         super(GoogleAuth, self).__init__(*args, **kwargs)
 
     def get_user_code(self):
-        data = sickrage.srCore.googleAuth.get_user_code()
+        data = sickrage.app.googleAuth.get_user_code()
         return json_encode({field: str(getattr(data, field)) for field in data._fields})
 
     def get_credentials(self, flow_info):
         try:
-            data = sickrage.srCore.googleAuth.get_credentials(AttrDict(json_decode(flow_info)))
+            data = sickrage.app.googleAuth.get_credentials(AttrDict(json_decode(flow_info)))
             return json_encode(data.token_response)
         except Exception as e:
             return json_encode({'error': e.message})
 
     def refresh_credentials(self):
-        sickrage.srCore.googleAuth.refresh_credentials()
+        sickrage.app.googleAuth.refresh_credentials()
 
     def logout(self):
-        sickrage.srCore.googleAuth.logout()
+        sickrage.app.googleAuth.logout()
 
 
 @Route('/ui(/?.*)')
@@ -548,14 +548,14 @@ class UI(WebHandler):
 
     @staticmethod
     def add_message():
-        sickrage.srCore.srNotifications.message('Test 1', 'This is test number 1')
-        sickrage.srCore.srNotifications.error('Test 2', 'This is test number 2')
+        sickrage.app.srNotifications.message('Test 1', 'This is test number 1')
+        sickrage.app.srNotifications.error('Test 2', 'This is test number 2')
         return "ok"
 
     def get_messages(self):
         messages = {}
         cur_notification_num = 0
-        for cur_notification in sickrage.srCore.srNotifications.get_notifications(self.request.remote_ip):
+        for cur_notification in sickrage.app.srNotifications.get_notifications(self.request.remote_ip):
             cur_notification_num += 1
             messages['notification-{}'.format(cur_notification_num)] = {
                 'title': cur_notification.title,
@@ -608,7 +608,7 @@ class Home(WebHandler):
         if show is None:
             return _("Invalid show parameters")
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return _("Invalid show paramaters")
@@ -626,20 +626,20 @@ class Home(WebHandler):
         return epObj
 
     def index(self):
-        if not len(sickrage.srCore.SHOWLIST):
+        if not len(sickrage.app.SHOWLIST):
             return self.redirect('/home/addShows/')
 
-        if sickrage.srCore.srConfig.ANIME_SPLIT_HOME:
+        if sickrage.app.srConfig.ANIME_SPLIT_HOME:
             shows = []
             anime = []
-            for show in sickrage.srCore.SHOWLIST:
+            for show in sickrage.app.SHOWLIST:
                 if show.is_anime:
                     anime.append(show)
                 else:
                     shows.append(show)
             showlists = [["Shows", shows], ["Anime", anime]]
         else:
-            showlists = [["Shows", sickrage.srCore.SHOWLIST]]
+            showlists = [["Shows", sickrage.app.SHOWLIST]]
 
         stats = self.show_statistics()
         return self.render(
@@ -665,7 +665,7 @@ class Home(WebHandler):
 
         max_download_count = 1000
 
-        for epData in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)]:
+        for epData in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)]:
             showid = epData['showid']
             if showid not in show_stat:
                 show_stat[showid] = {}
@@ -707,28 +707,28 @@ class Home(WebHandler):
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
-        if sickrage.srCore.started:
-            return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.srCore.PID))
+        if sickrage.app.started:
+            return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.app.PID))
         else:
             return "%s({'msg':%s})" % (kwargs['srcallback'], "nope")
 
     @staticmethod
     def haveKODI():
-        return sickrage.srCore.srConfig.USE_KODI and sickrage.srCore.srConfig.KODI_UPDATE_LIBRARY
+        return sickrage.app.srConfig.USE_KODI and sickrage.app.srConfig.KODI_UPDATE_LIBRARY
 
     @staticmethod
     def havePLEX():
-        return sickrage.srCore.srConfig.USE_PLEX and sickrage.srCore.srConfig.PLEX_UPDATE_LIBRARY
+        return sickrage.app.srConfig.USE_PLEX and sickrage.app.srConfig.PLEX_UPDATE_LIBRARY
 
     @staticmethod
     def haveEMBY():
-        return sickrage.srCore.srConfig.USE_EMBY
+        return sickrage.app.srConfig.USE_EMBY
 
     @staticmethod
     def haveTORRENT():
-        if sickrage.srCore.srConfig.USE_TORRENTS and sickrage.srCore.srConfig.TORRENT_METHOD != 'blackhole' and \
-                (sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'https' or not
-                sickrage.srCore.srConfig.ENABLE_HTTPS and sickrage.srCore.srConfig.TORRENT_HOST[:5] == 'http:'):
+        if sickrage.app.srConfig.USE_TORRENTS and sickrage.app.srConfig.TORRENT_METHOD != 'blackhole' and \
+                (sickrage.app.srConfig.ENABLE_HTTPS and sickrage.app.srConfig.TORRENT_HOST[:5] == 'https' or not
+                sickrage.app.srConfig.ENABLE_HTTPS and sickrage.app.srConfig.TORRENT_HOST[:5] == 'http:'):
             return True
         else:
             return False
@@ -762,7 +762,7 @@ class Home(WebHandler):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = sickrage.srCore.notifiersDict['freemobile'].test_notify(freemobile_id, freemobile_apikey)
+        result, message = sickrage.app.notifiersDict['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
             return _('SMS sent successfully')
         else:
@@ -771,7 +771,7 @@ class Home(WebHandler):
     @staticmethod
     def testTelegram(telegram_id=None, telegram_apikey=None):
 
-        result, message = sickrage.srCore.notifiersDict['telegram'].test_notify(telegram_id, telegram_apikey)
+        result, message = sickrage.app.notifiersDict['telegram'].test_notify(telegram_id, telegram_apikey)
         if result:
             return _('Telegram notification succeeded. Check your Telegram clients to make sure it worked')
         else:
@@ -783,7 +783,7 @@ class Home(WebHandler):
 
         host = clean_host(host, default_port=23053)
 
-        result = sickrage.srCore.notifiersDict['growl'].test_notify(host, password)
+        result = sickrage.app.notifiersDict['growl'].test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -797,7 +797,7 @@ class Home(WebHandler):
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
-        result = sickrage.srCore.notifiersDict['prowl'].test_notify(prowl_api, prowl_priority)
+        result = sickrage.app.notifiersDict['prowl'].test_notify(prowl_api, prowl_priority)
         if result:
             return _('Test prowl notice sent successfully')
         else:
@@ -806,7 +806,7 @@ class Home(WebHandler):
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
-        result = sickrage.srCore.notifiersDict['boxcar2'].test_notify(accesstoken)
+        result = sickrage.app.notifiersDict['boxcar2'].test_notify(accesstoken)
         if result:
             return _('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked')
         else:
@@ -815,7 +815,7 @@ class Home(WebHandler):
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
-        result = sickrage.srCore.notifiersDict['pushover'].test_notify(userKey, apiKey)
+        result = sickrage.app.notifiersDict['pushover'].test_notify(userKey, apiKey)
         if result:
             return _('Pushover notification succeeded. Check your Pushover clients to make sure it worked')
         else:
@@ -823,13 +823,13 @@ class Home(WebHandler):
 
     @staticmethod
     def twitterStep1():
-        return sickrage.srCore.notifiersDict['twitter']._get_authorization()
+        return sickrage.app.notifiersDict['twitter']._get_authorization()
 
     @staticmethod
     def twitterStep2(key):
 
-        result = sickrage.srCore.notifiersDict['twitter']._get_credentials(key)
-        sickrage.srCore.srLogger.info("result: " + str(result))
+        result = sickrage.app.notifiersDict['twitter']._get_credentials(key)
+        sickrage.app.srLogger.info("result: " + str(result))
         if result:
             return _('Key verification successful')
         else:
@@ -838,7 +838,7 @@ class Home(WebHandler):
     @staticmethod
     def testTwitter():
 
-        result = sickrage.srCore.notifiersDict['twitter'].test_notify()
+        result = sickrage.app.notifiersDict['twitter'].test_notify()
         if result:
             return _('Tweet successful, check your twitter to make sure it worked')
         else:
@@ -846,19 +846,19 @@ class Home(WebHandler):
 
     @staticmethod
     def testTwilio(account_sid=None, auth_token=None, phone_sid=None, to_number=None):
-        if not sickrage.srCore.notifiersDict['twilio'].account_regex.match(account_sid):
+        if not sickrage.app.notifiersDict['twilio'].account_regex.match(account_sid):
             return _('Please enter a valid account sid')
 
-        if not sickrage.srCore.notifiersDict['twilio'].auth_regex.match(auth_token):
+        if not sickrage.app.notifiersDict['twilio'].auth_regex.match(auth_token):
             return _('Please enter a valid auth token')
 
-        if not sickrage.srCore.notifiersDict['twilio'].phone_regex.match(phone_sid):
+        if not sickrage.app.notifiersDict['twilio'].phone_regex.match(phone_sid):
             return _('Please enter a valid phone sid')
 
-        if not sickrage.srCore.notifiersDict['twilio'].number_regex.match(to_number):
+        if not sickrage.app.notifiersDict['twilio'].number_regex.match(to_number):
             return _('Please format the phone number as "+1-###-###-####"')
 
-        result = sickrage.srCore.notifiersDict['twilio'].test_notify()
+        result = sickrage.app.notifiersDict['twilio'].test_notify()
         if result:
             return _('Authorization successful and number ownership verified')
         else:
@@ -866,7 +866,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testSlack():
-        result = sickrage.srCore.notifiersDict['slack'].test_notify()
+        result = sickrage.app.notifiersDict['slack'].test_notify()
         if result:
             return _('Slack message successful')
         else:
@@ -874,7 +874,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testDiscord():
-        result = sickrage.srCore.notifiersDict['discord'].test_notify()
+        result = sickrage.app.notifiersDict['discord'].test_notify()
         if result:
             return _('Discord message successful')
         else:
@@ -886,7 +886,7 @@ class Home(WebHandler):
         host = clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = sickrage.srCore.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
+            curResult = sickrage.app.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
                                                                           password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += _('Test KODI notice sent successfully to ') + urllib.unquote_plus(curHost)
@@ -900,11 +900,11 @@ class Home(WebHandler):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
         if None is not password and set('*') == set(password):
-            password = sickrage.srCore.srConfig.PLEX_CLIENT_PASSWORD
+            password = sickrage.app.srConfig.PLEX_CLIENT_PASSWORD
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
+            curResult = sickrage.app.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
                                                                               username,
                                                                               password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
@@ -913,7 +913,7 @@ class Home(WebHandler):
                 finalResult += _('Test failed for Plex client ... ') + urllib.unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
-        sickrage.srCore.srNotifications.message(_('Tested Plex client(s): '),
+        sickrage.app.srNotifications.message(_('Tested Plex client(s): '),
                                                 urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
@@ -922,11 +922,11 @@ class Home(WebHandler):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
         if password is not None and set('*') == set(password):
-            password = sickrage.srCore.srConfig.PLEX_PASSWORD
+            password = sickrage.app.srConfig.PLEX_PASSWORD
 
         finalResult = ''
 
-        curResult = sickrage.srCore.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
+        curResult = sickrage.app.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
                                                                           password,
                                                                           plex_server_token)
         if curResult is None:
@@ -939,22 +939,22 @@ class Home(WebHandler):
                            urllib.unquote_plus(str(curResult).replace(',', ', '))
         finalResult += '<br>' + '\n'
 
-        sickrage.srCore.srNotifications.message(_('Tested Plex Media Server host(s): '),
+        sickrage.app.srNotifications.message(_('Tested Plex Media Server host(s): '),
                                                 urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
     @staticmethod
     def testLibnotify():
-        if sickrage.srCore.notifiersDict['libnotify'].notifier.test_notify():
+        if sickrage.app.notifiersDict['libnotify'].notifier.test_notify():
             return _('Tried sending desktop notification via libnotify')
         else:
-            return sickrage.srCore.notifiersDict['libnotify'].diagnose()
+            return sickrage.app.notifiersDict['libnotify'].diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
         host = clean_host(host)
-        result = sickrage.srCore.notifiersDict['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickrage.app.notifiersDict['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
             return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
@@ -963,7 +963,7 @@ class Home(WebHandler):
     @staticmethod
     def testNMJ(host=None, database=None, mount=None):
         host = clean_host(host)
-        result = sickrage.srCore.notifiersDict['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickrage.app.notifiersDict['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
         if result:
             return _('Successfully started the scan update')
         else:
@@ -972,12 +972,12 @@ class Home(WebHandler):
     @staticmethod
     def settingsNMJ(host=None):
         host = clean_host(host)
-        result = sickrage.srCore.notifiersDict['nmj'].notify_settings(urllib.unquote_plus(host))
+        result = sickrage.app.notifiersDict['nmj'].notify_settings(urllib.unquote_plus(host))
         if result:
             return '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "message": _('Got settings from'),
-                "host": host, "database": sickrage.srCore.srConfig.NMJ_DATABASE,
-                "mount": sickrage.srCore.srConfig.NMJ_MOUNT
+                "host": host, "database": sickrage.app.srConfig.NMJ_DATABASE,
+                "mount": sickrage.app.srConfig.NMJ_MOUNT
             }
         else:
             message = _('Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for '
@@ -987,7 +987,7 @@ class Home(WebHandler):
     @staticmethod
     def testNMJv2(host=None):
         host = clean_host(host)
-        result = sickrage.srCore.notifiersDict['nmjv2'].test_notify(urllib.unquote_plus(host))
+        result = sickrage.app.notifiersDict['nmjv2'].test_notify(urllib.unquote_plus(host))
         if result:
             return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
@@ -996,11 +996,11 @@ class Home(WebHandler):
     @staticmethod
     def settingsNMJv2(host=None, dbloc=None, instance=None):
         host = clean_host(host)
-        result = sickrage.srCore.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
+        result = sickrage.app.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
                                                                         instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
-                                                                                                   "database": sickrage.srCore.srConfig.NMJv2_DATABASE}
+                                                                                                   "database": sickrage.app.srConfig.NMJv2_DATABASE}
         else:
             return '{"message": "Unable to find NMJ Database at location: %(dbloc)s. Is the right location selected and PCH running?", "database": ""}' % {
                 "dbloc": dbloc}
@@ -1013,13 +1013,13 @@ class Home(WebHandler):
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
-        return sickrage.srCore.notifiersDict['trakt'].test_notify(username, blacklist_name)
+        return sickrage.app.notifiersDict['trakt'].test_notify(username, blacklist_name)
 
     @staticmethod
     def loadShowNotifyLists():
         data = {'_size': 0}
 
-        tv_shows = sorted([x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)],
+        tv_shows = sorted([x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])
 
         for s in tv_shows:
@@ -1031,24 +1031,24 @@ class Home(WebHandler):
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            dbData = sickrage.srCore.mainDB.db.get('tv_shows', int(show), with_doc=True)['doc']
+            dbData = sickrage.app.mainDB.db.get('tv_shows', int(show), with_doc=True)['doc']
             dbData['notify_list'] = emails
-            sickrage.srCore.mainDB.db.update(dbData)
+            sickrage.app.mainDB.db.update(dbData)
         except RecordNotFound:
             return 'ERROR'
 
     @staticmethod
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         host = clean_host(host)
-        if sickrage.srCore.notifiersDict['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickrage.app.notifiersDict['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return _('Test email sent successfully! Check inbox.')
         else:
-            return _('ERROR: %s') % sickrage.srCore.notifiersDict['email'].last_err
+            return _('ERROR: %s') % sickrage.app.notifiersDict['email'].last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
-        result = sickrage.srCore.notifiersDict['nma'].test_notify(nma_api, nma_priority)
+        result = sickrage.app.notifiersDict['nma'].test_notify(nma_api, nma_priority)
         if result:
             return _('Test NMA notice sent successfully')
         else:
@@ -1056,7 +1056,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushalot(authorizationToken=None):
-        result = sickrage.srCore.notifiersDict['pushalot'].test_notify(authorizationToken)
+        result = sickrage.app.notifiersDict['pushalot'].test_notify(authorizationToken)
         if result:
             return _('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked')
         else:
@@ -1064,7 +1064,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushbullet(api=None):
-        result = sickrage.srCore.notifiersDict['pushbullet'].test_notify(api)
+        result = sickrage.app.notifiersDict['pushbullet'].test_notify(api)
         if result:
             return _('Pushbullet notification succeeded. Check your device to make sure it worked')
         else:
@@ -1072,17 +1072,17 @@ class Home(WebHandler):
 
     @staticmethod
     def getPushbulletDevices(api=None):
-        result = sickrage.srCore.notifiersDict['pushbullet'].get_devices(api)
+        result = sickrage.app.notifiersDict['pushbullet'].get_devices(api)
         if result:
             return result
         else:
             return _('Error getting Pushbullet devices')
 
     def status(self):
-        tvdirFree = getDiskSpaceUsage(sickrage.srCore.srConfig.TV_DOWNLOAD_DIR)
+        tvdirFree = getDiskSpaceUsage(sickrage.app.srConfig.TV_DOWNLOAD_DIR)
         rootDir = {}
-        if sickrage.srCore.srConfig.ROOT_DIRS:
-            backend_pieces = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+        if sickrage.app.srConfig.ROOT_DIRS:
+            backend_pieces = sickrage.app.srConfig.ROOT_DIRS.split('|')
             backend_dirs = backend_pieces[1:]
         else:
             backend_dirs = []
@@ -1103,21 +1103,21 @@ class Home(WebHandler):
         )
 
     def shutdown(self, pid=None):
-        if str(pid) != str(sickrage.srCore.PID):
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        if str(pid) != str(sickrage.app.PID):
+            return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
-        sickrage.srCore.shutdown()
+        sickrage.app.shutdown()
 
     def restart(self, pid=None, force=False):
-        if str(pid) != str(sickrage.srCore.PID) and not force:
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        if str(pid) != str(sickrage.app.PID) and not force:
+            return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
         # clear current user to disable header and footer
         self.current_user = None
 
         if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
-        sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.srCore.shutdown, restart=True)
+        sickrage.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return self.render(
             "/home/restart.mako",
@@ -1129,26 +1129,26 @@ class Home(WebHandler):
         ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
-        if str(pid) != str(sickrage.srCore.PID):
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        if str(pid) != str(sickrage.app.PID):
+            return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
         # check for new app updates
-        if not sickrage.srCore.VERSIONUPDATER.check_for_new_version(True):
-            sickrage.srCore.srNotifications.message(_('No new updates!'))
+        if not sickrage.app.VERSIONUPDATER.check_for_new_version(True):
+            sickrage.app.srNotifications.message(_('No new updates!'))
 
-        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
     def update(self, pid=None):
-        if str(pid) != str(sickrage.srCore.PID):
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        if str(pid) != str(sickrage.app.PID):
+            return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
-        if sickrage.srCore.VERSIONUPDATER.update():
-            sickrage.srCore.NEWEST_VERSION_STRING = None
+        if sickrage.app.VERSIONUPDATER.update():
+            sickrage.app.NEWEST_VERSION_STRING = None
             return self.restart(pid)
         else:
             self._genericMessage(_("Update Failed"),
                                  _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+            return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1157,37 +1157,37 @@ class Home(WebHandler):
             return _('Failed to find {path}'.format(path=path))
 
     def installRequirements(self):
-        sickrage.srCore.srNotifications.message(_('Installing SiCKRAGE requirements'))
-        if not sickrage.srCore.VERSIONUPDATER.updater.install_requirements():
-            sickrage.srCore.srNotifications.message(_('Failed to install SiCKRAGE requirements'))
+        sickrage.app.srNotifications.message(_('Installing SiCKRAGE requirements'))
+        if not sickrage.app.VERSIONUPDATER.updater.install_requirements():
+            sickrage.app.srNotifications.message(_('Failed to install SiCKRAGE requirements'))
         else:
-            sickrage.srCore.srNotifications.message(_('Installed SiCKRAGE requirements successfully!'))
+            sickrage.app.srNotifications.message(_('Installed SiCKRAGE requirements successfully!'))
 
-        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
 
     def branchCheckout(self, branch):
-        if branch and sickrage.srCore.VERSIONUPDATER.updater.current_branch != branch:
-            sickrage.srCore.srNotifications.message(_('Checking out branch: '), branch)
-            if sickrage.srCore.VERSIONUPDATER.updater.checkout_branch(branch):
-                sickrage.srCore.srNotifications.message(_('Branch checkout successful, restarting: '), branch)
-                return self.restart(sickrage.srCore.PID)
+        if branch and sickrage.app.VERSIONUPDATER.updater.current_branch != branch:
+            sickrage.app.srNotifications.message(_('Checking out branch: '), branch)
+            if sickrage.app.VERSIONUPDATER.updater.checkout_branch(branch):
+                sickrage.app.srNotifications.message(_('Branch checkout successful, restarting: '), branch)
+                return self.restart(sickrage.app.PID)
         else:
-            sickrage.srCore.srNotifications.message(_('Already on branch: '), branch)
+            sickrage.app.srNotifications.message(_('Already on branch: '), branch)
 
-        return self.redirect('/' + sickrage.srCore.srConfig.DEFAULT_PAGE + '/')
+        return self.redirect('/' + sickrage.app.srConfig.DEFAULT_PAGE + '/')
 
     def displayShow(self, show=None):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
 
         episodeResults = sorted(
-            [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
+            [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
             key=lambda d: (d['season'], d['episode']), reverse=True)
 
         seasonResults = list({x['season'] for x in episodeResults})
@@ -1200,29 +1200,29 @@ class Home(WebHandler):
 
         show_message = ''
 
-        if sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
+        if sickrage.app.SHOWQUEUE.isBeingAdded(showObj):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
+        elif sickrage.app.SHOWQUEUE.isBeingUpdated(showObj):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.srCore.SHOWQUEUE.isBeingRefreshed(showObj):
+        elif sickrage.app.SHOWQUEUE.isBeingRefreshed(showObj):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.srCore.SHOWQUEUE.isBeingSubtitled(showObj):
+        elif sickrage.app.SHOWQUEUE.isBeingSubtitled(showObj):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.srCore.SHOWQUEUE.isInRefreshQueue(showObj):
+        elif sickrage.app.SHOWQUEUE.isInRefreshQueue(showObj):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.srCore.SHOWQUEUE.isInUpdateQueue(showObj):
+        elif sickrage.app.SHOWQUEUE.isInUpdateQueue(showObj):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(showObj):
+        elif sickrage.app.SHOWQUEUE.isInSubtitleQueue(showObj):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.srCore.SHOWQUEUE.isBeingAdded(showObj):
-            if not sickrage.srCore.SHOWQUEUE.isBeingUpdated(showObj):
+        if not sickrage.app.SHOWQUEUE.isBeingAdded(showObj):
+            if not sickrage.app.SHOWQUEUE.isBeingUpdated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-play'})
@@ -1246,7 +1246,7 @@ class Home(WebHandler):
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-tag'})
 
-                if sickrage.srCore.srConfig.USE_SUBTITLES and not sickrage.srCore.SHOWQUEUE.isBeingSubtitled(
+                if sickrage.app.srConfig.USE_SUBTITLES and not sickrage.app.SHOWQUEUE.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
@@ -1279,12 +1279,12 @@ class Home(WebHandler):
                 epCounts[curEpCat] += 1
 
         def titler(x):
-            return (remove_article(x), x)[not x or sickrage.srCore.srConfig.SORT_ARTICLE]
+            return (remove_article(x), x)[not x or sickrage.app.srConfig.SORT_ARTICLE]
 
-        if sickrage.srCore.srConfig.ANIME_SPLIT_HOME:
+        if sickrage.app.srConfig.ANIME_SPLIT_HOME:
             shows = []
             anime = []
-            for show in sickrage.srCore.SHOWLIST:
+            for show in sickrage.app.SHOWLIST:
                 if show.is_anime:
                     anime.append(show)
                 else:
@@ -1294,7 +1294,7 @@ class Home(WebHandler):
                                ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
         else:
             sortedShowLists = [
-                ["Shows", sorted(sickrage.srCore.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+                ["Shows", sorted(sickrage.app.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
 
         bwl = None
         if showObj.is_anime:
@@ -1306,15 +1306,15 @@ class Home(WebHandler):
         indexer = int(showObj.indexer)
 
         # Delete any previous occurrances
-        for index, recentShow in enumerate(sickrage.srCore.srConfig.SHOWS_RECENT):
+        for index, recentShow in enumerate(sickrage.app.srConfig.SHOWS_RECENT):
             if recentShow['indexerid'] == indexerid:
-                del sickrage.srCore.srConfig.SHOWS_RECENT[index]
+                del sickrage.app.srConfig.SHOWS_RECENT[index]
 
         # Only track 5 most recent shows
-        del sickrage.srCore.srConfig.SHOWS_RECENT[4:]
+        del sickrage.app.srConfig.SHOWS_RECENT[4:]
 
         # Insert most recent show
-        sickrage.srCore.srConfig.SHOWS_RECENT.insert(0, {
+        sickrage.app.srConfig.SHOWS_RECENT.insert(0, {
             'indexerid': indexerid,
             'name': showObj.name,
         })
@@ -1362,7 +1362,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errString)
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if not showObj:
             errString = _("Unable to find the specified show: ") + str(show)
@@ -1379,14 +1379,14 @@ class Home(WebHandler):
                 whitelist = showObj.release_groups.whitelist
                 blacklist = showObj.release_groups.blacklist
 
-                if sickrage.srCore.ADBA_CONNECTION and not anidb_failed:
+                if sickrage.app.ADBA_CONNECTION and not anidb_failed:
                     try:
-                        anime = aniDBAbstracter.Anime(sickrage.srCore.ADBA_CONNECTION, name=showObj.name)
+                        anime = aniDBAbstracter.Anime(sickrage.app.ADBA_CONNECTION, name=showObj.name)
                         groups = anime.get_groups()
                     except Exception as e:
                         anidb_failed = True
-                        sickrage.srCore.srNotifications.error(_('Unable to retreive Fansub Groups from AniDB.'))
-                        sickrage.srCore.srLogger.debug(
+                        sickrage.app.srNotifications.error(_('Unable to retreive Fansub Groups from AniDB.'))
+                        sickrage.app.srLogger.debug(
                             'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
             with showObj.lock:
@@ -1493,7 +1493,7 @@ class Home(WebHandler):
             if bool(showObj.flatten_folders) != bool(flatten_folders):
                 showObj.flatten_folders = flatten_folders
                 try:
-                    sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+                    sickrage.app.SHOWQUEUE.refreshShow(showObj)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh this show: {}").format(e.message))
 
@@ -1514,8 +1514,8 @@ class Home(WebHandler):
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if os.path.normpath(showObj.location) != os.path.normpath(location):
-                sickrage.srCore.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
-                if not os.path.isdir(location) and not sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS:
+                sickrage.app.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
+                if not os.path.isdir(location) and not sickrage.app.srConfig.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location {} does not exist".format(location))
 
                 # don't bother if we're going to update anyway
@@ -1524,7 +1524,7 @@ class Home(WebHandler):
                     try:
                         showObj.location = location
                         try:
-                            sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+                            sickrage.app.SHOWQUEUE.refreshShow(showObj)
                         except CantRefreshShowException as e:
                             errors.append(_("Unable to refresh this show:{}").format(e.message))
                             # grab updated info from TVDB
@@ -1541,22 +1541,22 @@ class Home(WebHandler):
         # force the update
         if do_update:
             try:
-                sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)
-                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                sickrage.app.SHOWQUEUE.updateShow(showObj, True)
+                time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to update show: {0}").format(str(e)))
 
         if do_update_exceptions:
             try:
                 update_scene_exceptions(showObj.indexerid, exceptions_list)
-                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to force an update on scene exceptions of the show."))
 
         if do_update_scene_numbering:
             try:
                 xem_refresh(showObj.indexerid, showObj.indexer)
-                time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to force an update on scene numbering of the show."))
 
@@ -1564,7 +1564,7 @@ class Home(WebHandler):
             return map(str, errors)
 
         if len(errors) > 0:
-            sickrage.srCore.srNotifications.error(
+            sickrage.app.srNotifications.error(
                 _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
                                                                                plural="" if len(errors) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>{0}</li>'.format(error) for error in errors]) + "</ul>")
@@ -1575,7 +1575,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1584,7 +1584,7 @@ class Home(WebHandler):
 
         showObj.saveToDB()
 
-        sickrage.srCore.srNotifications.message(
+        sickrage.app.srNotifications.message(
             _('%s has been %s') % (showObj.name, (_('resumed'), _('paused'))[showObj.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % showObj.indexerid)
@@ -1593,25 +1593,25 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.srCore.SHOWQUEUE.removeShow(showObj, bool(full))
-            sickrage.srCore.srNotifications.message(
+            sickrage.app.SHOWQUEUE.removeShow(showObj, bool(full))
+            sickrage.app.srNotifications.message(
                 _('%s has been %s %s') %
                 (
                     showObj.name,
-                    (_('deleted'), _('trashed'))[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)],
+                    (_('deleted'), _('trashed'))[bool(sickrage.app.srConfig.TRASH_REMOVE_SHOW)],
                     (_('(media untouched)'), _('(with all related media)'))[bool(full)]
                 )
             )
         except CantRemoveShowException as e:
-            sickrage.srCore.srNotifications.error(_('Unable to delete this show.'), e.message)
+            sickrage.app.srNotifications.error(_('Unable to delete this show.'), e.message)
 
-        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
 
         # Don't redirect to the default page, so the user can confirm that the show was deleted
         return self.redirect('/home/')
@@ -1620,17 +1620,17 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+            sickrage.app.SHOWQUEUE.refreshShow(showObj)
         except CantRefreshShowException as e:
-            sickrage.srCore.srNotifications.error(_('Unable to refresh this show.'), e.message)
+            sickrage.app.srNotifications.error(_('Unable to refresh this show.'), e.message)
 
-        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -1638,19 +1638,19 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # force the update
         try:
-            sickrage.srCore.SHOWQUEUE.updateShow(showObj, bool(force))
+            sickrage.app.SHOWQUEUE.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            sickrage.srCore.srNotifications.error(_("Unable to update this show."), e.message)
+            sickrage.app.srNotifications.error(_("Unable to update this show."), e.message)
 
         # just give it some time
-        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -1659,15 +1659,15 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
-        sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj)
+        sickrage.app.SHOWQUEUE.downloadSubtitles(showObj)
 
-        time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+        time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
 
         return self.redirect("/home/displayShow?show=" + str(showObj.indexerid))
 
@@ -1676,19 +1676,19 @@ class Home(WebHandler):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
             if showObj:
                 showName = urllib.quote_plus(showObj.name.encode('utf-8'))
 
-        if sickrage.srCore.srConfig.KODI_UPDATE_ONLYFIRST:
-            host = sickrage.srCore.srConfig.KODI_HOST.split(",")[0].strip()
+        if sickrage.app.srConfig.KODI_UPDATE_ONLYFIRST:
+            host = sickrage.app.srConfig.KODI_HOST.split(",")[0].strip()
         else:
-            host = sickrage.srCore.srConfig.KODI_HOST
+            host = sickrage.app.srConfig.KODI_HOST
 
-        if sickrage.srCore.notifiersDict['kodi'].update_library(showName=showName):
-            sickrage.srCore.srNotifications.message(_("Library update command sent to KODI host(s): ") + host)
+        if sickrage.app.notifiersDict['kodi'].update_library(showName=showName):
+            sickrage.app.srNotifications.message(_("Library update command sent to KODI host(s): ") + host)
         else:
-            sickrage.srCore.srNotifications.error(_("Unable to contact one or more KODI host(s): ") + host)
+            sickrage.app.srNotifications.error(_("Unable to contact one or more KODI host(s): ") + host)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1696,28 +1696,28 @@ class Home(WebHandler):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if None is sickrage.srCore.notifiersDict['plex'].update_library():
-            sickrage.srCore.srNotifications.message(
+        if None is sickrage.app.notifiersDict['plex'].update_library():
+            sickrage.app.srNotifications.message(
                 _("Library update command sent to Plex Media Server host: ") +
-                sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                sickrage.app.srConfig.PLEX_SERVER_HOST)
         else:
-            sickrage.srCore.srNotifications.error(
+            sickrage.app.srNotifications.error(
                 _("Unable to contact Plex Media Server host: ") +
-                sickrage.srCore.srConfig.PLEX_SERVER_HOST)
+                sickrage.app.srConfig.PLEX_SERVER_HOST)
         return self.redirect('/home/')
 
     def updateEMBY(self, show=None):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
-        if sickrage.srCore.notifiersDict['emby'].update_library(showObj):
-            sickrage.srCore.srNotifications.message(
-                _("Library update command sent to Emby host: ") + sickrage.srCore.srConfig.EMBY_HOST)
+        if sickrage.app.notifiersDict['emby'].update_library(showObj):
+            sickrage.app.srNotifications.message(
+                _("Library update command sent to Emby host: ") + sickrage.app.srConfig.EMBY_HOST)
         else:
-            sickrage.srCore.srNotifications.error(
-                _("Unable to contact Emby host: ") + sickrage.srCore.srConfig.EMBY_HOST)
+            sickrage.app.srNotifications.error(
+                _("Unable to contact Emby host: ") + sickrage.app.srConfig.EMBY_HOST)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1725,9 +1725,9 @@ class Home(WebHandler):
             return self.redirect('/home/')
 
     def syncTrakt(self):
-        if sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER').func():
-            sickrage.srCore.srLogger.info("Syncing Trakt with SiCKRAGE")
-            sickrage.srCore.srNotifications.message(_('Syncing Trakt with SiCKRAGE'))
+        if sickrage.app.srScheduler.get_job('TRAKTSEARCHER').func():
+            sickrage.app.srLogger.info("Syncing Trakt with SiCKRAGE")
+            sickrage.app.srNotifications.message(_('Syncing Trakt with SiCKRAGE'))
 
         return self.redirect("/home/")
 
@@ -1735,16 +1735,16 @@ class Home(WebHandler):
         if not all([show, eps]):
             errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1752,14 +1752,14 @@ class Home(WebHandler):
         if eps:
             for curEp in eps.split('|'):
                 if not curEp:
-                    sickrage.srCore.srLogger.debug("curEp was empty when trying to deleteEpisode")
+                    sickrage.app.srLogger.debug("curEp was empty when trying to deleteEpisode")
 
-                sickrage.srCore.srLogger.debug("Attempting to delete episode " + curEp)
+                sickrage.app.srLogger.debug("Attempting to delete episode " + curEp)
 
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.srCore.srLogger.debug(
+                    sickrage.app.srLogger.debug(
                         "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
                             epInfo[0], epInfo[1]))
                     continue
@@ -1784,7 +1784,7 @@ class Home(WebHandler):
         if not all([show, eps, status]):
             errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1792,17 +1792,17 @@ class Home(WebHandler):
         if not statusStrings.has_key(int(status)):
             errMsg = _("Invalid status")
             if direct:
-                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.srCore.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.srNotifications.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1813,14 +1813,14 @@ class Home(WebHandler):
             for curEp in eps.split('|'):
 
                 if not curEp:
-                    sickrage.srCore.srLogger.debug("curEp was empty when trying to setStatus")
+                    sickrage.app.srLogger.debug("curEp was empty when trying to setStatus")
 
-                sickrage.srCore.srLogger.debug("Attempting to set status on episode " + curEp + " to " + status)
+                sickrage.app.srLogger.debug("Attempting to set status on episode " + curEp + " to " + status)
 
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.srCore.srLogger.debug(
+                    sickrage.app.srLogger.debug(
                         "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
                             epInfo[0], epInfo[1]))
                     continue
@@ -1840,25 +1840,25 @@ class Home(WebHandler):
                 with epObj.lock:
                     # don't let them mess up UNAIRED episodes
                     if epObj.status == UNAIRED:
-                        sickrage.srCore.srLogger.warning(
+                        sickrage.app.srLogger.warning(
                             "Refusing to change status of " + curEp + " because it is UNAIRED")
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
                             Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [
                         IGNORED] and not os.path.isfile(epObj.location):
-                        sickrage.srCore.srLogger.warning(
+                        sickrage.app.srLogger.warning(
                             "Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
                         continue
 
                     if int(status) == FAILED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
                             Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
-                        sickrage.srCore.srLogger.warning(
+                        sickrage.app.srLogger.warning(
                             "Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
                         continue
 
                     if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
-                        sickrage.srCore.srLogger.info(
+                        sickrage.app.srLogger.info(
                             "Removing release_name for episode as you want to set a downloaded episode back to wanted, so obviously you want it replaced")
                         epObj.release_name = ""
 
@@ -1869,19 +1869,19 @@ class Home(WebHandler):
 
                     trakt_data.append((epObj.season, epObj.episode))
 
-            data = sickrage.srCore.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
-            if data and sickrage.srCore.srConfig.USE_TRAKT and sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
+            data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
+            if data and sickrage.app.srConfig.USE_TRAKT and sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
-                    sickrage.srCore.srLogger.debug(
+                    sickrage.app.srLogger.debug(
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
-                    sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
+                    sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
                                                                             update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                    sickrage.srCore.srLogger.debug(
+                    sickrage.app.srLogger.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
-                    sickrage.srCore.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
+                    sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
                                                                             update="remove")
 
         if int(status) == WANTED and not showObj.paused:
@@ -1890,18 +1890,18 @@ class Home(WebHandler):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
+                sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.srCore.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
+                sickrage.app.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
                     season) + " because some eps were set to wanted")
 
             msg += "</ul>"
 
             if segments:
-                sickrage.srCore.srNotifications.message(_("Backlog started"), msg)
+                sickrage.app.srNotifications.message(_("Backlog started"), msg)
         elif int(status) == WANTED and showObj.paused:
-            sickrage.srCore.srLogger.info(
+            sickrage.app.srLogger.info(
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
 
         if int(status) == FAILED:
@@ -1910,16 +1910,16 @@ class Home(WebHandler):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.srCore.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
+                sickrage.app.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.srCore.srLogger.info("Retrying Search for " + showObj.name + " season " + str(
+                sickrage.app.srLogger.info("Retrying Search for " + showObj.name + " season " + str(
                     season) + " because some eps were set to failed")
 
             msg += "</ul>"
 
             if segments:
-                sickrage.srCore.srNotifications.message(_("Retry Search started"), msg)
+                sickrage.app.srNotifications.message(_("Retry Search started"), msg)
 
         if direct:
             return json_encode({'result': 'success'})
@@ -1931,7 +1931,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("You must specify a show"))
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1982,7 +1982,7 @@ class Home(WebHandler):
             errMsg = _("You must specify a show and at least one episode")
             return self._genericMessage(_("Error"), errMsg)
 
-        show_obj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        show_obj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if show_obj is None:
             errMsg = _("Show not in show list")
@@ -1998,14 +1998,14 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            ep_result = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', int(show), with_doc=True)
+            ep_result = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', int(show), with_doc=True)
                          if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
-                sickrage.srCore.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
+                sickrage.app.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
-            related_eps_result = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
+            related_eps_result = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)
                                   if x['doc']['location'] == ep_result[0]['location']
                                   and x['doc']['episode'] != int(epInfo[1])]
 
@@ -2029,7 +2029,7 @@ class Home(WebHandler):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
-            sickrage.srCore.SEARCHQUEUE.put(ep_queue_item)
+            sickrage.app.SEARCHQUEUE.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})
@@ -2040,10 +2040,10 @@ class Home(WebHandler):
     def getManualSearchStatus(self, show=None):
         def getEpisodes(searchThread, searchstatus):
             results = []
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(searchThread.show.indexerid))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(searchThread.show.indexerid))
 
             if not showObj:
-                sickrage.srCore.srLogger.error(
+                sickrage.app.srLogger.error(
                     'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
@@ -2074,13 +2074,13 @@ class Home(WebHandler):
 
         # Queued Searches
         searchstatus = 'queued'
-        for searchThread in sickrage.srCore.SEARCHQUEUE.get_all_ep_from_queue(show):
+        for searchThread in sickrage.app.SEARCHQUEUE.get_all_ep_from_queue(show):
             episodes += getEpisodes(searchThread, searchstatus)
 
         # Running Searches
         searchstatus = 'searching'
-        if sickrage.srCore.SEARCHQUEUE.is_manualsearch_in_progress():
-            searchThread = sickrage.srCore.SEARCHQUEUE.currentItem
+        if sickrage.app.SEARCHQUEUE.is_manualsearch_in_progress():
+            searchThread = sickrage.app.SEARCHQUEUE.currentItem
 
             if searchThread.success:
                 searchstatus = 'finished'
@@ -2132,7 +2132,7 @@ class Home(WebHandler):
             else:
                 status = _('No subtitles downloaded')
 
-            sickrage.srCore.srNotifications.message(ep_obj.show.name, status)
+            sickrage.app.srNotifications.message(ep_obj.show.name, status)
             return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
         return json_encode({'result': 'failure'})
@@ -2154,7 +2154,7 @@ class Home(WebHandler):
         if sceneAbsolute in ['null', '']:
             sceneAbsolute = None
 
-        showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
         if showObj.is_anime:
             result = {
@@ -2178,7 +2178,7 @@ class Home(WebHandler):
             result['success'] = False
             result['errorMessage'] = ep_obj
         elif showObj.is_anime:
-            sickrage.srCore.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
+            sickrage.app.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
                                            (show, forAbsolute, sceneAbsolute))
 
             show = int(show)
@@ -2189,7 +2189,7 @@ class Home(WebHandler):
 
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
-            sickrage.srCore.srLogger.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
+            sickrage.app.srLogger.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
                                            (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
 
             show = int(show)
@@ -2226,18 +2226,18 @@ class Home(WebHandler):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
 
-            sickrage.srCore.SEARCHQUEUE.put(ep_queue_item)
+            sickrage.app.SEARCHQUEUE.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})
 
     @staticmethod
     def fetch_releasegroups(show_name):
-        sickrage.srCore.srLogger.info('ReleaseGroups: %s' % show_name)
-        if sickrage.srCore.ADBA_CONNECTION:
-            anime = aniDBAbstracter.Anime(sickrage.srCore.ADBA_CONNECTION, name=show_name)
+        sickrage.app.srLogger.info('ReleaseGroups: %s' % show_name)
+        if sickrage.app.ADBA_CONNECTION:
+            anime = aniDBAbstracter.Anime(sickrage.app.ADBA_CONNECTION, name=show_name)
             groups = anime.get_groups()
-            sickrage.srCore.srLogger.info('ReleaseGroups: %s' % groups)
+            sickrage.app.srLogger.info('ReleaseGroups: %s' % groups)
             return json_encode({'result': 'success', 'groups': groups})
 
         return json_encode({'result': 'failure'})
@@ -2266,11 +2266,11 @@ class changelog(WebHandler):
 
     def index(self):
         try:
-            changes = sickrage.srCore.srWebSession.get(sickrage.srCore.srConfig.CHANGES_URL).text
+            changes = sickrage.app.srWebSession.get(sickrage.app.srConfig.CHANGES_URL).text
         except Exception:
-            sickrage.srCore.srLogger.debug('Could not load changes from repo, giving a link!')
+            sickrage.app.srLogger.debug('Could not load changes from repo, giving a link!')
             changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(
-                sickrage.srCore.srConfig.CHANGES_URL)
+                sickrage.app.srConfig.CHANGES_URL)
 
         data = markdown2.markdown(
             changes if changes else _("The was a problem connecting to github, please refresh and try again"),
@@ -2314,7 +2314,7 @@ class HomePostProcess(Home):
 
         if not proc_dir: return self.redirect("/home/postprocess/")
 
-        result = sickrage.srCore.POSTPROCESSORQUEUE.put(proc_dir, **pp_options)
+        result = sickrage.app.POSTPROCESSORQUEUE.put(proc_dir, **pp_options)
 
         if quite: return result
 
@@ -2347,7 +2347,7 @@ class HomeAddShows(Home):
     @staticmethod
     def searchIndexersForShowName(search_term, lang=None, indexer=None):
         if not lang or lang == 'null':
-            lang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+            lang = sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         results = {}
         final_results = []
@@ -2359,7 +2359,7 @@ class HomeAddShows(Home):
             lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
             t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
-            sickrage.srCore.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
+            sickrage.app.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
                 search_term, srIndexerApi(indexer).name))
 
             try:
@@ -2386,8 +2386,8 @@ class HomeAddShows(Home):
 
         root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
 
-        if sickrage.srCore.srConfig.ROOT_DIRS:
-            default_index = int(sickrage.srCore.srConfig.ROOT_DIRS.split('|')[0])
+        if sickrage.app.srConfig.ROOT_DIRS:
+            default_index = int(sickrage.app.srConfig.ROOT_DIRS.split('|')[0])
         else:
             default_index = 0
 
@@ -2426,7 +2426,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                if [x for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if
+                if [x for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True) if
                     x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
@@ -2435,7 +2435,7 @@ class HomeAddShows(Home):
                 dir_list.append(cur_dir)
 
                 showid = show_name = indexer = None
-                for cur_provider in sickrage.srCore.metadataProvidersDict.values():
+                for cur_provider in sickrage.app.metadataProvidersDict.values():
                     if all([showid, show_name, indexer]):
                         continue
 
@@ -2454,7 +2454,7 @@ class HomeAddShows(Home):
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if showid and findCertainShow(sickrage.srCore.SHOWLIST, showid): cur_dir['added_already'] = True
+                if showid and findCertainShow(sickrage.app.SHOWLIST, showid): cur_dir['added_already'] = True
 
         return self.render(
             "/home/mass_add_table.mako",
@@ -2498,7 +2498,7 @@ class HomeAddShows(Home):
         provided_indexer_id = int(indexer_id or 0)
         provided_indexer_name = show_name
 
-        provided_indexer = int(indexer or sickrage.srCore.srConfig.INDEXER_DEFAULT)
+        provided_indexer = int(indexer or sickrage.app.srConfig.INDEXER_DEFAULT)
 
         return self.render(
             "/home/new_show.mako",
@@ -2511,7 +2511,7 @@ class HomeAddShows(Home):
             provided_indexer_name=provided_indexer_name,
             provided_indexer=provided_indexer,
             indexers=srIndexerApi().indexers,
-            quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
+            quality=sickrage.app.srConfig.QUALITY_DEFAULT,
             whitelist=[],
             blacklist=[],
             groups=[],
@@ -2532,7 +2532,7 @@ class HomeAddShows(Home):
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
-                       'tvdb' in x.ids and not findCertainShow(sickrage.srCore.SHOWLIST, int(x.ids['tvdb']))]
+                       'tvdb' in x.ids and not findCertainShow(sickrage.app.SHOWLIST, int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
@@ -2569,7 +2569,7 @@ class HomeAddShows(Home):
         # URL parameters
         data = {'shows': [{'ids': {'tvdb': indexer_id}}]}
 
-        srTraktAPI()["users/me/lists/{list}".format(list=sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME)].add(data)
+        srTraktAPI()["users/me/lists/{list}".format(list=sickrage.app.srConfig.TRAKT_BLACKLIST_NAME)].add(data)
 
         return self.redirect('/home/addShows/trendingShows/')
 
@@ -2579,7 +2579,7 @@ class HomeAddShows(Home):
         """
         return self.render("/home/add_existing_shows.mako",
                            enable_anime_options=False,
-                           quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
+                           quality=sickrage.app.srConfig.QUALITY_DEFAULT,
                            title=_('Existing Show'),
                            header=_('Existing Show'),
                            topmenu="home",
@@ -2592,11 +2592,11 @@ class HomeAddShows(Home):
             t = srIndexerApi(1).indexer(**lINDEXER_API_PARMS)
             indexer_id = t[indexer_id]['id']
 
-        if findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):
+        if findCertainShow(sickrage.app.SHOWLIST, int(indexer_id)):
             return
 
-        if sickrage.srCore.srConfig.ROOT_DIRS:
-            root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+        if sickrage.app.srConfig.ROOT_DIRS:
+            root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
             location = root_dirs[int(root_dirs[0]) + 1]
         else:
             location = None
@@ -2605,26 +2605,26 @@ class HomeAddShows(Home):
             show_dir = os.path.join(location, sanitizeFileName(showName))
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
                 return
 
             chmodAsParent(show_dir)
 
-            sickrage.srCore.SHOWQUEUE.addShow(indexer=1,
+            sickrage.app.SHOWQUEUE.addShow(indexer=1,
                                               indexer_id=int(indexer_id),
                                               showDir=show_dir,
-                                              default_status=sickrage.srCore.srConfig.STATUS_DEFAULT,
-                                              quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
-                                              flatten_folders=sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT,
-                                              subtitles=sickrage.srCore.srConfig.SUBTITLES_DEFAULT,
-                                              anime=sickrage.srCore.srConfig.ANIME_DEFAULT,
-                                              scene=sickrage.srCore.srConfig.SCENE_DEFAULT,
-                                              default_status_after=sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER,
-                                              archive=sickrage.srCore.srConfig.ARCHIVE_DEFAULT)
+                                              default_status=sickrage.app.srConfig.STATUS_DEFAULT,
+                                              quality=sickrage.app.srConfig.QUALITY_DEFAULT,
+                                              flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
+                                              subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
+                                              anime=sickrage.app.srConfig.ANIME_DEFAULT,
+                                              scene=sickrage.app.srConfig.SCENE_DEFAULT,
+                                              default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
+                                              archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
 
-            sickrage.srCore.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
+            sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
-            sickrage.srCore.srLogger.error("There was an error creating the show, no root directory setting found")
+            sickrage.app.srLogger.error("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
 
         # done adding show
@@ -2640,7 +2640,7 @@ class HomeAddShows(Home):
         """
 
         if indexerLang is None:
-            indexerLang = sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+            indexerLang = sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
 
         # grab our list of other dirs if given
         if not other_shows:
@@ -2672,9 +2672,9 @@ class HomeAddShows(Home):
         series_pieces = whichSeries.split('|')
         if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
             if len(series_pieces) < 6:
-                sickrage.srCore.srLogger.error(
+                sickrage.app.srLogger.error(
                     'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
-                sickrage.srCore.srNotifications.error(
+                sickrage.app.srNotifications.error(
                     _('Unknown error. Unable to add show due to problem with show selection.'))
                 return self.redirect('/home/addShows/existingShows/')
 
@@ -2684,7 +2684,7 @@ class HomeAddShows(Home):
         else:
             # if no indexer was provided use the default indexer set in General settings
             if not providedIndexer:
-                providedIndexer = sickrage.srCore.srConfig.INDEXER_DEFAULT
+                providedIndexer = sickrage.app.srConfig.INDEXER_DEFAULT
 
             indexer = int(providedIndexer)
             indexer_id = int(whichSeries)
@@ -2698,19 +2698,19 @@ class HomeAddShows(Home):
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:
-            sickrage.srCore.srNotifications.error(_("Unable to add show"),
+            sickrage.app.srNotifications.error(_("Unable to add show"),
                                                   _("Folder ") + show_dir + _(" exists already"))
             return self.redirect('/home/addShows/existingShows/')
 
         # don't create show dir if config says not to
-        if sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR:
-            sickrage.srCore.srLogger.info(
+        if sickrage.app.srConfig.ADD_SHOWS_WO_DIR:
+            sickrage.app.srLogger.info(
                 "Skipping initial creation of " + show_dir + " due to sickrage.CONFIG.ini setting")
         else:
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.srCore.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.srCore.srNotifications.error(_("Unable to add show"),
+                sickrage.app.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.srNotifications.error(_("Unable to add show"),
                                                       _("Unable to create the folder " +
                                                         show_dir + ", can't add the show"))
 
@@ -2746,7 +2746,7 @@ class HomeAddShows(Home):
             newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
-        sickrage.srCore.SHOWQUEUE.addShow(indexer=indexer,
+        sickrage.app.SHOWQUEUE.addShow(indexer=indexer,
                                           indexer_id=indexer_id,
                                           showDir=show_dir,
                                           default_status=int(defaultStatus),
@@ -2763,7 +2763,7 @@ class HomeAddShows(Home):
                                           default_status_after=int(defaultStatusAfter),
                                           archive=archive)
 
-        sickrage.srCore.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
+        sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
         return finishAddShow()
 
@@ -2824,21 +2824,21 @@ class HomeAddShows(Home):
 
             if indexer is not None and indexer_id is not None:
                 # add the show
-                sickrage.srCore.SHOWQUEUE.addShow(indexer,
+                sickrage.app.SHOWQUEUE.addShow(indexer,
                                                   indexer_id,
                                                   show_dir,
-                                                  default_status=sickrage.srCore.srConfig.STATUS_DEFAULT,
-                                                  quality=sickrage.srCore.srConfig.QUALITY_DEFAULT,
-                                                  flatten_folders=sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT,
-                                                  subtitles=sickrage.srCore.srConfig.SUBTITLES_DEFAULT,
-                                                  anime=sickrage.srCore.srConfig.ANIME_DEFAULT,
-                                                  scene=sickrage.srCore.srConfig.SCENE_DEFAULT,
-                                                  default_status_after=sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER,
-                                                  archive=sickrage.srCore.srConfig.ARCHIVE_DEFAULT)
+                                                  default_status=sickrage.app.srConfig.STATUS_DEFAULT,
+                                                  quality=sickrage.app.srConfig.QUALITY_DEFAULT,
+                                                  flatten_folders=sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT,
+                                                  subtitles=sickrage.app.srConfig.SUBTITLES_DEFAULT,
+                                                  anime=sickrage.app.srConfig.ANIME_DEFAULT,
+                                                  scene=sickrage.app.srConfig.SCENE_DEFAULT,
+                                                  default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER,
+                                                  archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
                 num_added += 1
 
         if num_added:
-            sickrage.srCore.srNotifications.message(_("Shows Added"),
+            sickrage.app.srNotifications.message(_("Shows Added"),
                                                     _("Automatically added ") + str(
                                                         num_added) + _(" from their existing metadata files"))
 
@@ -2866,7 +2866,7 @@ class Manage(Home, WebRoot):
 
         result = {}
         for dbData in [x['doc'] for x in
-                       sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       sickrage.app.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
 
             cur_season = int(dbData["season"])
@@ -2892,8 +2892,8 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = sorted([s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)
-                                     for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'],
+            status_results = sorted([s['doc'] for s in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
+                                     for e in sickrage.app.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'],
                                                                                  with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
                                     key=lambda d: d['show_name'])
@@ -2946,7 +2946,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps_results = [x['doc'] for x in
-                                   sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                                   sickrage.app.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                                    if x['doc']['status'] in status_list and x['doc']['season'] != 0]
 
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
@@ -2960,7 +2960,7 @@ class Manage(Home, WebRoot):
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
         for dbData in [x['doc'] for x in
-                       sickrage.srCore.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       sickrage.app.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
@@ -2991,10 +2991,10 @@ class Manage(Home, WebRoot):
         status_results = []
 
         if whichSubs:
-            for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+            for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
                 if not s['subtitles'] == 1: continue
                 for e in [x['doc'] for x in
-                          sickrage.srCore.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                          sickrage.app.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
                         status_results += [{
                             'show_name': s['show_name'],
@@ -3055,7 +3055,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 dbData = [x['doc'] for x in
-                          sickrage.srCore.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                          sickrage.app.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                           if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
@@ -3063,16 +3063,16 @@ class Manage(Home, WebRoot):
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = findCertainShow(sickrage.srCore.SHOWLIST, int(cur_indexer_id))
+                show = findCertainShow(sickrage.app.SHOWLIST, int(cur_indexer_id))
                 show.getEpisode(int(season), int(episode)).downloadSubtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 
     def backlogShow(self, indexer_id):
-        show_obj = findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id))
+        show_obj = findCertainShow(sickrage.app.SHOWLIST, int(indexer_id))
 
         if show_obj:
-            sickrage.srCore.BACKLOGSEARCHER.searchBacklog([show_obj])
+            sickrage.app.BACKLOGSEARCHER.searchBacklog([show_obj])
 
         return self.redirect("/manage/backlogOverview/")
 
@@ -3081,7 +3081,7 @@ class Manage(Home, WebRoot):
         showCats = {}
         showResults = {}
 
-        for curShow in sickrage.srCore.SHOWLIST:
+        for curShow in sickrage.app.SHOWLIST:
 
             epCounts = {}
             epCats = {}
@@ -3093,7 +3093,7 @@ class Manage(Home, WebRoot):
             epCounts[Overview.SNATCHED] = 0
 
             dbData = sorted(
-                [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
+                [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
                  if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
@@ -3127,7 +3127,7 @@ class Manage(Home, WebRoot):
         showNames = []
         for curID in showIDs:
             curID = int(curID)
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, curID)
+            showObj = findCertainShow(sickrage.app.SHOWLIST, curID)
             if showObj:
                 showList.append(showObj)
                 showNames.append(showObj.name)
@@ -3287,7 +3287,7 @@ class Manage(Home, WebRoot):
         errors = []
         for curShow in showIDs:
             curErrors = []
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(curShow))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(curShow))
             if not showObj:
                 continue
 
@@ -3295,7 +3295,7 @@ class Manage(Home, WebRoot):
             cur_show_dir = os.path.basename(showObj.location)
             if cur_root_dir in dir_map and cur_root_dir != dir_map[cur_root_dir]:
                 new_show_dir = os.path.join(dir_map[cur_root_dir], cur_show_dir)
-                sickrage.srCore.srLogger.info(
+                sickrage.app.srLogger.info(
                     "For show " + showObj.name + " changing dir from " + showObj.location + " to " + new_show_dir)
             else:
                 new_show_dir = showObj.location
@@ -3372,12 +3372,12 @@ class Manage(Home, WebRoot):
                                        directCall=True)
 
             if curErrors:
-                sickrage.srCore.srLogger.error("Errors: " + str(curErrors))
+                sickrage.app.srLogger.error("Errors: " + str(curErrors))
                 errors.append('<b>%s:</b>\n<ul>' % showObj.name + ' '.join(
                     ['<li>%s</li>' % error for error in curErrors]) + "</ul>")
 
         if len(errors) > 0:
-            sickrage.srCore.srNotifications.error(
+            sickrage.app.srNotifications.error(
                 _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
                                                                                plural="" if len(errors) == 1 else "s"),
                 " ".join(errors))
@@ -3433,24 +3433,24 @@ class Manage(Home, WebRoot):
             if curShowID == '':
                 continue
 
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(curShowID))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(curShowID))
 
             if showObj is None:
                 continue
 
             if curShowID in toDelete:
-                sickrage.srCore.SHOWQUEUE.removeShow(showObj, True)
+                sickrage.app.SHOWQUEUE.removeShow(showObj, True)
                 # don't do anything else if it's being deleted
                 continue
 
             if curShowID in toRemove:
-                sickrage.srCore.SHOWQUEUE.removeShow(showObj)
+                sickrage.app.SHOWQUEUE.removeShow(showObj)
                 # don't do anything else if it's being remove
                 continue
 
             if curShowID in toUpdate:
                 try:
-                    sickrage.srCore.SHOWQUEUE.updateShow(showObj, True)
+                    sickrage.app.SHOWQUEUE.updateShow(showObj, True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
                     errors.append(_("Unable to update show: {0}").format(str(e)))
@@ -3458,21 +3458,21 @@ class Manage(Home, WebRoot):
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:
                 try:
-                    sickrage.srCore.SHOWQUEUE.refreshShow(showObj)
+                    sickrage.app.SHOWQUEUE.refreshShow(showObj)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e.message))
 
             if curShowID in toRename:
-                sickrage.srCore.SHOWQUEUE.renameShowEpisodes(showObj)
+                sickrage.app.SHOWQUEUE.renameShowEpisodes(showObj)
                 renames.append(showObj.name)
 
             if curShowID in toSubtitle:
-                sickrage.srCore.SHOWQUEUE.downloadSubtitles(showObj)
+                sickrage.app.SHOWQUEUE.downloadSubtitles(showObj)
                 subtitles.append(showObj.name)
 
         if errors:
-            sickrage.srCore.srNotifications.error(_("Errors encountered"),
+            sickrage.app.srNotifications.error(_("Errors encountered"),
                                                   '<br >\n'.join(errors))
 
         messageDetail = ""
@@ -3498,7 +3498,7 @@ class Manage(Home, WebRoot):
             messageDetail += "</li></ul>"
 
         if updates + refreshes + renames + subtitles:
-            sickrage.srCore.srNotifications.message(_("The following actions were queued:"),
+            sickrage.app.srNotifications.message(_("The following actions were queued:"),
                                                     messageDetail)
 
         return self.render(
@@ -3512,16 +3512,16 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if int(limit) == 0:
-            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in sickrage.srCore.failedDB.db.all('failed', int(limit), with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', int(limit), with_doc=True)]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                [sickrage.srCore.failedDB.db.delete(x['doc']) for x in
-                 sickrage.srCore.failedDB.db.get_many('failed', release, with_doc=True)]
+                [sickrage.app.failedDB.db.delete(x['doc']) for x in
+                 sickrage.app.failedDB.db.get_many('failed', release, with_doc=True)]
             except RecordNotFound:
                 continue
 
@@ -3548,14 +3548,14 @@ class ManageQueues(Manage):
     def index(self):
         return self.render(
             "/manage/queues.mako",
-            backlogPaused=sickrage.srCore.SEARCHQUEUE.is_backlog_paused(),
-            backlogRunning=sickrage.srCore.SEARCHQUEUE.is_backlog_in_progress(),
-            dailySearchStatus=sickrage.srCore.SEARCHQUEUE.is_dailysearch_in_progress(),
-            findPropersStatus=sickrage.srCore.PROPERSEARCHER.amActive,
-            searchQueueLength=sickrage.srCore.SEARCHQUEUE.queue_length(),
-            postProcessorPaused=sickrage.srCore.POSTPROCESSORQUEUE.is_paused,
-            postProcessorRunning=sickrage.srCore.POSTPROCESSORQUEUE.is_in_progress,
-            postProcessorQueueLength=sickrage.srCore.POSTPROCESSORQUEUE.queue_length,
+            backlogPaused=sickrage.app.SEARCHQUEUE.is_backlog_paused(),
+            backlogRunning=sickrage.app.SEARCHQUEUE.is_backlog_in_progress(),
+            dailySearchStatus=sickrage.app.SEARCHQUEUE.is_dailysearch_in_progress(),
+            findPropersStatus=sickrage.app.PROPERSEARCHER.amActive,
+            searchQueueLength=sickrage.app.SEARCHQUEUE.queue_length(),
+            postProcessorPaused=sickrage.app.POSTPROCESSORQUEUE.is_paused,
+            postProcessorRunning=sickrage.app.POSTPROCESSORQUEUE.is_in_progress,
+            postProcessorQueueLength=sickrage.app.POSTPROCESSORQUEUE.queue_length,
             title=_('Manage Queues'),
             header=_('Manage Queues'),
             topmenu='manage',
@@ -3565,41 +3565,41 @@ class ManageQueues(Manage):
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('BACKLOG').func(True):
-            sickrage.srCore.srLogger.info("Backlog search forced")
-            sickrage.srCore.srNotifications.message(_('Backlog search started'))
+        if sickrage.app.srScheduler.get_job('BACKLOG').func(True):
+            sickrage.app.srLogger.info("Backlog search forced")
+            sickrage.app.srNotifications.message(_('Backlog search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def forceSearch(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('DAILYSEARCHER').func(True):
-            sickrage.srCore.srLogger.info("Daily search forced")
-            sickrage.srCore.srNotifications.message(_('Daily search started'))
+        if sickrage.app.srScheduler.get_job('DAILYSEARCHER').func(True):
+            sickrage.app.srLogger.info("Daily search forced")
+            sickrage.app.srNotifications.message(_('Daily search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        if sickrage.srCore.srScheduler.get_job('PROPERSEARCHER').func(True):
-            sickrage.srCore.srLogger.info("Find propers search forced")
-            sickrage.srCore.srNotifications.message(_('Find propers search started'))
+        if sickrage.app.srScheduler.get_job('PROPERSEARCHER').func(True):
+            sickrage.app.srLogger.info("Find propers search forced")
+            sickrage.app.srNotifications.message(_('Find propers search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def pauseBacklog(self, paused=None):
         if paused == "1":
-            sickrage.srCore.SEARCHQUEUE.pause_backlog()
+            sickrage.app.SEARCHQUEUE.pause_backlog()
         else:
-            sickrage.srCore.SEARCHQUEUE.unpause_backlog()
+            sickrage.app.SEARCHQUEUE.unpause_backlog()
 
         return self.redirect("/manage/manageQueues/")
 
     def pausePostProcessor(self, paused=None):
         if paused == "1":
-            sickrage.srCore.POSTPROCESSORQUEUE.pause()
+            sickrage.app.POSTPROCESSORQUEUE.pause()
         else:
-            sickrage.srCore.POSTPROCESSORQUEUE.unpause()
+            sickrage.app.POSTPROCESSORQUEUE.unpause()
 
         return self.redirect("/manage/manageQueues/")
 
@@ -3613,16 +3613,16 @@ class History(WebHandler):
     def index(self, limit=None):
 
         if limit is None:
-            if sickrage.srCore.srConfig.HISTORY_LIMIT:
-                limit = int(sickrage.srCore.srConfig.HISTORY_LIMIT)
+            if sickrage.app.srConfig.HISTORY_LIMIT:
+                limit = int(sickrage.app.srConfig.HISTORY_LIMIT)
             else:
                 limit = 100
         else:
             limit = int(limit)
 
-        sickrage.srCore.srConfig.HISTORY_LIMIT = limit
+        sickrage.app.srConfig.HISTORY_LIMIT = limit
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         compact = []
         data = self.historyTool.get(limit)
@@ -3686,14 +3686,14 @@ class History(WebHandler):
     def clearHistory(self):
         self.historyTool.clear()
 
-        sickrage.srCore.srNotifications.message(_('History cleared'))
+        sickrage.app.srNotifications.message(_('History cleared'))
 
         return self.redirect("/history/")
 
     def trimHistory(self):
         self.historyTool.trim()
 
-        sickrage.srCore.srNotifications.message(_('Removed history entries older than 30 days'))
+        sickrage.app.srNotifications.message(_('Removed history entries older than 30 days'))
 
         return self.redirect("/history/")
 
@@ -3731,8 +3731,8 @@ class Config(WebHandler):
         )
 
     def reset(self):
-        sickrage.srCore.srConfig.load(True)
-        sickrage.srCore.srNotifications.message(_('Configuration Reset to Defaults'),
+        sickrage.app.srConfig.load(True)
+        sickrage.app.srNotifications.message(_('Configuration Reset to Defaults'),
                                                 os.path.join(sickrage.CONFIG_FILE))
         return self.redirect("/config/general")
 
@@ -3759,7 +3759,7 @@ class ConfigGeneral(Config):
 
     @staticmethod
     def saveRootDirs(rootDirString=None):
-        sickrage.srCore.srConfig.ROOT_DIRS = rootDirString
+        sickrage.app.srConfig.ROOT_DIRS = rootDirString
 
     @staticmethod
     def saveAddShowDefaults(defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
@@ -3777,19 +3777,19 @@ class ConfigGeneral(Config):
 
         newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
-        sickrage.srCore.srConfig.STATUS_DEFAULT = int(defaultStatus)
-        sickrage.srCore.srConfig.STATUS_DEFAULT_AFTER = int(defaultStatusAfter)
-        sickrage.srCore.srConfig.QUALITY_DEFAULT = int(newQuality)
+        sickrage.app.srConfig.STATUS_DEFAULT = int(defaultStatus)
+        sickrage.app.srConfig.STATUS_DEFAULT_AFTER = int(defaultStatusAfter)
+        sickrage.app.srConfig.QUALITY_DEFAULT = int(newQuality)
 
-        sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT = checkbox_to_value(
+        sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT = checkbox_to_value(
             defaultFlattenFolders)
-        sickrage.srCore.srConfig.SUBTITLES_DEFAULT = checkbox_to_value(subtitles)
+        sickrage.app.srConfig.SUBTITLES_DEFAULT = checkbox_to_value(subtitles)
 
-        sickrage.srCore.srConfig.ANIME_DEFAULT = checkbox_to_value(anime)
-        sickrage.srCore.srConfig.SCENE_DEFAULT = checkbox_to_value(scene)
-        sickrage.srCore.srConfig.ARCHIVE_DEFAULT = checkbox_to_value(archive)
+        sickrage.app.srConfig.ANIME_DEFAULT = checkbox_to_value(anime)
+        sickrage.app.srConfig.SCENE_DEFAULT = checkbox_to_value(scene)
+        sickrage.app.srConfig.ARCHIVE_DEFAULT = checkbox_to_value(archive)
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
                     encryption_version=None, web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
@@ -3808,103 +3808,103 @@ class ConfigGeneral(Config):
         results = []
 
         # Language
-        sickrage.srCore.srConfig.change_gui_lang(gui_language)
+        sickrage.app.srConfig.change_gui_lang(gui_language)
 
         # Debug
-        sickrage.srCore.srConfig.DEBUG = checkbox_to_value(debug)
-        sickrage.srCore.srLogger.set_level()
+        sickrage.app.srConfig.DEBUG = checkbox_to_value(debug)
+        sickrage.app.srLogger.set_level()
 
         # Misc
-        sickrage.srCore.srConfig.DOWNLOAD_URL = download_url
-        sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
-        sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS = ep_default_deleted_status
-        sickrage.srCore.srConfig.SKIP_REMOVED_FILES = checkbox_to_value(skip_removed_files)
-        sickrage.srCore.srConfig.LAUNCH_BROWSER = checkbox_to_value(launch_browser)
-        sickrage.srCore.srConfig.change_showupdate_hour(showupdate_hour)
-        sickrage.srCore.srConfig.change_version_notify(checkbox_to_value(version_notify))
-        sickrage.srCore.srConfig.AUTO_UPDATE = checkbox_to_value(auto_update)
-        sickrage.srCore.srConfig.NOTIFY_ON_UPDATE = checkbox_to_value(notify_on_update)
-        sickrage.srCore.srConfig.NOTIFY_ON_LOGIN = checkbox_to_value(notify_on_login)
-        sickrage.srCore.srConfig.SHOWUPDATE_STALE = checkbox_to_value(showupdate_stale)
-        sickrage.srCore.srConfig.LOG_NR = log_nr
-        sickrage.srCore.srConfig.LOG_SIZE = log_size
+        sickrage.app.srConfig.DOWNLOAD_URL = download_url
+        sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE = indexerDefaultLang
+        sickrage.app.srConfig.EP_DEFAULT_DELETED_STATUS = ep_default_deleted_status
+        sickrage.app.srConfig.SKIP_REMOVED_FILES = checkbox_to_value(skip_removed_files)
+        sickrage.app.srConfig.LAUNCH_BROWSER = checkbox_to_value(launch_browser)
+        sickrage.app.srConfig.change_showupdate_hour(showupdate_hour)
+        sickrage.app.srConfig.change_version_notify(checkbox_to_value(version_notify))
+        sickrage.app.srConfig.AUTO_UPDATE = checkbox_to_value(auto_update)
+        sickrage.app.srConfig.NOTIFY_ON_UPDATE = checkbox_to_value(notify_on_update)
+        sickrage.app.srConfig.NOTIFY_ON_LOGIN = checkbox_to_value(notify_on_login)
+        sickrage.app.srConfig.SHOWUPDATE_STALE = checkbox_to_value(showupdate_stale)
+        sickrage.app.srConfig.LOG_NR = log_nr
+        sickrage.app.srConfig.LOG_SIZE = log_size
 
-        sickrage.srCore.srConfig.TRASH_REMOVE_SHOW = checkbox_to_value(trash_remove_show)
-        sickrage.srCore.srConfig.TRASH_ROTATE_LOGS = checkbox_to_value(trash_rotate_logs)
-        sickrage.srCore.srConfig.change_updater_freq(update_frequency)
-        sickrage.srCore.srConfig.LAUNCH_BROWSER = checkbox_to_value(launch_browser)
-        sickrage.srCore.srConfig.SORT_ARTICLE = checkbox_to_value(sort_article)
-        sickrage.srCore.srConfig.CPU_PRESET = cpu_preset
-        sickrage.srCore.srConfig.ANON_REDIRECT = anon_redirect
-        sickrage.srCore.srConfig.PROXY_SETTING = proxy_setting
-        sickrage.srCore.srConfig.PROXY_INDEXERS = checkbox_to_value(proxy_indexers)
-        sickrage.srCore.srConfig.GIT_USERNAME = git_username
-        sickrage.srCore.srConfig.GIT_PASSWORD = git_password
-        sickrage.srCore.srConfig.GIT_RESET = 1
-        sickrage.srCore.srConfig.GIT_AUTOISSUES = checkbox_to_value(git_autoissues)
-        sickrage.srCore.srConfig.GIT_PATH = git_path
-        sickrage.srCore.srConfig.PIP_PATH = pip_path
-        sickrage.srCore.srConfig.CALENDAR_UNPROTECTED = checkbox_to_value(calendar_unprotected)
-        sickrage.srCore.srConfig.CALENDAR_ICONS = checkbox_to_value(calendar_icons)
-        sickrage.srCore.srConfig.NO_RESTART = checkbox_to_value(no_restart)
+        sickrage.app.srConfig.TRASH_REMOVE_SHOW = checkbox_to_value(trash_remove_show)
+        sickrage.app.srConfig.TRASH_ROTATE_LOGS = checkbox_to_value(trash_rotate_logs)
+        sickrage.app.srConfig.change_updater_freq(update_frequency)
+        sickrage.app.srConfig.LAUNCH_BROWSER = checkbox_to_value(launch_browser)
+        sickrage.app.srConfig.SORT_ARTICLE = checkbox_to_value(sort_article)
+        sickrage.app.srConfig.CPU_PRESET = cpu_preset
+        sickrage.app.srConfig.ANON_REDIRECT = anon_redirect
+        sickrage.app.srConfig.PROXY_SETTING = proxy_setting
+        sickrage.app.srConfig.PROXY_INDEXERS = checkbox_to_value(proxy_indexers)
+        sickrage.app.srConfig.GIT_USERNAME = git_username
+        sickrage.app.srConfig.GIT_PASSWORD = git_password
+        sickrage.app.srConfig.GIT_RESET = 1
+        sickrage.app.srConfig.GIT_AUTOISSUES = checkbox_to_value(git_autoissues)
+        sickrage.app.srConfig.GIT_PATH = git_path
+        sickrage.app.srConfig.PIP_PATH = pip_path
+        sickrage.app.srConfig.CALENDAR_UNPROTECTED = checkbox_to_value(calendar_unprotected)
+        sickrage.app.srConfig.CALENDAR_ICONS = checkbox_to_value(calendar_icons)
+        sickrage.app.srConfig.NO_RESTART = checkbox_to_value(no_restart)
 
-        sickrage.srCore.srConfig.SSL_VERIFY = checkbox_to_value(ssl_verify)
-        sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE = try_int(coming_eps_missed_range, 7)
-        sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS = checkbox_to_value(display_all_seasons)
+        sickrage.app.srConfig.SSL_VERIFY = checkbox_to_value(ssl_verify)
+        sickrage.app.srConfig.COMING_EPS_MISSED_RANGE = try_int(coming_eps_missed_range, 7)
+        sickrage.app.srConfig.DISPLAY_ALL_SEASONS = checkbox_to_value(display_all_seasons)
 
-        sickrage.srCore.srConfig.WEB_PORT = try_int(web_port)
-        sickrage.srCore.srConfig.WEB_IPV6 = checkbox_to_value(web_ipv6)
+        sickrage.app.srConfig.WEB_PORT = try_int(web_port)
+        sickrage.app.srConfig.WEB_IPV6 = checkbox_to_value(web_ipv6)
         if checkbox_to_value(encryption_version) == 1:
-            sickrage.srCore.srConfig.ENCRYPTION_VERSION = 2
+            sickrage.app.srConfig.ENCRYPTION_VERSION = 2
         else:
-            sickrage.srCore.srConfig.ENCRYPTION_VERSION = 0
-        sickrage.srCore.srConfig.WEB_USERNAME = web_username
-        sickrage.srCore.srConfig.WEB_PASSWORD = web_password
+            sickrage.app.srConfig.ENCRYPTION_VERSION = 0
+        sickrage.app.srConfig.WEB_USERNAME = web_username
+        sickrage.app.srConfig.WEB_PASSWORD = web_password
 
-        sickrage.srCore.srConfig.FILTER_ROW = checkbox_to_value(filter_row)
-        sickrage.srCore.srConfig.FUZZY_DATING = checkbox_to_value(fuzzy_dating)
-        sickrage.srCore.srConfig.TRIM_ZERO = checkbox_to_value(trim_zero)
+        sickrage.app.srConfig.FILTER_ROW = checkbox_to_value(filter_row)
+        sickrage.app.srConfig.FUZZY_DATING = checkbox_to_value(fuzzy_dating)
+        sickrage.app.srConfig.TRIM_ZERO = checkbox_to_value(trim_zero)
 
         if date_preset:
-            sickrage.srCore.srConfig.DATE_PRESET = date_preset
+            sickrage.app.srConfig.DATE_PRESET = date_preset
 
         if indexer_default:
-            sickrage.srCore.srConfig.INDEXER_DEFAULT = try_int(indexer_default)
+            sickrage.app.srConfig.INDEXER_DEFAULT = try_int(indexer_default)
 
         if indexer_timeout:
-            sickrage.srCore.srConfig.INDEXER_TIMEOUT = try_int(indexer_timeout)
+            sickrage.app.srConfig.INDEXER_TIMEOUT = try_int(indexer_timeout)
 
         if time_preset:
-            sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS = time_preset
-            sickrage.srCore.srConfig.TIME_PRESET = sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
+            sickrage.app.srConfig.TIME_PRESET_W_SECONDS = time_preset
+            sickrage.app.srConfig.TIME_PRESET = sickrage.app.srConfig.TIME_PRESET_W_SECONDS.replace(":%S", "")
 
-        sickrage.srCore.srConfig.TIMEZONE_DISPLAY = timezone_display
+        sickrage.app.srConfig.TIMEZONE_DISPLAY = timezone_display
 
-        sickrage.srCore.srConfig.API_KEY = api_key
+        sickrage.app.srConfig.API_KEY = api_key
 
-        sickrage.srCore.srConfig.ENABLE_HTTPS = checkbox_to_value(enable_https)
+        sickrage.app.srConfig.ENABLE_HTTPS = checkbox_to_value(enable_https)
 
-        if not sickrage.srCore.srConfig.change_https_cert(https_cert):
+        if not sickrage.app.srConfig.change_https_cert(https_cert):
             results += [
                 "Unable to create directory " + os.path.normpath(https_cert) + ", https cert directory not changed."]
 
-        if not sickrage.srCore.srConfig.change_https_key(https_key):
+        if not sickrage.app.srConfig.change_https_key(https_key):
             results += [
                 "Unable to create directory " + os.path.normpath(https_key) + ", https key directory not changed."]
 
-        sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY = checkbox_to_value(handle_reverse_proxy)
+        sickrage.app.srConfig.HANDLE_REVERSE_PROXY = checkbox_to_value(handle_reverse_proxy)
 
-        sickrage.srCore.srConfig.THEME_NAME = theme_name
+        sickrage.app.srConfig.THEME_NAME = theme_name
 
-        sickrage.srCore.srConfig.DEFAULT_PAGE = default_page
+        sickrage.app.srConfig.DEFAULT_PAGE = default_page
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[GENERAL] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[GENERAL] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/general/")
@@ -4001,83 +4001,83 @@ class ConfigSearch(Config):
 
         results = []
 
-        if not sickrage.srCore.srConfig.change_nzb_dir(nzb_dir):
+        if not sickrage.app.srConfig.change_nzb_dir(nzb_dir):
             results += [_("Unable to create directory ") + os.path.normpath(nzb_dir) + _(", dir not changed.")]
 
-        if not sickrage.srCore.srConfig.change_torrent_dir(torrent_dir):
+        if not sickrage.app.srConfig.change_torrent_dir(torrent_dir):
             results += [_("Unable to create directory ") + os.path.normpath(torrent_dir) + _(", dir not changed.")]
 
-        sickrage.srCore.srConfig.change_daily_searcher_freq(dailysearch_frequency)
+        sickrage.app.srConfig.change_daily_searcher_freq(dailysearch_frequency)
 
-        sickrage.srCore.srConfig.change_backlog_searcher_freq(backlog_frequency)
+        sickrage.app.srConfig.change_backlog_searcher_freq(backlog_frequency)
 
-        sickrage.srCore.srConfig.USE_NZBS = checkbox_to_value(use_nzbs)
-        sickrage.srCore.srConfig.USE_TORRENTS = checkbox_to_value(use_torrents)
+        sickrage.app.srConfig.USE_NZBS = checkbox_to_value(use_nzbs)
+        sickrage.app.srConfig.USE_TORRENTS = checkbox_to_value(use_torrents)
 
-        sickrage.srCore.srConfig.NZB_METHOD = nzb_method
-        sickrage.srCore.srConfig.TORRENT_METHOD = torrent_method
-        sickrage.srCore.srConfig.USENET_RETENTION = try_int(usenet_retention, 500)
+        sickrage.app.srConfig.NZB_METHOD = nzb_method
+        sickrage.app.srConfig.TORRENT_METHOD = torrent_method
+        sickrage.app.srConfig.USENET_RETENTION = try_int(usenet_retention, 500)
 
-        sickrage.srCore.srConfig.IGNORE_WORDS = ignore_words if ignore_words else ""
-        sickrage.srCore.srConfig.REQUIRE_WORDS = require_words if require_words else ""
-        sickrage.srCore.srConfig.IGNORED_SUBS_LIST = ignored_subs_list if ignored_subs_list else ""
+        sickrage.app.srConfig.IGNORE_WORDS = ignore_words if ignore_words else ""
+        sickrage.app.srConfig.REQUIRE_WORDS = require_words if require_words else ""
+        sickrage.app.srConfig.IGNORED_SUBS_LIST = ignored_subs_list if ignored_subs_list else ""
 
-        sickrage.srCore.srConfig.RANDOMIZE_PROVIDERS = checkbox_to_value(randomize_providers)
+        sickrage.app.srConfig.RANDOMIZE_PROVIDERS = checkbox_to_value(randomize_providers)
 
-        sickrage.srCore.srConfig.ENABLE_RSS_CACHE = checkbox_to_value(enable_rss_cache)
-        sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = checkbox_to_value(enable_rss_cache_valid_shows)
-        sickrage.srCore.srConfig.TORRENT_FILE_TO_MAGNET = checkbox_to_value(torrent_file_to_magnet)
+        sickrage.app.srConfig.ENABLE_RSS_CACHE = checkbox_to_value(enable_rss_cache)
+        sickrage.app.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS = checkbox_to_value(enable_rss_cache_valid_shows)
+        sickrage.app.srConfig.TORRENT_FILE_TO_MAGNET = checkbox_to_value(torrent_file_to_magnet)
 
-        sickrage.srCore.srConfig.change_download_propers(download_propers)
+        sickrage.app.srConfig.change_download_propers(download_propers)
 
-        sickrage.srCore.srConfig.PROPER_SEARCHER_INTERVAL = check_propers_interval
+        sickrage.app.srConfig.PROPER_SEARCHER_INTERVAL = check_propers_interval
 
-        sickrage.srCore.srConfig.ALLOW_HIGH_PRIORITY = checkbox_to_value(allow_high_priority)
+        sickrage.app.srConfig.ALLOW_HIGH_PRIORITY = checkbox_to_value(allow_high_priority)
 
-        sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS = checkbox_to_value(use_failed_downloads)
-        sickrage.srCore.srConfig.DELETE_FAILED = checkbox_to_value(delete_failed)
+        sickrage.app.srConfig.USE_FAILED_DOWNLOADS = checkbox_to_value(use_failed_downloads)
+        sickrage.app.srConfig.DELETE_FAILED = checkbox_to_value(delete_failed)
 
-        sickrage.srCore.srConfig.SAB_USERNAME = sab_username
-        sickrage.srCore.srConfig.SAB_PASSWORD = sab_password
-        sickrage.srCore.srConfig.SAB_APIKEY = sab_apikey.strip()
-        sickrage.srCore.srConfig.SAB_CATEGORY = sab_category
-        sickrage.srCore.srConfig.SAB_CATEGORY_BACKLOG = sab_category_backlog
-        sickrage.srCore.srConfig.SAB_CATEGORY_ANIME = sab_category_anime
-        sickrage.srCore.srConfig.SAB_CATEGORY_ANIME_BACKLOG = sab_category_anime_backlog
-        sickrage.srCore.srConfig.SAB_HOST = clean_url(sab_host)
-        sickrage.srCore.srConfig.SAB_FORCED = checkbox_to_value(sab_forced)
+        sickrage.app.srConfig.SAB_USERNAME = sab_username
+        sickrage.app.srConfig.SAB_PASSWORD = sab_password
+        sickrage.app.srConfig.SAB_APIKEY = sab_apikey.strip()
+        sickrage.app.srConfig.SAB_CATEGORY = sab_category
+        sickrage.app.srConfig.SAB_CATEGORY_BACKLOG = sab_category_backlog
+        sickrage.app.srConfig.SAB_CATEGORY_ANIME = sab_category_anime
+        sickrage.app.srConfig.SAB_CATEGORY_ANIME_BACKLOG = sab_category_anime_backlog
+        sickrage.app.srConfig.SAB_HOST = clean_url(sab_host)
+        sickrage.app.srConfig.SAB_FORCED = checkbox_to_value(sab_forced)
 
-        sickrage.srCore.srConfig.NZBGET_USERNAME = nzbget_username
-        sickrage.srCore.srConfig.NZBGET_PASSWORD = nzbget_password
-        sickrage.srCore.srConfig.NZBGET_CATEGORY = nzbget_category
-        sickrage.srCore.srConfig.NZBGET_CATEGORY_BACKLOG = nzbget_category_backlog
-        sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME = nzbget_category_anime
-        sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG = nzbget_category_anime_backlog
-        sickrage.srCore.srConfig.NZBGET_HOST = clean_host(nzbget_host)
-        sickrage.srCore.srConfig.NZBGET_USE_HTTPS = checkbox_to_value(nzbget_use_https)
-        sickrage.srCore.srConfig.NZBGET_PRIORITY = try_int(nzbget_priority, 100)
+        sickrage.app.srConfig.NZBGET_USERNAME = nzbget_username
+        sickrage.app.srConfig.NZBGET_PASSWORD = nzbget_password
+        sickrage.app.srConfig.NZBGET_CATEGORY = nzbget_category
+        sickrage.app.srConfig.NZBGET_CATEGORY_BACKLOG = nzbget_category_backlog
+        sickrage.app.srConfig.NZBGET_CATEGORY_ANIME = nzbget_category_anime
+        sickrage.app.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG = nzbget_category_anime_backlog
+        sickrage.app.srConfig.NZBGET_HOST = clean_host(nzbget_host)
+        sickrage.app.srConfig.NZBGET_USE_HTTPS = checkbox_to_value(nzbget_use_https)
+        sickrage.app.srConfig.NZBGET_PRIORITY = try_int(nzbget_priority, 100)
 
-        sickrage.srCore.srConfig.TORRENT_USERNAME = torrent_username
-        sickrage.srCore.srConfig.TORRENT_PASSWORD = torrent_password
-        sickrage.srCore.srConfig.TORRENT_LABEL = torrent_label
-        sickrage.srCore.srConfig.TORRENT_LABEL_ANIME = torrent_label_anime
-        sickrage.srCore.srConfig.TORRENT_VERIFY_CERT = checkbox_to_value(torrent_verify_cert)
-        sickrage.srCore.srConfig.TORRENT_PATH = torrent_path.rstrip('/\\')
-        sickrage.srCore.srConfig.TORRENT_SEED_TIME = torrent_seed_time
-        sickrage.srCore.srConfig.TORRENT_PAUSED = checkbox_to_value(torrent_paused)
-        sickrage.srCore.srConfig.TORRENT_HIGH_BANDWIDTH = checkbox_to_value(
+        sickrage.app.srConfig.TORRENT_USERNAME = torrent_username
+        sickrage.app.srConfig.TORRENT_PASSWORD = torrent_password
+        sickrage.app.srConfig.TORRENT_LABEL = torrent_label
+        sickrage.app.srConfig.TORRENT_LABEL_ANIME = torrent_label_anime
+        sickrage.app.srConfig.TORRENT_VERIFY_CERT = checkbox_to_value(torrent_verify_cert)
+        sickrage.app.srConfig.TORRENT_PATH = torrent_path.rstrip('/\\')
+        sickrage.app.srConfig.TORRENT_SEED_TIME = torrent_seed_time
+        sickrage.app.srConfig.TORRENT_PAUSED = checkbox_to_value(torrent_paused)
+        sickrage.app.srConfig.TORRENT_HIGH_BANDWIDTH = checkbox_to_value(
             torrent_high_bandwidth)
-        sickrage.srCore.srConfig.TORRENT_HOST = clean_url(torrent_host)
-        sickrage.srCore.srConfig.TORRENT_RPCURL = torrent_rpcurl
-        sickrage.srCore.srConfig.TORRENT_AUTH_TYPE = torrent_auth_type
+        sickrage.app.srConfig.TORRENT_HOST = clean_url(torrent_host)
+        sickrage.app.srConfig.TORRENT_RPCURL = torrent_rpcurl
+        sickrage.app.srConfig.TORRENT_AUTH_TYPE = torrent_auth_type
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[SEARCH] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[SEARCH] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/search/")
@@ -4118,46 +4118,46 @@ class ConfigPostProcessing(Config):
 
         results = []
 
-        if not sickrage.srCore.srConfig.change_tv_download_dir(tv_download_dir):
+        if not sickrage.app.srConfig.change_tv_download_dir(tv_download_dir):
             results += [_("Unable to create directory ") + os.path.normpath(tv_download_dir) + _(", dir not changed.")]
 
-        sickrage.srCore.srConfig.change_autopostprocessor_freq(autopostprocessor_frequency)
-        sickrage.srCore.srConfig.change_process_automatically(process_automatically)
+        sickrage.app.srConfig.change_autopostprocessor_freq(autopostprocessor_frequency)
+        sickrage.app.srConfig.change_process_automatically(process_automatically)
 
         if unpack:
             if self.isRarSupported() != 'not supported':
-                sickrage.srCore.srConfig.UNPACK = checkbox_to_value(unpack)
+                sickrage.app.srConfig.UNPACK = checkbox_to_value(unpack)
             else:
-                sickrage.srCore.srConfig.UNPACK = 0
+                sickrage.app.srConfig.UNPACK = 0
                 results.append(_("Unpacking Not Supported, disabling unpack setting"))
         else:
-            sickrage.srCore.srConfig.UNPACK = checkbox_to_value(unpack)
-        sickrage.srCore.srConfig.NO_DELETE = checkbox_to_value(no_delete)
-        sickrage.srCore.srConfig.KEEP_PROCESSED_DIR = checkbox_to_value(keep_processed_dir)
-        sickrage.srCore.srConfig.CREATE_MISSING_SHOW_DIRS = checkbox_to_value(create_missing_show_dirs)
-        sickrage.srCore.srConfig.ADD_SHOWS_WO_DIR = checkbox_to_value(add_shows_wo_dir)
-        sickrage.srCore.srConfig.PROCESS_METHOD = process_method
-        sickrage.srCore.srConfig.DELRARCONTENTS = checkbox_to_value(del_rar_contents)
-        sickrage.srCore.srConfig.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
-        sickrage.srCore.srConfig.RENAME_EPISODES = checkbox_to_value(rename_episodes)
-        sickrage.srCore.srConfig.AIRDATE_EPISODES = checkbox_to_value(airdate_episodes)
-        sickrage.srCore.srConfig.FILE_TIMESTAMP_TIMEZONE = file_timestamp_timezone
-        sickrage.srCore.srConfig.MOVE_ASSOCIATED_FILES = checkbox_to_value(move_associated_files)
-        sickrage.srCore.srConfig.SYNC_FILES = sync_files
-        sickrage.srCore.srConfig.POSTPONE_IF_SYNC_FILES = checkbox_to_value(postpone_if_sync_files)
-        sickrage.srCore.srConfig.NAMING_CUSTOM_ABD = checkbox_to_value(naming_custom_abd)
-        sickrage.srCore.srConfig.NAMING_CUSTOM_SPORTS = checkbox_to_value(naming_custom_sports)
-        sickrage.srCore.srConfig.NAMING_CUSTOM_ANIME = checkbox_to_value(naming_custom_anime)
-        sickrage.srCore.srConfig.NAMING_STRIP_YEAR = checkbox_to_value(naming_strip_year)
-        sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS = checkbox_to_value(use_failed_downloads)
-        sickrage.srCore.srConfig.DELETE_FAILED = checkbox_to_value(delete_failed)
-        sickrage.srCore.srConfig.NFO_RENAME = checkbox_to_value(nfo_rename)
+            sickrage.app.srConfig.UNPACK = checkbox_to_value(unpack)
+        sickrage.app.srConfig.NO_DELETE = checkbox_to_value(no_delete)
+        sickrage.app.srConfig.KEEP_PROCESSED_DIR = checkbox_to_value(keep_processed_dir)
+        sickrage.app.srConfig.CREATE_MISSING_SHOW_DIRS = checkbox_to_value(create_missing_show_dirs)
+        sickrage.app.srConfig.ADD_SHOWS_WO_DIR = checkbox_to_value(add_shows_wo_dir)
+        sickrage.app.srConfig.PROCESS_METHOD = process_method
+        sickrage.app.srConfig.DELRARCONTENTS = checkbox_to_value(del_rar_contents)
+        sickrage.app.srConfig.EXTRA_SCRIPTS = [x.strip() for x in extra_scripts.split('|') if x.strip()]
+        sickrage.app.srConfig.RENAME_EPISODES = checkbox_to_value(rename_episodes)
+        sickrage.app.srConfig.AIRDATE_EPISODES = checkbox_to_value(airdate_episodes)
+        sickrage.app.srConfig.FILE_TIMESTAMP_TIMEZONE = file_timestamp_timezone
+        sickrage.app.srConfig.MOVE_ASSOCIATED_FILES = checkbox_to_value(move_associated_files)
+        sickrage.app.srConfig.SYNC_FILES = sync_files
+        sickrage.app.srConfig.POSTPONE_IF_SYNC_FILES = checkbox_to_value(postpone_if_sync_files)
+        sickrage.app.srConfig.NAMING_CUSTOM_ABD = checkbox_to_value(naming_custom_abd)
+        sickrage.app.srConfig.NAMING_CUSTOM_SPORTS = checkbox_to_value(naming_custom_sports)
+        sickrage.app.srConfig.NAMING_CUSTOM_ANIME = checkbox_to_value(naming_custom_anime)
+        sickrage.app.srConfig.NAMING_STRIP_YEAR = checkbox_to_value(naming_strip_year)
+        sickrage.app.srConfig.USE_FAILED_DOWNLOADS = checkbox_to_value(use_failed_downloads)
+        sickrage.app.srConfig.DELETE_FAILED = checkbox_to_value(delete_failed)
+        sickrage.app.srConfig.NFO_RENAME = checkbox_to_value(nfo_rename)
 
         if self.isNamingValid(naming_pattern, naming_multi_ep, anime_type=naming_anime) != "invalid":
-            sickrage.srCore.srConfig.NAMING_PATTERN = naming_pattern
-            sickrage.srCore.srConfig.NAMING_MULTI_EP = int(naming_multi_ep)
-            sickrage.srCore.srConfig.NAMING_ANIME = int(naming_anime)
-            sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
+            sickrage.app.srConfig.NAMING_PATTERN = naming_pattern
+            sickrage.app.srConfig.NAMING_MULTI_EP = int(naming_multi_ep)
+            sickrage.app.srConfig.NAMING_ANIME = int(naming_anime)
+            sickrage.app.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
         else:
             if int(naming_anime) in [1, 2]:
                 results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
@@ -4165,10 +4165,10 @@ class ConfigPostProcessing(Config):
                 results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
         if self.isNamingValid(naming_anime_pattern, naming_anime_multi_ep, anime_type=naming_anime) != "invalid":
-            sickrage.srCore.srConfig.NAMING_ANIME_PATTERN = naming_anime_pattern
-            sickrage.srCore.srConfig.NAMING_ANIME_MULTI_EP = int(naming_anime_multi_ep)
-            sickrage.srCore.srConfig.NAMING_ANIME = int(naming_anime)
-            sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
+            sickrage.app.srConfig.NAMING_ANIME_PATTERN = naming_anime_pattern
+            sickrage.app.srConfig.NAMING_ANIME_MULTI_EP = int(naming_anime_multi_ep)
+            sickrage.app.srConfig.NAMING_ANIME = int(naming_anime)
+            sickrage.app.srConfig.NAMING_FORCE_FOLDERS = validator.check_force_season_folders()
         else:
             if int(naming_anime) in [1, 2]:
                 results.append(_("You tried saving an invalid anime naming config, not saving your naming settings"))
@@ -4176,32 +4176,32 @@ class ConfigPostProcessing(Config):
                 results.append(_("You tried saving an invalid naming config, not saving your naming settings"))
 
         if self.isNamingValid(naming_abd_pattern, None, abd=True) != "invalid":
-            sickrage.srCore.srConfig.NAMING_ABD_PATTERN = naming_abd_pattern
+            sickrage.app.srConfig.NAMING_ABD_PATTERN = naming_abd_pattern
         else:
             results.append(
                 _("You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"))
 
         if self.isNamingValid(naming_sports_pattern, None, sports=True) != "invalid":
-            sickrage.srCore.srConfig.NAMING_SPORTS_PATTERN = naming_sports_pattern
+            sickrage.app.srConfig.NAMING_SPORTS_PATTERN = naming_sports_pattern
         else:
             results.append(
                 _("You tried saving an invalid sports naming config, not saving your sports settings"))
 
-        sickrage.srCore.metadataProvidersDict['kodi'].set_config(kodi_data)
-        sickrage.srCore.metadataProvidersDict['kodi_12plus'].set_config(kodi_12plus_data)
-        sickrage.srCore.metadataProvidersDict['mediabrowser'].set_config(mediabrowser_data)
-        sickrage.srCore.metadataProvidersDict['sony_ps3'].set_config(sony_ps3_data)
-        sickrage.srCore.metadataProvidersDict['wdtv'].set_config(wdtv_data)
-        sickrage.srCore.metadataProvidersDict['tivo'].set_config(tivo_data)
-        sickrage.srCore.metadataProvidersDict['mede8er'].set_config(mede8er_data)
+        sickrage.app.metadataProvidersDict['kodi'].set_config(kodi_data)
+        sickrage.app.metadataProvidersDict['kodi_12plus'].set_config(kodi_12plus_data)
+        sickrage.app.metadataProvidersDict['mediabrowser'].set_config(mediabrowser_data)
+        sickrage.app.metadataProvidersDict['sony_ps3'].set_config(sony_ps3_data)
+        sickrage.app.metadataProvidersDict['wdtv'].set_config(wdtv_data)
+        sickrage.app.metadataProvidersDict['tivo'].set_config(tivo_data)
+        sickrage.app.metadataProvidersDict['mede8er'].set_config(mede8er_data)
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.warning(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.warning(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
@@ -4263,11 +4263,11 @@ class ConfigPostProcessing(Config):
             - Simulating in memory rar extraction on test.rar file
         """
 
-        check = sickrage.srCore.srConfig.change_unrar_tool(sickrage.srCore.srConfig.UNRAR_TOOL,
-                                                           sickrage.srCore.srConfig.UNRAR_ALT_TOOL)
+        check = sickrage.app.srConfig.change_unrar_tool(sickrage.app.srConfig.UNRAR_TOOL,
+                                                           sickrage.app.srConfig.UNRAR_ALT_TOOL)
 
         if not check:
-            sickrage.srCore.srLogger.warning('Looks like unrar is not installed, check failed')
+            sickrage.app.srLogger.warning('Looks like unrar is not installed, check failed')
         return ('not supported', 'supported')[check]
 
 
@@ -4292,7 +4292,7 @@ class ConfigProviders(Config):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
         providerObj = NewznabProvider(name, '', True)
-        if providerObj.id not in sickrage.srCore.providersDict.newznab():
+        if providerObj.id not in sickrage.app.providersDict.newznab():
             return json_encode({'success': providerObj.id})
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
@@ -4301,7 +4301,7 @@ class ConfigProviders(Config):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
         providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
-        if providerObj.id not in sickrage.srCore.providersDict.torrentrss():
+        if providerObj.id not in sickrage.app.providersDict.torrentrss():
             validate = providerObj.validateRSS()
             if validate['result']:
                 return json_encode({'success': providerObj.id})
@@ -4345,7 +4345,7 @@ class ConfigProviders(Config):
                 cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
 
                 providerObj = NewznabProvider(cur_name, cur_url, cur_key, cur_cat)
-                sickrage.srCore.providersDict.newznab().update(**{providerObj.id: providerObj})
+                sickrage.app.providersDict.newznab().update(**{providerObj.id: providerObj})
 
                 kwargs[providerObj.id + '_name'] = cur_name
                 kwargs[providerObj.id + '_key'] = cur_key
@@ -4355,31 +4355,31 @@ class ConfigProviders(Config):
                 cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
 
                 providerObj = TorrentRssProvider(cur_name, cur_url, cur_cookies, cur_title_tag)
-                sickrage.srCore.providersDict.torrentrss().update(**{providerObj.id: providerObj})
+                sickrage.app.providersDict.torrentrss().update(**{providerObj.id: providerObj})
 
                 kwargs[providerObj.id + '_name'] = cur_name
                 kwargs[providerObj.id + '_cookies'] = cur_cookies
                 kwargs[providerObj.id + '_curTitleTAG'] = cur_title_tag
 
-        sickrage.srCore.srConfig.CUSTOM_PROVIDERS = custom_providers
+        sickrage.app.srConfig.CUSTOM_PROVIDERS = custom_providers
 
         # remove providers
-        for p in list(set(sickrage.srCore.providersDict.provider_order).difference(
+        for p in list(set(sickrage.app.providersDict.provider_order).difference(
                 [x.split(':')[0] for x in kwargs.get('provider_order', '').split()])):
-            providerObj = sickrage.srCore.providersDict.all()[p]
-            del sickrage.srCore.providersDict[providerObj.type][p]
+            providerObj = sickrage.app.providersDict.all()[p]
+            del sickrage.app.providersDict[providerObj.type][p]
 
         # enable/disable/sort providers
-        sickrage.srCore.providersDict.provider_order = []
+        sickrage.app.providersDict.provider_order = []
         for curProviderStr in kwargs.get('provider_order', '').split():
             curProvider, curEnabled = curProviderStr.split(':')
-            sickrage.srCore.providersDict.provider_order += [curProvider]
-            if curProvider in sickrage.srCore.providersDict.all():
-                curProvObj = sickrage.srCore.providersDict.all()[curProvider]
+            sickrage.app.providersDict.provider_order += [curProvider]
+            if curProvider in sickrage.app.providersDict.all():
+                curProvObj = sickrage.app.providersDict.all()[curProvider]
                 curProvObj.enabled = bool(try_int(curEnabled))
 
         # dynamically load provider settings
-        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.providersDict.all().items():
             try:
                 providerSettings = {
                     'minseed': try_int(kwargs.get(providerID + '_minseed', 0)),
@@ -4416,13 +4416,13 @@ class ConfigProviders(Config):
                 continue
 
         # save provider settings
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
@@ -4501,255 +4501,255 @@ class ConfigNotifications(Config):
 
         results = []
 
-        sickrage.srCore.srConfig.USE_KODI = checkbox_to_value(use_kodi)
-        sickrage.srCore.srConfig.KODI_ALWAYS_ON = checkbox_to_value(kodi_always_on)
-        sickrage.srCore.srConfig.KODI_NOTIFY_ONSNATCH = checkbox_to_value(kodi_notify_onsnatch)
-        sickrage.srCore.srConfig.KODI_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.USE_KODI = checkbox_to_value(use_kodi)
+        sickrage.app.srConfig.KODI_ALWAYS_ON = checkbox_to_value(kodi_always_on)
+        sickrage.app.srConfig.KODI_NOTIFY_ONSNATCH = checkbox_to_value(kodi_notify_onsnatch)
+        sickrage.app.srConfig.KODI_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             kodi_notify_ondownload)
-        sickrage.srCore.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             kodi_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.KODI_UPDATE_LIBRARY = checkbox_to_value(kodi_update_library)
-        sickrage.srCore.srConfig.KODI_UPDATE_FULL = checkbox_to_value(kodi_update_full)
-        sickrage.srCore.srConfig.KODI_UPDATE_ONLYFIRST = checkbox_to_value(
+        sickrage.app.srConfig.KODI_UPDATE_LIBRARY = checkbox_to_value(kodi_update_library)
+        sickrage.app.srConfig.KODI_UPDATE_FULL = checkbox_to_value(kodi_update_full)
+        sickrage.app.srConfig.KODI_UPDATE_ONLYFIRST = checkbox_to_value(
             kodi_update_onlyfirst)
-        sickrage.srCore.srConfig.KODI_HOST = clean_hosts(kodi_host)
-        sickrage.srCore.srConfig.KODI_USERNAME = kodi_username
-        sickrage.srCore.srConfig.KODI_PASSWORD = kodi_password
+        sickrage.app.srConfig.KODI_HOST = clean_hosts(kodi_host)
+        sickrage.app.srConfig.KODI_USERNAME = kodi_username
+        sickrage.app.srConfig.KODI_PASSWORD = kodi_password
 
-        sickrage.srCore.srConfig.USE_PLEX = checkbox_to_value(use_plex)
-        sickrage.srCore.srConfig.PLEX_NOTIFY_ONSNATCH = checkbox_to_value(plex_notify_onsnatch)
-        sickrage.srCore.srConfig.PLEX_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.USE_PLEX = checkbox_to_value(use_plex)
+        sickrage.app.srConfig.PLEX_NOTIFY_ONSNATCH = checkbox_to_value(plex_notify_onsnatch)
+        sickrage.app.srConfig.PLEX_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             plex_notify_ondownload)
-        sickrage.srCore.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             plex_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PLEX_UPDATE_LIBRARY = checkbox_to_value(plex_update_library)
-        sickrage.srCore.srConfig.PLEX_HOST = clean_hosts(plex_host)
-        sickrage.srCore.srConfig.PLEX_SERVER_HOST = clean_hosts(plex_server_host)
-        sickrage.srCore.srConfig.PLEX_SERVER_TOKEN = clean_host(plex_server_token)
-        sickrage.srCore.srConfig.PLEX_USERNAME = plex_username
-        sickrage.srCore.srConfig.PLEX_PASSWORD = plex_password
-        sickrage.srCore.srConfig.USE_PLEX_CLIENT = checkbox_to_value(use_plex)
-        sickrage.srCore.srConfig.PLEX_CLIENT_USERNAME = plex_username
-        sickrage.srCore.srConfig.PLEX_CLIENT_PASSWORD = plex_password
+        sickrage.app.srConfig.PLEX_UPDATE_LIBRARY = checkbox_to_value(plex_update_library)
+        sickrage.app.srConfig.PLEX_HOST = clean_hosts(plex_host)
+        sickrage.app.srConfig.PLEX_SERVER_HOST = clean_hosts(plex_server_host)
+        sickrage.app.srConfig.PLEX_SERVER_TOKEN = clean_host(plex_server_token)
+        sickrage.app.srConfig.PLEX_USERNAME = plex_username
+        sickrage.app.srConfig.PLEX_PASSWORD = plex_password
+        sickrage.app.srConfig.USE_PLEX_CLIENT = checkbox_to_value(use_plex)
+        sickrage.app.srConfig.PLEX_CLIENT_USERNAME = plex_username
+        sickrage.app.srConfig.PLEX_CLIENT_PASSWORD = plex_password
 
-        sickrage.srCore.srConfig.USE_EMBY = checkbox_to_value(use_emby)
-        sickrage.srCore.srConfig.EMBY_HOST = clean_host(emby_host)
-        sickrage.srCore.srConfig.EMBY_APIKEY = emby_apikey
+        sickrage.app.srConfig.USE_EMBY = checkbox_to_value(use_emby)
+        sickrage.app.srConfig.EMBY_HOST = clean_host(emby_host)
+        sickrage.app.srConfig.EMBY_APIKEY = emby_apikey
 
-        sickrage.srCore.srConfig.USE_GROWL = checkbox_to_value(use_growl)
-        sickrage.srCore.srConfig.GROWL_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_GROWL = checkbox_to_value(use_growl)
+        sickrage.app.srConfig.GROWL_NOTIFY_ONSNATCH = checkbox_to_value(
             growl_notify_onsnatch)
-        sickrage.srCore.srConfig.GROWL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.GROWL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             growl_notify_ondownload)
-        sickrage.srCore.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             growl_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.GROWL_HOST = clean_host(growl_host, default_port=23053)
-        sickrage.srCore.srConfig.GROWL_PASSWORD = growl_password
+        sickrage.app.srConfig.GROWL_HOST = clean_host(growl_host, default_port=23053)
+        sickrage.app.srConfig.GROWL_PASSWORD = growl_password
 
-        sickrage.srCore.srConfig.USE_FREEMOBILE = checkbox_to_value(use_freemobile)
-        sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_FREEMOBILE = checkbox_to_value(use_freemobile)
+        sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONSNATCH = checkbox_to_value(
             freemobile_notify_onsnatch)
-        sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             freemobile_notify_ondownload)
-        sickrage.srCore.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             freemobile_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.FREEMOBILE_ID = freemobile_id
-        sickrage.srCore.srConfig.FREEMOBILE_APIKEY = freemobile_apikey
+        sickrage.app.srConfig.FREEMOBILE_ID = freemobile_id
+        sickrage.app.srConfig.FREEMOBILE_APIKEY = freemobile_apikey
 
-        sickrage.srCore.srConfig.USE_TELEGRAM = checkbox_to_value(use_telegram)
-        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_TELEGRAM = checkbox_to_value(use_telegram)
+        sickrage.app.srConfig.TELEGRAM_NOTIFY_ONSNATCH = checkbox_to_value(
             telegram_notify_onsnatch)
-        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TELEGRAM_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             telegram_notify_ondownload)
-        sickrage.srCore.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             telegram_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.TELEGRAM_ID = telegram_id
-        sickrage.srCore.srConfig.TELEGRAM_APIKEY = telegram_apikey
+        sickrage.app.srConfig.TELEGRAM_ID = telegram_id
+        sickrage.app.srConfig.TELEGRAM_APIKEY = telegram_apikey
 
-        sickrage.srCore.srConfig.USE_PROWL = checkbox_to_value(use_prowl)
-        sickrage.srCore.srConfig.PROWL_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_PROWL = checkbox_to_value(use_prowl)
+        sickrage.app.srConfig.PROWL_NOTIFY_ONSNATCH = checkbox_to_value(
             prowl_notify_onsnatch)
-        sickrage.srCore.srConfig.PROWL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PROWL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             prowl_notify_ondownload)
-        sickrage.srCore.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             prowl_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PROWL_API = prowl_api
-        sickrage.srCore.srConfig.PROWL_PRIORITY = prowl_priority
+        sickrage.app.srConfig.PROWL_API = prowl_api
+        sickrage.app.srConfig.PROWL_PRIORITY = prowl_priority
 
-        sickrage.srCore.srConfig.USE_TWITTER = checkbox_to_value(use_twitter)
-        sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_TWITTER = checkbox_to_value(use_twitter)
+        sickrage.app.srConfig.TWITTER_NOTIFY_ONSNATCH = checkbox_to_value(
             twitter_notify_onsnatch)
-        sickrage.srCore.srConfig.TWITTER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TWITTER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             twitter_notify_ondownload)
-        sickrage.srCore.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             twitter_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.TWITTER_USEDM = checkbox_to_value(twitter_usedm)
-        sickrage.srCore.srConfig.TWITTER_DMTO = twitter_dmto
+        sickrage.app.srConfig.TWITTER_USEDM = checkbox_to_value(twitter_usedm)
+        sickrage.app.srConfig.TWITTER_DMTO = twitter_dmto
 
-        sickrage.srCore.srConfig.USE_TWILIO = checkbox_to_value(use_twilio)
-        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_TWILIO = checkbox_to_value(use_twilio)
+        sickrage.app.srConfig.TWILIO_NOTIFY_ONSNATCH = checkbox_to_value(
             twilio_notify_onsnatch)
-        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TWILIO_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             twilio_notify_ondownload)
-        sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             twilio_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.TWILIO_PHONE_SID = twilio_phone_sid
-        sickrage.srCore.srConfig.TWILIO_ACCOUNT_SID = twilio_account_sid
-        sickrage.srCore.srConfig.TWILIO_AUTH_TOKEN = twilio_auth_token
-        sickrage.srCore.srConfig.TWILIO_TO_NUMBER = twilio_to_number
+        sickrage.app.srConfig.TWILIO_PHONE_SID = twilio_phone_sid
+        sickrage.app.srConfig.TWILIO_ACCOUNT_SID = twilio_account_sid
+        sickrage.app.srConfig.TWILIO_AUTH_TOKEN = twilio_auth_token
+        sickrage.app.srConfig.TWILIO_TO_NUMBER = twilio_to_number
 
-        sickrage.srCore.srConfig.USE_SLACK = checkbox_to_value(use_slack)
-        sickrage.srCore.srConfig.SLACK_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_SLACK = checkbox_to_value(use_slack)
+        sickrage.app.srConfig.SLACK_NOTIFY_ONSNATCH = checkbox_to_value(
             slack_notify_onsnatch)
-        sickrage.srCore.srConfig.SLACK_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.SLACK_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             slack_notify_ondownload)
-        sickrage.srCore.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             slack_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.SLACK_WEBHOOK = slack_webhook
+        sickrage.app.srConfig.SLACK_WEBHOOK = slack_webhook
 
-        sickrage.srCore.srConfig.USE_DISCORD = checkbox_to_value(use_discord)
-        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_DISCORD = checkbox_to_value(use_discord)
+        sickrage.app.srConfig.DISCORD_NOTIFY_ONSNATCH = checkbox_to_value(
             discord_notify_onsnatch)
-        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.DISCORD_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             discord_notify_ondownload)
-        sickrage.srCore.srConfig.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             discord_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.DISCORD_WEBHOOK = discord_webhook
-        sickrage.srCore.srConfig.DISCORD_NAME = discord_name
-        sickrage.srCore.srConfig.DISCORD_AVATAR_URL = discord_avatar_url
-        sickrage.srCore.srConfig.DISCORD_TTS = checkbox_to_value(discord_tts)
+        sickrage.app.srConfig.DISCORD_WEBHOOK = discord_webhook
+        sickrage.app.srConfig.DISCORD_NAME = discord_name
+        sickrage.app.srConfig.DISCORD_AVATAR_URL = discord_avatar_url
+        sickrage.app.srConfig.DISCORD_TTS = checkbox_to_value(discord_tts)
 
-        sickrage.srCore.srConfig.USE_BOXCAR2 = checkbox_to_value(use_boxcar2)
-        sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_BOXCAR2 = checkbox_to_value(use_boxcar2)
+        sickrage.app.srConfig.BOXCAR2_NOTIFY_ONSNATCH = checkbox_to_value(
             boxcar2_notify_onsnatch)
-        sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.BOXCAR2_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             boxcar2_notify_ondownload)
-        sickrage.srCore.srConfig.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             boxcar2_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.BOXCAR2_ACCESSTOKEN = boxcar2_accesstoken
+        sickrage.app.srConfig.BOXCAR2_ACCESSTOKEN = boxcar2_accesstoken
 
-        sickrage.srCore.srConfig.USE_PUSHOVER = checkbox_to_value(use_pushover)
-        sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_PUSHOVER = checkbox_to_value(use_pushover)
+        sickrage.app.srConfig.PUSHOVER_NOTIFY_ONSNATCH = checkbox_to_value(
             pushover_notify_onsnatch)
-        sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHOVER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             pushover_notify_ondownload)
-        sickrage.srCore.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             pushover_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PUSHOVER_USERKEY = pushover_userkey
-        sickrage.srCore.srConfig.PUSHOVER_APIKEY = pushover_apikey
-        sickrage.srCore.srConfig.PUSHOVER_DEVICE = pushover_device
-        sickrage.srCore.srConfig.PUSHOVER_SOUND = pushover_sound
+        sickrage.app.srConfig.PUSHOVER_USERKEY = pushover_userkey
+        sickrage.app.srConfig.PUSHOVER_APIKEY = pushover_apikey
+        sickrage.app.srConfig.PUSHOVER_DEVICE = pushover_device
+        sickrage.app.srConfig.PUSHOVER_SOUND = pushover_sound
 
-        sickrage.srCore.srConfig.USE_LIBNOTIFY = checkbox_to_value(use_libnotify)
-        sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_LIBNOTIFY = checkbox_to_value(use_libnotify)
+        sickrage.app.srConfig.LIBNOTIFY_NOTIFY_ONSNATCH = checkbox_to_value(
             libnotify_notify_onsnatch)
-        sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.LIBNOTIFY_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             libnotify_notify_ondownload)
-        sickrage.srCore.srConfig.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             libnotify_notify_onsubtitledownload)
 
-        sickrage.srCore.srConfig.USE_NMJ = checkbox_to_value(use_nmj)
-        sickrage.srCore.srConfig.NMJ_HOST = clean_host(nmj_host)
-        sickrage.srCore.srConfig.NMJ_DATABASE = nmj_database
-        sickrage.srCore.srConfig.NMJ_MOUNT = nmj_mount
+        sickrage.app.srConfig.USE_NMJ = checkbox_to_value(use_nmj)
+        sickrage.app.srConfig.NMJ_HOST = clean_host(nmj_host)
+        sickrage.app.srConfig.NMJ_DATABASE = nmj_database
+        sickrage.app.srConfig.NMJ_MOUNT = nmj_mount
 
-        sickrage.srCore.srConfig.USE_NMJv2 = checkbox_to_value(use_nmjv2)
-        sickrage.srCore.srConfig.NMJv2_HOST = clean_host(nmjv2_host)
-        sickrage.srCore.srConfig.NMJv2_DATABASE = nmjv2_database
-        sickrage.srCore.srConfig.NMJv2_DBLOC = nmjv2_dbloc
+        sickrage.app.srConfig.USE_NMJv2 = checkbox_to_value(use_nmjv2)
+        sickrage.app.srConfig.NMJv2_HOST = clean_host(nmjv2_host)
+        sickrage.app.srConfig.NMJv2_DATABASE = nmjv2_database
+        sickrage.app.srConfig.NMJv2_DBLOC = nmjv2_dbloc
 
-        sickrage.srCore.srConfig.USE_SYNOINDEX = checkbox_to_value(use_synoindex)
+        sickrage.app.srConfig.USE_SYNOINDEX = checkbox_to_value(use_synoindex)
 
-        sickrage.srCore.srConfig.USE_SYNOLOGYNOTIFIER = checkbox_to_value(use_synologynotifier)
-        sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_SYNOLOGYNOTIFIER = checkbox_to_value(use_synologynotifier)
+        sickrage.app.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = checkbox_to_value(
             synologynotifier_notify_onsnatch)
-        sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             synologynotifier_notify_ondownload)
-        sickrage.srCore.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             synologynotifier_notify_onsubtitledownload)
 
-        sickrage.srCore.srConfig.change_use_trakt(use_trakt)
-        sickrage.srCore.srConfig.TRAKT_USERNAME = trakt_username
-        sickrage.srCore.srConfig.TRAKT_REMOVE_WATCHLIST = checkbox_to_value(
+        sickrage.app.srConfig.change_use_trakt(use_trakt)
+        sickrage.app.srConfig.TRAKT_USERNAME = trakt_username
+        sickrage.app.srConfig.TRAKT_REMOVE_WATCHLIST = checkbox_to_value(
             trakt_remove_watchlist)
-        sickrage.srCore.srConfig.TRAKT_REMOVE_SERIESLIST = checkbox_to_value(
+        sickrage.app.srConfig.TRAKT_REMOVE_SERIESLIST = checkbox_to_value(
             trakt_remove_serieslist)
-        sickrage.srCore.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = checkbox_to_value(
+        sickrage.app.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = checkbox_to_value(
             trakt_remove_show_from_sickrage)
-        sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST = checkbox_to_value(trakt_sync_watchlist)
-        sickrage.srCore.srConfig.TRAKT_METHOD_ADD = int(trakt_method_add)
-        sickrage.srCore.srConfig.TRAKT_START_PAUSED = checkbox_to_value(trakt_start_paused)
-        sickrage.srCore.srConfig.TRAKT_USE_RECOMMENDED = checkbox_to_value(
+        sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST = checkbox_to_value(trakt_sync_watchlist)
+        sickrage.app.srConfig.TRAKT_METHOD_ADD = int(trakt_method_add)
+        sickrage.app.srConfig.TRAKT_START_PAUSED = checkbox_to_value(trakt_start_paused)
+        sickrage.app.srConfig.TRAKT_USE_RECOMMENDED = checkbox_to_value(
             trakt_use_recommended)
-        sickrage.srCore.srConfig.TRAKT_SYNC = checkbox_to_value(trakt_sync)
-        sickrage.srCore.srConfig.TRAKT_SYNC_REMOVE = checkbox_to_value(trakt_sync_remove)
-        sickrage.srCore.srConfig.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
-        sickrage.srCore.srConfig.TRAKT_TIMEOUT = int(trakt_timeout)
-        sickrage.srCore.srConfig.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
+        sickrage.app.srConfig.TRAKT_SYNC = checkbox_to_value(trakt_sync)
+        sickrage.app.srConfig.TRAKT_SYNC_REMOVE = checkbox_to_value(trakt_sync_remove)
+        sickrage.app.srConfig.TRAKT_DEFAULT_INDEXER = int(trakt_default_indexer)
+        sickrage.app.srConfig.TRAKT_TIMEOUT = int(trakt_timeout)
+        sickrage.app.srConfig.TRAKT_BLACKLIST_NAME = trakt_blacklist_name
 
-        sickrage.srCore.srConfig.USE_EMAIL = checkbox_to_value(use_email)
-        sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_EMAIL = checkbox_to_value(use_email)
+        sickrage.app.srConfig.EMAIL_NOTIFY_ONSNATCH = checkbox_to_value(
             email_notify_onsnatch)
-        sickrage.srCore.srConfig.EMAIL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.EMAIL_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             email_notify_ondownload)
-        sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             email_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.EMAIL_HOST = clean_host(email_host)
-        sickrage.srCore.srConfig.EMAIL_PORT = try_int(email_port, 25)
-        sickrage.srCore.srConfig.EMAIL_FROM = email_from
-        sickrage.srCore.srConfig.EMAIL_TLS = checkbox_to_value(email_tls)
-        sickrage.srCore.srConfig.EMAIL_USER = email_user
-        sickrage.srCore.srConfig.EMAIL_PASSWORD = email_password
-        sickrage.srCore.srConfig.EMAIL_LIST = email_list
+        sickrage.app.srConfig.EMAIL_HOST = clean_host(email_host)
+        sickrage.app.srConfig.EMAIL_PORT = try_int(email_port, 25)
+        sickrage.app.srConfig.EMAIL_FROM = email_from
+        sickrage.app.srConfig.EMAIL_TLS = checkbox_to_value(email_tls)
+        sickrage.app.srConfig.EMAIL_USER = email_user
+        sickrage.app.srConfig.EMAIL_PASSWORD = email_password
+        sickrage.app.srConfig.EMAIL_LIST = email_list
 
-        sickrage.srCore.srConfig.USE_PYTIVO = checkbox_to_value(use_pytivo)
-        sickrage.srCore.srConfig.PYTIVO_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_PYTIVO = checkbox_to_value(use_pytivo)
+        sickrage.app.srConfig.PYTIVO_NOTIFY_ONSNATCH = checkbox_to_value(
             pytivo_notify_onsnatch)
-        sickrage.srCore.srConfig.PYTIVO_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PYTIVO_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             pytivo_notify_ondownload)
-        sickrage.srCore.srConfig.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             pytivo_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PYTIVO_UPDATE_LIBRARY = checkbox_to_value(
+        sickrage.app.srConfig.PYTIVO_UPDATE_LIBRARY = checkbox_to_value(
             pytivo_update_library)
-        sickrage.srCore.srConfig.PYTIVO_HOST = clean_host(pytivo_host)
-        sickrage.srCore.srConfig.PYTIVO_SHARE_NAME = pytivo_share_name
-        sickrage.srCore.srConfig.PYTIVO_TIVO_NAME = pytivo_tivo_name
+        sickrage.app.srConfig.PYTIVO_HOST = clean_host(pytivo_host)
+        sickrage.app.srConfig.PYTIVO_SHARE_NAME = pytivo_share_name
+        sickrage.app.srConfig.PYTIVO_TIVO_NAME = pytivo_tivo_name
 
-        sickrage.srCore.srConfig.USE_NMA = checkbox_to_value(use_nma)
-        sickrage.srCore.srConfig.NMA_NOTIFY_ONSNATCH = checkbox_to_value(nma_notify_onsnatch)
-        sickrage.srCore.srConfig.NMA_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.USE_NMA = checkbox_to_value(use_nma)
+        sickrage.app.srConfig.NMA_NOTIFY_ONSNATCH = checkbox_to_value(nma_notify_onsnatch)
+        sickrage.app.srConfig.NMA_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             nma_notify_ondownload)
-        sickrage.srCore.srConfig.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             nma_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.NMA_API = nma_api
-        sickrage.srCore.srConfig.NMA_PRIORITY = nma_priority
+        sickrage.app.srConfig.NMA_API = nma_api
+        sickrage.app.srConfig.NMA_PRIORITY = nma_priority
 
-        sickrage.srCore.srConfig.USE_PUSHALOT = checkbox_to_value(use_pushalot)
-        sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_PUSHALOT = checkbox_to_value(use_pushalot)
+        sickrage.app.srConfig.PUSHALOT_NOTIFY_ONSNATCH = checkbox_to_value(
             pushalot_notify_onsnatch)
-        sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHALOT_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             pushalot_notify_ondownload)
-        sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             pushalot_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN = pushalot_authorizationtoken
+        sickrage.app.srConfig.PUSHALOT_AUTHORIZATIONTOKEN = pushalot_authorizationtoken
 
-        sickrage.srCore.srConfig.USE_PUSHBULLET = checkbox_to_value(use_pushbullet)
-        sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH = checkbox_to_value(
+        sickrage.app.srConfig.USE_PUSHBULLET = checkbox_to_value(use_pushbullet)
+        sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONSNATCH = checkbox_to_value(
             pushbullet_notify_onsnatch)
-        sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD = checkbox_to_value(
             pushbullet_notify_ondownload)
-        sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
+        sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = checkbox_to_value(
             pushbullet_notify_onsubtitledownload)
-        sickrage.srCore.srConfig.PUSHBULLET_API = pushbullet_api
-        sickrage.srCore.srConfig.PUSHBULLET_DEVICE = pushbullet_device_list
+        sickrage.app.srConfig.PUSHBULLET_API = pushbullet_api
+        sickrage.app.srConfig.PUSHBULLET_DEVICE = pushbullet_device_list
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
@@ -4788,19 +4788,19 @@ class ConfigSubtitles(Config):
 
         results = []
 
-        sickrage.srCore.srConfig.change_subtitle_searcher_freq(subtitles_finder_frequency)
-        sickrage.srCore.srConfig.change_use_subtitles(use_subtitles)
+        sickrage.app.srConfig.change_subtitle_searcher_freq(subtitles_finder_frequency)
+        sickrage.app.srConfig.change_use_subtitles(use_subtitles)
 
-        sickrage.srCore.srConfig.SUBTITLES_LANGUAGES = [code.strip() for code in subtitles_languages.split(',') if
+        sickrage.app.srConfig.SUBTITLES_LANGUAGES = [code.strip() for code in subtitles_languages.split(',') if
                                                         code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
-        sickrage.srCore.srConfig.SUBTITLES_DIR = subtitles_dir
-        sickrage.srCore.srConfig.SUBTITLES_HISTORY = checkbox_to_value(subtitles_history)
-        sickrage.srCore.srConfig.EMBEDDED_SUBTITLES_ALL = checkbox_to_value(
+        sickrage.app.srConfig.SUBTITLES_DIR = subtitles_dir
+        sickrage.app.srConfig.SUBTITLES_HISTORY = checkbox_to_value(subtitles_history)
+        sickrage.app.srConfig.EMBEDDED_SUBTITLES_ALL = checkbox_to_value(
             embedded_subtitles_all)
-        sickrage.srCore.srConfig.SUBTITLES_HEARING_IMPAIRED = checkbox_to_value(
+        sickrage.app.srConfig.SUBTITLES_HEARING_IMPAIRED = checkbox_to_value(
             subtitles_hearing_impaired)
-        sickrage.srCore.srConfig.SUBTITLES_MULTI = checkbox_to_value(subtitles_multi)
-        sickrage.srCore.srConfig.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in subtitles_extra_scripts.split('|') if
+        sickrage.app.srConfig.SUBTITLES_MULTI = checkbox_to_value(subtitles_multi)
+        sickrage.app.srConfig.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in subtitles_extra_scripts.split('|') if
                                                             x.strip()]
 
         # Subtitles services
@@ -4812,25 +4812,25 @@ class ConfigSubtitles(Config):
             subtitles_services_list.append(curService)
             subtitles_services_enabled.append(int(curEnabled))
 
-        sickrage.srCore.srConfig.SUBTITLES_SERVICES_LIST = subtitles_services_list
-        sickrage.srCore.srConfig.SUBTITLES_SERVICES_ENABLED = subtitles_services_enabled
+        sickrage.app.srConfig.SUBTITLES_SERVICES_LIST = subtitles_services_list
+        sickrage.app.srConfig.SUBTITLES_SERVICES_ENABLED = subtitles_services_enabled
 
-        sickrage.srCore.srConfig.ADDIC7ED_USER = addic7ed_user or ''
-        sickrage.srCore.srConfig.ADDIC7ED_PASS = addic7ed_pass or ''
-        sickrage.srCore.srConfig.LEGENDASTV_USER = legendastv_user or ''
-        sickrage.srCore.srConfig.LEGENDASTV_PASS = legendastv_pass or ''
-        sickrage.srCore.srConfig.ITASA_USER = itasa_user or ''
-        sickrage.srCore.srConfig.ITASA_PASS = itasa_pass or ''
-        sickrage.srCore.srConfig.OPENSUBTITLES_USER = opensubtitles_user or ''
-        sickrage.srCore.srConfig.OPENSUBTITLES_PASS = opensubtitles_pass or ''
+        sickrage.app.srConfig.ADDIC7ED_USER = addic7ed_user or ''
+        sickrage.app.srConfig.ADDIC7ED_PASS = addic7ed_pass or ''
+        sickrage.app.srConfig.LEGENDASTV_USER = legendastv_user or ''
+        sickrage.app.srConfig.LEGENDASTV_PASS = legendastv_pass or ''
+        sickrage.app.srConfig.ITASA_USER = itasa_user or ''
+        sickrage.app.srConfig.ITASA_PASS = itasa_pass or ''
+        sickrage.app.srConfig.OPENSUBTITLES_USER = opensubtitles_user or ''
+        sickrage.app.srConfig.OPENSUBTITLES_PASS = opensubtitles_pass or ''
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
@@ -4857,19 +4857,19 @@ class ConfigAnime(Config):
 
         results = []
 
-        sickrage.srCore.srConfig.USE_ANIDB = checkbox_to_value(use_anidb)
-        sickrage.srCore.srConfig.ANIDB_USERNAME = anidb_username
-        sickrage.srCore.srConfig.ANIDB_PASSWORD = anidb_password
-        sickrage.srCore.srConfig.ANIDB_USE_MYLIST = checkbox_to_value(anidb_use_mylist)
-        sickrage.srCore.srConfig.ANIME_SPLIT_HOME = checkbox_to_value(split_home)
+        sickrage.app.srConfig.USE_ANIDB = checkbox_to_value(use_anidb)
+        sickrage.app.srConfig.ANIDB_USERNAME = anidb_username
+        sickrage.app.srConfig.ANIDB_PASSWORD = anidb_password
+        sickrage.app.srConfig.ANIDB_USE_MYLIST = checkbox_to_value(anidb_use_mylist)
+        sickrage.app.srConfig.ANIME_SPLIT_HOME = checkbox_to_value(split_home)
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.srCore.srLogger.error(x) for x in results]
-            sickrage.srCore.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            [sickrage.app.srLogger.error(x) for x in results]
+            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.srCore.srNotifications.message(_('[ANIME] Configuration Saved'),
+            sickrage.app.srNotifications.message(_('[ANIME] Configuration Saved'),
                                                     os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
@@ -4892,11 +4892,11 @@ class ConfigQualitySettings(Config):
         )
 
     def saveQualities(self, **kwargs):
-        sickrage.srCore.srConfig.QUALITY_SIZES.update(dict((int(k), int(v)) for k, v in kwargs.items()))
+        sickrage.app.srConfig.QUALITY_SIZES.update(dict((int(k), int(v)) for k, v in kwargs.items()))
 
-        sickrage.srCore.srConfig.save()
+        sickrage.app.srConfig.save()
 
-        sickrage.srCore.srNotifications.message(_('[QUALITY SETTINGS] Configuration Saved'),
+        sickrage.app.srNotifications.message(_('[QUALITY SETTINGS] Configuration Saved'),
                                                 os.path.join(sickrage.CONFIG_FILE))
 
         return self.redirect("/config/qualitySettings/")
@@ -4910,17 +4910,17 @@ class Logs(WebHandler):
     def LogsMenu(self, level):
         menu = [
             {'title': _('Clear Errors'), 'path': '/logs/clearerrors/',
-             'requires': self.haveErrors() and level == sickrage.srCore.srLogger.ERROR,
+             'requires': self.haveErrors() and level == sickrage.app.srLogger.ERROR,
              'icon': 'ui-icon ui-icon-trash'},
-            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.srCore.srLogger.WARNING),
-             'requires': self.haveWarnings() and level == sickrage.srCore.srLogger.WARNING,
+            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.app.srLogger.WARNING),
+             'requires': self.haveWarnings() and level == sickrage.app.srLogger.WARNING,
              'icon': 'ui-icon ui-icon-trash'},
         ]
 
         return menu
 
     def index(self, level=None):
-        level = int(level or sickrage.srCore.srLogger.ERROR)
+        level = int(level or sickrage.app.srLogger.ERROR)
         return self.render(
             "/logs/errors.mako",
             header="Logs &amp; Errors",
@@ -4943,7 +4943,7 @@ class Logs(WebHandler):
             return True
 
     def clearerrors(self, level=None):
-        if int(level or sickrage.srCore.srLogger.ERROR) == sickrage.srCore.srLogger.WARNING:
+        if int(level or sickrage.app.srLogger.ERROR) == sickrage.app.srLogger.WARNING:
             WarningViewer.clear()
         else:
             ErrorViewer.clear()
@@ -4970,15 +4970,15 @@ class Logs(WebHandler):
             'MAIN': _('Main'),
         }
 
-        minLevel = minLevel or sickrage.srCore.srLogger.INFO
+        minLevel = minLevel or sickrage.app.srLogger.INFO
 
-        logFiles = [sickrage.srCore.srLogger.logFile] + \
-                   ["{}.{}".format(sickrage.srCore.srLogger.logFile, x) for x in
-                    xrange(int(sickrage.srCore.srLogger.logNr))]
+        logFiles = [sickrage.app.srLogger.logFile] + \
+                   ["{}.{}".format(sickrage.app.srLogger.logFile, x) for x in
+                    xrange(int(sickrage.app.srLogger.logNr))]
 
         levelsFiltered = b'|'.join(
-            [x for x in sickrage.srCore.srLogger.logLevels.keys() if
-             sickrage.srCore.srLogger.logLevels[x] >= int(minLevel)])
+            [x for x in sickrage.app.srLogger.logLevels.keys() if
+             sickrage.app.srLogger.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
             r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered,

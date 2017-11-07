@@ -45,7 +45,7 @@ class googleAuth(object):
 
     def refresh_credentials(self):
         if isinstance(self.credentials, OAuth2Credentials):
-            self.credentials.refresh(sickrage.srCore.srWebSession)
+            self.credentials.refresh(sickrage.app.srWebSession)
 
     def logout(self):
         self.credentials = None

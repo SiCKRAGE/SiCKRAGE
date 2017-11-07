@@ -46,7 +46,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     if indexer_id is None or season is None or episode is None:
         return season, episode
 
-    showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id))
+    showObj = findCertainShow(sickrage.app.SHOWLIST, int(indexer_id))
     if showObj and not showObj.is_scene:
         return season, episode
 
@@ -71,7 +71,7 @@ def find_scene_numbering(indexer_id, indexer, season, episode):
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['season'] == season
               and x['doc']['episode'] == episode
@@ -100,7 +100,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    showObj = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+    showObj = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
     if showObj and not showObj.is_scene:
         return absolute_number
 
@@ -125,7 +125,7 @@ def find_scene_absolute_numbering(indexer_id, indexer, absolute_number):
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['absolute_number'] == absolute_number
               and x['doc']['scene_absolute_number'] != 0]
@@ -145,7 +145,7 @@ def get_indexer_numbering(indexer_id, indexer, sceneSeason, sceneEpisode, fallba
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['scene_season'] == sceneSeason
               and x['doc']['scene_episode'] == sceneEpisode]
@@ -170,11 +170,11 @@ def get_indexer_absolute_numbering(indexer_id, indexer, sceneAbsoluteNumber, fal
     indexer = int(indexer)
 
     if scene_season is None:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
                   if x['doc']['indexer'] == indexer
                   and x['doc']['scene_absolute_number'] == sceneAbsoluteNumber]
     else:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
                   if x['doc']['indexer'] == indexer
                   and x['doc']['scene_absolute_number'] == sceneAbsoluteNumber
                   and x['doc']['scene_season'] == scene_season]
@@ -200,7 +200,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
     indexer = int(indexer)
 
     if season and episode:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
                   if x['doc']['index'] == indexer
                   and x['doc']['season'] == season
                   and x['doc']['episode'] == episode]
@@ -208,9 +208,9 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
         if len(dbData):
             dbData[0]['scene_season'] = sceneSeason
             dbData[0]['scene_episode'] = sceneEpisode
-            sickrage.srCore.mainDB.db.update(dbData[0])
+            sickrage.app.mainDB.db.update(dbData[0])
         else:
-            sickrage.srCore.mainDB.db.insert({
+            sickrage.app.mainDB.db.insert({
                 '_t': 'scene_numbering',
                 'indexer': indexer,
                 'indexer_id': indexer_id,
@@ -223,15 +223,15 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             })
 
     elif absolute_number:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)
                   if x['doc']['index'] == indexer
                   and x['doc']['absolute_number'] == absolute_number]
 
         if len(dbData):
             dbData[0]['scene_absolute_number'] = sceneAbsolute
-            sickrage.srCore.mainDB.db.update(dbData[0])
+            sickrage.app.mainDB.db.update(dbData[0])
         else:
-            sickrage.srCore.mainDB.db.insert({
+            sickrage.app.mainDB.db.insert({
                 '_t': 'scene_numbering',
                 'indexer': indexer,
                 'indexer_id': indexer_id,
@@ -244,7 +244,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             })
 
     # Reload data from DB so that cache and db are in sync
-    show = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+    show = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
     show.flushEpisodes()
 
 
@@ -266,7 +266,7 @@ def find_xem_numbering(indexer_id, indexer, season, episode):
 
     xem_refresh(indexer_id, indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['season'] == season
               and x['doc']['episode'] == episode
@@ -294,7 +294,7 @@ def find_xem_absolute_numbering(indexer_id, indexer, absolute_number):
 
     xem_refresh(indexer_id, indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['absolute_number'] == absolute_number
               and x['doc']['scene_absolute_number'] != 0]
@@ -320,7 +320,7 @@ def get_indexer_numbering_for_xem(indexer_id, indexer, sceneSeason, sceneEpisode
 
     xem_refresh(indexer_id, indexer)
 
-    dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+    dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
               if x['doc']['indexer'] == indexer
               and x['doc']['scene_season'] == sceneSeason
               and x['doc']['scene_episode'] == sceneEpisode]
@@ -348,11 +348,11 @@ def get_indexer_absolute_numbering_for_xem(indexer_id, indexer, sceneAbsoluteNum
     xem_refresh(indexer_id, indexer)
 
     if scene_season is None:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
                   if x['doc']['indexer'] == indexer
                   and x['doc']['scene_absolute_number'] == sceneAbsoluteNumber]
     else:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
                   if x['doc']['indexer'] == indexer
                   and x['doc']['scene_absolute_number'] == sceneAbsoluteNumber
                   and x['doc']['scene_season'] == scene_season]
@@ -376,7 +376,7 @@ def get_scene_numbering_for_show(indexer_id, indexer):
     indexer = int(indexer)
 
     result = {}
-    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)]:
+    for dbData in [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)]:
         season = try_int(dbData['season'])
         episode = try_int(dbData['episode'])
         scene_season = try_int(dbData['scene_season'])
@@ -403,7 +403,7 @@ def get_xem_numbering_for_show(indexer_id, indexer):
     xem_refresh(indexer_id, indexer)
 
     result = {}
-    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)]:
+    for dbData in [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)]:
         season = try_int(dbData.get('season'))
         episode = try_int(dbData.get('episode'))
         scene_season = try_int(dbData.get('scene_season'))
@@ -428,7 +428,7 @@ def get_scene_absolute_numbering_for_show(indexer_id, indexer):
     indexer = int(indexer)
 
     result = {}
-    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)]:
+    for dbData in [x['doc'] for x in sickrage.app.mainDB.db.get_many('scene_numbering', indexer_id, with_doc=True)]:
         absolute_number = try_int(dbData.get('absolute_number'))
         scene_absolute_number = try_int(dbData.get('scene_absolute_number'))
         if try_int(dbData.get('indexer')) != indexer or scene_absolute_number == 0: continue
@@ -453,7 +453,7 @@ def get_xem_absolute_numbering_for_show(indexer_id, indexer):
     xem_refresh(indexer_id, indexer)
 
     result = {}
-    for dbData in [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)]:
+    for dbData in [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)]:
         absolute_number = try_int(dbData.get('absolute_number'))
         scene_absolute_number = try_int(dbData.get('scene_absolute_number'))
         if try_int(dbData['indexer']) != indexer or scene_absolute_number == 0: continue
@@ -478,23 +478,23 @@ def xem_refresh(indexer_id, indexer, force=False):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = sickrage.srCore.mainDB.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+        dbData = sickrage.app.mainDB.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
         lastRefresh = try_int(dbData['last_refreshed'])
         refresh = int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     except RecordNotFound:
         refresh = True
 
     if refresh or force:
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             'Looking up XEM scene mapping for show %s on %s' % (indexer_id, srIndexerApi(indexer).name))
 
         # mark refreshed
         try:
-            dbData = sickrage.srCore.mainDB.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+            dbData = sickrage.app.mainDB.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
             dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
-            sickrage.srCore.mainDB.db.update(dbData)
+            sickrage.app.mainDB.db.update(dbData)
         except RecordNotFound:
-            sickrage.srCore.mainDB.db.insert({
+            sickrage.app.mainDB.db.insert({
                 '_t': 'xem_refresh',
                 'indexer': indexer,
                 'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
@@ -506,13 +506,13 @@ def xem_refresh(indexer_id, indexer, force=False):
             url = "http://thexem.de/map/havemap?origin=%s" % srIndexerApi(indexer).config['xem_origin']
 
             try:
-                parsedJSON = sickrage.srCore.srWebSession.get(url).json()
+                parsedJSON = sickrage.app.srWebSession.get(url).json()
                 if indexer_id not in map(int, parsedJSON['data']):
                     raise
             except:
-                for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True):
+                for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True):
                     x['doc']['scene_season'], x['doc']['scene_episode'], x['doc']['scene_absolute_number'] = 0, 0, 0
-                    sickrage.srCore.mainDB.db.update(x['doc'])
+                    sickrage.app.mainDB.db.update(x['doc'])
                 return
 
             # XEM API URL
@@ -520,18 +520,18 @@ def xem_refresh(indexer_id, indexer, force=False):
                 indexer_id, srIndexerApi(indexer).config['xem_origin'])
 
             try:
-                parsedJSON = sickrage.srCore.srWebSession.get(url).json()
+                parsedJSON = sickrage.app.srWebSession.get(url).json()
                 if 'success' not in parsedJSON['result']:
                     raise
             except:
-                sickrage.srCore.srLogger.info(
+                sickrage.app.srLogger.info(
                     'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
             for entry in parsedJSON['data']:
                 try:
                     dbData = \
-                        [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
+                        [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', indexer_id, with_doc=True)
                          if x['doc']['season'] == entry[srIndexerApi(indexer).config['xem_origin']]['season']
                          and x['doc']['episode'] == entry[srIndexerApi(indexer).config['xem_origin']]['episode']][
                             0]
@@ -547,14 +547,14 @@ def xem_refresh(indexer_id, indexer, force=False):
                     dbData['scene_episode'] = entry['scene_2']['episode']
                     dbData['scene_absolute_number'] = entry['scene_2']['absolute']
 
-                sickrage.srCore.mainDB.db.update(dbData)
+                sickrage.app.mainDB.db.update(dbData)
 
         except Exception as e:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
                                                                                    srIndexerApi(indexer).name,
                                                                                    e.message))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            sickrage.app.srLogger.debug(traceback.format_exc())
 
 
 def get_absolute_number_from_season_and_episode(show, season, episode):
@@ -570,16 +570,16 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
     absolute_number = None
 
     if season and episode:
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                   if x['doc']['season'] == season
                   and x['doc']['episode'] == episode]
 
         if len(dbData) == 1:
             absolute_number = try_int(dbData[0].get("absolute_number"))
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.srLogger.debug(
                 "Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))
         else:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.srLogger.debug(
                 "No entries for absolute number for show %s S%02dE%02d" % (show.name, season, episode))
 
     return absolute_number

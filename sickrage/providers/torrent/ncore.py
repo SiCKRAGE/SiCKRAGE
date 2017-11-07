@@ -56,7 +56,7 @@ class NcoreProvider(TorrentProvider):
         self.cache = TVCache(self)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -65,13 +65,13 @@ class NcoreProvider(TorrentProvider):
             'submitted': '1',
         }
 
-        response = sickrage.srCore.srWebSession.post(self.urls["login"], data=login_params).text
+        response = sickrage.app.srWebSession.post(self.urls["login"], data=login_params).text
         if not response:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider")
+            sickrage.app.srLogger.warning("Unable to connect to provider")
             return False
 
         if re.search('images/warning.png', response):
-            sickrage.srCore.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.app.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -84,17 +84,17 @@ class NcoreProvider(TorrentProvider):
 
         for mode in search_strings:
 
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
 
             for search_string in search_strings[mode]:
                 if mode != "RSS":
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
+                    sickrage.app.srLogger.debug("Search string: {0}".format(search_string))
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'] % search_string).json()
+                    data = sickrage.app.srWebSession.get(self.urls['search'] % search_string).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -115,7 +115,7 @@ class NcoreProvider(TorrentProvider):
         if not torrent_results:
             return results
 
-        sickrage.srCore.srLogger.debug('Number of torrents found on nCore = ' + str(torrent_results))
+        sickrage.app.srLogger.debug('Number of torrents found on nCore = ' + str(torrent_results))
 
         for item in data['results']:
             try:
@@ -130,13 +130,13 @@ class NcoreProvider(TorrentProvider):
                 size = convert_size(torrent_size, -1)
 
                 if mode != "RSS":
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                         'leechers': leechers, 'hash': ''}
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider")
+                sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

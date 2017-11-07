@@ -9,10 +9,10 @@
                 <label for="minLevel" class="badge">${_('Minimum logging level to display:')}
                     <select name="minLevel" id="minLevel"
                             class="form-control form-control-inline input-sm">
-                        <% levels = [x for x in sickrage.srCore.srLogger.logLevels.keys() if any([sickrage.srCore.srConfig.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
-                        <% levels.sort(lambda x,y: cmp(sickrage.srCore.srLogger.logLevels[x], sickrage.srCore.srLogger.logLevels[y])) %>
+                        <% levels = [x for x in sickrage.app.srLogger.logLevels.keys() if any([sickrage.app.srConfig.DEBUG and x in ['DEBUG','DB'], x not in ['DEBUG','DB']])]%>
+                        <% levels.sort(lambda x,y: cmp(sickrage.app.srLogger.logLevels[x], sickrage.app.srLogger.logLevels[y])) %>
                         % for level in levels:
-                            <option value="${sickrage.srCore.srLogger.logLevels[level]}" ${('', 'selected')[minLevel == sickrage.srCore.srLogger.logLevels[level]]}>${level.title()}</option>
+                            <option value="${sickrage.app.srLogger.logLevels[level]}" ${('', 'selected')[minLevel == sickrage.app.srLogger.logLevels[level]]}>${level.title()}</option>
                         % endfor
                     </select>
                 </label>

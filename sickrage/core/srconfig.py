@@ -935,7 +935,7 @@ class srConfig(object):
             try:
                 os.remove(bad_unrar)
             except OSError as e:
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.srLogger.warning(
                     "Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar,
                                                                                                        e.strerror))
 
@@ -980,17 +980,17 @@ class srConfig(object):
 
                 # Download
                 if not found:
-                    sickrage.srCore.srLogger.info('Trying to download unrar.exe and set the path')
+                    sickrage.app.srLogger.info('Trying to download unrar.exe and set the path')
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
                     unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
-                    if (sickrage.srCore.srWebSession.download(
+                    if (sickrage.app.srWebSession.download(
                             "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
                     ) and extract_zipfile(archive=unrar_zip, targetDir=unrar_dir)):
                         try:
                             os.remove(unrar_zip)
                         except OSError as e:
-                            sickrage.srCore.srLogger.info(
+                            sickrage.app.srLogger.info(
                                 "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
                                                                                                              e.strerror))
 
@@ -998,12 +998,12 @@ class srConfig(object):
                         try:
                             rarfile.custom_check(check)
                             unrar_tool = check
-                            sickrage.srCore.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool')
+                            sickrage.app.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool')
                         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                            sickrage.srCore.srLogger.info(
+                            sickrage.app.srLogger.info(
                                 'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
                     else:
-                        sickrage.srCore.srLogger.info('Unable to download unrar.exe')
+                        sickrage.app.srLogger.info('Unable to download unrar.exe')
 
         # These must always be set to something before returning
         self.UNRAR_TOOL = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
@@ -1014,7 +1014,7 @@ class srConfig(object):
             return True
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
             if self.UNPACK:
-                sickrage.srCore.srLogger.info('Disabling UNPACK setting because no unrar is installed.')
+                sickrage.app.srLogger.info('Disabling UNPACK setting because no unrar is installed.')
                 self.UNPACK = False
 
     def change_https_cert(self, https_cert):
@@ -1032,7 +1032,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_CERT) != os.path.normpath(https_cert):
             if makeDir(os.path.dirname(os.path.abspath(https_cert))):
                 self.HTTPS_CERT = os.path.normpath(https_cert)
-                sickrage.srCore.srLogger.info("Changed https cert path to " + https_cert)
+                sickrage.app.srLogger.info("Changed https cert path to " + https_cert)
             else:
                 return False
 
@@ -1052,7 +1052,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_KEY) != os.path.normpath(https_key):
             if makeDir(os.path.dirname(os.path.abspath(https_key))):
                 self.HTTPS_KEY = os.path.normpath(https_key)
-                sickrage.srCore.srLogger.info("Changed https key path to " + https_key)
+                sickrage.app.srLogger.info("Changed https key path to " + https_key)
             else:
                 return False
 
@@ -1072,7 +1072,7 @@ class srConfig(object):
         if os.path.normpath(self.NZB_DIR) != os.path.normpath(nzb_dir):
             if makeDir(nzb_dir):
                 self.NZB_DIR = os.path.normpath(nzb_dir)
-                sickrage.srCore.srLogger.info("Changed NZB folder to " + nzb_dir)
+                sickrage.app.srLogger.info("Changed NZB folder to " + nzb_dir)
             else:
                 return False
 
@@ -1092,7 +1092,7 @@ class srConfig(object):
         if os.path.normpath(self.TORRENT_DIR) != os.path.normpath(torrent_dir):
             if makeDir(torrent_dir):
                 self.TORRENT_DIR = os.path.normpath(torrent_dir)
-                sickrage.srCore.srLogger.info("Changed torrent folder to " + torrent_dir)
+                sickrage.app.srLogger.info("Changed torrent folder to " + torrent_dir)
             else:
                 return False
 
@@ -1112,7 +1112,7 @@ class srConfig(object):
         if os.path.normpath(self.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
             if makeDir(tv_download_dir):
                 self.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
-                sickrage.srCore.srLogger.info("Changed TV download folder to " + tv_download_dir)
+                sickrage.app.srLogger.info("Changed TV download folder to " + tv_download_dir)
             else:
                 return False
 
@@ -1126,7 +1126,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.AUTOPOSTPROCESSOR_FREQ = try_int(freq, self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
-        sickrage.srCore.srScheduler.modify_job('POSTPROCESSOR',
+        sickrage.app.srScheduler.modify_job('POSTPROCESSOR',
                                                trigger=IntervalTrigger(
                                                    minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
                                                ))
@@ -1138,7 +1138,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.DAILY_SEARCHER_FREQ = try_int(freq, self.DEFAULT_DAILY_SEARCHER_FREQ)
-        sickrage.srCore.srScheduler.modify_job('DAILYSEARCHER',
+        sickrage.app.srScheduler.modify_job('DAILYSEARCHER',
                                                trigger=IntervalTrigger(
                                                    minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
                                                ))
@@ -1150,8 +1150,8 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.BACKLOG_SEARCHER_FREQ = try_int(freq, self.DEFAULT_BACKLOG_SEARCHER_FREQ)
-        self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.srCore.BACKLOGSEARCHER.get_backlog_cycle_time()
-        sickrage.srCore.srScheduler.modify_job('BACKLOG',
+        self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
+        sickrage.app.srScheduler.modify_job('BACKLOG',
                                                trigger=IntervalTrigger(
                                                    minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
                                                ))
@@ -1163,7 +1163,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.VERSION_UPDATER_FREQ = try_int(freq, self.DEFAULT_VERSION_UPDATE_FREQ)
-        sickrage.srCore.srScheduler.modify_job('VERSIONUPDATER',
+        sickrage.app.srScheduler.modify_job('VERSIONUPDATER',
                                                trigger=IntervalTrigger(
                                                    hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
                                                ))
@@ -1175,7 +1175,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SHOWUPDATE_HOUR = try_int(freq, self.DEFAULT_SHOWUPDATE_HOUR)
-        sickrage.srCore.srScheduler.modify_job('SHOWUPDATER',
+        sickrage.app.srScheduler.modify_job('SHOWUPDATER',
                                                trigger=IntervalTrigger(
                                                    hours=1,
                                                    start_date=datetime.datetime.now().replace(
@@ -1189,7 +1189,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SUBTITLE_SEARCHER_FREQ = try_int(freq, self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
-        sickrage.srCore.srScheduler.modify_job('SUBTITLESEARCHER',
+        sickrage.app.srScheduler.modify_job('SUBTITLESEARCHER',
                                                trigger=IntervalTrigger(
                                                    hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
                                                ))
@@ -1202,7 +1202,7 @@ class srConfig(object):
         """
         self.VERSION_NOTIFY = checkbox_to_value(version_notify)
         if not self.VERSION_NOTIFY:
-            sickrage.srCore.NEWEST_VERSION_STRING = None
+            sickrage.app.NEWEST_VERSION_STRING = None
 
     def change_download_propers(self, download_propers):
         """
@@ -1212,7 +1212,7 @@ class srConfig(object):
         :param download_propers: New desired state
         """
         self.DOWNLOAD_PROPERS = checkbox_to_value(download_propers)
-        job = sickrage.srCore.srScheduler.get_job('PROPERSEARCHER')
+        job = sickrage.app.srScheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
 
     def change_use_trakt(self, use_trakt):
@@ -1223,7 +1223,7 @@ class srConfig(object):
         :param use_trakt: New desired state
         """
         self.USE_TRAKT = checkbox_to_value(use_trakt)
-        job = sickrage.srCore.srScheduler.get_job('TRAKTSEARCHER')
+        job = sickrage.app.srScheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
 
     def change_use_subtitles(self, use_subtitles):
@@ -1234,7 +1234,7 @@ class srConfig(object):
         :param use_subtitles: New desired state
         """
         self.USE_SUBTITLES = checkbox_to_value(use_subtitles)
-        job = sickrage.srCore.srScheduler.get_job('SUBTITLESEARCHER')
+        job = sickrage.app.srScheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[self.USE_SUBTITLES]()
 
     def change_process_automatically(self, process_automatically):
@@ -1245,7 +1245,7 @@ class srConfig(object):
         :param process_automatically: New desired state
         """
         self.PROCESS_AUTOMATICALLY = checkbox_to_value(process_automatically)
-        job = sickrage.srCore.srScheduler.get_job('POSTPROCESSOR')
+        job = sickrage.app.srScheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
 
     ################################################################################
@@ -1267,7 +1267,7 @@ class srConfig(object):
             my_val = def_val
 
         if not silent:
-            sickrage.srCore.srLogger.debug(key + " -> " + str(my_val))
+            sickrage.app.srLogger.debug(key + " -> " + str(my_val))
 
         return my_val
 
@@ -1283,7 +1283,7 @@ class srConfig(object):
             my_val = def_val
 
         if not silent:
-            sickrage.srCore.srLogger.debug(section + " -> " + str(my_val))
+            sickrage.app.srLogger.debug(section + " -> " + str(my_val))
 
         return my_val
 
@@ -1295,11 +1295,11 @@ class srConfig(object):
 
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
-        if censor or (section, key) in sickrage.srCore.srLogger.CENSORED_ITEMS:
-            sickrage.srCore.srLogger.CENSORED_ITEMS[section, key] = my_val
+        if censor or (section, key) in sickrage.app.srLogger.CENSORED_ITEMS:
+            sickrage.app.srLogger.CENSORED_ITEMS[section, key] = my_val
 
         if not silent:
-            sickrage.srCore.srLogger.debug(key + " -> " + my_val)
+            sickrage.app.srLogger.debug(key + " -> " + my_val)
 
         return my_val
 
@@ -1795,8 +1795,8 @@ class srConfig(object):
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers')
 
-        sickrage.srCore.providersDict.load()
-        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+        sickrage.app.providersDict.load()
+        for providerID, providerObj in sickrage.app.providersDict.all().items():
             providerSettings = self.check_setting_str('Providers', providerID, '') or {}
             for k, v in providerSettings.items():
                 providerSettings[k] = auto_type(v)
@@ -1805,9 +1805,9 @@ class srConfig(object):
              set(providerObj.__dict__).intersection(providerSettings)]
 
         # order providers
-        sickrage.srCore.providersDict.provider_order = self.check_setting_str('Providers', 'providers_order')
+        sickrage.app.providersDict.provider_order = self.check_setting_str('Providers', 'providers_order')
 
-        for metadataProviderID, metadataProviderObj in sickrage.srCore.metadataProvidersDict.items():
+        for metadataProviderID, metadataProviderObj in sickrage.app.metadataProvidersDict.items():
             metadataProviderObj.set_config(
                 self.check_setting_str('MetadataProviders', metadataProviderID, '0|0|0|0|0|0|0|0|0|0|0')
             )
@@ -1826,7 +1826,7 @@ class srConfig(object):
         new_config = ConfigObj(sickrage.CONFIG_FILE, indent_type='  ', encoding='utf8')
         new_config.clear()
 
-        sickrage.srCore.srLogger.debug("Saving all settings to disk")
+        sickrage.app.srLogger.debug("Saving all settings to disk")
 
         new_config.update({
             'General': {
@@ -2266,7 +2266,7 @@ class srConfig(object):
                 'sizes': pickle.dumps(self.QUALITY_SIZES),
             },
             'Providers': {
-                'providers_order': sickrage.srCore.providersDict.provider_order,
+                'providers_order': sickrage.app.providersDict.provider_order,
                 'custom_providers': self.CUSTOM_PROVIDERS,
             },
             'MetadataProviders': {}
@@ -2277,11 +2277,11 @@ class srConfig(object):
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
 
-        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.providersDict.all().items():
             provider_settings = dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)])
             new_config['Providers'][providerID] = provider_settings
 
-        for metadataProviderID, metadataProviderObj in sickrage.srCore.metadataProvidersDict.items():
+        for metadataProviderID, metadataProviderObj in sickrage.app.metadataProvidersDict.items():
             new_config['MetadataProviders'][metadataProviderID] = metadataProviderObj.get_config()
 
         # encrypt settings
@@ -2311,11 +2311,11 @@ class srConfig(object):
                     if _decrypt:
                         section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
                                                izip(base64.decodestring(section[key]),
-                                                    cycle(sickrage.srCore.srConfig.ENCRYPTION_SECRET)))
+                                                    cycle(sickrage.app.srConfig.ENCRYPTION_SECRET)))
                     else:
                         section[key] = base64.encodestring(
                             ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(
-                                sickrage.srCore.srConfig.ENCRYPTION_SECRET)))).strip()
+                                sickrage.app.srConfig.ENCRYPTION_SECRET)))).strip()
             except:
                 pass
 
@@ -2356,7 +2356,7 @@ class ConfigMigrator(srConfig):
         """
 
         if self.config_version > self.expected_config_version:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.srLogger.error(
                 """Your config version (%i) has been incremented past what this version of supports (%i).
                     If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
@@ -2373,15 +2373,15 @@ class ConfigMigrator(srConfig):
             else:
                 migration_name = ''
 
-            sickrage.srCore.srLogger.info("Backing up config before upgrade")
+            sickrage.app.srLogger.info("Backing up config before upgrade")
             if not backupVersionedFile(sickrage.CONFIG_FILE, self.config_version):
-                sickrage.srCore.srLogger.exit("Config backup failed, abort upgrading config")
+                sickrage.app.srLogger.exit("Config backup failed, abort upgrading config")
                 sys.exit(1)
             else:
-                sickrage.srCore.srLogger.info("Proceeding with upgrade")
+                sickrage.app.srLogger.info("Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            sickrage.srCore.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
+            sickrage.app.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
             self.CONFIG_OBJ = getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 

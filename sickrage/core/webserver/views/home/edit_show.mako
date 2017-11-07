@@ -129,7 +129,7 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="subtitles"
-                                                   name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.srCore.srConfig.USE_SUBTITLES])]}${('disabled="disabled"', '')[bool(sickrage.srCore.srConfig.USE_SUBTITLES)]}/>
+                                                   name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.srConfig.USE_SUBTITLES])]}${('disabled="disabled"', '')[bool(sickrage.app.srConfig.USE_SUBTITLES)]}/>
                                             <label for="subtitles">
                                                 ${_('search for subtitles')}
                                             </label>
@@ -243,7 +243,7 @@
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                             <input type="checkbox" id="season_folders"
-                                                   name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}/>
+                                                   name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.app.srConfig.NAMING_FORCE_FOLDERS]} ${('', 'disabled="disabled"')[bool(sickrage.app.srConfig.NAMING_FORCE_FOLDERS)]}/>
                                             <label for="season_folders">
                                                 ${_('group episodes by season folder (uncheck to store in a single folder)')}
                                             </label>

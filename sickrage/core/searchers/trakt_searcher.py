@@ -42,15 +42,15 @@ def setEpisodeToWanted(show, s, e):
             if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
                 return
 
-            sickrage.srCore.srLogger.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))
+            sickrage.app.srLogger.info("Setting episode %s S%02dE%02d to wanted" % (show.name, s, e))
             # figure out what segment the episode is in and remember it so we can backlog it
 
             epObj.status = WANTED
             epObj.saveToDB()
 
-        sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(show, [epObj]))
+        sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(show, [epObj]))
 
-        sickrage.srCore.srLogger.info(
+        sickrage.app.srLogger.info(
             "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (
                 show.name, s, e))
 
@@ -76,29 +76,29 @@ class srTraktSearcher(object):
         threading.currentThread().setName(self.name)
 
         self.todoWanted = []  # its about to all get re-added
-        if len(sickrage.srCore.srConfig.ROOT_DIRS.split('|')) < 2:
-            sickrage.srCore.srLogger.warning("No default root directory")
+        if len(sickrage.app.srConfig.ROOT_DIRS.split('|')) < 2:
+            sickrage.app.srLogger.warning("No default root directory")
             return
 
         # add shows from tv watchlist
-        if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
+        if sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
             try:
                 self.syncWatchlist()
             except Exception:
-                sickrage.srCore.srLogger.debug(traceback.format_exc())
+                sickrage.app.srLogger.debug(traceback.format_exc())
 
         # add shows from tv collection
-        if sickrage.srCore.srConfig.TRAKT_SYNC:
+        if sickrage.app.srConfig.TRAKT_SYNC:
             try:
                 self.syncCollection()
             except Exception:
-                sickrage.srCore.srLogger.debug(traceback.format_exc())
+                sickrage.app.srLogger.debug(traceback.format_exc())
 
         self.amActive = False
 
     def syncWatchlist(self):
-        if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST and sickrage.srCore.srConfig.USE_TRAKT:
-            sickrage.srCore.srLogger.debug("Syncing SiCKRAGE with Trakt Watchlist")
+        if sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST and sickrage.app.srConfig.USE_TRAKT:
+            sickrage.app.srLogger.debug("Syncing SiCKRAGE with Trakt Watchlist")
 
             self.removeShowFromSickRage()
 
@@ -108,15 +108,15 @@ class srTraktSearcher(object):
 
             if self._getEpisodeWatchlist():
                 self.addEpisodesToTraktWatchList()
-                if sickrage.srCore.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
+                if sickrage.app.srConfig.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
                     self.removeEpisodesFromTraktWatchList()
                 self.updateEpisodes()
 
     def syncCollection(self):
-        sickrage.srCore.srLogger.debug("Syncing SiCKRAGE with Trakt Collection")
+        sickrage.app.srLogger.debug("Syncing SiCKRAGE with Trakt Collection")
         if self._getShowCollection():
             self.addEpisodesToTraktCollection()
-            if sickrage.srCore.srConfig.TRAKT_SYNC_REMOVE:
+            if sickrage.app.srConfig.TRAKT_SYNC_REMOVE:
                 self.removeEpisodesFromTraktCollection()
 
     def findShowMatch(self, indexer, indexerid):
@@ -125,13 +125,13 @@ class srTraktSearcher(object):
         try:
             library = srTraktAPI()["sync/collection"].shows() or {}
             if not library:
-                sickrage.srCore.srLogger.debug("No shows found in your library, aborting library update")
+                sickrage.app.srLogger.debug("No shows found in your library, aborting library update")
                 return
 
             traktShow = [x for __, x in library.items() if
                          int(indexerid) == int(x.ids[srIndexerApi(indexer).trakt_id])]
         except Exception as e:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
 
         return traktShow
@@ -149,12 +149,12 @@ class srTraktSearcher(object):
                 ]
             }
 
-            sickrage.srCore.srLogger.debug("Removing %s from tv library" % show_obj.name)
+            sickrage.app.srLogger.debug("Removing %s from tv library" % show_obj.name)
 
             try:
                 srTraktAPI()["sync/collection"].remove(data)
             except Exception as e:
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.srLogger.warning(
                     "Could not connect to Trakt service. Aborting removing show %s from Trakt library. Error: %s" % (
                         show_obj.name, repr(e)))
 
@@ -179,12 +179,12 @@ class srTraktSearcher(object):
             }
 
         if len(data):
-            sickrage.srCore.srLogger.debug("Adding %s to tv library" % show_obj.name)
+            sickrage.app.srLogger.debug("Adding %s to tv library" % show_obj.name)
 
             try:
                 srTraktAPI()["sync/collection"].add(data)
             except Exception as e:
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.srLogger.warning(
                     "Could not connect to Trakt service. Aborting adding show %s to Trakt library. Error: %s" % (
                         show_obj.name, repr(e)))
                 return
@@ -192,16 +192,16 @@ class srTraktSearcher(object):
     def addEpisodesToTraktCollection(self):
         trakt_data = []
 
-        sickrage.srCore.srLogger.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
+        sickrage.app.srLogger.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
-                    sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
+                    sickrage.app.srLogger.debug("Adding Episode %s S%02dE%02d to collection" %
                                                    (s["show_name"], e["season"], e["episode"]))
                     trakt_data.append(
                         (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
@@ -211,25 +211,25 @@ class srTraktSearcher(object):
                 srTraktAPI()["sync/collection"].add(self.trakt_bulk_data_generate(trakt_data))
                 self._getShowCollection()
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
+                sickrage.app.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
 
-        sickrage.srCore.srLogger.debug("COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection")
+        sickrage.app.srLogger.debug("COLLECTION::ADD::FINISH - Look for Episodes to Add to Trakt Collection")
 
     def removeEpisodesFromTraktCollection(self):
         trakt_data = []
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 if e["location"]: continue
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
-                    sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
+                    sickrage.app.srLogger.debug("Removing Episode %s S%02dE%02d from collection" %
                                                    (s["show_name"], e["season"], e["episode"]))
                     trakt_data.append(
                         (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
@@ -239,25 +239,25 @@ class srTraktSearcher(object):
                 srTraktAPI()["sync/collection"].remove(self.trakt_bulk_data_generate(trakt_data))
                 self._getShowCollection()
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
+                sickrage.app.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             "COLLECTION::REMOVE::FINISH - Look for Episodes to Remove From Trakt Collection")
 
     def removeEpisodesFromTraktWatchList(self):
         trakt_data = []
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
-                    sickrage.srCore.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
+                    sickrage.app.srLogger.debug("Removing Episode %s S%02dE%02d from watchlist" %
                                                    (s["show_name"], e["season"], e["episode"]))
                     trakt_data.append(
                         (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
@@ -268,25 +268,25 @@ class srTraktSearcher(object):
                 srTraktAPI()["sync/watchlist"].remove(data)
                 self._getEpisodeWatchlist()
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
+                sickrage.app.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             "WATCHLIST::REMOVE::FINISH - Look for Episodes to Remove from Trakt Watchlist")
 
     def addEpisodesToTraktWatchList(self):
         trakt_data = []
 
-        sickrage.srCore.srLogger.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
+        sickrage.app.srLogger.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
-        for s in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.srCore.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
                 trakt_id = srIndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
-                    sickrage.srCore.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
+                    sickrage.app.srLogger.debug("Adding Episode %s S%02dE%02d to watchlist" %
                                                    (s["show_name"], e["season"], e["episode"]))
                     trakt_data.append(
                         (e["showid"], s["indexer"], s["show_name"], s["startyear"], e["season"], e["episode"]))
@@ -297,18 +297,18 @@ class srTraktSearcher(object):
                 srTraktAPI()["sync/watchlist"].add(data)
                 self._getEpisodeWatchlist()
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service. Error %s" % e)
+                sickrage.app.srLogger.warning("Could not connect to Trakt service. Error %s" % e)
 
-        sickrage.srCore.srLogger.debug("WATCHLIST::ADD::FINISH - Look for Episodes to Add to Trakt Watchlist")
+        sickrage.app.srLogger.debug("WATCHLIST::ADD::FINISH - Look for Episodes to Add to Trakt Watchlist")
 
     def addShowToTraktWatchList(self):
         trakt_data = []
 
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
 
-        for show in sickrage.srCore.SHOWLIST or []:
+        for show in sickrage.app.SHOWLIST or []:
             if not self._checkInList(srIndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
-                sickrage.srCore.srLogger.debug(
+                sickrage.app.srLogger.debug(
                     "Adding Show: Indexer %s %s - %s to Watchlist" % (
                         srIndexerApi(show.indexer).trakt_id, str(show.indexerid), show.name))
 
@@ -324,34 +324,34 @@ class srTraktSearcher(object):
                 srTraktAPI()["sync/watchlist"].add(data)
                 self._getShowWatchlist()
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
+                sickrage.app.srLogger.warning("Could not connect to Trakt service. Error: %s" % e)
 
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::ADD::FINISH - Look for Shows to Add to Trakt Watchlist")
 
     def removeShowFromSickRage(self):
-        sickrage.srCore.srLogger.debug("SHOW_SICKRAGE::REMOVE::START - Look for Shows to remove from SiCKRAGE")
+        sickrage.app.srLogger.debug("SHOW_SICKRAGE::REMOVE::START - Look for Shows to remove from SiCKRAGE")
 
-        for show in sickrage.srCore.SHOWLIST:
+        for show in sickrage.app.SHOWLIST:
             if show.status == "Ended":
                 try:
                     progress = srTraktAPI()["shows"].get(show.imdbid)
                 except Exception as e:
-                    sickrage.srCore.srLogger.warning(
+                    sickrage.app.srLogger.warning(
                         "Could not connect to Trakt service. Aborting removing show %s from SiCKRAGE. Error: %s" % (
                             show.name, repr(e)))
                     return
 
                 if progress.status in ['canceled', 'ended']:
-                    sickrage.srCore.SHOWQUEUE.removeShow(show, full=True)
-                    sickrage.srCore.srLogger.debug("Show: %s has been removed from SiCKRAGE" % show.name)
+                    sickrage.app.SHOWQUEUE.removeShow(show, full=True)
+                    sickrage.app.srLogger.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
-        sickrage.srCore.srLogger.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
+        sickrage.app.srLogger.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
 
     def updateShows(self):
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::CHECK::START - Trakt Show Watchlist")
 
         if not len(self.ShowWatchlist):
-            sickrage.srCore.srLogger.debug("No shows found in your watchlist, aborting watchlist update")
+            sickrage.app.srLogger.debug("No shows found in your watchlist, aborting watchlist update")
             return
 
         for key, show in self.ShowWatchlist.items():
@@ -365,29 +365,29 @@ class srTraktSearcher(object):
                 continue
 
             if trakt_id == srIndexerApi(indexer).trakt_id:
-                if int(sickrage.srCore.srConfig.TRAKT_METHOD_ADD) != 2:
+                if int(sickrage.app.srConfig.TRAKT_METHOD_ADD) != 2:
                     self.addDefaultShow(indexer, indexer_id, show.title, SKIPPED)
                 else:
                     self.addDefaultShow(indexer, indexer_id, show.title, WANTED)
 
-                if int(sickrage.srCore.srConfig.TRAKT_METHOD_ADD) == 1:
-                    newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+                if int(sickrage.app.srConfig.TRAKT_METHOD_ADD) == 1:
+                    newShow = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
 
                     if newShow is not None:
                         setEpisodeToWanted(newShow, 1, 1)
                     else:
                         self.todoWanted.append((indexer_id, 1, 1))
 
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Show Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Show Watchlist")
 
     def updateEpisodes(self):
         """
         Sets episodes to wanted that are in trakt watchlist
         """
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::START - Trakt Episode Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::CHECK::START - Trakt Episode Watchlist")
 
         if not len(self.EpisodeWatchlist):
-            sickrage.srCore.srLogger.debug("No episode found in your watchlist, aborting episode update")
+            sickrage.app.srLogger.debug("No episode found in your watchlist, aborting episode update")
             return
 
         managed_show = []
@@ -402,7 +402,7 @@ class srTraktSearcher(object):
             except KeyError:
                 continue
 
-            newShow = findCertainShow(sickrage.srCore.SHOWLIST, indexer_id)
+            newShow = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
 
             try:
                 if newShow is None:
@@ -419,18 +419,18 @@ class srTraktSearcher(object):
                             for episode_number, _ in season.episodes.items():
                                 setEpisodeToWanted(newShow, int(season_number), int(episode_number))
             except TypeError:
-                sickrage.srCore.srLogger.debug("Could not parse the output from trakt for %s " % show.title)
+                sickrage.app.srLogger.debug("Could not parse the output from trakt for %s " % show.title)
 
-        sickrage.srCore.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Episode Watchlist")
+        sickrage.app.srLogger.debug("SHOW_WATCHLIST::CHECK::FINISH - Trakt Episode Watchlist")
 
     @staticmethod
     def addDefaultShow(indexer, indexer_id, name, status):
         """
         Adds a new show with the default settings
         """
-        if not findCertainShow(sickrage.srCore.SHOWLIST, int(indexer_id)):
-            sickrage.srCore.srLogger.info("Adding show " + str(indexer_id))
-            root_dirs = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+        if not findCertainShow(sickrage.app.SHOWLIST, int(indexer_id)):
+            sickrage.app.srLogger.info("Adding show " + str(indexer_id))
+            root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
 
             try:
                 location = root_dirs[int(root_dirs[0]) + 1]
@@ -442,25 +442,25 @@ class srTraktSearcher(object):
                 dir_exists = makeDir(showPath)
 
                 if not dir_exists:
-                    sickrage.srCore.srLogger.warning("Unable to create the folder %s , can't add the show" % showPath)
+                    sickrage.app.srLogger.warning("Unable to create the folder %s , can't add the show" % showPath)
                     return
                 else:
                     chmodAsParent(showPath)
 
-                sickrage.srCore.SHOWQUEUE.addShow(int(indexer), int(indexer_id), showPath,
+                sickrage.app.SHOWQUEUE.addShow(int(indexer), int(indexer_id), showPath,
                                                   default_status=status,
-                                                  quality=int(sickrage.srCore.srConfig.QUALITY_DEFAULT),
-                                                  flatten_folders=int(sickrage.srCore.srConfig.FLATTEN_FOLDERS_DEFAULT),
-                                                  paused=sickrage.srCore.srConfig.TRAKT_START_PAUSED,
+                                                  quality=int(sickrage.app.srConfig.QUALITY_DEFAULT),
+                                                  flatten_folders=int(sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT),
+                                                  paused=sickrage.app.srConfig.TRAKT_START_PAUSED,
                                                   default_status_after=status,
-                                                  archive=sickrage.srCore.srConfig.ARCHIVE_DEFAULT)
+                                                  archive=sickrage.app.srConfig.ARCHIVE_DEFAULT)
             else:
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.srLogger.warning(
                     "There was an error creating the show, no root directory setting found")
                 return
 
     def manageNewShow(self, show):
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.srLogger.debug(
             "Checking if trakt watch list wants to search for episodes from new show " + show.name)
         episodes = [i for i in self.todoWanted if i[0] == show.indexerid]
 
@@ -494,10 +494,10 @@ class srTraktSearcher(object):
         Get Watchlist and parse once into addressable structure
         """
         try:
-            sickrage.srCore.srLogger.debug("Getting Show Watchlist")
+            sickrage.app.srLogger.debug("Getting Show Watchlist")
             self.ShowWatchlist = srTraktAPI()["sync/watchlist"].shows() or {}
         except Exception as e:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Could not connect to trakt service, cannot download Show Watchlist: %s" % repr(e))
             return False
         return True
@@ -507,10 +507,10 @@ class srTraktSearcher(object):
          Get Watchlist and parse once into addressable structure
         """
         try:
-            sickrage.srCore.srLogger.debug("Getting Episode Watchlist")
+            sickrage.app.srLogger.debug("Getting Episode Watchlist")
             self.EpisodeWatchlist = srTraktAPI()["sync/watchlist"].episodes() or {}
         except Exception as e:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Could not connect to trakt service, cannot download Episode Watchlist: %s" % repr(e))
             return False
 
@@ -521,10 +521,10 @@ class srTraktSearcher(object):
         Get Collection and parse once into addressable structure
         """
         try:
-            sickrage.srCore.srLogger.debug("Getting Show Collection")
+            sickrage.app.srLogger.debug("Getting Show Collection")
             self.Collectionlist = srTraktAPI()["sync/collection"].shows() or {}
         except Exception as e:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Could not connect to trakt service, cannot download Show Collection: %s" % repr(e))
             return False
 

@@ -49,7 +49,7 @@ class XthorProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -57,14 +57,14 @@ class XthorProvider(TorrentProvider):
                         'submitme': 'X'}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
+            response = sickrage.app.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
                                                          timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if not re.search('donate.php', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -78,19 +78,19 @@ class XthorProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -127,10 +127,10 @@ class XthorProvider(TorrentProvider):
                                     'leechers': leechers, 'hash': ''}
 
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                                sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                             results.append(item)
                     except Exception:
-                        sickrage.srCore.srLogger.error("Failed parsing provider.")
+                        sickrage.app.srLogger.error("Failed parsing provider.")
 
         return results

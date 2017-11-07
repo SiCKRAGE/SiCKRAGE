@@ -41,7 +41,7 @@ class srDailySearcher(object):
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
         """
-        if self.amActive or sickrage.srCore.srConfig.DEVELOPER and not force:
+        if self.amActive or sickrage.app.srConfig.DEVELOPER and not force:
             return
 
         self.amActive = True
@@ -50,10 +50,10 @@ class srDailySearcher(object):
         threading.currentThread().setName(self.name)
 
         # trim failed download history
-        if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+        if sickrage.app.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        sickrage.srCore.srLogger.info("{}: Searching for new released episodes".format(self.name))
+        sickrage.app.srLogger.info("{}: Searching for new released episodes".format(self.name))
 
         curDate = datetime.date.today()
         curDate += datetime.timedelta(days=2)
@@ -64,14 +64,14 @@ class srDailySearcher(object):
 
         show = None
 
-        episodes = [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_episodes', with_doc=True)
+        episodes = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)
                     if x['doc']['status'] == UNAIRED
                     and x['doc']['season'] > 0
                     and curDate.toordinal() >= x['doc']['airdate'] > 1]
 
         for episode in episodes:
             if not show or int(episode["showid"]) != show.indexerid:
-                show = findCertainShow(sickrage.srCore.SHOWLIST, int(episode["showid"]))
+                show = findCertainShow(sickrage.app.SHOWLIST, int(episode["showid"]))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:
@@ -91,21 +91,21 @@ class srDailySearcher(object):
             ep = show.getEpisode(int(episode['season']), int(episode['episode']))
             with ep.lock:
                 if ep.season == 0:
-                    sickrage.srCore.srLogger.info(
+                    sickrage.app.srLogger.info(
                         "New episode {} airs today, setting status to SKIPPED because is a special season".format(
                             ep.prettyName()))
                     ep.status = SKIPPED
                 else:
-                    sickrage.srCore.srLogger.info(
+                    sickrage.app.srLogger.info(
                         "New episode {} airs today, setting to default episode status for this show: {}".format(
                             ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 ep.saveToDB()
         else:
-            sickrage.srCore.srLogger.info("{}: No new released episodes found".format(self.name))
+            sickrage.app.srLogger.info("{}: No new released episodes found".format(self.name))
 
         # queue episode for daily search
-        sickrage.srCore.SEARCHQUEUE.put(DailySearchQueueItem())
+        sickrage.app.SEARCHQUEUE.put(DailySearchQueueItem())
 
         self.amActive = False

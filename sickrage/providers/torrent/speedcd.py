@@ -52,20 +52,20 @@ class SpeedCDProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -78,11 +78,11 @@ class SpeedCDProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -90,10 +90,10 @@ class SpeedCDProvider(TorrentProvider):
                                  **self.categories[mode])
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
+                    data = sickrage.app.srWebSession.post(self.urls['search'], data=post_data).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -131,10 +131,10 @@ class SpeedCDProvider(TorrentProvider):
                         'leechers': leechers, 'hash': ''}
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider")
+                sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

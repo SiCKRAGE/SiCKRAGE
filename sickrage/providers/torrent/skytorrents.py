@@ -62,10 +62,10 @@ class SkyTorrents(TorrentProvider):
             aa: added asc (oldest)
         """
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != "RSS":
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format
+                    sickrage.app.srLogger.debug("Search string: {0}".format
                                                    (search_string))
 
                 search_url = urljoin(self.urls["search"],
@@ -74,15 +74,15 @@ class SkyTorrents(TorrentProvider):
 
                 if self.custom_url:
                     if not validate_url(self.custom_url):
-                        sickrage.srCore.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
+                        sickrage.app.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.app.srWebSession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("URL did not return results/data, if the results are on the site "
+                    sickrage.app.srLogger.debug("URL did not return results/data, if the results are on the site "
                                                    "maybe try a custom url, or a different one")
 
         return results
@@ -98,7 +98,7 @@ class SkyTorrents(TorrentProvider):
         results = []
 
         if not data.startswith("<rss"):
-            sickrage.srCore.srLogger.info("Expected rss but got something else, is your mirror failing?")
+            sickrage.app.srLogger.info("Expected rss but got something else, is your mirror failing?")
             return results
 
         feed = feedparser.parse(data)
@@ -118,7 +118,7 @@ class SkyTorrents(TorrentProvider):
 
                 category = item.category
                 if category != 'all':
-                    sickrage.srCore.srLogger.warning(
+                    sickrage.app.srLogger.warning(
                         'skytorrents.in has added categories! Please report this so it can be updated: Category={cat}, '
                         'Title={title}'.format(cat=category, title=title))
 
@@ -129,10 +129,10 @@ class SkyTorrents(TorrentProvider):
                         'leechers': leechers, 'hash': info_hash}
 
                 if mode != "RSS":
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider")
+                sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

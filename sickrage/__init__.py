@@ -30,17 +30,7 @@ import time
 import traceback
 from signal import SIGTERM
 
-__all__ = [
-    'srCore',
-    'PROG_DIR',
-    'DATA_DIR',
-    'CONFIG_FILE'
-    'DEVELOPER',
-    'SYS_ENCODING',
-    'PID_FILE'
-]
-
-srCore = None
+app = None
 daemon = None
 io_loop = None
 
@@ -76,6 +66,7 @@ if not (LIBS_DIR in sys.path):
 
 # set system default language
 gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+
 
 class Daemon(object):
     """
@@ -229,11 +220,11 @@ def version():
 
 
 def main():
-    global srCore, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global app, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
 
     try:
         from tornado.ioloop import IOLoop
-        from sickrage import core
+        from sickrage.core import Core
 
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
@@ -330,13 +321,13 @@ def main():
         io_loop = IOLoop().instance()
 
         # main app
-        srCore = core.Core()
-        srCore.start()
+        app = Core()
+        app.start()
 
         # main thread loop
-        while srCore.started: time.sleep(1)
+        while app.started: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
-        if srCore: srCore.shutdown()
+        if app: app.shutdown()
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):

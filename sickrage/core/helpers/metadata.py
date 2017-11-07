@@ -100,14 +100,14 @@ def getFileMetadata(filename):
             if hasattr(p, 'title') and p.title:
                 titles.append(p.title)
         except:
-            sickrage.srCore.srLogger.error('Failed getting title from meta')
+            sickrage.app.srLogger.error('Failed getting title from meta')
 
         for video in p.video:
             try:
                 if video.title:
                     titles.append(video.title)
             except:
-                sickrage.srCore.srLogger.error('Failed getting title from meta')
+                sickrage.app.srLogger.error('Failed getting title from meta')
 
         return {
             'titles': list(set(titles)),
@@ -118,6 +118,6 @@ def getFileMetadata(filename):
             'audio_channels': p.audio[0].channels,
         }
     except Exception:
-        sickrage.srCore.srLogger.debug('Failed to parse meta for %s', filename)
+        sickrage.app.srLogger.debug('Failed to parse meta for %s', filename)
 
     return {}

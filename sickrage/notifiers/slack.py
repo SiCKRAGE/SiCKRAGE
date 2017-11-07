@@ -33,25 +33,25 @@ class SlackNotifier(srNotifiers):
         self.name = 'slack'
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.SLACK_NOTIFY_ONSNATCH:
+        if sickrage.app.srConfig.SLACK_NOTIFY_ONSNATCH:
             self._notify_slack(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.SLACK_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.srConfig.SLACK_NOTIFY_ONDOWNLOAD:
             self._notify_slack(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.srConfig.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_slack(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.srConfig.USE_SLACK:
+        if sickrage.app.srConfig.USE_SLACK:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_slack(title + " - " + update_text + new_version)
 
     def _notify_login(self, ipaddress=""):
-        if sickrage.srCore.srConfig.USE_SLACK:
+        if sickrage.app.srConfig.USE_SLACK:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notify_slack(title + " - " + update_text.format(ipaddress))
@@ -60,26 +60,26 @@ class SlackNotifier(srNotifiers):
         return self._notify_slack("This is a test notification from SiCKRAGE", force=True)
 
     def _send_slack(self, message=None):
-        sickrage.srCore.srLogger.info("Sending slack message: " + message)
-        sickrage.srCore.srLogger.info("Sending slack message  to url: " + sickrage.srCore.srConfig.SLACK_WEBHOOK)
+        sickrage.app.srLogger.info("Sending slack message: " + message)
+        sickrage.app.srLogger.info("Sending slack message  to url: " + sickrage.app.srConfig.SLACK_WEBHOOK)
 
         if isinstance(message, six.text_type):
             message = message.encode('utf-8')
 
         headers = {"Content-Type": "application/json"}
         try:
-            r = requests.post(sickrage.srCore.srConfig.SLACK_WEBHOOK,
+            r = requests.post(sickrage.app.srConfig.SLACK_WEBHOOK,
                               data=json.dumps(dict(text=message, username="SiCKRAGE")),
                               headers=headers)
             r.raise_for_status()
         except Exception as e:
-            sickrage.srCore.srLogger.error("Error Sending Slack message: " + e.message)
+            sickrage.app.srLogger.error("Error Sending Slack message: " + e.message)
             return False
 
         return True
 
     def _notify_slack(self, message='', force=False):
-        if not sickrage.srCore.srConfig.USE_SLACK and not force:
+        if not sickrage.app.srConfig.USE_SLACK and not force:
             return False
 
         return self._send_slack(message)

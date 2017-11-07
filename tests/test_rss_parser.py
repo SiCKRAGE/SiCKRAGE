@@ -37,7 +37,7 @@ def test_get_rss(self, provider):
             self.assertTrue(title and url, "Failed to get title and url from RSS feed for %s" % provider.name)
 
 
-for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+for providerID, providerObj in sickrage.app.providersDict.all().items():
     setattr(RSSTest, 'test_rss_%s' % providerObj.name, lambda self, x=providerObj: test_get_rss(self, x))
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@
 
 <%
     selected = None
-    qualities = Quality.splitQuality(sickrage.srCore.srConfig.QUALITY_DEFAULT)
+    qualities = Quality.splitQuality(sickrage.app.srConfig.QUALITY_DEFAULT)
 
     anyQualities = qualities[0]
     anyQualityList = filter(lambda x: x > Quality.NONE, Quality.qualityStrings)

@@ -1,8 +1,8 @@
 <%
     import sickrage
 
-    if sickrage.srCore.srConfig.ROOT_DIRS:
-        backend_pieces = sickrage.srCore.srConfig.ROOT_DIRS.split('|')
+    if sickrage.app.srConfig.ROOT_DIRS:
+        backend_pieces = sickrage.app.srConfig.ROOT_DIRS.split('|')
         backend_default = 'rd-' + backend_pieces[0]
         backend_dirs = backend_pieces[1:]
     else:

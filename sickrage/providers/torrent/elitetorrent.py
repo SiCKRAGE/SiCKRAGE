@@ -67,25 +67,25 @@ class EliteTorrentProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {}".format(mode))
 
             # Only search if user conditions are true
             if self.onlyspasearch and lang_info != 'es' and mode != 'RSS':
-                sickrage.srCore.srLogger.debug("Show info is not spanish, skipping provider search")
+                sickrage.app.srLogger.debug("Show info is not spanish, skipping provider search")
                 continue
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
+                    sickrage.app.srLogger.debug("Search string: {0}".format(search_string))
 
                 search_string = re.sub(r'S0*(\d*)E(\d*)', r'\1x\2', search_string)
                 search_params['buscar'] = search_string.strip() if mode != 'RSS' else ''
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -121,7 +121,7 @@ class EliteTorrentProvider(TorrentProvider):
             torrent_rows = torrent_table('tr') if torrent_table else []
 
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for row in torrent_rows[1:]:
@@ -145,10 +145,10 @@ class EliteTorrentProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

@@ -12,7 +12,7 @@
     <% totalWanted = 0 %>
     <% totalQual = 0 %>
 
-    % for curShow in sickrage.srCore.SHOWLIST:
+    % for curShow in sickrage.app.SHOWLIST:
         <% totalWanted = totalWanted + showCounts[curShow.indexerid][Overview.WANTED] %>
         <% totalQual = totalQual + showCounts[curShow.indexerid][Overview.QUAL] %>
     % endfor
@@ -36,7 +36,7 @@
                     <span class="fa fa-binoculars"></span>
                 </div>
                 <select id="pickShow" class="form-control" title="${_('Choose show')}">
-                    % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
+                    % for curShow in sorted(sickrage.app.SHOWLIST, key=lambda x: x.name):
                         % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
                             <option value="${curShow.indexerid}">${curShow.name}</option>
                         % endif
@@ -50,7 +50,7 @@
         <div class="col-md-12">
             <div class="horizontal-scroll">
                 <table class="sickrageTable" cellspacing="0" border="0" cellpadding="0">
-                    % for curShow in sorted(sickrage.srCore.SHOWLIST, key=lambda x: x.name):
+                    % for curShow in sorted(sickrage.app.SHOWLIST, key=lambda x: x.name):
                         % if not showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] == 0:
                             <tr class="seasonheader" id="show-${curShow.indexerid}">
                                 <td colspan="3" class="align-left">

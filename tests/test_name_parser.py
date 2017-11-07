@@ -29,7 +29,7 @@ from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameExcepti
 from sickrage.core.tv.show import TVShow
 from tests import SiCKRAGETestDBCase
 
-sickrage.srCore.SYS_ENCODING = 'UTF-8'
+sickrage.app.SYS_ENCODING = 'UTF-8'
 
 DEBUG = VERBOSE = False
 

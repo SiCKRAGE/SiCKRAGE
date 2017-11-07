@@ -72,11 +72,11 @@ class MoreThanTVProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(sickrage.app.srWebSession.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
@@ -84,16 +84,16 @@ class MoreThanTVProvider(TorrentProvider):
                             'keeplogged': '1'}
 
             try:
-                sickrage.srCore.srWebSession.get(self.urls['login'])
-                response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
+                sickrage.app.srWebSession.get(self.urls['login'])
+                response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params).text
             except Exception:
-                sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+                sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('logout.php', response):
                 return True
             elif re.search('Your username or password was incorrect.', response):
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.srLogger.warning(
                     "Invalid username or password. Check your settings".format(self.name))
 
     def search(self, search_params, age=0, ep_obj=None):
@@ -103,20 +103,20 @@ class MoreThanTVProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -133,7 +133,7 @@ class MoreThanTVProvider(TorrentProvider):
         with bs4_parser(data) as html:
             torrent_rows = html.find_all('tr', class_='torrent')
             if len(torrent_rows) < 1:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for result in torrent_rows:
@@ -161,10 +161,10 @@ class MoreThanTVProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

@@ -47,19 +47,19 @@ class LimeTorrentsProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format
+                    sickrage.app.srLogger.debug("Search string: {0}".format
                                                    (search_string))
 
                 search_url = (self.urls['rss'], self.urls['search'] + search_string)[mode != 'RSS']
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.app.srWebSession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -74,13 +74,13 @@ class LimeTorrentsProvider(TorrentProvider):
         results = []
 
         if not data.startswith('<?xml'):
-            sickrage.srCore.srLogger.debug('Expected xml but got something else, is your mirror failing?')
+            sickrage.app.srLogger.debug('Expected xml but got something else, is your mirror failing?')
             return results
 
         with bs4_parser(data) as html:
             entries = html('item')
             if not entries:
-                sickrage.srCore.srLogger.debug('Returned xml contained no results')
+                sickrage.app.srLogger.debug('Returned xml contained no results')
                 return results
 
             for item in entries:
@@ -91,7 +91,7 @@ class LimeTorrentsProvider(TorrentProvider):
                     # because we want to use magnets if connecting direct to client
                     # so that proxies work.
                     download_url = item.enclosure['url']
-                    if sickrage.srCore.srConfig.TORRENT_METHOD != "blackhole" or 'itorrents' not in download_url:
+                    if sickrage.app.srConfig.TORRENT_METHOD != "blackhole" or 'itorrents' not in download_url:
                         download_url = item.enclosure['url']
                         # http://itorrents.org/torrent/C7203982B6F000393B1CE3A013504E5F87A46A7F.torrent?title=The-Night-of-the-Generals-(1967)[BRRip-1080p-x264-by-alE13-DTS-AC3][Lektor-i-Napisy-PL-Eng][Eng]
                         # Keep the hash a separate string for when its needed for failed
@@ -123,10 +123,10 @@ class LimeTorrentsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

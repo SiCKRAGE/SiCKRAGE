@@ -50,12 +50,12 @@ class TorrentProjectProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
 
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format
+                    sickrage.app.srLogger.debug("Search string: {0}".format
                                                    (search_string))
 
                 search_params['s'] = search_string
@@ -63,15 +63,15 @@ class TorrentProjectProvider(TorrentProvider):
                 search_url = self.urls['base_url']
                 if self.custom_url:
                     if not validate_url(self.custom_url):
-                        sickrage.srCore.srLogger.warning("Invalid custom url set, please check your settings")
+                        sickrage.app.srLogger.warning("Invalid custom url set, please check your settings")
                         return results
                     search_url = self.custom_url
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).json()
+                    data = sickrage.app.srWebSession.get(search_url, params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -86,7 +86,7 @@ class TorrentProjectProvider(TorrentProvider):
         results = []
 
         if not (data and "total_found" in data and int(data["total_found"]) > 0):
-            sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+            sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
             return results
 
         del data["total_found"]
@@ -111,10 +111,10 @@ class TorrentProjectProvider(TorrentProvider):
                         'leechers': leechers, 'hash': t_hash}
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider.")
+                sickrage.app.srLogger.error("Failed parsing provider.")
 
         return results

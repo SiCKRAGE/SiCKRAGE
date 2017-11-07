@@ -47,12 +47,12 @@ class pyTivoNotifier(srNotifiers):
 
         # Values from config
 
-        if not sickrage.srCore.srConfig.USE_PYTIVO:
+        if not sickrage.app.srConfig.USE_PYTIVO:
             return False
 
-        host = sickrage.srCore.srConfig.PYTIVO_HOST
-        shareName = sickrage.srCore.srConfig.PYTIVO_SHARE_NAME
-        tsn = sickrage.srCore.srConfig.PYTIVO_TIVO_NAME
+        host = sickrage.app.srConfig.PYTIVO_HOST
+        shareName = sickrage.app.srConfig.PYTIVO_SHARE_NAME
+        tsn = sickrage.app.srConfig.PYTIVO_TIVO_NAME
 
         # There are two more values required, the container and file.
         #
@@ -88,7 +88,7 @@ class pyTivoNotifier(srNotifiers):
         requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
             {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
 
-        sickrage.srCore.srLogger.debug("pyTivo notification: Requesting " + requestUrl)
+        sickrage.app.srLogger.debug("pyTivo notification: Requesting " + requestUrl)
 
         request = Request(requestUrl)
 
@@ -96,15 +96,15 @@ class pyTivoNotifier(srNotifiers):
             response = urlopen(request)
         except HTTPError  as e:
             if hasattr(e, 'reason'):
-                sickrage.srCore.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
+                sickrage.app.srLogger.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
                 return False
             elif hasattr(e, 'code'):
-                sickrage.srCore.srLogger.error(
+                sickrage.app.srLogger.error(
                     "pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
         except Exception as e:
-            sickrage.srCore.srLogger.error("PYTIVO: Unknown exception: {}".format(e.message))
+            sickrage.app.srLogger.error("PYTIVO: Unknown exception: {}".format(e.message))
             return False
         else:
-            sickrage.srCore.srLogger.info("pyTivo notification: Successfully requested transfer of file")
+            sickrage.app.srLogger.info("pyTivo notification: Successfully requested transfer of file")
             return True

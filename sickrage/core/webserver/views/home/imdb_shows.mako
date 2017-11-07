@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="row">
-            <% imdb_tt = {show.imdbid for show in sickrage.srCore.SHOWLIST if show.imdbid} %>
+            <% imdb_tt = {show.imdbid for show in sickrage.app.SHOWLIST if show.imdbid} %>
             <div id="popularShows">
                 <div id="container">
                     % if not popular_shows:

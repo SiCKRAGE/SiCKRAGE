@@ -54,7 +54,7 @@ class FileListProvider(TorrentProvider):
         self.cache = TVCache(self)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -62,15 +62,15 @@ class FileListProvider(TorrentProvider):
             "password": self.password
         }
 
-        response = sickrage.srCore.srWebSession.post(self.urls["login"], data=login_params).text
+        response = sickrage.app.srWebSession.post(self.urls["login"], data=login_params).text
         if not response:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider")
+            sickrage.app.srLogger.warning("Unable to connect to provider")
             return False
 
         if re.search("Invalid Username/password", response) \
                 or re.search("<title>Login :: FileList.ro</title>", response) \
                 or re.search("Login esuat!", response):
-            sickrage.srCore.srLogger.warning("Invalid username or password. Check your settings")
+            sickrage.app.srLogger.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -88,20 +88,20 @@ class FileListProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
 
             for search_string in search_strings[mode]:
                 if mode != "RSS":
-                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
+                    sickrage.app.srLogger.debug("Search string: {}".format(search_string))
 
                 search_params["search"] = search_string
                 search_url = self.urls["search"]
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).text
+                    data = sickrage.app.srWebSession.get(search_url, params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -120,7 +120,7 @@ class FileListProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if not torrent_rows:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # "Type", "Name", "Download", "Files", "Comments", "Added", "Size", "Snatched", "Seeders", "Leechers", "Upped by"
@@ -166,10 +166,10 @@ class FileListProvider(TorrentProvider):
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': None}
                     if mode != "RSS":
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

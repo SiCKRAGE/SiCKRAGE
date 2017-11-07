@@ -20,8 +20,8 @@
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
-    % if sickrage.srCore.srConfig.INDEXER_DEFAULT:
-        <% indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT %>
+    % if sickrage.app.srConfig.INDEXER_DEFAULT:
+        <% indexer = sickrage.app.srConfig.INDEXER_DEFAULT %>
     % endif
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
@@ -44,7 +44,7 @@
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
                                     class="form-control form-control-inline bfh-languages"
                                     title="${_('for adding shows and metadata providers')}"
-                                    data-language=${sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
+                                    data-language=${sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
                             </select>
                         </div>
                     </div>
@@ -55,7 +55,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="launch_browser"
-                               id="launch_browser" ${('', 'checked')[bool(sickrage.srCore.srConfig.LAUNCH_BROWSER)]}/>
+                               id="launch_browser" ${('', 'checked')[bool(sickrage.app.srConfig.LAUNCH_BROWSER)]}/>
                         <label for="launch_browser">${_('open the SickRage home page on startup')}</label>
                     </div>
                 </div>
@@ -70,16 +70,16 @@
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
                                     title="${_('when launching SickRage interface')}">
-                                <option value="home" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'home']}>
+                                <option value="home" ${('', 'selected')[sickrage.app.srConfig.DEFAULT_PAGE == 'home']}>
                                     ${_('Shows')}
                                 </option>
-                                <option value="schedule" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'schedule']}>
+                                <option value="schedule" ${('', 'selected')[sickrage.app.srConfig.DEFAULT_PAGE == 'schedule']}>
                                     ${_('Schedule')}
                                 </option>
-                                <option value="history" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'history']}>
+                                <option value="history" ${('', 'selected')[sickrage.app.srConfig.DEFAULT_PAGE == 'history']}>
                                     ${_('History')}
                                 </option>
-                                <option value="IRC" ${('', 'selected')[sickrage.srCore.srConfig.DEFAULT_PAGE == 'IRC']}>
+                                <option value="IRC" ${('', 'selected')[sickrage.app.srConfig.DEFAULT_PAGE == 'IRC']}>
                                     ${_('IRC')}
                                 </option>
                             </select>
@@ -98,7 +98,7 @@
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
                             <input name="showupdate_hour" id="showupdate_hour"
-                                   value="${sickrage.srCore.srConfig.SHOWUPDATE_HOUR}"
+                                   value="${sickrage.app.srConfig.SHOWUPDATE_HOUR}"
                                    class="form-control"/>
                             <div class="input-group-addon">
                                 24hr
@@ -117,7 +117,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="showupdate_stale"
-                               id="showupdate_stale" ${('', 'checked')[bool(sickrage.srCore.srConfig.SHOWUPDATE_STALE)]}/>
+                               id="showupdate_stale" ${('', 'checked')[bool(sickrage.app.srConfig.SHOWUPDATE_STALE)]}/>
                         <label for="showupdate_stale">
                             ${_('should ended shows last updated less then 90 days get updated and refreshed automatically ?')}
                         </label>
@@ -130,11 +130,11 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trash_remove_show"
-                               id="trash_remove_show" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_REMOVE_SHOW)]}/>
+                               id="trash_remove_show" ${('', 'checked')[bool(sickrage.app.srConfig.TRASH_REMOVE_SHOW)]}/>
                         <label for="trash_remove_show">${_('when using show "Remove" and delete files')}</label>
                         <br/>
                         <input type="checkbox" name="trash_rotate_logs"
-                               id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRASH_ROTATE_LOGS)]}/>
+                               id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.app.srConfig.TRASH_ROTATE_LOGS)]}/>
                         <label for="trash_rotate_logs">
                             ${_('on scheduled deletes of the oldest log files')}
                         </label>
@@ -155,7 +155,7 @@
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
                             <input name="log_nr" id="log_nr"
-                                   value="${sickrage.srCore.srConfig.LOG_NR}"
+                                   value="${sickrage.app.srConfig.LOG_NR}"
                                    placeholder="${_('default = 5')}"
                                    title="number of log files saved when rotating logs (REQUIRES RESTART)"
                                    class="form-control"/>
@@ -175,7 +175,7 @@
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
                             <input name="log_size" id="log_size"
-                                   value="${sickrage.srCore.srConfig.LOG_SIZE}"
+                                   value="${sickrage.app.srConfig.LOG_SIZE}"
                                    placeholder="${_('default = 1048576 (1MB)')}"
                                    title="maximum size of a log file saved (REQUIRES RESTART)"
                                    class="form-control"/>
@@ -201,7 +201,7 @@
                                     ${_('All Indexers')}
                                 </option>
                                 % for indexer in srIndexerApi().indexers:
-                                    <option value="${indexer}" ${('', 'selected')[sickrage.srCore.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                    <option value="${indexer}" ${('', 'selected')[sickrage.app.srConfig.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -220,7 +220,7 @@
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
                             <input name="indexer_timeout" id="indexer_timeout"
-                                   value="${sickrage.srCore.srConfig.INDEXER_TIMEOUT}"
+                                   value="${sickrage.app.srConfig.INDEXER_TIMEOUT}"
                                    placeholder="${_('default = 10')}"
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
@@ -263,7 +263,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="version_notify"
-                               id="version_notify" ${('', 'checked')[bool(sickrage.srCore.srConfig.VERSION_NOTIFY)]}/>
+                               id="version_notify" ${('', 'checked')[bool(sickrage.app.srConfig.VERSION_NOTIFY)]}/>
                         <label for="version_notify">
                             ${_('and display notifications when updates are available. Checks are run on startup and at '
                             'the frequency set below*')}
@@ -278,7 +278,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="auto_update"
-                               id="auto_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.AUTO_UPDATE)]}/>
+                               id="auto_update" ${('', 'checked')[bool(sickrage.app.srConfig.AUTO_UPDATE)]}/>
                         <label for="auto_update">
                             ${_('fetch and install software updates.Updates are run on startupand in the background at '
                             'the frequency setbelow*')}
@@ -296,7 +296,7 @@
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
                             <input name="update_frequency" id="update_frequency"
-                                   value="${sickrage.srCore.srConfig.VERSION_UPDATER_FREQ}"
+                                   value="${sickrage.app.srConfig.VERSION_UPDATER_FREQ}"
                                    placeholder="${_('default = 12 (hours)')}"
                                    title="hours between software updates"
                                    class="form-control"/>
@@ -313,7 +313,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="notify_on_update"
-                               id="notify_on_update" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_UPDATE)]}/>
+                               id="notify_on_update" ${('', 'checked')[bool(sickrage.app.srConfig.NOTIFY_ON_UPDATE)]}/>
                         <label for="notify_on_update">
                             ${_('send a message to all enabled notifiers when SickRage has been updated')}
                         </label>
@@ -350,11 +350,11 @@
                                         <span class="fa fa-language"></span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
-                                        <option value="" ${('', 'selected')[sickrage.srCore.srConfig.GUI_LANG == ""]}>
+                                        <option value="" ${('', 'selected')[sickrage.app.srConfig.GUI_LANG == ""]}>
                                             ${_('System Language')}
                                         </option>
-                                        % for lang in sickrage.srCore.LANGUAGES:
-                                            <option value="${lang}" ${('', 'selected')[sickrage.srCore.srConfig.GUI_LANG == lang]}>${tornado.locale.get(lang).name}</option>
+                                        % for lang in sickrage.app.LANGUAGES:
+                                            <option value="${lang}" ${('', 'selected')[sickrage.app.srConfig.GUI_LANG == lang]}>${tornado.locale.get(lang).name}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -381,10 +381,10 @@
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
-                                <option value="dark" ${('', 'selected')[sickrage.srCore.srConfig.THEME_NAME == 'dark']}>
+                                <option value="dark" ${('', 'selected')[sickrage.app.srConfig.THEME_NAME == 'dark']}>
                                     ${_('Dark')}
                                 </option>
-                                <option value="light" ${('', 'selected')[sickrage.srCore.srConfig.THEME_NAME == 'light']}>
+                                <option value="light" ${('', 'selected')[sickrage.app.srConfig.THEME_NAME == 'light']}>
                                     ${_('Light')}
                                 </option>
                             </select>
@@ -398,7 +398,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="display_all_seasons"
-                               id="display_all_seasons" ${('', 'checked')[bool(sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS)]}>
+                               id="display_all_seasons" ${('', 'checked')[bool(sickrage.app.srConfig.DISPLAY_ALL_SEASONS)]}>
                         <label for="display_all_seasons">
                             ${_('on the show summary page')}
                         </label>
@@ -412,7 +412,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="sort_article"
-                               id="sort_article" ${('', 'checked')[bool(sickrage.srCore.srConfig.SORT_ARTICLE)]}/>
+                               id="sort_article" ${('', 'checked')[bool(sickrage.app.srConfig.SORT_ARTICLE)]}/>
                         <label for="sort_article">
                             ${_('include articles ("The", "A", "An") when sorting show lists')}
                         </label>
@@ -426,7 +426,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="filter_row"
-                               id="filter_row" ${('', 'checked')[bool(sickrage.srCore.srConfig.FILTER_ROW)]}/>
+                               id="filter_row" ${('', 'checked')[bool(sickrage.app.srConfig.FILTER_ROW)]}/>
                         <label for="filter_row">
                             ${_('Add a filter row to the show display on the home page')}
                         </label>
@@ -444,7 +444,7 @@
                             </div>
                             <input type="number" step="1" min="7" name="coming_eps_missed_range"
                                    id="coming_eps_missed_range"
-                                   value="${sickrage.srCore.srConfig.COMING_EPS_MISSED_RANGE}"
+                                   value="${sickrage.app.srConfig.COMING_EPS_MISSED_RANGE}"
                                    placeholder="${_('# of days')}"
                                    title="Set the range in days of the missed episodes in the Schedule page"
                                    class="form-control"/>
@@ -459,20 +459,20 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="fuzzy_dating"
                                id="fuzzy_dating"
-                               class="viewIf datePresets" ${('', 'checked')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}/>
+                               class="viewIf datePresets" ${('', 'checked')[bool(sickrage.app.srConfig.FUZZY_DATING)]}/>
                         <label for="fuzzy_dating">
                             ${_('move absolute dates into tooltips and display e.g. "Last Thu", "On Tue"')}
                         </label>
                     </div>
 
                 </div>
-                <div class="row field-pair show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
+                <div class="row field-pair show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.srConfig.FUZZY_DATING)]}">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Trim zero padding')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trim_zero"
-                               id="trim_zero" ${('', 'checked')[bool(sickrage.srCore.srConfig.TRIM_ZERO)]}/>
+                               id="trim_zero" ${('', 'checked')[bool(sickrage.app.srConfig.TRIM_ZERO)]}/>
                         <label for="trim_zero">
                             ${_('remove the leading number "0" shown on hour of day, and date of month')}
                         </label>
@@ -484,25 +484,25 @@
                         <label class="component-title">${_('Date style')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select class="form-control ${(' metadataDiv', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                id="date_presets${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                name="date_preset${('_na', '')[bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
+                        <select class="form-control ${(' metadataDiv', '')[bool(sickrage.app.srConfig.FUZZY_DATING)]}"
+                                id="date_presets${('_na', '')[bool(sickrage.app.srConfig.FUZZY_DATING)]}"
+                                name="date_preset${('_na', '')[bool(sickrage.app.srConfig.FUZZY_DATING)]}">
                             % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.srCore.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
+                                <option value="${cur_preset}" ${('', 'selected')[sickrage.app.srConfig.DATE_PRESET == cur_preset or ("%x" == sickrage.app.srConfig.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.SYS_ENCODING)}</option>
                             % endfor
                         </select>
                         <div class="input-group input350">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
-                            <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                    id="date_presets${(' metadataDiv', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}"
-                                    name="date_preset${('_na', '')[not bool(sickrage.srCore.srConfig.FUZZY_DATING)]}">
-                                <option value="%x" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == '%x']}>
+                            <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.app.srConfig.FUZZY_DATING)]}"
+                                    id="date_presets${(' metadataDiv', '')[not bool(sickrage.app.srConfig.FUZZY_DATING)]}"
+                                    name="date_preset${('_na', '')[not bool(sickrage.app.srConfig.FUZZY_DATING)]}">
+                                <option value="%x" ${('', 'selected')[sickrage.app.srConfig.DATE_PRESET == '%x']}>
                                     ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.srCore.SYS_ENCODING)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.srConfig.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.SYS_ENCODING)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -521,7 +521,7 @@
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
                                 % for cur_preset in time_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.srConfig.TIME_PRESET_W_SECONDS == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -534,11 +534,11 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="radio" name="timezone_display" id="local"
-                               value="local" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "local"]} />
+                               value="local" ${('', 'checked')[sickrage.app.srConfig.TIMEZONE_DISPLAY == "local"]} />
                         <label for="local">${_('Local')}</label>
                         <br/>
                         <input type="radio" name="timezone_display" id="network"
-                               value="network" ${('', 'checked')[sickrage.srCore.srConfig.TIMEZONE_DISPLAY == "network"]} />
+                               value="network" ${('', 'checked')[sickrage.app.srConfig.TIMEZONE_DISPLAY == "network"]} />
                         <label for="network">${_('Network')}</label>
                         <div class="row">
                             <div class="col-md-12">
@@ -560,7 +560,7 @@
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input name="download_url" id="download_url" class="form-control"
-                                   value="${sickrage.srCore.srConfig.DOWNLOAD_URL}"
+                                   value="${sickrage.app.srConfig.DOWNLOAD_URL}"
                                    title="URL where the shows can be downloaded."
                                    autocapitalize="off"/>
                         </div>
@@ -574,7 +574,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="fanart_background"
 
-                               id="fanart_background" ${('', 'checked')[bool(sickrage.srCore.srConfig.FANART_BACKGROUND)]}>
+                               id="fanart_background" ${('', 'checked')[bool(sickrage.app.srConfig.FANART_BACKGROUND)]}>
                         <label for="fanart_background">
                             ${_('on the show summary page')}
                         </label>
@@ -592,7 +592,7 @@
                             </div>
                             <input type="number" step="0.1" min="0.1" max="1.0"
                                    name="fanart_background_opacity" id="fanart_background_opacity"
-                                   value="${sickrage.srCore.srConfig.FANART_BACKGROUND_OPACITY}"
+                                   value="${sickrage.app.srConfig.FANART_BACKGROUND_OPACITY}"
                                    title="transparency of the fanart in the background"
                                    class="form-control"/>
                         </div>
@@ -626,7 +626,7 @@
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
                                     <input name="api_key" id="api_key"
-                                           value="${sickrage.srCore.srConfig.API_KEY}"
+                                           value="${sickrage.app.srConfig.API_KEY}"
                                            class="form-control"/>
                                     <div class="input-group-addon">
                                         <input class="button" type="button" id="generate_new_apikey"
@@ -653,7 +653,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_log"
-                               id="web_log" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_LOG)]}/>
+                               id="web_log" ${('', 'checked')[bool(sickrage.app.srConfig.WEB_LOG)]}/>
                         <label for="web_log">${_('enable logs from the internal Tornado web server')}</label>
                     </div>
                 </div>
@@ -668,7 +668,7 @@
                                 <span class="glyphicon glyphicon-user"></span>
                             </div>
                             <input name="web_username" id="web_username"
-                                   value="${sickrage.srCore.srConfig.WEB_USERNAME}"
+                                   value="${sickrage.app.srConfig.WEB_USERNAME}"
                                    title="WebUI username"
                                    placeholder="${_('blank = no authentication')}"
                                    class="form-control"
@@ -687,7 +687,7 @@
                                 <span class="glyphicon glyphicon-lock"></span>
                             </div>
                             <input type="password" name="web_password" id="web_password"
-                                   value="${sickrage.srCore.srConfig.WEB_PASSWORD}"
+                                   value="${sickrage.app.srConfig.WEB_PASSWORD}"
                                    title="WebUI password"
                                    placeholder="${_('blank = no authentication')}"
                                    class="form-control"
@@ -706,7 +706,7 @@
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input name="web_port" id="web_port"
-                                   value="${sickrage.srCore.srConfig.WEB_PORT}"
+                                   value="${sickrage.app.srConfig.WEB_PORT}"
                                    placeholder="${_('8081')}"
                                    title="web port to browse and access WebUI"
                                    class="form-control"/>
@@ -721,7 +721,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="web_ipv6"
-                               id="web_ipv6" ${('', 'checked')[bool(sickrage.srCore.srConfig.WEB_IPV6)]}/>
+                               id="web_ipv6" ${('', 'checked')[bool(sickrage.app.srConfig.WEB_IPV6)]}/>
                         <label for="web_ipv6">${_('attempt binding to any available IPv6 address')}</label>
                     </div>
 
@@ -734,7 +734,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="enable_https" class="enabler"
-                               id="enable_https" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENABLE_HTTPS)]}/>
+                               id="enable_https" ${('', 'checked')[bool(sickrage.app.srConfig.ENABLE_HTTPS)]}/>
                         <label for="enable_https">
                             ${_('enable access to the web interface using a HTTPS address')}
                         </label>
@@ -751,7 +751,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input name="https_cert" id="https_cert"
-                                           value="${sickrage.srCore.srConfig.HTTPS_CERT}"
+                                           value="${sickrage.app.srConfig.HTTPS_CERT}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -775,7 +775,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <input name="https_key" id="https_key"
-                                           value="${sickrage.srCore.srConfig.HTTPS_KEY}"
+                                           value="${sickrage.app.srConfig.HTTPS_KEY}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
@@ -795,7 +795,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="handle_reverse_proxy"
-                               id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.srCore.srConfig.HANDLE_REVERSE_PROXY)]}/>
+                               id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.app.srConfig.HANDLE_REVERSE_PROXY)]}/>
                         <label for="handle_reverse_proxy">
                             ${_('accept the following reverse proxy headers (advanced)...')}<br/>
                             ${_('(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)')}
@@ -809,7 +809,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="notify_on_login"
-                               id="notify_on_login" ${('', 'checked')[bool(sickrage.srCore.srConfig.NOTIFY_ON_LOGIN)]}/>
+                               id="notify_on_login" ${('', 'checked')[bool(sickrage.app.srConfig.NOTIFY_ON_LOGIN)]}/>
                         <label for="notify_on_login">
                             ${_('send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address')}
                         </label>
@@ -846,7 +846,7 @@
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="Normal (default). High is lower and Low is higher CPU use">
                                 % for cur_preset in cpu_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.srCore.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.srConfig.CPU_PRESET == cur_preset]}>${cur_preset.capitalize()}</option>
                                 % endfor
                             </select>
                         </div>
@@ -863,7 +863,7 @@
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input id="anon_redirect" name="anon_redirect"
-                                   value="${sickrage.srCore.srConfig.ANON_REDIRECT}"
+                                   value="${sickrage.app.srConfig.ANON_REDIRECT}"
                                    title="backlink protection via anonymizer service, must end in ?"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -877,7 +877,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="debug"
-                               id="debug" ${('', 'checked')[bool(sickrage.srCore.srConfig.DEBUG)]}/>
+                               id="debug" ${('', 'checked')[bool(sickrage.app.srConfig.DEBUG)]}/>
                         <label for="debug">
                             ${_('Enable debug logs')}
                         </label>
@@ -890,7 +890,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="ssl_verify"
-                               id="ssl_verify" ${('', 'checked')[bool(sickrage.srCore.srConfig.SSL_VERIFY)]}/>
+                               id="ssl_verify" ${('', 'checked')[bool(sickrage.app.srConfig.SSL_VERIFY)]}/>
                         <label for="ssl_verify">
                             ${_('Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)')}
                         </label>
@@ -906,7 +906,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="no_restart"
                                title="Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)"
-                               id="no_restart" ${('', 'checked')[bool(sickrage.srCore.srConfig.NO_RESTART)]}/>
+                               id="no_restart" ${('', 'checked')[bool(sickrage.app.srConfig.NO_RESTART)]}/>
                         <label for="no_restart">
                             ${_('Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own).')}
                         </label>
@@ -922,7 +922,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="encryption_version"
-                               id="encryption_version" ${('', 'checked')[bool(sickrage.srCore.srConfig.ENCRYPTION_VERSION)]}/>
+                               id="encryption_version" ${('', 'checked')[bool(sickrage.app.srConfig.ENCRYPTION_VERSION)]}/>
                         <label for="encryption_version">
                             ${_('in the')} <code>${sickrage.CONFIG_FILE}</code> ${_('file.')}
                         </label>
@@ -937,7 +937,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="calendar_unprotected"
-                               id="calendar_unprotected" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_UNPROTECTED)]}/>
+                               id="calendar_unprotected" ${('', 'checked')[bool(sickrage.app.srConfig.CALENDAR_UNPROTECTED)]}/>
                         <label for="calendar_unprotected">
                             ${_('allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way')}
                         </label>
@@ -953,7 +953,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="calendar_icons"
-                               id="calendar_icons" ${('', 'checked')[bool(sickrage.srCore.srConfig.CALENDAR_ICONS)]}/>
+                               id="calendar_icons" ${('', 'checked')[bool(sickrage.app.srConfig.CALENDAR_ICONS)]}/>
                         <label for="calendar_icons">
                             ${_('show an icon next to exported calendar events in Google Calendar.')}
                         </label>
@@ -985,7 +985,7 @@
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input id="proxy_setting" name="proxy_setting"
-                                   value="${sickrage.srCore.srConfig.PROXY_SETTING}"
+                                   value="${sickrage.app.srConfig.PROXY_SETTING}"
                                    title="Proxy SiCKRAGE connections"
                                    class="form-control" autocapitalize="off"/>
                         </div>
@@ -998,7 +998,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="proxy_indexers"
-                               id="proxy_indexers" ${('', 'checked')[bool(sickrage.srCore.srConfig.PROXY_INDEXERS)]}/>
+                               id="proxy_indexers" ${('', 'checked')[bool(sickrage.app.srConfig.PROXY_INDEXERS)]}/>
                         <label for="proxy_indexers">
                             ${_('use proxy host for connecting to indexers (thetvdb)')}
                         </label>
@@ -1012,7 +1012,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="skip_removed_files"
-                               id="skip_removed_files" ${('', 'checked')[bool(sickrage.srCore.srConfig.SKIP_REMOVED_FILES)]}/>
+                               id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.srConfig.SKIP_REMOVED_FILES)]}/>
                         <label for="skip_removed_files">
                             ${_('Skip detection of removed files. If disable it will set default deleted status')}<br/>
                             <b>${_('NOTE:')}</b> ${_('This may mean SickRage misses renames as well')}
@@ -1032,22 +1032,22 @@
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-erase"></span>
                                     </div>
-                                    % if not sickrage.srCore.srConfig.SKIP_REMOVED_FILES:
+                                    % if not sickrage.app.srConfig.SKIP_REMOVED_FILES:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control">
                                             % for defStatus in [SKIPPED, IGNORED, ARCHIVED]:
-                                                <option value="${defStatus}" ${('', 'selected')[int(sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
+                                                <option value="${defStatus}" ${('', 'selected')[int(sickrage.app.srConfig.EP_DEFAULT_DELETED_STATUS) == defStatus]}>${statusStrings[defStatus]}</option>
                                             % endfor
                                         </select>
                                     % else:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"
                                                 class="form-control" disabled="disabled">
                                             % for defStatus in [SKIPPED, IGNORED]:
-                                                <option value="${defStatus}" ${('', 'selected')[sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
+                                                <option value="${defStatus}" ${('', 'selected')[sickrage.app.srConfig.EP_DEFAULT_DELETED_STATUS == defStatus]}>${statusStrings[defStatus]}</option>
                                             % endfor
                                         </select>
                                         <input type="hidden" name="ep_default_deleted_status"
-                                               value="${sickrage.srCore.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
+                                               value="${sickrage.app.srConfig.EP_DEFAULT_DELETED_STATUS}"/>
                                     % endif
                                 </div>
                             </div>
@@ -1092,7 +1092,7 @@
                                         <span class="glyphicon glyphicon-file"></span>
                                     </div>
                                     <input id="pip_path" name="pip_path"
-                                           value="${sickrage.srCore.srConfig.PIP_PATH}"
+                                           value="${sickrage.app.srConfig.PIP_PATH}"
                                            placeholder="${_('ex: /path/to/pip')}"
                                            title="only needed if OS is unable to locate pip from env"
                                            class="form-control" autocapitalize="off"/>
@@ -1124,9 +1124,9 @@
             </fieldset>
         </div>
 
-        % if sickrage.srCore.VERSIONUPDATER.updater.type == "git":
+        % if sickrage.app.VERSIONUPDATER.updater.type == "git":
         <%
-            git_branch = sickrage.srCore.VERSIONUPDATER.updater.remote_branches
+            git_branch = sickrage.app.VERSIONUPDATER.updater.remote_branches
         %>
 
             <div class="row tab-pane">
@@ -1149,10 +1149,10 @@
                                                 title=${_('GIT Branch Version')}>
                                             % if git_branch:
                                                 % for cur_branch in git_branch:
-                                                    % if sickrage.srCore.srConfig.DEVELOPER:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                    % if sickrage.app.srConfig.DEVELOPER:
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % elif cur_branch in ['master', 'develop']:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.srCore.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % endif
                                                 % endfor
                                             % endif
@@ -1189,7 +1189,7 @@
                                             <span class="glyphicon glyphicon-file"></span>
                                         </div>
                                         <input id="git_path" name="git_path"
-                                               value="${sickrage.srCore.srConfig.GIT_PATH}"
+                                               value="${sickrage.app.srConfig.GIT_PATH}"
                                                placeholder="${_('ex: /path/to/git')}"
                                                title="only needed if OS is unable to locate git from env"
                                                class="form-control" autocapitalize="off"/>
@@ -1216,7 +1216,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="git_reset"
-                                   id="git_reset" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_RESET)]}/>
+                                   id="git_reset" ${('', 'checked')[bool(sickrage.app.srConfig.GIT_RESET)]}/>
                             <label for="git_reset">
                                 ${_('removes untracked files and performs a hard reset on git branch automatically to help resolve update issues')}
                             </label>
@@ -1230,7 +1230,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="git_autoissues"
-                                   id="git_autoissues" ${('', 'checked')[bool(sickrage.srCore.srConfig.GIT_AUTOISSUES)]}
+                                   id="git_autoissues" ${('', 'checked')[bool(sickrage.app.srConfig.GIT_AUTOISSUES)]}
                                    disabled="disabled"/>
                             <label for="git_autoissues">
                                 ${_('automatically submit bug/issue reports to our issue tracker when errors are logged')}

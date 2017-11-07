@@ -46,7 +46,7 @@ class HD4FreeProvider(TorrentProvider):
         if self.username and self.api_key:
             return True
 
-        sickrage.srCore.srLogger.warning(
+        sickrage.app.srLogger.warning(
             'Your authentication credentials for {} are missing, check your config.'.format(self.name))
 
         return False
@@ -63,7 +63,7 @@ class HD4FreeProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.srLogger.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if self.freeleech:
                     search_params['fl'] = 'true'
@@ -71,16 +71,16 @@ class HD4FreeProvider(TorrentProvider):
                     search_params.pop('fl', '')
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string.strip()))
+                    sickrage.app.srLogger.debug("Search string: {}".format(search_string.strip()))
                     search_params['search'] = search_string
                 else:
                     search_params.pop('search', '')
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).json()
+                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -96,12 +96,12 @@ class HD4FreeProvider(TorrentProvider):
 
         error = data.get('error')
         if error:
-            sickrage.srCore.srLogger.debug(error)
+            sickrage.app.srLogger.debug(error)
             return results
 
         try:
             if data['0']['total_results'] == 0:
-                sickrage.srCore.srLogger.debug("Provider has no results for this search")
+                sickrage.app.srLogger.debug("Provider has no results for this search")
                 return results
         except Exception:
             return results
@@ -123,10 +123,10 @@ class HD4FreeProvider(TorrentProvider):
                         'leechers': leechers, 'hash': ''}
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider")
+                sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

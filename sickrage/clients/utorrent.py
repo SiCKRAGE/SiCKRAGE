@@ -45,10 +45,10 @@ class uTorrentAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.srCore.srWebSession.get(self.url + 'token.html',
+            self.response = sickrage.app.srWebSession.get(self.url + 'token.html',
                                                              timeout=120,
                                                              auth=(self.username, self.password),
-                                                             verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                             verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
 
             self.auth = re.findall("<div.*?>(.*?)</", self.response.text)[0]
             self.cookies = self.response.cookies
@@ -70,9 +70,9 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.srCore.srConfig.TORRENT_LABEL
+        label = sickrage.app.srConfig.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.srCore.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
 
         params = {'action': 'setprops',
                   'hash': result.hash,
@@ -107,8 +107,8 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_seed_time(self, result):
 
-        if sickrage.srCore.srConfig.TORRENT_SEED_TIME:
-            time = 3600 * float(sickrage.srCore.srConfig.TORRENT_SEED_TIME)
+        if sickrage.app.srConfig.TORRENT_SEED_TIME:
+            time = 3600 * float(sickrage.app.srConfig.TORRENT_SEED_TIME)
             params = {'action': 'setprops',
                       'hash': result.hash,
                       's': 'seed_override',
@@ -136,7 +136,7 @@ class uTorrentAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.srCore.srConfig.TORRENT_PAUSED:
+        if sickrage.app.srConfig.TORRENT_PAUSED:
             params = {'action': 'pause', 'hash': result.hash}
         else:
             params = {'action': 'start', 'hash': result.hash}

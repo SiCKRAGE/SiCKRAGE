@@ -58,7 +58,7 @@ class SCCProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -66,14 +66,14 @@ class SCCProvider(TorrentProvider):
                         'submit': 'come on in'}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search(r'Username or password incorrect', response) \
                 or re.search(r'<title>SceneAccess \| Login</title>', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -92,19 +92,19 @@ class SCCProvider(TorrentProvider):
 
         for mode in search_strings.keys():
             if mode != 'RSS':
-                sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+                sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[mode])
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -124,7 +124,7 @@ class SCCProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for result in torrent_table.find_all('tr')[1:]:
@@ -134,7 +134,7 @@ class SCCProvider(TorrentProvider):
 
                     title = link.string
                     if re.search(r'\.\.\.', title):
-                        data = sickrage.srCore.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
+                        data = sickrage.app.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
                         with bs4_parser(data) as details_html:
                             title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                     download_url = self.urls['download'] % url['href']
@@ -149,10 +149,10 @@ class SCCProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

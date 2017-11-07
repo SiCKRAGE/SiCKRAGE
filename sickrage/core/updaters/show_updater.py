@@ -48,11 +48,11 @@ class srShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            dbData = sickrage.app.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
             last_update = int(dbData['time'])
         except RecordNotFound:
             last_update = update_timestamp
-            dbData = sickrage.srCore.cacheDB.db.insert({
+            dbData = sickrage.app.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
                 'time': 0
@@ -64,20 +64,20 @@ class srShowUpdater(object):
 
         # start update process
         pi_list = []
-        for curShow in sickrage.srCore.SHOWLIST:
+        for curShow in sickrage.app.SHOWLIST:
             try:
                 curShow.nextEpisode()
                 stale = (datetime.datetime.now() - datetime.datetime.fromordinal(curShow.last_update)).days > 7
                 if curShow.indexerid in updated_shows or stale:
-                    pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, False))
+                    pi_list.append(sickrage.app.SHOWQUEUE.updateShow(curShow, False))
                 else:
-                    pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
+                    pi_list.append(sickrage.app.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.srCore.srLogger.debug("Automatic update failed: {}".format(e.message))
+                sickrage.app.srLogger.debug("Automatic update failed: {}".format(e.message))
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData['time'] = update_timestamp
-        sickrage.srCore.cacheDB.db.update(dbData)
+        sickrage.app.cacheDB.db.update(dbData)
 
         self.amActive = False

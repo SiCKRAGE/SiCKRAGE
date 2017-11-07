@@ -58,19 +58,19 @@ class SceneTimeProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 query = {'sec': 'jax', 'cata': 'yes', 'search': search_string}
                 query.update({"c%s" % i: 1 for i in self.categories})
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=query).text
+                    data = sickrage.app.srWebSession.post(self.urls['search'], data=query).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -89,7 +89,7 @@ class SceneTimeProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # Scenetime apparently uses different number of cells in #torrenttable based
@@ -123,10 +123,10 @@ class SceneTimeProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

@@ -41,8 +41,8 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in
-             sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
+            [sickrage.app.cacheDB.db.delete(x['doc']) for x in
+             sickrage.app.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -82,10 +82,10 @@ class TVCache(object):
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
-                sickrage.srCore.srLogger.warning("Authentication error: {}".format(e.message))
+                sickrage.app.srLogger.warning("Authentication error: {}".format(e.message))
                 return False
             except Exception as e:
-                sickrage.srCore.srLogger.debug(
+                sickrage.app.srLogger.debug(
                     "Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
                 return False
 
@@ -94,10 +94,10 @@ class TVCache(object):
     def getRSSFeed(self, url, params=None):
         handlers = []
 
-        if sickrage.srCore.srConfig.PROXY_SETTING:
-            sickrage.srCore.srLogger.debug("Using global proxy for url: " + url)
-            scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
-            address = sickrage.srCore.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.srCore.srConfig.PROXY_SETTING
+        if sickrage.app.srConfig.PROXY_SETTING:
+            sickrage.app.srLogger.debug("Using global proxy for url: " + url)
+            scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
+            address = sickrage.app.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.app.srConfig.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
 
         return getFeed(url, params=params, handlers=handlers)
@@ -119,13 +119,13 @@ class TVCache(object):
         if title and url:
             self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size, files)
         else:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.srLogger.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
     @property
     def last_update(self):
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cacheDB.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -136,11 +136,11 @@ class TVCache(object):
     @last_update.setter
     def last_update(self, toDate):
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cacheDB.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.srCore.cacheDB.db.update(dbData)
+            sickrage.app.cacheDB.db.update(dbData)
         except RecordNotFound:
-            sickrage.srCore.cacheDB.db.insert({
+            sickrage.app.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
@@ -149,7 +149,7 @@ class TVCache(object):
     @property
     def last_search(self):
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cacheDB.db.get('lastSearch', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -160,18 +160,18 @@ class TVCache(object):
     @last_search.setter
     def last_search(self, toDate):
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cacheDB.db.get('lastSearch', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.srCore.cacheDB.db.update(dbData)
+            sickrage.app.cacheDB.db.update(dbData)
         except RecordNotFound:
-            sickrage.srCore.cacheDB.db.insert({
+            sickrage.app.cacheDB.db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
     def should_update(self):
-        if sickrage.srCore.srConfig.DEVELOPER: return True
+        if sickrage.app.srConfig.DEVELOPER: return True
 
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
@@ -186,16 +186,16 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size, files, parse_result=None, indexer_id=0):
         # check for existing entry in cache
-        if len([x for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True) if
+        if len([x for x in sickrage.app.cacheDB.db.get_many('providers', self.providerID, with_doc=True) if
                 x['doc']['url'] == url]): return
 
         # check if we passed in a parsed result or should we try and create one
         if not parse_result:
             try:
                 parse_result = NameParser(
-                    showObj=findCertainShow(sickrage.srCore.SHOWLIST, indexer_id),
-                    tryIndexers=not sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS,
-                    validate_show=sickrage.srCore.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS
+                    showObj=findCertainShow(sickrage.app.SHOWLIST, indexer_id),
+                    tryIndexers=not sickrage.app.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS,
+                    validate_show=sickrage.app.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS
                 ).parse(name)
             except (InvalidShowException, InvalidNameException):
                 pass
@@ -218,7 +218,7 @@ class TVCache(object):
                 version = parse_result.version
 
                 # add to DB
-                sickrage.srCore.cacheDB.db.insert({
+                sickrage.app.cacheDB.db.insert({
                     '_t': 'providers',
                     'provider': self.providerID,
                     'name': name,
@@ -236,16 +236,16 @@ class TVCache(object):
                     'files': files
                 })
 
-                sickrage.srCore.srLogger.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
+                sickrage.app.srLogger.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
     def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
 
         if not episode:
             dbData = [x['doc'] for x in
-                      sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
+                      sickrage.app.cacheDB.db.get_many('providers', self.providerID, with_doc=True)]
         else:
-            dbData = [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
+            dbData = [x['doc'] for x in sickrage.app.cacheDB.db.get_many('providers', self.providerID, with_doc=True)
                       if x['doc']['indexerid'] == episode.show.indexerid
                       and x['doc']['season'] == episode.season
                       and "|" + str(episode.episode) + "|" in x['doc']['episodes']]
@@ -259,13 +259,13 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            showObj = findCertainShow(sickrage.srCore.SHOWLIST, int(curResult["indexerid"]))
+            showObj = findCertainShow(sickrage.app.SHOWLIST, int(curResult["indexerid"]))
             if not showObj:
                 continue
 
             # skip if provider is anime only and show is not anime
             if self.provider.anime_only and not showObj.is_anime:
-                sickrage.srCore.srLogger.debug("" + str(showObj.name) + " is not an anime, skiping")
+                sickrage.app.srLogger.debug("" + str(showObj.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -285,7 +285,7 @@ class TVCache(object):
 
             # if the show says we want that episode then add it to the list
             if not showObj.wantEpisode(curSeason, curEp, result.quality, manualSearch, downCurQuality):
-                sickrage.srCore.srLogger.info(
+                sickrage.app.srLogger.info(
                     "Skipping " + curResult["name"] + " because we don't want an episode that's " +
                     Quality.qualityStrings[result.quality])
                 continue
@@ -296,7 +296,7 @@ class TVCache(object):
             result.name = curResult["name"]
             result.url = curResult["url"]
 
-            sickrage.srCore.srLogger.info("Found result " + result.name + " at " + result.url)
+            sickrage.app.srLogger.info("Found result " + result.name + " at " + result.url)
 
             result.show = showObj
             result.seeders = curResult.get("seeders", -1)

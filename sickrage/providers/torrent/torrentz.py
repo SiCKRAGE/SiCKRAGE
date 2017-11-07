@@ -53,17 +53,17 @@ class TORRENTZProvider(TorrentProvider):
         results = []
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
+            sickrage.app.srLogger.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 search_url = self.urls['feed']
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, params={'f': search_string}).text
+                    data = sickrage.app.srWebSession.get(search_url, params={'f': search_string}).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    sickrage.app.srLogger.debug('No data returned from provider')
 
         return results
 
@@ -78,7 +78,7 @@ class TORRENTZProvider(TorrentProvider):
         results = []
 
         if not data.startswith('<?xml'):
-            sickrage.srCore.srLogger.info('Expected xml but got something else, is your mirror failing?')
+            sickrage.app.srLogger.info('Expected xml but got something else, is your mirror failing?')
             return results
 
         with bs4_parser(data) as parser:
@@ -106,6 +106,6 @@ class TORRENTZProvider(TorrentProvider):
                         'hash': t_hash
                     }]
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
+                    sickrage.app.srLogger.error("Failed parsing provider.")
 
         return results

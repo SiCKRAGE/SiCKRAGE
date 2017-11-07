@@ -30,7 +30,7 @@ from tests import SiCKRAGETestDBCase
 class TVShowTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(TVShowTests, self).setUp()
-        sickrage.srCore.SHOWLIST = []
+        sickrage.app.SHOWLIST = []
 
     def test_init_indexerid(self):
         show = TVShow(1, 0001, "en")
@@ -66,7 +66,7 @@ class TVShowTests(SiCKRAGETestDBCase):
 class TVEpisodeTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(TVEpisodeTests, self).setUp(force_db=True)
-        sickrage.srCore.SHOWLIST = []
+        sickrage.app.SHOWLIST = []
 
     def test_init_empty_db(self):
         show = TVShow(1, 0001, "en")
@@ -83,7 +83,7 @@ class TVEpisodeTests(SiCKRAGETestDBCase):
 class TVTests(SiCKRAGETestDBCase):
     def setUp(self, **kwargs):
         super(TVTests, self).setUp()
-        sickrage.srCore.SHOWLIST = []
+        sickrage.app.SHOWLIST = []
 
     def test_getEpisode(self):
         show = TVShow(1, 0001, "en")
@@ -97,7 +97,7 @@ class TVTests(SiCKRAGETestDBCase):
         show.startyear = 1987
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
-        sickrage.srCore.SHOWLIST = [show]
+        sickrage.app.SHOWLIST = [show]
 
 if __name__ == '__main__':
     print "=================="

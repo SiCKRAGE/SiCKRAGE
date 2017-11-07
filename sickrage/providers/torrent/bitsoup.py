@@ -49,13 +49,13 @@ class BitSoupProvider(TorrentProvider):
 
     def _check_auth(self):
         if not self.username or not self.password:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -65,13 +65,13 @@ class BitSoupProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.srLogger.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -88,19 +88,19 @@ class BitSoupProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
 
                 search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], search_params).text
+                    data = sickrage.app.srWebSession.get(self.urls['search'], search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.srLogger.debug("No data returned from provider")
 
         return results
 
@@ -120,7 +120,7 @@ class BitSoupProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for row in torrent_rows[1:]:
@@ -146,10 +146,10 @@ class BitSoupProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.srLogger.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.srLogger.error("Failed parsing provider")
 
         return results

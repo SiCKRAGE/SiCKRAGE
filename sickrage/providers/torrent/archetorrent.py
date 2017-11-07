@@ -60,7 +60,7 @@ class ArcheTorrentProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
             return True
 
         login_params = {
@@ -69,15 +69,15 @@ class ArcheTorrentProvider(TorrentProvider):
             'returnto': '/index.php'
         }
 
-        response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params).text
+        response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params).text
         if response:
-            sickrage.srCore.srLogger.warning('Unable to connect to provider')
+            sickrage.app.srLogger.warning('Unable to connect to provider')
             return False
 
-        search = sickrage.srCore.srWebSession.get(self.urls['search'])
+        search = sickrage.app.srWebSession.get(self.urls['search'])
 
         if not re.search('torrents.php', search):
-            sickrage.srCore.srLogger.warning('Invalid username or password. Check your settings')
+            sickrage.app.srLogger.warning('Invalid username or password. Check your settings')
             return False
 
         return True
@@ -108,20 +108,20 @@ class ArcheTorrentProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug('Search Mode: {0}'.format(mode))
+            sickrage.app.srLogger.debug('Search Mode: {0}'.format(mode))
             for search_string in search_strings[mode]:
-                sickrage.srCore.srLogger.debug('Search String: {0} for mode {1}'.format(search_strings[mode], mode))
+                sickrage.app.srLogger.debug('Search String: {0} for mode {1}'.format(search_strings[mode], mode))
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {0}'.format(search_string))
+                    sickrage.app.srLogger.debug('Search string: {0}'.format(search_string))
 
                 search_params['search'] = re.sub(r'[()]', '', search_string)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    sickrage.app.srLogger.debug('No data returned from provider')
 
         return results
 
@@ -141,7 +141,7 @@ class ArcheTorrentProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+                sickrage.app.srLogger.debug('Data returned from provider does not contain any torrents')
                 return results
 
             # Catégorie, Release, Date, DL, Size, C, S, L
@@ -171,10 +171,10 @@ class ArcheTorrentProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                        sickrage.app.srLogger.debug('Found result: {}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error('Failed parsing provider')
+                    sickrage.app.srLogger.error('Failed parsing provider')
 
         return results

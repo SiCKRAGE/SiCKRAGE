@@ -24,7 +24,7 @@
                             <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.srCore.VERSIONUPDATER.updater.version}
+                            ${sickrage.app.VERSIONUPDATER.updater.version}
                         </div>
                     </div>
                     <br/>
@@ -33,7 +33,7 @@
                             <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.srCore.VERSIONUPDATER.updater.type}
+                            ${sickrage.app.VERSIONUPDATER.updater.type}
                         </div>
                     </div>
                     <br/>
@@ -52,7 +52,7 @@
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
                                 class="icons-sickrage icons-sickrage-locale"></i> ${_('SR Locale:')}
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.srCore.SYS_ENCODING}</div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.app.SYS_ENCODING}</div>
                     </div>
                     <br/>
                     <div class="row">
@@ -78,7 +78,7 @@
                             <i class="icons-sickrage icons-sickrage-log"></i> ${_('SR Log File:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.srCore.srLogger.logFile}
+                            ${sickrage.app.srLogger.logFile}
                         </div>
                     </div>
                     <br/>
@@ -91,13 +91,13 @@
                         </div>
                     </div>
                     <br/>
-                    % if sickrage.srCore.srConfig.WEB_ROOT:
+                    % if sickrage.app.srConfig.WEB_ROOT:
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                 ${_('SR Web Root:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                ${sickrage.srCore.srConfig.WEB_ROOT}
+                                ${sickrage.app.srConfig.WEB_ROOT}
                             </div>
                         </div>
                         <br/>

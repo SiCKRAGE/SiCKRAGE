@@ -39,32 +39,32 @@ class TwilioNotifier(srNotifiers):
 
     @property
     def number(self):
-        return self.client.phone_numbers.get(sickrage.srCore.srConfig.TWILIO_PHONE_SID)
+        return self.client.phone_numbers.get(sickrage.app.srConfig.TWILIO_PHONE_SID)
 
     @property
     def client(self):
-        return TwilioRestClient(sickrage.srCore.srConfig.TWILIO_ACCOUNT_SID,
-                                sickrage.srCore.srConfig.TWILIO_AUTH_TOKEN)
+        return TwilioRestClient(sickrage.app.srConfig.TWILIO_ACCOUNT_SID,
+                                sickrage.app.srConfig.TWILIO_AUTH_TOKEN)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSNATCH:
+        if sickrage.app.srConfig.TWILIO_NOTIFY_ONSNATCH:
             self._notifyTwilio(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.srConfig.TWILIO_NOTIFY_ONDOWNLOAD:
             self._notifyTwilio(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.srConfig.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyTwilio(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ': ' + lang)
 
     def _notify_git_update(self, new_version):
-        if sickrage.srCore.srConfig.USE_TWILIO:
+        if sickrage.app.srConfig.USE_TWILIO:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             self._notifyTwilio(update_text + new_version)
 
     def _notify_login(self, ipaddress=""):
-        if sickrage.srCore.srConfig.USE_TWILIO:
+        if sickrage.app.srConfig.USE_TWILIO:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notifyTwilio(title + " - " + update_text.format(ipaddress))
@@ -79,20 +79,20 @@ class TwilioNotifier(srNotifiers):
             return False
 
     def _notifyTwilio(self, message='', force=False, allow_raise=False):
-        if not (sickrage.srCore.srConfig.USE_TWILIO or force or self.number_regex.match(
-                sickrage.srCore.srConfig.TWILIO_TO_NUMBER)):
+        if not (sickrage.app.srConfig.USE_TWILIO or force or self.number_regex.match(
+                sickrage.app.srConfig.TWILIO_TO_NUMBER)):
             return False
 
-        sickrage.srCore.srLogger.debug('Sending Twilio SMS: ' + message)
+        sickrage.app.srLogger.debug('Sending Twilio SMS: ' + message)
 
         try:
             self.client.messages.create(
                 body=message,
-                to=sickrage.srCore.srConfig.TWILIO_TO_NUMBER,
+                to=sickrage.app.srConfig.TWILIO_TO_NUMBER,
                 from_=self.number.phone_number,
             )
         except TwilioRestException as e:
-            sickrage.srCore.srLogger.error('Twilio notification failed:' + e.message)
+            sickrage.app.srLogger.error('Twilio notification failed:' + e.message)
 
             if allow_raise:
                 raise e
