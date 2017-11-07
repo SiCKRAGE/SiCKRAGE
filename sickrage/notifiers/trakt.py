@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.traktapi import srTraktAPI
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.notifiers import srNotifiers
 
 
@@ -60,7 +60,7 @@ class TraktNotifier(srNotifiers):
                         {
                             'title': ep_obj.show.name,
                             'year': ep_obj.show.startyear,
-                            'ids': {srIndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
+                            'ids': {IndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
                         }
                     ]
                 }
@@ -108,7 +108,7 @@ class TraktNotifier(srNotifiers):
                             {
                                 'title': show_obj.name,
                                 'year': show_obj.startyear,
-                                'ids': {srIndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
+                                'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
                             }
                         ]
                     }
@@ -165,7 +165,7 @@ class TraktNotifier(srNotifiers):
         for indexer, indexerid, title, year in data:
             show = {'title': title,
                     'year': year,
-                    'ids': {srIndexerApi(indexer).trakt_id: indexerid}}
+                    'ids': {IndexerApi(indexer).trakt_id: indexerid}}
 
             showList.append(show)
 

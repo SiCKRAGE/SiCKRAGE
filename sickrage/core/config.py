@@ -41,7 +41,7 @@ from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSe
     try_int, checkbox_to_value
 
 
-class srConfig(object):
+class Config(object):
     def __init__(self):
         self.loaded = False
 
@@ -984,7 +984,7 @@ class srConfig(object):
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
                     unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
-                    if (sickrage.app.srWebSession.download(
+                    if (sickrage.app.wsession.download(
                             "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
                     ) and extract_zipfile(archive=unrar_zip, targetDir=unrar_dir)):
                         try:
@@ -1126,7 +1126,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.AUTOPOSTPROCESSOR_FREQ = try_int(freq, self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
-        sickrage.app.srScheduler.modify_job('POSTPROCESSOR',
+        sickrage.app.scheduler.modify_job('POSTPROCESSOR',
                                                trigger=IntervalTrigger(
                                                    minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
                                                ))
@@ -1138,7 +1138,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.DAILY_SEARCHER_FREQ = try_int(freq, self.DEFAULT_DAILY_SEARCHER_FREQ)
-        sickrage.app.srScheduler.modify_job('DAILYSEARCHER',
+        sickrage.app.scheduler.modify_job('DAILYSEARCHER',
                                                trigger=IntervalTrigger(
                                                    minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
                                                ))
@@ -1151,7 +1151,7 @@ class srConfig(object):
         """
         self.BACKLOG_SEARCHER_FREQ = try_int(freq, self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
-        sickrage.app.srScheduler.modify_job('BACKLOG',
+        sickrage.app.scheduler.modify_job('BACKLOG',
                                                trigger=IntervalTrigger(
                                                    minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
                                                ))
@@ -1163,7 +1163,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.VERSION_UPDATER_FREQ = try_int(freq, self.DEFAULT_VERSION_UPDATE_FREQ)
-        sickrage.app.srScheduler.modify_job('VERSIONUPDATER',
+        sickrage.app.scheduler.modify_job('VERSIONUPDATER',
                                                trigger=IntervalTrigger(
                                                    hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
                                                ))
@@ -1175,7 +1175,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SHOWUPDATE_HOUR = try_int(freq, self.DEFAULT_SHOWUPDATE_HOUR)
-        sickrage.app.srScheduler.modify_job('SHOWUPDATER',
+        sickrage.app.scheduler.modify_job('SHOWUPDATER',
                                                trigger=IntervalTrigger(
                                                    hours=1,
                                                    start_date=datetime.datetime.now().replace(
@@ -1189,7 +1189,7 @@ class srConfig(object):
         :param freq: New frequency
         """
         self.SUBTITLE_SEARCHER_FREQ = try_int(freq, self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
-        sickrage.app.srScheduler.modify_job('SUBTITLESEARCHER',
+        sickrage.app.scheduler.modify_job('SUBTITLESEARCHER',
                                                trigger=IntervalTrigger(
                                                    hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
                                                ))
@@ -1212,7 +1212,7 @@ class srConfig(object):
         :param download_propers: New desired state
         """
         self.DOWNLOAD_PROPERS = checkbox_to_value(download_propers)
-        job = sickrage.app.srScheduler.get_job('PROPERSEARCHER')
+        job = sickrage.app.scheduler.get_job('PROPERSEARCHER')
         (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
 
     def change_use_trakt(self, use_trakt):
@@ -1223,7 +1223,7 @@ class srConfig(object):
         :param use_trakt: New desired state
         """
         self.USE_TRAKT = checkbox_to_value(use_trakt)
-        job = sickrage.app.srScheduler.get_job('TRAKTSEARCHER')
+        job = sickrage.app.scheduler.get_job('TRAKTSEARCHER')
         (job.pause, job.resume)[self.USE_TRAKT]()
 
     def change_use_subtitles(self, use_subtitles):
@@ -1234,7 +1234,7 @@ class srConfig(object):
         :param use_subtitles: New desired state
         """
         self.USE_SUBTITLES = checkbox_to_value(use_subtitles)
-        job = sickrage.app.srScheduler.get_job('SUBTITLESEARCHER')
+        job = sickrage.app.scheduler.get_job('SUBTITLESEARCHER')
         (job.pause, job.resume)[self.USE_SUBTITLES]()
 
     def change_process_automatically(self, process_automatically):
@@ -1245,7 +1245,7 @@ class srConfig(object):
         :param process_automatically: New desired state
         """
         self.PROCESS_AUTOMATICALLY = checkbox_to_value(process_automatically)
-        job = sickrage.app.srScheduler.get_job('POSTPROCESSOR')
+        job = sickrage.app.scheduler.get_job('POSTPROCESSOR')
         (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
 
     ################################################################################
@@ -1795,8 +1795,8 @@ class srConfig(object):
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers')
 
-        sickrage.app.providersDict.load()
-        for providerID, providerObj in sickrage.app.providersDict.all().items():
+        sickrage.app.search_providers.load()
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
             providerSettings = self.check_setting_str('Providers', providerID, '') or {}
             for k, v in providerSettings.items():
                 providerSettings[k] = auto_type(v)
@@ -1805,9 +1805,9 @@ class srConfig(object):
              set(providerObj.__dict__).intersection(providerSettings)]
 
         # order providers
-        sickrage.app.providersDict.provider_order = self.check_setting_str('Providers', 'providers_order')
+        sickrage.app.search_providers.provider_order = self.check_setting_str('Providers', 'providers_order')
 
-        for metadataProviderID, metadataProviderObj in sickrage.app.metadataProvidersDict.items():
+        for metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items():
             metadataProviderObj.set_config(
                 self.check_setting_str('MetadataProviders', metadataProviderID, '0|0|0|0|0|0|0|0|0|0|0')
             )
@@ -2266,7 +2266,7 @@ class srConfig(object):
                 'sizes': pickle.dumps(self.QUALITY_SIZES),
             },
             'Providers': {
-                'providers_order': sickrage.app.providersDict.provider_order,
+                'providers_order': sickrage.app.search_providers.provider_order,
                 'custom_providers': self.CUSTOM_PROVIDERS,
             },
             'MetadataProviders': {}
@@ -2277,11 +2277,11 @@ class srConfig(object):
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
                          'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
 
-        for providerID, providerObj in sickrage.app.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
             provider_settings = dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)])
             new_config['Providers'][providerID] = provider_settings
 
-        for metadataProviderID, metadataProviderObj in sickrage.app.metadataProvidersDict.items():
+        for metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items():
             new_config['MetadataProviders'][metadataProviderID] = metadataProviderObj.get_config()
 
         # encrypt settings
@@ -2323,7 +2323,7 @@ class srConfig(object):
         return self.encrypt(section, key, _decrypt=True)
 
 
-class ConfigMigrator(srConfig):
+class ConfigMigrator(Config):
     def __init__(self, configobj):
         """
         Initializes a config migrator that can take the config from the version indicated in the config

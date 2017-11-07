@@ -42,7 +42,7 @@ class PostProcessorQueueActions(object):
 postprocessor_queue_lock = threading.Lock()
 
 
-class srPostProcessorQueue(srQueue):
+class PostProcessorQueue(srQueue):
     def __init__(self):
         srQueue.__init__(self, "POSTPROCESSORQUEUE")
 
@@ -159,7 +159,7 @@ class srPostProcessorQueue(srQueue):
                     message = item.result
                 return message
             else:
-                super(srPostProcessorQueue, self).put(item)
+                super(PostProcessorQueue, self).put(item)
                 message = logHelper(
                     "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
                 return message + "<br\><span class='hidden'>Processing succeeded</span>"

@@ -23,7 +23,7 @@ import threading
 import sickrage
 
 
-class srPostProcessor(object):
+class AutoPostProcessor(object):
     def __init__(self):
         self.name = "POSTPROCESSOR"
         self.lock = threading.Lock()
@@ -37,5 +37,5 @@ class srPostProcessor(object):
         """
 
         self.amActive = True
-        sickrage.app.POSTPROCESSORQUEUE.put(sickrage.app.config.TV_DOWNLOAD_DIR, force=force)
+        sickrage.app.postprocessor_queue.put(sickrage.app.config.TV_DOWNLOAD_DIR, force=force)
         self.amActive = False

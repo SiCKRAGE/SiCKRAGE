@@ -61,7 +61,7 @@ class PretomeProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -69,7 +69,7 @@ class PretomeProvider(TorrentProvider):
                         'login_pin': self.pin}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -97,7 +97,7 @@ class PretomeProvider(TorrentProvider):
                 sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.app.srWebSession.get(searchURL).text
+                    data = sickrage.app.wsession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

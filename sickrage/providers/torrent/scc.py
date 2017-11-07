@@ -58,7 +58,7 @@ class SCCProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -66,7 +66,7 @@ class SCCProvider(TorrentProvider):
                         'submit': 'come on in'}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -101,7 +101,7 @@ class SCCProvider(TorrentProvider):
                 sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.app.srWebSession.get(searchURL).text
+                    data = sickrage.app.wsession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -134,7 +134,7 @@ class SCCProvider(TorrentProvider):
 
                     title = link.string
                     if re.search(r'\.\.\.', title):
-                        data = sickrage.app.srWebSession.get(self.urls['base_url'] + "/" + link['href']).text
+                        data = sickrage.app.wsession.get(self.urls['base_url'] + "/" + link['href']).text
                         with bs4_parser(data) as details_html:
                             title = re.search('(?<=").+(?<!")', details_html.title.string).group(0)
                     download_url = self.urls['download'] % url['href']

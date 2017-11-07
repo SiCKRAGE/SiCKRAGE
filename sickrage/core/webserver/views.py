@@ -79,7 +79,7 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.notifiers import srNotifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
@@ -316,11 +316,11 @@ class CalendarHandler(BaseHandler):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
+        for show in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
                      if x['doc']['status'].lower() in ['continuing', 'returning series']
                      and x['doc']['paused'] != 1]:
             for episode in [x['doc'] for x in
-                            sickrage.app.mainDB.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
+                            sickrage.app.main_db.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
                             past_date <= x['doc']['airdate'] < future_date]:
 
                 air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
@@ -389,7 +389,7 @@ class WebRoot(WebHandler):
         shows = sorted(sickrage.app.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
-        for result in sorted([x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)],
+        for result in sorted([x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)],
                              key=lambda d: (d['season'], d['episode'])):
 
             if result['showid'] not in episodes:
@@ -548,14 +548,14 @@ class UI(WebHandler):
 
     @staticmethod
     def add_message():
-        sickrage.app.srNotifications.message('Test 1', 'This is test number 1')
-        sickrage.app.srNotifications.error('Test 2', 'This is test number 2')
+        sickrage.app.alerts.message('Test 1', 'This is test number 1')
+        sickrage.app.alerts.error('Test 2', 'This is test number 2')
         return "ok"
 
     def get_messages(self):
         messages = {}
         cur_notification_num = 0
-        for cur_notification in sickrage.app.srNotifications.get_notifications(self.request.remote_ip):
+        for cur_notification in sickrage.app.alerts.get_notifications(self.request.remote_ip):
             cur_notification_num += 1
             messages['notification-{}'.format(cur_notification_num)] = {
                 'title': cur_notification.title,
@@ -665,7 +665,7 @@ class Home(WebHandler):
 
         max_download_count = 1000
 
-        for epData in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)]:
+        for epData in [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)]:
             showid = epData['showid']
             if showid not in show_stat:
                 show_stat[showid] = {}
@@ -762,7 +762,7 @@ class Home(WebHandler):
     @staticmethod
     def testFreeMobile(freemobile_id=None, freemobile_apikey=None):
 
-        result, message = sickrage.app.notifiersDict['freemobile'].test_notify(freemobile_id, freemobile_apikey)
+        result, message = sickrage.app.notifier_providers['freemobile'].test_notify(freemobile_id, freemobile_apikey)
         if result:
             return _('SMS sent successfully')
         else:
@@ -771,7 +771,7 @@ class Home(WebHandler):
     @staticmethod
     def testTelegram(telegram_id=None, telegram_apikey=None):
 
-        result, message = sickrage.app.notifiersDict['telegram'].test_notify(telegram_id, telegram_apikey)
+        result, message = sickrage.app.notifier_providers['telegram'].test_notify(telegram_id, telegram_apikey)
         if result:
             return _('Telegram notification succeeded. Check your Telegram clients to make sure it worked')
         else:
@@ -783,7 +783,7 @@ class Home(WebHandler):
 
         host = clean_host(host, default_port=23053)
 
-        result = sickrage.app.notifiersDict['growl'].test_notify(host, password)
+        result = sickrage.app.notifier_providers['growl'].test_notify(host, password)
         if password is None or password == '':
             pw_append = ''
         else:
@@ -797,7 +797,7 @@ class Home(WebHandler):
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
 
-        result = sickrage.app.notifiersDict['prowl'].test_notify(prowl_api, prowl_priority)
+        result = sickrage.app.notifier_providers['prowl'].test_notify(prowl_api, prowl_priority)
         if result:
             return _('Test prowl notice sent successfully')
         else:
@@ -806,7 +806,7 @@ class Home(WebHandler):
     @staticmethod
     def testBoxcar2(accesstoken=None):
 
-        result = sickrage.app.notifiersDict['boxcar2'].test_notify(accesstoken)
+        result = sickrage.app.notifier_providers['boxcar2'].test_notify(accesstoken)
         if result:
             return _('Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked')
         else:
@@ -815,7 +815,7 @@ class Home(WebHandler):
     @staticmethod
     def testPushover(userKey=None, apiKey=None):
 
-        result = sickrage.app.notifiersDict['pushover'].test_notify(userKey, apiKey)
+        result = sickrage.app.notifier_providers['pushover'].test_notify(userKey, apiKey)
         if result:
             return _('Pushover notification succeeded. Check your Pushover clients to make sure it worked')
         else:
@@ -823,12 +823,12 @@ class Home(WebHandler):
 
     @staticmethod
     def twitterStep1():
-        return sickrage.app.notifiersDict['twitter']._get_authorization()
+        return sickrage.app.notifier_providers['twitter']._get_authorization()
 
     @staticmethod
     def twitterStep2(key):
 
-        result = sickrage.app.notifiersDict['twitter']._get_credentials(key)
+        result = sickrage.app.notifier_providers['twitter']._get_credentials(key)
         sickrage.app.log.info("result: " + str(result))
         if result:
             return _('Key verification successful')
@@ -838,7 +838,7 @@ class Home(WebHandler):
     @staticmethod
     def testTwitter():
 
-        result = sickrage.app.notifiersDict['twitter'].test_notify()
+        result = sickrage.app.notifier_providers['twitter'].test_notify()
         if result:
             return _('Tweet successful, check your twitter to make sure it worked')
         else:
@@ -846,19 +846,19 @@ class Home(WebHandler):
 
     @staticmethod
     def testTwilio(account_sid=None, auth_token=None, phone_sid=None, to_number=None):
-        if not sickrage.app.notifiersDict['twilio'].account_regex.match(account_sid):
+        if not sickrage.app.notifier_providers['twilio'].account_regex.match(account_sid):
             return _('Please enter a valid account sid')
 
-        if not sickrage.app.notifiersDict['twilio'].auth_regex.match(auth_token):
+        if not sickrage.app.notifier_providers['twilio'].auth_regex.match(auth_token):
             return _('Please enter a valid auth token')
 
-        if not sickrage.app.notifiersDict['twilio'].phone_regex.match(phone_sid):
+        if not sickrage.app.notifier_providers['twilio'].phone_regex.match(phone_sid):
             return _('Please enter a valid phone sid')
 
-        if not sickrage.app.notifiersDict['twilio'].number_regex.match(to_number):
+        if not sickrage.app.notifier_providers['twilio'].number_regex.match(to_number):
             return _('Please format the phone number as "+1-###-###-####"')
 
-        result = sickrage.app.notifiersDict['twilio'].test_notify()
+        result = sickrage.app.notifier_providers['twilio'].test_notify()
         if result:
             return _('Authorization successful and number ownership verified')
         else:
@@ -866,7 +866,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testSlack():
-        result = sickrage.app.notifiersDict['slack'].test_notify()
+        result = sickrage.app.notifier_providers['slack'].test_notify()
         if result:
             return _('Slack message successful')
         else:
@@ -874,7 +874,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testDiscord():
-        result = sickrage.app.notifiersDict['discord'].test_notify()
+        result = sickrage.app.notifier_providers['discord'].test_notify()
         if result:
             return _('Discord message successful')
         else:
@@ -886,7 +886,7 @@ class Home(WebHandler):
         host = clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = sickrage.app.notifiersDict['kodi'].test_notify(urllib.unquote_plus(curHost), username,
+            curResult = sickrage.app.notifier_providers['kodi'].test_notify(urllib.unquote_plus(curHost), username,
                                                                        password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
                 finalResult += _('Test KODI notice sent successfully to ') + urllib.unquote_plus(curHost)
@@ -904,7 +904,7 @@ class Home(WebHandler):
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = sickrage.app.notifiersDict['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
+            curResult = sickrage.app.notifier_providers['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
                                                                            username,
                                                                            password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
@@ -913,7 +913,7 @@ class Home(WebHandler):
                 finalResult += _('Test failed for Plex client ... ') + urllib.unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
-        sickrage.app.srNotifications.message(_('Tested Plex client(s): '),
+        sickrage.app.alerts.message(_('Tested Plex client(s): '),
                                              urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
@@ -926,7 +926,7 @@ class Home(WebHandler):
 
         finalResult = ''
 
-        curResult = sickrage.app.notifiersDict['plex'].test_notify_pms(urllib.unquote_plus(host), username,
+        curResult = sickrage.app.notifier_providers['plex'].test_notify_pms(urllib.unquote_plus(host), username,
                                                                        password,
                                                                        plex_server_token)
         if curResult is None:
@@ -939,22 +939,22 @@ class Home(WebHandler):
                            urllib.unquote_plus(str(curResult).replace(',', ', '))
         finalResult += '<br>' + '\n'
 
-        sickrage.app.srNotifications.message(_('Tested Plex Media Server host(s): '),
+        sickrage.app.alerts.message(_('Tested Plex Media Server host(s): '),
                                              urllib.unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
     @staticmethod
     def testLibnotify():
-        if sickrage.app.notifiersDict['libnotify'].notifier.test_notify():
+        if sickrage.app.notifier_providers['libnotify'].notifier.test_notify():
             return _('Tried sending desktop notification via libnotify')
         else:
-            return sickrage.app.notifiersDict['libnotify'].diagnose()
+            return sickrage.app.notifier_providers['libnotify'].diagnose()
 
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
         host = clean_host(host)
-        result = sickrage.app.notifiersDict['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickrage.app.notifier_providers['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
         if result:
             return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
@@ -963,7 +963,7 @@ class Home(WebHandler):
     @staticmethod
     def testNMJ(host=None, database=None, mount=None):
         host = clean_host(host)
-        result = sickrage.app.notifiersDict['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickrage.app.notifier_providers['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
         if result:
             return _('Successfully started the scan update')
         else:
@@ -972,7 +972,7 @@ class Home(WebHandler):
     @staticmethod
     def settingsNMJ(host=None):
         host = clean_host(host)
-        result = sickrage.app.notifiersDict['nmj'].notify_settings(urllib.unquote_plus(host))
+        result = sickrage.app.notifier_providers['nmj'].notify_settings(urllib.unquote_plus(host))
         if result:
             return '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "message": _('Got settings from'),
@@ -987,7 +987,7 @@ class Home(WebHandler):
     @staticmethod
     def testNMJv2(host=None):
         host = clean_host(host)
-        result = sickrage.app.notifiersDict['nmjv2'].test_notify(urllib.unquote_plus(host))
+        result = sickrage.app.notifier_providers['nmjv2'].test_notify(urllib.unquote_plus(host))
         if result:
             return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
         else:
@@ -996,7 +996,7 @@ class Home(WebHandler):
     @staticmethod
     def settingsNMJv2(host=None, dbloc=None, instance=None):
         host = clean_host(host)
-        result = sickrage.app.notifiersDict['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
+        result = sickrage.app.notifier_providers['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
                                                                      instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
@@ -1013,13 +1013,13 @@ class Home(WebHandler):
 
     @staticmethod
     def testTrakt(username=None, blacklist_name=None):
-        return sickrage.app.notifiersDict['trakt'].test_notify(username, blacklist_name)
+        return sickrage.app.notifier_providers['trakt'].test_notify(username, blacklist_name)
 
     @staticmethod
     def loadShowNotifyLists():
         data = {'_size': 0}
 
-        tv_shows = sorted([x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)],
+        tv_shows = sorted([x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)],
                           key=lambda d: d['show_name'])
 
         for s in tv_shows:
@@ -1031,24 +1031,24 @@ class Home(WebHandler):
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            dbData = sickrage.app.mainDB.db.get('tv_shows', int(show), with_doc=True)['doc']
+            dbData = sickrage.app.main_db.db.get('tv_shows', int(show), with_doc=True)['doc']
             dbData['notify_list'] = emails
-            sickrage.app.mainDB.db.update(dbData)
+            sickrage.app.main_db.db.update(dbData)
         except RecordNotFound:
             return 'ERROR'
 
     @staticmethod
     def testEmail(host=None, port=None, smtp_from=None, use_tls=None, user=None, pwd=None, to=None):
         host = clean_host(host)
-        if sickrage.app.notifiersDict['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
+        if sickrage.app.notifier_providers['email'].test_notify(host, port, smtp_from, use_tls, user, pwd, to):
             return _('Test email sent successfully! Check inbox.')
         else:
-            return _('ERROR: %s') % sickrage.app.notifiersDict['email'].last_err
+            return _('ERROR: %s') % sickrage.app.notifier_providers['email'].last_err
 
     @staticmethod
     def testNMA(nma_api=None, nma_priority=0):
 
-        result = sickrage.app.notifiersDict['nma'].test_notify(nma_api, nma_priority)
+        result = sickrage.app.notifier_providers['nma'].test_notify(nma_api, nma_priority)
         if result:
             return _('Test NMA notice sent successfully')
         else:
@@ -1056,7 +1056,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushalot(authorizationToken=None):
-        result = sickrage.app.notifiersDict['pushalot'].test_notify(authorizationToken)
+        result = sickrage.app.notifier_providers['pushalot'].test_notify(authorizationToken)
         if result:
             return _('Pushalot notification succeeded. Check your Pushalot clients to make sure it worked')
         else:
@@ -1064,7 +1064,7 @@ class Home(WebHandler):
 
     @staticmethod
     def testPushbullet(api=None):
-        result = sickrage.app.notifiersDict['pushbullet'].test_notify(api)
+        result = sickrage.app.notifier_providers['pushbullet'].test_notify(api)
         if result:
             return _('Pushbullet notification succeeded. Check your device to make sure it worked')
         else:
@@ -1072,7 +1072,7 @@ class Home(WebHandler):
 
     @staticmethod
     def getPushbulletDevices(api=None):
-        result = sickrage.app.notifiersDict['pushbullet'].get_devices(api)
+        result = sickrage.app.notifier_providers['pushbullet'].get_devices(api)
         if result:
             return result
         else:
@@ -1133,8 +1133,8 @@ class Home(WebHandler):
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
         # check for new app updates
-        if not sickrage.app.VERSIONUPDATER.check_for_new_version(True):
-            sickrage.app.srNotifications.message(_('No new updates!'))
+        if not sickrage.app.version_updater.check_for_new_version(True):
+            sickrage.app.alerts.message(_('No new updates!'))
 
         return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
@@ -1142,7 +1142,7 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.app.PID):
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
-        if sickrage.app.VERSIONUPDATER.update():
+        if sickrage.app.version_updater.update():
             sickrage.app.NEWEST_VERSION_STRING = None
             return self.restart(pid)
         else:
@@ -1157,22 +1157,22 @@ class Home(WebHandler):
             return _('Failed to find {path}'.format(path=path))
 
     def installRequirements(self):
-        sickrage.app.srNotifications.message(_('Installing SiCKRAGE requirements'))
-        if not sickrage.app.VERSIONUPDATER.updater.install_requirements():
-            sickrage.app.srNotifications.message(_('Failed to install SiCKRAGE requirements'))
+        sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
+        if not sickrage.app.version_updater.updater.install_requirements():
+            sickrage.app.alerts.message(_('Failed to install SiCKRAGE requirements'))
         else:
-            sickrage.app.srNotifications.message(_('Installed SiCKRAGE requirements successfully!'))
+            sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
 
         return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
     def branchCheckout(self, branch):
-        if branch and sickrage.app.VERSIONUPDATER.updater.current_branch != branch:
-            sickrage.app.srNotifications.message(_('Checking out branch: '), branch)
-            if sickrage.app.VERSIONUPDATER.updater.checkout_branch(branch):
-                sickrage.app.srNotifications.message(_('Branch checkout successful, restarting: '), branch)
+        if branch and sickrage.app.version_updater.updater.current_branch != branch:
+            sickrage.app.alerts.message(_('Checking out branch: '), branch)
+            if sickrage.app.version_updater.updater.checkout_branch(branch):
+                sickrage.app.alerts.message(_('Branch checkout successful, restarting: '), branch)
                 return self.restart(sickrage.app.PID)
         else:
-            sickrage.app.srNotifications.message(_('Already on branch: '), branch)
+            sickrage.app.alerts.message(_('Already on branch: '), branch)
 
         return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
@@ -1186,7 +1186,7 @@ class Home(WebHandler):
                 return self._genericMessage(_("Error"), _("Show not in show list"))
 
         episodeResults = sorted(
-            [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
+            [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', showObj.indexerid, with_doc=True)],
             key=lambda d: (d['season'], d['episode']), reverse=True)
 
         seasonResults = list({x['season'] for x in episodeResults})
@@ -1199,29 +1199,29 @@ class Home(WebHandler):
 
         show_message = ''
 
-        if sickrage.app.SHOWQUEUE.isBeingAdded(showObj):
+        if sickrage.app.show_queue.isBeingAdded(showObj):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.app.SHOWQUEUE.isBeingUpdated(showObj):
+        elif sickrage.app.show_queue.isBeingUpdated(showObj):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.app.SHOWQUEUE.isBeingRefreshed(showObj):
+        elif sickrage.app.show_queue.isBeingRefreshed(showObj):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.app.SHOWQUEUE.isBeingSubtitled(showObj):
+        elif sickrage.app.show_queue.isBeingSubtitled(showObj):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.SHOWQUEUE.isInRefreshQueue(showObj):
+        elif sickrage.app.show_queue.isInRefreshQueue(showObj):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.SHOWQUEUE.isInUpdateQueue(showObj):
+        elif sickrage.app.show_queue.isInUpdateQueue(showObj):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.SHOWQUEUE.isInSubtitleQueue(showObj):
+        elif sickrage.app.show_queue.isInSubtitleQueue(showObj):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.app.SHOWQUEUE.isBeingAdded(showObj):
-            if not sickrage.app.SHOWQUEUE.isBeingUpdated(showObj):
+        if not sickrage.app.show_queue.isBeingAdded(showObj):
+            if not sickrage.app.show_queue.isBeingUpdated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'ui-icon ui-icon-play'})
@@ -1245,7 +1245,7 @@ class Home(WebHandler):
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'ui-icon ui-icon-tag'})
 
-                if sickrage.app.config.USE_SUBTITLES and not sickrage.app.SHOWQUEUE.isBeingSubtitled(
+                if sickrage.app.config.USE_SUBTITLES and not sickrage.app.show_queue.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
@@ -1378,13 +1378,13 @@ class Home(WebHandler):
                 whitelist = showObj.release_groups.whitelist
                 blacklist = showObj.release_groups.blacklist
 
-                if sickrage.app.ADBA_CONNECTION and not anidb_failed:
+                if sickrage.app.adba_connection and not anidb_failed:
                     try:
-                        anime = aniDBAbstracter.Anime(sickrage.app.ADBA_CONNECTION, name=showObj.name)
+                        anime = aniDBAbstracter.Anime(sickrage.app.adba_connection, name=showObj.name)
                         groups = anime.get_groups()
                     except Exception as e:
                         anidb_failed = True
-                        sickrage.app.srNotifications.error(_('Unable to retreive Fansub Groups from AniDB.'))
+                        sickrage.app.alerts.error(_('Unable to retreive Fansub Groups from AniDB.'))
                         sickrage.app.log.debug(
                             'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
@@ -1428,7 +1428,7 @@ class Home(WebHandler):
         subtitles = checkbox_to_value(subtitles)
         subtitles_sr_metadata = checkbox_to_value(subtitles_sr_metadata)
 
-        if indexerLang and indexerLang in srIndexerApi(showObj.indexer).indexer().languages.keys():
+        if indexerLang and indexerLang in IndexerApi(showObj.indexer).indexer().languages.keys():
             indexer_lang = indexerLang
         else:
             indexer_lang = showObj.lang
@@ -1492,7 +1492,7 @@ class Home(WebHandler):
             if bool(showObj.flatten_folders) != bool(flatten_folders):
                 showObj.flatten_folders = flatten_folders
                 try:
-                    sickrage.app.SHOWQUEUE.refreshShow(showObj)
+                    sickrage.app.show_queue.refreshShow(showObj)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh this show: {}").format(e.message))
 
@@ -1523,7 +1523,7 @@ class Home(WebHandler):
                     try:
                         showObj.location = location
                         try:
-                            sickrage.app.SHOWQUEUE.refreshShow(showObj)
+                            sickrage.app.show_queue.refreshShow(showObj)
                         except CantRefreshShowException as e:
                             errors.append(_("Unable to refresh this show:{}").format(e.message))
                             # grab updated info from TVDB
@@ -1540,7 +1540,7 @@ class Home(WebHandler):
         # force the update
         if do_update:
             try:
-                sickrage.app.SHOWQUEUE.updateShow(showObj, True)
+                sickrage.app.show_queue.updateShow(showObj, True)
                 time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to update show: {0}").format(str(e)))
@@ -1563,7 +1563,7 @@ class Home(WebHandler):
             return map(str, errors)
 
         if len(errors) > 0:
-            sickrage.app.srNotifications.error(
+            sickrage.app.alerts.error(
                 _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
                                                                                plural="" if len(errors) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>{0}</li>'.format(error) for error in errors]) + "</ul>")
@@ -1583,7 +1583,7 @@ class Home(WebHandler):
 
         showObj.saveToDB()
 
-        sickrage.app.srNotifications.message(
+        sickrage.app.alerts.message(
             _('%s has been %s') % (showObj.name, (_('resumed'), _('paused'))[showObj.paused]))
 
         return self.redirect("/home/displayShow?show=%i" % showObj.indexerid)
@@ -1598,8 +1598,8 @@ class Home(WebHandler):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.SHOWQUEUE.removeShow(showObj, bool(full))
-            sickrage.app.srNotifications.message(
+            sickrage.app.show_queue.removeShow(showObj, bool(full))
+            sickrage.app.alerts.message(
                 _('%s has been %s %s') %
                 (
                     showObj.name,
@@ -1608,7 +1608,7 @@ class Home(WebHandler):
                 )
             )
         except CantRemoveShowException as e:
-            sickrage.app.srNotifications.error(_('Unable to delete this show.'), e.message)
+            sickrage.app.alerts.error(_('Unable to delete this show.'), e.message)
 
         time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
@@ -1625,9 +1625,9 @@ class Home(WebHandler):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.SHOWQUEUE.refreshShow(showObj)
+            sickrage.app.show_queue.refreshShow(showObj)
         except CantRefreshShowException as e:
-            sickrage.app.srNotifications.error(_('Unable to refresh this show.'), e.message)
+            sickrage.app.alerts.error(_('Unable to refresh this show.'), e.message)
 
         time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
@@ -1644,9 +1644,9 @@ class Home(WebHandler):
 
         # force the update
         try:
-            sickrage.app.SHOWQUEUE.updateShow(showObj, bool(force))
+            sickrage.app.show_queue.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            sickrage.app.srNotifications.error(_("Unable to update this show."), e.message)
+            sickrage.app.alerts.error(_("Unable to update this show."), e.message)
 
         # just give it some time
         time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
@@ -1664,7 +1664,7 @@ class Home(WebHandler):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
-        sickrage.app.SHOWQUEUE.downloadSubtitles(showObj)
+        sickrage.app.show_queue.downloadSubtitles(showObj)
 
         time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
@@ -1684,10 +1684,10 @@ class Home(WebHandler):
         else:
             host = sickrage.app.config.KODI_HOST
 
-        if sickrage.app.notifiersDict['kodi'].update_library(showName=showName):
-            sickrage.app.srNotifications.message(_("Library update command sent to KODI host(s): ") + host)
+        if sickrage.app.notifier_providers['kodi'].update_library(showName=showName):
+            sickrage.app.alerts.message(_("Library update command sent to KODI host(s): ") + host)
         else:
-            sickrage.app.srNotifications.error(_("Unable to contact one or more KODI host(s): ") + host)
+            sickrage.app.alerts.error(_("Unable to contact one or more KODI host(s): ") + host)
 
         if showObj:
             return self.redirect('/home/displayShow?show=' + str(showObj.indexerid))
@@ -1695,12 +1695,12 @@ class Home(WebHandler):
             return self.redirect('/home/')
 
     def updatePLEX(self):
-        if None is sickrage.app.notifiersDict['plex'].update_library():
-            sickrage.app.srNotifications.message(
+        if None is sickrage.app.notifier_providers['plex'].update_library():
+            sickrage.app.alerts.message(
                 _("Library update command sent to Plex Media Server host: ") +
                 sickrage.app.config.PLEX_SERVER_HOST)
         else:
-            sickrage.app.srNotifications.error(
+            sickrage.app.alerts.error(
                 _("Unable to contact Plex Media Server host: ") +
                 sickrage.app.config.PLEX_SERVER_HOST)
         return self.redirect('/home/')
@@ -1711,11 +1711,11 @@ class Home(WebHandler):
         if show:
             showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
 
-        if sickrage.app.notifiersDict['emby'].update_library(showObj):
-            sickrage.app.srNotifications.message(
+        if sickrage.app.notifier_providers['emby'].update_library(showObj):
+            sickrage.app.alerts.message(
                 _("Library update command sent to Emby host: ") + sickrage.app.config.EMBY_HOST)
         else:
-            sickrage.app.srNotifications.error(
+            sickrage.app.alerts.error(
                 _("Unable to contact Emby host: ") + sickrage.app.config.EMBY_HOST)
 
         if showObj:
@@ -1724,9 +1724,9 @@ class Home(WebHandler):
             return self.redirect('/home/')
 
     def syncTrakt(self):
-        if sickrage.app.srScheduler.get_job('TRAKTSEARCHER').func():
+        if sickrage.app.scheduler.get_job('TRAKTSEARCHER').func():
             sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
-            sickrage.app.srNotifications.message(_('Syncing Trakt with SiCKRAGE'))
+            sickrage.app.alerts.message(_('Syncing Trakt with SiCKRAGE'))
 
         return self.redirect("/home/")
 
@@ -1734,7 +1734,7 @@ class Home(WebHandler):
         if not all([show, eps]):
             errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.app.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.alerts.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1743,7 +1743,7 @@ class Home(WebHandler):
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.app.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.alerts.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1783,7 +1783,7 @@ class Home(WebHandler):
         if not all([show, eps, status]):
             errMsg = _("You must specify a show and at least one episode")
             if direct:
-                sickrage.app.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.alerts.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1791,7 +1791,7 @@ class Home(WebHandler):
         if not statusStrings.has_key(int(status)):
             errMsg = _("Invalid status")
             if direct:
-                sickrage.app.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.alerts.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1801,7 +1801,7 @@ class Home(WebHandler):
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
-                sickrage.app.srNotifications.error(_('Error'), errMsg)
+                sickrage.app.alerts.error(_('Error'), errMsg)
                 return json_encode({'result': 'error'})
             else:
                 return self._genericMessage(_("Error"), errMsg)
@@ -1868,19 +1868,19 @@ class Home(WebHandler):
 
                     trakt_data.append((epObj.season, epObj.episode))
 
-            data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
+            data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
             if data and sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
                     sickrage.app.log.debug(
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
-                    sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(showObj, data_episode=data,
                                                                          update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                     sickrage.app.log.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
-                    sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
+                    sickrage.app.notifier_providers['trakt'].update_watchlist(showObj, data_episode=data,
                                                                          update="remove")
 
         if int(status) == WANTED and not showObj.paused:
@@ -1889,7 +1889,7 @@ class Home(WebHandler):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
+                sickrage.app.search_queue.put(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Sending backlog for " + showObj.name + " season " + str(
@@ -1898,7 +1898,7 @@ class Home(WebHandler):
             msg += "</ul>"
 
             if segments:
-                sickrage.app.srNotifications.message(_("Backlog started"), msg)
+                sickrage.app.alerts.message(_("Backlog started"), msg)
         elif int(status) == WANTED and showObj.paused:
             sickrage.app.log.info(
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
@@ -1909,7 +1909,7 @@ class Home(WebHandler):
             msg += '<ul>'
 
             for season, segment in segments.items():
-                sickrage.app.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
+                sickrage.app.search_queue.put(FailedQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
                 sickrage.app.log.info("Retrying Search for " + showObj.name + " season " + str(
@@ -1918,7 +1918,7 @@ class Home(WebHandler):
             msg += "</ul>"
 
             if segments:
-                sickrage.app.srNotifications.message(_("Retry Search started"), msg)
+                sickrage.app.alerts.message(_("Retry Search started"), msg)
 
         if direct:
             return json_encode({'result': 'success'})
@@ -1997,14 +1997,14 @@ class Home(WebHandler):
 
             epInfo = curEp.split('x')
 
-            ep_result = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', int(show), with_doc=True)
+            ep_result = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', int(show), with_doc=True)
                          if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
-            related_eps_result = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)
+            related_eps_result = [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)
                                   if x['doc']['location'] == ep_result[0]['location']
                                   and x['doc']['episode'] != int(epInfo[1])]
 
@@ -2028,7 +2028,7 @@ class Home(WebHandler):
             # make a queue item for it and put it on the queue
             ep_queue_item = ManualSearchQueueItem(ep_obj.show, ep_obj, bool(int(downCurQuality)))
 
-            sickrage.app.SEARCHQUEUE.put(ep_queue_item)
+            sickrage.app.search_queue.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})
@@ -2073,13 +2073,13 @@ class Home(WebHandler):
 
         # Queued Searches
         searchstatus = 'queued'
-        for searchThread in sickrage.app.SEARCHQUEUE.get_all_ep_from_queue(show):
+        for searchThread in sickrage.app.search_queue.get_all_ep_from_queue(show):
             episodes += getEpisodes(searchThread, searchstatus)
 
         # Running Searches
         searchstatus = 'searching'
-        if sickrage.app.SEARCHQUEUE.is_manualsearch_in_progress():
-            searchThread = sickrage.app.SEARCHQUEUE.currentItem
+        if sickrage.app.search_queue.is_manualsearch_in_progress():
+            searchThread = sickrage.app.search_queue.currentItem
 
             if searchThread.success:
                 searchstatus = 'finished'
@@ -2131,7 +2131,7 @@ class Home(WebHandler):
             else:
                 status = _('No subtitles downloaded')
 
-            sickrage.app.srNotifications.message(ep_obj.show.name, status)
+            sickrage.app.alerts.message(ep_obj.show.name, status)
             return json_encode({'result': status, 'subtitles': ','.join(ep_obj.subtitles)})
 
         return json_encode({'result': 'failure'})
@@ -2225,7 +2225,7 @@ class Home(WebHandler):
             # make a queue item for it and put it on the queue
             ep_queue_item = FailedQueueItem(ep_obj.show, [ep_obj], bool(int(downCurQuality)))
 
-            sickrage.app.SEARCHQUEUE.put(ep_queue_item)
+            sickrage.app.search_queue.put(ep_queue_item)
             if not all([ep_queue_item.started, ep_queue_item.success]):
                 return json_encode({'result': 'success'})
         return json_encode({'result': 'failure'})
@@ -2233,8 +2233,8 @@ class Home(WebHandler):
     @staticmethod
     def fetch_releasegroups(show_name):
         sickrage.app.log.info('ReleaseGroups: %s' % show_name)
-        if sickrage.app.ADBA_CONNECTION:
-            anime = aniDBAbstracter.Anime(sickrage.app.ADBA_CONNECTION, name=show_name)
+        if sickrage.app.adba_connection:
+            anime = aniDBAbstracter.Anime(sickrage.app.adba_connection, name=show_name)
             groups = anime.get_groups()
             sickrage.app.log.info('ReleaseGroups: %s' % groups)
             return json_encode({'result': 'success', 'groups': groups})
@@ -2265,7 +2265,7 @@ class changelog(WebHandler):
 
     def index(self):
         try:
-            changes = sickrage.app.srWebSession.get(sickrage.app.config.CHANGES_URL).text
+            changes = sickrage.app.wsession.get(sickrage.app.config.CHANGES_URL).text
         except Exception:
             sickrage.app.log.debug('Could not load changes from repo, giving a link!')
             changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(
@@ -2313,7 +2313,7 @@ class HomePostProcess(Home):
 
         if not proc_dir: return self.redirect("/home/postprocess/")
 
-        result = sickrage.app.POSTPROCESSORQUEUE.put(proc_dir, **pp_options)
+        result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
 
         if quite: return result
 
@@ -2337,7 +2337,7 @@ class HomeAddShows(Home):
 
     @staticmethod
     def getIndexerLanguages():
-        return json_encode({'results': srIndexerApi().indexer().language.keys()})
+        return json_encode({'results': IndexerApi().indexer().language.keys()})
 
     @staticmethod
     def sanitizeFileName(name):
@@ -2352,14 +2352,14 @@ class HomeAddShows(Home):
         final_results = []
 
         # Query Indexers for each search term and build the list of results
-        for indexer in srIndexerApi().indexers if not int(indexer) else [int(indexer)]:
-            lINDEXER_API_PARMS = srIndexerApi(indexer).api_params.copy()
+        for indexer in IndexerApi().indexers if not int(indexer) else [int(indexer)]:
+            lINDEXER_API_PARMS = IndexerApi(indexer).api_params.copy()
             lINDEXER_API_PARMS['language'] = lang
             lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
-            t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
             sickrage.app.log.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
-                search_term, srIndexerApi(indexer).name))
+                search_term, IndexerApi(indexer).name))
 
             try:
                 # search via seriesname
@@ -2369,10 +2369,10 @@ class HomeAddShows(Home):
 
         for i, shows in results.items():
             final_results.extend(
-                [[srIndexerApi(i).name, i, srIndexerApi(i).config["show_url"],
+                [[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
                   int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
 
-        lang_id = srIndexerApi().indexer().languages[lang] or 7
+        lang_id = IndexerApi().indexer().languages[lang] or 7
         return json_encode({'results': final_results, 'langid': lang_id})
 
     def massAddTable(self, rootDir=None):
@@ -2425,7 +2425,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in KODI already
-                if [x for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True) if
+                if [x for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
                     x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True
                 else:
@@ -2434,7 +2434,7 @@ class HomeAddShows(Home):
                 dir_list.append(cur_dir)
 
                 showid = show_name = indexer = None
-                for cur_provider in sickrage.app.metadataProvidersDict.values():
+                for cur_provider in sickrage.app.metadata_providers.values():
                     if all([showid, show_name, indexer]):
                         continue
 
@@ -2442,7 +2442,7 @@ class HomeAddShows(Home):
 
                     # default to TVDB if indexer was not detected
                     if show_name and not (indexer or showid):
-                        (sn, idxr, i) = srIndexerApi(indexer).searchForShowID(show_name, showid)
+                        (sn, idxr, i) = IndexerApi(indexer).searchForShowID(show_name, showid)
 
                         # set indexer and indexer_id from found info
                         if not indexer and idxr:
@@ -2509,7 +2509,7 @@ class HomeAddShows(Home):
             provided_indexer_id=provided_indexer_id,
             provided_indexer_name=provided_indexer_name,
             provided_indexer=provided_indexer,
-            indexers=srIndexerApi().indexers,
+            indexers=IndexerApi().indexers,
             quality=sickrage.app.config.QUALITY_DEFAULT,
             whitelist=[],
             blacklist=[],
@@ -2587,8 +2587,8 @@ class HomeAddShows(Home):
 
     def addShowByID(self, indexer_id, showName):
         if re.search(r'tt\d+', indexer_id):
-            lINDEXER_API_PARMS = srIndexerApi(1).api_params.copy()
-            t = srIndexerApi(1).indexer(**lINDEXER_API_PARMS)
+            lINDEXER_API_PARMS = IndexerApi(1).api_params.copy()
+            t = IndexerApi(1).indexer(**lINDEXER_API_PARMS)
             indexer_id = t[indexer_id]['id']
 
         if findCertainShow(sickrage.app.SHOWLIST, int(indexer_id)):
@@ -2609,7 +2609,7 @@ class HomeAddShows(Home):
 
             chmodAsParent(show_dir)
 
-            sickrage.app.SHOWQUEUE.addShow(indexer=1,
+            sickrage.app.show_queue.addShow(indexer=1,
                                            indexer_id=int(indexer_id),
                                            showDir=show_dir,
                                            default_status=sickrage.app.config.STATUS_DEFAULT,
@@ -2621,7 +2621,7 @@ class HomeAddShows(Home):
                                            default_status_after=sickrage.app.config.STATUS_DEFAULT_AFTER,
                                            archive=sickrage.app.config.ARCHIVE_DEFAULT)
 
-            sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
+            sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
             sickrage.app.log.error("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
@@ -2673,7 +2673,7 @@ class HomeAddShows(Home):
             if len(series_pieces) < 6:
                 sickrage.app.log.error(
                     'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
-                sickrage.app.srNotifications.error(
+                sickrage.app.alerts.error(
                     _('Unknown error. Unable to add show due to problem with show selection.'))
                 return self.redirect('/home/addShows/existingShows/')
 
@@ -2697,7 +2697,7 @@ class HomeAddShows(Home):
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:
-            sickrage.app.srNotifications.error(_("Unable to add show"),
+            sickrage.app.alerts.error(_("Unable to add show"),
                                                _("Folder ") + show_dir + _(" exists already"))
             return self.redirect('/home/addShows/existingShows/')
 
@@ -2709,7 +2709,7 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.app.srNotifications.error(_("Unable to add show"),
+                sickrage.app.alerts.error(_("Unable to add show"),
                                                    _("Unable to create the folder " +
                                                      show_dir + ", can't add the show"))
 
@@ -2745,7 +2745,7 @@ class HomeAddShows(Home):
             newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
-        sickrage.app.SHOWQUEUE.addShow(indexer=indexer,
+        sickrage.app.show_queue.addShow(indexer=indexer,
                                        indexer_id=indexer_id,
                                        showDir=show_dir,
                                        default_status=int(defaultStatus),
@@ -2762,7 +2762,7 @@ class HomeAddShows(Home):
                                        default_status_after=int(defaultStatusAfter),
                                        archive=archive)
 
-        sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
+        sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
         return finishAddShow()
 
@@ -2823,7 +2823,7 @@ class HomeAddShows(Home):
 
             if indexer is not None and indexer_id is not None:
                 # add the show
-                sickrage.app.SHOWQUEUE.addShow(indexer,
+                sickrage.app.show_queue.addShow(indexer,
                                                indexer_id,
                                                show_dir,
                                                default_status=sickrage.app.config.STATUS_DEFAULT,
@@ -2837,7 +2837,7 @@ class HomeAddShows(Home):
                 num_added += 1
 
         if num_added:
-            sickrage.app.srNotifications.message(_("Shows Added"),
+            sickrage.app.alerts.message(_("Shows Added"),
                                                  _("Automatically added ") + str(
                                                      num_added) + _(" from their existing metadata files"))
 
@@ -2865,7 +2865,7 @@ class Manage(Home, WebRoot):
 
         result = {}
         for dbData in [x['doc'] for x in
-                       sickrage.app.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       sickrage.app.main_db.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if x['doc']['season'] != 0 and x['doc']['status'] in status_list]:
 
             cur_season = int(dbData["season"])
@@ -2891,8 +2891,8 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = sorted([s['doc'] for s in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
-                                     for e in sickrage.app.mainDB.db.get_many('tv_episodes', s['doc']['indexer_id'],
+            status_results = sorted([s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
+                                     for e in sickrage.app.main_db.db.get_many('tv_episodes', s['doc']['indexer_id'],
                                                                               with_doc=True)
                                      if e['doc']['status'] in status_list and e['doc']['season'] != 0],
                                     key=lambda d: d['show_name'])
@@ -2945,7 +2945,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
                 all_eps_results = [x['doc'] for x in
-                                   sickrage.app.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                                   sickrage.app.main_db.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                                    if x['doc']['status'] in status_list and x['doc']['season'] != 0]
 
                 all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in all_eps_results]
@@ -2959,7 +2959,7 @@ class Manage(Home, WebRoot):
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
         for dbData in [x['doc'] for x in
-                       sickrage.app.mainDB.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
+                       sickrage.app.main_db.db.get_many('tv_episodes', int(indexer_id), with_doc=True)
                        if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]:
 
             if whichSubs == 'all':
@@ -2990,10 +2990,10 @@ class Manage(Home, WebRoot):
         status_results = []
 
         if whichSubs:
-            for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+            for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
                 if not s['subtitles'] == 1: continue
                 for e in [x['doc'] for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                          sickrage.app.main_db.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
                     if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
                         status_results += [{
                             'show_name': s['show_name'],
@@ -3054,7 +3054,7 @@ class Manage(Home, WebRoot):
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
                 dbData = [x['doc'] for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', int(cur_indexer_id), with_doc=True)
                           if str(x['doc']['status']).endswith('4') and x['doc']['season'] != 0]
 
                 to_download[cur_indexer_id] = [str(x["season"]) + 'x' + str(x["episode"]) for x in dbData]
@@ -3092,7 +3092,7 @@ class Manage(Home, WebRoot):
             epCounts[Overview.SNATCHED] = 0
 
             dbData = sorted(
-                [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
+                [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', curShow.indexerid, with_doc=True)
                  if curShow.paused == 0], key=lambda d: (d['season'], d['episode']), reverse=True)
 
             for curResult in dbData:
@@ -3376,7 +3376,7 @@ class Manage(Home, WebRoot):
                     ['<li>%s</li>' % error for error in curErrors]) + "</ul>")
 
         if len(errors) > 0:
-            sickrage.app.srNotifications.error(
+            sickrage.app.alerts.error(
                 _('{num_errors:d} error{plural} while saving changes:').format(num_errors=len(errors),
                                                                                plural="" if len(errors) == 1 else "s"),
                 " ".join(errors))
@@ -3438,18 +3438,18 @@ class Manage(Home, WebRoot):
                 continue
 
             if curShowID in toDelete:
-                sickrage.app.SHOWQUEUE.removeShow(showObj, True)
+                sickrage.app.show_queue.removeShow(showObj, True)
                 # don't do anything else if it's being deleted
                 continue
 
             if curShowID in toRemove:
-                sickrage.app.SHOWQUEUE.removeShow(showObj)
+                sickrage.app.show_queue.removeShow(showObj)
                 # don't do anything else if it's being remove
                 continue
 
             if curShowID in toUpdate:
                 try:
-                    sickrage.app.SHOWQUEUE.updateShow(showObj, True)
+                    sickrage.app.show_queue.updateShow(showObj, True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
                     errors.append(_("Unable to update show: {0}").format(str(e)))
@@ -3457,21 +3457,21 @@ class Manage(Home, WebRoot):
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:
                 try:
-                    sickrage.app.SHOWQUEUE.refreshShow(showObj)
+                    sickrage.app.show_queue.refreshShow(showObj)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e.message))
 
             if curShowID in toRename:
-                sickrage.app.SHOWQUEUE.renameShowEpisodes(showObj)
+                sickrage.app.show_queue.renameShowEpisodes(showObj)
                 renames.append(showObj.name)
 
             if curShowID in toSubtitle:
-                sickrage.app.SHOWQUEUE.downloadSubtitles(showObj)
+                sickrage.app.show_queue.downloadSubtitles(showObj)
                 subtitles.append(showObj.name)
 
         if errors:
-            sickrage.app.srNotifications.error(_("Errors encountered"),
+            sickrage.app.alerts.error(_("Errors encountered"),
                                                '<br >\n'.join(errors))
 
         messageDetail = ""
@@ -3497,7 +3497,7 @@ class Manage(Home, WebRoot):
             messageDetail += "</li></ul>"
 
         if updates + refreshes + renames + subtitles:
-            sickrage.app.srNotifications.message(_("The following actions were queued:"),
+            sickrage.app.alerts.message(_("The following actions were queued:"),
                                                  messageDetail)
 
         return self.render(
@@ -3511,16 +3511,16 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if int(limit) == 0:
-            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', int(limit), with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', int(limit), with_doc=True)]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                [sickrage.app.failedDB.db.delete(x['doc']) for x in
-                 sickrage.app.failedDB.db.get_many('failed', release, with_doc=True)]
+                [sickrage.app.failed_db.db.delete(x['doc']) for x in
+                 sickrage.app.failed_db.db.get_many('failed', release, with_doc=True)]
             except RecordNotFound:
                 continue
 
@@ -3547,14 +3547,14 @@ class ManageQueues(Manage):
     def index(self):
         return self.render(
             "/manage/queues.mako",
-            backlogPaused=sickrage.app.SEARCHQUEUE.is_backlog_paused(),
-            backlogRunning=sickrage.app.SEARCHQUEUE.is_backlog_in_progress(),
-            dailySearchStatus=sickrage.app.SEARCHQUEUE.is_dailysearch_in_progress(),
+            backlogPaused=sickrage.app.search_queue.is_backlog_paused(),
+            backlogRunning=sickrage.app.search_queue.is_backlog_in_progress(),
+            dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
             findPropersStatus=sickrage.app.PROPERSEARCHER.amActive,
-            searchQueueLength=sickrage.app.SEARCHQUEUE.queue_length(),
-            postProcessorPaused=sickrage.app.POSTPROCESSORQUEUE.is_paused,
-            postProcessorRunning=sickrage.app.POSTPROCESSORQUEUE.is_in_progress,
-            postProcessorQueueLength=sickrage.app.POSTPROCESSORQUEUE.queue_length,
+            searchQueueLength=sickrage.app.search_queue.queue_length(),
+            postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
+            postProcessorRunning=sickrage.app.postprocessor_queue.is_in_progress,
+            postProcessorQueueLength=sickrage.app.postprocessor_queue.queue_length,
             title=_('Manage Queues'),
             header=_('Manage Queues'),
             topmenu='manage',
@@ -3564,41 +3564,41 @@ class ManageQueues(Manage):
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        if sickrage.app.srScheduler.get_job('BACKLOG').func(True):
+        if sickrage.app.scheduler.get_job('BACKLOG').func(True):
             sickrage.app.log.info("Backlog search forced")
-            sickrage.app.srNotifications.message(_('Backlog search started'))
+            sickrage.app.alerts.message(_('Backlog search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def forceSearch(self):
         # force it to run the next time it looks
-        if sickrage.app.srScheduler.get_job('DAILYSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job('DAILYSEARCHER').func(True):
             sickrage.app.log.info("Daily search forced")
-            sickrage.app.srNotifications.message(_('Daily search started'))
+            sickrage.app.alerts.message(_('Daily search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        if sickrage.app.srScheduler.get_job('PROPERSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job('PROPERSEARCHER').func(True):
             sickrage.app.log.info("Find propers search forced")
-            sickrage.app.srNotifications.message(_('Find propers search started'))
+            sickrage.app.alerts.message(_('Find propers search started'))
 
         return self.redirect("/manage/manageQueues/")
 
     def pauseBacklog(self, paused=None):
         if paused == "1":
-            sickrage.app.SEARCHQUEUE.pause_backlog()
+            sickrage.app.search_queue.pause_backlog()
         else:
-            sickrage.app.SEARCHQUEUE.unpause_backlog()
+            sickrage.app.search_queue.unpause_backlog()
 
         return self.redirect("/manage/manageQueues/")
 
     def pausePostProcessor(self, paused=None):
         if paused == "1":
-            sickrage.app.POSTPROCESSORQUEUE.pause()
+            sickrage.app.postprocessor_queue.pause()
         else:
-            sickrage.app.POSTPROCESSORQUEUE.unpause()
+            sickrage.app.postprocessor_queue.unpause()
 
         return self.redirect("/manage/manageQueues/")
 
@@ -3685,14 +3685,14 @@ class History(WebHandler):
     def clearHistory(self):
         self.historyTool.clear()
 
-        sickrage.app.srNotifications.message(_('History cleared'))
+        sickrage.app.alerts.message(_('History cleared'))
 
         return self.redirect("/history/")
 
     def trimHistory(self):
         self.historyTool.trim()
 
-        sickrage.app.srNotifications.message(_('Removed history entries older than 30 days'))
+        sickrage.app.alerts.message(_('Removed history entries older than 30 days'))
 
         return self.redirect("/history/")
 
@@ -3731,7 +3731,7 @@ class Config(WebHandler):
 
     def reset(self):
         sickrage.app.config.load(True)
-        sickrage.app.srNotifications.message(_('Configuration Reset to Defaults'),
+        sickrage.app.alerts.message(_('Configuration Reset to Defaults'),
                                              os.path.join(sickrage.app.CONFIG_FILE))
         return self.redirect("/config/general")
 
@@ -3901,9 +3901,9 @@ class ConfigGeneral(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[GENERAL] Configuration Saved'),
+            sickrage.app.alerts.message(_('[GENERAL] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/general/")
@@ -4074,9 +4074,9 @@ class ConfigSearch(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[SEARCH] Configuration Saved'),
+            sickrage.app.alerts.message(_('[SEARCH] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/search/")
@@ -4186,21 +4186,21 @@ class ConfigPostProcessing(Config):
             results.append(
                 _("You tried saving an invalid sports naming config, not saving your sports settings"))
 
-        sickrage.app.metadataProvidersDict['kodi'].set_config(kodi_data)
-        sickrage.app.metadataProvidersDict['kodi_12plus'].set_config(kodi_12plus_data)
-        sickrage.app.metadataProvidersDict['mediabrowser'].set_config(mediabrowser_data)
-        sickrage.app.metadataProvidersDict['sony_ps3'].set_config(sony_ps3_data)
-        sickrage.app.metadataProvidersDict['wdtv'].set_config(wdtv_data)
-        sickrage.app.metadataProvidersDict['tivo'].set_config(tivo_data)
-        sickrage.app.metadataProvidersDict['mede8er'].set_config(mede8er_data)
+        sickrage.app.metadata_providers['kodi'].set_config(kodi_data)
+        sickrage.app.metadata_providers['kodi_12plus'].set_config(kodi_12plus_data)
+        sickrage.app.metadata_providers['mediabrowser'].set_config(mediabrowser_data)
+        sickrage.app.metadata_providers['sony_ps3'].set_config(sony_ps3_data)
+        sickrage.app.metadata_providers['wdtv'].set_config(wdtv_data)
+        sickrage.app.metadata_providers['tivo'].set_config(tivo_data)
+        sickrage.app.metadata_providers['mede8er'].set_config(mede8er_data)
 
         sickrage.app.config.save()
 
         if len(results) > 0:
             [sickrage.app.log.warning(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
+            sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/postProcessing/")
@@ -4291,7 +4291,7 @@ class ConfigProviders(Config):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
         providerObj = NewznabProvider(name, '', True)
-        if providerObj.id not in sickrage.app.providersDict.newznab():
+        if providerObj.id not in sickrage.app.search_providers.newznab():
             return json_encode({'success': providerObj.id})
         return json_encode({'error': 'Provider Name already exists as ' + name})
 
@@ -4300,7 +4300,7 @@ class ConfigProviders(Config):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
         providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
-        if providerObj.id not in sickrage.app.providersDict.torrentrss():
+        if providerObj.id not in sickrage.app.search_providers.torrentrss():
             validate = providerObj.validateRSS()
             if validate['result']:
                 return json_encode({'success': providerObj.id})
@@ -4344,7 +4344,7 @@ class ConfigProviders(Config):
                 cur_name, cur_url, cur_key, cur_cat = curProviderData.split('|')
 
                 providerObj = NewznabProvider(cur_name, cur_url, cur_key, cur_cat)
-                sickrage.app.providersDict.newznab().update(**{providerObj.id: providerObj})
+                sickrage.app.search_providers.newznab().update(**{providerObj.id: providerObj})
 
                 kwargs[providerObj.id + '_name'] = cur_name
                 kwargs[providerObj.id + '_key'] = cur_key
@@ -4354,7 +4354,7 @@ class ConfigProviders(Config):
                 cur_name, cur_url, cur_cookies, cur_title_tag = curProviderData.split('|')
 
                 providerObj = TorrentRssProvider(cur_name, cur_url, cur_cookies, cur_title_tag)
-                sickrage.app.providersDict.torrentrss().update(**{providerObj.id: providerObj})
+                sickrage.app.search_providers.torrentrss().update(**{providerObj.id: providerObj})
 
                 kwargs[providerObj.id + '_name'] = cur_name
                 kwargs[providerObj.id + '_cookies'] = cur_cookies
@@ -4363,22 +4363,22 @@ class ConfigProviders(Config):
         sickrage.app.config.CUSTOM_PROVIDERS = custom_providers
 
         # remove providers
-        for p in list(set(sickrage.app.providersDict.provider_order).difference(
+        for p in list(set(sickrage.app.search_providers.provider_order).difference(
                 [x.split(':')[0] for x in kwargs.get('provider_order', '').split()])):
-            providerObj = sickrage.app.providersDict.all()[p]
-            del sickrage.app.providersDict[providerObj.type][p]
+            providerObj = sickrage.app.search_providers.all()[p]
+            del sickrage.app.search_providers[providerObj.type][p]
 
         # enable/disable/sort providers
-        sickrage.app.providersDict.provider_order = []
+        sickrage.app.search_providers.provider_order = []
         for curProviderStr in kwargs.get('provider_order', '').split():
             curProvider, curEnabled = curProviderStr.split(':')
-            sickrage.app.providersDict.provider_order += [curProvider]
-            if curProvider in sickrage.app.providersDict.all():
-                curProvObj = sickrage.app.providersDict.all()[curProvider]
+            sickrage.app.search_providers.provider_order += [curProvider]
+            if curProvider in sickrage.app.search_providers.all():
+                curProvObj = sickrage.app.search_providers.all()[curProvider]
                 curProvObj.enabled = bool(try_int(curEnabled))
 
         # dynamically load provider settings
-        for providerID, providerObj in sickrage.app.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
             try:
                 providerSettings = {
                     'minseed': try_int(kwargs.get(providerID + '_minseed', 0)),
@@ -4419,9 +4419,9 @@ class ConfigProviders(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
+            sickrage.app.alerts.message(_('[PROVIDERS] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/providers/")
@@ -4746,9 +4746,9 @@ class ConfigNotifications(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
+            sickrage.app.alerts.message(_('[NOTIFICATIONS] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/notifications/")
@@ -4827,9 +4827,9 @@ class ConfigSubtitles(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
+            sickrage.app.alerts.message(_('[SUBTITLES] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/subtitles/")
@@ -4866,9 +4866,9 @@ class ConfigAnime(Config):
 
         if len(results) > 0:
             [sickrage.app.log.error(x) for x in results]
-            sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
+            sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
-            sickrage.app.srNotifications.message(_('[ANIME] Configuration Saved'),
+            sickrage.app.alerts.message(_('[ANIME] Configuration Saved'),
                                                  os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/anime/")
@@ -4895,7 +4895,7 @@ class ConfigQualitySettings(Config):
 
         sickrage.app.config.save()
 
-        sickrage.app.srNotifications.message(_('[QUALITY SETTINGS] Configuration Saved'),
+        sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Saved'),
                                              os.path.join(sickrage.app.CONFIG_FILE))
 
         return self.redirect("/config/qualitySettings/")

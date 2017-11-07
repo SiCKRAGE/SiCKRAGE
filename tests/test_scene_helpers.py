@@ -92,7 +92,7 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        sickrage.app.cacheDB.db.insert({
+        sickrage.app.cache_db.db.insert({
             '_t': 'scene_exceptions',
             'indexer_id': -1,
             'show_name': 'Exception Test',
@@ -142,13 +142,13 @@ class SceneExceptionTestCase(SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        [sickrage.app.cacheDB.db.delete(x['doc']) for x in sickrage.app.cacheDB.db.all('scene_exceptions', with_doc=True)]
+        [sickrage.app.cache_db.db.delete(x['doc']) for x in sickrage.app.cache_db.db.all('scene_exceptions', with_doc=True)]
 
         # put something in the cache
-        sickrage.app.NAMECACHE.put('Cached Name', 0)
+        sickrage.app.name_cache.put('Cached Name', 0)
 
         # updating should not clear the cache this time since our exceptions didn't change
-        self.assertEqual(sickrage.app.NAMECACHE.get('Cached Name'), 0)
+        self.assertEqual(sickrage.app.name_cache.get('Cached Name'), 0)
 
 
 if __name__ == '__main__':

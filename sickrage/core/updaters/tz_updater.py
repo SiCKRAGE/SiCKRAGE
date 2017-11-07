@@ -40,7 +40,7 @@ def update_network_dict():
     url = 'https://cdn.sickrage.ca/network_timezones/'
 
     try:
-        url_data = sickrage.app.srWebSession.get(url).text
+        url_data = sickrage.app.wsession.get(url).text
     except Exception:
         sickrage.app.log.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
@@ -61,18 +61,18 @@ def update_network_dict():
         existing = network in network_dict
         if not existing:
             try:
-                sickrage.app.cacheDB.db.get('network_timezones', network)
+                sickrage.app.cache_db.db.get('network_timezones', network)
             except RecordNotFound:
-                sickrage.app.cacheDB.db.insert({
+                sickrage.app.cache_db.db.insert({
                     '_t': 'network_timezones',
                     'network_name': network,
                     'timezone': timezone
                 })
         elif network_dict[network] is not timezone:
             try:
-                dbData = sickrage.app.cacheDB.db.get('network_timezones', network, with_doc=True)['doc']
+                dbData = sickrage.app.cache_db.db.get('network_timezones', network, with_doc=True)['doc']
                 dbData['timezone'] = timezone
-                sickrage.app.cacheDB.db.update(dbData)
+                sickrage.app.cache_db.db.update(dbData)
             except RecordNotFound:
                 continue
 
@@ -81,8 +81,8 @@ def update_network_dict():
 
     for x in network_dict:
         try:
-            sickrage.app.cacheDB.db.delete(
-                sickrage.app.cacheDB.db.get('network_timezones', x, with_doc=True)['doc'])
+            sickrage.app.cache_db.db.delete(
+                sickrage.app.cache_db.db.get('network_timezones', x, with_doc=True)['doc'])
         except RecordNotFound:
             continue
 
@@ -97,7 +97,7 @@ def load_network_dict():
 
     global network_dict
     network_dict = dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
-                         sickrage.app.cacheDB.db.all('network_timezones', with_doc=True)])
+                         sickrage.app.cache_db.db.all('network_timezones', with_doc=True)])
 
 
 # get timezone of a network or return default timezone

@@ -42,7 +42,7 @@ class TransmissionAPI(GenericClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        self.response = sickrage.app.srWebSession.post(self.url,
+        self.response = sickrage.app.wsession.post(self.url,
                                                           data=json.dumps({'method': 'session-get', }),
                                                           timeout=120,
                                                           auth=(self.username, self.password),

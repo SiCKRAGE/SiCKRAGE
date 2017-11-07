@@ -32,7 +32,7 @@ class qbittorrentAPI(GenericClient):
         """Get API version."""
         try:
             self.url = '{}version/api'.format(self.host)
-            version = int(sickrage.app.srWebSession.get(self.url,
+            version = int(sickrage.app.wsession.get(self.url,
                                                            verify=sickrage.app.config.TORRENT_VERIFY_CERT).content)
         except Exception:
             version = 1
@@ -47,19 +47,19 @@ class qbittorrentAPI(GenericClient):
                 'password': self.password,
             }
             try:
-                self.response = sickrage.app.srWebSession.post(self.url, data=data)
+                self.response = sickrage.app.wsession.post(self.url, data=data)
             except Exception:
                 return None
 
         else:
             try:
-                self.response = sickrage.app.srWebSession.get(self.host,
+                self.response = sickrage.app.wsession.get(self.host,
                                                                  verify=sickrage.app.config.TORRENT_VERIFY_CERT)
                 self.auth = self.response.content
             except Exception:
                 return None
 
-        sickrage.app.srWebSession.cookies = self.response.cookies
+        sickrage.app.wsession.cookies = self.response.cookies
         self.auth = self.response.content
 
         return self.auth if not self.response.status_code == 404 else None
@@ -77,35 +77,35 @@ class qbittorrentAPI(GenericClient):
                 'hashes': result.hash.lower(),
                 label_key.lower(): label.replace(' ', '_'),
             }
-            return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
+            return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
         return True
 
     def _add_torrent_uri(self, result):
         self.url = '{}command/download'.format(self.host)
         data = {'urls': result.url}
-        return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def _add_torrent_file(self, result):
         self.url = '{}command/upload'.format(self.host)
         files = {'torrent': result.content}
-        return self._request(method='post', files=files, cookies=sickrage.app.srWebSession.cookies)
+        return self._request(method='post', files=files, cookies=sickrage.app.wsession.cookies)
 
     def _set_torrent_priority(self, result):
         self.url = '{}command/{}Prio'.format(self.host, 'increase' if result.priority == 1 else 'decrease')
         data = {'hashes': result.hash}
-        return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def _set_torrent_pause(self, result):
         self.url = '{}command/{}'.format(self.host, 'pause' if sickrage.app.config.TORRENT_PAUSED else 'resume')
         data = {'hash': result.hash}
-        return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def remove_torrent(self, info_hash):
         self.url = '{}command/deletePerm'.format(self.host)
         data = {
             'hashes': info_hash.lower(),
         }
-        return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
 
 api = qbittorrentAPI()

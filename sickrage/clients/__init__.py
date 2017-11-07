@@ -155,7 +155,6 @@ def getClientIstance(name):
 
 class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
-
         self.name = name
         self.username = sickrage.app.config.TORRENT_USERNAME if not username else username
         self.password = sickrage.app.config.TORRENT_PASSWORD if not password else password
@@ -197,7 +196,7 @@ class GenericClient(object):
             return False
 
         try:
-            self.response = sickrage.app.srWebSession.request(method.upper(),
+            self.response = sickrage.app.wsession.request(method.upper(),
                                                                  self.url,
                                                                  params=params,
                                                                  data=data,
@@ -367,7 +366,7 @@ class GenericClient(object):
     def testAuthentication(self):
         try:
             # verify valid url
-            self.response = sickrage.app.srWebSession.get(self.url, timeout=120, verify=False)
+            self.response = sickrage.app.wsession.get(self.url, timeout=120, verify=False)
         except:
             pass
 

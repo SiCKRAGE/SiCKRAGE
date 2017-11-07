@@ -7,7 +7,7 @@
     import sickrage
     from sickrage.core.helpers import anon_url, srdatetime
     from sickrage.core.media.util import showImage
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 <%block name="content">
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -186,11 +186,11 @@
                                                     width="16"
                                                     src="${srWebRoot}/images/imdb.png"/></a>
                                         % endif
-                                        <a href="${anon_url(srIndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                        <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
                                            rel="noreferrer" onclick="window.open(this.href, '_blank'); return false"
-                                           title="${srIndexerApi(cur_indexer).config['show_url']}${cur_result['showid']}">
-                                            <img alt="${srIndexerApi(cur_indexer).name}" height="16" width="16"
-                                                 src="${srWebRoot}/images/${srIndexerApi(cur_indexer).config['icon']}"/>
+                                           title="${IndexerApi(cur_indexer).config['show_url']}${cur_result['showid']}">
+                                            <img alt="${IndexerApi(cur_indexer).name}" height="16" width="16"
+                                                 src="${srWebRoot}/images/${IndexerApi(cur_indexer).config['icon']}"/>
                                         </a>
                                     </td>
 
@@ -360,12 +360,12 @@
                                                                                                            width="16"
                                                                                                            src="${srWebRoot}/images/imdb.png"/></a>
                                     % endif
-                                                <a href="${anon_url(srIndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                                <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
                                                    rel="noreferrer"
                                                    onclick="window.open(this.href, '_blank'); return false"
-                                                   title="${srIndexerApi(cur_indexer).config['show_url']}"><img
-                                                        alt="${srIndexerApi(cur_indexer).name}" height="16" width="16"
-                                                        src="${srWebRoot}/images/${srIndexerApi(cur_indexer).config['icon']}"/></a>
+                                                   title="${IndexerApi(cur_indexer).config['show_url']}"><img
+                                                        alt="${IndexerApi(cur_indexer).name}" height="16" width="16"
+                                                        src="${srWebRoot}/images/${IndexerApi(cur_indexer).config['icon']}"/></a>
                                     <span><a
                                             href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
                                             title="Manual Search" id="forceUpdate-${cur_result['showid']}"

@@ -62,7 +62,7 @@ class HoundDawgsProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -71,7 +71,7 @@ class HoundDawgsProvider(TorrentProvider):
                         'login': 'Login'}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -100,7 +100,7 @@ class HoundDawgsProvider(TorrentProvider):
                 self.search_params['searchstr'] = search_string
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['search'], params=self.search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=self.search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

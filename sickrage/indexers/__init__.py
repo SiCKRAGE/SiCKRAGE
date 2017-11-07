@@ -25,7 +25,7 @@ from sickrage.core.classes import ShowListUI
 from sickrage.indexers.config import indexerConfig
 
 
-class srIndexerApi(object):
+class IndexerApi(object):
     def __init__(self, indexerID=1):
         self.indexerID = indexerID
         self.module = indexerConfig[self.indexerID]['module']

@@ -84,7 +84,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_download(ep_name):
-        for n in sickrage.app.notifiersDict.values():
+        for n in sickrage.app.notifier_providers.values():
             try:
                 n._notify_download(ep_name)
             except:
@@ -92,7 +92,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_subtitle_download(ep_name, lang):
-        for n in sickrage.app.notifiersDict.values():
+        for n in sickrage.app.notifier_providers.values():
             try:
                 n._notify_subtitle_download(ep_name, lang)
             except:
@@ -100,7 +100,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_snatch(ep_name):
-        for n in sickrage.app.notifiersDict.values():
+        for n in sickrage.app.notifier_providers.values():
             try:
                 n._notify_snatch(ep_name)
             except:
@@ -109,7 +109,7 @@ class srNotifiers(object):
     @staticmethod
     def notify_version_update(new_version=""):
         if sickrage.app.config.NOTIFY_ON_UPDATE:
-            for n in sickrage.app.notifiersDict.values():
+            for n in sickrage.app.notifier_providers.values():
                 try:
                     n._notify_version_update(new_version)
                 except:
@@ -118,7 +118,7 @@ class srNotifiers(object):
     @staticmethod
     def notify_login(ipaddress):
         if sickrage.app.config.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
-            for n in sickrage.app.notifiersDict.values():
+            for n in sickrage.app.notifier_providers.values():
                 try:
                     n._notify_login(ipaddress)
                 except:

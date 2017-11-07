@@ -34,7 +34,7 @@ from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
 from sickrage.core.traktapi import srTraktAPI
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
 
@@ -66,7 +66,7 @@ class NameParser(object):
 
         try:
             # check cache for show
-            cache = sickrage.app.NAMECACHE.get(name)
+            cache = sickrage.app.name_cache.get(name)
             if cache:
                 fromCache = True
                 show_id = cache
@@ -74,7 +74,7 @@ class NameParser(object):
             # try indexers
             if not show_id and self.tryIndexers:
                 try:
-                    show_id1 = int(srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                    show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
                     show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
                     show_id = (show_id, show_id1)[show_id1 == show_id2]
                 except Exception:
@@ -92,7 +92,7 @@ class NameParser(object):
 
             # add show to cache
             if show and not fromCache:
-                sickrage.app.NAMECACHE.put(name, show.indexerid)
+                sickrage.app.name_cache.put(name, show.indexerid)
         except Exception as e:
             sickrage.app.log.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
@@ -268,7 +268,7 @@ class NameParser(object):
                 airdate = bestResult.air_date.toordinal()
 
                 dbData = [x['doc'] for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
                           if x['doc']['indexer'] == bestResult.show.indexer and x['doc']['airdate'] == airdate]
 
                 season_number = None
@@ -280,12 +280,12 @@ class NameParser(object):
 
                 if not season_number or not len(episode_numbers):
                     try:
-                        lINDEXER_API_PARMS = srIndexerApi(bestResult.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = IndexerApi(bestResult.show.indexer).api_params.copy()
 
                         lINDEXER_API_PARMS[
                             'language'] = bestResult.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
-                        t = srIndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = IndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
@@ -297,7 +297,7 @@ class NameParser(object):
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.app.log.warning(
-                            "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
+                            "Unable to contact " + IndexerApi(bestResult.show.indexer).name + ": {}".format(
                                 e))
                         episode_numbers = []
 

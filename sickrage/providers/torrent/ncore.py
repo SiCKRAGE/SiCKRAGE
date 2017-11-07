@@ -56,7 +56,7 @@ class NcoreProvider(TorrentProvider):
         self.cache = TVCache(self)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {
@@ -65,7 +65,7 @@ class NcoreProvider(TorrentProvider):
             'submitted': '1',
         }
 
-        response = sickrage.app.srWebSession.post(self.urls["login"], data=login_params).text
+        response = sickrage.app.wsession.post(self.urls["login"], data=login_params).text
         if not response:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
@@ -91,7 +91,7 @@ class NcoreProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: {0}".format(search_string))
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['search'] % search_string).json()
+                    data = sickrage.app.wsession.get(self.urls['search'] % search_string).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

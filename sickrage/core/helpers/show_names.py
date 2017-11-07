@@ -199,7 +199,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
     else:
         numseasons = len({x['doc']['season'] for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['season'] != 0})
 
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
@@ -233,7 +233,7 @@ def makeSceneSearchString(show, ep_obj):
     toReturn = []
 
     numseasons = len(
-        {x['doc']['season'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+        {x['doc']['season'] for x in sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
          if x['doc']['season'] != 0})
 
     # see if we should use dates instead of episodes
@@ -403,7 +403,7 @@ def searchDBForShow(regShowName, log=False):
     yearRegex = r"([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
 
     for showName in showNames:
-        dbData = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True) if
+        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
                   x['doc']['show_name'] == showName]
         if len(dbData) == 1:
             return int(dbData[0]["indexer_id"])
@@ -415,7 +415,7 @@ def searchDBForShow(regShowName, log=False):
                     sickrage.app.log.debug(
                         "Unable to match original name but trying to manually strip and specify show year")
 
-                dbData = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)
+                dbData = [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
                           if match.group(1) in x['doc']['show_name']
                           and x['doc']['startyear'] == match.group(3)]
 

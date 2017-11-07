@@ -378,7 +378,7 @@ class Tvdb:
 
         # get response from theTVDB
         try:
-            resp = sickrage.app.srWebSession.request(
+            resp = sickrage.app.wsession.request(
                 method,
                 urlparse.urljoin(self.config['api']['base'], url),
                 cache=self.config['cache_enabled'],

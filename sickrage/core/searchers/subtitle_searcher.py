@@ -28,7 +28,7 @@ from sickrage.core.common import dateTimeFormat
 from sickrage.core.helpers import findCertainShow
 
 
-class srSubtitleSearcher(object):
+class SubtitleSearcher(object):
     """
     The SubtitleSearcher will be executed every hour but will not necessarly search
     and download subtitles. Only if the defined rule is true
@@ -65,9 +65,9 @@ class srSubtitleSearcher(object):
         today = datetime.date.today().toordinal()
 
         results = []
-        for s in [s['doc'] for s in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
+        for s in [s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
             for e in [e['doc'] for e in
-                      sickrage.app.mainDB.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
+                      sickrage.app.main_db.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
                       if s['subtitles'] == 1
                       and e['doc']['location'] != ''
                       and e['doc']['subtitles'] not in sickrage.subtitles.wanted_languages()

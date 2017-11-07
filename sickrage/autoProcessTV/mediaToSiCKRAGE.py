@@ -214,7 +214,7 @@ def main():
     print("Opening URL: " + url + ' with params=' + str(params))
 
     try:
-        response = sickrage.app.srWebSession.get(url, auth=(username, password), params=params, verify=False)
+        response = sickrage.app.wsession.get(url, auth=(username, password), params=params, verify=False)
     except Exception as err:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(err))
         sys.exit('Unknown exception raised when opening url: ' + str(err))

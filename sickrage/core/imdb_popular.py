@@ -47,7 +47,7 @@ class imdbPopular(object):
         popular_shows = []
 
         try:
-            data = sickrage.app.srWebSession.get(self.url,
+            data = sickrage.app.wsession.get(self.url,
                                                     headers={'Referer': 'http://akas.imdb.com/'},
                                                     params=self.params).text
         except Exception:
@@ -124,4 +124,4 @@ class imdbPopular(object):
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            sickrage.app.srWebSession.download(image_url, full_path)
+            sickrage.app.wsession.download(image_url, full_path)

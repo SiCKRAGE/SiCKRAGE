@@ -63,7 +63,7 @@ def _verify_result(result):
 
             sickrage.app.log.debug("Verifiying a result from " + resProvider.name + " at " + url)
 
-            result.content = sickrage.app.srWebSession.get(url, verify=False, headers=headers).content
+            result.content = sickrage.app.wsession.get(url, verify=False, headers=headers).content
 
             if result.resultType == "torrent":
                 try:
@@ -206,7 +206,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if sickrage.app.config.USE_FAILED_DOWNLOADS:
         FailedHistory.logSnatch(result)
 
-    sickrage.app.srNotifications.message(_('Episode snatched'), result.name)
+    sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
     History.logSnatch(result)
 
@@ -231,14 +231,14 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
             trakt_data.append((curEpObj.season, curEpObj.episode))
 
-    data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
+    data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate(trakt_data)
 
     if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST:
         sickrage.app.log.debug(
             "Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
                 result.show.name) + " to Traktv Watchlist")
         if data:
-            sickrage.app.notifiersDict['trakt'].update_watchlist(result.show, data_episode=data, update="add")
+            sickrage.app.notifier_providers['trakt'].update_watchlist(result.show, data_episode=data, update="add")
 
     return True
 
@@ -428,7 +428,7 @@ def wantedEpisodes(show, fromDate):
     sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
     # check through the list of statuses to see if we want any
-    for dbData in [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+    for dbData in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                    if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
 
         curCompositeStatus = int(dbData["status"] or -1)
@@ -482,12 +482,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
     :return: results for search
     """
 
-    if not len(sickrage.app.providersDict.enabled()):
+    if not len(sickrage.app.search_providers.enabled()):
         sickrage.app.log.warning("No NZB/Torrent providers enabled. Please check your settings.")
         return
 
     # build name cache for show
-    sickrage.app.NAMECACHE.build(show)
+    sickrage.app.name_cache.build(show)
 
     origThreadName = threading.currentThread().getName()
 
@@ -495,7 +495,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
         foundResults = {}
         finalResults = []
 
-        for providerID, providerObj in sickrage.app.providersDict.sort(
+        for providerID, providerObj in sickrage.app.search_providers.sort(
                 randomize=sickrage.app.config.RANDOMIZE_PROVIDERS).items():
 
             # check provider type and provider is enabled
@@ -605,7 +605,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                         seasonQual])
 
                 allEps = [int(x['doc']["episode"]) for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['season'] in searchedSeasons]
 
                 sickrage.app.log.debug("Episode list: " + str(allEps))

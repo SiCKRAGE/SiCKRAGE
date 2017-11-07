@@ -273,7 +273,7 @@ class PostProcessor(object):
                 os.remove(cur_file)
 
                 # do the library update for synoindex
-                sickrage.app.notifiersDict['synoindex'].deleteFile(cur_file)
+                sickrage.app.notifier_providers['synoindex'].deleteFile(cur_file)
 
     def _combined_file_operation(self, file_path, new_path, new_base_name, associated_files=False, action=None,
                                  subs=False):
@@ -494,7 +494,7 @@ class PostProcessor(object):
 
         # search the database for a possible match and return immediately if we find one
         for curName in names:
-            dbData = [x['doc'] for x in sickrage.app.mainDB.db.all('history', with_doc=True)
+            dbData = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
                       if curName in x['doc']['resource']]
 
             if len(dbData) == 0:
@@ -613,9 +613,9 @@ class PostProcessor(object):
 
         :param filePath: file to add to mylist
         """
-        if sickrage.app.ADBA_CONNECTION:
+        if sickrage.app.adba_connection:
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
-                self.anidbEpisode = self._build_anidb_episode(sickrage.app.ADBA_CONNECTION, filePath)
+                self.anidbEpisode = self._build_anidb_episode(sickrage.app.adba_connection, filePath)
 
             self._log("Adding the file to the anidb mylist", sickrage.app.log.DEBUG)
             try:
@@ -688,7 +688,7 @@ class PostProcessor(object):
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
                 dbData = [x['doc'] for x in
-                          sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                           if x['doc']['indexer'] == show.indexer
                           and x['doc']['airdate'] == airdate
                           and x['doc']['season'] != 0]
@@ -699,7 +699,7 @@ class PostProcessor(object):
                 else:
                     # Found no result, try with season 0
                     dbData = [x['doc'] for x in
-                              sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                              sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                               if x['doc']['indexer'] == show.indexer and x['doc']['airdate'] == airdate]
 
                     if dbData:
@@ -719,7 +719,7 @@ class PostProcessor(object):
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
                 if len({x['doc']['season'] for x in
-                        sickrage.app.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                        sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                         if x['doc']['season'] != 0 and x['doc']['indexer'] == show.indexer}) == 1 and season is None:
                     season = 1
                     self._log(
@@ -1033,7 +1033,7 @@ class PostProcessor(object):
                 chmodAsParent(ep_obj.show.location)
 
                 # do the library update for synoindex
-                sickrage.app.notifiersDict['synoindex'].addFolder(ep_obj.show.location)
+                sickrage.app.notifier_providers['synoindex'].addFolder(ep_obj.show.location)
             except (OSError, IOError):
                 raise EpisodePostProcessingFailedException(
                     "Unable to create the show directory: " + ep_obj.show.location)
@@ -1171,25 +1171,25 @@ class PostProcessor(object):
             srNotifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
-            sickrage.app.notifiersDict['kodi'].update_library(ep_obj.show.name)
+            sickrage.app.notifier_providers['kodi'].update_library(ep_obj.show.name)
 
             # do the library update for Plex
-            sickrage.app.notifiersDict['plex'].update_library(ep_obj)
+            sickrage.app.notifier_providers['plex'].update_library(ep_obj)
 
             # do the library update for EMBY
-            sickrage.app.notifiersDict['emby'].update_library(ep_obj.show)
+            sickrage.app.notifier_providers['emby'].update_library(ep_obj.show)
 
             # do the library update for NMJ
             # nmj_notifier kicks off its library update when the notify_download is issued (inside notifiers)
 
             # do the library update for Synology Indexer
-            sickrage.app.notifiersDict['synoindex'].addFile(ep_obj.location)
+            sickrage.app.notifier_providers['synoindex'].addFile(ep_obj.location)
 
             # do the library update for pyTivo
-            sickrage.app.notifiersDict['pytivo'].update_library(ep_obj)
+            sickrage.app.notifier_providers['pytivo'].update_library(ep_obj)
 
             # do the library update for Trakt
-            sickrage.app.notifiersDict['trakt'].update_library(ep_obj)
+            sickrage.app.notifier_providers['trakt'].update_library(ep_obj)
         except:
             sickrage.app.log.info("Some notifications could not be sent. Continuing with post-processing...")
 

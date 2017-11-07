@@ -2,12 +2,12 @@
 <%!
     import sickrage
     from sickrage.core.helpers import anon_url
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 
 <%block name="metas">
     <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.INDEXER_DEFAULT_LANGUAGE}">
-    <meta data-var="sickrage.LANGUAGES" data-content="${','.join(srIndexerApi().indexer().languages.keys())}">
+    <meta data-var="sickrage.LANGUAGES" data-content="${','.join(IndexerApi().indexer().languages.keys())}">
 </%block>
 
 <%block name="content">
@@ -27,7 +27,7 @@
                                    value="${sickrage.app.config.INDEXER_TIMEOUT}"/>
                             % if use_provided_info:
                             ${_('Show retrieved from existing metadata:')}
-                                <a href="${anon_url(srIndexerApi(provided_indexer).config['show_url'], provided_indexer_id)}">
+                                <a href="${anon_url(IndexerApi(provided_indexer).config['show_url'], provided_indexer_id)}">
                                     ${provided_indexer_name}
                                 </a>
                                 <input type="hidden" id="indexerLang" name="indexerLang"

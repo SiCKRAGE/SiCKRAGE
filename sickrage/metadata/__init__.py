@@ -28,7 +28,7 @@ import fanart
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, try_int
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata.helpers import getShowImage
 
@@ -696,25 +696,25 @@ class GenericMetadata(object):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.app.log.debug("Indexer " + srIndexerApi(
+            sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
 
         if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb'):
             sickrage.app.log.error(
-                "Invalid image type " + str(image_type) + ", couldn't find it in the " + srIndexerApi(
+                "Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(
                     show_obj.indexer).name + " object")
             return
 
@@ -753,21 +753,21 @@ class GenericMetadata(object):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show_obj.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal poster-style season graphics
             return t.images(show_obj.indexerid, key_type='season', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.app.log.debug("Indexer " + srIndexerApi(
+            sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
         except (KeyError, IndexError):
             pass
@@ -786,18 +786,18 @@ class GenericMetadata(object):
         try:
             # There's gotta be a better way of doing this but we don't wanna
             # change the language value elsewhere
-            lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
-            t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
             # Give us just the normal season graphics
             return t.images(show_obj.indexerid, key_type='seasonwide', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
-            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + srIndexerApi(
+            sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
                 show_obj.indexer).name + ", not downloading images: {}".format(e.message))
-            sickrage.app.log.debug("Indexer " + srIndexerApi(
+            sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
         except (KeyError, IndexError):
             pass
@@ -911,14 +911,14 @@ class GenericMetadata(object):
         indexer_lang = show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
-            lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(show.indexer).indexer(**lINDEXER_API_PARMS)
             if season is None and episode is None:
                 return t
 

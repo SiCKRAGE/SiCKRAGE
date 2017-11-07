@@ -49,7 +49,7 @@ class XthorProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -57,7 +57,7 @@ class XthorProvider(TorrentProvider):
                         'submitme': 'X'}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
+            response = sickrage.app.wsession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
                                                          timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
@@ -87,7 +87,7 @@ class XthorProvider(TorrentProvider):
                 sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.app.srWebSession.get(searchURL).text
+                    data = sickrage.app.wsession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

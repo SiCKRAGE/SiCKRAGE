@@ -37,7 +37,7 @@ from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidSh
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.updaters import tz_updater
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import srNotifiers
 from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, \
@@ -327,7 +327,7 @@ class TVEpisode(object):
 
         # check for nfo and tbn
         if os.path.isfile(self.location):
-            for cur_provider in sickrage.app.metadataProvidersDict.values():
+            for cur_provider in sickrage.app.metadata_providers.values():
                 if cur_provider.episode_metadata:
                     new_result = cur_provider._has_episode_metadata(self)
                 else:
@@ -378,12 +378,12 @@ class TVEpisode(object):
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
         dbData = [x['doc'] for x in
-                  sickrage.app.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                  sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
                   if x['doc']['season'] == season and x['doc']['episode'] == episode]
 
         if len(dbData) > 1:
             for ep in dbData:
-                sickrage.app.mainDB.db.delete(ep)
+                sickrage.app.main_db.db.delete(ep)
             return False
         elif len(dbData) == 0:
             sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
@@ -432,7 +432,7 @@ class TVEpisode(object):
             return True
 
     def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
-        indexer_name = srIndexerApi(self.indexer).name
+        indexer_name = IndexerApi(self.indexer).name
 
         season = (self.season, season)[season is not None]
         episode = (self.episode, episode)[episode is not None]
@@ -447,7 +447,7 @@ class TVEpisode(object):
             if cachedSeason is None:
                 t = tvapi
                 if not t:
-                    lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
+                    lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
                     lINDEXER_API_PARMS['cache'] = cache
 
                     lINDEXER_API_PARMS['language'] = indexer_lang
@@ -455,7 +455,7 @@ class TVEpisode(object):
                     if self.show.dvdorder != 0:
                         lINDEXER_API_PARMS['dvdorder'] = True
 
-                    t = srIndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+                    t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
                 myEp = t[self.show.indexerid][season][episode]
             else:
                 myEp = cachedSeason[episode]
@@ -530,7 +530,7 @@ class TVEpisode(object):
         # early conversion to int so that episode doesn't get marked dirty
         self.indexerid = try_int(safe_getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
-            sickrage.app.log.error("Failed to retrieve ID from " + srIndexerApi(self.indexer).name)
+            sickrage.app.log.error("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False
@@ -693,7 +693,7 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.app.metadataProvidersDict.values():
+        for cur_provider in sickrage.app.metadata_providers.values():
             result = cur_provider.create_episode_metadata(self) or result
 
         return result
@@ -702,7 +702,7 @@ class TVEpisode(object):
 
         result = False
 
-        for cur_provider in sickrage.app.metadataProvidersDict.values():
+        for cur_provider in sickrage.app.metadata_providers.values():
             result = cur_provider.create_episode_thumb(self) or result
 
         return result
@@ -720,14 +720,14 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [sickrage.app.mainDB.db.delete(x['doc']) for x in
-         sickrage.app.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+        [sickrage.app.main_db.db.delete(x['doc']) for x in
+         sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
-        data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
+        data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST and data:
             sickrage.app.log.debug("Deleting myself from Trakt")
-            sickrage.app.notifiersDict['trakt'].update_watchlist(self.show, data_episode=data, update="remove")
+            sickrage.app.notifier_providers['trakt'].update_watchlist(self.show, data_episode=data, update="remove")
 
         if full and os.path.isfile(self.location):
             sickrage.app.log.info('Attempt to delete episode file %s' % self.location)
@@ -781,13 +781,13 @@ class TVEpisode(object):
 
         try:
             dbData = \
-                [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
+                [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
                  if x['doc']['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
-            sickrage.app.mainDB.db.update(dbData)
+            sickrage.app.main_db.db.update(dbData)
         except:
-            sickrage.app.mainDB.db.insert(tv_episode)
+            sickrage.app.main_db.db.insert(tv_episode)
 
     def fullPath(self):
         if self.location is None or self.location == "":

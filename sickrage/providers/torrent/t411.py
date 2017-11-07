@@ -54,7 +54,7 @@ class T411Provider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         if self.token is not None:
@@ -65,7 +65,7 @@ class T411Provider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30,
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30,
                                                          auth=T411Auth(self.token)).json()
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
@@ -100,7 +100,7 @@ class T411Provider(TorrentProvider):
                     sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = sickrage.app.srWebSession.get(searchURL, auth=T411Auth(self.token)).json()
+                        data = sickrage.app.wsession.get(searchURL, auth=T411Auth(self.token)).json()
                         results += self.parse(data, mode)
                     except Exception:
                         sickrage.app.log.debug("No data returned from provider")

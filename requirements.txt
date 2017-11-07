@@ -42,3 +42,5 @@ arrow==0.10.0
 unidecode==0.4.21
 twilio==6.7.0
 chardet==3.0.4
+pytz==2017.3
+tzlocal==1.4

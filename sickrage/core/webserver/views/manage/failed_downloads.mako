@@ -58,7 +58,7 @@
                                     % endif
                                 </td>
                                 <td align="center">
-                                    <% provider = sickrage.app.providersDict.all()[hItem["provider"].lower()] %>
+                                    <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
                                     % if provider is not None:
                                         <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16"
                                              height="16"

@@ -121,7 +121,7 @@ class TNTVillageProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'UserName': self.username,
@@ -130,7 +130,7 @@ class TNTVillageProvider(TorrentProvider):
                         'submit': 'Connettiti al Forum'}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -278,7 +278,7 @@ class TNTVillageProvider(TorrentProvider):
             sickrage.app.log.debug("Unable to parse the filename %s into a valid show" % name)
             return False
 
-        if len([x for x in sickrage.app.mainDB.db.get_many('tv_episodes', parse_result.indexerid, with_doc=True)
+        if len([x for x in sickrage.app.main_db.db.get_many('tv_episodes', parse_result.indexerid, with_doc=True)
                 if x['doc']['season'] == parse_result.season_number]) == len(parse_result.episode_numbers): return True
 
     def search(self, search_params, age=0, ep_obj=None):
@@ -320,7 +320,7 @@ class TNTVillageProvider(TorrentProvider):
                     sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                     try:
-                        data = sickrage.app.srWebSession.get(searchURL).text
+                        data = sickrage.app.wsession.get(searchURL).text
                     except Exception:
                         sickrage.app.log.debug("No data returned from provider")
                         continue

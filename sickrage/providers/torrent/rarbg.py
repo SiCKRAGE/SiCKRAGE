@@ -57,7 +57,7 @@ class RarbgProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.srWebSession.get(self.urls['api'], params=login_params, timeout=30).json()
+            response = sickrage.app.wsession.get(self.urls['api'], params=login_params, timeout=30).json()
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -114,7 +114,7 @@ class RarbgProvider(TorrentProvider):
                 sleep(5)
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['api'], params=search_params).json()
+                    data = sickrage.app.wsession.get(self.urls['api'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

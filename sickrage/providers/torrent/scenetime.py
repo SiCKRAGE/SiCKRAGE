@@ -67,7 +67,7 @@ class SceneTimeProvider(TorrentProvider):
                 query.update({"c%s" % i: 1 for i in self.categories})
 
                 try:
-                    data = sickrage.app.srWebSession.post(self.urls['search'], data=query).text
+                    data = sickrage.app.wsession.post(self.urls['search'], data=query).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

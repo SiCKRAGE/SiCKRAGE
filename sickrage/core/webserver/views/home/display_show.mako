@@ -12,7 +12,7 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
     from sickrage.core.media.util import showImage
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -198,11 +198,11 @@
                                                          style="margin-top: -1px; vertical-align:middle;"/>
                                                 </a>
                                             % endif
-                                            <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                            <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
                                                onclick="window.open(this.href, '_blank'); return false;"
-                                               title="<% srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>"><img
-                                                    alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
-                                                    src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
+                                               title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>"><img
+                                                    alt="${IndexerApi(show.indexer).name}" height="16" width="16"
+                                                    src="${srWebRoot}/images/${IndexerApi(show.indexer).config["icon"]}"
                                                     style="margin-top: -1px; vertical-align:middle;"/></a>
                                             % if xem_numbering or xem_absolute_numbering:
                                                 <a href="${anon_url('http://thexem.de/search?q=', show.name)}"

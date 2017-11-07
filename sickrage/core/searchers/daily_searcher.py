@@ -30,7 +30,7 @@ from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.updaters import tz_updater
 
 
-class srDailySearcher(object):
+class DailySearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "DAILYSEARCHER"
         self.lock = threading.Lock()
@@ -64,7 +64,7 @@ class srDailySearcher(object):
 
         show = None
 
-        episodes = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)
+        episodes = [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)
                     if x['doc']['status'] == UNAIRED
                     and x['doc']['season'] > 0
                     and curDate.toordinal() >= x['doc']['airdate'] > 1]
@@ -106,6 +106,6 @@ class srDailySearcher(object):
             sickrage.app.log.info("{}: No new released episodes found".format(self.name))
 
         # queue episode for daily search
-        sickrage.app.SEARCHQUEUE.put(DailySearchQueueItem())
+        sickrage.app.search_queue.put(DailySearchQueueItem())
 
         self.amActive = False

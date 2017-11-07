@@ -47,9 +47,9 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class srWebServer(threading.Thread):
+class WebServer(threading.Thread):
     def __init__(self):
-        super(srWebServer, self).__init__(name="TORNADO")
+        super(WebServer, self).__init__(name="TORNADO")
         self.daemon = True
         self.started = False
         self.video_root = None
@@ -174,7 +174,7 @@ class srWebServer(threading.Thread):
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.log.info(
-                "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.VERSIONUPDATER.version))
+                "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.version_updater.version))
             sickrage.app.log.info(
                 "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.config.CONFIG_VERSION))
             sickrage.app.log.info(

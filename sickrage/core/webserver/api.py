@@ -56,7 +56,7 @@ from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
 from sickrage.core.updaters import tz_updater
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
 
@@ -720,7 +720,7 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
+        dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                   if x['doc']['season'] == self.s and x['doc']['episode'] == self.e]
 
         if not len(dbData) == 1:
@@ -789,7 +789,7 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = sickrage.app.SEARCHQUEUE.put(
+        ep_queue_item = sickrage.app.search_queue.put(
             ManualSearchQueueItem(showObj, epObj))  # @UndefinedVariable
 
         # wait until the queue item tells us whether it worked or not
@@ -906,7 +906,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         extra_msg = ""
         if start_backlog:
             for season, segment in segments.items():
-                sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
+                sickrage.app.search_queue.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
                 sickrage.app.log.info("Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
@@ -967,7 +967,7 @@ class CMD_SubtitleSearch(ApiCall):
             status = 'No subtitles downloaded'
             response = _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
-        sickrage.app.srNotifications.message(_('Subtitles Search'), status)
+        sickrage.app.alerts.message(_('Subtitles Search'), status)
 
         return response
 
@@ -991,7 +991,7 @@ class CMD_Exceptions(ApiCall):
 
         if self.indexerid is None:
             scene_exceptions = {}
-            for dbData in [x['doc'] for x in sickrage.app.cacheDB.db.all('scene_exceptions', with_doc=True)]:
+            for dbData in [x['doc'] for x in sickrage.app.cache_db.db.all('scene_exceptions', with_doc=True)]:
                 indexerid = dbData['indexer_id']
                 if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
@@ -1003,7 +1003,7 @@ class CMD_Exceptions(ApiCall):
 
             scene_exceptions = []
             for dbData in [x['doc'] for x in
-                           sickrage.app.cacheDB.db.all('scene_exceptions', self.indexerid, with_doc=True)
+                           sickrage.app.cache_db.db.all('scene_exceptions', self.indexerid, with_doc=True)
                            if x['doc']['indexer_id'] == self.indexerid]:
                 scene_exceptions.append(dbData['show_name'])
 
@@ -1101,9 +1101,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', with_doc=True)]
         else:
-            dbData = [x['doc'] for x in sickrage.app.failedDB.db.all('failed', ulimit, with_doc=True)]
+            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', ulimit, with_doc=True)]
 
         return _responds(RESULT_SUCCESS, dbData)
 
@@ -1123,7 +1123,7 @@ class CMD_Backlog(ApiCall):
         for s in sickrage.app.SHOWLIST:
             showEps = []
             for e in sorted(
-                    [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+                    [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
                      s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
 
                 curEpCat = s.getOverview(int(e["status"] or -1))
@@ -1232,7 +1232,7 @@ class CMD_PostProcess(ApiCall):
         if not self.type:
             self.type = 'manual'
 
-        data = sickrage.app.POSTPROCESSORQUEUE.put(self.path, process_method=self.process_method, force=self.force_replace,
+        data = sickrage.app.postprocessor_queue.put(self.path, process_method=self.process_method, force=self.force_replace,
                           is_priority=self.is_priority, delete_on=self.delete, failed=self.failed,
                           proc_type=self.type, force_next=self.force_next)
 
@@ -1251,7 +1251,7 @@ class CMD_SiCKRAGE(ApiCall):
 
     def run(self):
         """ Get miscellaneous information about SiCKRAGE """
-        data = {"app_version": sickrage.app.VERSIONUPDATER.updater.version, "api_version": self.version,
+        data = {"app_version": sickrage.app.version_updater.updater.version, "api_version": self.version,
                 "api_commands": sorted(self.api_calls.keys())}
         return _responds(RESULT_SUCCESS, data)
 
@@ -1325,12 +1325,12 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
     def run(self):
         return _responds(RESULT_SUCCESS, {
             "current_version": {
-                "version": sickrage.app.VERSIONUPDATER.updater.version,
+                "version": sickrage.app.version_updater.updater.version,
             },
             "latest_version": {
-                "version": sickrage.app.VERSIONUPDATER.updater.get_newest_version,
+                "version": sickrage.app.version_updater.updater.get_newest_version,
             },
-            "needs_update": sickrage.app.VERSIONUPDATER.check_for_new_version(True),
+            "needs_update": sickrage.app.version_updater.check_for_new_version(True),
         })
 
 
@@ -1345,12 +1345,12 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         """ Get information about the scheduler """
 
         try:
-            last_backlog = [x['doc'] for x in sickrage.app.mainDB.db.all('info', with_doc=True)][0]["last_backlog"]
+            last_backlog = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)][0]["last_backlog"]
         except:
             last_backlog = 1
 
-        backlogPaused = sickrage.app.SEARCHQUEUE.is_backlog_paused()  # @UndefinedVariable
-        backlogRunning = sickrage.app.SEARCHQUEUE.is_backlog_in_progress()  # @UndefinedVariable
+        backlogPaused = sickrage.app.search_queue.is_backlog_paused()  # @UndefinedVariable
+        backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()  # @UndefinedVariable
         nextBacklog = sickrage.app.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(
             sickrage.app.SYS_ENCODING)
 
@@ -1432,7 +1432,7 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
 
     def run(self):
         messages = []
-        for cur_notification in sickrage.app.srNotifications.get_notifications(self.request.remote_ip):
+        for cur_notification in sickrage.app.alerts.get_notifications(self.request.remote_ip):
             messages.append({"title": cur_notification.title,
                              "message": cur_notification.message,
                              "type": cur_notification.type})
@@ -1468,10 +1468,10 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
     def run(self):
         """ Pause or unpause the backlog search """
         if self.pause:
-            sickrage.app.SEARCHQUEUE.pause_backlog()  # @UndefinedVariable
+            sickrage.app.search_queue.pause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog paused")
         else:
-            sickrage.app.SEARCHQUEUE.unpause_backlog()  # @UndefinedVariable
+            sickrage.app.search_queue.unpause_backlog()  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg="Backlog unpaused")
 
 
@@ -1517,7 +1517,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
-        self.valid_languages = srIndexerApi().indexer().languages
+        self.valid_languages = IndexerApi().indexer().languages
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
         self.lang, args = self.check_params("lang", sickrage.app.config.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
@@ -1530,15 +1530,15 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         lang_id = self.valid_languages[self.lang]
 
         if self.name and not self.indexerid:  # only name was given
-            for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
+            for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
+                lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
 
                 lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
                 lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
 
-                t = srIndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     apiData = t[str(self.name).encode()]
@@ -1555,14 +1555,14 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             return _responds(RESULT_SUCCESS, {"results": results, "langid": lang_id})
 
         elif self.indexerid:
-            for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
-                lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
+            for _indexer in IndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
+                lINDEXER_API_PARMS = IndexerApi(_indexer).api_params.copy()
 
                 lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
 
-                t = srIndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
+                t = IndexerApi(_indexer).indexer(**lINDEXER_API_PARMS)
 
                 try:
                     myShow = t[int(self.indexerid)]
@@ -1723,8 +1723,8 @@ class CMD_SiCKRAGEUpdate(ApiCall):
         super(CMD_SiCKRAGEUpdate, self).__init__(application, request, *args, **kwargs)
 
     def run(self):
-        if sickrage.app.VERSIONUPDATER.check_for_new_version():
-            if sickrage.app.VERSIONUPDATER.update():
+        if sickrage.app.version_updater.check_for_new_version():
+            if sickrage.app.version_updater.update():
                 return _responds(RESULT_SUCCESS, msg="SiCKRAGE is updating ...")
             return _responds(RESULT_FAILURE, msg="SiCKRAGE could not update ...")
         return _responds(RESULT_FAILURE, msg="SiCKRAGE is already up to date")
@@ -1901,7 +1901,7 @@ class CMD_ShowAddExisting(ApiCall):
         if iqualityID or aqualityID:
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
-        sickrage.app.SHOWQUEUE.addShow(
+        sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.STATUS_DEFAULT,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
             default_status_after=sickrage.app.config.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
@@ -1937,7 +1937,7 @@ class CMD_ShowAddNew(ApiCall):
 
     def __init__(self, application, request, *args, **kwargs):
         super(CMD_ShowAddNew, self).__init__(application, request, *args, **kwargs)
-        self.valid_languages = srIndexerApi().indexer().languages
+        self.valid_languages = IndexerApi().indexer().languages
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
         self.initial, args = self.check_params("initial", None, False, "list",
@@ -2074,7 +2074,7 @@ class CMD_ShowAddNew(ApiCall):
             else:
                 chmodAsParent(showPath)
 
-        sickrage.app.SHOWQUEUE.addShow(
+        sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
             scene=self.scene, default_status_after=default_ep_status_after, archive=self.archive_firstmatch
@@ -2148,7 +2148,7 @@ class CMD_ShowDelete(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.SHOWQUEUE.removeShow(showObj, bool(self.removefiles))
+            sickrage.app.show_queue.removeShow(showObj, bool(self.removefiles))
         except CantRemoveShowException as exception:
             return _responds(RESULT_FAILURE, msg=exception.message)
 
@@ -2337,7 +2337,7 @@ class CMD_ShowRefresh(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.SHOWQUEUE.refreshShow(showObj)
+            sickrage.app.show_queue.refreshShow(showObj)
         except CantRefreshShowException as e:
             return _responds(RESULT_FAILURE, msg=e.message)
 
@@ -2371,12 +2371,12 @@ class CMD_ShowSeasonList(ApiCall):
         if self.sort == "asc":
             seasonList = sorted(
                 *[{x['doc']['season'] for x in
-                   sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                   sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
                 key=lambda d: d)
         else:
             seasonList = sorted(
                 *[{x['doc']['season'] for x in
-                   sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
+                   sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
                 key=lambda d: d, reverse=True)
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2410,7 +2410,7 @@ class CMD_ShowSeasons(ApiCall):
             seasons = {}
 
             for row in [x['doc'] for x in
-                        sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+                        sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
@@ -2434,7 +2434,7 @@ class CMD_ShowSeasons(ApiCall):
                 seasons[curSeason][curEpisode] = row
 
         else:
-            dbData = [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
+            dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                       if x['doc']['season'] == self.season]
 
             if len(dbData) is 0:
@@ -2568,7 +2568,7 @@ class CMD_ShowStats(ApiCall):
             if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in [x['doc'] for x in sickrage.app.mainDB.db.get_many('tv_episodes', self.indexerid, with_doc=True)
+        for row in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
                     if x['doc']['season'] != 0]:
 
             status, quality = Quality.splitCompositeStatus(int(row["status"]))
@@ -2650,7 +2650,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.SHOWQUEUE.updateShow(showObj, True)  # @UndefinedVariable
+            sickrage.app.show_queue.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             sickrage.app.log.debug("API::Unable to update show: {0}".format(str(e)))

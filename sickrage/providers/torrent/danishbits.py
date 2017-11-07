@@ -72,7 +72,7 @@ class DanishbitsProvider(TorrentProvider):
                 search_params['search'] = search_string
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

@@ -82,7 +82,7 @@ class EliteTorrentProvider(TorrentProvider):
                 search_params['buscar'] = search_string.strip() if mode != 'RSS' else ''
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

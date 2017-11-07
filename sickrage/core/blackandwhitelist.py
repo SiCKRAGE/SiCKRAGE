@@ -51,7 +51,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            sickrage.app.mainDB.db.insert({
+            sickrage.app.main_db.db.insert({
                 '_t': table,
                 'show_id': self.show_id,
                 'keywork': value
@@ -86,7 +86,7 @@ class BlackAndWhiteList(object):
         :param table: database table remove keywords from
         """
         try:
-            sickrage.app.mainDB.db.delete(sickrage.app.mainDB.db.get(table, self.show_id, with_doc=True)['doc'])
+            sickrage.app.main_db.db.delete(sickrage.app.main_db.db.get(table, self.show_id, with_doc=True)['doc'])
         except RecordNotFound:
             pass
 
@@ -99,7 +99,7 @@ class BlackAndWhiteList(object):
         :return: keywords in list
         """
         groups = []
-        for result in [x['doc'] for x in sickrage.app.mainDB.db.get_many(table, self.show_id, with_doc=True)]:
+        for result in [x['doc'] for x in sickrage.app.main_db.db.get_many(table, self.show_id, with_doc=True)]:
             groups.append(result['keyword'])
 
         sickrage.app.log.debug(
@@ -156,10 +156,10 @@ def short_group_names(groups):
     """
     groups = groups.split(",")
     shortGroupList = []
-    if sickrage.app.ADBA_CONNECTION:
+    if sickrage.app.adba_connection:
         for groupName in groups:
             try:
-                group = sickrage.app.ADBA_CONNECTION.group(gname=groupName)
+                group = sickrage.app.adba_connection.group(gname=groupName)
             except AniDBCommandTimeoutError:
                 sickrage.app.log.debug("Timeout while loading group from AniDB. Trying next group")
             except Exception:

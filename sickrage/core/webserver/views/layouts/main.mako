@@ -454,9 +454,9 @@
                         class="footer-highlight">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
                     &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> ${_('Overall Downloaded')}
                     | ${_('Daily Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.srScheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
                     | ${_('Backlog Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.srScheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
                 </div>
 
                 <div>

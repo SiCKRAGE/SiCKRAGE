@@ -27,7 +27,7 @@ import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replaceExtension, indentXML
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -234,14 +234,14 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
         # There's gotta be a better way of doing this but we don't wanna
         # change the language value elsewhere
-        lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         tv_node = Element("Series")
 
@@ -249,19 +249,19 @@ class MediaBrowserMetadata(GenericMetadata):
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
             sickrage.app.log.error(
-                "Unable to find show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
+                "Unable to find show with id " + str(show_obj.indexerid) + " on " + IndexerApi(
                     show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
             sickrage.app.log.error(
-                "" + srIndexerApi(show_obj.indexer).name + " is down, can't use its data to make the NFO")
+                "" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to make the NFO")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
             sickrage.app.log.info(
-                "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
+                "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + IndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
 
@@ -405,20 +405,20 @@ class MediaBrowserMetadata(GenericMetadata):
         indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
-            lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
 
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.app.log.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + IndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -432,7 +432,7 @@ class MediaBrowserMetadata(GenericMetadata):
             except (indexer_episodenotfound, indexer_seasonnotfound):
                 sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                    (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                    (curEpToWrite.season, curEpToWrite.episode, IndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if curEpToWrite == ep_obj:

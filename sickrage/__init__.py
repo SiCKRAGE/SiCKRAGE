@@ -302,14 +302,14 @@ def main():
         if DAEMONIZE:
             app.NOLAUNCH = True
             app.QUITE = True
-            app.daemon = Daemon(PID_FILE, app.DATA_DIR)
-            app.daemon.daemonize()
+            app.DAEMON = Daemon(PID_FILE, app.DATA_DIR)
+            app.DAEMON.daemonize()
 
         # start app
         app.start()
 
         # main thread loop
-        while app.started: time.sleep(1)
+        while app.STARTED: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
         if app: app.shutdown()
     except ImportError:

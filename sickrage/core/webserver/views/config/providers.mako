@@ -25,7 +25,7 @@
         torrentrss_providers = ''
 
         if sickrage.app.config.USE_NZBS:
-            for providerID, providerObj in sickrage.app.providersDict.newznab().items():
+            for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                 if providerObj.default:
                     continue
 
@@ -39,7 +39,7 @@
                         ("false", "true")[bool(sickrage.app.config.USE_NZBS)]]))
 
         if sickrage.app.config.USE_TORRENTS:
-            for providerID, providerObj in sickrage.app.providersDict.torrentrss().items():
+            for providerID, providerObj in sickrage.app.search_providers.torrentrss().items():
                 if providerObj.default:
                     continue
 
@@ -85,7 +85,7 @@
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <ul id="provider_order_list">
-                    % for providerID, providerObj in sickrage.app.providersDict.sort().items():
+                    % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.USE_TORRENTS):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
                         % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
@@ -113,7 +113,7 @@
                     % endfor
                 </ul>
                 <input type="hidden" name="provider_order" id="provider_order"
-                       value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.providersDict.all().items()])}"/>
+                       value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
                 <br><input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
             </fieldset>
         </div>
@@ -138,7 +138,7 @@
                                 <span class="glyphicon glyphicon-search"></span>
                             </div>
                             <select id="editAProvider" class="form-control" title="Choose a search provider">
-                                % for providerID, providerObj in sickrage.app.providersDict.enabled().items():
+                                % for providerID, providerObj in sickrage.app.search_providers.enabled().items():
                                     <option value="${providerID}">${providerObj.name}</option>
                                 % endfor
                             </select>
@@ -148,7 +148,7 @@
 
 
                 <!-- start div for editing providers //-->
-                % for providerID, providerObj in sickrage.app.providersDict.newznab().items():
+                % for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if not providerObj.default:
                             <div class="row field-pair">
@@ -279,7 +279,7 @@
                     </div>
                 % endfor
 
-                % for providerID, providerObj in sickrage.app.providersDict.nzb().items():
+                % for providerID, providerObj in sickrage.app.search_providers.nzb().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
@@ -408,7 +408,7 @@
                     </div>
                 % endfor
 
-                % for providerID, providerObj in sickrage.app.providersDict.all_torrent().items():
+                % for providerID, providerObj in sickrage.app.search_providers.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'custom_url'):
                             <div class="row field-pair">

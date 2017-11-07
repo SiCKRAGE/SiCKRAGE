@@ -84,7 +84,7 @@ class NewpctProvider(TorrentProvider):
                         searchURL = search_url + '/' + search_string + '//pg/' + str(pg)
 
                         try:
-                            data = sickrage.app.srWebSession.get(searchURL).text
+                            data = sickrage.app.wsession.get(searchURL).text
                             items = self.parse(data, mode)
                             if not len(items): break
                             results += items
@@ -121,7 +121,7 @@ class NewpctProvider(TorrentProvider):
                 try:
                     torrent_anchor = row.find_all('a')[1]
                     details_url = torrent_anchor.get('href', '')
-                    with bs4_parser(sickrage.app.srWebSession.get(details_url).text) as details:
+                    with bs4_parser(sickrage.app.wsession.get(details_url).text) as details:
                         title = self._process_title(details.find('h1').get_text().split('/')[1])
                         download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
                                                 details.get_text(), re.DOTALL).group(1)
@@ -173,7 +173,7 @@ class NewpctProvider(TorrentProvider):
 
     def _process_link(self, url):
         try:
-            url = sickrage.app.srWebSession.get(url).text
+            url = sickrage.app.wsession.get(url).text
             download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
             url = self.urls['download'] % download_id
         except Exception as e:

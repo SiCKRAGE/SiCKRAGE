@@ -24,7 +24,7 @@ import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import indentXML
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -101,32 +101,32 @@ class KODI_12PlusMetadata(GenericMetadata):
         show_ID = show_obj.indexerid
 
         indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
-        lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
+        lINDEXER_API_PARMS = IndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['language'] = indexer_lang
 
         if show_obj.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
 
-        t = srIndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
+        t = IndexerApi(show_obj.indexer).indexer(**lINDEXER_API_PARMS)
 
         tv_node = Element("tvshow")
 
         try:
             myShow = t[int(show_ID)]
         except indexer_shownotfound:
-            sickrage.app.log.error("Unable to find show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.app.log.error("Unable to find show with id " + str(show_ID) + " on " + IndexerApi(
                 show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
             sickrage.app.log.error(
-                "" + srIndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
+                "" + IndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.app.log.info("Incomplete info for show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.app.log.info("Incomplete info for show with id " + str(show_ID) + " on " + IndexerApi(
                 show_obj.indexer).name + ", skipping it")
             return False
 
@@ -153,7 +153,7 @@ class KODI_12PlusMetadata(GenericMetadata):
         # if getattr(myShow, 'id', None):
         #    episodeguide = SubElement(tv_node, "episodeguide")
         #    episodeguideurl = SubElement(episodeguide, "url")
-        #    episodeguideurl.text = srIndexerApi(show_obj.indexer).config['base_url'] + str(
+        #    episodeguideurl.text = IndexerApi(show_obj.indexer).config['base_url'] + str(
         #        myShow["id"]) + '/all/en.zip'
 
         if getattr(myShow, 'contentrating', None):
@@ -211,7 +211,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
-        lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
+        lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['language'] = indexer_lang
 
@@ -219,13 +219,13 @@ class KODI_12PlusMetadata(GenericMetadata):
             lINDEXER_API_PARMS['dvdorder'] = True
 
         try:
-            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
             sickrage.app.log.error("Unable to connect to {} while creating meta files - skipping - {}".format(
-                srIndexerApi(
+                IndexerApi(
                     ep_obj.show.indexer).name, e))
             return
 
@@ -242,7 +242,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             except (indexer_episodenotfound, indexer_seasonnotfound):
                 sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                    (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                    (curEpToWrite.season, curEpToWrite.episode, IndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if not getattr(myEp, 'firstaired', None):

@@ -169,7 +169,7 @@ def tearDown_test_show_dir():
 
 
 def setUp_test_web_server():
-    threading.Thread(None, sickrage.app.srWebServer.start).start()
+    threading.Thread(None, sickrage.app.wserver.start).start()
 
 
 def tearDown_test_web_server():

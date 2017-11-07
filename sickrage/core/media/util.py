@@ -26,7 +26,7 @@ from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
 from sickrage.core.media.poster import Poster
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVDB
 from sickrage.indexers.exceptions import indexer_error
 
@@ -50,13 +50,13 @@ def indexerImage(id=None, which=None):
 
     if image_type not in ('fanart', 'poster', 'banner'):
         sickrage.app.log.error(
-            "Invalid image type " + str(image_type) + ", couldn't find it in the " + srIndexerApi(
+            "Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(
                 INDEXER_TVDB).name + " object")
         return
 
     try:
-        lINDEXER_API_PARMS = srIndexerApi(INDEXER_TVDB).api_params.copy()
-        t = srIndexerApi(INDEXER_TVDB).indexer(**lINDEXER_API_PARMS)
+        lINDEXER_API_PARMS = IndexerApi(INDEXER_TVDB).api_params.copy()
+        t = IndexerApi(INDEXER_TVDB).indexer(**lINDEXER_API_PARMS)
 
         image_name = str(id) + '.' + image_type + '.jpg'
 
@@ -65,12 +65,12 @@ def indexerImage(id=None, which=None):
                 image_path = os.path.join(ImageCache()._thumbnails_dir(), image_name)
                 if not os.path.exists(image_path):
                     image_url = t.images(int(id), key_type=image_type)[0]['thumbnail']
-                    sickrage.app.srWebSession.download(image_url, image_path)
+                    sickrage.app.wsession.download(image_url, image_path)
             else:
                 image_path = os.path.join(ImageCache()._cache_dir(), image_name)
                 if not os.path.exists(image_path):
                     image_url = t.images(int(id), key_type=image_type)[0]['filename']
-                    sickrage.app.srWebSession.download(image_url, image_path)
+                    sickrage.app.wsession.download(image_url, image_path)
         except (KeyError, IndexError):
             return
 
@@ -81,5 +81,5 @@ def indexerImage(id=None, which=None):
         elif image_type == 'poster':
             return Poster(int(id), media_format).url
     except (indexer_error, IOError) as e:
-        sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + srIndexerApi(
+        sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + IndexerApi(
             INDEXER_TVDB).name + ", not downloading images: {}".format(e.message))

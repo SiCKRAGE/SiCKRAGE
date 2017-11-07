@@ -80,7 +80,7 @@ class HDBitsProvider(TorrentProvider):
         self._check_auth()
 
         try:
-            parsedJSON = sickrage.app.srWebSession.post(self.urls['search'], data=search_params).json()
+            parsedJSON = sickrage.app.wsession.post(self.urls['search'], data=search_params).json()
         except Exception:
             return []
 
@@ -156,7 +156,7 @@ class HDBitsCache(TVCache):
         results = []
 
         try:
-            resp = sickrage.app.srWebSession.post(self.provider.urls['rss'],
+            resp = sickrage.app.wsession.post(self.provider.urls['rss'],
                                                      data=self.provider._make_post_data_JSON()).json()
 
             if self.provider._check_auth_from_data(resp):

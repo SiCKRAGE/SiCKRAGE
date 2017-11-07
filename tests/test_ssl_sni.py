@@ -42,7 +42,7 @@ def test_sni(self, provider):
         pass
 
 
-for providerID, providerObj in sickrage.app.providersDict.all().items():
+for providerID, providerObj in sickrage.app.search_providers.all().items():
     setattr(SNI_Tests, 'test_%s' % providerObj.name, lambda self, x=providerObj: test_sni(self, x))
 
 if __name__ == "__main__":

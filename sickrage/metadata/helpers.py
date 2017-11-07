@@ -28,6 +28,6 @@ def getShowImage(url):
     sickrage.app.log.debug("Fetching image from " + url)
 
     try:
-        return sickrage.app.srWebSession.get(url).content
+        return sickrage.app.wsession.get(url).content
     except Exception:
         sickrage.app.log.warning("There was an error trying to retrieve the image, aborting")

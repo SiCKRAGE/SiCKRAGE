@@ -116,7 +116,7 @@ for forceSearch in (True, False):
     for name, curData in tests.items():
         fname = name.replace(' ', '_')
 
-        for providerID, providerObj in sickrage.app.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
             if providerObj.type == TorrentProvider.type:
                 if forceSearch:
                     test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)

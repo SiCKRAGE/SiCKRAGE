@@ -1,6 +1,7 @@
 # Changelog
 
-- * 00ad05b - 2017-11-07: refactored core variable name srConfig to config 
+- * 7a62f48 - 2017-11-07: refactored core variable name srIndexerApi to IndexerApi 
+- * e18ac02 - 2017-11-07: refactored core variable name srConfig to config 
 - * cf804d2 - 2017-11-07: refactored core variable name srLogger to log 
 - * ef549b6 - 2017-11-07: Removed subtitles category for newpct as subtitles can be downloaded via SR instead 
 - * 83efbc5 - 2017-11-07: refactored core variables from main module to core class 

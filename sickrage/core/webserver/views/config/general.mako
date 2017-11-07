@@ -10,7 +10,7 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
     from sickrage.core.helpers.srdatetime import srDateTime, date_presets, time_presets
     from sickrage.core.helpers import anon_url
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
     from sickrage.metadata import GenericMetadata
 %>
 <%block name="tabs">
@@ -44,7 +44,7 @@
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
                                     class="form-control form-control-inline bfh-languages"
                                     title="${_('for adding shows and metadata providers')}"
-                                    data-language=${sickrage.app.config.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(srIndexerApi().indexer().languages.keys())}">
+                                    data-language=${sickrage.app.config.INDEXER_DEFAULT_LANGUAGE} data-available="${','.join(IndexerApi().indexer().languages.keys())}">
                             </select>
                         </div>
                     </div>
@@ -200,8 +200,8 @@
                                 <option value="0" ${('', 'selected')[indexer == 0]}>
                                     ${_('All Indexers')}
                                 </option>
-                                % for indexer in srIndexerApi().indexers:
-                                    <option value="${indexer}" ${('', 'selected')[sickrage.app.config.INDEXER_DEFAULT == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                % for indexer in IndexerApi().indexers:
+                                    <option value="${indexer}" ${('', 'selected')[sickrage.app.config.INDEXER_DEFAULT == indexer]}>${IndexerApi().indexers[indexer]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -1124,9 +1124,9 @@
             </fieldset>
         </div>
 
-        % if sickrage.app.VERSIONUPDATER.updater.type == "git":
+        % if sickrage.app.version_updater.updater.type == "git":
         <%
-            git_branch = sickrage.app.VERSIONUPDATER.updater.remote_branches
+            git_branch = sickrage.app.version_updater.updater.remote_branches
         %>
 
             <div class="row tab-pane">
@@ -1150,9 +1150,9 @@
                                             % if git_branch:
                                                 % for cur_branch in git_branch:
                                                     % if sickrage.app.config.DEVELOPER:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % elif cur_branch in ['master', 'develop']:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.VERSIONUPDATER.updater.current_branch == cur_branch]}>${cur_branch}</option>
+                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % endif
                                                 % endfor
                                             % endif

@@ -29,7 +29,7 @@ from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
 from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import srTraktAPI
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 
 
 def setEpisodeToWanted(show, s, e):
@@ -48,14 +48,14 @@ def setEpisodeToWanted(show, s, e):
             epObj.status = WANTED
             epObj.saveToDB()
 
-        sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(show, [epObj]))
+        sickrage.app.search_queue.put(BacklogQueueItem(show, [epObj]))
 
         sickrage.app.log.info(
             "Starting backlog search for %s S%02dE%02d because some episodes were set to wanted" % (
                 show.name, s, e))
 
 
-class srTraktSearcher(object):
+class TraktSearcher(object):
     def __init__(self):
         self.name = "TRAKTSEARCHER"
 
@@ -129,7 +129,7 @@ class srTraktSearcher(object):
                 return
 
             traktShow = [x for __, x in library.items() if
-                         int(indexerid) == int(x.ids[srIndexerApi(indexer).trakt_id])]
+                         int(indexerid) == int(x.ids[IndexerApi(indexer).trakt_id])]
         except Exception as e:
             sickrage.app.log.warning(
                 "Could not connect to Trakt service. Aborting library check. Error: %s" % repr(e))
@@ -144,7 +144,7 @@ class srTraktSearcher(object):
                     {
                         'title': show_obj.name,
                         'year': show_obj.startyear,
-                        'ids': {srIndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
+                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
                     }
                 ]
             }
@@ -173,7 +173,7 @@ class srTraktSearcher(object):
                     {
                         'title': show_obj.name,
                         'year': show_obj.startyear,
-                        'ids': {srIndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
+                        'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid}
                     }
                 ]
             }
@@ -194,12 +194,12 @@ class srTraktSearcher(object):
 
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
-        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
-                trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                trakt_id = IndexerApi(s["indexer"]).trakt_id
                 if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
                     sickrage.app.log.debug("Adding Episode %s S%02dE%02d to collection" %
                                                    (s["show_name"], e["season"], e["episode"]))
@@ -221,13 +221,13 @@ class srTraktSearcher(object):
         sickrage.app.log.debug(
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
-        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 if e["location"]: continue
-                trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                trakt_id = IndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
                     sickrage.app.log.debug("Removing Episode %s S%02dE%02d from collection" %
                                                    (s["show_name"], e["season"], e["episode"]))
@@ -250,12 +250,12 @@ class srTraktSearcher(object):
         sickrage.app.log.debug(
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
-        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
-                trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                trakt_id = IndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
                     sickrage.app.log.debug("Removing Episode %s S%02dE%02d from watchlist" %
                                                    (s["show_name"], e["season"], e["episode"]))
@@ -278,13 +278,13 @@ class srTraktSearcher(object):
 
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
-        for s in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_shows', with_doc=True)]:
-            for e in [e['doc'] for e in sickrage.app.mainDB.db.get_many('tv_episodes',
+        for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes',
                                                                            s['indexer_id'],
                                                                            with_doc=True)]:
 
                 if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
-                trakt_id = srIndexerApi(s["indexer"]).trakt_id
+                trakt_id = IndexerApi(s["indexer"]).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
                     sickrage.app.log.debug("Adding Episode %s S%02dE%02d to watchlist" %
                                                    (s["show_name"], e["season"], e["episode"]))
@@ -307,14 +307,14 @@ class srTraktSearcher(object):
         sickrage.app.log.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
 
         for show in sickrage.app.SHOWLIST or []:
-            if not self._checkInList(srIndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
+            if not self._checkInList(IndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
                 sickrage.app.log.debug(
                     "Adding Show: Indexer %s %s - %s to Watchlist" % (
-                        srIndexerApi(show.indexer).trakt_id, str(show.indexerid), show.name))
+                        IndexerApi(show.indexer).trakt_id, str(show.indexerid), show.name))
 
                 show_el = {'title': show.name,
                            'year': show.startyear,
-                           'ids': {srIndexerApi(show.indexer).trakt_id: show.indexerid}}
+                           'ids': {IndexerApi(show.indexer).trakt_id: show.indexerid}}
 
                 trakt_data.append(show_el)
 
@@ -342,7 +342,7 @@ class srTraktSearcher(object):
                     return
 
                 if progress.status in ['canceled', 'ended']:
-                    sickrage.app.SHOWQUEUE.removeShow(show, full=True)
+                    sickrage.app.show_queue.removeShow(show, full=True)
                     sickrage.app.log.debug("Show: %s has been removed from SiCKRAGE" % show.name)
 
         sickrage.app.log.debug("SHOW_SICKRAGE::REMOVE::FINISH - Trakt Show Watchlist")
@@ -360,11 +360,11 @@ class srTraktSearcher(object):
 
             try:
                 # determine
-                indexer = srIndexerApi().indexersByTraktID[trakt_id]
+                indexer = IndexerApi().indexersByTraktID[trakt_id]
             except KeyError:
                 continue
 
-            if trakt_id == srIndexerApi(indexer).trakt_id:
+            if trakt_id == IndexerApi(indexer).trakt_id:
                 if int(sickrage.app.config.TRAKT_METHOD_ADD) != 2:
                     self.addDefaultShow(indexer, indexer_id, show.title, SKIPPED)
                 else:
@@ -398,7 +398,7 @@ class srTraktSearcher(object):
 
             try:
                 # determine
-                indexer = srIndexerApi().indexersByTraktID[trakt_id]
+                indexer = IndexerApi().indexersByTraktID[trakt_id]
             except KeyError:
                 continue
 
@@ -447,7 +447,7 @@ class srTraktSearcher(object):
                 else:
                     chmodAsParent(showPath)
 
-                sickrage.app.SHOWQUEUE.addShow(int(indexer), int(indexer_id), showPath,
+                sickrage.app.show_queue.addShow(int(indexer), int(indexer_id), showPath,
                                                   default_status=status,
                                                   quality=int(sickrage.app.config.QUALITY_DEFAULT),
                                                   flatten_folders=int(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT),
@@ -544,7 +544,7 @@ class srTraktSearcher(object):
             if indexerid not in shows:
                 shows[indexerid] = {'title': show_name,
                                     'year': startyear,
-                                    'ids': {srIndexerApi(indexer).trakt_id: indexerid}}
+                                    'ids': {IndexerApi(indexer).trakt_id: indexerid}}
 
             if indexerid not in seasons:
                 seasons[indexerid] = {}

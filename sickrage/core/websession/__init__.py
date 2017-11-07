@@ -62,9 +62,9 @@ class DBCache(object):
                 cache.clear()
 
 
-class srSession(cfscrape.CloudflareScraper):
+class WebSession(cfscrape.CloudflareScraper):
     def __init__(self):
-        super(srSession, self).__init__()
+        super(WebSession, self).__init__()
 
     def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
         if headers is None: headers = {}
@@ -97,7 +97,7 @@ class srSession(cfscrape.CloudflareScraper):
             self.mount('https://', adapter)
 
         # get web response
-        response = super(srSession, self).request(
+        response = super(WebSession, self).request(
             method,
             url,
             headers=headers,

@@ -45,7 +45,7 @@ class NextorrentProvider(TorrentProvider):
 
     def get_download_url(self, url):
         try:
-            data = sickrage.app.srWebSession.get(urljoin(self.urls['base_url'], url)).text
+            data = sickrage.app.wsession.get(urljoin(self.urls['base_url'], url)).text
             with bs4_parser(data) as html:
                 return html.find('div', class_="btn-magnet").find('a').get('href')
         except Exception:
@@ -67,7 +67,7 @@ class NextorrentProvider(TorrentProvider):
                     search_url = urljoin(self.urls['base_url'], search_string)
 
                 try:
-                    data = sickrage.app.srWebSession.get(search_url).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

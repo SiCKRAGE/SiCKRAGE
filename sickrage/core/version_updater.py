@@ -35,7 +35,7 @@ from sickrage.core.helpers import backupSR
 from sickrage.notifiers import srNotifiers
 
 
-class srVersionUpdater(object):
+class VersionUpdater(object):
     """
     Version check class meant to run as a thread object with the sr scheduler.
     """
@@ -64,14 +64,14 @@ class srVersionUpdater(object):
                     return
 
                 sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                sickrage.app.srNotifications.message(_('New update found for SiCKRAGE, starting auto-updater'))
+                sickrage.app.alerts.message(_('New update found for SiCKRAGE, starting auto-updater'))
                 if self.update():
                     sickrage.app.log.info("Update was successful!")
-                    sickrage.app.srNotifications.message(_('Update was successful'))
+                    sickrage.app.alerts.message(_('Update was successful'))
                     sickrage.app.shutdown(restart=True)
                 else:
                     sickrage.app.log.info("Update failed!")
-                    sickrage.app.srNotifications.message(_('Update failed!'))
+                    sickrage.app.alerts.message(_('Update failed!'))
         finally:
             self.amActive = False
 
@@ -79,7 +79,7 @@ class srVersionUpdater(object):
         if self.safe_to_update():
             # Do a system backup before update
             sickrage.app.log.info("Config backup in progress...")
-            sickrage.app.srNotifications.message(_('Backup'), _('Config backup in progress...'))
+            sickrage.app.alerts.message(_('Backup'), _('Config backup in progress...'))
             try:
                 backupDir = os.path.join(sickrage.app.DATA_DIR, 'backup')
                 if not os.path.isdir(backupDir):
@@ -87,15 +87,15 @@ class srVersionUpdater(object):
 
                 if backupSR(backupDir, keep_latest=True):
                     sickrage.app.log.info("Config backup successful, updating...")
-                    sickrage.app.srNotifications.message(_('Backup'), _('Config backup successful, updating...'))
+                    sickrage.app.alerts.message(_('Backup'), _('Config backup successful, updating...'))
                     return True
                 else:
                     sickrage.app.log.error("Config backup failed, aborting update")
-                    sickrage.app.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
+                    sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
                     return False
             except Exception as e:
                 sickrage.app.log.error('Update: Config backup failed. Error: %s' % e)
-                sickrage.app.srNotifications.message(_('Backup'), _('Config backup failed, aborting update'))
+                sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
 
     @staticmethod
@@ -105,7 +105,7 @@ class srVersionUpdater(object):
 
         if not sickrage.app.started:
             return True
-        if not sickrage.app.AUTOPOSTPROCESSOR.amActive:
+        if not sickrage.app.auto_postprocessor.amActive:
             return True
 
         sickrage.app.log.debug("We can't proceed with the update. Post-Processor is running")
@@ -530,7 +530,7 @@ class SourceUpdateManager(UpdateManager):
         git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/sickrage/version.txt"
 
         try:
-            return sickrage.app.srWebSession.get(git_version_url).text
+            return sickrage.app.wsession.get(git_version_url).text
         except Exception:
             return self._find_installed_version()
 
@@ -571,7 +571,7 @@ class SourceUpdateManager(UpdateManager):
             # retrieve file
             sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
             tar_download_path = os.path.join(sr_update_dir, 'sr-update.tar')
-            sickrage.app.srWebSession.download(tar_download_url, tar_download_path)
+            sickrage.app.wsession.download(tar_download_url, tar_download_path)
 
             if not os.path.isfile(tar_download_path):
                 sickrage.app.log.warning(
@@ -673,7 +673,7 @@ class PipUpdateManager(UpdateManager):
     def _check_for_new_version(self):
         from distutils.version import StrictVersion
         url = "https://pypi.python.org/pypi/{}/json".format('sickrage')
-        resp = sickrage.app.srWebSession.get(url)
+        resp = sickrage.app.wsession.get(url)
         versions = resp.json()["releases"].keys()
         versions.sort(key=StrictVersion, reverse=True)
 

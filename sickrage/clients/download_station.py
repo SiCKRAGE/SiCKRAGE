@@ -113,7 +113,7 @@ class DownloadStationAPI(GenericClient):
 
         try:
             # login to API
-            self.response = sickrage.app.srWebSession.get(self.urls['auth'],
+            self.response = sickrage.app.wsession.get(self.urls['auth'],
                                                              params=params,
                                                              verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
 

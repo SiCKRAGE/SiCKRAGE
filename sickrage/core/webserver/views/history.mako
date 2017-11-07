@@ -96,8 +96,8 @@
                                         % else:
                                             % if hItem["provider"] > 0:
                                                 % if curStatus in [SNATCHED, FAILED]:
-                                                    % if hItem["provider"].lower() in sickrage.app.providersDict.all():
-                                                    <% provider = sickrage.app.providersDict.all()[hItem["provider"].lower()] %>
+                                                    % if hItem["provider"].lower() in sickrage.app.search_providers.all():
+                                                    <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
                                                         <img src="${srWebRoot}/images/providers/${provider.imageName}"
                                                              width="16"
                                                              height="16"
@@ -164,8 +164,8 @@
                                         % for action in sorted(hItem["actions"]):
                                             <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                                             % if curStatus in [SNATCHED, FAILED]:
-                                                % if action["provider"].lower() in sickrage.app.providersDict.all():
-                                                <% provider = sickrage.app.providersDict.all()[action["provider"].lower()] %>
+                                                % if action["provider"].lower() in sickrage.app.search_providers.all():
+                                                <% provider = sickrage.app.search_providers.all()[action["provider"].lower()] %>
                                                     <img src="${srWebRoot}/images/providers/${provider.imageName}"
                                                          width="16"
                                                          height="16"

@@ -409,7 +409,7 @@ def makeDir(path):
     if not os.path.isdir(path):
         try:
             os.makedirs(path)
-            sickrage.app.notifiersDict['synoindex'].addFolder(path)
+            sickrage.app.notifier_providers['synoindex'].addFolder(path)
         except OSError:
             return False
     return True
@@ -580,7 +580,7 @@ def make_dirs(path):
                     # use normpath to remove end separator, otherwise checks permissions against itself
                     chmodAsParent(os.path.normpath(sofar))
                     # do the library update for synoindex
-                    sickrage.app.notifiersDict['synoindex'].addFolder(sofar)
+                    sickrage.app.notifier_providers['synoindex'].addFolder(sofar)
                 except (OSError, IOError) as e:
                     sickrage.app.log.error("Failed creating %s : %r" % (sofar, e))
                     return False
@@ -615,7 +615,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
                     shutil.rmtree(check_empty_dir)
 
                     # do the library update for synoindex
-                    sickrage.app.notifiersDict['synoindex'].deleteFolder(check_empty_dir)
+                    sickrage.app.notifier_providers['synoindex'].deleteFolder(check_empty_dir)
                 except OSError as e:
                     sickrage.app.log.warning("Unable to delete %s. Error: %r" % (check_empty_dir, repr(e)))
                     raise StopIteration
@@ -1550,7 +1550,7 @@ def overall_stats():
         'total_size': 0
     }
 
-    for result in [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)]:
+    for result in [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)]:
         if not (result['season'] > 0 and result['episode'] > 0 and result['airdate'] > 1):
             continue
 

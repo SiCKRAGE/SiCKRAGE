@@ -8,7 +8,7 @@
     from sickrage.core.helpers import anon_url
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#tabs-1">${_('Home Theater')} / ${_('NAS')}</a></li>
@@ -2611,8 +2611,8 @@
                                 </div>
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
-                                    % for indexer in srIndexerApi().indexers:
-                                        <option value="${indexer}" ${('', 'selected')[sickrage.app.config.TRAKT_DEFAULT_INDEXER == indexer]}>${srIndexerApi().indexers[indexer]}</option>
+                                    % for indexer in IndexerApi().indexers:
+                                        <option value="${indexer}" ${('', 'selected')[sickrage.app.config.TRAKT_DEFAULT_INDEXER == indexer]}>${IndexerApi().indexers[indexer]}</option>
                                     % endfor
                                 </select>
                             </div>

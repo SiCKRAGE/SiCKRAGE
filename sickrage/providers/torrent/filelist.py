@@ -54,7 +54,7 @@ class FileListProvider(TorrentProvider):
         self.cache = TVCache(self)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {
@@ -62,7 +62,7 @@ class FileListProvider(TorrentProvider):
             "password": self.password
         }
 
-        response = sickrage.app.srWebSession.post(self.urls["login"], data=login_params).text
+        response = sickrage.app.wsession.post(self.urls["login"], data=login_params).text
         if not response:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
@@ -98,7 +98,7 @@ class FileListProvider(TorrentProvider):
                 search_url = self.urls["search"]
 
                 try:
-                    data = sickrage.app.srWebSession.get(search_url, params=search_params).text
+                    data = sickrage.app.wsession.get(search_url, params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

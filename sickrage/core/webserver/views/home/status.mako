@@ -43,7 +43,7 @@
                     <tbody>
                         % for schedulerName, scheduler in schedulerList.items():
                             <% service = getattr(sickrage.srCore, scheduler) %>
-                            <% job = sickrage.app.srScheduler.get_job(service.name) %>
+                            <% job = sickrage.app.scheduler.get_job(service.name) %>
                             <% enabled = bool(getattr(job, 'next_run_time', False)) %>
                             <tr>
                                 <td>${schedulerName}</td>
@@ -112,39 +112,39 @@
                 </tr>
                 </thead>
                 <tbody>
-                    % if sickrage.app.SHOWQUEUE.currentItem is not None:
+                    % if sickrage.app.show_queue.currentItem is not None:
                         <tr>
                         % try:
-                            <% showindexerid = sickrage.app.SHOWQUEUE.currentItem.show.indexerid %>
+                            <% showindexerid = sickrage.app.show_queue.currentItem.show.indexerid %>
                             <td>${showindexerid}</td>
                         % except Exception:
                             <td></td>
                         % endtry
                         % try:
-                            <% showname = sickrage.app.SHOWQUEUE.currentItem.show.name %>
+                            <% showname = sickrage.app.show_queue.currentItem.show.name %>
                             <td>${showname}</td>
                         % except Exception:
-                            % if sickrage.app.SHOWQUEUE.currentItem.action_id == ShowQueueActions.ADD:
-                                <td>${sickrage.app.SHOWQUEUE.currentItem.showDir}</td>
+                            % if sickrage.app.show_queue.currentItem.action_id == ShowQueueActions.ADD:
+                                <td>${sickrage.app.show_queue.currentItem.showDir}</td>
                             % else:
                                 <td></td>
                             % endif
                         % endtry
-                            <td>${sickrage.app.SHOWQUEUE.currentItem.is_alive()}</td>
-                            % if sickrage.app.SHOWQUEUE.currentItem.priority == 10:
+                            <td>${sickrage.app.show_queue.currentItem.is_alive()}</td>
+                            % if sickrage.app.show_queue.currentItem.priority == 10:
                                 <td>${_('LOW')}</td>
-                            % elif sickrage.app.SHOWQUEUE.currentItem.priority == 20:
+                            % elif sickrage.app.show_queue.currentItem.priority == 20:
                                 <td>${_('NORMAL')}</td>
-                            % elif sickrage.app.SHOWQUEUE.currentItem.priority == 30:
+                            % elif sickrage.app.show_queue.currentItem.priority == 30:
                                 <td>${_('HIGH')}</td>
                             % else:
-                                <td>${sickrage.app.SHOWQUEUE.currentItem.priority}</td>
+                                <td>${sickrage.app.show_queue.currentItem.priority}</td>
                             % endif
-                            <td>${sickrage.app.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
-                            <td>${ShowQueueActions.names[sickrage.app.SHOWQUEUE.currentItem.action_id]}</td>
+                            <td>${sickrage.app.show_queue.currentItem.added.strftime(dateTimeFormat)}</td>
+                            <td>${ShowQueueActions.names[sickrage.app.show_queue.currentItem.action_id]}</td>
                         </tr>
                     % endif
-                    % for __, __, item in sickrage.app.SHOWQUEUE.queue:
+                    % for __, __, item in sickrage.app.show_queue.queue:
                         <tr>
                         % try:
                             <% showindexerid = item.show.indexerid %>

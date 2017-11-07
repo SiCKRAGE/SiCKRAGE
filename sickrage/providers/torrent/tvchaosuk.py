@@ -96,13 +96,13 @@ class TVChaosUKProvider(TorrentProvider):
         return [search_string]
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username, 'password': self.password}
 
         try:
-            response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -138,7 +138,7 @@ class TVChaosUKProvider(TorrentProvider):
                 search_params['keywords'] = search_string.strip()
 
                 try:
-                    data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
                     continue

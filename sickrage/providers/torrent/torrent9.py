@@ -66,7 +66,7 @@ class Torrent9Provider(TorrentProvider):
                     search_url = self.urls['rss']
 
                 try:
-                    data = sickrage.app.srWebSession.get(search_url).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

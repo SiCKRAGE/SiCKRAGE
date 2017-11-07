@@ -401,7 +401,7 @@ class GenericProvider(object):
                 else:
                     airdate = parse_result.air_date.toordinal()
                     dbData = [x['doc'] for x in
-                              sickrage.app.mainDB.db.get_many('tv_episodes', result.show.indexerid, with_doc=True)
+                              sickrage.app.main_db.db.get_many('tv_episodes', result.show.indexerid, with_doc=True)
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
@@ -500,7 +500,7 @@ class GenericProvider(object):
 
         cookie_validator = re.compile(r'^([\w%]+=[\w%]+)(;[\w%]+=[\w%]+)*$')
         if not cookie_validator.match(self.cookies):
-            sickrage.app.srNotifications.message(
+            sickrage.app.alerts.message(
                 'Failed to validate cookie for provider {}'.format(self.name),
                 'Cookie is not correctly formatted: {}'.format(self.cookies))
 
@@ -515,7 +515,7 @@ class GenericProvider(object):
                         .format(provider_url=self.name, required_cookies=self.required_cookies)}
 
         # cookie_validator got at least one cookie key/value pair, let's return success
-        add_dict_to_cookiejar(sickrage.app.srWebSession.cookies,
+        add_dict_to_cookiejar(sickrage.app.wsession.cookies,
                               dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
         return {'result': True,
@@ -534,7 +534,7 @@ class GenericProvider(object):
                 'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
             return False
         return all(
-            dict_from_cookiejar(sickrage.app.srWebSession.cookies).get(cookie) for cookie in self.required_cookies)
+            dict_from_cookiejar(sickrage.app.wsession.cookies).get(cookie) for cookie in self.required_cookies)
 
     def cookie_login(self, check_login_text, check_url=None):
         """
@@ -555,29 +555,29 @@ class GenericProvider(object):
         if self.cookies:
             result = self.add_cookies_from_ui()
             if not result['result']:
-                sickrage.app.srNotifications.notifications.message(result['message'])
+                sickrage.app.alerts.notifications.message(result['message'])
                 sickrage.app.log.warning(result['message'])
                 return False
         else:
             sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
                                              'settings')
 
-            sickrage.app.srNotifications.notifications.error(
+            sickrage.app.alerts.notifications.error(
                 'Failed to auth with {provider}'.format(provider=self.name),
                 'You will need to add your cookies in the provider settings')
             return False
 
-        response = sickrage.app.srWebSession.get(check_url)
+        response = sickrage.app.wsession.get(check_url)
         if any([not response, not (response.text and response.status_code == 200),
                 check_login_text.lower() in response.text.lower()]):
             sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
                                              'provider settings')
 
-            sickrage.app.srNotifications.notifications.error(
+            sickrage.app.alerts.notifications.error(
                 'Wrong cookies for {}'.format(self.name),
                 'Check your provider settings'
             )
-            sickrage.app.srWebSession.cookies.clear()
+            sickrage.app.wsession.cookies.clear()
             return False
         else:
             return True
@@ -684,7 +684,7 @@ class TorrentProvider(GenericProvider):
         if size == -1 and item.get('url'):
             for url in self.make_url(item.url):
                 try:
-                    resp = sickrage.app.srWebSession.get(url)
+                    resp = sickrage.app.wsession.get(url)
                     torrent = bencode.bdecode(resp.content)
 
                     total_length = 0
@@ -706,7 +706,7 @@ class TorrentProvider(GenericProvider):
         if url:
             for url in self.make_url(url):
                 try:
-                    resp = sickrage.app.srWebSession.get(url)
+                    resp = sickrage.app.wsession.get(url)
                     torrent = bencode.bdecode(resp.content)
 
                     for file in torrent['info']['files']:
@@ -735,7 +735,7 @@ class TorrentProvider(GenericProvider):
         """
 
         try:
-            trackers_list = sickrage.app.srWebSession.get('https://cdn.sickrage.ca/torrent_trackers/').text.split()
+            trackers_list = sickrage.app.wsession.get('https://cdn.sickrage.ca/torrent_trackers/').text.split()
         except Exception:
             trackers_list = []
 
@@ -790,7 +790,7 @@ class NZBProvider(GenericProvider):
         size = item.get('size', -1)
         if size == -1 and item.get('url'):
             try:
-                resp = sickrage.app.srWebSession.get(item.url)
+                resp = sickrage.app.wsession.get(item.url)
 
                 total_length = 0
                 for file in nzb_parser.parse(resp.content):
@@ -810,7 +810,7 @@ class NZBProvider(GenericProvider):
         title, url = self._get_title_and_url(item)
         if url:
             try:
-                resp = sickrage.app.srWebSession.get(url)
+                resp = sickrage.app.wsession.get(url)
 
                 for file in nzb_parser.parse(resp.content):
                     total_length = 0
@@ -913,7 +913,7 @@ class TorrentRssProvider(TorrentProvider):
                         'message': 'RSS feed Parsed correctly'}
             else:
                 try:
-                    torrent_file = sickrage.app.srWebSession.get(url).content
+                    torrent_file = sickrage.app.wsession.get(url).content
                     bencode.bdecode(torrent_file)
                 except Exception as e:
                     if data: self.dumpHTML(torrent_file)
@@ -1032,7 +1032,7 @@ class NewznabProvider(NZBProvider):
             url_params['apikey'] = self.key
 
         try:
-            response = sickrage.app.srWebSession.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
+            response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
         except Exception:
             error_string = 'Error getting caps xml for [{}]'.format(self.name)
             sickrage.app.log.warning(error_string)
@@ -1150,7 +1150,7 @@ class NewznabProvider(NZBProvider):
                 sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
                 try:
-                    response = sickrage.app.srWebSession.get(urljoin(self.urls['base_url'], 'api'),
+                    response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'),
                                                                 params=search_params).text
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
@@ -1287,9 +1287,9 @@ class TorrentRssCache(TVCache):
         return self.getRSSFeed(self.provider.urls['base_url'])
 
 
-class providersDict(dict):
+class SearchProviders(dict):
     def __init__(self):
-        super(providersDict, self).__init__()
+        super(SearchProviders, self).__init__()
 
         self.provider_order = []
 

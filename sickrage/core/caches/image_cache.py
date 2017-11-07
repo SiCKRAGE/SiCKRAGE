@@ -297,7 +297,7 @@ class ImageCache(object):
         # check the show dir for poster or banner images and use them
         if any([need_images[self.POSTER], need_images[self.BANNER], need_images[self.FANART]]):
             if os.path.isdir(show_obj.location):
-                for cur_provider in sickrage.app.metadataProvidersDict.values():
+                for cur_provider in sickrage.app.metadata_providers.values():
                     sickrage.app.log.debug(
                         "Checking if we can use the show image from the " + cur_provider.name + " metadata")
                     if os.path.isfile(cur_provider.get_poster_path(show_obj)):

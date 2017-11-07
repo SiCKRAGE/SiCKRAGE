@@ -71,7 +71,7 @@
                         <td align="center">
                             <input type="checkbox" class="showCheck"
                                    id="${curShow.indexerid}"
-                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.SHOWQUEUE.isBeingRenamed(curShow), sickrage.app.SHOWQUEUE.isInRenameQueue(curShow), sickrage.app.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.app.SHOWQUEUE.isBeingUpdated(curShow),sickrage.app.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.app.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.app.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.app.SHOWQUEUE.isBeingRenamed(curShow), sickrage.app.SHOWQUEUE.isInRenameQueue(curShow), sickrage.app.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.app.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
+                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.isBeingRenamed(curShow), sickrage.app.show_queue.isInRenameQueue(curShow), sickrage.app.show_queue.isInRefreshQueue(curShow), sickrage.app.show_queue.isBeingUpdated(curShow),sickrage.app.show_queue.isInUpdateQueue(curShow), sickrage.app.show_queue.isBeingRefreshed(curShow), sickrage.app.show_queue.isInRefreshQueue(curShow), sickrage.app.show_queue.isBeingRenamed(curShow), sickrage.app.show_queue.isInRenameQueue(curShow), sickrage.app.show_queue.isBeingSubtitled(curShow), sickrage.app.show_queue.isInSubtitleQueue(curShow)]))]}/>
                         </td>
                         <td class="tvShow"><a
                                 href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>

@@ -60,7 +60,7 @@ class TORRENTZProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.app.srWebSession.get(search_url, params={'f': search_string}).text
+                    data = sickrage.app.wsession.get(search_url, params={'f': search_string}).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

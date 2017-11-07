@@ -1,7 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
     import sickrage
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
     import adba
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings, Quality
@@ -95,7 +95,7 @@
                                             <label class="component-title">${_('Info Language')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <% languages = srIndexerApi().indexer().languages.keys() %>
+                                            <% languages = IndexerApi().indexer().languages.keys() %>
                                             <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-flag"></span>

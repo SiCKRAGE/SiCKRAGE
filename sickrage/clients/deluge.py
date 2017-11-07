@@ -40,7 +40,7 @@ class DelugeAPI(GenericClient):
                                 "id": 1})
 
         try:
-            self.response = sickrage.app.srWebSession.post(self.url,
+            self.response = sickrage.app.wsession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
                                                               verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
@@ -54,7 +54,7 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = sickrage.app.srWebSession.post(self.url,
+            self.response = sickrage.app.wsession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
                                                               verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
@@ -69,7 +69,7 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = sickrage.app.srWebSession.post(self.url,
+                self.response = sickrage.app.wsession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
@@ -88,7 +88,7 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = sickrage.app.srWebSession.post(self.url,
+                self.response = sickrage.app.wsession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
@@ -102,7 +102,7 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = sickrage.app.srWebSession.post(self.url,
+                self.response = sickrage.app.wsession.post(self.url,
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(

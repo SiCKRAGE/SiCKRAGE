@@ -46,7 +46,7 @@ def fifo(myList, item, maxSize=100):
     myList.append(item)
 
 
-class srSearchQueue(srQueue):
+class SearchQueue(srQueue):
     def __init__(self):
         srQueue.__init__(self, "SEARCHQUEUE")
 
@@ -77,15 +77,15 @@ class srSearchQueue(srQueue):
 
     def pause_backlog(self):
         self.min_priority = srQueuePriorities.HIGH
-        sickrage.app.srScheduler.pause_job('BACKLOG')
+        sickrage.app.scheduler.pause_job('BACKLOG')
 
     def unpause_backlog(self):
         self.min_priority = 0
-        sickrage.app.srScheduler.resume_job('BACKLOG')
+        sickrage.app.scheduler.resume_job('BACKLOG')
 
     def is_backlog_paused(self):
         # backlog priorities are NORMAL, this should be done properly somewhere
-        return not sickrage.app.srScheduler.get_job('BACKLOG').next_run_time
+        return not sickrage.app.scheduler.get_job('BACKLOG').next_run_time
 
     def is_manualsearch_in_progress(self):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
@@ -123,19 +123,19 @@ class srSearchQueue(srQueue):
         return length
 
     def put(self, item, *args, **kwargs):
-        if not len(sickrage.app.providersDict.enabled()):
+        if not len(sickrage.app.search_providers.enabled()):
             sickrage.app.log.warning("Search Failed, No NZB/Torrent providers enabled")
             return
 
         if isinstance(item, DailySearchQueueItem):
             # daily searches
-            super(srSearchQueue, self).put(item)
+            super(SearchQueue, self).put(item)
         elif isinstance(item, BacklogQueueItem) and not self.is_in_queue(item.show, item.segment):
             # backlog searches
-            super(srSearchQueue, self).put(item)
+            super(SearchQueue, self).put(item)
         elif isinstance(item, (ManualSearchQueueItem, FailedQueueItem)) and not self.is_ep_in_queue(item.segment):
             # manual and failed searches
-            super(srSearchQueue, self).put(item)
+            super(SearchQueue, self).put(item)
         else:
             sickrage.app.log.debug("Not adding item, it's already in the queue")
 
@@ -195,7 +195,7 @@ class ManualSearchQueueItem(srQueueItem):
                 time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
             else:
-                sickrage.app.srNotifications.message(
+                sickrage.app.alerts.message(
                     _('No downloads were found'),
                     _("Couldn't find a download for <i>%s</i>") % self.segment.prettyName()
                 )

@@ -31,12 +31,12 @@ import sickrage
 from sickrage.core import makeDir
 
 
-class srLogger(logging.getLoggerClass()):
+class Logger(logging.getLoggerClass()):
     logging.captureWarnings(True)
     logging.getLogger().addHandler(logging.NullHandler())
 
     def __init__(self, name="sickrage"):
-        super(srLogger, self).__init__(name)
+        super(Logger, self).__init__(name)
         self.propagate = False
 
         self.consoleLogging = True
@@ -123,7 +123,7 @@ class srLogger(logging.getLoggerClass()):
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
         if (False, True)[name in self.loggers]:
-            record = super(srLogger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
+            record = super(Logger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
 
             try:
                 record.msg = re.sub(
@@ -175,28 +175,28 @@ class srLogger(logging.getLoggerClass()):
         return [logging.getLogger(modname) for modname in self.list_modules(package)]
 
     def log(self, level, msg, *args, **kwargs):
-        super(srLogger, self).log(level, msg, *args, **kwargs)
+        super(Logger, self).log(level, msg, *args, **kwargs)
 
     def db(self, msg, *args, **kwargs):
-        super(srLogger, self).log(self.logLevels['DB'], msg, *args, **kwargs)
+        super(Logger, self).log(self.logLevels['DB'], msg, *args, **kwargs)
 
     def info(self, msg, *args, **kwargs):
-        super(srLogger, self).info(msg, *args, **kwargs)
+        super(Logger, self).info(msg, *args, **kwargs)
 
     def debug(self, msg, *args, **kwargs):
-        super(srLogger, self).debug(msg, *args, **kwargs)
+        super(Logger, self).debug(msg, *args, **kwargs)
 
     def critical(self, msg, *args, **kwargs):
-        super(srLogger, self).critical(msg, *args, **kwargs)
+        super(Logger, self).critical(msg, *args, **kwargs)
 
     def exception(self, msg, *args, **kwargs):
-        super(srLogger, self).exception(msg, *args, **kwargs)
+        super(Logger, self).exception(msg, *args, **kwargs)
 
     def error(self, msg, *args, **kwargs):
-        super(srLogger, self).error(msg, exc_info=1, *args, **kwargs)
+        super(Logger, self).error(msg, exc_info=1, *args, **kwargs)
 
     def warning(self, msg, *args, **kwargs):
-        super(srLogger, self).warning(msg, *args, **kwargs)
+        super(Logger, self).warning(msg, *args, **kwargs)
 
     def close(self, *args, **kwargs):
         logging.shutdown()

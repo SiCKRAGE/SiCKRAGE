@@ -24,7 +24,7 @@
                             <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.app.VERSIONUPDATER.updater.version}
+                            ${sickrage.app.version_updater.updater.version}
                         </div>
                     </div>
                     <br/>
@@ -33,7 +33,7 @@
                             <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.app.VERSIONUPDATER.updater.type}
+                            ${sickrage.app.version_updater.updater.type}
                         </div>
                     </div>
                     <br/>
