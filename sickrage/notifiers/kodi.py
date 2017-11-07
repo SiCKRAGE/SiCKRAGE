@@ -73,7 +73,7 @@ class KODINotifier(srNotifiers):
         result = self._send_to_kodi_json(checkCommand, host, username, password)
 
         # revert back to default socket timeout
-        socket.setdefaulttimeout(sickrage.app.srConfig.SOCKET_TIMEOUT)
+        socket.setdefaulttimeout(sickrage.app.config.SOCKET_TIMEOUT)
 
         if not result:
             # fallback to legacy HTTPAPI method
@@ -108,14 +108,14 @@ class KODINotifier(srNotifiers):
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.app.srConfig.KODI_HOST
+            host = sickrage.app.config.KODI_HOST
         if not username:
-            username = sickrage.app.srConfig.KODI_USERNAME
+            username = sickrage.app.config.KODI_USERNAME
         if not password:
-            password = sickrage.app.srConfig.KODI_PASSWORD
+            password = sickrage.app.config.KODI_PASSWORD
 
         # suppress notifications if the notifier is disabled but the notify options are checked
-        if not sickrage.app.srConfig.USE_KODI and not force:
+        if not sickrage.app.config.USE_KODI and not force:
             sickrage.app.log.debug("Notification for KODI not enabled, skipping this notification")
             return False
 
@@ -141,7 +141,7 @@ class KODINotifier(srNotifiers):
                     if notifyResult and notifyResult.get('result'):
                         result += curHost + ':' + notifyResult["result"].decode(sickrage.app.SYS_ENCODING)
             else:
-                if sickrage.app.srConfig.KODI_ALWAYS_ON or force:
+                if sickrage.app.config.KODI_ALWAYS_ON or force:
                     sickrage.app.log.warning(
                         "Failed to detect KODI version for '" + curHost + "', check configuration and try again.")
                 result += curHost + ':False'
@@ -164,24 +164,24 @@ class KODINotifier(srNotifiers):
 
         sickrage.app.log.debug("Sending request to update library for KODI host: '" + host + "'")
 
-        kodiapi = self._get_kodi_version(host, sickrage.app.srConfig.KODI_USERNAME,
-                                         sickrage.app.srConfig.KODI_PASSWORD)
+        kodiapi = self._get_kodi_version(host, sickrage.app.config.KODI_USERNAME,
+                                         sickrage.app.config.KODI_PASSWORD)
         if kodiapi:
             if kodiapi <= 4:
                 # try to update for just the show, if it fails, do full update if enabled
-                if not self._update_library(host, showName) and sickrage.app.srConfig.KODI_UPDATE_FULL:
+                if not self._update_library(host, showName) and sickrage.app.config.KODI_UPDATE_FULL:
                     sickrage.app.log.debug("Single show update failed, falling back to full update")
                     return self._update_library(host)
                 else:
                     return True
             else:
                 # try to update for just the show, if it fails, do full update if enabled
-                if not self._update_library_json(host, showName) and sickrage.app.srConfig.KODI_UPDATE_FULL:
+                if not self._update_library_json(host, showName) and sickrage.app.config.KODI_UPDATE_FULL:
                     sickrage.app.log.debug("Single show update failed, falling back to full update")
                     return self._update_library_json(host)
                 else:
                     return True
-        elif sickrage.app.srConfig.KODI_ALWAYS_ON:
+        elif sickrage.app.config.KODI_ALWAYS_ON:
             sickrage.app.log.warning(
                 "Failed to detect KODI version for '" + host + "', check configuration and try again.")
 
@@ -207,9 +207,9 @@ class KODINotifier(srNotifiers):
 
         # fill in omitted parameters
         if not username:
-            username = sickrage.app.srConfig.KODI_USERNAME
+            username = sickrage.app.config.KODI_USERNAME
         if not password:
-            password = sickrage.app.srConfig.KODI_PASSWORD
+            password = sickrage.app.config.KODI_PASSWORD
 
         if not host:
             sickrage.app.log.warning('No KODI host passed, aborting update')
@@ -357,9 +357,9 @@ class KODINotifier(srNotifiers):
 
         # fill in omitted parameters
         if not username:
-            username = sickrage.app.srConfig.KODI_USERNAME
+            username = sickrage.app.config.KODI_USERNAME
         if not password:
-            password = sickrage.app.srConfig.KODI_PASSWORD
+            password = sickrage.app.config.KODI_PASSWORD
 
         if not host:
             sickrage.app.log.warning('No KODI host passed, aborting update')
@@ -384,7 +384,7 @@ class KODINotifier(srNotifiers):
             try:
                 response = urllib2.urlopen(req)
             except (httplib.BadStatusLine, urllib2.URLError) as e:
-                if sickrage.app.srConfig.KODI_ALWAYS_ON:
+                if sickrage.app.config.KODI_ALWAYS_ON:
                     sickrage.app.log.warning(
                         "Error while trying to retrieve KODI API version for " + host + ": {}".format(e.message))
                 return False
@@ -400,7 +400,7 @@ class KODINotifier(srNotifiers):
                 return False
 
         except IOError as e:
-            if sickrage.app.srConfig.KODI_ALWAYS_ON:
+            if sickrage.app.config.KODI_ALWAYS_ON:
                 sickrage.app.log.warning(
                     "Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e.message))
             return False
@@ -519,19 +519,19 @@ class KODINotifier(srNotifiers):
     ##############################################################################
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.srConfig.KODI_NOTIFY_ONSNATCH:
+        if sickrage.app.config.KODI_NOTIFY_ONSNATCH:
             self._notify_kodi(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
-        if sickrage.app.srConfig.KODI_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.KODI_NOTIFY_ONDOWNLOAD:
             self._notify_kodi(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.srConfig.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.KODI_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notify_kodi(ep_name + ": " + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.srConfig.USE_KODI:
+        if sickrage.app.config.USE_KODI:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_kodi(update_text + new_version, title)
@@ -556,21 +556,21 @@ class KODINotifier(srNotifiers):
 
         """
 
-        if sickrage.app.srConfig.USE_KODI and sickrage.app.srConfig.KODI_UPDATE_LIBRARY:
-            if not sickrage.app.srConfig.KODI_HOST:
+        if sickrage.app.config.USE_KODI and sickrage.app.config.KODI_UPDATE_LIBRARY:
+            if not sickrage.app.config.KODI_HOST:
                 sickrage.app.log.debug("No KODI hosts specified, check your settings")
                 return False
 
             # either update each host, or only attempt to update until one successful result
             result = 0
-            for host in [x.strip() for x in sickrage.app.srConfig.KODI_HOST.split(",")]:
+            for host in [x.strip() for x in sickrage.app.config.KODI_HOST.split(",")]:
                 if self._send_update_library(host, showName):
-                    if sickrage.app.srConfig.KODI_UPDATE_ONLYFIRST:
+                    if sickrage.app.config.KODI_UPDATE_ONLYFIRST:
                         sickrage.app.log.debug(
                             "Successfully updated '" + host + "', stopped sending update library commands.")
                         return True
                 else:
-                    if sickrage.app.srConfig.KODI_ALWAYS_ON:
+                    if sickrage.app.config.KODI_ALWAYS_ON:
                         sickrage.app.log.warning(
                             "Failed to detect KODI version for '" + host + "', check configuration and try again.")
                     result += 1

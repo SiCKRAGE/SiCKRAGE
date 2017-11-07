@@ -89,25 +89,25 @@ class Boxcar2Notifier(srNotifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
-        if sickrage.app.srConfig.BOXCAR2_NOTIFY_ONSNATCH:
+        if sickrage.app.config.BOXCAR2_NOTIFY_ONSNATCH:
             self._notifyBoxcar2(title, ep_name)
 
     def _notify_download(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
-        if sickrage.app.srConfig.BOXCAR2_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.BOXCAR2_NOTIFY_ONDOWNLOAD:
             self._notifyBoxcar2(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
-        if sickrage.app.srConfig.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyBoxcar2(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.srConfig.USE_BOXCAR2:
+        if sickrage.app.config.USE_BOXCAR2:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyBoxcar2(title, update_text + new_version)
@@ -121,13 +121,13 @@ class Boxcar2Notifier(srNotifiers):
         accesstoken: to send to this device
         """
 
-        if not sickrage.app.srConfig.USE_BOXCAR2:
+        if not sickrage.app.config.USE_BOXCAR2:
             sickrage.app.log.debug("Notification for Boxcar2 not enabled, skipping this notification")
             return False
 
         # if no username was given then use the one from the config
         if not accesstoken:
-            accesstoken = sickrage.app.srConfig.BOXCAR2_ACCESSTOKEN
+            accesstoken = sickrage.app.config.BOXCAR2_ACCESSTOKEN
 
         sickrage.app.log.debug("Sending notification for " + message)
 

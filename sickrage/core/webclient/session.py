@@ -75,18 +75,18 @@ class srSession(cfscrape.CloudflareScraper):
         headers["User-Agent"] = sickrage.app.USER_AGENT
 
         # request session ssl verify
-        if sickrage.app.srConfig.SSL_VERIFY:
+        if sickrage.app.config.SSL_VERIFY:
             try:
                 verify = certifi.where()
             except:
                 pass
 
         # request session proxies
-        if 'Referer' not in headers and sickrage.app.srConfig.PROXY_SETTING:
-            sickrage.app.log.debug("Using global proxy: " + sickrage.app.srConfig.PROXY_SETTING)
-            scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
-            address = ('http://{}'.format(sickrage.app.srConfig.PROXY_SETTING),
-                       sickrage.app.srConfig.PROXY_SETTING)[scheme]
+        if 'Referer' not in headers and sickrage.app.config.PROXY_SETTING:
+            sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.PROXY_SETTING)
+            scheme, address = urllib2.splittype(sickrage.app.config.PROXY_SETTING)
+            address = ('http://{}'.format(sickrage.app.config.PROXY_SETTING),
+                       sickrage.app.config.PROXY_SETTING)[scheme]
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
@@ -116,7 +116,7 @@ class srSession(cfscrape.CloudflareScraper):
                     "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
                         e.request.url, ssl.OPENSSL_VERSION))
 
-            if sickrage.app.srConfig.SSL_VERIFY:
+            if sickrage.app.config.SSL_VERIFY:
                 sickrage.app.log.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
                         e.request.url))

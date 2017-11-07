@@ -231,7 +231,7 @@ class MediaBrowserMetadata(GenericMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
         # There's gotta be a better way of doing this but we don't wanna
         # change the language value elsewhere
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
@@ -402,7 +402,7 @@ class MediaBrowserMetadata(GenericMetadata):
             'Writer': []
         }
 
-        indexer_lang = ep_obj.show.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
@@ -526,7 +526,7 @@ class MediaBrowserMetadata(GenericMetadata):
                 try:
                     Language.text = myEp['language']
                 except Exception:
-                    Language.text = sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+                    Language.text = sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
                 thumb = SubElement(episode, "filename")
                 # TODO: See what this is needed for.. if its still needed

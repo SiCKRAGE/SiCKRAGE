@@ -41,9 +41,9 @@ class EMBYNotifier(srNotifiers):
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.app.srConfig.EMBY_HOST
+            host = sickrage.app.config.EMBY_HOST
         if not emby_apikey:
-            emby_apikey = sickrage.app.srConfig.EMBY_APIKEY
+            emby_apikey = sickrage.app.config.EMBY_APIKEY
 
         url = 'http://%s/emby/Notifications/Admin' % (host)
         values = {'Name': 'SiCKRAGE', 'Description': message,
@@ -81,9 +81,9 @@ class EMBYNotifier(srNotifiers):
 
         """
 
-        if sickrage.app.srConfig.USE_EMBY:
+        if sickrage.app.config.USE_EMBY:
 
-            if not sickrage.app.srConfig.EMBY_HOST:
+            if not sickrage.app.config.EMBY_HOST:
                 sickrage.app.log.debug('EMBY: No host specified, check your settings')
                 return False
 
@@ -100,12 +100,12 @@ class EMBYNotifier(srNotifiers):
             else:
                 query = ''
 
-            url = 'http://%s/emby/Library/Series/Updated%s' % (sickrage.app.srConfig.EMBY_HOST, query)
+            url = 'http://%s/emby/Library/Series/Updated%s' % (sickrage.app.config.EMBY_HOST, query)
             values = {}
             data = urllib.urlencode(values)
             try:
                 req = urllib2.Request(url, data)
-                req.add_header('X-MediaBrowser-Token', sickrage.app.srConfig.EMBY_APIKEY)
+                req.add_header('X-MediaBrowser-Token', sickrage.app.config.EMBY_APIKEY)
 
                 response = urllib2.urlopen(req)
                 result = response.read()

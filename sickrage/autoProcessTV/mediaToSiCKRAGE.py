@@ -36,7 +36,7 @@ config = ConfigParser.ConfigParser()
 
 try:
     with io.open(configFilename, "r") as fp:
-        sickrage.app.srConfig.readfp(fp)
+        sickrage.app.config.readfp(fp)
 except IOError as e:
     print("Could not find/read SiCKRAGE config.ini: " + str(e))
     print(
@@ -48,7 +48,7 @@ scriptlogger = logging.getLogger('mediaToSiCKRAGE')
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s MEDIATOSICKRAGE :: %(message)s', '%b-%d %H:%M:%S')
 
 # Get the log dir setting from SB config
-logdirsetting = sickrage.app.srConfig.get("General", "log_dir") if sickrage.app.srConfig.get("General",
+logdirsetting = sickrage.app.config.get("General", "log_dir") if sickrage.app.config.get("General",
                                                                                                    "log_dir") else 'Logs'
 # put the log dir inside the SiCKRAGE dir, unless an absolute path
 logdir = os.path.normpath(os.path.join(sickragePath, logdirsetting))
@@ -148,23 +148,23 @@ def blackhole():
 def main():
     scriptlogger.info('Starting external PostProcess script ' + __file__)
 
-    host = sickrage.app.srConfig.get("General", "web_host")
-    port = sickrage.app.srConfig.get("General", "web_port")
-    username = sickrage.app.srConfig.get("General", "web_username")
-    password = sickrage.app.srConfig.get("General", "web_password")
+    host = sickrage.app.config.get("General", "web_host")
+    port = sickrage.app.config.get("General", "web_port")
+    username = sickrage.app.config.get("General", "web_username")
+    password = sickrage.app.config.get("General", "web_password")
     try:
-        ssl = int(sickrage.app.srConfig.get("General", "enable_https"))
+        ssl = int(sickrage.app.config.get("General", "enable_https"))
     except (ConfigParser.NoOptionError, ValueError):
         ssl = 0
 
     try:
-        web_root = sickrage.app.srConfig.get("General", "web_root")
+        web_root = sickrage.app.config.get("General", "web_root")
     except ConfigParser.NoOptionError:
         web_root = ""
 
-    tv_dir = sickrage.app.srConfig.get("General", "tv_download_dir")
-    use_torrents = int(sickrage.app.srConfig.get("General", "use_torrents"))
-    torrent_method = sickrage.app.srConfig.get("General", "torrent_method")
+    tv_dir = sickrage.app.config.get("General", "tv_download_dir")
+    use_torrents = int(sickrage.app.config.get("General", "use_torrents"))
+    torrent_method = sickrage.app.config.get("General", "torrent_method")
 
     if not use_torrents:
         scriptlogger.error('Enable Use Torrent on SiCKRAGE to use this Script. Aborting!')

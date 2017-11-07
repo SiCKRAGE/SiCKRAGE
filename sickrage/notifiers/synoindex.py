@@ -49,7 +49,7 @@ class synoIndexNotifier(srNotifiers):
         self.moveObject(old_file, new_file)
 
     def moveObject(self, old_path, new_path):
-        if sickrage.app.srConfig.USE_SYNOINDEX:
+        if sickrage.app.config.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', '-N', os.path.abspath(new_path),
                              os.path.abspath(old_path)]
             sickrage.app.log.debug("Executing command " + str(synoindex_cmd))
@@ -75,7 +75,7 @@ class synoIndexNotifier(srNotifiers):
         self.makeObject('-a', cur_file)
 
     def makeObject(self, cmd_arg, cur_path):
-        if sickrage.app.srConfig.USE_SYNOINDEX:
+        if sickrage.app.config.USE_SYNOINDEX:
             synoindex_cmd = ['/usr/syno/bin/synoindex', cmd_arg, os.path.abspath(cur_path)]
             sickrage.app.log.debug("Executing command " + str(synoindex_cmd))
             sickrage.app.log.debug("Absolute path to command: " + os.path.abspath(synoindex_cmd[0]))

@@ -2311,11 +2311,11 @@ class srConfig(object):
                     if _decrypt:
                         section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
                                                izip(base64.decodestring(section[key]),
-                                                    cycle(sickrage.app.srConfig.ENCRYPTION_SECRET)))
+                                                    cycle(sickrage.app.config.ENCRYPTION_SECRET)))
                     else:
                         section[key] = base64.encodestring(
                             ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(
-                                sickrage.app.srConfig.ENCRYPTION_SECRET)))).strip()
+                                sickrage.app.config.ENCRYPTION_SECRET)))).strip()
             except:
                 pass
 

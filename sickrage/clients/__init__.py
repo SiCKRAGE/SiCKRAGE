@@ -157,10 +157,10 @@ class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
 
         self.name = name
-        self.username = sickrage.app.srConfig.TORRENT_USERNAME if not username else username
-        self.password = sickrage.app.srConfig.TORRENT_PASSWORD if not password else password
-        self.host = sickrage.app.srConfig.TORRENT_HOST if not host else host
-        self.rpcurl = sickrage.app.srConfig.TORRENT_RPCURL
+        self.username = sickrage.app.config.TORRENT_USERNAME if not username else username
+        self.password = sickrage.app.config.TORRENT_PASSWORD if not password else password
+        self.host = sickrage.app.config.TORRENT_HOST if not host else host
+        self.rpcurl = sickrage.app.config.TORRENT_RPCURL
 
         self.url = None
         self.auth = None
@@ -325,7 +325,7 @@ class GenericClient(object):
             result = self._get_torrent_hash(result)
 
             # convert to magnetic url if result has info hash and is not a private provider
-            if sickrage.app.srConfig.TORRENT_FILE_TO_MAGNET:
+            if sickrage.app.config.TORRENT_FILE_TO_MAGNET:
                 if result.hash and not result.provider.private and not result.url.startswith('magnet'):
                     result.url = "magnet:?xt=urn:btih:{}".format(result.hash)
 

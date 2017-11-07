@@ -46,9 +46,9 @@ class FreeMobileNotifier(srNotifiers):
         """
 
         if id is None:
-            id = sickrage.app.srConfig.FREEMOBILE_ID
+            id = sickrage.app.config.FREEMOBILE_ID
         if apiKey is None:
-            apiKey = sickrage.app.srConfig.FREEMOBILE_APIKEY
+            apiKey = sickrage.app.config.FREEMOBILE_APIKEY
 
         sickrage.app.log.debug("Free Mobile in use with API KEY: " + apiKey)
 
@@ -92,25 +92,25 @@ class FreeMobileNotifier(srNotifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
-        if sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONSNATCH:
+        if sickrage.app.config.FREEMOBILE_NOTIFY_ONSNATCH:
             self._notifyFreeMobile(title, ep_name)
 
     def _notify_download(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
-        if sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.FREEMOBILE_NOTIFY_ONDOWNLOAD:
             self._notifyFreeMobile(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
-        if sickrage.app.srConfig.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.srConfig.USE_FREEMOBILE:
+        if sickrage.app.config.USE_FREEMOBILE:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyFreeMobile(title, update_text + new_version)
@@ -126,7 +126,7 @@ class FreeMobileNotifier(srNotifiers):
         force: Enforce sending, for instance for testing
         """
 
-        if not sickrage.app.srConfig.USE_FREEMOBILE and not force:
+        if not sickrage.app.config.USE_FREEMOBILE and not force:
             sickrage.app.log.debug("Notification for Free Mobile not enabled, skipping this notification")
             return False, "Disabled"
 

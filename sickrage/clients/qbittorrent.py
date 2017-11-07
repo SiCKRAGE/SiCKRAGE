@@ -33,7 +33,7 @@ class qbittorrentAPI(GenericClient):
         try:
             self.url = '{}version/api'.format(self.host)
             version = int(sickrage.app.srWebSession.get(self.url,
-                                                           verify=sickrage.app.srConfig.TORRENT_VERIFY_CERT).content)
+                                                           verify=sickrage.app.config.TORRENT_VERIFY_CERT).content)
         except Exception:
             version = 1
 
@@ -54,7 +54,7 @@ class qbittorrentAPI(GenericClient):
         else:
             try:
                 self.response = sickrage.app.srWebSession.get(self.host,
-                                                                 verify=sickrage.app.srConfig.TORRENT_VERIFY_CERT)
+                                                                 verify=sickrage.app.config.TORRENT_VERIFY_CERT)
                 self.auth = self.response.content
             except Exception:
                 return None
@@ -66,9 +66,9 @@ class qbittorrentAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.app.srConfig.TORRENT_LABEL
+        label = sickrage.app.config.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.app.config.TORRENT_LABEL_ANIME
 
         if self.api > 6 and label:
             label_key = 'Category' if self.api >= 10 else 'Label'
@@ -96,7 +96,7 @@ class qbittorrentAPI(GenericClient):
         return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
 
     def _set_torrent_pause(self, result):
-        self.url = '{}command/{}'.format(self.host, 'pause' if sickrage.app.srConfig.TORRENT_PAUSED else 'resume')
+        self.url = '{}command/{}'.format(self.host, 'pause' if sickrage.app.config.TORRENT_PAUSED else 'resume')
         data = {'hash': result.hash}
         return self._request(method='post', data=data, cookies=sickrage.app.srWebSession.cookies)
 

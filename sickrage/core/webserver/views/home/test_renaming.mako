@@ -14,12 +14,12 @@
     <input type="hidden" id="showID" value="${show.indexerid}"/>
     <h3>${_('Preview of the proposed name changes')}</h3>
     <blockquote>
-        % if int(show.air_by_date) == 1 and sickrage.app.srConfig.NAMING_CUSTOM_ABD:
-    ${sickrage.app.srConfig.NAMING_ABD_PATTERN}
-        % elif int(show.sports) == 1 and sickrage.app.srConfig.NAMING_CUSTOM_SPORTS:
-    ${sickrage.app.srConfig.NAMING_SPORTS_PATTERN}
+        % if int(show.air_by_date) == 1 and sickrage.app.config.NAMING_CUSTOM_ABD:
+    ${sickrage.app.config.NAMING_ABD_PATTERN}
+        % elif int(show.sports) == 1 and sickrage.app.config.NAMING_CUSTOM_SPORTS:
+    ${sickrage.app.config.NAMING_SPORTS_PATTERN}
         % else:
-    ${sickrage.app.srConfig.NAMING_PATTERN}
+    ${sickrage.app.config.NAMING_PATTERN}
         % endif
     </blockquote>
 

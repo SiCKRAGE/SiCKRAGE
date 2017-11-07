@@ -43,7 +43,7 @@ class DelugeAPI(GenericClient):
             self.response = sickrage.app.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
-                                                              verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                              verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
         except Exception:
             return None
 
@@ -57,7 +57,7 @@ class DelugeAPI(GenericClient):
             self.response = sickrage.app.srWebSession.post(self.url,
                                                               data=post_data.encode('utf-8'),
                                                               headers=self.headers,
-                                                              verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                              verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
 
         except Exception:
             return None
@@ -73,7 +73,7 @@ class DelugeAPI(GenericClient):
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.config.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -92,7 +92,7 @@ class DelugeAPI(GenericClient):
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.config.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -106,7 +106,7 @@ class DelugeAPI(GenericClient):
                                                                   data=post_data.encode('utf-8'),
                                                                   headers=self.headers,
                                                                   verify=bool(
-                                                                      sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                                      sickrage.app.config.TORRENT_VERIFY_CERT))
 
             except Exception:
                 return None
@@ -144,9 +144,9 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.app.srConfig.TORRENT_LABEL
+        label = sickrage.app.config.TORRENT_LABEL
         if result.show.is_anime:
-            label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.app.config.TORRENT_LABEL_ANIME
         if ' ' in label:
             sickrage.app.log.error(self.name + ': Invalid label. Label must not contain a space')
             return False
@@ -209,7 +209,7 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_path(self, result):
 
-        if sickrage.app.srConfig.TORRENT_PATH:
+        if sickrage.app.config.TORRENT_PATH:
             post_data = json.dumps({"method": "core.set_torrent_move_completed",
                                     "params": [result.hash, True],
                                     "id": 7})
@@ -217,7 +217,7 @@ class DelugeAPI(GenericClient):
             self._request(method='post', data=post_data, headers=self.headers)
 
             post_data = json.dumps({"method": "core.set_torrent_move_completed_path",
-                                    "params": [result.hash, sickrage.app.srConfig.TORRENT_PATH],
+                                    "params": [result.hash, sickrage.app.config.TORRENT_PATH],
                                     "id": 8})
 
             self._request(method='post', data=post_data, headers=self.headers)
@@ -228,7 +228,7 @@ class DelugeAPI(GenericClient):
 
     def _set_torrent_pause(self, result):
 
-        if sickrage.app.srConfig.TORRENT_PAUSED:
+        if sickrage.app.config.TORRENT_PAUSED:
             post_data = json.dumps({"method": "core.pause_torrent",
                                     "params": [[result.hash]],
                                     "id": 9})

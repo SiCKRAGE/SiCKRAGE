@@ -59,8 +59,8 @@ def delete_folder(folder, check_empty=True):
         return False
 
     # check if it isn't TV_DOWNLOAD_DIR
-    if sickrage.app.srConfig.TV_DOWNLOAD_DIR:
-        if real_path(folder) == real_path(sickrage.app.srConfig.TV_DOWNLOAD_DIR):
+    if sickrage.app.config.TV_DOWNLOAD_DIR:
+        if real_path(folder) == real_path(sickrage.app.config.TV_DOWNLOAD_DIR):
             return False
 
     # check if it's empty folder when wanted checked
@@ -156,9 +156,9 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("Processing folder %s" % dirName, sickrage.app.log.DEBUG)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
-    elif sickrage.app.srConfig.TV_DOWNLOAD_DIR and os.path.isdir(sickrage.app.srConfig.TV_DOWNLOAD_DIR) \
-            and os.path.normpath(dirName) != os.path.normpath(sickrage.app.srConfig.TV_DOWNLOAD_DIR):
-        dirName = os.path.join(sickrage.app.srConfig.TV_DOWNLOAD_DIR,
+    elif sickrage.app.config.TV_DOWNLOAD_DIR and os.path.isdir(sickrage.app.config.TV_DOWNLOAD_DIR) \
+            and os.path.normpath(dirName) != os.path.normpath(sickrage.app.config.TV_DOWNLOAD_DIR):
+        dirName = os.path.join(sickrage.app.config.TV_DOWNLOAD_DIR,
                                os.path.abspath(dirName).split(os.path.sep)[-1])
         result.output += logHelper("Trying to use folder %s" % dirName, sickrage.app.log.DEBUG)
 
@@ -175,7 +175,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     SyncFiles = [x for x in files if isSyncFile(x)]
 
     # Don't post process if files are still being synced and option is activated
-    if SyncFiles and sickrage.app.srConfig.POSTPONE_IF_SYNC_FILES:
+    if SyncFiles and sickrage.app.config.POSTPONE_IF_SYNC_FILES:
         postpone = True
 
     nzbNameOriginal = nzbName
@@ -203,7 +203,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             nzbName = None
 
         if not process_method:
-            process_method = sickrage.app.srConfig.PROCESS_METHOD
+            process_method = sickrage.app.config.PROCESS_METHOD
 
         result.result = True
 
@@ -213,7 +213,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             delete_files(path, rarContent, result)
             for video in set(videoFiles) - set(videoInRar):
                 process_media(path, [video], nzbName, process_method, force, is_priority, result)
-        elif sickrage.app.srConfig.DELRARCONTENTS and videoInRar:
+        elif sickrage.app.config.DELRARCONTENTS and videoInRar:
             process_media(path, videoInRar, nzbName, process_method, force, is_priority, result)
             delete_files(path, rarContent, result, True)
             for video in set(videoFiles) - set(videoInRar):
@@ -242,7 +242,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             SyncFiles = [x for x in fileList if isSyncFile(x)]
 
             # Don't post process if files are still being synced and option is activated
-            if SyncFiles and sickrage.app.srConfig.POSTPONE_IF_SYNC_FILES:
+            if SyncFiles and sickrage.app.config.POSTPONE_IF_SYNC_FILES:
                 postpone = True
 
             if not postpone:
@@ -262,7 +262,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                     process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
                                   is_priority, result)
                     delete_files(processPath, rarContent, result)
-                elif sickrage.app.srConfig.DELRARCONTENTS and videoInRar:
+                elif sickrage.app.config.DELRARCONTENTS and videoInRar:
                     process_media(processPath, videoInRar, nzbName, process_method, force, is_priority, result)
                     process_media(processPath, set(videoFiles) - set(videoInRar), nzbName, process_method, force,
                                   is_priority, result)
@@ -276,8 +276,8 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
                     delete_files(processPath, notwantedFiles, result)
 
-                    if (not sickrage.app.srConfig.NO_DELETE or proc_type == "manual") and process_method == "move":
-                        if os.path.normpath(processPath) != os.path.normpath(sickrage.app.srConfig.TV_DOWNLOAD_DIR):
+                    if (not sickrage.app.config.NO_DELETE or proc_type == "manual") and process_method == "move":
+                        if os.path.normpath(processPath) != os.path.normpath(sickrage.app.config.TV_DOWNLOAD_DIR):
                             if delete_folder(processPath, check_empty=True):
                                 result.output += logHelper("Deleted folder: %s" % processPath,
                                                            sickrage.app.log.DEBUG)
@@ -374,7 +374,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         except (InvalidNameException, InvalidShowException) as e:
             pass
 
-    if sickrage.app.srConfig.UNPACK:
+    if sickrage.app.config.UNPACK:
         # Search for packed release
         packedFiles = [x for x in allFiles if isRarFile(x)]
 
@@ -402,7 +402,7 @@ def unRAR(path, rarFiles, force, result):
 
     unpacked_files = []
 
-    if sickrage.app.srConfig.UNPACK and rarFiles:
+    if sickrage.app.config.UNPACK and rarFiles:
 
         result.output += logHelper("Packed Releases detected: " + str(rarFiles), sickrage.app.log.DEBUG)
 
@@ -581,7 +581,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
     dirs = []
     files = []
 
-    if dirName == sickrage.app.srConfig.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
+    if dirName == sickrage.app.config.TV_DOWNLOAD_DIR and not nzbName or proc_type == "manual":  # Scheduled Post Processing Active
         # Get at first all the subdir in the dirName
         for path, dirs, files in os.walk(dirName):
             break
@@ -604,7 +604,7 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 def process_failed(dirName, nzbName, result):
     """Process a download that did not complete correctly"""
 
-    if sickrage.app.srConfig.USE_FAILED_DOWNLOADS:
+    if sickrage.app.config.USE_FAILED_DOWNLOADS:
         processor = None
 
         try:
@@ -618,7 +618,7 @@ def process_failed(dirName, nzbName, result):
         if processor:
             result.output += processor.log
 
-        if sickrage.app.srConfig.DELETE_FAILED and result.result:
+        if sickrage.app.config.DELETE_FAILED and result.result:
             if delete_folder(dirName, check_empty=False):
                 result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
 

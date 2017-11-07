@@ -115,7 +115,7 @@ class DownloadStationAPI(GenericClient):
             # login to API
             self.response = sickrage.app.srWebSession.get(self.urls['auth'],
                                                              params=params,
-                                                             verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                             verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
 
             # get sid
             self.auth = self.response
@@ -138,8 +138,8 @@ class DownloadStationAPI(GenericClient):
 
     def _send_dsm_request(self, method, data, **kwargs):
 
-        if sickrage.app.srConfig.TORRENT_PATH:
-            data['destination'] = sickrage.app.srConfig.TORRENT_PATH
+        if sickrage.app.config.TORRENT_PATH:
+            data['destination'] = sickrage.app.config.TORRENT_PATH
 
         self._request(method=method, data=data, **kwargs)
         return self.response

@@ -41,7 +41,7 @@
         <div class="col-md-12">
             <h3>
                 <b>${_('Find Propers Search:')}</b>
-                % if not sickrage.app.srConfig.DOWNLOAD_PROPERS:
+                % if not sickrage.app.config.DOWNLOAD_PROPERS:
                     ${_('Propers search disabled')}
                 % elif not findPropersStatus:
                     ${_('Not in progress')}
@@ -49,7 +49,7 @@
                     ${_("In Progress")}
                 % endif
             </h3>
-            <a class="btn ${('disabled', '')[bool(sickrage.app.srConfig.DOWNLOAD_PROPERS)]}"
+            <a class="btn ${('disabled', '')[bool(sickrage.app.config.DOWNLOAD_PROPERS)]}"
                href="${srWebRoot}/manage/manageQueues/forceFindPropers">
                 <i class="icon-exclamation-sign"></i>Force
             </a>

@@ -87,12 +87,12 @@ class KeyHandler(RequestHandler):
         api_key = None
 
         try:
-            username = sickrage.app.srConfig.WEB_USERNAME
-            password = sickrage.app.srConfig.WEB_PASSWORD
+            username = sickrage.app.config.WEB_USERNAME
+            password = sickrage.app.config.WEB_PASSWORD
 
             if (self.get_argument('u', None) == username or not username) and \
                     (self.get_argument('p', None) == password or not password):
-                api_key = sickrage.app.srConfig.API_KEY
+                api_key = sickrage.app.config.API_KEY
 
             self.finish({'success': api_key is not None, 'api_key': api_key})
         except Exception:
@@ -565,14 +565,14 @@ def _getQualityMap():
 
 
 def _getRootDirs():
-    if sickrage.app.srConfig.ROOT_DIRS == "":
+    if sickrage.app.config.ROOT_DIRS == "":
         return {}
 
     rootDir = {}
-    root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
-    default_index = int(sickrage.app.srConfig.ROOT_DIRS.split('|')[0])
+    root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
+    default_index = int(sickrage.app.config.ROOT_DIRS.split('|')[0])
 
-    rootDir["default_index"] = int(sickrage.app.srConfig.ROOT_DIRS.split('|')[0])
+    rootDir["default_index"] = int(sickrage.app.config.ROOT_DIRS.split('|')[0])
     # remove default_index value from list (this fixes the offset)
     root_dirs.pop(0)
 
@@ -659,7 +659,7 @@ class CMD_ComingEpisodes(ApiCall):
                                             **kwargs)
         self.type, args = self.check_params("type", '|'.join(ComingEpisodes.categories), False, "list",
                                             ComingEpisodes.categories, *args, **kwargs)
-        self.paused, args = self.check_params("paused", bool(sickrage.app.srConfig.COMING_EPS_DISPLAY_PAUSED), False,
+        self.paused, args = self.check_params("paused", bool(sickrage.app.config.COMING_EPS_DISPLAY_PAUSED), False,
                                               "bool", [],
                                               *args, **kwargs)
 
@@ -882,7 +882,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                         failure = True
                     continue
 
-                if self.status == FAILED and not sickrage.app.srConfig.USE_FAILED_DOWNLOADS:
+                if self.status == FAILED and not sickrage.app.config.USE_FAILED_DOWNLOADS:
                     ep_results.append(_epResult(RESULT_FAILURE, epObj,
                                                 "Refusing to change status to FAILED because failed download handling is disabled"))
                     failure = True
@@ -1174,9 +1174,9 @@ class CMD_Logs(ApiCall):
 
         data = []
         try:
-            if os.path.isfile(sickrage.app.srConfig.LOG_FILE):
+            if os.path.isfile(sickrage.app.config.LOG_FILE):
                 data += list(reversed(re.findall("((?:^.+?{}.+?$))".format(""),
-                                                 "\n".join(next(readFileBuffered(sickrage.app.srConfig.LOG_FILE,
+                                                 "\n".join(next(readFileBuffered(sickrage.app.config.LOG_FILE,
                                                                                  reverse=True)).splitlines()),
                                                  re.S + re.M + re.I)))
                 maxLines -= len(data)
@@ -1223,11 +1223,11 @@ class CMD_PostProcess(ApiCall):
 
     def run(self):
         """ Manually post-process the files in the download folder """
-        if not self.path and not sickrage.app.srConfig.TV_DOWNLOAD_DIR:
+        if not self.path and not sickrage.app.config.TV_DOWNLOAD_DIR:
             return _responds(RESULT_FAILURE, msg="You need to provide a path or set TV Download Dir")
 
         if not self.path:
-            self.path = sickrage.app.srConfig.TV_DOWNLOAD_DIR
+            self.path = sickrage.app.config.TV_DOWNLOAD_DIR
 
         if not self.type:
             self.type = 'manual'
@@ -1286,11 +1286,11 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
 
         root_dirs = []
 
-        if sickrage.app.srConfig.ROOT_DIRS == "":
+        if sickrage.app.config.ROOT_DIRS == "":
             self.default = 1
         else:
-            root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
-            index = int(sickrage.app.srConfig.ROOT_DIRS.split('|')[0])
+            root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
+            index = int(sickrage.app.config.ROOT_DIRS.split('|')[0])
             root_dirs.pop(0)
             # clean up the list - replace %xx escapes by their single-character equivalent
             root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
@@ -1311,7 +1311,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
         root_dirs_new.insert(0, index)
         root_dirs_new = '|'.join(x for x in root_dirs_new)
 
-        sickrage.app.srConfig.ROOT_DIRS = root_dirs_new
+        sickrage.app.config.ROOT_DIRS = root_dirs_new
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directories updated")
 
 
@@ -1373,12 +1373,12 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
 
     def run(self):
         """ Delete a root (parent) directory from SiCKRAGE """
-        if sickrage.app.srConfig.ROOT_DIRS == "":
+        if sickrage.app.config.ROOT_DIRS == "":
             return _responds(RESULT_FAILURE, _getRootDirs(), msg="No root directories detected")
 
         newIndex = 0
         root_dirs_new = []
-        root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
+        root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
         index = int(root_dirs[0])
         root_dirs.pop(0)
         # clean up the list - replace %xx escapes by their single-character equivalent
@@ -1400,7 +1400,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
             root_dirs_new.insert(0, newIndex)
         root_dirs_new = "|".join(x for x in root_dirs_new)
 
-        sickrage.app.srConfig.ROOT_DIRS = root_dirs_new
+        sickrage.app.config.ROOT_DIRS = root_dirs_new
         # what if the root dir was not found?
         return _responds(RESULT_SUCCESS, _getRootDirs(), msg="Root directory deleted")
 
@@ -1415,11 +1415,11 @@ class CMD_SiCKRAGEGetDefaults(ApiCall):
     def run(self):
         """ Get SiCKRAGE's user default configuration value """
 
-        anyQualities, bestQualities = _mapQuality(sickrage.app.srConfig.QUALITY_DEFAULT)
+        anyQualities, bestQualities = _mapQuality(sickrage.app.config.QUALITY_DEFAULT)
 
-        data = {"status": statusStrings[sickrage.app.srConfig.STATUS_DEFAULT].lower(),
-                "flatten_folders": int(sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT), "initial": anyQualities,
-                "archive": bestQualities, "future_show_paused": int(sickrage.app.srConfig.COMING_EPS_DISPLAY_PAUSED)}
+        data = {"status": statusStrings[sickrage.app.config.STATUS_DEFAULT].lower(),
+                "flatten_folders": int(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT), "initial": anyQualities,
+                "archive": bestQualities, "future_show_paused": int(sickrage.app.config.COMING_EPS_DISPLAY_PAUSED)}
         return _responds(RESULT_SUCCESS, data)
 
 
@@ -1519,7 +1519,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
         super(CMD_SiCKRAGESearchIndexers, self).__init__(application, request, *args, **kwargs)
         self.valid_languages = srIndexerApi().indexer().languages
         self.name, args = self.check_params("name", None, False, "string", [], *args, **kwargs)
-        self.lang, args = self.check_params("lang", sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
+        self.lang, args = self.check_params("lang", sickrage.app.config.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, False, "int", [], *args, **kwargs)
 
@@ -1533,7 +1533,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
                 lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
@@ -1558,7 +1558,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
             for _indexer in srIndexerApi().indexers if self.indexer == 0 else [int(self.indexer)]:
                 lINDEXER_API_PARMS = srIndexerApi(_indexer).api_params.copy()
 
-                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
                 lINDEXER_API_PARMS['actors'] = False
 
@@ -1675,7 +1675,7 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                 aqualityID.append(quality_map[quality])
 
         if iqualityID or aqualityID:
-            sickrage.app.srConfig.QUALITY_DEFAULT = Quality.combineQualities(iqualityID, aqualityID)
+            sickrage.app.config.QUALITY_DEFAULT = Quality.combineQualities(iqualityID, aqualityID)
 
         if self.status:
             # convert the string status to a int
@@ -1689,13 +1689,13 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
             # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
                 raise ApiError("Status Prohibited")
-            sickrage.app.srConfig.STATUS_DEFAULT = self.status
+            sickrage.app.config.STATUS_DEFAULT = self.status
 
         if self.flatten_folders is not None:
-            sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
+            sickrage.app.config.FLATTEN_FOLDERS_DEFAULT = int(self.flatten_folders)
 
         if self.future_show_paused is not None:
-            sickrage.app.srConfig.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
+            sickrage.app.config.COMING_EPS_DISPLAY_PAUSED = int(self.future_show_paused)
 
         return _responds(RESULT_SUCCESS, msg="Saved defaults")
 
@@ -1846,9 +1846,9 @@ class CMD_ShowAddExisting(ApiCall):
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders",
-                                                       bool(sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT), False,
+                                                       bool(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT), False,
                                                        "bool", [], *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", int(sickrage.app.srConfig.USE_SUBTITLES), False, "int",
+        self.subtitles, args = self.check_params("subtitles", int(sickrage.app.config.USE_SUBTITLES), False, "int",
                                                  [], *args, **kwargs)
 
     def run(self):
@@ -1887,7 +1887,7 @@ class CMD_ShowAddExisting(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.app.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.app.config.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 
@@ -1902,9 +1902,9 @@ class CMD_ShowAddExisting(ApiCall):
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
         sickrage.app.SHOWQUEUE.addShow(
-            int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.srConfig.STATUS_DEFAULT,
+            int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.STATUS_DEFAULT,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
-            default_status_after=sickrage.app.srConfig.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
+            default_status_after=sickrage.app.config.STATUS_DEFAULT_AFTER, archive=self.archive_firstmatch
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
@@ -1947,22 +1947,22 @@ class CMD_ShowAddNew(ApiCall):
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders",
-                                                       bool(sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT), False,
+                                                       bool(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT), False,
                                                        "bool", [], *args, **kwargs)
         self.status, args = self.check_params("status", None, False, "string", ["wanted", "skipped", "ignored"], *args,
                                               **kwargs)
-        self.lang, args = self.check_params("lang", sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE, False, "string",
+        self.lang, args = self.check_params("lang", sickrage.app.config.INDEXER_DEFAULT_LANGUAGE, False, "string",
                                             self.valid_languages.keys(), *args, **kwargs)
-        self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.srConfig.USE_SUBTITLES), False,
+        self.subtitles, args = self.check_params("subtitles", bool(sickrage.app.config.USE_SUBTITLES), False,
                                                  "bool", [], *args, **kwargs)
-        self.anime, args = self.check_params("anime", bool(sickrage.app.srConfig.ANIME_DEFAULT), False, "bool", [],
+        self.anime, args = self.check_params("anime", bool(sickrage.app.config.ANIME_DEFAULT), False, "bool", [],
                                              *args, **kwargs)
-        self.scene, args = self.check_params("scene", bool(sickrage.app.srConfig.SCENE_DEFAULT), False, "bool", [],
+        self.scene, args = self.check_params("scene", bool(sickrage.app.config.SCENE_DEFAULT), False, "bool", [],
                                              *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
         self.archive_firstmatch, args = self.check_params("archive_firstmatch",
-                                                          bool(sickrage.app.srConfig.ARCHIVE_DEFAULT), False, "bool",
+                                                          bool(sickrage.app.config.ARCHIVE_DEFAULT), False, "bool",
                                                           [], *args, **kwargs)
 
     def run(self):
@@ -1972,10 +1972,10 @@ class CMD_ShowAddNew(ApiCall):
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
 
         if not self.location:
-            if sickrage.app.srConfig.ROOT_DIRS != "":
-                root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
+            if sickrage.app.config.ROOT_DIRS != "":
+                root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
                 root_dirs.pop(0)
-                default_index = int(sickrage.app.srConfig.ROOT_DIRS.split('|')[0])
+                default_index = int(sickrage.app.config.ROOT_DIRS.split('|')[0])
                 self.location = root_dirs[default_index]
             else:
                 return _responds(RESULT_FAILURE, msg="Root directory is not set, please provide a location")
@@ -1995,7 +1995,7 @@ class CMD_ShowAddNew(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.app.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.app.config.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 
@@ -2010,7 +2010,7 @@ class CMD_ShowAddNew(ApiCall):
             newQuality = Quality.combineQualities(iqualityID, aqualityID)
 
         # use default status as a failsafe
-        newStatus = sickrage.app.srConfig.STATUS_DEFAULT
+        newStatus = sickrage.app.config.STATUS_DEFAULT
         if self.status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
@@ -2027,7 +2027,7 @@ class CMD_ShowAddNew(ApiCall):
             newStatus = self.status
 
         # use default status as a failsafe
-        default_ep_status_after = sickrage.app.srConfig.STATUS_DEFAULT_AFTER
+        default_ep_status_after = sickrage.app.config.STATUS_DEFAULT_AFTER
         if self.future_status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
@@ -2062,7 +2062,7 @@ class CMD_ShowAddNew(ApiCall):
         showPath = os.path.join(self.location, sanitizeFileName(indexerName))
 
         # don't create show dir if config says not to
-        if sickrage.app.srConfig.ADD_SHOWS_WO_DIR:
+        if sickrage.app.config.ADD_SHOWS_WO_DIR:
             sickrage.app.log.info("Skipping initial creation of " + showPath + " due to config.ini setting")
         else:
             dir_exists = makeDir(showPath)
@@ -2504,7 +2504,7 @@ class CMD_ShowSetQuality(ApiCall):
                        'unknown': Quality.UNKNOWN}
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.app.srConfig.QUALITY_DEFAULT)
+        newQuality = int(sickrage.app.config.QUALITY_DEFAULT)
         iqualityID = []
         aqualityID = []
 

@@ -67,7 +67,7 @@ class NMJNotifier(srNotifiers):
             database = match.group(1)
             device = match.group(2)
             sickrage.app.log.debug("Found NMJ database %s on device %s" % (database, device))
-            sickrage.app.srConfig.NMJ_DATABASE = database
+            sickrage.app.config.NMJ_DATABASE = database
         else:
             sickrage.app.log.warning(
                 "Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
@@ -80,7 +80,7 @@ class NMJNotifier(srNotifiers):
             if match:
                 mount = match.group().replace("127.0.0.1", host)
                 sickrage.app.log.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
-                sickrage.app.srConfig.NMJ_MOUNT = mount
+                sickrage.app.config.NMJ_MOUNT = mount
             else:
                 sickrage.app.log.warning(
                     "Detected a network share on the Popcorn Hour, but could not get the mounting url")
@@ -93,11 +93,11 @@ class NMJNotifier(srNotifiers):
         # Not implemented: Start the scanner when snatched does not make any sense
 
     def _notify_download(self, ep_name):
-        if sickrage.app.srConfig.USE_NMJ:
+        if sickrage.app.config.USE_NMJ:
             self._notifyNMJ()
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.srConfig.USE_NMJ:
+        if sickrage.app.config.USE_NMJ:
             self._notifyNMJ()
 
     def _notify_version_update(self, new_version):
@@ -188,17 +188,17 @@ class NMJNotifier(srNotifiers):
         mount: The mount URL (optional, defaults to the mount URL in the config)
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
-        if not sickrage.app.srConfig.USE_NMJ and not force:
+        if not sickrage.app.config.USE_NMJ and not force:
             sickrage.app.log.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.app.srConfig.NMJ_HOST
+            host = sickrage.app.config.NMJ_HOST
         if not database:
-            database = sickrage.app.srConfig.NMJ_DATABASE
+            database = sickrage.app.config.NMJ_DATABASE
         if not mount:
-            mount = sickrage.app.srConfig.NMJ_MOUNT
+            mount = sickrage.app.config.NMJ_MOUNT
 
         sickrage.app.log.debug("Sending scan command for NMJ ")
 

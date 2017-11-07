@@ -119,7 +119,7 @@ def _download_result(result):
     # if it's an nzb data result
     elif result.resultType == "nzbdata":
         # get the final file path to the nzb
-        filename = os.path.join(sickrage.app.srConfig.NZB_DIR, result.name + ".nzb")
+        filename = os.path.join(sickrage.app.config.NZB_DIR, result.name + ".nzb")
 
         sickrage.app.log.info("Saving NZB to " + filename)
 
@@ -163,7 +163,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         return False
 
     result.priority = 0  # -1 = low, 0 = normal, 1 = high
-    if sickrage.app.srConfig.ALLOW_HIGH_PRIORITY:
+    if sickrage.app.config.ALLOW_HIGH_PRIORITY:
         # if it aired recently make it high priority
         for curEp in result.episodes:
             if date.today() - curEp.airdate <= timedelta(days=7):
@@ -177,22 +177,22 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
     dlResult = False
     if result.resultType in ("nzb", "nzbdata"):
-        if sickrage.app.srConfig.NZB_METHOD == "blackhole":
+        if sickrage.app.config.NZB_METHOD == "blackhole":
             dlResult = _download_result(result)
-        elif sickrage.app.srConfig.NZB_METHOD == "sabnzbd":
+        elif sickrage.app.config.NZB_METHOD == "sabnzbd":
             dlResult = SabNZBd.sendNZB(result)
-        elif sickrage.app.srConfig.NZB_METHOD == "nzbget":
+        elif sickrage.app.config.NZB_METHOD == "nzbget":
             is_proper = True if endStatus == SNATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
         else:
             sickrage.app.log.error(
-                "Unknown NZB action specified in config: " + sickrage.app.srConfig.NZB_METHOD)
+                "Unknown NZB action specified in config: " + sickrage.app.config.NZB_METHOD)
     elif result.resultType == "torrent":
-        if sickrage.app.srConfig.TORRENT_METHOD == "blackhole":
+        if sickrage.app.config.TORRENT_METHOD == "blackhole":
             dlResult = _download_result(result)
         else:
             if any([result.content, result.url.startswith('magnet:')]):
-                client = getClientIstance(sickrage.app.srConfig.TORRENT_METHOD)()
+                client = getClientIstance(sickrage.app.config.TORRENT_METHOD)()
                 dlResult = client.sendTORRENT(result)
             else:
                 sickrage.app.log.warning("Torrent file content is empty")
@@ -203,7 +203,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if not dlResult:
         return False
 
-    if sickrage.app.srConfig.USE_FAILED_DOWNLOADS:
+    if sickrage.app.config.USE_FAILED_DOWNLOADS:
         FailedHistory.logSnatch(result)
 
     sickrage.app.srNotifications.message(_('Episode snatched'), result.name)
@@ -233,7 +233,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
     data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
 
-    if sickrage.app.srConfig.USE_TRAKT and sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
+    if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST:
         sickrage.app.log.debug(
             "Add episodes, showid: indexerid " + str(result.show.indexerid) + ", Title " + str(
                 result.show.name) + " to Traktv Watchlist")
@@ -306,7 +306,7 @@ def pickBestResult(results, show):
             continue
 
         if hasattr(cur_result, 'size'):
-            if sickrage.app.srConfig.USE_FAILED_DOWNLOADS and FailedHistory.hasFailed(cur_result.name,
+            if sickrage.app.config.USE_FAILED_DOWNLOADS and FailedHistory.hasFailed(cur_result.name,
                                                                                          cur_result.size,
                                                                                          cur_result.provider.name):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
@@ -314,7 +314,7 @@ def pickBestResult(results, show):
 
         # quality definition video file size constraints check
         try:
-            quality_size = sickrage.app.srConfig.QUALITY_SIZES[cur_result.quality]
+            quality_size = sickrage.app.config.QUALITY_SIZES[cur_result.quality]
             for file, file_size in cur_result.files.items():
                 if not file.decode('utf-8').endswith(tuple(video_exts)):
                     continue
@@ -465,7 +465,7 @@ def searchForNeededEpisodes():
         curShow.nextEpisode()
 
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
-        result = searchProviders(curShow, episodes, cacheOnly=sickrage.app.srConfig.ENABLE_RSS_CACHE)
+        result = searchProviders(curShow, episodes, cacheOnly=sickrage.app.config.ENABLE_RSS_CACHE)
         if result: results += result
 
     return results
@@ -496,12 +496,12 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
         finalResults = []
 
         for providerID, providerObj in sickrage.app.providersDict.sort(
-                randomize=sickrage.app.srConfig.RANDOMIZE_PROVIDERS).items():
+                randomize=sickrage.app.config.RANDOMIZE_PROVIDERS).items():
 
             # check provider type and provider is enabled
-            if not sickrage.app.srConfig.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
+            if not sickrage.app.config.USE_NZBS and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
                 continue
-            elif not sickrage.app.srConfig.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
+            elif not sickrage.app.config.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
                                                                                     TorrentRssProvider.type]:
                 continue
             elif not providerObj.isEnabled:
@@ -527,7 +527,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    if sickrage.app.srConfig.ENABLE_RSS_CACHE: providerObj.cache.update()
+                    if sickrage.app.config.ENABLE_RSS_CACHE: providerObj.cache.update()
 
                     if len(episodes):
                         if search_mode == 'eponly':

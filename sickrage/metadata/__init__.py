@@ -691,7 +691,7 @@ class GenericMetadata(object):
         """
 
         image_data = None
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
@@ -748,7 +748,7 @@ class GenericMetadata(object):
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
 
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
@@ -781,7 +781,7 @@ class GenericMetadata(object):
                     {1: '<url 1>', 2: <url 2>, ...},}
         """
 
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
@@ -888,7 +888,7 @@ class GenericMetadata(object):
             indexerid = show.mapIndexers()[1]
             if indexerid:
                 request = fanart.Request(
-                    apikey=sickrage.app.srConfig.FANART_API_KEY,
+                    apikey=sickrage.app.config.FANART_API_KEY,
                     id=indexerid,
                     ws=fanart.WS.TV,
                     type=types[img_type],
@@ -908,7 +908,7 @@ class GenericMetadata(object):
 
     @staticmethod
     def validateShow(show, season=None, episode=None):
-        indexer_lang = show.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             lINDEXER_API_PARMS = srIndexerApi(show.indexer).api_params.copy()

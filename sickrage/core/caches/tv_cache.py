@@ -94,10 +94,10 @@ class TVCache(object):
     def getRSSFeed(self, url, params=None):
         handlers = []
 
-        if sickrage.app.srConfig.PROXY_SETTING:
+        if sickrage.app.config.PROXY_SETTING:
             sickrage.app.log.debug("Using global proxy for url: " + url)
-            scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
-            address = sickrage.app.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.app.srConfig.PROXY_SETTING
+            scheme, address = urllib2.splittype(sickrage.app.config.PROXY_SETTING)
+            address = sickrage.app.config.PROXY_SETTING if scheme else 'http://' + sickrage.app.config.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
 
         return getFeed(url, params=params, handlers=handlers)
@@ -171,7 +171,7 @@ class TVCache(object):
             })
 
     def should_update(self):
-        if sickrage.app.srConfig.DEVELOPER: return True
+        if sickrage.app.config.DEVELOPER: return True
 
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):
@@ -194,8 +194,8 @@ class TVCache(object):
             try:
                 parse_result = NameParser(
                     showObj=findCertainShow(sickrage.app.SHOWLIST, indexer_id),
-                    tryIndexers=not sickrage.app.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS,
-                    validate_show=sickrage.app.srConfig.ENABLE_RSS_CACHE_VALID_SHOWS
+                    tryIndexers=not sickrage.app.config.ENABLE_RSS_CACHE_VALID_SHOWS,
+                    validate_show=sickrage.app.config.ENABLE_RSS_CACHE_VALID_SHOWS
                 ).parse(name)
             except (InvalidShowException, InvalidNameException):
                 pass

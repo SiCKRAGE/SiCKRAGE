@@ -11,10 +11,10 @@
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Provider Priorities')}</a></li>
     <li><a data-toggle="tab" href="#core-tab-pane2">${_('Provider Options')}</a></li>
-    % if sickrage.app.srConfig.USE_NZBS:
+    % if sickrage.app.config.USE_NZBS:
         <li><a data-toggle="tab" href="#core-tab-pane3">${_('Custom Newznab Providers')}</a></li>
     % endif
-    % if sickrage.app.srConfig.USE_TORRENTS:
+    % if sickrage.app.config.USE_TORRENTS:
         <li><a data-toggle="tab" href="#core-tab-pane4">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>
@@ -24,7 +24,7 @@
         newznab_providers = ''
         torrentrss_providers = ''
 
-        if sickrage.app.srConfig.USE_NZBS:
+        if sickrage.app.config.USE_NZBS:
             for providerID, providerObj in sickrage.app.providersDict.newznab().items():
                 if providerObj.default:
                     continue
@@ -36,9 +36,9 @@
                         providerObj.key,
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
-                        ("false", "true")[bool(sickrage.app.srConfig.USE_NZBS)]]))
+                        ("false", "true")[bool(sickrage.app.config.USE_NZBS)]]))
 
-        if sickrage.app.srConfig.USE_TORRENTS:
+        if sickrage.app.config.USE_TORRENTS:
             for providerID, providerObj in sickrage.app.providersDict.torrentrss().items():
                 if providerObj.default:
                     continue
@@ -50,7 +50,7 @@
                               providerObj.cookies,
                               providerObj.titleTAG,
                               ("false", "true")[bool(providerObj.default)],
-                              ("false", "true")[bool(sickrage.app.srConfig.USE_TORRENTS)]]))
+                              ("false", "true")[bool(sickrage.app.config.USE_TORRENTS)]]))
     %>
     <meta data-var="NEWZNAB_PROVIDERS" data-content="${newznab_providers}">
     <meta data-var="TORRENTRSS_PROVIDERS" data-content="${torrentrss_providers}">
@@ -64,7 +64,7 @@
                 <p>${_('Check off and drag the providers into the order you want them to be used.')}</p>
                 <p>${_('At least one provider is required but two are recommended.')}</p>
 
-                % if not sickrage.app.srConfig.USE_NZBS or not sickrage.app.srConfig.USE_TORRENTS:
+                % if not sickrage.app.config.USE_NZBS or not sickrage.app.config.USE_TORRENTS:
                     <blockquote style="margin: 20px 0;">
                         ${_('NZB/Torrent providers can be toggled in')}
                         <b>
@@ -86,7 +86,7 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <ul id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.providersDict.sort().items():
-                        % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.srConfig.USE_TORRENTS):
+                        % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.USE_TORRENTS):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
                         % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
                             <% provider_url = providerObj.custom_url %>
@@ -911,7 +911,7 @@
         </div>
     </div><!-- /tab-pane2 //-->
 
-    % if sickrage.app.srConfig.USE_NZBS:
+    % if sickrage.app.config.USE_NZBS:
         <div id="core-tab-pane3" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
@@ -1035,7 +1035,7 @@
         </div><!-- /tab-pane3 //-->
     % endif
 
-    % if sickrage.app.srConfig.USE_TORRENTS:
+    % if sickrage.app.config.USE_TORRENTS:
         <div id="core-tab-pane4" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">

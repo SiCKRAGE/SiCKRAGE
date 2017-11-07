@@ -58,7 +58,7 @@ class srVersionUpdater(object):
         threading.currentThread().setName(self.name)
 
         try:
-            if self.check_for_new_version(force) and sickrage.app.srConfig.AUTO_UPDATE:
+            if self.check_for_new_version(force) and sickrage.app.config.AUTO_UPDATE:
                 if sickrage.app.SHOWUPDATER.amActive:
                     sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
                     return
@@ -100,7 +100,7 @@ class srVersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        if sickrage.app.srConfig.DEVELOPER:
+        if sickrage.app.config.DEVELOPER:
             return False
 
         if not sickrage.app.started:
@@ -171,7 +171,7 @@ class UpdateManager(object):
     def _git_path(self):
         test_cmd = '--version'
 
-        main_git = sickrage.app.srConfig.GIT_PATH or 'git'
+        main_git = sickrage.app.config.GIT_PATH or 'git'
 
         sickrage.app.log.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
         __, __, exit_status = self._git_cmd(main_git, test_cmd)
@@ -218,7 +218,7 @@ class UpdateManager(object):
     def _pip_path(self):
         test_cmd = '-V'
 
-        main_pip = sickrage.app.srConfig.PIP_PATH or 'pip'
+        main_pip = sickrage.app.config.PIP_PATH or 'pip'
 
         sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
         __, __, exit_status = self._pip_cmd(main_pip, test_cmd)
@@ -338,7 +338,7 @@ class UpdateManager(object):
 
     @staticmethod
     def get_update_url():
-        return "{}/home/update/?pid={}".format(sickrage.app.srConfig.WEB_ROOT, sickrage.app.PID)
+        return "{}/home/update/?pid={}".format(sickrage.app.config.WEB_ROOT, sickrage.app.PID)
 
     def install_requirements(self):
         __, __, exit_status = self._pip_cmd(self._pip_path,
@@ -418,11 +418,11 @@ class GitUpdateManager(UpdateManager):
         """
 
         # remove untracked files and performs a hard reset on git branch to avoid update issues
-        if sickrage.app.srConfig.GIT_RESET:
+        if sickrage.app.config.GIT_RESET:
             # self.clean() # This is removing user data and backups
             self.reset()
 
-        __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.app.srConfig.GIT_REMOTE,
+        __, __, exit_status = self._git_cmd(self._git_path, 'pull -f {} {}'.format(sickrage.app.config.GIT_REMOTE,
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
@@ -464,7 +464,7 @@ class GitUpdateManager(UpdateManager):
             sickrage.app.log.debug("Branch checkout: " + self._find_installed_version() + "->" + branch)
 
             # remove untracked files and performs a hard reset on git branch to avoid update issues
-            if sickrage.app.srConfig.GIT_RESET:
+            if sickrage.app.config.GIT_RESET:
                 self.reset()
 
             # fetch all branches
@@ -479,13 +479,13 @@ class GitUpdateManager(UpdateManager):
 
     def get_remote_url(self):
         url, __, exit_status = self._git_cmd(self._git_path,
-                                             'remote get-url {}'.format(sickrage.app.srConfig.GIT_REMOTE))
+                                             'remote get-url {}'.format(sickrage.app.config.GIT_REMOTE))
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
-        if not sickrage.app.srConfig.DEVELOPER:
-            self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.srConfig.GIT_REMOTE,
-                                                                        sickrage.app.srConfig.GIT_REMOTE_URL))
+        if not sickrage.app.config.DEVELOPER:
+            self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.config.GIT_REMOTE,
+                                                                        sickrage.app.config.GIT_REMOTE_URL))
 
     @property
     def current_branch(self):
@@ -495,7 +495,7 @@ class GitUpdateManager(UpdateManager):
     @property
     def remote_branches(self):
         branches, __, exit_status = self._git_cmd(self._git_path,
-                                                  'ls-remote --heads {}'.format(sickrage.app.srConfig.GIT_REMOTE))
+                                                  'ls-remote --heads {}'.format(sickrage.app.config.GIT_REMOTE))
         if exit_status == 0 and branches:
             return re.findall(r'refs/heads/(.*)', branches)
 

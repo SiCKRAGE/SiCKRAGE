@@ -383,7 +383,7 @@ class Tvdb:
                 urlparse.urljoin(self.config['api']['base'], url),
                 cache=self.config['cache_enabled'],
                 headers=self.config['headers'],
-                timeout=sickrage.app.srConfig.INDEXER_TIMEOUT,
+                timeout=sickrage.app.config.INDEXER_TIMEOUT,
                 **kwargs
             )
         except Exception as e:

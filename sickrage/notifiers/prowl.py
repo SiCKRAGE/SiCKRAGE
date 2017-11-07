@@ -38,22 +38,22 @@ class ProwlNotifier(srNotifiers):
                                message="Testing Prowl settings from SiCKRAGE", force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.srConfig.PROWL_NOTIFY_ONSNATCH:
+        if sickrage.app.config.PROWL_NOTIFY_ONSNATCH:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_SNATCH],
                             message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.srConfig.PROWL_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.PROWL_NOTIFY_ONDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                             message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.srConfig.USE_PROWL:
+        if sickrage.app.config.USE_PROWL:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
@@ -61,14 +61,14 @@ class ProwlNotifier(srNotifiers):
 
     def _sendProwl(self, prowl_api=None, prowl_priority=None, event=None, message=None, force=False):
 
-        if not sickrage.app.srConfig.USE_PROWL and not force:
+        if not sickrage.app.config.USE_PROWL and not force:
             return False
 
         if prowl_api is None:
-            prowl_api = sickrage.app.srConfig.PROWL_API
+            prowl_api = sickrage.app.config.PROWL_API
 
         if prowl_priority is None:
-            prowl_priority = sickrage.app.srConfig.PROWL_PRIORITY
+            prowl_priority = sickrage.app.config.PROWL_PRIORITY
 
         title = "SiCKRAGE"
 

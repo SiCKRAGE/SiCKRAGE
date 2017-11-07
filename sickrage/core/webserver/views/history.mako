@@ -32,10 +32,10 @@
             <label for="HistoryLayout" class="badge">${_('Layout:')}
                 <select name="HistoryLayout" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.app.srConfig.HISTORY_LAYOUT == 'compact']}>
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.app.config.HISTORY_LAYOUT == 'compact']}>
                         ${_('Compact')}
                     </option>
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.app.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.app.config.HISTORY_LAYOUT == 'detailed']}>
                         ${_('Detailed')}
                     </option>
                 </select>
@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="horizontal-scroll">
-                % if sickrage.app.srConfig.HISTORY_LAYOUT == "detailed":
+                % if sickrage.app.config.HISTORY_LAYOUT == "detailed":
                     <table id="historyTable" class="sickrageTable tablesorter" cellspacing="1" border="0"
                            cellpadding="0">
                         <thead>
@@ -131,7 +131,7 @@
                             <th>${_('Episode')}</th>
                             <th>${_('Snatched')}</th>
                             <th>${_('Downloaded')}</th>
-                            % if sickrage.app.srConfig.USE_SUBTITLES:
+                            % if sickrage.app.config.USE_SUBTITLES:
                                 <th>${_('Subtitled')}</th>
                             % endif
                             <th>${_('Quality')}</th>
@@ -195,7 +195,7 @@
                                             % endif
                                         % endfor
                                     </td>
-                                    % if sickrage.app.srConfig.USE_SUBTITLES:
+                                    % if sickrage.app.config.USE_SUBTITLES:
                                         <td align="center">
                                             % for action in sorted(hItem["actions"]):
                                                 <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>

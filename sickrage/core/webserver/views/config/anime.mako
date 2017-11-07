@@ -28,7 +28,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="use_anidb"
-                               id="use_anidb" ${('', 'checked')[bool(sickrage.app.srConfig.USE_ANIDB)]} />
+                               id="use_anidb" ${('', 'checked')[bool(sickrage.app.config.USE_ANIDB)]} />
                         <label for="use_anidb">
                             ${_('Enable AniDB')}
                         </label>
@@ -46,7 +46,7 @@
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input type="text" name="anidb_username" id="anidb_username"
-                                       value="${sickrage.app.srConfig.ANIDB_USERNAME}"
+                                       value="${sickrage.app.config.ANIDB_USERNAME}"
                                        title="${_('AniDB Username')}"
                                        class="form-control"
                                        autocapitalize="off"/>
@@ -63,7 +63,7 @@
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input type="password" name="anidb_password" id="anidb_password"
-                                       value="${sickrage.app.srConfig.ANIDB_PASSWORD}"
+                                       value="${sickrage.app.config.ANIDB_PASSWORD}"
                                        title="${_('AniDB Password')}"
                                        class="form-control"
                                        autocapitalize="off"/>
@@ -76,7 +76,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="checkbox" name="anidb_use_mylist"
-                                   id="anidb_use_mylist" ${('', 'checked')[bool(sickrage.app.srConfig.ANIDB_USE_MYLIST)]}/>
+                                   id="anidb_use_mylist" ${('', 'checked')[bool(sickrage.app.config.ANIDB_USE_MYLIST)]}/>
                             <label for="anidb_use_mylist">
                                 ${_('Do you want to add the PostProcessed Episodes to the MyList ?')}
                             </label>
@@ -104,7 +104,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" name="split_home"
-                               id="split_home" ${('', 'checked')[bool(sickrage.app.srConfig.ANIME_SPLIT_HOME)]}/>
+                               id="split_home" ${('', 'checked')[bool(sickrage.app.config.ANIME_SPLIT_HOME)]}/>
                         <label for="split_home">
                             ${_('Separate anime and normal shows in groups')}
                         </label>

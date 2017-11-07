@@ -100,7 +100,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         show_ID = show_obj.indexerid
 
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['language'] = indexer_lang
@@ -209,7 +209,7 @@ class KODI_12PlusMetadata(GenericMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
 

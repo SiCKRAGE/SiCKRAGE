@@ -160,7 +160,7 @@ class DailySearchQueueItem(srQueueItem):
                     self.success = snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
@@ -192,7 +192,7 @@ class ManualSearchQueueItem(srQueueItem):
                 self.success = snatchEpisode(searchResult[0])
 
                 # give the CPU a break
-                time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
 
             else:
                 sickrage.app.srNotifications.message(
@@ -236,7 +236,7 @@ class BacklogQueueItem(srQueueItem):
                         snatchEpisode(result)
 
                         # give the CPU a break
-                        time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
+                        time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
             except Exception:
                 sickrage.app.log.debug(traceback.format_exc())
             finally:
@@ -279,7 +279,7 @@ class FailedQueueItem(srQueueItem):
                     snatchEpisode(result)
 
                     # give the CPU a break
-                    time.sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
+                    time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:

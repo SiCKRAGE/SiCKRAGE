@@ -91,13 +91,13 @@
                         </div>
                     </div>
                     <br/>
-                    % if sickrage.app.srConfig.WEB_ROOT:
+                    % if sickrage.app.config.WEB_ROOT:
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                 ${_('SR Web Root:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                ${sickrage.app.srConfig.WEB_ROOT}
+                                ${sickrage.app.config.WEB_ROOT}
                             </div>
                         </div>
                         <br/>

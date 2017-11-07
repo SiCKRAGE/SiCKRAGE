@@ -52,7 +52,7 @@ class TraktNotifier(srNotifiers):
         ep_obj: The TVEpisode object to add to trakt
         """
 
-        if sickrage.app.srConfig.USE_TRAKT:
+        if sickrage.app.config.USE_TRAKT:
             try:
                 # URL parameters
                 data = {
@@ -65,8 +65,8 @@ class TraktNotifier(srNotifiers):
                     ]
                 }
 
-                if sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.app.srConfig.TRAKT_REMOVE_SERIESLIST:
+                if sickrage.app.config.TRAKT_SYNC_WATCHLIST:
+                    if sickrage.app.config.TRAKT_REMOVE_SERIESLIST:
                         srTraktAPI()["sync/watchlist"].remove(data)
 
                 # Add Season and Episode + Related Episodes
@@ -75,8 +75,8 @@ class TraktNotifier(srNotifiers):
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
 
-                if sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.app.srConfig.TRAKT_REMOVE_WATCHLIST:
+                if sickrage.app.config.TRAKT_SYNC_WATCHLIST:
+                    if sickrage.app.config.TRAKT_REMOVE_WATCHLIST:
                         srTraktAPI()["sync/watchlist"].remove(data)
 
                 # update library
@@ -98,7 +98,7 @@ class TraktNotifier(srNotifiers):
         update: type o action add or remove
         """
 
-        if sickrage.app.srConfig.USE_TRAKT:
+        if sickrage.app.config.USE_TRAKT:
             data = {}
             try:
                 # URL parameters

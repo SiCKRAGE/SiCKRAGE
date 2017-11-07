@@ -69,36 +69,36 @@ class srWebServer(threading.Thread):
             shutil.rmtree(mako_cache)
 
         # video root
-        if sickrage.app.srConfig.ROOT_DIRS:
-            root_dirs = sickrage.app.srConfig.ROOT_DIRS.split('|')
+        if sickrage.app.config.ROOT_DIRS:
+            root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
             self.video_root = root_dirs[int(root_dirs[0]) + 1]
 
         # web root
-        if sickrage.app.srConfig.WEB_ROOT:
-            sickrage.app.srConfig.WEB_ROOT = sickrage.app.srConfig.WEB_ROOT = (
-                '/' + sickrage.app.srConfig.WEB_ROOT.lstrip('/').strip('/'))
+        if sickrage.app.config.WEB_ROOT:
+            sickrage.app.config.WEB_ROOT = sickrage.app.config.WEB_ROOT = (
+                '/' + sickrage.app.config.WEB_ROOT.lstrip('/').strip('/'))
 
         # api root
-        if not sickrage.app.srConfig.API_KEY:
-            sickrage.app.srConfig.API_KEY = generateApiKey()
-        self.api_root = r'%s/api/%s' % (sickrage.app.srConfig.WEB_ROOT, sickrage.app.srConfig.API_KEY)
+        if not sickrage.app.config.API_KEY:
+            sickrage.app.config.API_KEY = generateApiKey()
+        self.api_root = r'%s/api/%s' % (sickrage.app.config.WEB_ROOT, sickrage.app.config.API_KEY)
 
         # tornado setup
-        if sickrage.app.srConfig.ENABLE_HTTPS:
+        if sickrage.app.config.ENABLE_HTTPS:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
             if not (
-                        sickrage.app.srConfig.HTTPS_CERT and os.path.exists(
-                        sickrage.app.srConfig.HTTPS_CERT)) or not (
-                        sickrage.app.srConfig.HTTPS_KEY and os.path.exists(sickrage.app.srConfig.HTTPS_KEY)):
-                if not create_https_certificates(sickrage.app.srConfig.HTTPS_CERT,
-                                                 sickrage.app.srConfig.HTTPS_KEY):
+                        sickrage.app.config.HTTPS_CERT and os.path.exists(
+                        sickrage.app.config.HTTPS_CERT)) or not (
+                        sickrage.app.config.HTTPS_KEY and os.path.exists(sickrage.app.config.HTTPS_KEY)):
+                if not create_https_certificates(sickrage.app.config.HTTPS_CERT,
+                                                 sickrage.app.config.HTTPS_KEY):
                     sickrage.app.log.info("Unable to create CERT/KEY files, disabling HTTPS")
-                    sickrage.app.srConfig.ENABLE_HTTPS = False
+                    sickrage.app.config.ENABLE_HTTPS = False
 
-            if not (os.path.exists(sickrage.app.srConfig.HTTPS_CERT) and os.path.exists(
-                    sickrage.app.srConfig.HTTPS_KEY)):
+            if not (os.path.exists(sickrage.app.config.HTTPS_CERT) and os.path.exists(
+                    sickrage.app.config.HTTPS_KEY)):
                 sickrage.app.log.warning("Disabled HTTPS because of missing CERT and KEY files")
-                sickrage.app.srConfig.ENABLE_HTTPS = False
+                sickrage.app.config.ENABLE_HTTPS = False
 
         # Load the app
         self.app = Application(
@@ -107,88 +107,88 @@ class srWebServer(threading.Thread):
                 (r'%s(/?.*)' % self.api_root, ApiHandler),
 
                 # redirect to web root
-                (r"(?!%s)(.*)" % sickrage.app.srConfig.WEB_ROOT, RedirectHandler,
-                 {"url": "%s/{0}" % sickrage.app.srConfig.WEB_ROOT}),
+                (r"(?!%s)(.*)" % sickrage.app.config.WEB_ROOT, RedirectHandler,
+                 {"url": "%s/{0}" % sickrage.app.config.WEB_ROOT}),
 
                 # api key
-                (r'%s/getkey(/?.*)' % sickrage.app.srConfig.WEB_ROOT, KeyHandler),
+                (r'%s/getkey(/?.*)' % sickrage.app.config.WEB_ROOT, KeyHandler),
 
                 # api builder
-                (r'%s/api/builder' % sickrage.app.srConfig.WEB_ROOT, RedirectHandler,
-                 {"url": sickrage.app.srConfig.WEB_ROOT + '/apibuilder/'}),
+                (r'%s/api/builder' % sickrage.app.config.WEB_ROOT, RedirectHandler,
+                 {"url": sickrage.app.config.WEB_ROOT + '/apibuilder/'}),
 
                 # login
-                (r'%s/login(/?)' % sickrage.app.srConfig.WEB_ROOT, LoginHandler),
+                (r'%s/login(/?)' % sickrage.app.config.WEB_ROOT, LoginHandler),
 
                 # logout
-                (r'%s/logout(/?)' % sickrage.app.srConfig.WEB_ROOT, LogoutHandler),
+                (r'%s/logout(/?)' % sickrage.app.config.WEB_ROOT, LogoutHandler),
 
                 # calendar
-                (r'%s/calendar' % sickrage.app.srConfig.WEB_ROOT, CalendarHandler),
+                (r'%s/calendar' % sickrage.app.config.WEB_ROOT, CalendarHandler),
 
                 # favicon
-                (r'%s/(favicon\.ico)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'images/favicon.ico')}),
+                (r'%s/(favicon\.ico)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'images/favicon.ico')}),
 
                 # images
-                (r'%s/images/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticImageHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'images')}),
+                (r'%s/images/(.*)' % sickrage.app.config.WEB_ROOT, StaticImageHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'images')}),
 
                 # css
-                (r'%s/css/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'css')}),
+                (r'%s/css/(.*)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'css')}),
 
                 # scss
-                (r'%s/scss/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'scss')}),
+                (r'%s/scss/(.*)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'scss')}),
 
                 # fonts
-                (r'%s/fonts/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'fonts')}),
+                (r'%s/fonts/(.*)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'fonts')}),
 
                 # javascript
-                (r'%s/js/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
-                 {"path": os.path.join(sickrage.app.srConfig.GUI_STATIC_DIR, 'js')}),
+                (r'%s/js/(.*)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
+                 {"path": os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'js')}),
 
                 # videos
-                (r'%s/videos/(.*)' % sickrage.app.srConfig.WEB_ROOT, StaticFileHandler,
+                (r'%s/videos/(.*)' % sickrage.app.config.WEB_ROOT, StaticFileHandler,
                  {"path": self.video_root}),
-            ] + Route.get_routes(sickrage.app.srConfig.WEB_ROOT),
+            ] + Route.get_routes(sickrage.app.config.WEB_ROOT),
             debug=True,
             autoreload=False,
-            gzip=sickrage.app.srConfig.WEB_USE_GZIP,
-            xheaders=sickrage.app.srConfig.HANDLE_REVERSE_PROXY,
-            cookie_secret=sickrage.app.srConfig.WEB_COOKIE_SECRET,
-            login_url='%s/login/' % sickrage.app.srConfig.WEB_ROOT)
+            gzip=sickrage.app.config.WEB_USE_GZIP,
+            xheaders=sickrage.app.config.HANDLE_REVERSE_PROXY,
+            cookie_secret=sickrage.app.config.WEB_COOKIE_SECRET,
+            login_url='%s/login/' % sickrage.app.config.WEB_ROOT)
 
         self.server = HTTPServer(self.app, no_keep_alive=True)
 
-        if sickrage.app.srConfig.ENABLE_HTTPS: self.server.ssl_options = {
-            "certfile": sickrage.app.srConfig.HTTPS_CERT,
-            "keyfile": sickrage.app.srConfig.HTTPS_KEY
+        if sickrage.app.config.ENABLE_HTTPS: self.server.ssl_options = {
+            "certfile": sickrage.app.config.HTTPS_CERT,
+            "keyfile": sickrage.app.config.HTTPS_KEY
         }
 
         try:
-            self.server.listen(sickrage.app.WEB_PORT or sickrage.app.srConfig.WEB_PORT, None)
+            self.server.listen(sickrage.app.WEB_PORT or sickrage.app.config.WEB_PORT, None)
 
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.log.info(
                 "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.VERSIONUPDATER.version))
             sickrage.app.log.info(
-                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.srConfig.CONFIG_VERSION))
+                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.config.CONFIG_VERSION))
             sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}/]".format(
-                    ('http', 'https')[sickrage.app.srConfig.ENABLE_HTTPS],
-                    sickrage.app.srConfig.WEB_HOST, sickrage.app.srConfig.WEB_PORT))
+                    ('http', 'https')[sickrage.app.config.ENABLE_HTTPS],
+                    sickrage.app.config.WEB_HOST, sickrage.app.config.WEB_PORT))
 
             # launch browser window
-            if all([not sickrage.app.NOLAUNCH, sickrage.app.srConfig.LAUNCH_BROWSER]):
+            if all([not sickrage.app.NOLAUNCH, sickrage.app.config.LAUNCH_BROWSER]):
                 threading.Thread(None,
                                  lambda: launch_browser(
-                                     ('http', 'https')[sickrage.app.srConfig.ENABLE_HTTPS],
-                                     sickrage.app.srConfig.WEB_HOST,
-                                     sickrage.app.srConfig.WEB_PORT
+                                     ('http', 'https')[sickrage.app.config.ENABLE_HTTPS],
+                                     sickrage.app.config.WEB_HOST,
+                                     sickrage.app.config.WEB_PORT
                                  ), name="LAUNCH-BROWSER").start()
 
             sickrage.app.io_loop.start()

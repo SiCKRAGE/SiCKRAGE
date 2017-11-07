@@ -108,7 +108,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_version_update(new_version=""):
-        if sickrage.app.srConfig.NOTIFY_ON_UPDATE:
+        if sickrage.app.config.NOTIFY_ON_UPDATE:
             for n in sickrage.app.notifiersDict.values():
                 try:
                     n._notify_version_update(new_version)
@@ -117,7 +117,7 @@ class srNotifiers(object):
 
     @staticmethod
     def notify_login(ipaddress):
-        if sickrage.app.srConfig.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
+        if sickrage.app.config.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
             for n in sickrage.app.notifiersDict.values():
                 try:
                     n._notify_login(ipaddress)

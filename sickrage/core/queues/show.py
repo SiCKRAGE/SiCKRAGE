@@ -125,7 +125,7 @@ class srShowQueue(srQueue):
                 blacklist=None, whitelist=None, default_status_after=None, archive=None):
 
         if lang is None:
-            lang = sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+            lang = sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         return self.put(QueueItemAdd(indexer=indexer,
                                      indexer_id=indexer_id,
@@ -267,7 +267,7 @@ class QueueItemAdd(ShowQueueItem):
 
             lINDEXER_API_PARMS = srIndexerApi(self.indexer).api_params.copy()
             lINDEXER_API_PARMS['cache'] = False
-            lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+            lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
             sickrage.app.log.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 
@@ -307,7 +307,7 @@ class QueueItemAdd(ShowQueueItem):
                   "manually again.").format(self.showDir, index_name, self.indexer_id)
             )
 
-            if sickrage.app.srConfig.USE_TRAKT:
+            if sickrage.app.config.USE_TRAKT:
                 title = self.showDir.split("/")[-1]
 
                 data = {
@@ -330,13 +330,13 @@ class QueueItemAdd(ShowQueueItem):
 
             # set up initial values
             self.show.location = self.showDir
-            self.show.subtitles = self.subtitles or sickrage.app.srConfig.SUBTITLES_DEFAULT
+            self.show.subtitles = self.subtitles or sickrage.app.config.SUBTITLES_DEFAULT
             self.show.subtitles_sr_metadata = self.subtitles_sr_metadata
-            self.show.quality = self.quality or sickrage.app.srConfig.QUALITY_DEFAULT
-            self.show.flatten_folders = self.flatten_folders or sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT
-            self.show.anime = self.anime or sickrage.app.srConfig.ANIME_DEFAULT
-            self.show.scene = self.scene or sickrage.app.srConfig.SCENE_DEFAULT
-            self.show.archive_firstmatch = self.archive or sickrage.app.srConfig.ARCHIVE_DEFAULT
+            self.show.quality = self.quality or sickrage.app.config.QUALITY_DEFAULT
+            self.show.flatten_folders = self.flatten_folders or sickrage.app.config.FLATTEN_FOLDERS_DEFAULT
+            self.show.anime = self.anime or sickrage.app.config.ANIME_DEFAULT
+            self.show.scene = self.scene or sickrage.app.config.SCENE_DEFAULT
+            self.show.archive_firstmatch = self.archive or sickrage.app.config.ARCHIVE_DEFAULT
             self.show.paused = self.paused or False
 
             # set up default new/missing episode status
@@ -423,15 +423,15 @@ class QueueItemAdd(ShowQueueItem):
         self.show.updateMetadata()
         self.show.populateCache()
 
-        if sickrage.app.srConfig.USE_TRAKT:
+        if sickrage.app.config.USE_TRAKT:
             # if there are specific episodes that need to be added by trakt
             sickrage.app.TRAKTSEARCHER.manageNewShow(self.show)
 
             # add show to trakt.tv library
-            if sickrage.app.srConfig.TRAKT_SYNC:
+            if sickrage.app.config.TRAKT_SYNC:
                 sickrage.app.TRAKTSEARCHER.addShowToTraktLibrary(self.show)
 
-            if sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
+            if sickrage.app.config.TRAKT_SYNC_WATCHLIST:
                 sickrage.app.log.info("update watchlist")
                 sickrage.app.notifiersDict['trakt'].update_watchlist(show_obj=self.show)
 
@@ -633,7 +633,7 @@ class QueueItemRemove(ShowQueueItem):
 
         self.show.deleteShow(full=self.full)
 
-        if sickrage.app.srConfig.USE_TRAKT:
+        if sickrage.app.config.USE_TRAKT:
             try:
                 sickrage.app.TRAKTSEARCHER.removeShowFromTraktLibrary(self.show)
             except Exception as e:

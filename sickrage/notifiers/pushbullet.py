@@ -54,32 +54,32 @@ class PushbulletNotifier(srNotifiers):
             return False
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONSNATCH:
+        if sickrage.app.config.PUSHBULLET_NOTIFY_ONSNATCH:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_SNATCH] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.PUSHBULLET_NOTIFY_ONDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
             self._sendPushbullet(pushbullet_api=None,
                                  event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.srConfig.USE_PUSHBULLET:
+        if sickrage.app.config.USE_PUSHBULLET:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_GIT_UPDATE],
                                  message=self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None, force=False):
-        if not (sickrage.app.srConfig.USE_PUSHBULLET or force):
+        if not (sickrage.app.config.USE_PUSHBULLET or force):
             return False
 
-        pushbullet_api = pushbullet_api or sickrage.app.srConfig.PUSHBULLET_API
-        pushbullet_device = pushbullet_device or sickrage.app.srConfig.PUSHBULLET_DEVICE
+        pushbullet_api = pushbullet_api or sickrage.app.config.PUSHBULLET_API
+        pushbullet_device = pushbullet_device or sickrage.app.config.PUSHBULLET_DEVICE
 
         sickrage.app.log.debug("Pushbullet event: %r" % event)
         sickrage.app.log.debug("Pushbullet message: %r" % message)

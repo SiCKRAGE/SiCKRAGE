@@ -34,7 +34,7 @@ class mlnetAPI(GenericClient):
         try:
             self.response = sickrage.app.srWebSession.get(self.host,
                                                              auth=(self.username, self.password),
-                                                             verify=bool(sickrage.app.srConfig.TORRENT_VERIFY_CERT))
+                                                             verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
             self.auth = self.response.text
         except Exception:
             return None

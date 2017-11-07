@@ -22,7 +22,7 @@
                 </div>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                % for qtype, qsize in sickrage.app.srConfig.QUALITY_SIZES.items():
+                % for qtype, qsize in sickrage.app.config.QUALITY_SIZES.items():
                     % if qsize:
                         <div class="row field-pair">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">

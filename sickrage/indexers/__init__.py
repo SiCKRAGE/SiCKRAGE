@@ -47,8 +47,8 @@ class srIndexerApi(object):
 
     @property
     def api_params(self):
-        if sickrage.app.srConfig.PROXY_SETTING and sickrage.app.srConfig.PROXY_INDEXERS:
-            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.app.srConfig.PROXY_SETTING
+        if sickrage.app.config.PROXY_SETTING and sickrage.app.config.PROXY_INDEXERS:
+            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.app.config.PROXY_SETTING
 
         return indexerConfig[self.indexerID]['api_params']
 

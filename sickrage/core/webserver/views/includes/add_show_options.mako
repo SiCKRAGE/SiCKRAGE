@@ -3,7 +3,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
 %>
-% if sickrage.app.srConfig.USE_SUBTITLES:
+% if sickrage.app.config.USE_SUBTITLES:
     <div class="row field-pair">
         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
             <label class="component-title">${_('Subtitles')}</label>
@@ -11,7 +11,7 @@
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
             <label>
                 <input type="checkbox" name="subtitles"
-                       id="subtitles" ${('', 'checked')[bool(sickrage.app.srConfig.SUBTITLES_DEFAULT)]} />
+                       id="subtitles" ${('', 'checked')[bool(sickrage.app.config.SUBTITLES_DEFAULT)]} />
             </label>
         </div>
     </div>
@@ -23,7 +23,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
             <input class="cb" type="checkbox" name="flatten_folders"
-                   id="flatten_folders" ${('', 'checked')[bool(sickrage.app.srConfig.FLATTEN_FOLDERS_DEFAULT)]}/>
+                   id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT)]}/>
         </label>
     </div>
 </div>
@@ -35,7 +35,7 @@
         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
             <label>
                 <input type="checkbox" name="anime"
-                       id="anime" ${('', 'checked')[bool(sickrage.app.srConfig.ANIME_DEFAULT)]} />
+                       id="anime" ${('', 'checked')[bool(sickrage.app.config.ANIME_DEFAULT)]} />
             </label>
         </div>
     </div>
@@ -47,7 +47,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
             <input type="checkbox" name="scene"
-                   id="scene" ${('', 'checked')[bool(sickrage.app.srConfig.SCENE_DEFAULT)]} />
+                   id="scene" ${('', 'checked')[bool(sickrage.app.config.SCENE_DEFAULT)]} />
         </label>
     </div>
 </div>
@@ -58,7 +58,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
             <input type="checkbox" name="archive"
-                   id="archive" ${('', 'checked')[bool(sickrage.app.srConfig.ARCHIVE_DEFAULT)]} />
+                   id="archive" ${('', 'checked')[bool(sickrage.app.config.ARCHIVE_DEFAULT)]} />
         </label>
     </div>
 </div>
@@ -75,7 +75,7 @@
             <select name="defaultStatus" id="statusSelect" class="form-control"
                     title="Status for previously aired episodes">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.srConfig.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.config.STATUS_DEFAULT == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </div>
@@ -95,7 +95,7 @@
             <select name="defaultStatusAfter" id="statusSelectAfter" title="Status for future episodes"
                     class="form-control">
                 % for curStatus in [SKIPPED, WANTED, IGNORED]:
-                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.srConfig.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
+                    <option value="${curStatus}" ${('', 'selected')[sickrage.app.config.STATUS_DEFAULT_AFTER == curStatus]}>${statusStrings[curStatus]}</option>
                 % endfor
             </select>
         </div>

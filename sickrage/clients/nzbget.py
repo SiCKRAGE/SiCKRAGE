@@ -39,7 +39,7 @@ class NZBGet(object):
         :param proper: True if this is a Proper download, False if not. Defaults to False
         """
 
-        if sickrage.app.srConfig.NZBGET_HOST is None:
+        if sickrage.app.config.NZBGET_HOST is None:
             sickrage.app.log.error("No NZBget host found in configuration. Please configure it.")
             return False
 
@@ -48,15 +48,15 @@ class NZBGet(object):
         addToTop = False
         nzbgetprio = 0
 
-        category = sickrage.app.srConfig.NZBGET_CATEGORY
+        category = sickrage.app.config.NZBGET_CATEGORY
         if nzb.show.is_anime:
-            category = sickrage.app.srConfig.NZBGET_CATEGORY_ANIME
+            category = sickrage.app.config.NZBGET_CATEGORY_ANIME
 
         url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
-            "protocol": 'https' if sickrage.app.srConfig.NZBGET_USE_HTTPS else 'http',
-            "host": sickrage.app.srConfig.NZBGET_HOST,
-            "username": sickrage.app.srConfig.NZBGET_USERNAME,
-            "password": sickrage.app.srConfig.NZBGET_PASSWORD
+            "protocol": 'https' if sickrage.app.config.NZBGET_USE_HTTPS else 'http',
+            "host": sickrage.app.config.NZBGET_HOST,
+            "username": sickrage.app.config.NZBGET_USERNAME,
+            "password": sickrage.app.config.NZBGET_PASSWORD
         }
 
         nzbGetRPC = xmlrpclib.ServerProxy(url)
@@ -89,11 +89,11 @@ class NZBGet(object):
             dupe_key += "-" + str(curEp.season) + "." + str(curEp.episode)
             if date.today() - curEp.airdate <= timedelta(days=7):
                 addToTop = True
-                nzbgetprio = sickrage.app.srConfig.NZBGET_PRIORITY
+                nzbgetprio = sickrage.app.config.NZBGET_PRIORITY
             else:
-                category = sickrage.app.srConfig.NZBGET_CATEGORY_BACKLOG
+                category = sickrage.app.config.NZBGET_CATEGORY_BACKLOG
                 if nzb.show.is_anime:
-                    category = sickrage.app.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG
+                    category = sickrage.app.config.NZBGET_CATEGORY_ANIME_BACKLOG
 
         if nzb.quality != Quality.UNKNOWN:
             dupe_score = nzb.quality * 100

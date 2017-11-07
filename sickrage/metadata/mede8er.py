@@ -97,7 +97,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
         show_obj: a TVShow instance to create the NFO for
         """
 
-        indexer_lang = show_obj.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = show_obj.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
         lINDEXER_API_PARMS = srIndexerApi(show_obj.indexer).api_params.copy()
 
         lINDEXER_API_PARMS['language'] = indexer_lang
@@ -211,7 +211,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang or sickrage.app.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
 
         try:
             # There's gotta be a better way of doing this but we don't wanna
