@@ -58,10 +58,10 @@ class SceneTimeProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 query = {'sec': 'jax', 'cata': 'yes', 'search': search_string}
                 query.update({"c%s" % i: 1 for i in self.categories})
@@ -70,7 +70,7 @@ class SceneTimeProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.post(self.urls['search'], data=query).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -89,7 +89,7 @@ class SceneTimeProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # Scenetime apparently uses different number of cells in #torrenttable based
@@ -123,10 +123,10 @@ class SceneTimeProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

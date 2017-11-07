@@ -135,7 +135,7 @@ def codeDescription(status_code):
     if status_code in http_error_code:
         return http_error_code[status_code]
     else:
-        sickrage.app.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
+        sickrage.app.log.error("Unknown error code: %s. Please submit an issue" % status_code)
         return 'unknown'
 
 
@@ -181,7 +181,7 @@ class GenericClient(object):
             self.last_time = time.time()
             self._get_auth()
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             '{name}: Requested a {method} connection to {url} with'
             ' params: {params} Data: {data}'.format(
                 name=self.name,
@@ -193,7 +193,7 @@ class GenericClient(object):
         )
 
         if not self.auth:
-            sickrage.app.srLogger.warning(self.name + ': Authentication Failed')
+            sickrage.app.log.warning(self.name + ': Authentication Failed')
             return False
 
         try:
@@ -209,7 +209,7 @@ class GenericClient(object):
         except Exception:
             return False
 
-        sickrage.app.srLogger.debug('{name}: Response to {method} request is {response}'.format(
+        sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
             name=self.name,
             method=method.upper(),
             response=self.response.text
@@ -287,20 +287,20 @@ class GenericClient(object):
                 result.hash = b16encode(b32decode(result.hash)).lower()
         else:
             if not result.content:
-                sickrage.app.srLogger.error('Torrent without content')
+                sickrage.app.log.error('Torrent without content')
                 raise Exception('Torrent without content')
 
             try:
                 torrent_bdecode = bdecode(result.content)
             except BTFailure:
-                sickrage.app.srLogger.error('Unable to bdecode torrent')
-                sickrage.app.srLogger.debug('Torrent bencoded data: %r' % result.content)
+                sickrage.app.log.error('Unable to bdecode torrent')
+                sickrage.app.log.debug('Torrent bencoded data: %r' % result.content)
                 raise
 
             try:
                 info = torrent_bdecode["info"]
             except Exception:
-                sickrage.app.srLogger.error('Unable to find info field in torrent')
+                sickrage.app.log.error('Unable to find info field in torrent')
                 raise
 
             result.hash = sha1(bencode(info)).hexdigest()
@@ -311,10 +311,10 @@ class GenericClient(object):
 
         r_code = False
 
-        sickrage.app.srLogger.debug('Calling ' + self.name + ' Client')
+        sickrage.app.log.debug('Calling ' + self.name + ' Client')
 
         if not self._get_auth():
-            sickrage.app.srLogger.error(self.name + ': Authentication Failed')
+            sickrage.app.log.error(self.name + ': Authentication Failed')
             return r_code
 
         try:
@@ -335,30 +335,30 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                sickrage.app.srLogger.warning(self.name + ': Unable to send Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to send Torrent')
                 return False
 
             if not self._set_torrent_pause(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set the pause for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the pause for Torrent')
 
             if not self._set_torrent_label(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set the label for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the label for Torrent')
 
             if not self._set_torrent_ratio(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set the ratio for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the ratio for Torrent')
 
             if not self._set_torrent_seed_time(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set the seed time for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the seed time for Torrent')
 
             if not self._set_torrent_path(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set the path for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the path for Torrent')
 
             if result.priority != 0 and not self._set_torrent_priority(result):
-                sickrage.app.srLogger.error(self.name + ': Unable to set priority for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set priority for Torrent')
 
         except Exception as e:
-            sickrage.app.srLogger.error(self.name + ': Failed Sending Torrent')
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.error(self.name + ': Failed Sending Torrent')
+            sickrage.app.log.debug(
                 self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
             return r_code
 

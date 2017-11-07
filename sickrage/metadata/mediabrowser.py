@@ -116,7 +116,7 @@ class MediaBrowserMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), 'metadata')
             xml_file_path = os.path.join(metadata_dir_name, xml_file_name)
         else:
-            sickrage.app.srLogger.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.app.log.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
 
         return xml_file_path
@@ -173,10 +173,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.app.srLogger.debug("Unable to find a season dir for season " + str(season))
+            sickrage.app.log.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
@@ -215,10 +215,10 @@ class MediaBrowserMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.app.srLogger.debug("Unable to find a season dir for season " + str(season))
+            sickrage.app.log.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "Using " + str(season_dir) + "/banner.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'banner.jpg')
@@ -248,19 +248,19 @@ class MediaBrowserMetadata(GenericMetadata):
         try:
             myShow = t[int(show_obj.indexerid)]
         except indexer_shownotfound:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "Unable to find show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
                     show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "" + srIndexerApi(show_obj.indexer).name + " is down, can't use its data to make the NFO")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "Incomplete info for show with id " + str(show_obj.indexerid) + " on " + srIndexerApi(
                     show_obj.indexer).name + ", skipping it")
             return False
@@ -418,7 +418,7 @@ class MediaBrowserMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.app.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + srIndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -430,7 +430,7 @@ class MediaBrowserMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None

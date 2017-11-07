@@ -60,11 +60,11 @@ class TorrentBytesProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -79,10 +79,10 @@ class TorrentBytesProvider(TorrentProvider):
         search_params = {"c33": 1, "c38": 1, "c32": 1, "c37": 1, "c41": 1}
 
         for mode in search_strings:
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 search_params["search"] = search_string
 
@@ -90,7 +90,7 @@ class TorrentBytesProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -110,7 +110,7 @@ class TorrentBytesProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # "Type", "Name", Files", "Comm.", "Added", "TTL", "Size", "Snatched", "Seeders", "Leechers"
@@ -143,10 +143,10 @@ class TorrentBytesProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != "RSS":
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider.")
+                    sickrage.app.log.error("Failed parsing provider.")
 
         return results

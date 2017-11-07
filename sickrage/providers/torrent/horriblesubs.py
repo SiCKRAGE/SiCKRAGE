@@ -50,10 +50,10 @@ class HorribleSubsProvider(TorrentProvider):
         }
 
         for mode in search_strings.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: " + search_string)
+                    sickrage.app.log.debug("Search string: " + search_string)
                     search_params["value"] = search_string
 
                 searchURL = self.urls[('search', 'rss')[mode == 'RSS']]
@@ -62,7 +62,7 @@ class HorribleSubsProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(searchURL, params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -86,7 +86,7 @@ class HorribleSubsProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 1:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for torrent_row in torrent_rows:
@@ -113,10 +113,10 @@ class HorribleSubsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

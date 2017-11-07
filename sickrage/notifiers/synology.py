@@ -49,12 +49,12 @@ class synologyNotifier(srNotifiers):
 
     def _send_synologyNotifier(self, message, title):
         synodsmnotify_cmd = ["/usr/syno/bin/synodsmnotify", "@administrators", title, message]
-        sickrage.app.srLogger.info("Executing command " + str(synodsmnotify_cmd))
-        sickrage.app.srLogger.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
+        sickrage.app.log.info("Executing command " + str(synodsmnotify_cmd))
+        sickrage.app.log.debug("Absolute path to command: " + os.path.abspath(synodsmnotify_cmd[0]))
         try:
             p = subprocess.Popen(synodsmnotify_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                  cwd=sickrage.PROG_DIR)
             out, err = p.communicate()
-            sickrage.app.srLogger.debug("Script result: " + str(out))
+            sickrage.app.log.debug("Script result: " + str(out))
         except OSError as e:
-            sickrage.app.srLogger.info("Unable to run synodsmnotify: {}".format(e.message))
+            sickrage.app.log.info("Unable to run synodsmnotify: {}".format(e.message))

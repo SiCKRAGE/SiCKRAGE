@@ -60,8 +60,8 @@ class SlackNotifier(srNotifiers):
         return self._notify_slack("This is a test notification from SiCKRAGE", force=True)
 
     def _send_slack(self, message=None):
-        sickrage.app.srLogger.info("Sending slack message: " + message)
-        sickrage.app.srLogger.info("Sending slack message  to url: " + sickrage.app.srConfig.SLACK_WEBHOOK)
+        sickrage.app.log.info("Sending slack message: " + message)
+        sickrage.app.log.info("Sending slack message  to url: " + sickrage.app.srConfig.SLACK_WEBHOOK)
 
         if isinstance(message, six.text_type):
             message = message.encode('utf-8')
@@ -73,7 +73,7 @@ class SlackNotifier(srNotifiers):
                               headers=headers)
             r.raise_for_status()
         except Exception as e:
-            sickrage.app.srLogger.error("Error Sending Slack message: " + e.message)
+            sickrage.app.log.error("Error Sending Slack message: " + e.message)
             return False
 
         return True

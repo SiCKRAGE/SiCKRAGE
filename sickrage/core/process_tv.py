@@ -68,17 +68,17 @@ def delete_folder(folder, check_empty=True):
         if check_empty:
             check_files = os.listdir(folder)
             if check_files:
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Not deleting folder {} found the following files: {}".format(folder, check_files))
                 return False
 
-            sickrage.app.srLogger.info("Deleting folder (if it's empty): " + folder)
+            sickrage.app.log.info("Deleting folder (if it's empty): " + folder)
             shutil.rmtree(folder)
         else:
-            sickrage.app.srLogger.info("Deleting folder: " + folder)
+            sickrage.app.log.info("Deleting folder: " + folder)
             shutil.rmtree(folder)
     except (OSError, IOError) as e:
-        sickrage.app.srLogger.warning("Warning: unable to delete folder: {}: {}".format(folder, e))
+        sickrage.app.log.warning("Warning: unable to delete folder: {}: {}".format(folder, e))
         return False
 
     return True
@@ -96,7 +96,7 @@ def delete_files(processPath, notwantedFiles, result, force=False):
 
     if not result.result and force:
         result.output += logHelper("Forcing deletion of files, even though last result was not success",
-                                   sickrage.app.srLogger.DEBUG)
+                                   sickrage.app.log.DEBUG)
     elif not result.result:
         return
 
@@ -107,30 +107,30 @@ def delete_files(processPath, notwantedFiles, result, force=False):
         if not os.path.isfile(cur_file_path):
             continue  # Prevent error when a notwantedfiles is an associated files
 
-        result.output += logHelper("Deleting file %s" % cur_file, sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("Deleting file %s" % cur_file, sickrage.app.log.DEBUG)
 
         # check first the read-only attribute
         file_attribute = os.stat(cur_file_path)[0]
         if not file_attribute & stat.S_IWRITE:
             # File is read-only, so make it writeable
-            result.output += logHelper("Changing ReadOnly Flag for file %s" % cur_file, sickrage.app.srLogger.DEBUG)
+            result.output += logHelper("Changing ReadOnly Flag for file %s" % cur_file, sickrage.app.log.DEBUG)
             try:
                 os.chmod(cur_file_path, stat.S_IWRITE)
             except OSError as e:
                 result.output += logHelper(
                     "Cannot change permissions of %s: %s" % (
                         cur_file, str(e.strerror).decode(sickrage.app.SYS_ENCODING)),
-                    sickrage.app.srLogger.DEBUG)
+                    sickrage.app.log.DEBUG)
         try:
             os.remove(cur_file_path)
         except OSError as e:
             result.output += logHelper(
                 "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.app.SYS_ENCODING)),
-                sickrage.app.srLogger.DEBUG)
+                sickrage.app.log.DEBUG)
 
 
 def logHelper(logMessage, logLevel=None):
-    sickrage.app.srLogger.log(logLevel or sickrage.app.srLogger.INFO, logMessage)
+    sickrage.app.log.log(logLevel or sickrage.app.log.INFO, logMessage)
     return logMessage + "\n"
 
 
@@ -153,20 +153,20 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     # if they passed us a real dir then assume it's the one we want
     if os.path.isdir(dirName):
         dirName = os.path.realpath(dirName)
-        result.output += logHelper("Processing folder %s" % dirName, sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("Processing folder %s" % dirName, sickrage.app.log.DEBUG)
 
     # if the client and SickRage are not on the same machine translate the Dir in a network dir
     elif sickrage.app.srConfig.TV_DOWNLOAD_DIR and os.path.isdir(sickrage.app.srConfig.TV_DOWNLOAD_DIR) \
             and os.path.normpath(dirName) != os.path.normpath(sickrage.app.srConfig.TV_DOWNLOAD_DIR):
         dirName = os.path.join(sickrage.app.srConfig.TV_DOWNLOAD_DIR,
                                os.path.abspath(dirName).split(os.path.sep)[-1])
-        result.output += logHelper("Trying to use folder %s" % dirName, sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("Trying to use folder %s" % dirName, sickrage.app.log.DEBUG)
 
     # if we didn't find a real dir then quit
     if not os.path.isdir(dirName):
         result.output += logHelper(
             "Unable to figure out what folder to process. If your downloader and SiCKRAGE aren't on the same PC make sure you fill out your TV download dir in the config.",
-            sickrage.app.srLogger.DEBUG)
+            sickrage.app.log.DEBUG)
         return result.output
 
     path, dirs, files = get_path_dir_files(dirName, nzbName, proc_type)
@@ -181,8 +181,8 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     nzbNameOriginal = nzbName
 
     if not postpone:
-        result.output += logHelper("PostProcessing Path: %s" % path, sickrage.app.srLogger.INFO)
-        result.output += logHelper("PostProcessing Dirs: [%s]" % ", ".join(dirs), sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("PostProcessing Path: %s" % path, sickrage.app.log.INFO)
+        result.output += logHelper("PostProcessing Dirs: [%s]" % ", ".join(dirs), sickrage.app.log.DEBUG)
 
         rarFiles = [x for x in files if isRarFile(x)]
         rarContent = unRAR(path, rarFiles, force, result)
@@ -190,13 +190,13 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         videoFiles = [x for x in files if isMediaFile(x)]
         videoInRar = [x for x in rarContent if isMediaFile(x)]
 
-        result.output += logHelper("PostProcessing Files: [%s]" % ", ".join(files), sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("PostProcessing Files: [%s]" % ", ".join(files), sickrage.app.log.DEBUG)
         result.output += logHelper("PostProcessing VideoFiles: [%s]" % ", ".join(videoFiles),
-                                   sickrage.app.srLogger.DEBUG)
+                                   sickrage.app.log.DEBUG)
         result.output += logHelper("PostProcessing RarContent: [%s]" % ", ".join(rarContent),
-                                   sickrage.app.srLogger.DEBUG)
+                                   sickrage.app.log.DEBUG)
         result.output += logHelper("PostProcessing VideoInRar: [%s]" % ", ".join(videoInRar),
-                                   sickrage.app.srLogger.DEBUG)
+                                   sickrage.app.log.DEBUG)
 
         # If nzbName is set and there's more than one videofile in the folder, files will be lost (overwritten).
         if len(videoFiles) >= 2:
@@ -254,7 +254,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 notwantedFiles = [x for x in fileList if x not in videoFiles]
                 if notwantedFiles:
                     result.output += logHelper("Found unwanted files: [%s]" % ", ".join(notwantedFiles),
-                                               sickrage.app.srLogger.DEBUG)
+                                               sickrage.app.log.DEBUG)
 
                 # Don't Link media when the media is extracted from a rar in the same path
                 if process_method in ('hardlink', 'symlink') and videoInRar:
@@ -280,14 +280,14 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                         if os.path.normpath(processPath) != os.path.normpath(sickrage.app.srConfig.TV_DOWNLOAD_DIR):
                             if delete_folder(processPath, check_empty=True):
                                 result.output += logHelper("Deleted folder: %s" % processPath,
-                                                           sickrage.app.srLogger.DEBUG)
+                                                           sickrage.app.log.DEBUG)
             else:
                 result.output += logHelper("Found temporary sync files, skipping post processing for: %s" % processPath)
                 result.output += logHelper("Sync Files: [%s] in path %s" % (", ".join(SyncFiles), processPath))
                 result.missedfiles.append("%s : Syncfiles found" % processPath)
 
     result.output += logHelper(("Processing Failed", "Successfully processed")[result.aggresult],
-                                (sickrage.app.srLogger.WARNING, sickrage.app.srLogger.INFO)[result.aggresult])
+                                (sickrage.app.log.WARNING, sickrage.app.log.INFO)[result.aggresult])
     if result.missedfiles:
         result.output += logHelper("Some items were not processed.")
         for missed_file in result.missedfiles:
@@ -314,19 +314,19 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
     if folder_name in IGNORED_FOLDERS:
         return False
 
-    result.output += logHelper("Processing folder " + dirName, sickrage.app.srLogger.DEBUG)
+    result.output += logHelper("Processing folder " + dirName, sickrage.app.log.DEBUG)
 
     if folder_name.startswith('_FAILED_'):
-        result.output += logHelper("The directory name indicates it failed to extract.", sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("The directory name indicates it failed to extract.", sickrage.app.log.DEBUG)
         failed = True
     elif folder_name.startswith('_UNDERSIZED_'):
         result.output += logHelper("The directory name indicates that it was previously rejected for being undersized.",
-                                   sickrage.app.srLogger.DEBUG)
+                                   sickrage.app.log.DEBUG)
         failed = True
     elif folder_name.upper().startswith('_UNPACK'):
         result.output += logHelper(
             "The directory name indicates that this release is in the process of being unpacked.",
-            sickrage.app.srLogger.DEBUG)
+            sickrage.app.log.DEBUG)
         result.missedfiles.append(dirName + " : Being unpacked")
         return False
 
@@ -336,7 +336,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
         return False
 
     if is_hidden_folder(os.path.join(path, dirName)):
-        result.output += logHelper("Ignoring hidden folder: " + dirName, sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("Ignoring hidden folder: " + dirName, sickrage.app.log.DEBUG)
         result.missedfiles.append(dirName + " : Hidden folder")
         return False
 
@@ -346,7 +346,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
                         dirName.lower() == os.path.realpath(dbData["location"]).lower():
             result.output += logHelper(
                 "Cannot process an episode that's already been moved to its show dir, skipping " + dirName,
-                sickrage.app.srLogger.WARNING)
+                sickrage.app.log.WARNING)
             return False
 
     # Get the videofile list for the next checks
@@ -385,7 +385,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
             except (InvalidNameException, InvalidShowException):
                 pass
 
-    result.output += logHelper(dirName + " : No processable items found in folder", sickrage.app.srLogger.DEBUG)
+    result.output += logHelper(dirName + " : No processable items found in folder", sickrage.app.log.DEBUG)
     return False
 
 
@@ -404,11 +404,11 @@ def unRAR(path, rarFiles, force, result):
 
     if sickrage.app.srConfig.UNPACK and rarFiles:
 
-        result.output += logHelper("Packed Releases detected: " + str(rarFiles), sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("Packed Releases detected: " + str(rarFiles), sickrage.app.log.DEBUG)
 
         for archive in rarFiles:
 
-            result.output += logHelper("Unpacking archive: " + archive, sickrage.app.srLogger.DEBUG)
+            result.output += logHelper("Unpacking archive: " + archive, sickrage.app.log.DEBUG)
 
             try:
                 rar_handle = UnRAR2.RarFile(os.path.join(path, archive))
@@ -419,7 +419,7 @@ def unRAR(path, rarFiles, force, result):
                     if already_postprocessed(path, file_in_archive, force, result):
                         result.output += logHelper(
                             "Archive file already post-processed, extraction skipped: " + file_in_archive,
-                            sickrage.app.srLogger.DEBUG)
+                            sickrage.app.log.DEBUG)
                         skip_file = True
                         break
 
@@ -436,43 +436,43 @@ def unRAR(path, rarFiles, force, result):
 
             except ArchiveHeaderBroken as e:
                 result.output += logHelper("Failed Unrar archive {0}: Unrar: Archive Header Broken".format(archive),
-                                           sickrage.app.srLogger.ERROR)
+                                           sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed because the Archive Header is Broken")
                 continue
             except IncorrectRARPassword:
                 result.output += logHelper("Failed Unrar archive {0}: Unrar: Incorrect Rar Password".format(archive),
-                                           sickrage.app.srLogger.ERROR)
+                                           sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed because of an Incorrect Rar Password")
                 continue
             except FileOpenError:
                 result.output += logHelper(
                     "Failed Unrar archive {0}: Unrar: File Open Error, check the parent folder and destination file permissions.".format(
-                        archive), sickrage.app.srLogger.ERROR)
+                        archive), sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed with a File Open Error (file permissions?)")
                 continue
             except InvalidRARArchiveUsage:
                 result.output += logHelper("Failed Unrar archive {0}: Unrar: Invalid Rar Archive Usage".format(archive),
-                                           sickrage.app.srLogger.ERROR)
+                                           sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking Failed with Invalid Rar Archive Usage")
                 continue
             except InvalidRARArchive:
                 result.output += logHelper("Failed Unrar archive {0}: Unrar: Invalid Rar Archive".format(archive),
-                                           sickrage.app.srLogger.ERROR)
+                                           sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking Failed with an Invalid Rar Archive Error")
                 continue
             except Exception as e:
                 result.output += logHelper("Failed Unrar archive {}: {}".format(archive, e),
-                                           sickrage.app.srLogger.ERROR)
+                                           sickrage.app.log.ERROR)
                 result.result = False
                 result.missedfiles.append(archive + " : Unpacking failed for an unknown reason")
                 continue
 
-        result.output += logHelper("UnRar content: " + str(unpacked_files), sickrage.app.srLogger.DEBUG)
+        result.output += logHelper("UnRar content: " + str(unpacked_files), sickrage.app.log.DEBUG)
 
     return unpacked_files
 
@@ -545,7 +545,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
 
         if already_postprocessed(processPath, cur_video_file, force, result):
             result.output += logHelper("Already Processed " + cur_video_file_path + " : Skipping",
-                                       sickrage.app.srLogger.DEBUG)
+                                       sickrage.app.log.DEBUG)
             continue
 
         try:
@@ -563,7 +563,7 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             result.output += logHelper("Processing succeeded for " + cur_video_file_path)
         else:
             result.output += logHelper("Processing failed for " + cur_video_file_path + ": " + process_fail_message,
-                                       sickrage.app.srLogger.WARNING)
+                                       sickrage.app.log.WARNING)
             result.missedfiles.append(cur_video_file_path + " : Processing failed: " + process_fail_message)
             result.aggresult = False
 
@@ -620,11 +620,11 @@ def process_failed(dirName, nzbName, result):
 
         if sickrage.app.srConfig.DELETE_FAILED and result.result:
             if delete_folder(dirName, check_empty=False):
-                result.output += logHelper("Deleted folder: " + dirName, sickrage.app.srLogger.DEBUG)
+                result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
 
         if result.result:
             result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
         else:
             result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
                                        .format(nzbName, dirName, process_fail_message),
-                                       sickrage.app.srLogger.WARNING)
+                                       sickrage.app.log.WARNING)

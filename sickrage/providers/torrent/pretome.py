@@ -56,7 +56,7 @@ class PretomeProvider(TorrentProvider):
     def _check_auth(self):
 
         if not self.username or not self.password or not self.pin:
-            sickrage.app.srLogger.warning("Invalid username or password or pin. Check your settings")
+            sickrage.app.log.warning("Invalid username or password or pin. Check your settings")
 
         return True
 
@@ -71,11 +71,11 @@ class PretomeProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Username or password incorrect', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -88,19 +88,19 @@ class PretomeProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
-                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -118,12 +118,12 @@ class PretomeProvider(TorrentProvider):
             # Continue only if one Release is found
             empty = html.find('h2', text="No .torrents fit this filter criteria")
             if empty:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             torrent_table = html.find('table', attrs={'style': 'border: none; width: 100%;'})
             if not torrent_table:
-                sickrage.app.srLogger.error("Could not find table of torrents")
+                sickrage.app.log.error("Could not find table of torrents")
                 return results
 
             torrent_rows = torrent_table.find_all('tr', attrs={'class': 'browse'})
@@ -157,10 +157,10 @@ class PretomeProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider.")
+                    sickrage.app.log.error("Failed parsing provider.")
 
         return results

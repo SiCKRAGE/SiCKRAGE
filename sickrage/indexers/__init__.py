@@ -82,7 +82,7 @@ class srIndexerApi(object):
         t = self.indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            sickrage.app.srLogger.debug("Trying to find show {} on indexer {}".format(name, self.name))
+            sickrage.app.log.debug("Trying to find show {} on indexer {}".format(name, self.name))
 
             try:
                 search = t[showid] if showid else t[name]

@@ -331,7 +331,7 @@
                                 %endif
                                 %if numWarnings:
                                     <li>
-                                        <a href="${srWebRoot}/logs/?level=${sickrage.app.srLogger.WARNING}">
+                                        <a href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
                                             <i class="fa fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
                                             <span class="badge btn-warning">${numWarnings}</span>
                                         </a>

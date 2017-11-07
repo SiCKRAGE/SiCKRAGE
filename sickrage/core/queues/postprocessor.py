@@ -121,12 +121,12 @@ class srPostProcessorQueue(srQueue):
         if not dirName:
             return logHelper(
                 "{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
-                sickrage.app.srLogger.WARNING)
+                sickrage.app.log.WARNING)
 
         if not os.path.isabs(dirName):
             return logHelper("{} post-processing attempted but directory is relative (and probably not what you "
                              "really want to process): {}".format(proc_type.title(), dirName),
-                             sickrage.app.srLogger.WARNING)
+                             sickrage.app.log.WARNING)
 
         if not delete_on:
             delete_on = (False, (not sickrage.app.srConfig.NO_DELETE, True)[process_method == "move"])[
@@ -192,7 +192,7 @@ class PostProcessorItem(srQueueItem):
         """
 
         try:
-            sickrage.app.srLogger.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
+            sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             self.result = processDir(
                 dirName=self.dirName,
@@ -205,10 +205,10 @@ class PostProcessorItem(srQueueItem):
                 proc_type=self.proc_type
             )
 
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             # give the CPU a break
             sleep(cpu_presets[sickrage.app.srConfig.CPU_PRESET])
         except Exception:
-            sickrage.app.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())

@@ -935,7 +935,7 @@ class srConfig(object):
             try:
                 os.remove(bad_unrar)
             except OSError as e:
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "Unable to delete bad unrar.exe file {}: {}. You should delete it manually".format(bad_unrar,
                                                                                                        e.strerror))
 
@@ -980,7 +980,7 @@ class srConfig(object):
 
                 # Download
                 if not found:
-                    sickrage.app.srLogger.info('Trying to download unrar.exe and set the path')
+                    sickrage.app.log.info('Trying to download unrar.exe and set the path')
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
                     unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
@@ -990,7 +990,7 @@ class srConfig(object):
                         try:
                             os.remove(unrar_zip)
                         except OSError as e:
-                            sickrage.app.srLogger.info(
+                            sickrage.app.log.info(
                                 "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
                                                                                                              e.strerror))
 
@@ -998,12 +998,12 @@ class srConfig(object):
                         try:
                             rarfile.custom_check(check)
                             unrar_tool = check
-                            sickrage.app.srLogger.info('Successfully downloaded unrar.exe and set as unrar tool')
+                            sickrage.app.log.info('Successfully downloaded unrar.exe and set as unrar tool')
                         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                            sickrage.app.srLogger.info(
+                            sickrage.app.log.info(
                                 'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
                     else:
-                        sickrage.app.srLogger.info('Unable to download unrar.exe')
+                        sickrage.app.log.info('Unable to download unrar.exe')
 
         # These must always be set to something before returning
         self.UNRAR_TOOL = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
@@ -1014,7 +1014,7 @@ class srConfig(object):
             return True
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
             if self.UNPACK:
-                sickrage.app.srLogger.info('Disabling UNPACK setting because no unrar is installed.')
+                sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
                 self.UNPACK = False
 
     def change_https_cert(self, https_cert):
@@ -1032,7 +1032,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_CERT) != os.path.normpath(https_cert):
             if makeDir(os.path.dirname(os.path.abspath(https_cert))):
                 self.HTTPS_CERT = os.path.normpath(https_cert)
-                sickrage.app.srLogger.info("Changed https cert path to " + https_cert)
+                sickrage.app.log.info("Changed https cert path to " + https_cert)
             else:
                 return False
 
@@ -1052,7 +1052,7 @@ class srConfig(object):
         if os.path.normpath(self.HTTPS_KEY) != os.path.normpath(https_key):
             if makeDir(os.path.dirname(os.path.abspath(https_key))):
                 self.HTTPS_KEY = os.path.normpath(https_key)
-                sickrage.app.srLogger.info("Changed https key path to " + https_key)
+                sickrage.app.log.info("Changed https key path to " + https_key)
             else:
                 return False
 
@@ -1072,7 +1072,7 @@ class srConfig(object):
         if os.path.normpath(self.NZB_DIR) != os.path.normpath(nzb_dir):
             if makeDir(nzb_dir):
                 self.NZB_DIR = os.path.normpath(nzb_dir)
-                sickrage.app.srLogger.info("Changed NZB folder to " + nzb_dir)
+                sickrage.app.log.info("Changed NZB folder to " + nzb_dir)
             else:
                 return False
 
@@ -1092,7 +1092,7 @@ class srConfig(object):
         if os.path.normpath(self.TORRENT_DIR) != os.path.normpath(torrent_dir):
             if makeDir(torrent_dir):
                 self.TORRENT_DIR = os.path.normpath(torrent_dir)
-                sickrage.app.srLogger.info("Changed torrent folder to " + torrent_dir)
+                sickrage.app.log.info("Changed torrent folder to " + torrent_dir)
             else:
                 return False
 
@@ -1112,7 +1112,7 @@ class srConfig(object):
         if os.path.normpath(self.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
             if makeDir(tv_download_dir):
                 self.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
-                sickrage.app.srLogger.info("Changed TV download folder to " + tv_download_dir)
+                sickrage.app.log.info("Changed TV download folder to " + tv_download_dir)
             else:
                 return False
 
@@ -1267,7 +1267,7 @@ class srConfig(object):
             my_val = def_val
 
         if not silent:
-            sickrage.app.srLogger.debug(key + " -> " + str(my_val))
+            sickrage.app.log.debug(key + " -> " + str(my_val))
 
         return my_val
 
@@ -1283,7 +1283,7 @@ class srConfig(object):
             my_val = def_val
 
         if not silent:
-            sickrage.app.srLogger.debug(section + " -> " + str(my_val))
+            sickrage.app.log.debug(section + " -> " + str(my_val))
 
         return my_val
 
@@ -1295,11 +1295,11 @@ class srConfig(object):
 
         my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
 
-        if censor or (section, key) in sickrage.app.srLogger.CENSORED_ITEMS:
-            sickrage.app.srLogger.CENSORED_ITEMS[section, key] = my_val
+        if censor or (section, key) in sickrage.app.log.CENSORED_ITEMS:
+            sickrage.app.log.CENSORED_ITEMS[section, key] = my_val
 
         if not silent:
-            sickrage.app.srLogger.debug(key + " -> " + my_val)
+            sickrage.app.log.debug(key + " -> " + my_val)
 
         return my_val
 
@@ -1826,7 +1826,7 @@ class srConfig(object):
         new_config = ConfigObj(sickrage.app.CONFIG_FILE, indent_type='  ', encoding='utf8')
         new_config.clear()
 
-        sickrage.app.srLogger.debug("Saving all settings to disk")
+        sickrage.app.log.debug("Saving all settings to disk")
 
         new_config.update({
             'General': {
@@ -2356,7 +2356,7 @@ class ConfigMigrator(srConfig):
         """
 
         if self.config_version > self.expected_config_version:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 """Your config version (%i) has been incremented past what this version of supports (%i).
                     If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
                 (self.config_version, self.expected_config_version)
@@ -2373,15 +2373,15 @@ class ConfigMigrator(srConfig):
             else:
                 migration_name = ''
 
-            sickrage.app.srLogger.info("Backing up config before upgrade")
+            sickrage.app.log.info("Backing up config before upgrade")
             if not backupVersionedFile(sickrage.app.CONFIG_FILE, self.config_version):
-                sickrage.app.srLogger.exit("Config backup failed, abort upgrading config")
+                sickrage.app.log.exit("Config backup failed, abort upgrading config")
                 sys.exit(1)
             else:
-                sickrage.app.srLogger.info("Proceeding with upgrade")
+                sickrage.app.log.info("Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            sickrage.app.srLogger.info("Migrating config up to version " + str(next_version) + migration_name)
+            sickrage.app.log.info("Migrating config up to version " + str(next_version) + migration_name)
             self.CONFIG_OBJ = getattr(self, '_migrate_v' + str(next_version))()
             self.config_version = next_version
 

@@ -80,7 +80,7 @@ class DelugeAPI(GenericClient):
 
             hosts = self.response.json()['result']
             if not hosts:
-                sickrage.app.srLogger.warning(self.name + ': WebUI does not contain daemons')
+                sickrage.app.log.warning(self.name + ': WebUI does not contain daemons')
                 return None
 
             post_data = json.dumps({"method": "web.connect",
@@ -113,7 +113,7 @@ class DelugeAPI(GenericClient):
 
             connected = self.response.json()['result']
             if not connected:
-                sickrage.app.srLogger.warning(self.name + ': WebUI could not connect to daemon')
+                sickrage.app.log.warning(self.name + ': WebUI could not connect to daemon')
                 return None
 
         return self.auth
@@ -148,7 +148,7 @@ class DelugeAPI(GenericClient):
         if result.show.is_anime:
             label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
         if ' ' in label:
-            sickrage.app.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.app.log.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -162,14 +162,14 @@ class DelugeAPI(GenericClient):
 
             if labels is not None:
                 if label not in labels:
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         self.name + ': ' + label + " label does not exist in Deluge we must add it")
                     post_data = json.dumps({"method": 'label.add',
                                             "params": [label],
                                             "id": 4})
 
                     self._request(method='post', data=post_data, headers=self.headers)
-                    sickrage.app.srLogger.debug(self.name + ': ' + label + " label added to Deluge")
+                    sickrage.app.log.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
                 post_data = json.dumps({"method": 'label.set_torrent',
@@ -177,9 +177,9 @@ class DelugeAPI(GenericClient):
                                         "id": 5})
 
                 self._request(method='post', data=post_data, headers=self.headers)
-                sickrage.app.srLogger.debug(self.name + ': ' + label + " label added to torrent")
+                sickrage.app.log.debug(self.name + ': ' + label + " label added to torrent")
             else:
-                sickrage.app.srLogger.debug(self.name + ': ' + "label plugin not detected")
+                sickrage.app.log.debug(self.name + ': ' + "label plugin not detected")
                 return False
 
         return not self.response.json()['error']

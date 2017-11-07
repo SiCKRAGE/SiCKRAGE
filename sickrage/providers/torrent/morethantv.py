@@ -87,13 +87,13 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.app.srWebSession.get(self.urls['login'])
                 response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params).text
             except Exception:
-                sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+                sickrage.app.log.warning("Unable to connect to provider".format(self.name))
                 return False
 
             if re.search('logout.php', response):
                 return True
             elif re.search('Your username or password was incorrect.', response):
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "Invalid username or password. Check your settings".format(self.name))
 
     def search(self, search_params, age=0, ep_obj=None):
@@ -103,20 +103,20 @@ class MoreThanTVProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
-                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:
                     data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -133,7 +133,7 @@ class MoreThanTVProvider(TorrentProvider):
         with bs4_parser(data) as html:
             torrent_rows = html.find_all('tr', class_='torrent')
             if len(torrent_rows) < 1:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for result in torrent_rows:
@@ -161,10 +161,10 @@ class MoreThanTVProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

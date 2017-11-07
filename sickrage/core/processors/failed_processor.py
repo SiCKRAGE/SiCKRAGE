@@ -49,27 +49,27 @@ class FailedProcessor(object):
 
         releaseName = show_names.determineReleaseName(self.dir_name, self.nzb_name)
         if releaseName is None:
-            self._log("Warning: unable to find a valid release name.", sickrage.app.srLogger.WARNING)
+            self._log("Warning: unable to find a valid release name.", sickrage.app.log.WARNING)
             raise FailedPostProcessingFailedException()
 
         try:
             parser = NameParser(False)
             parsed = parser.parse(releaseName)
         except InvalidNameException:
-            self._log("Error: release name is invalid: " + releaseName, sickrage.app.srLogger.DEBUG)
+            self._log("Error: release name is invalid: " + releaseName, sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
         except InvalidShowException:
             self._log("Error: unable to parse release name " + releaseName + " into a valid show",
-                      sickrage.app.srLogger.DEBUG)
+                      sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
 
-        sickrage.app.srLogger.debug("name_parser info: ")
-        sickrage.app.srLogger.debug(" - " + str(parsed.series_name))
-        sickrage.app.srLogger.debug(" - " + str(parsed.season_number))
-        sickrage.app.srLogger.debug(" - " + str(parsed.episode_numbers))
-        sickrage.app.srLogger.debug(" - " + str(parsed.extra_info))
-        sickrage.app.srLogger.debug(" - " + str(parsed.release_group))
-        sickrage.app.srLogger.debug(" - " + str(parsed.air_date))
+        sickrage.app.log.debug("name_parser info: ")
+        sickrage.app.log.debug(" - " + str(parsed.series_name))
+        sickrage.app.log.debug(" - " + str(parsed.season_number))
+        sickrage.app.log.debug(" - " + str(parsed.episode_numbers))
+        sickrage.app.log.debug(" - " + str(parsed.extra_info))
+        sickrage.app.log.debug(" - " + str(parsed.release_group))
+        sickrage.app.log.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
             sickrage.app.SEARCHQUEUE.put(
@@ -79,5 +79,5 @@ class FailedProcessor(object):
 
     def _log(self, message, level=None):
         """Log to regular logfile and save for return for PP script log"""
-        sickrage.app.srLogger.log(level or sickrage.app.srLogger.INFO, message)
+        sickrage.app.log.log(level or sickrage.app.log.INFO, message)
         self.log += message + "\n"

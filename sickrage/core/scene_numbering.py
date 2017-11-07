@@ -485,7 +485,7 @@ def xem_refresh(indexer_id, indexer, force=False):
         refresh = True
 
     if refresh or force:
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             'Looking up XEM scene mapping for show %s on %s' % (indexer_id, srIndexerApi(indexer).name))
 
         # mark refreshed
@@ -524,7 +524,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 if 'success' not in parsedJSON['result']:
                     raise
             except:
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     'No XEM data for show "%s on %s"' % (indexer_id, srIndexerApi(indexer).name,))
                 return
 
@@ -550,11 +550,11 @@ def xem_refresh(indexer_id, indexer, force=False):
                 sickrage.app.mainDB.db.update(dbData)
 
         except Exception as e:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
                                                                                    srIndexerApi(indexer).name,
                                                                                    e.message))
-            sickrage.app.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())
 
 
 def get_absolute_number_from_season_and_episode(show, season, episode):
@@ -576,10 +576,10 @@ def get_absolute_number_from_season_and_episode(show, season, episode):
 
         if len(dbData) == 1:
             absolute_number = try_int(dbData[0].get("absolute_number"))
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "Found absolute number %s for show %s S%02dE%02d" % (absolute_number, show.name, season, episode))
         else:
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "No entries for absolute number for show %s S%02dE%02d" % (show.name, season, episode))
 
     return absolute_number

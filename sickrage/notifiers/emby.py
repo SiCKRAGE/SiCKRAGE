@@ -58,11 +58,11 @@ class EMBYNotifier(srNotifiers):
             result = response.read()
             response.close()
 
-            sickrage.app.srLogger.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+            sickrage.app.log.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
             return True
 
         except (urllib2.URLError, IOError) as e:
-            sickrage.app.srLogger.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+            sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
 
@@ -84,17 +84,17 @@ class EMBYNotifier(srNotifiers):
         if sickrage.app.srConfig.USE_EMBY:
 
             if not sickrage.app.srConfig.EMBY_HOST:
-                sickrage.app.srLogger.debug('EMBY: No host specified, check your settings')
+                sickrage.app.log.debug('EMBY: No host specified, check your settings')
                 return False
 
             if show:
                 if show.indexer == 1:
                     provider = 'tvdb'
                 elif show.indexer == 2:
-                    sickrage.app.srLogger.warning('EMBY: TVRage Provider no longer valid')
+                    sickrage.app.log.warning('EMBY: TVRage Provider no longer valid')
                     return False
                 else:
-                    sickrage.app.srLogger.warning('EMBY: Provider unknown')
+                    sickrage.app.log.warning('EMBY: Provider unknown')
                     return False
                 query = '?%sid=%s' % (provider, show.indexerid)
             else:
@@ -111,9 +111,9 @@ class EMBYNotifier(srNotifiers):
                 result = response.read()
                 response.close()
 
-                sickrage.app.srLogger.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
+                sickrage.app.log.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
                 return True
 
             except (urllib2.URLError, IOError) as e:
-                sickrage.app.srLogger.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+                sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
                 return False

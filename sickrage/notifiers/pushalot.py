@@ -68,9 +68,9 @@ class PushalotNotifier(srNotifiers):
         if not sickrage.app.srConfig.USE_PUSHALOT and not force:
             return False
 
-        sickrage.app.srLogger.debug("Pushalot event: " + event)
-        sickrage.app.srLogger.debug("Pushalot message: " + message)
-        sickrage.app.srLogger.debug("Pushalot api: " + pushalot_authorizationtoken)
+        sickrage.app.log.debug("Pushalot event: " + event)
+        sickrage.app.log.debug("Pushalot message: " + message)
+        sickrage.app.log.debug("Pushalot api: " + pushalot_authorizationtoken)
 
         http_handler = HTTPSConnection("pushalot.com")
 
@@ -84,17 +84,17 @@ class PushalotNotifier(srNotifiers):
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            sickrage.app.srLogger.error("Pushalot notification failed.")
+            sickrage.app.log.error("Pushalot notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            sickrage.app.srLogger.debug("Pushalot notifications sent.")
+            sickrage.app.log.debug("Pushalot notifications sent.")
             return True
         elif request_status == 410:
-            sickrage.app.srLogger.error("Pushalot auth failed: %s" % response.reason)
+            sickrage.app.log.error("Pushalot auth failed: %s" % response.reason)
             return False
         else:
-            sickrage.app.srLogger.error("Pushalot notification failed.")
+            sickrage.app.log.error("Pushalot notification failed.")
             return False

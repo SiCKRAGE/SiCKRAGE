@@ -83,7 +83,7 @@ class TraktNotifier(srNotifiers):
                 srTraktAPI()["sync/collection"].add(data)
 
             except Exception as e:
-                sickrage.app.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
@@ -116,7 +116,7 @@ class TraktNotifier(srNotifiers):
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    sickrage.app.srLogger.warning(
+                    sickrage.app.log.warning(
                         "there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj")
                     return False
 
@@ -154,7 +154,7 @@ class TraktNotifier(srNotifiers):
                     srTraktAPI()[trakt_url].add(data)
 
             except Exception as e:
-                sickrage.app.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
         return True
@@ -211,5 +211,5 @@ class TraktNotifier(srNotifiers):
                     return "Trakt blacklist doesn't exists"
             return "Test notice sent successfully to Trakt"
         except Exception as e:
-            sickrage.app.srLogger.warning("Could not connect to Trakt service: %s" % e)
+            sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
             return "Test notice failed to Trakt: %s" % e

@@ -61,12 +61,12 @@ class AlphaRatioProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning('Unable to connect to provider')
+            sickrage.app.log.warning('Unable to connect to provider')
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -79,20 +79,20 @@ class AlphaRatioProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string, self.catagories)
-                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -120,7 +120,7 @@ class AlphaRatioProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # '', '', 'Name /Year', 'Files', 'Time', 'Size', 'Snatches', 'Seeders', 'Leechers'
@@ -145,7 +145,7 @@ class AlphaRatioProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < min(self.minseed, 1):
                         if mode != 'RSS':
-                            sickrage.app.srLogger.debug("Discarding torrent because it doesn't meet the"
+                            sickrage.app.log.debug("Discarding torrent because it doesn't meet the"
                                                            " minimum seeders: {0}. Seeders: {1}".format(title, seeders))
                         continue
 
@@ -161,10 +161,10 @@ class AlphaRatioProvider(TorrentProvider):
                     }
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug('Found result: {}'.format(title))
+                        sickrage.app.log.debug('Found result: {}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error('Failed parsing provider')
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results

@@ -142,7 +142,7 @@ class TIVOMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), '.meta')
             metadata_file_path = os.path.join(metadata_dir_name, metadata_file_name)
         else:
-            sickrage.app.srLogger.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.app.log.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
         return metadata_file_path
 
@@ -183,7 +183,7 @@ class TIVOMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
-            sickrage.app.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + srIndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
             return False
 
@@ -192,7 +192,7 @@ class TIVOMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (
                     curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
@@ -313,11 +313,11 @@ class TIVOMetadata(GenericMetadata):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                sickrage.app.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            sickrage.app.srLogger.debug("Writing episode nfo file to " + nfo_file_path)
+            sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
             with io.open(nfo_file_path, 'w') as nfo_file:
                 # Calling encode directly, b/c often descriptions have wonky characters.
@@ -326,7 +326,7 @@ class TIVOMetadata(GenericMetadata):
             chmodAsParent(nfo_file_path)
 
         except EnvironmentError as e:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                     e.message))
             return False

@@ -104,11 +104,11 @@ class TVChaosUKProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -129,18 +129,18 @@ class TVChaosUKProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 search_params['keywords'] = search_string.strip()
 
                 try:
                     data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
                     continue
 
                 with bs4_parser(data) as html:
@@ -174,10 +174,10 @@ class TVChaosUKProvider(TorrentProvider):
                                     'leechers': leechers, 'hash': ''}
 
                             if mode != 'RSS':
-                                sickrage.app.srLogger.debug("Found result: {}".format(title))
+                                sickrage.app.log.debug("Found result: {}".format(title))
 
                             results.append(item)
                         except Exception:
-                            sickrage.app.srLogger.error("Failed parsing provider.")
+                            sickrage.app.log.error("Failed parsing provider.")
 
         return results

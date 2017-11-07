@@ -96,7 +96,7 @@ class KeyHandler(RequestHandler):
 
             self.finish({'success': api_key is not None, 'api_key': api_key})
         except Exception:
-            sickrage.app.srLogger.error('Failed doing key request: %s' % (traceback.format_exc()))
+            sickrage.app.log.error('Failed doing key request: %s' % (traceback.format_exc()))
             self.finish({'success': False, 'error': 'Failed returning results'})
 
 
@@ -116,7 +116,7 @@ class ApiHandler(RequestHandler):
         }
 
         accessMsg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
-        sickrage.app.srLogger.debug(accessMsg)
+        sickrage.app.log.debug(accessMsg)
 
         # set the original call_dispatcher as the local _call_dispatcher
         _call_dispatcher = self.call_dispatcher
@@ -131,7 +131,7 @@ class ApiHandler(RequestHandler):
         try:
             outDict = self.route(_call_dispatcher, **self.request.arguments)
         except Exception as e:
-            sickrage.app.srLogger.error(e.message)
+            sickrage.app.log.error(e.message)
             errorData = {"error_msg": e, "request arguments": self.request.arguments}
             outDict = _responds(RESULT_FATAL,
                                 errorData,
@@ -163,7 +163,7 @@ class ApiHandler(RequestHandler):
             if callback is not None:
                 out = callback + '(' + out + ');'  # wrap with JSONP call if requested
         except Exception as e:  # if we fail to generate the output fake an error
-            sickrage.app.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())
             out = '{"result": "%s", "message": "error while composing output: %s"}' % \
                   (result_type_map[RESULT_ERROR], e)
         return out
@@ -178,7 +178,7 @@ class ApiHandler(RequestHandler):
             or calls the TVDBShorthandWrapper when the first args element is a number
             or returns an error that there is no such cmd
         """
-        sickrage.app.srLogger.debug("all params: '" + str(kwargs) + "'")
+        sickrage.app.log.debug("all params: '" + str(kwargs) + "'")
 
         cmds = []
         if args:
@@ -199,7 +199,7 @@ class ApiHandler(RequestHandler):
             if len(cmd.split("_")) > 1:  # was a index used for this cmd ?
                 cmd, cmdIndex = cmd.split("_")  # this gives us the clear cmd and the index
 
-            sickrage.app.srLogger.debug(cmd + ": current params " + str(curKwargs))
+            sickrage.app.log.debug(cmd + ": current params " + str(curKwargs))
             if not (multiCmds and cmd in ('show.getbanner', 'show.getfanart', 'show.getnetworklogo',
                                           'show.getposter')):  # skip these cmd while chaining
                 try:
@@ -415,7 +415,7 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 'Invalid param type: "{}" can not be checked. Ignoring it.'.format(str(arg_type)))
 
         if error:
@@ -907,7 +907,7 @@ class CMD_EpisodeSetStatus(ApiCall):
         if start_backlog:
             for season, segment in segments.items():
                 sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))  # @UndefinedVariable
-                sickrage.app.srLogger.info("Starting backlog for " + showObj.name + " season " + str(
+                sickrage.app.log.info("Starting backlog for " + showObj.name + " season " + str(
                     season) + " because some episodes were set to WANTED")
 
             extra_msg = " Backlog started"
@@ -1164,9 +1164,9 @@ class CMD_Logs(ApiCall):
         maxLines = 50
 
         levelsFiltered = '|'.join(
-            [x for x in sickrage.app.srLogger.logLevels.keys() if
-             sickrage.app.srLogger.logLevels[x] >= int(
-                 sickrage.app.srLogger.logLevels[str(self.min_level).upper()])])
+            [x for x in sickrage.app.log.logLevels.keys() if
+             sickrage.app.log.logLevels[x] >= int(
+                 sickrage.app.log.logLevels[str(self.min_level).upper()])])
 
         logRegex = re.compile(
             r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered, ""),
@@ -1543,7 +1543,7 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     apiData = t[str(self.name).encode()]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.srLogger.warning("Unable to find show with id " + str(self.indexerid))
+                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
                     continue
 
                 for curSeries in apiData:
@@ -1567,11 +1567,11 @@ class CMD_SiCKRAGESearchIndexers(ApiCall):
                 try:
                     myShow = t[int(self.indexerid)]
                 except (indexer_shownotfound, indexer_showincomplete, indexer_error):
-                    sickrage.app.srLogger.warning("Unable to find show with id " + str(self.indexerid))
+                    sickrage.app.log.warning("Unable to find show with id " + str(self.indexerid))
                     return _responds(RESULT_SUCCESS, {"results": [], "langid": lang_id})
 
                 if not myShow.data['seriesname']:
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Found show with indexerid: " + str(
                             self.indexerid) + ", however it contained no show name")
                     return _responds(RESULT_FAILURE, msg="Show contains no name, invalid result")
@@ -2063,11 +2063,11 @@ class CMD_ShowAddNew(ApiCall):
 
         # don't create show dir if config says not to
         if sickrage.app.srConfig.ADD_SHOWS_WO_DIR:
-            sickrage.app.srLogger.info("Skipping initial creation of " + showPath + " due to config.ini setting")
+            sickrage.app.log.info("Skipping initial creation of " + showPath + " due to config.ini setting")
         else:
             dir_exists = makeDir(showPath)
             if not dir_exists:
-                sickrage.app.srLogger.error(
+                sickrage.app.log.error(
                     "Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
@@ -2653,7 +2653,7 @@ class CMD_ShowUpdate(ApiCall):
             sickrage.app.SHOWQUEUE.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
-            sickrage.app.srLogger.debug("API::Unable to update show: {0}".format(str(e)))
+            sickrage.app.log.debug("API::Unable to update show: {0}".format(str(e)))
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

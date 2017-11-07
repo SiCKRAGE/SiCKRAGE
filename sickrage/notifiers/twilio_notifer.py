@@ -83,7 +83,7 @@ class TwilioNotifier(srNotifiers):
                 sickrage.app.srConfig.TWILIO_TO_NUMBER)):
             return False
 
-        sickrage.app.srLogger.debug('Sending Twilio SMS: ' + message)
+        sickrage.app.log.debug('Sending Twilio SMS: ' + message)
 
         try:
             self.client.messages.create(
@@ -92,7 +92,7 @@ class TwilioNotifier(srNotifiers):
                 from_=self.number.phone_number,
             )
         except TwilioRestException as e:
-            sickrage.app.srLogger.error('Twilio notification failed:' + e.message)
+            sickrage.app.log.error('Twilio notification failed:' + e.message)
 
             if allow_raise:
                 raise e

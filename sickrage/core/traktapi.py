@@ -56,7 +56,7 @@ class srTraktAPI(object):
         if not sickrage.app.srConfig.TRAKT_OAUTH_TOKEN:
             return False
 
-        sickrage.app.srLogger.debug('Token exchanged - auth: %r' % sickrage.app.srConfig.TRAKT_OAUTH_TOKEN)
+        sickrage.app.log.debug('Token exchanged - auth: %r' % sickrage.app.srConfig.TRAKT_OAUTH_TOKEN)
         sickrage.app.srConfig.save()
 
         return True
@@ -66,7 +66,7 @@ class srTraktAPI(object):
         # OAuth token refreshed, save token for future calls
         sickrage.app.srConfig.TRAKT_OAUTH_TOKEN = response
 
-        sickrage.app.srLogger.debug('Token refreshed - auth: %r' % sickrage.app.srConfig.TRAKT_OAUTH_TOKEN)
+        sickrage.app.log.debug('Token refreshed - auth: %r' % sickrage.app.srConfig.TRAKT_OAUTH_TOKEN)
         sickrage.app.srConfig.save()
 
     def __getattr__(self, name):

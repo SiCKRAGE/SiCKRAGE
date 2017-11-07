@@ -47,11 +47,11 @@ class NMJNotifier(srNotifiers):
         try:
             terminal = telnetlib.Telnet(host)
         except Exception:
-            sickrage.app.srLogger.warning("Warning: unable to get a telnet session to %s" % host)
+            sickrage.app.log.warning("Warning: unable to get a telnet session to %s" % host)
             return False
 
         # tell the terminal to output the necessary info to the screen so we can search it later
-        sickrage.app.srLogger.debug("Connected to %s via telnet" % (host))
+        sickrage.app.log.debug("Connected to %s via telnet" % (host))
         terminal.read_until("sh-3.00# ")
         terminal.write("cat /tmp/source\n")
         terminal.write("cat /tmp/netshare\n")
@@ -66,10 +66,10 @@ class NMJNotifier(srNotifiers):
         if match:
             database = match.group(1)
             device = match.group(2)
-            sickrage.app.srLogger.debug("Found NMJ database %s on device %s" % (database, device))
+            sickrage.app.log.debug("Found NMJ database %s on device %s" % (database, device))
             sickrage.app.srConfig.NMJ_DATABASE = database
         else:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
             return False
 
@@ -79,10 +79,10 @@ class NMJNotifier(srNotifiers):
 
             if match:
                 mount = match.group().replace("127.0.0.1", host)
-                sickrage.app.srLogger.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
+                sickrage.app.log.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
                 sickrage.app.srConfig.NMJ_MOUNT = mount
             else:
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "Detected a network share on the Popcorn Hour, but could not get the mounting url")
                 return False
 
@@ -122,17 +122,17 @@ class NMJNotifier(srNotifiers):
         if mount:
             try:
                 req = urllib2.Request(mount)
-                sickrage.app.srLogger.debug("Try to mount network drive via url: %s" % (mount))
+                sickrage.app.log.debug("Try to mount network drive via url: %s" % (mount))
                 handle = urllib2.urlopen(req)
             except IOError as e:
                 if hasattr(e, 'reason'):
-                    sickrage.app.srLogger.warning(
+                    sickrage.app.log.warning(
                         "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
                 elif hasattr(e, 'code'):
-                    sickrage.app.srLogger.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
+                    sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
                 return False
             except Exception as e:
-                sickrage.app.srLogger.error("NMJ: Unknown exception: {}".format(e.message))
+                sickrage.app.log.error("NMJ: Unknown exception: {}".format(e.message))
                 return False
 
         # build up the request URL and parameters
@@ -149,18 +149,18 @@ class NMJNotifier(srNotifiers):
         # send the request to the server
         try:
             req = urllib2.Request(updateUrl)
-            sickrage.app.srLogger.debug("Sending NMJ scan update command via url: %s" % (updateUrl))
+            sickrage.app.log.debug("Sending NMJ scan update command via url: %s" % (updateUrl))
             handle = urllib2.urlopen(req)
             response = handle.read()
         except IOError as e:
             if hasattr(e, 'reason'):
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
             elif hasattr(e, 'code'):
-                sickrage.app.srLogger.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
+                sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
             return False
         except Exception as e:
-            sickrage.app.srLogger.error("NMJ: Unknown exception: {}".format(e.message))
+            sickrage.app.log.error("NMJ: Unknown exception: {}".format(e.message))
             return False
 
         # try to parse the resulting XML
@@ -168,15 +168,15 @@ class NMJNotifier(srNotifiers):
             et = ElementTree.fromstring(response)
             result = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.app.srLogger.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e.message))
+            sickrage.app.log.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e.message))
             return False
 
         # if the result was a number then consider that an error
         if int(result) > 0:
-            sickrage.app.srLogger.error("Popcorn Hour returned an errorcode: {}".format(result))
+            sickrage.app.log.error("Popcorn Hour returned an errorcode: {}".format(result))
             return False
         else:
-            sickrage.app.srLogger.info("NMJ started background scan")
+            sickrage.app.log.info("NMJ started background scan")
             return True
 
     def _notifyNMJ(self, host=None, database=None, mount=None, force=False):
@@ -189,7 +189,7 @@ class NMJNotifier(srNotifiers):
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
         if not sickrage.app.srConfig.USE_NMJ and not force:
-            sickrage.app.srLogger.debug("Notification for NMJ scan update not enabled, skipping this notification")
+            sickrage.app.log.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
@@ -200,6 +200,6 @@ class NMJNotifier(srNotifiers):
         if not mount:
             mount = sickrage.app.srConfig.NMJ_MOUNT
 
-        sickrage.app.srLogger.debug("Sending scan command for NMJ ")
+        sickrage.app.log.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host, database, mount)

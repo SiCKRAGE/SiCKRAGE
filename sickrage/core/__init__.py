@@ -103,8 +103,8 @@ class Core(object):
         self.metadataProvidersDict = None
         self.providersDict = None
         self.srNotifications = None
-        self.srLogger = None
-        self.srConfig = None
+        self.log = None
+        self.config = None
         self.mainDB = None
         self.cacheDB = None
         self.failedDB = None
@@ -139,8 +139,8 @@ class Core(object):
         self.metadataProvidersDict = metadataProvidersDict()
         self.providersDict = providersDict()
         self.srNotifications = Notifications()
-        self.srLogger = srLogger()
-        self.srConfig = srConfig()
+        self.log = srLogger()
+        self.config = srConfig()
         self.mainDB = MainDB()
         self.cacheDB = CacheDB()
         self.failedDB = FailedDB()

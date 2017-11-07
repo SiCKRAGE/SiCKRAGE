@@ -92,12 +92,12 @@ class srWebServer(threading.Thread):
                         sickrage.app.srConfig.HTTPS_KEY and os.path.exists(sickrage.app.srConfig.HTTPS_KEY)):
                 if not create_https_certificates(sickrage.app.srConfig.HTTPS_CERT,
                                                  sickrage.app.srConfig.HTTPS_KEY):
-                    sickrage.app.srLogger.info("Unable to create CERT/KEY files, disabling HTTPS")
+                    sickrage.app.log.info("Unable to create CERT/KEY files, disabling HTTPS")
                     sickrage.app.srConfig.ENABLE_HTTPS = False
 
             if not (os.path.exists(sickrage.app.srConfig.HTTPS_CERT) and os.path.exists(
                     sickrage.app.srConfig.HTTPS_KEY)):
-                sickrage.app.srLogger.warning("Disabled HTTPS because of missing CERT and KEY files")
+                sickrage.app.log.warning("Disabled HTTPS because of missing CERT and KEY files")
                 sickrage.app.srConfig.ENABLE_HTTPS = False
 
         # Load the app
@@ -171,13 +171,13 @@ class srWebServer(threading.Thread):
         try:
             self.server.listen(sickrage.app.WEB_PORT or sickrage.app.srConfig.WEB_PORT, None)
 
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.VERSIONUPDATER.version))
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.srConfig.CONFIG_VERSION))
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}/]".format(
                     ('http', 'https')[sickrage.app.srConfig.ENABLE_HTTPS],
                     sickrage.app.srConfig.WEB_HOST, sickrage.app.srConfig.WEB_PORT))
@@ -193,7 +193,7 @@ class srWebServer(threading.Thread):
 
             sickrage.app.io_loop.start()
         except socket.error as e:
-            sickrage.app.srLogger.warning(e.strerror)
+            sickrage.app.log.warning(e.strerror)
             raise SystemExit
 
     def shutdown(self):

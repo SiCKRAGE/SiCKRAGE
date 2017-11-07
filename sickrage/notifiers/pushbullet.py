@@ -34,7 +34,7 @@ class PushbulletNotifier(srNotifiers):
         self.TEST_EVENT = 'Test'
 
     def test_notify(self, pushbullet_api):
-        sickrage.app.srLogger.debug("Sending a test Pushbullet notification.")
+        sickrage.app.log.debug("Sending a test Pushbullet notification.")
         return self._sendPushbullet(
             pushbullet_api,
             event=self.TEST_EVENT,
@@ -43,13 +43,13 @@ class PushbulletNotifier(srNotifiers):
         )
 
     def get_devices(self, pushbullet_api):
-        sickrage.app.srLogger.debug("Retrieving Pushbullet device list.")
+        sickrage.app.log.debug("Retrieving Pushbullet device list.")
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
             return sickrage.app.srWebSession.get(urljoin(self.url, 'devices'), headers=headers).text
         except Exception:
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
@@ -81,10 +81,10 @@ class PushbulletNotifier(srNotifiers):
         pushbullet_api = pushbullet_api or sickrage.app.srConfig.PUSHBULLET_API
         pushbullet_device = pushbullet_device or sickrage.app.srConfig.PUSHBULLET_DEVICE
 
-        sickrage.app.srLogger.debug("Pushbullet event: %r" % event)
-        sickrage.app.srLogger.debug("Pushbullet message: %r" % message)
-        sickrage.app.srLogger.debug("Pushbullet api: %r" % pushbullet_api)
-        sickrage.app.srLogger.debug("Pushbullet devices: %r" % pushbullet_device)
+        sickrage.app.log.debug("Pushbullet event: %r" % event)
+        sickrage.app.log.debug("Pushbullet message: %r" % message)
+        sickrage.app.log.debug("Pushbullet api: %r" % pushbullet_api)
+        sickrage.app.log.debug("Pushbullet devices: %r" % pushbullet_device)
 
         post_data = {
             'title': event.encode('utf-8'),
@@ -104,23 +104,23 @@ class PushbulletNotifier(srNotifiers):
                 headers=headers
             )
         except Exception:
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:
-            sickrage.app.srLogger.debug('Pushbullet authorization failed')
+            sickrage.app.log.debug('Pushbullet authorization failed')
             return False
 
         if not response.ok:
-            sickrage.app.srLogger.debug('Pushbullet call failed with error code %r' % response.status_code)
+            sickrage.app.log.debug('Pushbullet call failed with error code %r' % response.status_code)
             return False
 
-        sickrage.app.srLogger.debug("Pushbullet response: %r" % response.text)
+        sickrage.app.log.debug("Pushbullet response: %r" % response.text)
 
         if not response.text:
-            sickrage.app.srLogger.error("Pushbullet notification failed.")
+            sickrage.app.log.error("Pushbullet notification failed.")
             return False
 
-        sickrage.app.srLogger.debug("Pushbullet notifications sent.")
+        sickrage.app.log.debug("Pushbullet notifications sent.")
         return (True, response.text)[event is self.TEST_EVENT or event is None]

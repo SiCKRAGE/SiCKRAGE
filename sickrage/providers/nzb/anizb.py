@@ -52,29 +52,29 @@ class Anizb(NZBProvider):
         results = []
 
         for mode in search_strings:
-            sickrage.app.srLogger.debug('Search mode: {0}'.format(mode))
+            sickrage.app.log.debug('Search mode: {0}'.format(mode))
 
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                     search_url = (self.urls['rss'], self.urls['api'] + search_string)[mode != 'RSS']
 
                     try:
                         response = sickrage.app.srWebSession.get(search_url).text
                     except Exception:
-                        sickrage.app.srLogger.debug('No data returned from provider')
+                        sickrage.app.log.debug('No data returned from provider')
                         continue
 
                     if not response.text.startswith('<?xml'):
-                        sickrage.app.srLogger.info('Expected xml but got something else, is your mirror failing?')
+                        sickrage.app.log.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
                     with bs4_parser(response) as html:
                         entries = html('item')
                         if not entries:
-                            sickrage.app.srLogger.info('Returned xml contained no results')
+                            sickrage.app.log.info('Returned xml contained no results')
                             continue
 
                         for item in entries:
@@ -95,7 +95,7 @@ class Anizb(NZBProvider):
 
                                 results.append(item)
                             except (AttributeError, TypeError, KeyError, ValueError, IndexError):
-                                sickrage.app.srLogger.error('Failed parsing provider.')
+                                sickrage.app.log.error('Failed parsing provider.')
                                 continue
 
             return results

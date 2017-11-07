@@ -56,10 +56,10 @@ class NextorrentProvider(TorrentProvider):
 
         for mode in search_strings:
 
-            sickrage.app.srLogger.debug('Search Mode: {}'.format(mode))
+            sickrage.app.log.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 if mode == 'RSS':
                     search_url = self.urls['series']
@@ -70,7 +70,7 @@ class NextorrentProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug('No data returned from provider')
+                    sickrage.app.log.debug('No data returned from provider')
 
         return results
 
@@ -109,7 +109,7 @@ class NextorrentProvider(TorrentProvider):
                                 leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
 
                                 if mode != 'RSS':
-                                    sickrage.app.srLogger.debug("Found result: {}".format(title))
+                                    sickrage.app.log.debug("Found result: {}".format(title))
 
                                 results += [{
                                     'title': title,
@@ -119,6 +119,6 @@ class NextorrentProvider(TorrentProvider):
                                     'leechers': leechers,
                                 }]
                         except Exception:
-                            sickrage.app.srLogger.error("Failed parsing provider")
+                            sickrage.app.log.error("Failed parsing provider")
 
         return results

@@ -49,7 +49,7 @@ def indexerImage(id=None, which=None):
     image_type = which[0:6]
 
     if image_type not in ('fanart', 'poster', 'banner'):
-        sickrage.app.srLogger.error(
+        sickrage.app.log.error(
             "Invalid image type " + str(image_type) + ", couldn't find it in the " + srIndexerApi(
                 INDEXER_TVDB).name + " object")
         return
@@ -81,5 +81,5 @@ def indexerImage(id=None, which=None):
         elif image_type == 'poster':
             return Poster(int(id), media_format).url
     except (indexer_error, IOError) as e:
-        sickrage.app.srLogger.warning("{}: Unable to look up show on ".format(id) + srIndexerApi(
+        sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + srIndexerApi(
             INDEXER_TVDB).name + ", not downloading images: {}".format(e.message))

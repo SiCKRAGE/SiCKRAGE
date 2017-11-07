@@ -253,11 +253,11 @@ class LoginHandler(BaseHandler):
                                    json_encode(sickrage.app.srConfig.API_KEY),
                                    expires_days=30 if remember_me > 0 else None)
 
-            sickrage.app.srLogger.debug('User logged into the SiCKRAGE web interface')
+            sickrage.app.log.debug('User logged into the SiCKRAGE web interface')
 
             return self.redirect("/{}/".format(sickrage.app.srConfig.DEFAULT_PAGE))
         elif username and password:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
                     self.request.remote_ip)
             )
@@ -302,7 +302,7 @@ class CalendarHandler(BaseHandler):
 
         utc = dateutil.tz.gettz('GMT')
 
-        sickrage.app.srLogger.info("Receiving iCal request from %s" % self.request.remote_ip)
+        sickrage.app.log.info("Receiving iCal request from %s" % self.request.remote_ip)
 
         # Create a iCal string
         ical = 'BEGIN:VCALENDAR\r\n'
@@ -829,7 +829,7 @@ class Home(WebHandler):
     def twitterStep2(key):
 
         result = sickrage.app.notifiersDict['twitter']._get_credentials(key)
-        sickrage.app.srLogger.info("result: " + str(result))
+        sickrage.app.log.info("result: " + str(result))
         if result:
             return _('Key verification successful')
         else:
@@ -1385,7 +1385,7 @@ class Home(WebHandler):
                     except Exception as e:
                         anidb_failed = True
                         sickrage.app.srNotifications.error(_('Unable to retreive Fansub Groups from AniDB.'))
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
 
             with showObj.lock:
@@ -1513,7 +1513,7 @@ class Home(WebHandler):
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if os.path.normpath(showObj.location) != os.path.normpath(location):
-                sickrage.app.srLogger.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
+                sickrage.app.log.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.app.srConfig.CREATE_MISSING_SHOW_DIRS:
                     errors.append("New location {} does not exist".format(location))
 
@@ -1725,7 +1725,7 @@ class Home(WebHandler):
 
     def syncTrakt(self):
         if sickrage.app.srScheduler.get_job('TRAKTSEARCHER').func():
-            sickrage.app.srLogger.info("Syncing Trakt with SiCKRAGE")
+            sickrage.app.log.info("Syncing Trakt with SiCKRAGE")
             sickrage.app.srNotifications.message(_('Syncing Trakt with SiCKRAGE'))
 
         return self.redirect("/home/")
@@ -1751,14 +1751,14 @@ class Home(WebHandler):
         if eps:
             for curEp in eps.split('|'):
                 if not curEp:
-                    sickrage.app.srLogger.debug("curEp was empty when trying to deleteEpisode")
+                    sickrage.app.log.debug("curEp was empty when trying to deleteEpisode")
 
-                sickrage.app.srLogger.debug("Attempting to delete episode " + curEp)
+                sickrage.app.log.debug("Attempting to delete episode " + curEp)
 
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Something went wrong when trying to deleteEpisode, epInfo[0]: %s, epInfo[1]: %s" % (
                             epInfo[0], epInfo[1]))
                     continue
@@ -1812,14 +1812,14 @@ class Home(WebHandler):
             for curEp in eps.split('|'):
 
                 if not curEp:
-                    sickrage.app.srLogger.debug("curEp was empty when trying to setStatus")
+                    sickrage.app.log.debug("curEp was empty when trying to setStatus")
 
-                sickrage.app.srLogger.debug("Attempting to set status on episode " + curEp + " to " + status)
+                sickrage.app.log.debug("Attempting to set status on episode " + curEp + " to " + status)
 
                 epInfo = curEp.split('x')
 
                 if not all(epInfo):
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Something went wrong when trying to setStatus, epInfo[0]: %s, epInfo[1]: %s" % (
                             epInfo[0], epInfo[1]))
                     continue
@@ -1839,25 +1839,25 @@ class Home(WebHandler):
                 with epObj.lock:
                     # don't let them mess up UNAIRED episodes
                     if epObj.status == UNAIRED:
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Refusing to change status of " + curEp + " because it is UNAIRED")
                         continue
 
                     if int(status) in Quality.DOWNLOADED and epObj.status not in Quality.SNATCHED + \
                             Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.DOWNLOADED + [
                         IGNORED] and not os.path.isfile(epObj.location):
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Refusing to change status of " + curEp + " to DOWNLOADED because it's not SNATCHED/DOWNLOADED")
                         continue
 
                     if int(status) == FAILED and epObj.status not in Quality.SNATCHED + Quality.SNATCHED_PROPER + \
                             Quality.SNATCHED_BEST + Quality.DOWNLOADED + Quality.ARCHIVED:
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Refusing to change status of " + curEp + " to FAILED because it's not SNATCHED/DOWNLOADED")
                         continue
 
                     if epObj.status in Quality.DOWNLOADED + Quality.ARCHIVED and int(status) == WANTED:
-                        sickrage.app.srLogger.info(
+                        sickrage.app.log.info(
                             "Removing release_name for episode as you want to set a downloaded episode back to wanted, so obviously you want it replaced")
                         epObj.release_name = ""
 
@@ -1871,13 +1871,13 @@ class Home(WebHandler):
             data = sickrage.app.notifiersDict['trakt'].trakt_episode_data_generate(trakt_data)
             if data and sickrage.app.srConfig.USE_TRAKT and sickrage.app.srConfig.TRAKT_SYNC_WATCHLIST:
                 if int(status) in [WANTED, FAILED]:
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Add episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " to Watchlist")
                     sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
                                                                          update="add")
                 elif int(status) in [IGNORED, SKIPPED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Remove episodes, showid: indexerid " + str(showObj.indexerid) + ", Title " + str(
                             showObj.name) + " from Watchlist")
                     sickrage.app.notifiersDict['trakt'].update_watchlist(showObj, data_episode=data,
@@ -1892,7 +1892,7 @@ class Home(WebHandler):
                 sickrage.app.SEARCHQUEUE.put(BacklogQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.app.srLogger.info("Sending backlog for " + showObj.name + " season " + str(
+                sickrage.app.log.info("Sending backlog for " + showObj.name + " season " + str(
                     season) + " because some eps were set to wanted")
 
             msg += "</ul>"
@@ -1900,7 +1900,7 @@ class Home(WebHandler):
             if segments:
                 sickrage.app.srNotifications.message(_("Backlog started"), msg)
         elif int(status) == WANTED and showObj.paused:
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "Some episodes were set to wanted, but " + showObj.name + " is paused. Not adding to Backlog until show is unpaused")
 
         if int(status) == FAILED:
@@ -1912,7 +1912,7 @@ class Home(WebHandler):
                 sickrage.app.SEARCHQUEUE.put(FailedQueueItem(showObj, segment))
 
                 msg += "<li>" + _("Season ") + str(season) + "</li>"
-                sickrage.app.srLogger.info("Retrying Search for " + showObj.name + " season " + str(
+                sickrage.app.log.info("Retrying Search for " + showObj.name + " season " + str(
                     season) + " because some eps were set to failed")
 
             msg += "</ul>"
@@ -2001,7 +2001,7 @@ class Home(WebHandler):
                          if x['doc']['season'] == int(epInfo[0]) and x['doc']['episode'] == int(epInfo[1])]
 
             if not ep_result:
-                sickrage.app.srLogger.warning("Unable to find an episode for " + curEp + ", skipping")
+                sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
             related_eps_result = [x['doc'] for x in sickrage.app.mainDB.db.all('tv_episodes', with_doc=True)
@@ -2042,7 +2042,7 @@ class Home(WebHandler):
             showObj = findCertainShow(sickrage.app.SHOWLIST, int(searchThread.show.indexerid))
 
             if not showObj:
-                sickrage.app.srLogger.error(
+                sickrage.app.log.error(
                     'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
@@ -2177,7 +2177,7 @@ class Home(WebHandler):
             result['success'] = False
             result['errorMessage'] = ep_obj
         elif showObj.is_anime:
-            sickrage.app.srLogger.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
+            sickrage.app.log.debug("setAbsoluteSceneNumbering for %s from %s to %s" %
                                         (show, forAbsolute, sceneAbsolute))
 
             show = int(show)
@@ -2188,7 +2188,7 @@ class Home(WebHandler):
 
             set_scene_numbering(show, indexer, absolute_number=forAbsolute, sceneAbsolute=sceneAbsolute)
         else:
-            sickrage.app.srLogger.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
+            sickrage.app.log.debug("setEpisodeSceneNumbering for %s from %sx%s to %sx%s" %
                                         (show, forSeason, forEpisode, sceneSeason, sceneEpisode))
 
             show = int(show)
@@ -2232,11 +2232,11 @@ class Home(WebHandler):
 
     @staticmethod
     def fetch_releasegroups(show_name):
-        sickrage.app.srLogger.info('ReleaseGroups: %s' % show_name)
+        sickrage.app.log.info('ReleaseGroups: %s' % show_name)
         if sickrage.app.ADBA_CONNECTION:
             anime = aniDBAbstracter.Anime(sickrage.app.ADBA_CONNECTION, name=show_name)
             groups = anime.get_groups()
-            sickrage.app.srLogger.info('ReleaseGroups: %s' % groups)
+            sickrage.app.log.info('ReleaseGroups: %s' % groups)
             return json_encode({'result': 'success', 'groups': groups})
 
         return json_encode({'result': 'failure'})
@@ -2267,7 +2267,7 @@ class changelog(WebHandler):
         try:
             changes = sickrage.app.srWebSession.get(sickrage.app.srConfig.CHANGES_URL).text
         except Exception:
-            sickrage.app.srLogger.debug('Could not load changes from repo, giving a link!')
+            sickrage.app.log.debug('Could not load changes from repo, giving a link!')
             changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(
                 sickrage.app.srConfig.CHANGES_URL)
 
@@ -2358,7 +2358,7 @@ class HomeAddShows(Home):
             lINDEXER_API_PARMS['custom_ui'] = AllShowsUI
             t = srIndexerApi(indexer).indexer(**lINDEXER_API_PARMS)
 
-            sickrage.app.srLogger.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
+            sickrage.app.log.debug("Searching for Show with searchterm: %s on Indexer: %s" % (
                 search_term, srIndexerApi(indexer).name))
 
             try:
@@ -2604,7 +2604,7 @@ class HomeAddShows(Home):
             show_dir = os.path.join(location, sanitizeFileName(showName))
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
                 return
 
             chmodAsParent(show_dir)
@@ -2623,7 +2623,7 @@ class HomeAddShows(Home):
 
             sickrage.app.srNotifications.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
-            sickrage.app.srLogger.error("There was an error creating the show, no root directory setting found")
+            sickrage.app.log.error("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
 
         # done adding show
@@ -2671,7 +2671,7 @@ class HomeAddShows(Home):
         series_pieces = whichSeries.split('|')
         if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
             if len(series_pieces) < 6:
-                sickrage.app.srLogger.error(
+                sickrage.app.log.error(
                     'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
                 sickrage.app.srNotifications.error(
                     _('Unknown error. Unable to add show due to problem with show selection.'))
@@ -2703,12 +2703,12 @@ class HomeAddShows(Home):
 
         # don't create show dir if config says not to
         if sickrage.app.srConfig.ADD_SHOWS_WO_DIR:
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 "Skipping initial creation of " + show_dir + " due to sickrage.CONFIG.ini setting")
         else:
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.srLogger.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.app.srNotifications.error(_("Unable to add show"),
                                                    _("Unable to create the folder " +
                                                      show_dir + ", can't add the show"))
@@ -3294,7 +3294,7 @@ class Manage(Home, WebRoot):
             cur_show_dir = os.path.basename(showObj.location)
             if cur_root_dir in dir_map and cur_root_dir != dir_map[cur_root_dir]:
                 new_show_dir = os.path.join(dir_map[cur_root_dir], cur_show_dir)
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "For show " + showObj.name + " changing dir from " + showObj.location + " to " + new_show_dir)
             else:
                 new_show_dir = showObj.location
@@ -3371,7 +3371,7 @@ class Manage(Home, WebRoot):
                                        directCall=True)
 
             if curErrors:
-                sickrage.app.srLogger.error("Errors: " + str(curErrors))
+                sickrage.app.log.error("Errors: " + str(curErrors))
                 errors.append('<b>%s:</b>\n<ul>' % showObj.name + ' '.join(
                     ['<li>%s</li>' % error for error in curErrors]) + "</ul>")
 
@@ -3565,7 +3565,7 @@ class ManageQueues(Manage):
     def forceBacklog(self):
         # force it to run the next time it looks
         if sickrage.app.srScheduler.get_job('BACKLOG').func(True):
-            sickrage.app.srLogger.info("Backlog search forced")
+            sickrage.app.log.info("Backlog search forced")
             sickrage.app.srNotifications.message(_('Backlog search started'))
 
         return self.redirect("/manage/manageQueues/")
@@ -3573,7 +3573,7 @@ class ManageQueues(Manage):
     def forceSearch(self):
         # force it to run the next time it looks
         if sickrage.app.srScheduler.get_job('DAILYSEARCHER').func(True):
-            sickrage.app.srLogger.info("Daily search forced")
+            sickrage.app.log.info("Daily search forced")
             sickrage.app.srNotifications.message(_('Daily search started'))
 
         return self.redirect("/manage/manageQueues/")
@@ -3581,7 +3581,7 @@ class ManageQueues(Manage):
     def forceFindPropers(self):
         # force it to run the next time it looks
         if sickrage.app.srScheduler.get_job('PROPERSEARCHER').func(True):
-            sickrage.app.srLogger.info("Find propers search forced")
+            sickrage.app.log.info("Find propers search forced")
             sickrage.app.srNotifications.message(_('Find propers search started'))
 
         return self.redirect("/manage/manageQueues/")
@@ -3811,7 +3811,7 @@ class ConfigGeneral(Config):
 
         # Debug
         sickrage.app.srConfig.DEBUG = checkbox_to_value(debug)
-        sickrage.app.srLogger.set_level()
+        sickrage.app.log.set_level()
 
         # Misc
         sickrage.app.srConfig.DOWNLOAD_URL = download_url
@@ -3900,7 +3900,7 @@ class ConfigGeneral(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[GENERAL] Configuration Saved'),
@@ -4073,7 +4073,7 @@ class ConfigSearch(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[SEARCH] Configuration Saved'),
@@ -4197,7 +4197,7 @@ class ConfigPostProcessing(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.warning(x) for x in results]
+            [sickrage.app.log.warning(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[POST-PROCESSING] Configuration Saved'),
@@ -4266,7 +4266,7 @@ class ConfigPostProcessing(Config):
                                                         sickrage.app.srConfig.UNRAR_ALT_TOOL)
 
         if not check:
-            sickrage.app.srLogger.warning('Looks like unrar is not installed, check failed')
+            sickrage.app.log.warning('Looks like unrar is not installed, check failed')
         return ('not supported', 'supported')[check]
 
 
@@ -4418,7 +4418,7 @@ class ConfigProviders(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[PROVIDERS] Configuration Saved'),
@@ -4745,7 +4745,7 @@ class ConfigNotifications(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[NOTIFICATIONS] Configuration Saved'),
@@ -4826,7 +4826,7 @@ class ConfigSubtitles(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[SUBTITLES] Configuration Saved'),
@@ -4865,7 +4865,7 @@ class ConfigAnime(Config):
         sickrage.app.srConfig.save()
 
         if len(results) > 0:
-            [sickrage.app.srLogger.error(x) for x in results]
+            [sickrage.app.log.error(x) for x in results]
             sickrage.app.srNotifications.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.srNotifications.message(_('[ANIME] Configuration Saved'),
@@ -4909,17 +4909,17 @@ class Logs(WebHandler):
     def LogsMenu(self, level):
         menu = [
             {'title': _('Clear Errors'), 'path': '/logs/clearerrors/',
-             'requires': self.haveErrors() and level == sickrage.app.srLogger.ERROR,
+             'requires': self.haveErrors() and level == sickrage.app.log.ERROR,
              'icon': 'ui-icon ui-icon-trash'},
-            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.app.srLogger.WARNING),
-             'requires': self.haveWarnings() and level == sickrage.app.srLogger.WARNING,
+            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.app.log.WARNING),
+             'requires': self.haveWarnings() and level == sickrage.app.log.WARNING,
              'icon': 'ui-icon ui-icon-trash'},
         ]
 
         return menu
 
     def index(self, level=None):
-        level = int(level or sickrage.app.srLogger.ERROR)
+        level = int(level or sickrage.app.log.ERROR)
         return self.render(
             "/logs/errors.mako",
             header="Logs &amp; Errors",
@@ -4942,7 +4942,7 @@ class Logs(WebHandler):
             return True
 
     def clearerrors(self, level=None):
-        if int(level or sickrage.app.srLogger.ERROR) == sickrage.app.srLogger.WARNING:
+        if int(level or sickrage.app.log.ERROR) == sickrage.app.log.WARNING:
             WarningViewer.clear()
         else:
             ErrorViewer.clear()
@@ -4969,15 +4969,15 @@ class Logs(WebHandler):
             'MAIN': _('Main'),
         }
 
-        minLevel = minLevel or sickrage.app.srLogger.INFO
+        minLevel = minLevel or sickrage.app.log.INFO
 
-        logFiles = [sickrage.app.srLogger.logFile] + \
-                   ["{}.{}".format(sickrage.app.srLogger.logFile, x) for x in
-                    xrange(int(sickrage.app.srLogger.logNr))]
+        logFiles = [sickrage.app.log.logFile] + \
+                   ["{}.{}".format(sickrage.app.log.logFile, x) for x in
+                    xrange(int(sickrage.app.log.logNr))]
 
         levelsFiltered = b'|'.join(
-            [x for x in sickrage.app.srLogger.logLevels.keys() if
-             sickrage.app.srLogger.logLevels[x] >= int(minLevel)])
+            [x for x in sickrage.app.log.logLevels.keys() if
+             sickrage.app.log.logLevels[x] >= int(minLevel)])
 
         logRegex = re.compile(
             r"(?P<entry>^\d+\-\d+\-\d+\s+\d+\:\d+\:\d+\s+(?:{})[\s\S]+?(?:{})[\s\S]+?$)".format(levelsFiltered,

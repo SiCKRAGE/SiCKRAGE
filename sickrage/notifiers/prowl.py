@@ -72,7 +72,7 @@ class ProwlNotifier(srNotifiers):
 
         title = "SiCKRAGE"
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
                 event, message, prowl_priority, prowl_api))
 
@@ -90,17 +90,17 @@ class ProwlNotifier(srNotifiers):
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            sickrage.app.srLogger.error("Prowl notification failed.")
+            sickrage.app.log.error("Prowl notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            sickrage.app.srLogger.info("Prowl notifications sent.")
+            sickrage.app.log.info("Prowl notifications sent.")
             return True
         elif request_status == 401:
-            sickrage.app.srLogger.error("Prowl auth failed: %s" % response.reason)
+            sickrage.app.log.error("Prowl auth failed: %s" % response.reason)
             return False
         else:
-            sickrage.app.srLogger.error("Prowl notification failed.")
+            sickrage.app.log.error("Prowl notification failed.")
             return False

@@ -79,7 +79,7 @@ class DownloadStationAPI(GenericClient):
         try:
             resp = self._response.json()
         except (ValueError, AttributeError):
-            sickrage.app.srLogger.info(
+            sickrage.app.log.info(
                 'Could not convert response to json, check the host:port: {!r}'.format(self.response))
             return False
 
@@ -87,7 +87,7 @@ class DownloadStationAPI(GenericClient):
             error_code = resp.get('error', {}).get('code')
             api_method = resp.get('method', 'generic')
             log_string = self.error_map.get(api_method)[error_code]
-            sickrage.app.srLogger.info('{}: {}'.format(self.name, log_string))
+            sickrage.app.log.info('{}: {}'.format(self.name, log_string))
         elif resp.get('data', {}).get('sid'):
             self.post_task['_sid'] = resp['data']['sid']
 

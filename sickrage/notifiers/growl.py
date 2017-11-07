@@ -130,7 +130,7 @@ class GrowlNotifier(srNotifiers):
         for pc in growlHosts:
             opts['host'] = pc[0]
             opts['port'] = pc[1]
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "GROWL: Sending message '" + message + "' to " + opts['host'] + ":" + str(opts['port']))
             try:
                 if self._send_growl(opts, message):
@@ -141,7 +141,7 @@ class GrowlNotifier(srNotifiers):
                     else:
                         return False
             except Exception as e:
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(
                         e))
                 return False
@@ -186,6 +186,6 @@ class GrowlNotifier(srNotifiers):
         try:
             return self._send(opts['host'], opts['port'], register.encode(), opts['debug'])
         except Exception as e:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(e.message))
             return False

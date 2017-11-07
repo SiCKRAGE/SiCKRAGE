@@ -67,12 +67,12 @@ class TwitterNotifier(srNotifiers):
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
         oauth_client = oauth2.Client(oauth_consumer)
 
-        sickrage.app.srLogger.debug('Requesting temp token from Twitter')
+        sickrage.app.log.debug('Requesting temp token from Twitter')
 
         resp, content = oauth_client.request(self.REQUEST_TOKEN_URL, 'GET')
 
         if resp['status'] != '200':
-            sickrage.app.srLogger.error('Invalid response from Twitter requesting temp token: %s' % resp['status'])
+            sickrage.app.log.error('Invalid response from Twitter requesting temp token: %s' % resp['status'])
         else:
             request_token = dict(parse_qsl(content))
 
@@ -89,26 +89,26 @@ class TwitterNotifier(srNotifiers):
         token = oauth2.Token(request_token['oauth_token'], request_token['oauth_token_secret'])
         token.set_verifier(key)
 
-        sickrage.app.srLogger.debug('Generating and signing request for an access token using key ' + key)
+        sickrage.app.log.debug('Generating and signing request for an access token using key ' + key)
 
         signature_method_hmac_sha1 = oauth2.SignatureMethod_HMAC_SHA1()
         oauth_consumer = oauth2.Consumer(key=self.consumer_key, secret=self.consumer_secret)
-        sickrage.app.srLogger.debug('oauth_consumer: ' + str(oauth_consumer))
+        sickrage.app.log.debug('oauth_consumer: ' + str(oauth_consumer))
         oauth_client = oauth2.Client(oauth_consumer, token)
-        sickrage.app.srLogger.debug('oauth_client: ' + str(oauth_client))
+        sickrage.app.log.debug('oauth_client: ' + str(oauth_client))
         resp, content = oauth_client.request(self.ACCESS_TOKEN_URL, method='POST', body='oauth_verifier=%s' % key)
-        sickrage.app.srLogger.debug('resp, content: ' + str(resp) + ',' + str(content))
+        sickrage.app.log.debug('resp, content: ' + str(resp) + ',' + str(content))
 
         access_token = dict(parse_qsl(content))
-        sickrage.app.srLogger.debug('access_token: ' + str(access_token))
+        sickrage.app.log.debug('access_token: ' + str(access_token))
 
-        sickrage.app.srLogger.debug('resp[status] = ' + str(resp['status']))
+        sickrage.app.log.debug('resp[status] = ' + str(resp['status']))
         if resp['status'] != '200':
-            sickrage.app.srLogger.error('The request for a token with did not succeed: ' + str(resp['status']))
+            sickrage.app.log.error('The request for a token with did not succeed: ' + str(resp['status']))
             return False
         else:
-            sickrage.app.srLogger.debug('Your Twitter Access Token key: %s' % access_token['oauth_token'])
-            sickrage.app.srLogger.debug('Access Token secret: %s' % access_token['oauth_token_secret'])
+            sickrage.app.log.debug('Your Twitter Access Token key: %s' % access_token['oauth_token'])
+            sickrage.app.log.debug('Access Token secret: %s' % access_token['oauth_token_secret'])
             sickrage.app.srConfig.TWITTER_USERNAME = access_token['oauth_token']
             sickrage.app.srConfig.TWITTER_PASSWORD = access_token['oauth_token_secret']
             return True
@@ -120,14 +120,14 @@ class TwitterNotifier(srNotifiers):
         access_token_key = sickrage.app.srConfig.TWITTER_USERNAME
         access_token_secret = sickrage.app.srConfig.TWITTER_PASSWORD
 
-        sickrage.app.srLogger.debug("Sending tweet: " + message)
+        sickrage.app.log.debug("Sending tweet: " + message)
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostUpdate(message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.app.srLogger.error("Error Sending Tweet: {}".format(e.message))
+            sickrage.app.log.error("Error Sending Tweet: {}".format(e.message))
             return False
 
         return True
@@ -140,14 +140,14 @@ class TwitterNotifier(srNotifiers):
         access_token_key = sickrage.app.srConfig.TWITTER_USERNAME
         access_token_secret = sickrage.app.srConfig.TWITTER_PASSWORD
 
-        sickrage.app.srLogger.debug("Sending DM: " + dmdest + " " + message)
+        sickrage.app.log.debug("Sending DM: " + dmdest + " " + message)
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
             api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
         except Exception as e:
-            sickrage.app.srLogger.error("Error Sending Tweet (DM): {}".format(e.message))
+            sickrage.app.log.error("Error Sending Tweet (DM): {}".format(e.message))
             return False
 
         return True

@@ -51,10 +51,10 @@ class TokyoToshokanProvider(TorrentProvider):
             return results
 
         for mode in search_strings:
-            sickrage.app.srLogger.debug("Search Mode: {}".format(mode))
+            sickrage.app.log.debug("Search Mode: {}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: {}".format(search_string))
+                    sickrage.app.log.debug("Search string: {}".format(search_string))
 
                 search_params = {
                     "terms": search_string,
@@ -65,7 +65,7 @@ class TokyoToshokanProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -85,7 +85,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             a = 1 if len(torrent_rows[0]('td')) < 2 else 0
@@ -112,10 +112,10 @@ class TokyoToshokanProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

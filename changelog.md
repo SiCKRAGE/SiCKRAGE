@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8bc987b - 2017-11-07: Removed subtitles category for newpct as subtitles can be downloaded via SR instead 
+- * f64c6ef - 2017-11-07: refactored core variable name srLogger to log 
+- * ef549b6 - 2017-11-07: Removed subtitles category for newpct as subtitles can be downloaded via SR instead 
 - * 83efbc5 - 2017-11-07: refactored core variables from main module to core class 
 - * bbe7773 - 2017-11-07: refactored variable name srCore to app 
 - * 4eec63e - 2017-11-06: Added search url for Newpct subtitles 

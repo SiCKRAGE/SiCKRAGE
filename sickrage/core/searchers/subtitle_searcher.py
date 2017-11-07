@@ -48,12 +48,12 @@ class srSubtitleSearcher(object):
         threading.currentThread().setName(self.name)
 
         if len(sickrage.subtitles.getEnabledServiceList()) < 1:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 'Not enough services selected. At least 1 service is required to search subtitles in the background'
             )
             return
 
-        sickrage.app.srLogger.info('Checking for subtitles')
+        sickrage.app.log.info('Checking for subtitles')
 
         # get episodes on which we want subtitles
         # criteria is:
@@ -87,14 +87,14 @@ class srSubtitleSearcher(object):
                 }]
 
         if len(results) == 0:
-            sickrage.app.srLogger.info('No subtitles to download')
+            sickrage.app.log.info('No subtitles to download')
             return
 
         rules = self._getRules()
         now = datetime.datetime.now()
         for epToSub in results:
             if not os.path.isfile(epToSub['location']):
-                sickrage.app.srLogger.debug(
+                sickrage.app.log.debug(
                     'Episode file does not exist, cannot download subtitles for episode %dx%d of show %s' % (
                         epToSub['season'], epToSub['episode'], epToSub['show_name']))
                 continue
@@ -118,17 +118,17 @@ class srSubtitleSearcher(object):
                         )
             ):
 
-                sickrage.app.srLogger.debug('Downloading subtitles for episode %dx%d of show %s' % (
+                sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (
                     epToSub['season'], epToSub['episode'], epToSub['show_name']))
 
                 showObj = findCertainShow(sickrage.app.SHOWLIST, int(epToSub['showid']))
                 if not showObj:
-                    sickrage.app.srLogger.debug('Show not found')
+                    sickrage.app.log.debug('Show not found')
                     return
 
                 epObj = showObj.getEpisode(int(epToSub["season"]), int(epToSub["episode"]))
                 if isinstance(epObj, str):
-                    sickrage.app.srLogger.debug('Episode not found')
+                    sickrage.app.log.debug('Episode not found')
                     return
 
                 existing_subtitles = epObj.subtitles
@@ -136,13 +136,13 @@ class srSubtitleSearcher(object):
                 try:
                     epObj.downloadSubtitles()
                 except Exception as e:
-                    sickrage.app.srLogger.debug('Unable to find subtitles')
-                    sickrage.app.srLogger.debug(str(e))
+                    sickrage.app.log.debug('Unable to find subtitles')
+                    sickrage.app.log.debug(str(e))
                     return
 
                 newSubtitles = frozenset(epObj.subtitles).difference(existing_subtitles)
                 if newSubtitles:
-                    sickrage.app.srLogger.info('Downloaded subtitles for S%02dE%02d in %s' % (
+                    sickrage.app.log.info('Downloaded subtitles for S%02dE%02d in %s' % (
                         epToSub["season"], epToSub["episode"], ', '.join(newSubtitles)))
 
         self.amActive = False

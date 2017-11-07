@@ -92,7 +92,7 @@ class DelugeDAPI(GenericClient):
         if result.show.is_anime:
             label = sickrage.app.srConfig.TORRENT_LABEL_ANIME
         if ' ' in label:
-            sickrage.app.srLogger.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.app.log.error(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:
@@ -249,7 +249,7 @@ class DelugeRPC(object):
     def _check_torrent(self, torrent_hash):
         torrent_id = self.client.core.get_torrent_status(torrent_hash, {}).get()
         if torrent_id['hash']:
-            sickrage.app.srLogger.debug('DelugeD: Torrent already exists in Deluge')
+            sickrage.app.log.debug('DelugeD: Torrent already exists in Deluge')
             return torrent_hash
         return False
 

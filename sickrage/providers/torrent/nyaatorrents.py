@@ -57,23 +57,23 @@ class NyaaProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.app.srLogger.debug('Search mode: {}'.format(mode))
+            sickrage.app.log.debug('Search mode: {}'.format(mode))
 
             if self.confirmed:
                 search_params['f'] = 2  # Trusted only
-                sickrage.app.srLogger.debug('Searching only confirmed torrents')
+                sickrage.app.log.debug('Searching only confirmed torrents')
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
                     search_params['q'] = search_string
 
                 data = self.cache.getRSSFeed(self.urls['base_url'], params=search_params)
                 if not data:
-                    sickrage.app.srLogger.debug('No data returned from provider')
+                    sickrage.app.log.debug('No data returned from provider')
                     continue
                 if not data.get('entries'):
-                    sickrage.app.srLogger.debug('Data returned from provider does not contain any {0}torrents',
+                    sickrage.app.log.debug('Data returned from provider does not contain any {0}torrents',
                                                    'confirmed ' if self.confirmed else '')
                     continue
 
@@ -104,7 +104,7 @@ class NyaaProvider(TorrentProvider):
                 # Filter unseeded torrent
                 if seeders < min(self.minseed, 1):
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Discarding torrent because it doesn't meet the "
+                        sickrage.app.log.debug("Discarding torrent because it doesn't meet the "
                                                        "minimum seeders: {}. Seeders: {}".format(title, seeders))
                     continue
 
@@ -118,10 +118,10 @@ class NyaaProvider(TorrentProvider):
                     'leechers': leechers
                 }
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Found result: {}'.format(title))
+                    sickrage.app.log.debug('Found result: {}'.format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.app.srLogger.error('Failed parsing provider')
+                sickrage.app.log.error('Failed parsing provider')
 
         return results

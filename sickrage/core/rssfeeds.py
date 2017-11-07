@@ -37,6 +37,6 @@ def getFeed(url, params=None, request_headers=None, handlers=None):
                 handlers=handlers
             )
     except Exception as e:
-        sickrage.app.srLogger.debug("RSS Error: {}".format(e.message))
+        sickrage.app.log.debug("RSS Error: {}".format(e.message))
 
     return FeedParserDict()

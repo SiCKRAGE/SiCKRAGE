@@ -163,10 +163,10 @@ class WDTVMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.app.srLogger.debug("Unable to find a season dir for season " + str(season))
+            sickrage.app.log.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
@@ -196,7 +196,7 @@ class WDTVMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.app.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + srIndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -208,7 +208,7 @@ class WDTVMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None

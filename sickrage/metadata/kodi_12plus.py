@@ -115,18 +115,18 @@ class KODI_12PlusMetadata(GenericMetadata):
         try:
             myShow = t[int(show_ID)]
         except indexer_shownotfound:
-            sickrage.app.srLogger.error("Unable to find show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.app.log.error("Unable to find show with id " + str(show_ID) + " on " + srIndexerApi(
                 show_obj.indexer).name + ", skipping it")
             raise
 
         except indexer_error:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "" + srIndexerApi(show_obj.indexer).name + " is down, can't use its data to add this show")
             raise
 
         # check for title and id
         if not (getattr(myShow, 'seriesname', None) and getattr(myShow, 'id', None)):
-            sickrage.app.srLogger.info("Incomplete info for show with id " + str(show_ID) + " on " + srIndexerApi(
+            sickrage.app.log.info("Incomplete info for show with id " + str(show_ID) + " on " + srIndexerApi(
                 show_obj.indexer).name + ", skipping it")
             return False
 
@@ -224,7 +224,7 @@ class KODI_12PlusMetadata(GenericMetadata):
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.app.srLogger.error("Unable to connect to {} while creating meta files - skipping - {}".format(
+            sickrage.app.log.error("Unable to connect to {} while creating meta files - skipping - {}".format(
                 srIndexerApi(
                     ep_obj.show.indexer).name, e))
             return
@@ -240,7 +240,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
                     (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
                 return None
@@ -249,10 +249,10 @@ class KODI_12PlusMetadata(GenericMetadata):
                 myEp["firstaired"] = str(datetime.date.fromordinal(1))
 
             if not getattr(myEp, 'episodename', None):
-                sickrage.app.srLogger.debug("Not generating nfo because the ep has no title")
+                sickrage.app.log.debug("Not generating nfo because the ep has no title")
                 return None
 
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "Creating metadata for episode " + str(ep_obj.season) + "x" + str(ep_obj.episode))
 
             if len(eps_to_write) > 1:

@@ -83,7 +83,7 @@ class srSession(cfscrape.CloudflareScraper):
 
         # request session proxies
         if 'Referer' not in headers and sickrage.app.srConfig.PROXY_SETTING:
-            sickrage.app.srLogger.debug("Using global proxy: " + sickrage.app.srConfig.PROXY_SETTING)
+            sickrage.app.log.debug("Using global proxy: " + sickrage.app.srConfig.PROXY_SETTING)
             scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
             address = ('http://{}'.format(sickrage.app.srConfig.PROXY_SETTING),
                        sickrage.app.srConfig.PROXY_SETTING)[scheme]
@@ -112,12 +112,12 @@ class srSession(cfscrape.CloudflareScraper):
             response.raise_for_status()
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
                         e.request.url, ssl.OPENSSL_VERSION))
 
             if sickrage.app.srConfig.SSL_VERIFY:
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
                         e.request.url))
         except Exception:
@@ -138,7 +138,7 @@ class srSession(cfscrape.CloudflareScraper):
 
             chmodAsParent(filename)
         except Exception as e:
-            sickrage.app.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
+            sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
             remove_file_failed(filename)
             return False
 

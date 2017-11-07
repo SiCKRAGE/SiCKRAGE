@@ -247,22 +247,22 @@ class FailedHistory(object):
                   x['doc']['release'] == release]
 
         if len(dbData) == 0:
-            sickrage.app.srLogger.warning("{}, Release not found in snatch history.".format(release))
+            sickrage.app.log.warning("{}, Release not found in snatch history.".format(release))
         elif len(dbData) > 1:
-            sickrage.app.srLogger.warning("Multiple logged snatches found for release")
+            sickrage.app.log.warning("Multiple logged snatches found for release")
             sizes = len(set(x["size"] for x in dbData))
             providers = len(set(x["provider"] for x in dbData))
             if sizes == 1:
-                sickrage.app.srLogger.warning("However, they're all the same size. Continuing with found size.")
+                sickrage.app.log.warning("However, they're all the same size. Continuing with found size.")
                 size = dbData[0]["size"]
             else:
-                sickrage.app.srLogger.warning(
+                sickrage.app.log.warning(
                     "They also vary in size. Deleting the logged snatches and recording this release with no size/provider")
                 for result in dbData:
                     FailedHistory.deleteLoggedSnatch(result["release"], result["size"], result["provider"])
 
             if providers == 1:
-                sickrage.app.srLogger.info("They're also from the same provider. Using it as well.")
+                sickrage.app.log.info("They're also from the same provider. Using it as well.")
                 provider = dbData[0]["provider"]
         else:
             size = dbData[0]["size"]
@@ -317,18 +317,18 @@ class FailedHistory(object):
         history_eps = dict([(res["episode"], res) for res in dbData])
 
         try:
-            sickrage.app.srLogger.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
+            sickrage.app.log.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
             with epObj.lock:
                 if epObj.episode in history_eps:
-                    sickrage.app.srLogger.info("Found in history")
+                    sickrage.app.log.info("Found in history")
                     epObj.status = history_eps[epObj.episode]['old_status']
                 else:
-                    sickrage.app.srLogger.warning("WARNING: Episode not found in history. Setting it back to WANTED")
+                    sickrage.app.log.warning("WARNING: Episode not found in history. Setting it back to WANTED")
                     epObj.status = WANTED
                     epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Unable to create episode, please set its status manually: {}".format(e.message))
 
     @staticmethod
@@ -348,7 +348,7 @@ class FailedHistory(object):
                 epObj.saveToDB()
 
         except EpisodeNotFoundException as e:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Unable to get episode, please set its status manually: {}".format(e.message))
 
         return log_str
@@ -440,13 +440,13 @@ class FailedHistory(object):
                 if x['release'] == release and x['date'] != date: sickrage.app.failedDB.db.delete(x)
 
             # Found a previously failed release
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "Failed release found for season (%s): (%s)" % (epObj.season, dbData["release"]))
 
             return release, provider
 
         # Release was not found
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "No releases found for season (%s) of (%s)" % (epObj.season, epObj.show.indexerid))
 
         return release, provider

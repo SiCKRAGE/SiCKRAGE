@@ -42,7 +42,7 @@ def update_network_dict():
     try:
         url_data = sickrage.app.srWebSession.get(url).text
     except Exception:
-        sickrage.app.srLogger.warning(
+        sickrage.app.log.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
         return
 

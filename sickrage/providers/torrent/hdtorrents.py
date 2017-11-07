@@ -55,7 +55,7 @@ class HDTorrentsProvider(TorrentProvider):
     def _check_auth(self):
 
         if not self.username or not self.password:
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
 
         return True
@@ -71,11 +71,11 @@ class HDTorrentsProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('You need cookies enabled to log in.', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -88,7 +88,7 @@ class HDTorrentsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
@@ -96,15 +96,15 @@ class HDTorrentsProvider(TorrentProvider):
                 else:
                     searchURL = self.urls['rss'] % self.categories
 
-                sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s" % search_string)
+                    sickrage.app.log.debug("Search string: %s" % search_string)
 
                 try:
                     data = sickrage.app.srWebSession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -119,7 +119,7 @@ class HDTorrentsProvider(TorrentProvider):
         results = []
 
         if data.find('No torrents here') != -1:
-            sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+            sickrage.app.log.debug("Data returned from provider does not contain any torrents")
             return results
 
         # Search result page contains some invalid html that prevents html parser from returning all data.
@@ -128,12 +128,12 @@ class HDTorrentsProvider(TorrentProvider):
         try:
             index = data.lower().index('<table class="mainblockcontenttt"')
         except ValueError:
-            sickrage.app.srLogger.debug("Could not find table of torrents mainblockcontenttt")
+            sickrage.app.log.debug("Could not find table of torrents mainblockcontenttt")
             return results
 
         with bs4_parser(data[index:]) as html:
             if not html:
-                sickrage.app.srLogger.debug("No html data parsed from provider")
+                sickrage.app.log.debug("No html data parsed from provider")
                 return results
 
             torrent_rows = []
@@ -142,7 +142,7 @@ class HDTorrentsProvider(TorrentProvider):
                 torrent_rows = torrent_table('tr')
 
             if not torrent_rows:
-                sickrage.app.srLogger.debug("Could not find results in returned data")
+                sickrage.app.log.debug("Could not find results in returned data")
                 return results
 
             # Cat., Active, Filename, Dl, Wl, Added, Size, Uploader, S, L, C
@@ -171,10 +171,10 @@ class HDTorrentsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

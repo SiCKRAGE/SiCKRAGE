@@ -56,7 +56,7 @@ class TelegramNotifier(srNotifiers):
         id = sickrage.app.srConfig.TELEGRAM_ID or id
         api_key = sickrage.app.srConfig.TELEGRAM_APIKEY or api_key
 
-        sickrage.app.srLogger.debug('Telegram in use with API KEY: {}'.format(api_key))
+        sickrage.app.log.debug('Telegram in use with API KEY: {}'.format(api_key))
 
         message = '{} : {}'.format(title.encode(), msg.encode())
         payload = urllib.parse.urlencode({'chat_id': id, 'text': message})
@@ -83,7 +83,7 @@ class TelegramNotifier(srNotifiers):
         except Exception as e:
             message = 'Error while sending Telegram message: {} '.format(e.message)
         finally:
-            sickrage.app.srLogger.info(message)
+            sickrage.app.log.info(message)
             return success, message
 
     def _notify_snatch(self, ep_name, title=None):
@@ -162,9 +162,9 @@ class TelegramNotifier(srNotifiers):
         """
 
         if not (force or sickrage.app.srConfig.USE_TELEGRAM):
-            sickrage.app.srLogger.debug('Notification for Telegram not enabled, skipping this notification')
+            sickrage.app.log.debug('Notification for Telegram not enabled, skipping this notification')
             return False, 'Disabled'
 
-        sickrage.app.srLogger.debug('Sending a Telegram message for {}'.format(message))
+        sickrage.app.log.debug('Sending a Telegram message for {}'.format(message))
 
         return self._send_telegram_msg(title, message, id, api_key)

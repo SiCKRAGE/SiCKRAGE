@@ -450,13 +450,13 @@ class Tvdb:
         """
 
         if not re.search(r'tt\d+', series):
-            sickrage.app.srLogger.debug("Searching for show by name: {}".format(series))
+            sickrage.app.log.debug("Searching for show by name: {}".format(series))
             return self._request('get', self.config['api']['getSeries'].format(name=series))['data']
         else:
-            sickrage.app.srLogger.debug("Searching for show by imdbId: {}".format(series))
+            sickrage.app.log.debug("Searching for show by imdbId: {}".format(series))
             return self._request('get', self.config['api']['getSeriesIMDB'].format(id=series))['data']
             # elif zap2itid:
-            #    sickrage.app.srLogger.debug("Searching for show by zap2itId: {}".format(zap2itid))
+            #    sickrage.app.log.debug("Searching for show by zap2itId: {}".format(zap2itid))
             #    return self._request('get', self.config['api']['getSeriesZap2It'].format(id=zap2itid))['data']
 
     def _getSeries(self, series):
@@ -467,7 +467,7 @@ class Tvdb:
         """
         allSeries = self.search(series)
         if not allSeries:
-            sickrage.app.srLogger.debug('Series result returned zero')
+            sickrage.app.log.debug('Series result returned zero')
             raise tvdb_shownotfound("Show search returned zero results (cannot find show on theTVDB)")
 
         ui = BaseUI(config=self.config)
@@ -484,7 +484,7 @@ class Tvdb:
         """
 
         # Parse show information
-        sickrage.app.srLogger.debug('Getting all series data for {}'.format(sid))
+        sickrage.app.log.debug('Getting all series data for {}'.format(sid))
 
         try:
             # get series info in english
@@ -499,7 +499,7 @@ class Tvdb:
                                                                     self.config['api']['series'].format(id=sid)
                                                                     )['data'].iteritems() if v)
         except Exception:
-            sickrage.app.srLogger.debug("[{}]: Series result returned zero".format(sid))
+            sickrage.app.log.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
 
         # get series data
@@ -515,7 +515,7 @@ class Tvdb:
             self._setShowData(sid, k, v)
 
         # Parse episode data
-        sickrage.app.srLogger.debug('Getting all episode data for {}'.format(sid))
+        sickrage.app.log.debug('Getting all episode data for {}'.format(sid))
 
         p = 1
         episodes = []
@@ -544,14 +544,14 @@ class Tvdb:
                 break
 
         if not len(episodes):
-            sickrage.app.srLogger.debug('Series results incomplete')
+            sickrage.app.log.debug('Series results incomplete')
             return
 
         for cur_ep in episodes:
             try:
                 use_dvd = False
                 if self.config['dvdorder']:
-                    sickrage.app.srLogger.debug('Using DVD ordering.')
+                    sickrage.app.log.debug('Using DVD ordering.')
                     use_dvd = all([cur_ep.get('dvdseason'), cur_ep.get('dvdepisodenumber')])
 
                 seasnum, epno = cur_ep.get('airedseason'), cur_ep.get('airedepisodenumber')
@@ -561,7 +561,7 @@ class Tvdb:
                 if seasnum is None or epno is None:
                     raise Exception
             except Exception as e:
-                sickrage.app.srLogger.warning("Episode has incomplete season/episode numbers, skipping!")
+                sickrage.app.log.warning("Episode has incomplete season/episode numbers, skipping!")
                 continue
 
             seas_no = int(float(seasnum))
@@ -587,7 +587,7 @@ class Tvdb:
 
     @login_required
     def images(self, sid, key_type='poster', season=None):
-        sickrage.app.srLogger.debug('Getting {} images for {}'.format(key_type, sid))
+        sickrage.app.log.debug('Getting {} images for {}'.format(key_type, sid))
 
         try:
             if not season:
@@ -611,7 +611,7 @@ class Tvdb:
 
     @login_required
     def actors(self, sid):
-        sickrage.app.srLogger.debug("Getting actors for {}".format(sid))
+        sickrage.app.log.debug("Getting actors for {}".format(sid))
 
         cur_actors = Actors()
 
@@ -625,7 +625,7 @@ class Tvdb:
 
                 cur_actors.append(curActor)
         except Exception:
-            sickrage.app.srLogger.debug('Actors result returned zero')
+            sickrage.app.log.debug('Actors result returned zero')
 
         return cur_actors
 

@@ -182,7 +182,7 @@ class NMA_Notifier(srNotifiers):
 
         if len(keys) > 1: batch = True
 
-        sickrage.app.srLogger.debug(
+        sickrage.app.log.debug(
             "NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
                 event, message, nma_priority, batch))
 
@@ -195,8 +195,8 @@ class NMA_Notifier(srNotifiers):
         )
 
         if not response[nma_api]['code'] == '200':
-            sickrage.app.srLogger.error('Could not send notification to NotifyMyAndroid')
+            sickrage.app.log.error('Could not send notification to NotifyMyAndroid')
             return False
         else:
-            sickrage.app.srLogger.info("NMA: Notification sent to NotifyMyAndroid")
+            sickrage.app.log.info("NMA: Notification sent to NotifyMyAndroid")
             return True

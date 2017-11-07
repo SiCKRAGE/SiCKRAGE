@@ -40,7 +40,7 @@ class NZBGet(object):
         """
 
         if sickrage.app.srConfig.NZBGET_HOST is None:
-            sickrage.app.srLogger.error("No NZBget host found in configuration. Please configure it.")
+            sickrage.app.log.error("No NZBget host found in configuration. Please configure it.")
             return False
 
         dupe_key = ""
@@ -63,20 +63,20 @@ class NZBGet(object):
 
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-                sickrage.app.srLogger.debug("Successful connected to NZBget")
+                sickrage.app.log.debug("Successful connected to NZBget")
             else:
-                sickrage.app.srLogger.error("Successful connected to NZBget, but unable to send a message")
+                sickrage.app.log.error("Successful connected to NZBget, but unable to send a message")
 
         except httplib.socket.error:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
 
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                sickrage.app.srLogger.error("NZBget username or password is incorrect.")
+                sickrage.app.log.error("NZBget username or password is incorrect.")
             else:
-                sickrage.app.srLogger.error("Protocol Error: " + e.errmsg)
+                sickrage.app.log.error("Protocol Error: " + e.errmsg)
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score
@@ -105,8 +105,8 @@ class NZBGet(object):
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
-        sickrage.app.srLogger.info("Sending NZB to NZBget")
-        sickrage.app.srLogger.debug("URL: " + url)
+        sickrage.app.log.info("Sending NZB to NZBget")
+        sickrage.app.log.debug("URL: " + url)
 
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
@@ -146,12 +146,12 @@ class NZBGet(object):
                                                         nzb.url)
 
             if nzbget_result:
-                sickrage.app.srLogger.debug("NZB sent to NZBget successfully")
+                sickrage.app.log.debug("NZB sent to NZBget successfully")
                 return True
             else:
-                sickrage.app.srLogger.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.app.log.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 "Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

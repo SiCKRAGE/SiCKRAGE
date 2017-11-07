@@ -68,7 +68,7 @@ class T411Provider(TorrentProvider):
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30,
                                                          auth=T411Auth(self.token)).json()
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if 'token' in response:
@@ -77,7 +77,7 @@ class T411Provider(TorrentProvider):
             self.uid = response['uid'].encode('ascii', 'ignore')
             return True
         else:
-            sickrage.app.srLogger.warning("Token not found in authentication response")
+            sickrage.app.log.warning("Token not found in authentication response")
             return False
 
     def search(self, search_params, age=0, ep_obj=None):
@@ -87,23 +87,23 @@ class T411Provider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURLS = \
                     ([self.urls['search'] % (search_string, u) for u in self.subcategories], [self.urls['rss']])[
                         mode == 'RSS']
                 for searchURL in searchURLS:
-                    sickrage.app.srLogger.debug("Search URL: %s" % searchURL)
+                    sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                     try:
                         data = sickrage.app.srWebSession.get(searchURL, auth=T411Auth(self.token)).json()
                         results += self.parse(data, mode)
                     except Exception:
-                        sickrage.app.srLogger.debug("No data returned from provider")
+                        sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -118,13 +118,13 @@ class T411Provider(TorrentProvider):
         results = []
 
         if 'torrents' not in data and mode != 'RSS':
-            sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+            sickrage.app.log.debug("Data returned from provider does not contain any torrents")
             return results
 
         torrents = data['torrents'] if mode != 'RSS' else data
 
         if not torrents:
-            sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+            sickrage.app.log.debug("Data returned from provider does not contain any torrents")
             return results
 
         for torrent in torrents:
@@ -144,7 +144,7 @@ class T411Provider(TorrentProvider):
                 verified = bool(torrent['isVerified'])
 
                 if self.confirmed and not verified and mode != 'RSS':
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "Found result " + title + " but that doesn't seem like a verified result so I'm ignoring it")
                     continue
 
@@ -152,11 +152,11 @@ class T411Provider(TorrentProvider):
                         'leechers': leechers, 'hash': ''}
 
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.log.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.app.srLogger.error("Failed parsing provider.")
+                sickrage.app.log.error("Failed parsing provider.")
 
         return results
 

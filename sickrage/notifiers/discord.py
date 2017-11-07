@@ -65,8 +65,8 @@ class DiscordNotifier(srNotifiers):
         avatar_icon = sickrage.app.srConfig.DISCORD_AVATAR_URL
         discord_tts = bool(sickrage.app.srConfig.DISCORD_TTS)
 
-        sickrage.app.srLogger.info("Sending discord message: " + message)
-        sickrage.app.srLogger.info("Sending discord message  to url: " + discord_webhook)
+        sickrage.app.log.info("Sending discord message: " + message)
+        sickrage.app.log.info("Sending discord message  to url: " + discord_webhook)
 
         if isinstance(message, six.text_type):
             message = message.encode('utf-8')
@@ -79,7 +79,7 @@ class DiscordNotifier(srNotifiers):
                                                                     tts=discord_tts)), headers=headers)
             r.raise_for_status()
         except Exception as e:
-            sickrage.app.srLogger.error("Error Sending Discord message: " + e.message)
+            sickrage.app.log.error("Error Sending Discord message: " + e.message)
             return False
 
         return True

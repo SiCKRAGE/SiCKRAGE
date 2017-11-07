@@ -84,7 +84,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            sickrage.app.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())
             return False
 
     def _add_torrent_file(self, result):
@@ -122,7 +122,7 @@ class rTorrentAPI(GenericClient):
             return True
 
         except Exception:
-            sickrage.app.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())
             return False
 
     def _set_torrent_ratio(self, name):

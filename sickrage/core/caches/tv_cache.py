@@ -82,10 +82,10 @@ class TVCache(object):
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
-                sickrage.app.srLogger.warning("Authentication error: {}".format(e.message))
+                sickrage.app.log.warning("Authentication error: {}".format(e.message))
                 return False
             except Exception as e:
-                sickrage.app.srLogger.debug(
+                sickrage.app.log.debug(
                     "Error while searching {}, skipping: {}".format(self.provider.name, repr(e)))
                 return False
 
@@ -95,7 +95,7 @@ class TVCache(object):
         handlers = []
 
         if sickrage.app.srConfig.PROXY_SETTING:
-            sickrage.app.srLogger.debug("Using global proxy for url: " + url)
+            sickrage.app.log.debug("Using global proxy for url: " + url)
             scheme, address = urllib2.splittype(sickrage.app.srConfig.PROXY_SETTING)
             address = sickrage.app.srConfig.PROXY_SETTING if scheme else 'http://' + sickrage.app.srConfig.PROXY_SETTING
             handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
@@ -119,7 +119,7 @@ class TVCache(object):
         if title and url:
             self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size, files)
         else:
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
 
     @property
@@ -236,7 +236,7 @@ class TVCache(object):
                     'files': files
                 })
 
-                sickrage.app.srLogger.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
+                sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
     def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
@@ -265,7 +265,7 @@ class TVCache(object):
 
             # skip if provider is anime only and show is not anime
             if self.provider.anime_only and not showObj.is_anime:
-                sickrage.app.srLogger.debug("" + str(showObj.name) + " is not an anime, skiping")
+                sickrage.app.log.debug("" + str(showObj.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -285,7 +285,7 @@ class TVCache(object):
 
             # if the show says we want that episode then add it to the list
             if not showObj.wantEpisode(curSeason, curEp, result.quality, manualSearch, downCurQuality):
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "Skipping " + curResult["name"] + " because we don't want an episode that's " +
                     Quality.qualityStrings[result.quality])
                 continue
@@ -296,7 +296,7 @@ class TVCache(object):
             result.name = curResult["name"]
             result.url = curResult["url"]
 
-            sickrage.app.srLogger.info("Found result " + result.name + " at " + result.url)
+            sickrage.app.log.info("Found result " + result.name + " at " + result.url)
 
             result.show = showObj
             result.seeders = curResult.get("seeders", -1)

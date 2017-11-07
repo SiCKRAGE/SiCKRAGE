@@ -73,7 +73,7 @@ class srShowUpdater(object):
                 else:
                     pi_list.append(sickrage.app.SHOWQUEUE.refreshShow(curShow, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.app.srLogger.debug("Automatic update failed: {}".format(e.message))
+                sickrage.app.log.debug("Automatic update failed: {}".format(e.message))
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 

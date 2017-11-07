@@ -55,7 +55,7 @@ class NorbitsProvider(TorrentProvider):
         """ Check that we are authenticated. """
 
         if 'status' in parsed_json and 'message' in parsed_json and parsed_json.get('status') == 3:
-            sickrage.app.srLogger.warning('Invalid username or password. Check your settings')
+            sickrage.app.log.warning('Invalid username or password. Check your settings')
 
         return True
 
@@ -65,10 +65,10 @@ class NorbitsProvider(TorrentProvider):
         results = []
 
         for mode in search_params:
-            sickrage.app.srLogger.debug('Search Mode: {0}'.format(mode))
+            sickrage.app.log.debug('Search Mode: {0}'.format(mode))
             for search_string in search_params[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Search string: {0}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {0}'.format(search_string))
 
                 post_data = {
                     'username': self.username,
@@ -83,7 +83,7 @@ class NorbitsProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.post(self.urls['search'], data=post_data).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -100,7 +100,7 @@ class NorbitsProvider(TorrentProvider):
         if self._check_auth_from_data(data):
             json_items = data.get('data', '')
             if not json_items:
-                sickrage.app.srLogger.error('Resulting JSON from provider is not correct, not parsing it')
+                sickrage.app.log.error('Resulting JSON from provider is not correct, not parsing it')
                 return results
 
             for item in json_items.get('torrents', []):
@@ -120,10 +120,10 @@ class NorbitsProvider(TorrentProvider):
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': info_hash}
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug('Found result: {0}'.format(title))
+                        sickrage.app.log.debug('Found result: {0}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

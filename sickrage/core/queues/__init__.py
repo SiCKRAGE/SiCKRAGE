@@ -94,12 +94,12 @@ class srQueue(threading.Thread):
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.app.srLogger.info("Pausing queue")
+        sickrage.app.log.info("Pausing queue")
         self.min_priority = 999999999999
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.app.srLogger.info("Unpausing queue")
+        sickrage.app.log.info("Unpausing queue")
         self.min_priority = 0
 
     def shutdown(self):

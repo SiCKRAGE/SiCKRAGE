@@ -53,7 +53,7 @@ class srDailySearcher(object):
         if sickrage.app.srConfig.USE_FAILED_DOWNLOADS:
             FailedHistory.trimHistory()
 
-        sickrage.app.srLogger.info("{}: Searching for new released episodes".format(self.name))
+        sickrage.app.log.info("{}: Searching for new released episodes".format(self.name))
 
         curDate = datetime.date.today()
         curDate += datetime.timedelta(days=2)
@@ -91,19 +91,19 @@ class srDailySearcher(object):
             ep = show.getEpisode(int(episode['season']), int(episode['episode']))
             with ep.lock:
                 if ep.season == 0:
-                    sickrage.app.srLogger.info(
+                    sickrage.app.log.info(
                         "New episode {} airs today, setting status to SKIPPED because is a special season".format(
                             ep.prettyName()))
                     ep.status = SKIPPED
                 else:
-                    sickrage.app.srLogger.info(
+                    sickrage.app.log.info(
                         "New episode {} airs today, setting to default episode status for this show: {}".format(
                             ep.prettyName(), statusStrings[ep.show.default_ep_status]))
                     ep.status = ep.show.default_ep_status
 
                 ep.saveToDB()
         else:
-            sickrage.app.srLogger.info("{}: No new released episodes found".format(self.name))
+            sickrage.app.log.info("{}: No new released episodes found".format(self.name))
 
         # queue episode for daily search
         sickrage.app.SEARCHQUEUE.put(DailySearchQueueItem())

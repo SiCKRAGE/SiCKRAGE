@@ -65,11 +65,11 @@ class ABNormalProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params).text
         except Exception:
-            sickrage.app.srLogger.warning('Unable to connect to provider')
+            sickrage.app.log.warning('Unable to connect to provider')
             return False
 
         if not re.search('torrents.php', response):
-            sickrage.app.srLogger.warning('Invalid username or password. Check your settings')
+            sickrage.app.log.warning('Invalid username or password. Check your settings')
             return False
 
         return True
@@ -94,10 +94,10 @@ class ABNormalProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.app.srLogger.debug('Search Mode: {0}'.format(mode))
+            sickrage.app.log.debug('Search Mode: {0}'.format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 # Sorting: Available parameters: ReleaseName, Seeders, Leechers, Snatched, Size
                 search_params['order'] = ('Seeders', 'Time')[mode == 'RSS']
@@ -107,7 +107,7 @@ class ABNormalProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug('No data returned from provider')
+                    sickrage.app.log.debug('No data returned from provider')
 
         return results
 
@@ -127,7 +127,7 @@ class ABNormalProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.app.srLogger.debug('Data returned from provider does not contain any torrents')
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results
 
             # Catégorie, Release, Date, DL, Size, C, S, L
@@ -158,10 +158,10 @@ class ABNormalProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug('Found result: {}'.format(title))
+                        sickrage.app.log.debug('Found result: {}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error('Failed parsing provider')
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results

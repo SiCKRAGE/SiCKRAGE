@@ -73,13 +73,13 @@ class HoundDawgsProvider(TorrentProvider):
         try:
             response = sickrage.app.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Dit brugernavn eller kodeord er forkert.', response) \
                 or re.search('<title>Login :: HoundDawgs</title>', response) \
                 or re.search('Dine cookies er ikke aktiveret.', response):
-            sickrage.app.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -92,10 +92,10 @@ class HoundDawgsProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.app.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 self.search_params['searchstr'] = search_string
 
@@ -103,7 +103,7 @@ class HoundDawgsProvider(TorrentProvider):
                     data = sickrage.app.srWebSession.get(self.urls['search'], params=self.search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -121,7 +121,7 @@ class HoundDawgsProvider(TorrentProvider):
             result_table = html.find('table', {'id': 'torrent_table'})
 
             if not result_table:
-                sickrage.app.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             result_tbody = result_table.find('tbody')
@@ -164,10 +164,10 @@ class HoundDawgsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.app.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.app.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

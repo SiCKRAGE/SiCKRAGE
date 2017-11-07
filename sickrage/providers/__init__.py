@@ -128,7 +128,7 @@ class GenericProvider(object):
                 torrent_hash = b16encode(b32decode(torrent_hash)).upper()
 
             if not torrent_hash:
-                sickrage.app.srLogger.error("Unable to extract torrent hash from magnet: " + url)
+                sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
             urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
@@ -241,12 +241,12 @@ class GenericProvider(object):
 
     def _get_size(self, item):
         """Gets the size from the item"""
-        sickrage.app.srLogger.debug("Provider type doesn't have ability to provide download size implemented yet")
+        sickrage.app.log.debug("Provider type doesn't have ability to provide download size implemented yet")
         return -1
 
     def _get_files(self, item):
         """Gets dict of files with sizes from the item"""
-        sickrage.app.srLogger.debug("Provider type doesn't have _get_files() implemented yet")
+        sickrage.app.log.debug("Provider type doesn't have _get_files() implemented yet")
         return {}
 
     def _get_result_stats(self, item):
@@ -296,7 +296,7 @@ class GenericProvider(object):
 
             first = search_strings and isinstance(search_strings[0], dict) and 'rid' in search_strings[0]
             if first:
-                sickrage.app.srLogger.debug('First search_string has rid')
+                sickrage.app.log.debug('First search_string has rid')
 
             for curString in search_strings:
                 try:
@@ -307,11 +307,11 @@ class GenericProvider(object):
                 if first:
                     first = False
                     if itemList:
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             'First search_string had rid, and returned results, skipping query by string')
                         break
                     else:
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             'First search_string had rid, but returned no results, searching with string query')
 
         # if we found what we needed already from cache then return results and exit
@@ -348,10 +348,10 @@ class GenericProvider(object):
                 myParser = NameParser(False)
                 parse_result = myParser.parse(result.name)
             except InvalidNameException:
-                sickrage.app.srLogger.debug("Unable to parse the filename " + result.name + " into a valid episode")
+                sickrage.app.log.debug("Unable to parse the filename " + result.name + " into a valid episode")
                 continue
             except InvalidShowException:
-                sickrage.app.srLogger.debug("Unable to parse the filename " + result.name + " into a valid show")
+                sickrage.app.log.debug("Unable to parse the filename " + result.name + " into a valid show")
                 continue
 
             result.show = parse_result.show
@@ -367,25 +367,25 @@ class GenericProvider(object):
             if not (result.show.air_by_date or result.show.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
                         addCacheEntry = True
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
                         addCacheEntry = True
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
-                        sickrage.app.srLogger.debug(
+                        sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
                         addCacheEntry = True
 
@@ -395,7 +395,7 @@ class GenericProvider(object):
                     actual_episodes = parse_result.episode_numbers
             else:
                 if not parse_result.is_air_by_date:
-                    sickrage.app.srLogger.debug(
+                    sickrage.app.log.debug(
                         "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
                     addCacheEntry = True
                 else:
@@ -405,7 +405,7 @@ class GenericProvider(object):
                               if x['doc']['airdate'] == airdate]
 
                     if len(dbData) != 1:
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
                         addCacheEntry = True
 
@@ -415,7 +415,7 @@ class GenericProvider(object):
 
             # add parsed result to cache for usage later on
             if addCacheEntry:
-                sickrage.app.srLogger.debug("Adding item from search to cache: " + result.name)
+                sickrage.app.log.debug("Adding item from search to cache: " + result.name)
                 self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
                                          result.files, parse_result)
                 continue
@@ -428,7 +428,7 @@ class GenericProvider(object):
                     break
 
             if not wantEp:
-                sickrage.app.srLogger.info(
+                sickrage.app.log.info(
                     "RESULT:[{}] QUALITY:[{}] IGNORED!".format(result.name, Quality.qualityStrings[result.quality]))
                 continue
 
@@ -437,21 +437,21 @@ class GenericProvider(object):
             for curEp in actual_episodes:
                 result.episodes.append(result.show.getEpisode(actual_season, curEp))
 
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
                                                                  result.url))
 
             if len(result.episodes) == 1:
                 epNum = result.episodes[0].episode
-                sickrage.app.srLogger.debug("Single episode result.")
+                sickrage.app.log.debug("Single episode result.")
             elif len(result.episodes) > 1:
                 epNum = MULTI_EP_RESULT
-                sickrage.app.srLogger.debug(
+                sickrage.app.log.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
             elif len(result.episodes) == 0:
                 epNum = SEASON_RESULT
-                sickrage.app.srLogger.debug("Separating full season result to check for later")
+                sickrage.app.log.debug("Separating full season result to check for later")
 
             if epNum not in results:
                 results[epNum] = [result]
@@ -530,7 +530,7 @@ class GenericProvider(object):
         """
         if not hasattr(self, 'required_cookies'):
             # A reminder for the developer, implementing cookie based authentication.
-            sickrage.app.srLogger.error(
+            sickrage.app.log.error(
                 'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
             return False
         return all(
@@ -556,10 +556,10 @@ class GenericProvider(object):
             result = self.add_cookies_from_ui()
             if not result['result']:
                 sickrage.app.srNotifications.notifications.message(result['message'])
-                sickrage.app.srLogger.warning(result['message'])
+                sickrage.app.log.warning(result['message'])
                 return False
         else:
-            sickrage.app.srLogger.warning('Failed to login, you will need to add your cookies in the provider '
+            sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
                                              'settings')
 
             sickrage.app.srNotifications.notifications.error(
@@ -570,7 +570,7 @@ class GenericProvider(object):
         response = sickrage.app.srWebSession.get(check_url)
         if any([not response, not (response.text and response.status_code == 200),
                 check_login_text.lower() in response.text.lower()]):
-            sickrage.app.srLogger.warning('Please configure the required cookies for this provider. Check your '
+            sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
                                              'provider settings')
 
             sickrage.app.srNotifications.notifications.error(
@@ -670,7 +670,7 @@ class TorrentProvider(GenericProvider):
 
         # Temp global block `DIAMOND` releases
         if title.endswith('DIAMOND'):
-            sickrage.app.srLogger.info('Skipping DIAMOND release for mass fake releases.')
+            sickrage.app.log.info('Skipping DIAMOND release for mass fake releases.')
             title = download_url = 'FAKERELEASE'
         else:
             title = self._clean_title_from_provider(title)
@@ -937,9 +937,9 @@ class TorrentRssProvider(TorrentProvider):
 
             chmodAsParent(dumpName)
 
-            sickrage.app.srLogger.info("Saved custom_torrent html dump %s " % dumpName)
+            sickrage.app.log.info("Saved custom_torrent html dump %s " % dumpName)
         except IOError as e:
-            sickrage.app.srLogger.error("Unable to save the file: %s " % repr(e))
+            sickrage.app.log.error("Unable to save the file: %s " % repr(e))
             return False
 
         return True
@@ -1035,13 +1035,13 @@ class NewznabProvider(NZBProvider):
             response = sickrage.app.srWebSession.get(urljoin(self.urls['base_url'], 'api'), params=url_params).text
         except Exception:
             error_string = 'Error getting caps xml for [{}]'.format(self.name)
-            sickrage.app.srLogger.warning(error_string)
+            sickrage.app.log.warning(error_string)
             return False, return_categories, error_string
 
         with bs4_parser(response) as html:
             if not html.find('categories'):
                 error_string = 'Error parsing caps xml for [{}]'.format(self.name)
-                sickrage.app.srLogger.debug(error_string)
+                sickrage.app.log.debug(error_string)
                 return False, return_categories, error_string
 
             self.set_caps(html.find('searching'))
@@ -1062,7 +1062,7 @@ class NewznabProvider(NZBProvider):
 
     def _check_auth(self):
         if self.private and not self.key:
-            sickrage.app.srLogger.warning('Invalid api key for {}. Check your settings'.format(self.name))
+            sickrage.app.log.warning('Invalid api key for {}. Check your settings'.format(self.name))
             return False
 
         return True
@@ -1083,7 +1083,7 @@ class NewznabProvider(NZBProvider):
         except (AttributeError, TypeError):
             return self._check_auth()
 
-        sickrage.app.srLogger.info(err_desc)
+        sickrage.app.log.info(err_desc)
 
         return False
 
@@ -1134,7 +1134,7 @@ class NewznabProvider(NZBProvider):
                 if mode == 'Season':
                     search_params.pop('ep', '')
 
-            sickrage.app.srLogger.debug('Search mode: {0}'.format(mode))
+            sickrage.app.log.debug('Search mode: {0}'.format(mode))
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
@@ -1142,7 +1142,7 @@ class NewznabProvider(NZBProvider):
                     if any(proper_string in search_string for proper_string in self.proper_strings):
                         search_params['t'] = 'search'
 
-                    sickrage.app.srLogger.debug("Search string: {}".format(search_string))
+                    sickrage.app.log.debug("Search string: {}".format(search_string))
 
                     if search_params['t'] != 'tvsearch':
                         search_params['q'] = search_string
@@ -1153,7 +1153,7 @@ class NewznabProvider(NZBProvider):
                     response = sickrage.app.srWebSession.get(urljoin(self.urls['base_url'], 'api'),
                                                                 params=search_params).text
                 except Exception:
-                    sickrage.app.srLogger.debug('No data returned from provider')
+                    sickrage.app.log.debug('No data returned from provider')
                     continue
 
                 with bs4_parser(response) as html:
@@ -1166,7 +1166,7 @@ class NewznabProvider(NZBProvider):
                         self.torznab = False
 
                     if not html('item'):
-                        sickrage.app.srLogger.debug('No results returned from provider. Check chosen Newznab '
+                        sickrage.app.log.debug('No results returned from provider. Check chosen Newznab '
                                                        'search categories in provider settings and/or usenet '
                                                        'retention')
                         continue
@@ -1213,11 +1213,11 @@ class NewznabProvider(NZBProvider):
                                 'leechers': leechers,
                             }
                             if mode != 'RSS':
-                                sickrage.app.srLogger.debug('Found result: {0}'.format(title))
+                                sickrage.app.log.debug('Found result: {0}'.format(title))
 
                             results.append(item)
                         except (AttributeError, TypeError, KeyError, ValueError, IndexError):
-                            sickrage.app.srLogger.error('Failed parsing provider')
+                            sickrage.app.log.error('Failed parsing provider')
 
                 # Since we arent using the search string,
                 # break out of the search string loop
@@ -1279,7 +1279,7 @@ class TorrentRssCache(TVCache):
         self.min_time = 15
 
     def _get_rss_data(self):
-        sickrage.app.srLogger.debug("Cache update URL: %s" % self.provider.urls['base_url'])
+        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
             self.provider.headers.update({'Cookie': self.provider.cookies})

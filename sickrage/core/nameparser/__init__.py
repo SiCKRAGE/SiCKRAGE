@@ -94,7 +94,7 @@ class NameParser(object):
             if show and not fromCache:
                 sickrage.app.NAMECACHE.put(name, show.indexerid)
         except Exception as e:
-            sickrage.app.srLogger.debug(
+            sickrage.app.log.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
         return show, show_id
@@ -134,7 +134,7 @@ class NameParser(object):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
                 except re.error as errormsg:
-                    sickrage.app.srLogger.info(
+                    sickrage.app.log.info(
                         "WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (
                             dbg_str, errormsg, cur_pattern))
                 else:
@@ -292,11 +292,11 @@ class NameParser(object):
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
                         episode_numbers = []
                     except indexer_error as e:
-                        sickrage.app.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
                                 e))
                         episode_numbers = []
@@ -374,7 +374,7 @@ class NameParser(object):
                 bestResult.season_number = new_season_numbers[0]
 
             if bestResult.show.is_scene and not skip_scene_detection:
-                sickrage.app.srLogger.debug(
+                sickrage.app.log.debug(
                     "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
@@ -509,7 +509,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        sickrage.app.srLogger.debug("Parsed {} into {}".format(name, final_result))
+        sickrage.app.log.debug("Parsed {} into {}".format(name, final_result))
         return final_result
 
 
@@ -642,7 +642,7 @@ class NameParserCache(object):
         with self.lock:
             value = self.data.get(key)
             if value:
-                sickrage.app.srLogger.debug("Using cached parse result for: {}".format(key))
+                sickrage.app.log.debug("Using cached parse result for: {}".format(key))
             return value
 
     def add(self, key, value):
