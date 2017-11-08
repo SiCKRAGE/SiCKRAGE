@@ -177,8 +177,8 @@ def check_requirements():
         v_needed = '0.15'
 
         if not v >= v_needed:
-            print('OpenSSL installed but {} is needed while {} is installed. Run `pip install -U pyopenssl`'.format(
-                v_needed, v))
+            print('OpenSSL installed but {} is needed while {} is installed. '
+                  'Run `pip install -U pyopenssl`'.format(v_needed, v))
     except:
         print('OpenSSL not available, please install for better requests validation: '
               '`https://pyopenssl.readthedocs.org/en/latest/install.html`')
@@ -258,14 +258,14 @@ def main():
         app.data_dir = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
         app.cache_dir = os.path.abspath(os.path.realpath(os.path.join(app.data_dir, 'cache')))
         app.config_file = args.config
-        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
-        PID_FILE = args.pidfile
+        daemonize = (False, args.daemon)[not sys.platform == 'win32']
+        pid_file = args.pidfile
 
         if not os.path.isabs(app.config_file):
             app.config_file = os.path.join(app.data_dir, app.config_file)
 
-        if not os.path.abspath(PID_FILE):
-            PID_FILE = os.path.join(app.data_dir, PID_FILE)
+        if not os.path.abspath(pid_file):
+            pid_file = os.path.join(app.data_dir, pid_file)
 
         # check lib requirements
         check_requirements()
@@ -299,10 +299,10 @@ def main():
             sys.exit("Cache directory must be writeable '" + app.cache_dir + "'")
 
         # daemonize if requested
-        if DAEMONIZE:
+        if daemonize:
             app.no_launch = True
             app.quite = True
-            app.daemon = Daemon(PID_FILE, app.data_dir)
+            app.daemon = Daemon(pid_file, app.data_dir)
             app.daemon.daemonize()
 
         # start app
@@ -315,8 +315,8 @@ def main():
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
-            print("Failed to import required libs, please run 'pip install --user -U -r {}' from console".format(
-                REQS_FILE))
+            print("Failed to import required libs, please run "
+                  "'pip install --user -U -r {}' from console".format(REQS_FILE))
     except Exception:
         traceback.print_exc()
 

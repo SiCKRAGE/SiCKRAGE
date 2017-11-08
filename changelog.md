@@ -1,5 +1,6 @@
 # Changelog
 
+- * e008dd1 - 2017-11-08: Spelling corrections 
 - * dd5db5c - 2017-11-08: Updated ThePirateBay url 
 - * b407d9c - 2017-11-08: refactored core code relating to instance variables 
 - * 30c56e0 - 2017-11-08: refactored core code relating to providers 
