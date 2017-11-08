@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9a134d7 - 2017-11-08: refactored core code relating to instance variables 
+- * dd5db5c - 2017-11-08: Updated ThePirateBay url 
+- * b407d9c - 2017-11-08: refactored core code relating to instance variables 
 - * 30c56e0 - 2017-11-08: refactored core code relating to providers 
 - * 32a1762 - 2017-11-07: refactored core variable name srIndexerApi to IndexerApi 
 - * e18ac02 - 2017-11-07: refactored core variable name srConfig to config 
