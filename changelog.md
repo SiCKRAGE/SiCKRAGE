@@ -1,6 +1,7 @@
 # Changelog
 
-- * ecb24ca - 2017-11-08: refactored core config instance variables fixed issues with mediaToSiCKRAGE code 
+- * eca44ca - 2017-11-08: Fixed bad reference 
+- * 73ee12e - 2017-11-08: refactored core config instance variables fixed issues with mediaToSiCKRAGE code 
 - * 79026f8 - 2017-11-08: Spelling corrections 
 - * dd5db5c - 2017-11-08: Updated ThePirateBay url 
 - * b407d9c - 2017-11-08: refactored core code relating to instance variables 

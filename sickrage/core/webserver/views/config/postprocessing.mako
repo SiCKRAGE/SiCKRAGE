@@ -7,7 +7,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets, multiEpStrings
     from sickrage.core.nameparser import validator
-    from sickrage.metadata import GenericMetadata, metadataProvidersDict
+    from sickrage.metadata import GenericMetadata, MetadataProviders
 %>
 
 <%block name="tabs">
