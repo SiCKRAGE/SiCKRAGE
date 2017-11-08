@@ -24,10 +24,10 @@ import gntp
 import gntp.core
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class GrowlNotifier(srNotifiers):
+class GrowlNotifier(Notifiers):
     sr_logo_url = 'https://www.sickrage.ca/favicon.ico'
 
     def __init__(self):

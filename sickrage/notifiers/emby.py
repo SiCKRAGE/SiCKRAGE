@@ -23,10 +23,10 @@ import urllib
 import urllib2
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class EMBYNotifier(srNotifiers):
+class EMBYNotifier(Notifiers):
     def __init__(self):
         super(EMBYNotifier, self).__init__()
         self.name = 'emby'

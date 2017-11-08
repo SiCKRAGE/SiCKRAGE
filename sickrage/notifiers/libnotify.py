@@ -22,7 +22,7 @@ import cgi
 import os
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
 def diagnose():
@@ -61,7 +61,7 @@ def diagnose():
     return "<p>Error: Unable to send notification."
 
 
-class LibnotifyNotifier(srNotifiers):
+class LibnotifyNotifier(Notifiers):
     def __init__(self):
         super(LibnotifyNotifier, self).__init__()
         self.name = 'libnotify'

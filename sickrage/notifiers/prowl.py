@@ -25,10 +25,10 @@ from urllib import urlencode
 from requests.exceptions import SSLError
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class ProwlNotifier(srNotifiers):
+class ProwlNotifier(Notifiers):
     def __init__(self):
         super(ProwlNotifier, self).__init__()
         self.name = 'prowl'

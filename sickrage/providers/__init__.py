@@ -1293,12 +1293,6 @@ class SearchProviders(dict):
 
         self.provider_order = []
 
-        self[NZBProvider.type] = {}
-        self[TorrentProvider.type] = {}
-        self[NewznabProvider.type] = {}
-        self[TorrentRssProvider.type] = {}
-
-    def load(self):
         self[NZBProvider.type] = dict([(p.id, p) for p in NZBProvider.getProviders()])
         self[TorrentProvider.type] = dict([(p.id, p) for p in TorrentProvider.getProviders()])
         self[NewznabProvider.type] = dict([(p.id, p) for p in NewznabProvider.getProviders()])

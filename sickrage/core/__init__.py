@@ -47,7 +47,7 @@ from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.google import googleAuth
+from sickrage.core.google import GoogleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
@@ -70,8 +70,8 @@ from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import VersionUpdater
 from sickrage.core.webserver import WebServer
 from sickrage.core.websession import WebSession
-from sickrage.metadata import metadataProvidersDict
-from sickrage.notifiers import notifiersDict
+from sickrage.metadata import MetadataProviders
+from sickrage.notifiers import NotifierProviders
 from sickrage.providers import SearchProviders
 
 
@@ -111,7 +111,7 @@ class Core(object):
         self.scheduler = None
         self.wserver = None
         self.wsession = None
-        self.googleAuth = None
+        self.google_auth = None
         self.name_cache = None
         self.show_queue = None
         self.search_queue = None
@@ -135,8 +135,8 @@ class Core(object):
         threading.currentThread().setName('CORE')
 
         # init core classes
-        self.notifier_providers = notifiersDict()
-        self.metadata_providers = metadataProvidersDict()
+        self.notifier_providers = NotifierProviders()
+        self.metadata_providers = MetadataProviders()
         self.search_providers = SearchProviders()
         self.log = Logger()
         self.config = Config()
@@ -147,7 +147,7 @@ class Core(object):
         self.scheduler = BackgroundScheduler()
         self.wserver = WebServer()
         self.wsession = WebSession()
-        self.googleAuth = googleAuth()
+        self.google_auth = GoogleAuth()
         self.name_cache = NameCache()
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()

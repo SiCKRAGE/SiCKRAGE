@@ -80,7 +80,7 @@ from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import IndexerApi
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
@@ -245,7 +245,7 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', '')
 
         if username == sickrage.app.config.WEB_USERNAME and password == sickrage.app.config.WEB_PASSWORD:
-            srNotifiers.notify_login(self.request.remote_ip)
+            Notifiers.notify_login(self.request.remote_ip)
 
             remember_me = int(self.get_argument('remember_me', default=0))
 
@@ -522,21 +522,21 @@ class GoogleAuth(WebHandler):
         super(GoogleAuth, self).__init__(*args, **kwargs)
 
     def get_user_code(self):
-        data = sickrage.app.googleAuth.get_user_code()
+        data = sickrage.app.google_auth.get_user_code()
         return json_encode({field: str(getattr(data, field)) for field in data._fields})
 
     def get_credentials(self, flow_info):
         try:
-            data = sickrage.app.googleAuth.get_credentials(AttrDict(json_decode(flow_info)))
+            data = sickrage.app.google_auth.get_credentials(AttrDict(json_decode(flow_info)))
             return json_encode(data.token_response)
         except Exception as e:
             return json_encode({'error': e.message})
 
     def refresh_credentials(self):
-        sickrage.app.googleAuth.refresh_credentials()
+        sickrage.app.google_auth.refresh_credentials()
 
     def logout(self):
-        sickrage.app.googleAuth.logout()
+        sickrage.app.google_auth.logout()
 
 
 @Route('/ui(/?.*)')

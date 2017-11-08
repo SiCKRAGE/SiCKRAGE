@@ -25,10 +25,10 @@ from xml.dom.minidom import parseString
 from requests import request
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class NMA_Notifier(srNotifiers):
+class NMA_Notifier(Notifiers):
     def __init__(self):
         super(NMA_Notifier, self).__init__()
         self.name = 'nma'

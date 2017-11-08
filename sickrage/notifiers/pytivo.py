@@ -23,10 +23,10 @@ from urllib import urlencode
 from urllib2 import HTTPError, Request, urlopen
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class pyTivoNotifier(srNotifiers):
+class pyTivoNotifier(Notifiers):
     def __init__(self):
         super(pyTivoNotifier, self).__init__()
         self.name = 'pytivo'

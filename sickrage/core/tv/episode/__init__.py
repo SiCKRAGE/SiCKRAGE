@@ -39,7 +39,7 @@ from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_number
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 from sickrage.subtitles import subtitle_extensions, download_subtitles, refresh_subtitles, subtitle_code_filter, \
     name_from_code
 
@@ -310,7 +310,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                            (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
-            srNotifiers.notify_subtitle_download(self.prettyName(), subtitleList)
+            Notifiers.notify_subtitle_download(self.prettyName(), subtitleList)
         else:
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                            (self.show.indexerid, self.season or 0, self.episode or 0))

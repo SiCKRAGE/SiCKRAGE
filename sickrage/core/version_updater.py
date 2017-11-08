@@ -32,7 +32,7 @@ import traceback
 
 import sickrage
 from sickrage.core.helpers import backupSR
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
 class VersionUpdater(object):
@@ -426,7 +426,7 @@ class GitUpdateManager(UpdateManager):
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
-            srNotifiers.notify_version_update(self.get_newest_version)
+            Notifiers.notify_version_update(self.get_newest_version)
             self.install_requirements()
             return True
 
@@ -632,7 +632,7 @@ class SourceUpdateManager(UpdateManager):
             return False
 
         # Notify update successful
-        srNotifiers.notify_version_update(self.get_newest_version)
+        Notifiers.notify_version_update(self.get_newest_version)
 
         # install requirements
         self.install_requirements()
@@ -703,7 +703,7 @@ class PipUpdateManager(UpdateManager):
         __, __, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from PyPi servers")
-            srNotifiers.notify_version_update(self.get_newest_version)
+            Notifiers.notify_version_update(self.get_newest_version)
             return True
 
         return False

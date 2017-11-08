@@ -25,10 +25,10 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class PLEXNotifier(srNotifiers):
+class PLEXNotifier(Notifiers):
     def __init__(self):
         super(PLEXNotifier, self).__init__()
         self.name = 'plex'

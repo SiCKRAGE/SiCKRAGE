@@ -25,10 +25,10 @@ from xml.dom.minidom import parseString
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class NMJv2Notifier(srNotifiers):
+class NMJv2Notifier(Notifiers):
     def __init__(self):
         super(NMJv2Notifier, self).__init__()
         self.name = 'nmjv2'

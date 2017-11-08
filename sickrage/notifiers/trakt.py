@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 import sickrage
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.indexers import IndexerApi
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class TraktNotifier(srNotifiers):
+class TraktNotifier(Notifiers):
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """

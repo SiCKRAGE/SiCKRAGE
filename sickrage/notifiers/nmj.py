@@ -25,10 +25,10 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class NMJNotifier(srNotifiers):
+class NMJNotifier(Notifiers):
     def __init__(self):
         super(NMJNotifier, self).__init__()
         self.name = 'nmj'

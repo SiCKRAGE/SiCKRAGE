@@ -25,10 +25,10 @@ from ssl import SSLError
 from urllib import urlencode
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class PushalotNotifier(srNotifiers):
+class PushalotNotifier(Notifiers):
     def __init__(self):
         super(PushalotNotifier, self).__init__()
         self.name = 'pushalot'

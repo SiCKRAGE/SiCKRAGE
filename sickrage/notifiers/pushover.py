@@ -26,12 +26,12 @@ import urllib
 import urllib2
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
 
 
-class PushoverNotifier(srNotifiers):
+class PushoverNotifier(Notifiers):
     def __init__(self):
         super(PushoverNotifier, self).__init__()
         self.name = 'pushover'

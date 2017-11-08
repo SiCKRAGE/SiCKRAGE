@@ -23,10 +23,10 @@ import traceback
 from urlparse import urljoin
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class PushbulletNotifier(srNotifiers):
+class PushbulletNotifier(Notifiers):
     def __init__(self):
         super(PushbulletNotifier, self).__init__()
         self.name = 'pushbullet'

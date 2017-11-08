@@ -23,10 +23,10 @@ from __future__ import unicode_literals
 import urllib2
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class FreeMobileNotifier(srNotifiers):
+class FreeMobileNotifier(Notifiers):
     def __init__(self):
         super(FreeMobileNotifier, self).__init__()
         self.name = 'freemobile'

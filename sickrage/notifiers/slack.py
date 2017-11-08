@@ -24,10 +24,10 @@ import requests
 import six
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class SlackNotifier(srNotifiers):
+class SlackNotifier(Notifiers):
     def __init__(self):
         super(SlackNotifier, self).__init__()
         self.name = 'slack'

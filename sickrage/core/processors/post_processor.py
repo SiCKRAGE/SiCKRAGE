@@ -36,7 +36,7 @@ from sickrage.core.helpers import findCertainShow, show_names, fixGlob, replaceE
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 from sickrage.subtitles import subtitle_extensions, wanted_languages
 
 
@@ -1168,7 +1168,7 @@ class PostProcessor(object):
         # If any notification fails, don't stop postProcessor
         try:
             # send notifications
-            srNotifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
+            Notifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
             sickrage.app.notifier_providers['kodi'].update_library(ep_obj.show.name)

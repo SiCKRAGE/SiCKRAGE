@@ -24,10 +24,10 @@ import requests
 import six
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class DiscordNotifier(srNotifiers):
+class DiscordNotifier(Notifiers):
     def __init__(self):
         super(DiscordNotifier, self).__init__()
         self.name = 'discord'

@@ -28,10 +28,10 @@ import urllib2
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class KODINotifier(srNotifiers):
+class KODINotifier(Notifiers):
     sr_logo_url = 'https://www.sickrage.ca/favicon.ico'
 
     def __init__(self):

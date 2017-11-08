@@ -30,10 +30,10 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class EmailNotifier(srNotifiers):
+class EmailNotifier(Notifiers):
     def __init__(self):
         super(EmailNotifier, self).__init__()
         self.name = 'email'

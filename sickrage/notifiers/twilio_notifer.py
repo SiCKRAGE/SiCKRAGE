@@ -24,10 +24,10 @@ from twilio.base.exceptions import TwilioRestException
 from twilio.rest import TwilioRestClient
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class TwilioNotifier(srNotifiers):
+class TwilioNotifier(Notifiers):
     number_regex = re.compile(r'^\+1-\d{3}-\d{3}-\d{4}$')
     account_regex = re.compile(r'^AC[a-z0-9]{32}$')
     auth_regex = re.compile(r'^[a-z0-9]{32}$')

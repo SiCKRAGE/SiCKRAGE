@@ -22,12 +22,12 @@ import urllib
 import urllib2
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 API_URL = "https://new.boxcar.io/api/notifications"
 
 
-class Boxcar2Notifier(srNotifiers):
+class Boxcar2Notifier(Notifiers):
     def __init__(self):
         super(Boxcar2Notifier, self).__init__()
         self.name = 'boxcar2'

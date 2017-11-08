@@ -33,35 +33,6 @@ from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound,
 from sickrage.metadata.helpers import getShowImage
 
 
-def _getMetadataClass(name):
-    import inspect
-
-    try:
-        return dict(
-            inspect.getmembers(
-                importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
-                predicate=lambda o: inspect.isclass(o) and issubclass(o, GenericMetadata) and o is not GenericMetadata)
-        ).values()[0]
-    except:
-        pass
-
-
-def metadataProvidersDict():
-    results = {}
-
-    pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-    names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
-
-    for name in names:
-        try:
-            klass = _getMetadataClass(name.group(1))
-            results[klass().id] = klass()
-        except:
-            continue
-
-    return results
-
-
 class GenericMetadata(object):
     """
     Base class for all metadata providers. Default behavior is meant to mostly
@@ -924,4 +895,32 @@ class GenericMetadata(object):
 
             return t[show.indexerid][season][episode]
         except (indexer_episodenotfound, indexer_seasonnotfound):
+            pass
+
+
+class MetadataProviders(dict):
+    def __init__(self):
+        super(MetadataProviders, self).__init__()
+        pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
+        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
+
+        for name in names:
+            try:
+                klass = self._get_klass(name.group(1))
+                self[klass().id] = klass()
+            except:
+                continue
+
+    @staticmethod
+    def _get_klass(name):
+        import inspect
+
+        try:
+            return dict(
+                inspect.getmembers(
+                    importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
+                    predicate=lambda o: inspect.isclass(o) and issubclass(o,
+                                                                          GenericMetadata) and o is not GenericMetadata)
+            ).values()[0]
+        except:
             pass

@@ -24,10 +24,10 @@ import oauth2
 import twitter
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class TwitterNotifier(srNotifiers):
+class TwitterNotifier(Notifiers):
     consumer_key = "vHHtcB6WzpWDG6KYlBMr8g"
     consumer_secret = "zMqq5CB3f8cWKiRO2KzWPTlBanYmV0VYxSXZ0Pxds0E"
 

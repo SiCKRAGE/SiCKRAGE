@@ -21,10 +21,10 @@ from __future__ import unicode_literals
 from six.moves import urllib
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class TelegramNotifier(srNotifiers):
+class TelegramNotifier(Notifiers):
     """
     A notifier for Telegram
     """

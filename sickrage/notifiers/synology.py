@@ -21,10 +21,10 @@ import os
 import subprocess
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class synologyNotifier(srNotifiers):
+class synologyNotifier(Notifiers):
     def __init__(self):
         super(synologyNotifier, self).__init__()
         self.name = 'synology'

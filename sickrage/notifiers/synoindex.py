@@ -22,10 +22,10 @@ import os
 import subprocess
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class synoIndexNotifier(srNotifiers):
+class synoIndexNotifier(Notifiers):
     def __init__(self):
         super(synoIndexNotifier, self).__init__()
         self.name = 'synoindex'

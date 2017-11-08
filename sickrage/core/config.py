@@ -1795,7 +1795,6 @@ class Config(object):
 
         self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers')
 
-        sickrage.app.search_providers.load()
         for providerID, providerObj in sickrage.app.search_providers.all().items():
             providerSettings = self.check_setting_str('Providers', providerID, '') or {}
             for k, v in providerSettings.items():
