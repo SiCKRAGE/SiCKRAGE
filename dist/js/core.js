@@ -1566,6 +1566,8 @@ jQuery(document).ready(function ($) {
                         borderRadius = 6;
                     }
 
+                    $('#posterPopup').remove();
+
                     if (fontSize === undefined) {
                         $('.show-details').hide();
                     } else {
@@ -1733,29 +1735,90 @@ jQuery(document).ready(function ($) {
                     sortAppend: [[2, 0]]
                 });
 
-                $('.show-grid').show().isotope({
-                    itemSelector: '.show-container',
-                    sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
-                    sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
-                    layoutMode: 'masonry',
-                    masonry: {
-                        isFitWidth: true
-                    },
-                    getSortData: {
-                        name: function (itemElem) {
-                            var name = $(itemElem).attr('data-name');
-                            return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (name || '') : (name || '').replace(/^(The|A|An)\s/i, ''));
+                $('.show-grid').imagesLoaded(function () {
+                    //$('.loading-spinner').hide();
+                    $('.show-grid').show().isotope({
+                        itemSelector: '.show-container',
+                        sortBy : SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
+                        sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
+                        layoutMode: 'masonry',
+                        masonry: {
+                            isFitWidth: true
                         },
-                        network: '[data-network]',
-                        date: function (itemElem) {
-                            var date = $(itemElem).attr('data-date');
-                            return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
-                        },
-                        progress: function (itemElem) {
-                            var progress = $(itemElem).attr('data-progress');
-                            return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
+                        getSortData: {
+                            name: function (itemElem) {
+                                var name = $(itemElem).attr('data-name') || '';
+                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
+                            },
+                            network: '[data-network]',
+                            date: function (itemElem) {
+                                var date = $(itemElem).attr('data-date');
+                                return date.length && parseInt(date, 10) || Number.POSITIVE_INFINITY;
+                            },
+                            progress: function (itemElem) {
+                                var progress = $(itemElem).attr('data-progress');
+                                return progress.length && parseInt(progress, 10) || Number.NEGATIVE_INFINITY;
+                            }
                         }
-                    }
+                    });
+
+                    // When posters are small enough to not display the .show-details
+                    // table, display a larger poster when hovering.
+                    var posterHoverTimer = null;
+                    $('.show-container').on('mouseenter', function () {
+                        var poster = $(this);
+                        if (poster.find('.show-details').css('display') !== 'none') {
+                            return;
+                        }
+                        posterHoverTimer = setTimeout(function () {
+                            posterHoverTimer = null;
+                            $('#posterPopup').remove();
+                            var popup = poster.clone().attr({
+                                id: 'posterPopup'
+                            });
+                            var origLeft = poster.offset().left;
+                            var origTop  = poster.offset().top;
+                            popup.css({
+                                position: 'absolute',
+                                margin: 0,
+                                top: origTop,
+                                left: origLeft,
+                                zIndex: 9999
+                            });
+
+                            popup.find('.show-details').show();
+                            popup.on('mouseleave', function () {
+                                $(this).remove();
+                            });
+                            popup.appendTo('body');
+
+                            var height = 438, width = 250;
+                            var newTop = (origTop+poster.height()/2)-(height/2);
+                            var newLeft = (origLeft+poster.width()/2)-(width/2);
+
+                            // Make sure the popup isn't outside the viewport
+                            var margin = 5;
+                            var scrollTop = $(window).scrollTop();
+                            var scrollLeft = $(window).scrollLeft();
+                            var scrollBottom = scrollTop + $(window).innerHeight();
+                            var scrollRight = scrollLeft + $(window).innerWidth();
+                            if (newTop < scrollTop+margin) { newTop = scrollTop+margin; }
+                            if (newLeft < scrollLeft+margin) { newLeft = scrollLeft+margin; }
+                            if (newTop+height+margin > scrollBottom) { newTop = scrollBottom-height-margin; }
+                            if (newLeft+width+margin > scrollRight) { newLeft = scrollRight-width-margin; }
+
+                            popup.animate({
+                                top: newTop,
+                                left: newLeft,
+                                width: 250,
+                                height: 438
+                            });
+                        }, 300);
+                    }).on('mouseleave', function () {
+                        if (posterHoverTimer !== null) {
+                            clearTimeout(posterHoverTimer);
+                        }
+                    });
                 });
 
                 if ($("#showListTableShows").find("tbody").find("tr").length > 0) {
