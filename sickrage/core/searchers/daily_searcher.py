@@ -41,7 +41,7 @@ class DailySearcher(object):
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
         """
-        if self.amActive or sickrage.app.config.DEVELOPER and not force:
+        if self.amActive or sickrage.app.config.developer and not force:
             return
 
         self.amActive = True
@@ -50,7 +50,7 @@ class DailySearcher(object):
         threading.currentThread().setName(self.name)
 
         # trim failed download history
-        if sickrage.app.config.USE_FAILED_DOWNLOADS:
+        if sickrage.app.config.use_failed_downloads:
             FailedHistory.trimHistory()
 
         sickrage.app.log.info("{}: Searching for new released episodes".format(self.name))

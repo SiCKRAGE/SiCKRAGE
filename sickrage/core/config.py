@@ -48,425 +48,425 @@ class Config(object):
         self.config_obj = None
         self.config_version = 0
 
-        self.DEBUG = False
-        self.DEVELOPER = False
-        self.ENCRYPTION_VERSION = 0
-        self.ENCRYPTION_SECRET = generateCookieSecret()
+        self.debug = False
+        self.developer = False
+        self.encryption_version = 0
+        self.encryption_secret = generateCookieSecret()
 
-        self.LAST_DB_COMPACT = 0
+        self.last_db_compact = 0
 
-        self.NAMING_EP_TYPE = ("%(seasonnumber)dx%(episodenumber)02d",
+        self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
                                "%(seasonnumber)02dx%(episodenumber)02d")
-        self.SPORTS_EP_TYPE = ("%(seasonnumber)dx%(episodenumber)02d",
+        self.sports_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
                                "s%(seasonnumber)02de%(episodenumber)02d",
                                "S%(seasonnumber)02dE%(episodenumber)02d",
                                "%(seasonnumber)02dx%(episodenumber)02d")
-        self.NAMING_EP_TYPE_TEXT = ("1x02", "s01e02", "S01E02", "01x02")
-        self.NAMING_MULTI_EP_TYPE = {0: ["-%(episodenumber)02d"] * len(self.NAMING_EP_TYPE),
-                                     1: [" - " + x for x in self.NAMING_EP_TYPE],
+        self.naming_ep_type_text = ("1x02", "s01e02", "S01E02", "01x02")
+        self.naming_multi_ep_type = {0: ["-%(episodenumber)02d"] * len(self.naming_ep_type),
+                                     1: [" - " + x for x in self.naming_ep_type],
                                      2: [x + "%(episodenumber)02d" for x in ("x", "e", "E", "x")]}
-        self.NAMING_MULTI_EP_TYPE_TEXT = ("extend", "duplicate", "repeat")
-        self.NAMING_SEP_TYPE = (" - ", " ")
-        self.NAMING_SEP_TYPE_TEXT = (" - ", "space")
+        self.naming_multi_ep_type_text = ("extend", "duplicate", "repeat")
+        self.naming_sep_type = (" - ", " ")
+        self.naming_sep_type_text = (" - ", "space")
 
-        self.LOG_SIZE = 1048576
-        self.LOG_NR = 5
+        self.log_size = 1048576
+        self.log_nr = 5
 
-        self.VERSION_NOTIFY = True
-        self.AUTO_UPDATE = True
-        self.NOTIFY_ON_UPDATE = True
-        self.NOTIFY_ON_LOGIN = False
-        self.PIP_PATH = ""
-        self.GIT_RESET = True
-        self.GIT_USERNAME = ""
-        self.GIT_PASSWORD = ""
-        self.GIT_PATH = ""
-        self.GIT_AUTOISSUES = False
-        self.GIT_NEWVER = False
-        self.CHANGES_URL = 'https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md'
-        self.SOCKET_TIMEOUT = 30
-        self.WEB_HOST = get_lan_ip()
-        self.WEB_PORT = 8081
-        self.WEB_LOG = False
-        self.WEB_ROOT = ""
-        self.WEB_USERNAME = ""
-        self.WEB_PASSWORD = ""
-        self.WEB_IPV6 = False
-        self.WEB_COOKIE_SECRET = generateCookieSecret()
-        self.WEB_USE_GZIP = True
-        self.HANDLE_REVERSE_PROXY = False
-        self.PROXY_SETTING = ""
-        self.PROXY_INDEXERS = True
-        self.SSL_VERIFY = True
-        self.ENABLE_HTTPS = False
-        self.HTTPS_CERT = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
-        self.HTTPS_KEY = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
-        self.API_KEY = ""
-        self.API_ROOT = None
-        self.INDEXER_DEFAULT_LANGUAGE = 'en'
-        self.EP_DEFAULT_DELETED_STATUS = 6
-        self.LAUNCH_BROWSER = False
-        self.SHOWUPDATE_STALE = True
-        self.ROOT_DIRS = ""
-        self.CPU_PRESET = "NORMAL"
-        self.ANON_REDIRECT = 'http://nullrefer.com/?'
-        self.DOWNLOAD_URL = ""
-        self.TRASH_REMOVE_SHOW = False
-        self.TRASH_ROTATE_LOGS = False
-        self.SORT_ARTICLE = False
-        self.DISPLAY_ALL_SEASONS = True
-        self.DEFAULT_PAGE = "home"
-        self.USE_LISTVIEW = False
+        self.version_notify = True
+        self.auto_update = True
+        self.notify_on_update = True
+        self.notify_on_login = False
+        self.pip_path = ""
+        self.git_reset = True
+        self.git_username = ""
+        self.git_password = ""
+        self.git_path = ""
+        self.git_autoissues = False
+        self.git_newver = False
+        self.changes_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md'
+        self.socket_timeout = 30
+        self.web_host = get_lan_ip()
+        self.web_port = 8081
+        self.web_log = False
+        self.web_root = ""
+        self.web_username = ""
+        self.web_password = ""
+        self.web_ipv6 = False
+        self.web_cookie_secret = generateCookieSecret()
+        self.web_use_gzip = True
+        self.handle_reverse_proxy = False
+        self.proxy_setting = ""
+        self.proxy_indexers = True
+        self.ssl_verify = True
+        self.enable_https = False
+        self.https_cert = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
+        self.https_key = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
+        self.api_key = ""
+        self.api_root = None
+        self.indexer_default_language = 'en'
+        self.ep_default_deleted_status = 6
+        self.launch_browser = False
+        self.showupdate_stale = True
+        self.root_dirs = ""
+        self.cpu_preset = "NORMAL"
+        self.anon_redirect = 'http://nullrefer.com/?'
+        self.download_url = ""
+        self.trash_remove_show = False
+        self.trash_rotate_logs = False
+        self.sort_article = False
+        self.display_all_seasons = True
+        self.default_page = "home"
+        self.use_listview = False
 
-        self.QUALITY_DEFAULT = SD
-        self.STATUS_DEFAULT = SKIPPED
-        self.STATUS_DEFAULT_AFTER = WANTED
-        self.FLATTEN_FOLDERS_DEFAULT = False
-        self.SUBTITLES_DEFAULT = False
-        self.INDEXER_DEFAULT = 0
-        self.INDEXER_TIMEOUT = 120
-        self.SCENE_DEFAULT = False
-        self.ANIME_DEFAULT = False
-        self.ARCHIVE_DEFAULT = False
-        self.NAMING_MULTI_EP = False
-        self.NAMING_ANIME_MULTI_EP = False
-        self.NAMING_PATTERN = None
-        self.NAMING_ABD_PATTERN = None
-        self.NAMING_CUSTOM_ABD = False
-        self.NAMING_SPORTS_PATTERN = None
-        self.NAMING_CUSTOM_SPORTS = False
-        self.NAMING_ANIME_PATTERN = None
-        self.NAMING_CUSTOM_ANIME = False
-        self.NAMING_FORCE_FOLDERS = False
-        self.NAMING_STRIP_YEAR = False
-        self.NAMING_ANIME = None
-        self.USE_NZBS = False
-        self.USE_TORRENTS = False
-        self.NZB_METHOD = None
-        self.NZB_DIR = None
-        self.USENET_RETENTION = 500
-        self.TORRENT_METHOD = None
-        self.TORRENT_DIR = None
-        self.DOWNLOAD_PROPERS = False
-        self.ENABLE_RSS_CACHE = True
-        self.ENABLE_RSS_CACHE_VALID_SHOWS = False
-        self.TORRENT_FILE_TO_MAGNET = False
-        self.PROPER_SEARCHER_INTERVAL = None
-        self.ALLOW_HIGH_PRIORITY = False
-        self.SAB_FORCED = False
-        self.RANDOMIZE_PROVIDERS = False
-        self.MIN_AUTOPOSTPROCESSOR_FREQ = 1
-        self.MIN_DAILY_SEARCHER_FREQ = 10
-        self.MIN_BACKLOG_SEARCHER_FREQ = 10
-        self.MIN_VERSION_UPDATER_FREQ = 1
-        self.MIN_SUBTITLE_SEARCHER_FREQ = 1
-        self.BACKLOG_DAYS = 7
-        self.ADD_SHOWS_WO_DIR = False
-        self.CREATE_MISSING_SHOW_DIRS = False
-        self.RENAME_EPISODES = False
-        self.AIRDATE_EPISODES = False
-        self.FILE_TIMESTAMP_TIMEZONE = None
-        self.PROCESS_AUTOMATICALLY = False
-        self.NO_DELETE = False
-        self.KEEP_PROCESSED_DIR = False
-        self.PROCESS_METHOD = None
-        self.DELRARCONTENTS = False
-        self.MOVE_ASSOCIATED_FILES = False
-        self.POSTPONE_IF_SYNC_FILES = True
-        self.NFO_RENAME = True
-        self.TV_DOWNLOAD_DIR = None
-        self.UNPACK = False
-        self.SKIP_REMOVED_FILES = False
-        self.NZBS = False
-        self.NZBS_UID = None
-        self.NZBS_HASH = None
-        self.OMGWTFNZBS = False
-        self.NEWZBIN = False
-        self.NEWZBIN_USERNAME = None
-        self.NEWZBIN_PASSWORD = None
-        self.SAB_USERNAME = None
-        self.SAB_PASSWORD = None
-        self.SAB_APIKEY = None
-        self.SAB_CATEGORY = None
-        self.SAB_CATEGORY_BACKLOG = None
-        self.SAB_CATEGORY_ANIME = None
-        self.SAB_CATEGORY_ANIME_BACKLOG = None
-        self.SAB_HOST = None
-        self.NZBGET_USERNAME = None
-        self.NZBGET_PASSWORD = None
-        self.NZBGET_CATEGORY = None
-        self.NZBGET_CATEGORY_BACKLOG = None
-        self.NZBGET_CATEGORY_ANIME = None
-        self.NZBGET_CATEGORY_ANIME_BACKLOG = None
-        self.NZBGET_HOST = None
-        self.NZBGET_USE_HTTPS = False
-        self.NZBGET_PRIORITY = 100
-        self.TORRENT_USERNAME = None
-        self.TORRENT_PASSWORD = None
-        self.TORRENT_HOST = None
-        self.TORRENT_PATH = None
-        self.TORRENT_SEED_TIME = None
-        self.TORRENT_PAUSED = False
-        self.TORRENT_HIGH_BANDWIDTH = False
-        self.TORRENT_LABEL = None
-        self.TORRENT_LABEL_ANIME = None
-        self.TORRENT_VERIFY_CERT = False
-        self.TORRENT_RPCURL = None
-        self.TORRENT_AUTH_TYPE = None
-        self.USE_KODI = False
-        self.KODI_ALWAYS_ON = True
-        self.KODI_NOTIFY_ONSNATCH = False
-        self.KODI_NOTIFY_ONDOWNLOAD = False
-        self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.KODI_UPDATE_LIBRARY = False
-        self.KODI_UPDATE_FULL = False
-        self.KODI_UPDATE_ONLYFIRST = False
-        self.KODI_HOST = None
-        self.KODI_USERNAME = None
-        self.KODI_PASSWORD = None
-        self.USE_PLEX = False
-        self.PLEX_NOTIFY_ONSNATCH = False
-        self.PLEX_NOTIFY_ONDOWNLOAD = False
-        self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PLEX_UPDATE_LIBRARY = False
-        self.PLEX_SERVER_HOST = None
-        self.PLEX_SERVER_TOKEN = None
-        self.PLEX_HOST = None
-        self.PLEX_USERNAME = None
-        self.PLEX_PASSWORD = None
-        self.USE_PLEX_CLIENT = False
-        self.PLEX_CLIENT_USERNAME = None
-        self.PLEX_CLIENT_PASSWORD = None
-        self.USE_EMBY = False
-        self.EMBY_HOST = None
-        self.EMBY_APIKEY = None
-        self.USE_GROWL = False
-        self.GROWL_NOTIFY_ONSNATCH = False
-        self.GROWL_NOTIFY_ONDOWNLOAD = False
-        self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.GROWL_HOST = None
-        self.GROWL_PASSWORD = None
-        self.USE_FREEMOBILE = False
-        self.FREEMOBILE_NOTIFY_ONSNATCH = False
-        self.FREEMOBILE_NOTIFY_ONDOWNLOAD = False
-        self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.FREEMOBILE_ID = ""
-        self.FREEMOBILE_APIKEY = ""
-        self.USE_TELEGRAM = False
-        self.TELEGRAM_NOTIFY_ONSNATCH = False
-        self.TELEGRAM_NOTIFY_ONDOWNLOAD = False
-        self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.TELEGRAM_ID = ""
-        self.TELEGRAM_APIKEY = ""
-        self.USE_PROWL = False
-        self.PROWL_NOTIFY_ONSNATCH = False
-        self.PROWL_NOTIFY_ONDOWNLOAD = False
-        self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PROWL_API = None
-        self.PROWL_PRIORITY = 0
-        self.USE_TWITTER = False
-        self.TWITTER_NOTIFY_ONSNATCH = False
-        self.TWITTER_NOTIFY_ONDOWNLOAD = False
-        self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.TWITTER_USERNAME = None
-        self.TWITTER_PASSWORD = None
-        self.TWITTER_PREFIX = None
-        self.TWITTER_DMTO = None
-        self.TWITTER_USEDM = False
-        self.USE_BOXCAR2 = False
-        self.BOXCAR2_NOTIFY_ONSNATCH = False
-        self.BOXCAR2_NOTIFY_ONDOWNLOAD = False
-        self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.BOXCAR2_ACCESSTOKEN = None
-        self.USE_PUSHOVER = False
-        self.PUSHOVER_NOTIFY_ONSNATCH = False
-        self.PUSHOVER_NOTIFY_ONDOWNLOAD = False
-        self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PUSHOVER_USERKEY = None
-        self.PUSHOVER_APIKEY = None
-        self.PUSHOVER_DEVICE = None
-        self.PUSHOVER_SOUND = None
-        self.USE_LIBNOTIFY = False
-        self.LIBNOTIFY_NOTIFY_ONSNATCH = False
-        self.LIBNOTIFY_NOTIFY_ONDOWNLOAD = False
-        self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.USE_NMJ = False
-        self.NMJ_HOST = None
-        self.NMJ_DATABASE = None
-        self.NMJ_MOUNT = None
-        self.USE_ANIDB = False
-        self.ANIDB_USERNAME = None
-        self.ANIDB_PASSWORD = None
-        self.ANIDB_USE_MYLIST = False
-        self.ANIME_SPLIT_HOME = False
-        self.USE_SYNOINDEX = False
-        self.USE_NMJv2 = False
-        self.NMJv2_HOST = None
-        self.NMJv2_DATABASE = None
-        self.NMJv2_DBLOC = None
-        self.USE_SYNOLOGYNOTIFIER = False
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = False
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = False
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.USE_SLACK = False
-        self.SLACK_NOTIFY_ONSNATCH = None
-        self.SLACK_NOTIFY_ONDOWNLOAD = None
-        self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = None
-        self.SLACK_WEBHOOK = ""
-        self.USE_DISCORD = False
-        self.DISCORD_NOTIFY_ONSNATCH = False
-        self.DISCORD_NOTIFY_ONDOWNLOAD = False
-        self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.DISCORD_WEBHOOK = ""
-        self.DISCORD_NAME = None
-        self.DISCORD_AVATAR_URL = None
-        self.DISCORD_TTS = False
-        self.USE_TRAKT = False
-        self.TRAKT_USERNAME = ""
-        self.TRAKT_OAUTH_TOKEN = ""
-        self.TRAKT_REMOVE_WATCHLIST = False
-        self.TRAKT_REMOVE_SERIESLIST = False
-        self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = False
-        self.TRAKT_SYNC_WATCHLIST = False
-        self.TRAKT_METHOD_ADD = False
-        self.TRAKT_START_PAUSED = False
-        self.TRAKT_USE_RECOMMENDED = False
-        self.TRAKT_SYNC = False
-        self.TRAKT_SYNC_REMOVE = False
-        self.TRAKT_DEFAULT_INDEXER = 1
-        self.TRAKT_TIMEOUT = 30
-        self.TRAKT_BLACKLIST_NAME = ""
-        self.USE_PYTIVO = False
-        self.PYTIVO_NOTIFY_ONSNATCH = False
-        self.PYTIVO_NOTIFY_ONDOWNLOAD = False
-        self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PYTIVO_UPDATE_LIBRARY = False
-        self.PYTIVO_HOST = None
-        self.PYTIVO_SHARE_NAME = None
-        self.PYTIVO_TIVO_NAME = None
-        self.USE_NMA = False
-        self.NMA_NOTIFY_ONSNATCH = False
-        self.NMA_NOTIFY_ONDOWNLOAD = False
-        self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.NMA_API = None
-        self.NMA_PRIORITY = 0
-        self.USE_PUSHALOT = False
-        self.PUSHALOT_NOTIFY_ONSNATCH = False
-        self.PUSHALOT_NOTIFY_ONDOWNLOAD = False
-        self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PUSHALOT_AUTHORIZATIONTOKEN = None
-        self.USE_PUSHBULLET = False
-        self.PUSHBULLET_NOTIFY_ONSNATCH = False
-        self.PUSHBULLET_NOTIFY_ONDOWNLOAD = False
-        self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.PUSHBULLET_API = None
-        self.PUSHBULLET_DEVICE = None
-        self.USE_EMAIL = False
-        self.EMAIL_NOTIFY_ONSNATCH = False
-        self.EMAIL_NOTIFY_ONDOWNLOAD = False
-        self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = False
-        self.EMAIL_HOST = None
-        self.EMAIL_PORT = 25
-        self.EMAIL_TLS = False
-        self.EMAIL_USER = None
-        self.EMAIL_PASSWORD = None
-        self.EMAIL_FROM = None
-        self.EMAIL_LIST = None
-        self.GUI_LANG = ""
-        self.GUI_STATIC_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'static')
-        self.GUI_VIEWS_DIR = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
-        self.HOME_LAYOUT = None
-        self.HISTORY_LAYOUT = None
-        self.HISTORY_LIMIT = 0
-        self.DISPLAY_SHOW_SPECIALS = False
-        self.COMING_EPS_LAYOUT = None
-        self.COMING_EPS_DISPLAY_PAUSED = False
-        self.COMING_EPS_SORT = None
-        self.COMING_EPS_MISSED_RANGE = None
-        self.FUZZY_DATING = False
-        self.TRIM_ZERO = False
-        self.DATE_PRESET = None
-        self.TIME_PRESET = None
-        self.TIME_PRESET_W_SECONDS = None
-        self.TIMEZONE_DISPLAY = None
-        self.THEME_NAME = None
-        self.POSTER_SORTBY = None
-        self.POSTER_SORTDIR = None
-        self.FILTER_ROW = True
-        self.USE_SUBTITLES = False
-        self.SUBTITLES_LANGUAGES = None
-        self.SUBTITLES_DIR = None
-        self.SUBTITLES_SERVICES_LIST = None
-        self.SUBTITLES_SERVICES_ENABLED = None
-        self.SUBTITLES_HISTORY = False
-        self.EMBEDDED_SUBTITLES_ALL = False
-        self.SUBTITLES_HEARING_IMPAIRED = False
-        self.SUBTITLES_MULTI = False
-        self.SUBTITLES_EXTRA_SCRIPTS = None
-        self.ADDIC7ED_USER = None
-        self.ADDIC7ED_PASS = None
-        self.OPENSUBTITLES_USER = None
-        self.OPENSUBTITLES_PASS = None
-        self.LEGENDASTV_USER = None
-        self.LEGENDASTV_PASS = None
-        self.ITASA_USER = None
-        self.ITASA_PASS = None
-        self.USE_FAILED_DOWNLOADS = False
-        self.DELETE_FAILED = False
-        self.EXTRA_SCRIPTS = None
-        self.REQUIRE_WORDS = None
-        self.IGNORE_WORDS = None
-        self.IGNORED_SUBS_LIST = None
-        self.SYNC_FILES = None
-        self.CALENDAR_UNPROTECTED = False
-        self.CALENDAR_ICONS = False
-        self.NO_RESTART = False
-        self.THETVDB_APITOKEN = None
-        self.TRAKT_API_KEY = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
-        self.TRAKT_API_SECRET = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
-        self.TRAKT_APP_ID = '4562'
-        self.TRAKT_OAUTH_URL = 'https://trakt.tv/'
-        self.TRAKT_API_URL = 'https://api.trakt.tv/'
-        self.FANART_API_KEY = '9b3afaf26f6241bdb57d6cc6bd798da7'
-        self.SHOWS_RECENT = []
+        self.quality_default = SD
+        self.status_default = SKIPPED
+        self.status_default_after = WANTED
+        self.flatten_folders_default = False
+        self.subtitles_default = False
+        self.indexer_default = 0
+        self.indexer_timeout = 120
+        self.scene_default = False
+        self.anime_default = False
+        self.archive_default = False
+        self.naming_multi_ep = False
+        self.naming_anime_multi_ep = False
+        self.naming_pattern = None
+        self.naming_abd_pattern = None
+        self.naming_custom_abd = False
+        self.naming_sports_pattern = None
+        self.naming_custom_sports = False
+        self.naming_anime_pattern = None
+        self.naming_custom_anime = False
+        self.naming_force_folders = False
+        self.naming_strip_year = False
+        self.naming_anime = None
+        self.use_nzbs = False
+        self.use_torrents = False
+        self.nzb_method = None
+        self.nzb_dir = None
+        self.usenet_retention = 500
+        self.torrent_method = None
+        self.torrent_dir = None
+        self.download_propers = False
+        self.enable_rss_cache = True
+        self.enable_rss_cache_valid_shows = False
+        self.torrent_file_to_magnet = False
+        self.proper_searcher_interval = None
+        self.allow_high_priority = False
+        self.sab_forced = False
+        self.randomize_providers = False
+        self.min_autopostprocessor_freq = 1
+        self.min_daily_searcher_freq = 10
+        self.min_backlog_searcher_freq = 10
+        self.min_version_updater_freq = 1
+        self.min_subtitle_searcher_freq = 1
+        self.backlog_days = 7
+        self.add_shows_wo_dir = False
+        self.create_missing_show_dirs = False
+        self.rename_episodes = False
+        self.airdate_episodes = False
+        self.file_timestamp_timezone = None
+        self.process_automatically = False
+        self.no_delete = False
+        self.keep_processed_dir = False
+        self.process_method = None
+        self.delrarcontents = False
+        self.move_associated_files = False
+        self.postpone_if_sync_files = True
+        self.nfo_rename = True
+        self.tv_download_dir = None
+        self.unpack = False
+        self.skip_removed_files = False
+        self.nzbs = False
+        self.nzbs_uid = None
+        self.nzbs_hash = None
+        self.omgwtfnzbs = False
+        self.newzbin = False
+        self.newzbin_username = None
+        self.newzbin_password = None
+        self.sab_username = None
+        self.sab_password = None
+        self.sab_apikey = None
+        self.sab_category = None
+        self.sab_category_backlog = None
+        self.sab_category_anime = None
+        self.sab_category_anime_backlog = None
+        self.sab_host = None
+        self.nzbget_username = None
+        self.nzbget_password = None
+        self.nzbget_category = None
+        self.nzbget_category_backlog = None
+        self.nzbget_category_anime = None
+        self.nzbget_category_anime_backlog = None
+        self.nzbget_host = None
+        self.nzbget_use_https = False
+        self.nzbget_priority = 100
+        self.torrent_username = None
+        self.torrent_password = None
+        self.torrent_host = None
+        self.torrent_path = None
+        self.torrent_seed_time = None
+        self.torrent_paused = False
+        self.torrent_high_bandwidth = False
+        self.torrent_label = None
+        self.torrent_label_anime = None
+        self.torrent_verify_cert = False
+        self.torrent_rpcurl = None
+        self.torrent_auth_type = None
+        self.use_kodi = False
+        self.kodi_always_on = True
+        self.kodi_notify_onsnatch = False
+        self.kodi_notify_ondownload = False
+        self.kodi_notify_onsubtitledownload = False
+        self.kodi_update_library = False
+        self.kodi_update_full = False
+        self.kodi_update_onlyfirst = False
+        self.kodi_host = None
+        self.kodi_username = None
+        self.kodi_password = None
+        self.use_plex = False
+        self.plex_notify_onsnatch = False
+        self.plex_notify_ondownload = False
+        self.plex_notify_onsubtitledownload = False
+        self.plex_update_library = False
+        self.plex_server_host = None
+        self.plex_server_token = None
+        self.plex_host = None
+        self.plex_username = None
+        self.plex_password = None
+        self.use_plex_client = False
+        self.plex_client_username = None
+        self.plex_client_password = None
+        self.use_emby = False
+        self.emby_host = None
+        self.emby_apikey = None
+        self.use_growl = False
+        self.growl_notify_onsnatch = False
+        self.growl_notify_ondownload = False
+        self.growl_notify_onsubtitledownload = False
+        self.growl_host = None
+        self.growl_password = None
+        self.use_freemobile = False
+        self.freemobile_notify_onsnatch = False
+        self.freemobile_notify_ondownload = False
+        self.freemobile_notify_onsubtitledownload = False
+        self.freemobile_id = ""
+        self.freemobile_apikey = ""
+        self.use_telegram = False
+        self.telegram_notify_onsnatch = False
+        self.telegram_notify_ondownload = False
+        self.telegram_notify_onsubtitledownload = False
+        self.telegram_id = ""
+        self.telegram_apikey = ""
+        self.use_prowl = False
+        self.prowl_notify_onsnatch = False
+        self.prowl_notify_ondownload = False
+        self.prowl_notify_onsubtitledownload = False
+        self.prowl_api = None
+        self.prowl_priority = 0
+        self.use_twitter = False
+        self.twitter_notify_onsnatch = False
+        self.twitter_notify_ondownload = False
+        self.twitter_notify_onsubtitledownload = False
+        self.twitter_username = None
+        self.twitter_password = None
+        self.twitter_prefix = None
+        self.twitter_dmto = None
+        self.twitter_usedm = False
+        self.use_boxcar2 = False
+        self.boxcar2_notify_onsnatch = False
+        self.boxcar2_notify_ondownload = False
+        self.boxcar2_notify_onsubtitledownload = False
+        self.boxcar2_accesstoken = None
+        self.use_pushover = False
+        self.pushover_notify_onsnatch = False
+        self.pushover_notify_ondownload = False
+        self.pushover_notify_onsubtitledownload = False
+        self.pushover_userkey = None
+        self.pushover_apikey = None
+        self.pushover_device = None
+        self.pushover_sound = None
+        self.use_libnotify = False
+        self.libnotify_notify_onsnatch = False
+        self.libnotify_notify_ondownload = False
+        self.libnotify_notify_onsubtitledownload = False
+        self.use_nmj = False
+        self.nmj_host = None
+        self.nmj_database = None
+        self.nmj_mount = None
+        self.use_anidb = False
+        self.anidb_username = None
+        self.anidb_password = None
+        self.anidb_use_mylist = False
+        self.anime_split_home = False
+        self.use_synoindex = False
+        self.use_nmjv2 = False
+        self.nmjv2_host = None
+        self.nmjv2_database = None
+        self.nmjv2_dbloc = None
+        self.use_synologynotifier = False
+        self.synologynotifier_notify_onsnatch = False
+        self.synologynotifier_notify_ondownload = False
+        self.synologynotifier_notify_onsubtitledownload = False
+        self.use_slack = False
+        self.slack_notify_onsnatch = None
+        self.slack_notify_ondownload = None
+        self.slack_notify_onsubtitledownload = None
+        self.slack_webhook = ""
+        self.use_discord = False
+        self.discord_notify_onsnatch = False
+        self.discord_notify_ondownload = False
+        self.discord_notify_onsubtitledownload = False
+        self.discord_webhook = ""
+        self.discord_name = None
+        self.discord_avatar_url = None
+        self.discord_tts = False
+        self.use_trakt = False
+        self.trakt_username = ""
+        self.trakt_oauth_token = ""
+        self.trakt_remove_watchlist = False
+        self.trakt_remove_serieslist = False
+        self.trakt_remove_show_from_sickrage = False
+        self.trakt_sync_watchlist = False
+        self.trakt_method_add = False
+        self.trakt_start_paused = False
+        self.trakt_use_recommended = False
+        self.trakt_sync = False
+        self.trakt_sync_remove = False
+        self.trakt_default_indexer = 1
+        self.trakt_timeout = 30
+        self.trakt_blacklist_name = ""
+        self.use_pytivo = False
+        self.pytivo_notify_onsnatch = False
+        self.pytivo_notify_ondownload = False
+        self.pytivo_notify_onsubtitledownload = False
+        self.pytivo_update_library = False
+        self.pytivo_host = None
+        self.pytivo_share_name = None
+        self.pytivo_tivo_name = None
+        self.use_nma = False
+        self.nma_notify_onsnatch = False
+        self.nma_notify_ondownload = False
+        self.nma_notify_onsubtitledownload = False
+        self.nma_api = None
+        self.nma_priority = 0
+        self.use_pushalot = False
+        self.pushalot_notify_onsnatch = False
+        self.pushalot_notify_ondownload = False
+        self.pushalot_notify_onsubtitledownload = False
+        self.pushalot_authorizationtoken = None
+        self.use_pushbullet = False
+        self.pushbullet_notify_onsnatch = False
+        self.pushbullet_notify_ondownload = False
+        self.pushbullet_notify_onsubtitledownload = False
+        self.pushbullet_api = None
+        self.pushbullet_device = None
+        self.use_email = False
+        self.email_notify_onsnatch = False
+        self.email_notify_ondownload = False
+        self.email_notify_onsubtitledownload = False
+        self.email_host = None
+        self.email_port = 25
+        self.email_tls = False
+        self.email_user = None
+        self.email_password = None
+        self.email_from = None
+        self.email_list = None
+        self.gui_lang = ""
+        self.gui_static_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'static')
+        self.gui_views_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
+        self.home_layout = None
+        self.history_layout = None
+        self.history_limit = 0
+        self.display_show_specials = False
+        self.coming_eps_layout = None
+        self.coming_eps_display_paused = False
+        self.coming_eps_sort = None
+        self.coming_eps_missed_range = None
+        self.fuzzy_dating = False
+        self.trim_zero = False
+        self.date_preset = None
+        self.time_preset = None
+        self.time_preset_w_seconds = None
+        self.timezone_display = None
+        self.theme_name = None
+        self.poster_sortby = None
+        self.poster_sortdir = None
+        self.filter_row = True
+        self.use_subtitles = False
+        self.subtitles_languages = None
+        self.subtitles_dir = None
+        self.subtitles_services_list = None
+        self.subtitles_services_enabled = None
+        self.subtitles_history = False
+        self.embedded_subtitles_all = False
+        self.subtitles_hearing_impaired = False
+        self.subtitles_multi = False
+        self.subtitles_extra_scripts = None
+        self.addic7ed_user = None
+        self.addic7ed_pass = None
+        self.opensubtitles_user = None
+        self.opensubtitles_pass = None
+        self.legendastv_user = None
+        self.legendastv_pass = None
+        self.itasa_user = None
+        self.itasa_pass = None
+        self.use_failed_downloads = False
+        self.delete_failed = False
+        self.extra_scripts = None
+        self.require_words = None
+        self.ignore_words = None
+        self.ignored_subs_list = None
+        self.sync_files = None
+        self.calendar_unprotected = False
+        self.calendar_icons = False
+        self.no_restart = False
+        self.thetvdb_apitoken = None
+        self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
+        self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
+        self.trakt_app_id = '4562'
+        self.trakt_oauth_url = 'https://trakt.tv/'
+        self.trakt_api_url = 'https://api.trakt.tv/'
+        self.fanart_api_key = '9b3afaf26f6241bdb57d6cc6bd798da7'
+        self.shows_recent = []
 
-        self.DEFAULT_AUTOPOSTPROCESSOR_FREQ = 10
-        self.AUTOPOSTPROCESSOR_FREQ = None
+        self.default_autopostprocessor_freq = 10
+        self.autopostprocessor_freq = None
 
-        self.DEFAULT_NAMECACHE_FREQ = 10
-        self.NAMECACHE_FREQ = None
+        self.default_namecache_freq = 10
+        self.namecache_freq = None
 
-        self.DEFAULT_DAILY_SEARCHER_FREQ = 40
-        self.DAILY_SEARCHER_FREQ = None
+        self.default_daily_searcher_freq = 40
+        self.daily_searcher_freq = None
 
-        self.DEFAULT_BACKLOG_SEARCHER_FREQ = 21
-        self.BACKLOG_SEARCHER_FREQ = None
+        self.default_backlog_searcher_freq = 21
+        self.backlog_searcher_freq = None
 
-        self.DEFAULT_VERSION_UPDATE_FREQ = 1
-        self.VERSION_UPDATER_FREQ = None
+        self.default_version_update_freq = 1
+        self.version_updater_freq = None
 
-        self.DEFAULT_SUBTITLE_SEARCHER_FREQ = 1
-        self.SUBTITLE_SEARCHER_FREQ = None
+        self.default_subtitle_searcher_freq = 1
+        self.subtitle_searcher_freq = None
 
-        self.DEFAULT_SHOWUPDATE_HOUR = 3
-        self.SHOWUPDATE_HOUR = None
+        self.default_showupdate_hour = 3
+        self.showupdate_hour = None
 
-        self.QUALITY_SIZES = None
+        self.quality_sizes = None
 
-        self.CUSTOM_PROVIDERS = None
+        self.custom_providers = None
 
-        self.GIT_REMOTE = "origin"
-        self.GIT_REMOTE_URL = "https://git.sickrage.ca/SiCKRAGE/sickrage"
+        self.git_remote = "origin"
+        self.git_remote_url = "https://git.sickrage.ca/SiCKRAGE/sickrage"
 
-        self.RANDOM_USER_AGENT = False
+        self.random_user_agent = False
 
-        self.FANART_BACKGROUND = True
-        self.FANART_BACKGROUND_OPACITY = 0.4
+        self.fanart_background = True
+        self.fanart_background_opacity = 0.4
 
-        self.UNRAR_TOOL = rarfile.UNRAR_TOOL
-        self.UNRAR_ALT_TOOL = rarfile.ALT_TOOL
+        self.unrar_tool = rarfile.UNRAR_TOOL
+        self.unrar_alt_tool = rarfile.ALT_TOOL
 
     @property
     def defaults(self):
@@ -925,7 +925,7 @@ class Config(object):
             # System default language
             gettext.install('messages', sickrage.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
-        self.GUI_LANG = lang
+        self.gui_lang = lang
 
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it
@@ -948,8 +948,8 @@ class Config(object):
                 test = rarfile._check_unrar_tool()
                 if test:
                     # These must always be set to something before returning
-                    self.UNRAR_TOOL = rarfile.UNRAR_TOOL
-                    self.ALT_UNRAR_TOOL = rarfile.ALT_TOOL
+                    self.unrar_tool = rarfile.UNRAR_TOOL
+                    self.alt_unrar_tool = rarfile.ALT_TOOL
                     return True
             except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
                 pass
@@ -1006,16 +1006,16 @@ class Config(object):
                         sickrage.app.log.info('Unable to download unrar.exe')
 
         # These must always be set to something before returning
-        self.UNRAR_TOOL = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
-        self.UNRAR_ALT_TOOL = rarfile.ALT_TOOL = unrar_alt_tool
+        self.unrar_tool = rarfile.UNRAR_TOOL = rarfile.ORIG_UNRAR_TOOL = unrar_tool
+        self.unrar_alt_tool = rarfile.ALT_TOOL = unrar_alt_tool
 
         try:
             rarfile._check_unrar_tool()
             return True
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-            if self.UNPACK:
+            if self.unpack:
                 sickrage.app.log.info('Disabling UNPACK setting because no unrar is installed.')
-                self.UNPACK = False
+                self.unpack = False
 
     def change_https_cert(self, https_cert):
         """
@@ -1026,12 +1026,12 @@ class Config(object):
         """
 
         if https_cert == '':
-            self.HTTPS_CERT = ''
+            self.https_cert = ''
             return True
 
-        if os.path.normpath(self.HTTPS_CERT) != os.path.normpath(https_cert):
+        if os.path.normpath(self.https_cert) != os.path.normpath(https_cert):
             if makeDir(os.path.dirname(os.path.abspath(https_cert))):
-                self.HTTPS_CERT = os.path.normpath(https_cert)
+                self.https_cert = os.path.normpath(https_cert)
                 sickrage.app.log.info("Changed https cert path to " + https_cert)
             else:
                 return False
@@ -1046,12 +1046,12 @@ class Config(object):
         :return: True on success, False on failure
         """
         if https_key == '':
-            self.HTTPS_KEY = ''
+            self.https_key = ''
             return True
 
-        if os.path.normpath(self.HTTPS_KEY) != os.path.normpath(https_key):
+        if os.path.normpath(self.https_key) != os.path.normpath(https_key):
             if makeDir(os.path.dirname(os.path.abspath(https_key))):
-                self.HTTPS_KEY = os.path.normpath(https_key)
+                self.https_key = os.path.normpath(https_key)
                 sickrage.app.log.info("Changed https key path to " + https_key)
             else:
                 return False
@@ -1066,12 +1066,12 @@ class Config(object):
         :return: True on success, False on failure
         """
         if nzb_dir == '':
-            self.NZB_DIR = ''
+            self.nzb_dir = ''
             return True
 
-        if os.path.normpath(self.NZB_DIR) != os.path.normpath(nzb_dir):
+        if os.path.normpath(self.nzb_dir) != os.path.normpath(nzb_dir):
             if makeDir(nzb_dir):
-                self.NZB_DIR = os.path.normpath(nzb_dir)
+                self.nzb_dir = os.path.normpath(nzb_dir)
                 sickrage.app.log.info("Changed NZB folder to " + nzb_dir)
             else:
                 return False
@@ -1086,12 +1086,12 @@ class Config(object):
         :return: True on success, False on failure
         """
         if torrent_dir == '':
-            self.TORRENT_DIR = ''
+            self.torrent_dir = ''
             return True
 
-        if os.path.normpath(self.TORRENT_DIR) != os.path.normpath(torrent_dir):
+        if os.path.normpath(self.torrent_dir) != os.path.normpath(torrent_dir):
             if makeDir(torrent_dir):
-                self.TORRENT_DIR = os.path.normpath(torrent_dir)
+                self.torrent_dir = os.path.normpath(torrent_dir)
                 sickrage.app.log.info("Changed torrent folder to " + torrent_dir)
             else:
                 return False
@@ -1106,12 +1106,12 @@ class Config(object):
         :return: True on success, False on failure
         """
         if tv_download_dir == '':
-            self.TV_DOWNLOAD_DIR = ''
+            self.tv_download_dir = ''
             return True
 
-        if os.path.normpath(self.TV_DOWNLOAD_DIR) != os.path.normpath(tv_download_dir):
+        if os.path.normpath(self.tv_download_dir) != os.path.normpath(tv_download_dir):
             if makeDir(tv_download_dir):
-                self.TV_DOWNLOAD_DIR = os.path.normpath(tv_download_dir)
+                self.tv_download_dir = os.path.normpath(tv_download_dir)
                 sickrage.app.log.info("Changed TV download folder to " + tv_download_dir)
             else:
                 return False
@@ -1125,10 +1125,10 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.AUTOPOSTPROCESSOR_FREQ = try_int(freq, self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
+        self.autopostprocessor_freq = try_int(freq, self.default_autopostprocessor_freq)
         sickrage.app.scheduler.modify_job('POSTPROCESSOR',
                                           trigger=IntervalTrigger(
-                                              minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
+                                              minutes=self.autopostprocessor_freq if self.autopostprocessor_freq >= self.min_autopostprocessor_freq else self.min_autopostprocessor_freq
                                           ))
 
     def change_daily_searcher_freq(self, freq):
@@ -1137,10 +1137,10 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.DAILY_SEARCHER_FREQ = try_int(freq, self.DEFAULT_DAILY_SEARCHER_FREQ)
+        self.daily_searcher_freq = try_int(freq, self.default_daily_searcher_freq)
         sickrage.app.scheduler.modify_job('DAILYSEARCHER',
                                           trigger=IntervalTrigger(
-                                              minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
+                                              minutes=self.daily_searcher_freq if self.daily_searcher_freq >= self.min_daily_searcher_freq else self.min_daily_searcher_freq
                                           ))
 
     def change_backlog_searcher_freq(self, freq):
@@ -1149,11 +1149,11 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.BACKLOG_SEARCHER_FREQ = try_int(freq, self.DEFAULT_BACKLOG_SEARCHER_FREQ)
-        self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
+        self.backlog_searcher_freq = try_int(freq, self.default_backlog_searcher_freq)
+        self.min_backlog_searcher_freq = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
         sickrage.app.scheduler.modify_job('BACKLOG',
                                           trigger=IntervalTrigger(
-                                              minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
+                                              minutes=self.backlog_searcher_freq if self.backlog_searcher_freq >= self.min_backlog_searcher_freq else self.min_backlog_searcher_freq
                                           ))
 
     def change_updater_freq(self, freq):
@@ -1162,10 +1162,10 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.VERSION_UPDATER_FREQ = try_int(freq, self.DEFAULT_VERSION_UPDATE_FREQ)
+        self.version_updater_freq = try_int(freq, self.default_version_update_freq)
         sickrage.app.scheduler.modify_job('VERSIONUPDATER',
                                           trigger=IntervalTrigger(
-                                              hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
+                                              hours=self.version_updater_freq if self.version_updater_freq >= self.min_version_updater_freq else self.min_version_updater_freq
                                           ))
 
     def change_showupdate_hour(self, freq):
@@ -1174,12 +1174,12 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.SHOWUPDATE_HOUR = try_int(freq, self.DEFAULT_SHOWUPDATE_HOUR)
+        self.showupdate_hour = try_int(freq, self.default_showupdate_hour)
         sickrage.app.scheduler.modify_job('SHOWUPDATER',
                                           trigger=IntervalTrigger(
                                               hours=1,
                                               start_date=datetime.datetime.now().replace(
-                                                  hour=self.SHOWUPDATE_HOUR if self.SHOWUPDATE_HOUR >= 0 and self.SHOWUPDATE_HOUR <= 23 else 0)
+                                                  hour=self.showupdate_hour if self.showupdate_hour >= 0 and self.showupdate_hour <= 23 else 0)
                                           ))
 
     def change_subtitle_searcher_freq(self, freq):
@@ -1188,10 +1188,10 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.SUBTITLE_SEARCHER_FREQ = try_int(freq, self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
+        self.subtitle_searcher_freq = try_int(freq, self.default_subtitle_searcher_freq)
         sickrage.app.scheduler.modify_job('SUBTITLESEARCHER',
                                           trigger=IntervalTrigger(
-                                              hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
+                                              hours=self.subtitle_searcher_freq if self.subtitle_searcher_freq >= self.min_subtitle_searcher_freq else self.min_subtitle_searcher_freq
                                           ))
 
     def change_version_notify(self, version_notify):
@@ -1200,8 +1200,8 @@ class Config(object):
 
         :param version_notify: New frequency
         """
-        self.VERSION_NOTIFY = checkbox_to_value(version_notify)
-        if not self.VERSION_NOTIFY:
+        self.version_notify = checkbox_to_value(version_notify)
+        if not self.version_notify:
             sickrage.app.newest_version_string = None
 
     def change_download_propers(self, download_propers):
@@ -1211,9 +1211,9 @@ class Config(object):
 
         :param download_propers: New desired state
         """
-        self.DOWNLOAD_PROPERS = checkbox_to_value(download_propers)
+        self.download_propers = checkbox_to_value(download_propers)
         job = sickrage.app.scheduler.get_job('PROPERSEARCHER')
-        (job.pause, job.resume)[self.DOWNLOAD_PROPERS]()
+        (job.pause, job.resume)[self.download_propers]()
 
     def change_use_trakt(self, use_trakt):
         """
@@ -1222,9 +1222,9 @@ class Config(object):
 
         :param use_trakt: New desired state
         """
-        self.USE_TRAKT = checkbox_to_value(use_trakt)
+        self.use_trakt = checkbox_to_value(use_trakt)
         job = sickrage.app.scheduler.get_job('TRAKTSEARCHER')
-        (job.pause, job.resume)[self.USE_TRAKT]()
+        (job.pause, job.resume)[self.use_trakt]()
 
     def change_use_subtitles(self, use_subtitles):
         """
@@ -1233,9 +1233,9 @@ class Config(object):
 
         :param use_subtitles: New desired state
         """
-        self.USE_SUBTITLES = checkbox_to_value(use_subtitles)
+        self.use_subtitles = checkbox_to_value(use_subtitles)
         job = sickrage.app.scheduler.get_job('SUBTITLESEARCHER')
-        (job.pause, job.resume)[self.USE_SUBTITLES]()
+        (job.pause, job.resume)[self.use_subtitles]()
 
     def change_process_automatically(self, process_automatically):
         """
@@ -1244,9 +1244,9 @@ class Config(object):
 
         :param process_automatically: New desired state
         """
-        self.PROCESS_AUTOMATICALLY = checkbox_to_value(process_automatically)
+        self.process_automatically = checkbox_to_value(process_automatically)
         job = sickrage.app.scheduler.get_job('POSTPROCESSOR')
-        (job.pause, job.resume)[self.PROCESS_AUTOMATICALLY]()
+        (job.pause, job.resume)[self.process_automatically]()
 
     ################################################################################
     # check_setting_int                                                            #
@@ -1354,8 +1354,8 @@ class Config(object):
         if defaults: self.config_obj.clear()
 
         # decrypt settings
-        self.ENCRYPTION_VERSION = self.check_setting_int('General', 'encryption_version')
-        self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', censor=True)
+        self.encryption_version = self.check_setting_int('General', 'encryption_version')
+        self.encryption_secret = self.check_setting_str('General', 'encryption_secret', censor=True)
         self.config_obj.walk(self.decrypt)
 
         # migrate config
@@ -1366,438 +1366,438 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
-        self.DEBUG = sickrage.app.debug or self.check_setting_bool('General', 'debug')
-        self.DEVELOPER = sickrage.app.developer or self.check_setting_bool('General', 'developer')
-        self.LAST_DB_COMPACT = self.check_setting_int('General', 'last_db_compact')
-        self.LOG_NR = self.check_setting_int('General', 'log_nr')
-        self.LOG_SIZE = self.check_setting_int('General', 'log_size')
-        self.SOCKET_TIMEOUT = self.check_setting_int('General', 'socket_timeout')
-        self.DEFAULT_PAGE = self.check_setting_str('General', 'default_page')
-        self.PIP_PATH = self.check_setting_str('General', 'pip_path')
-        self.GIT_PATH = self.check_setting_str('General', 'git_path')
-        self.GIT_AUTOISSUES = self.check_setting_bool('General', 'git_autoissues')
-        self.GIT_USERNAME = self.check_setting_str('General', 'git_username', censor=True)
-        self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', censor=True)
-        self.GIT_NEWVER = self.check_setting_bool('General', 'git_newver')
-        self.GIT_RESET = self.check_setting_bool('General', 'git_reset')
-        self.WEB_PORT = sickrage.app.web_port or self.check_setting_int('General', 'web_port')
-        self.WEB_HOST = self.check_setting_str('General', 'web_host')
-        self.WEB_IPV6 = self.check_setting_bool('General', 'web_ipv6')
-        self.WEB_ROOT = self.check_setting_str('General', 'web_root').rstrip("/")
-        self.WEB_LOG = self.check_setting_bool('General', 'web_log')
-        self.WEB_USERNAME = self.check_setting_str('General', 'web_username', censor=True)
-        self.WEB_PASSWORD = self.check_setting_str('General', 'web_password', censor=True)
-        self.WEB_COOKIE_SECRET = self.check_setting_str('General', 'web_cookie_secret')
-        self.WEB_USE_GZIP = self.check_setting_bool('General', 'web_use_gzip')
-        self.SSL_VERIFY = self.check_setting_bool('General', 'ssl_verify')
-        self.LAUNCH_BROWSER = self.check_setting_bool('General', 'launch_browser')
-        self.INDEXER_DEFAULT_LANGUAGE = self.check_setting_str('General', 'indexerDefaultLang')
-        self.EP_DEFAULT_DELETED_STATUS = self.check_setting_int('General', 'ep_default_deleted_status')
-        self.DOWNLOAD_URL = self.check_setting_str('General', 'download_url')
-        self.CPU_PRESET = self.check_setting_str('General', 'cpu_preset')
-        self.ANON_REDIRECT = self.check_setting_str('General', 'anon_redirect')
-        self.PROXY_SETTING = self.check_setting_str('General', 'proxy_setting')
-        self.PROXY_INDEXERS = self.check_setting_bool('General', 'proxy_indexers')
-        self.TRASH_REMOVE_SHOW = self.check_setting_bool('General', 'trash_remove_show')
-        self.TRASH_ROTATE_LOGS = self.check_setting_bool('General', 'trash_rotate_logs')
-        self.SORT_ARTICLE = self.check_setting_bool('General', 'sort_article')
-        self.API_KEY = self.check_setting_str('General', 'api_key', censor=True)
-        self.ENABLE_HTTPS = self.check_setting_bool('General', 'enable_https')
-        self.HTTPS_CERT = self.check_setting_str('General', 'https_cert')
-        self.HTTPS_KEY = self.check_setting_str('General', 'https_key')
-        self.HANDLE_REVERSE_PROXY = self.check_setting_bool('General', 'handle_reverse_proxy')
-        self.ROOT_DIRS = self.check_setting_str('General', 'root_dirs')
-        self.QUALITY_DEFAULT = self.check_setting_int('General', 'quality_default')
-        self.STATUS_DEFAULT = self.check_setting_int('General', 'status_default')
-        self.STATUS_DEFAULT_AFTER = self.check_setting_int('General', 'status_default_after')
-        self.VERSION_NOTIFY = self.check_setting_bool('General', 'version_notify')
-        self.AUTO_UPDATE = self.check_setting_bool('General', 'auto_update')
-        self.NOTIFY_ON_UPDATE = self.check_setting_bool('General', 'notify_on_update')
-        self.NOTIFY_ON_LOGIN = self.check_setting_bool('General', 'notify_on_login')
-        self.FLATTEN_FOLDERS_DEFAULT = self.check_setting_bool('General', 'flatten_folders_default')
-        self.INDEXER_DEFAULT = self.check_setting_int('General', 'indexer_default')
-        self.INDEXER_TIMEOUT = self.check_setting_int('General', 'indexer_timeout')
-        self.ANIME_DEFAULT = self.check_setting_bool('General', 'anime_default')
-        self.SCENE_DEFAULT = self.check_setting_bool('General', 'scene_default')
-        self.ARCHIVE_DEFAULT = self.check_setting_bool('General', 'archive_default')
-        self.NAMING_PATTERN = self.check_setting_str('General', 'naming_pattern')
-        self.NAMING_ABD_PATTERN = self.check_setting_str('General', 'naming_abd_pattern')
-        self.NAMING_CUSTOM_ABD = self.check_setting_bool('General', 'naming_custom_abd')
-        self.NAMING_SPORTS_PATTERN = self.check_setting_str('General', 'naming_sports_pattern')
-        self.NAMING_ANIME_PATTERN = self.check_setting_str('General', 'naming_anime_pattern')
-        self.NAMING_ANIME = self.check_setting_int('General', 'naming_anime')
-        self.NAMING_CUSTOM_SPORTS = self.check_setting_bool('General', 'naming_custom_sports')
-        self.NAMING_CUSTOM_ANIME = self.check_setting_bool('General', 'naming_custom_anime')
-        self.NAMING_MULTI_EP = self.check_setting_int('General', 'naming_multi_ep')
-        self.NAMING_ANIME_MULTI_EP = self.check_setting_int('General', 'naming_anime_multi_ep')
-        self.NAMING_STRIP_YEAR = self.check_setting_bool('General', 'naming_strip_year')
-        self.USE_NZBS = self.check_setting_bool('General', 'use_nzbs')
-        self.USE_TORRENTS = self.check_setting_bool('General', 'use_torrents')
-        self.NZB_METHOD = self.check_setting_str('General', 'nzb_method')
-        self.TORRENT_METHOD = self.check_setting_str('General', 'torrent_method')
-        self.DOWNLOAD_PROPERS = self.check_setting_bool('General', 'download_propers')
-        self.ENABLE_RSS_CACHE = self.check_setting_bool('General', 'enable_rss_cache')
-        self.ENABLE_RSS_CACHE_VALID_SHOWS = self.check_setting_bool('General', 'enable_rss_cache_valid_shows')
-        self.TORRENT_FILE_TO_MAGNET = self.check_setting_bool('General', 'torrent_file_to_magnet')
-        self.PROPER_SEARCHER_INTERVAL = self.check_setting_str('General', 'check_propers_interval')
-        self.RANDOMIZE_PROVIDERS = self.check_setting_bool('General', 'randomize_providers')
-        self.ALLOW_HIGH_PRIORITY = self.check_setting_bool('General', 'allow_high_priority')
-        self.SKIP_REMOVED_FILES = self.check_setting_bool('General', 'skip_removed_files')
-        self.USENET_RETENTION = self.check_setting_int('General', 'usenet_retention')
-        self.DAILY_SEARCHER_FREQ = self.check_setting_int('General', 'dailysearch_frequency')
-        self.BACKLOG_SEARCHER_FREQ = self.check_setting_int('General', 'backlog_frequency')
-        self.VERSION_UPDATER_FREQ = self.check_setting_int('General', 'update_frequency')
-        self.SHOWUPDATE_STALE = self.check_setting_bool('General', 'showupdate_stale')
-        self.SHOWUPDATE_HOUR = self.check_setting_int('General', 'showupdate_hour')
-        self.BACKLOG_DAYS = self.check_setting_int('General', 'backlog_days')
-        self.AUTOPOSTPROCESSOR_FREQ = self.check_setting_int('General', 'autopostprocessor_frequency')
-        self.TV_DOWNLOAD_DIR = self.check_setting_str('General', 'tv_download_dir')
-        self.PROCESS_AUTOMATICALLY = self.check_setting_bool('General', 'process_automatically')
-        self.NO_DELETE = self.check_setting_bool('General', 'no_delete')
-        self.UNPACK = self.check_setting_bool('General', 'unpack')
-        self.RENAME_EPISODES = self.check_setting_bool('General', 'rename_episodes')
-        self.AIRDATE_EPISODES = self.check_setting_bool('General', 'airdate_episodes')
-        self.FILE_TIMESTAMP_TIMEZONE = self.check_setting_str('General', 'file_timestamp_timezone')
-        self.KEEP_PROCESSED_DIR = self.check_setting_bool('General', 'keep_processed_dir')
-        self.PROCESS_METHOD = self.check_setting_str('General', 'process_method')
-        self.DELRARCONTENTS = self.check_setting_bool('General', 'del_rar_contents')
-        self.MOVE_ASSOCIATED_FILES = self.check_setting_bool('General', 'move_associated_files')
-        self.POSTPONE_IF_SYNC_FILES = self.check_setting_bool('General', 'postpone_if_sync_files')
-        self.SYNC_FILES = self.check_setting_str('General', 'sync_files')
-        self.NFO_RENAME = self.check_setting_bool('General', 'nfo_rename')
-        self.CREATE_MISSING_SHOW_DIRS = self.check_setting_bool('General', 'create_missing_show_dirs')
-        self.ADD_SHOWS_WO_DIR = self.check_setting_bool('General', 'add_shows_wo_dir')
-        self.REQUIRE_WORDS = self.check_setting_str('General', 'require_words')
-        self.IGNORE_WORDS = self.check_setting_str('General', 'ignore_words')
-        self.IGNORED_SUBS_LIST = self.check_setting_str('General', 'ignored_subs_list')
-        self.CALENDAR_UNPROTECTED = self.check_setting_bool('General', 'calendar_unprotected')
-        self.CALENDAR_ICONS = self.check_setting_bool('General', 'calendar_icons')
-        self.NO_RESTART = self.check_setting_bool('General', 'no_restart')
-        self.EXTRA_SCRIPTS = [x.strip() for x in self.check_setting_str('General', 'extra_scripts').split('|') if
+        self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
+        self.developer = sickrage.app.developer or self.check_setting_bool('General', 'developer')
+        self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
+        self.log_nr = self.check_setting_int('General', 'log_nr')
+        self.log_size = self.check_setting_int('General', 'log_size')
+        self.socket_timeout = self.check_setting_int('General', 'socket_timeout')
+        self.default_page = self.check_setting_str('General', 'default_page')
+        self.pip_path = self.check_setting_str('General', 'pip_path')
+        self.git_path = self.check_setting_str('General', 'git_path')
+        self.git_autoissues = self.check_setting_bool('General', 'git_autoissues')
+        self.git_username = self.check_setting_str('General', 'git_username', censor=True)
+        self.git_password = self.check_setting_str('General', 'git_password', censor=True)
+        self.git_newver = self.check_setting_bool('General', 'git_newver')
+        self.git_reset = self.check_setting_bool('General', 'git_reset')
+        self.web_port = sickrage.app.web_port or self.check_setting_int('General', 'web_port')
+        self.web_host = self.check_setting_str('General', 'web_host')
+        self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
+        self.web_root = self.check_setting_str('General', 'web_root').rstrip("/")
+        self.web_log = self.check_setting_bool('General', 'web_log')
+        self.web_username = self.check_setting_str('General', 'web_username', censor=True)
+        self.web_password = self.check_setting_str('General', 'web_password', censor=True)
+        self.web_cookie_secret = self.check_setting_str('General', 'web_cookie_secret')
+        self.web_use_gzip = self.check_setting_bool('General', 'web_use_gzip')
+        self.ssl_verify = self.check_setting_bool('General', 'ssl_verify')
+        self.launch_browser = self.check_setting_bool('General', 'launch_browser')
+        self.indexer_default_language = self.check_setting_str('General', 'indexerDefaultLang')
+        self.ep_default_deleted_status = self.check_setting_int('General', 'ep_default_deleted_status')
+        self.download_url = self.check_setting_str('General', 'download_url')
+        self.cpu_preset = self.check_setting_str('General', 'cpu_preset')
+        self.anon_redirect = self.check_setting_str('General', 'anon_redirect')
+        self.proxy_setting = self.check_setting_str('General', 'proxy_setting')
+        self.proxy_indexers = self.check_setting_bool('General', 'proxy_indexers')
+        self.trash_remove_show = self.check_setting_bool('General', 'trash_remove_show')
+        self.trash_rotate_logs = self.check_setting_bool('General', 'trash_rotate_logs')
+        self.sort_article = self.check_setting_bool('General', 'sort_article')
+        self.api_key = self.check_setting_str('General', 'api_key', censor=True)
+        self.enable_https = self.check_setting_bool('General', 'enable_https')
+        self.https_cert = self.check_setting_str('General', 'https_cert')
+        self.https_key = self.check_setting_str('General', 'https_key')
+        self.handle_reverse_proxy = self.check_setting_bool('General', 'handle_reverse_proxy')
+        self.root_dirs = self.check_setting_str('General', 'root_dirs')
+        self.quality_default = self.check_setting_int('General', 'quality_default')
+        self.status_default = self.check_setting_int('General', 'status_default')
+        self.status_default_after = self.check_setting_int('General', 'status_default_after')
+        self.version_notify = self.check_setting_bool('General', 'version_notify')
+        self.auto_update = self.check_setting_bool('General', 'auto_update')
+        self.notify_on_update = self.check_setting_bool('General', 'notify_on_update')
+        self.notify_on_login = self.check_setting_bool('General', 'notify_on_login')
+        self.flatten_folders_default = self.check_setting_bool('General', 'flatten_folders_default')
+        self.indexer_default = self.check_setting_int('General', 'indexer_default')
+        self.indexer_timeout = self.check_setting_int('General', 'indexer_timeout')
+        self.anime_default = self.check_setting_bool('General', 'anime_default')
+        self.scene_default = self.check_setting_bool('General', 'scene_default')
+        self.archive_default = self.check_setting_bool('General', 'archive_default')
+        self.naming_pattern = self.check_setting_str('General', 'naming_pattern')
+        self.naming_abd_pattern = self.check_setting_str('General', 'naming_abd_pattern')
+        self.naming_custom_abd = self.check_setting_bool('General', 'naming_custom_abd')
+        self.naming_sports_pattern = self.check_setting_str('General', 'naming_sports_pattern')
+        self.naming_anime_pattern = self.check_setting_str('General', 'naming_anime_pattern')
+        self.naming_anime = self.check_setting_int('General', 'naming_anime')
+        self.naming_custom_sports = self.check_setting_bool('General', 'naming_custom_sports')
+        self.naming_custom_anime = self.check_setting_bool('General', 'naming_custom_anime')
+        self.naming_multi_ep = self.check_setting_int('General', 'naming_multi_ep')
+        self.naming_anime_multi_ep = self.check_setting_int('General', 'naming_anime_multi_ep')
+        self.naming_strip_year = self.check_setting_bool('General', 'naming_strip_year')
+        self.use_nzbs = self.check_setting_bool('General', 'use_nzbs')
+        self.use_torrents = self.check_setting_bool('General', 'use_torrents')
+        self.nzb_method = self.check_setting_str('General', 'nzb_method')
+        self.torrent_method = self.check_setting_str('General', 'torrent_method')
+        self.download_propers = self.check_setting_bool('General', 'download_propers')
+        self.enable_rss_cache = self.check_setting_bool('General', 'enable_rss_cache')
+        self.enable_rss_cache_valid_shows = self.check_setting_bool('General', 'enable_rss_cache_valid_shows')
+        self.torrent_file_to_magnet = self.check_setting_bool('General', 'torrent_file_to_magnet')
+        self.proper_searcher_interval = self.check_setting_str('General', 'check_propers_interval')
+        self.randomize_providers = self.check_setting_bool('General', 'randomize_providers')
+        self.allow_high_priority = self.check_setting_bool('General', 'allow_high_priority')
+        self.skip_removed_files = self.check_setting_bool('General', 'skip_removed_files')
+        self.usenet_retention = self.check_setting_int('General', 'usenet_retention')
+        self.daily_searcher_freq = self.check_setting_int('General', 'dailysearch_frequency')
+        self.backlog_searcher_freq = self.check_setting_int('General', 'backlog_frequency')
+        self.version_updater_freq = self.check_setting_int('General', 'update_frequency')
+        self.showupdate_stale = self.check_setting_bool('General', 'showupdate_stale')
+        self.showupdate_hour = self.check_setting_int('General', 'showupdate_hour')
+        self.backlog_days = self.check_setting_int('General', 'backlog_days')
+        self.autopostprocessor_freq = self.check_setting_int('General', 'autopostprocessor_frequency')
+        self.tv_download_dir = self.check_setting_str('General', 'tv_download_dir')
+        self.process_automatically = self.check_setting_bool('General', 'process_automatically')
+        self.no_delete = self.check_setting_bool('General', 'no_delete')
+        self.unpack = self.check_setting_bool('General', 'unpack')
+        self.rename_episodes = self.check_setting_bool('General', 'rename_episodes')
+        self.airdate_episodes = self.check_setting_bool('General', 'airdate_episodes')
+        self.file_timestamp_timezone = self.check_setting_str('General', 'file_timestamp_timezone')
+        self.keep_processed_dir = self.check_setting_bool('General', 'keep_processed_dir')
+        self.process_method = self.check_setting_str('General', 'process_method')
+        self.delrarcontents = self.check_setting_bool('General', 'del_rar_contents')
+        self.move_associated_files = self.check_setting_bool('General', 'move_associated_files')
+        self.postpone_if_sync_files = self.check_setting_bool('General', 'postpone_if_sync_files')
+        self.sync_files = self.check_setting_str('General', 'sync_files')
+        self.nfo_rename = self.check_setting_bool('General', 'nfo_rename')
+        self.create_missing_show_dirs = self.check_setting_bool('General', 'create_missing_show_dirs')
+        self.add_shows_wo_dir = self.check_setting_bool('General', 'add_shows_wo_dir')
+        self.require_words = self.check_setting_str('General', 'require_words')
+        self.ignore_words = self.check_setting_str('General', 'ignore_words')
+        self.ignored_subs_list = self.check_setting_str('General', 'ignored_subs_list')
+        self.calendar_unprotected = self.check_setting_bool('General', 'calendar_unprotected')
+        self.calendar_icons = self.check_setting_bool('General', 'calendar_icons')
+        self.no_restart = self.check_setting_bool('General', 'no_restart')
+        self.extra_scripts = [x.strip() for x in self.check_setting_str('General', 'extra_scripts').split('|') if
                               x.strip()]
-        self.USE_LISTVIEW = self.check_setting_bool('General', 'use_listview')
-        self.DISPLAY_ALL_SEASONS = self.check_setting_bool('General', 'display_all_seasons')
-        self.RANDOM_USER_AGENT = self.check_setting_bool('General', 'random_user_agent')
+        self.use_listview = self.check_setting_bool('General', 'use_listview')
+        self.display_all_seasons = self.check_setting_bool('General', 'display_all_seasons')
+        self.random_user_agent = self.check_setting_bool('General', 'random_user_agent')
 
         # GUI SETTINGS
-        self.GUI_LANG = self.check_setting_str('GUI', 'gui_lang')
-        self.THEME_NAME = self.check_setting_str('GUI', 'theme_name')
-        self.FANART_BACKGROUND = self.check_setting_bool('GUI', 'fanart_background')
-        self.FANART_BACKGROUND_OPACITY = self.check_setting_float('GUI', 'fanart_background_opacity')
-        self.HOME_LAYOUT = self.check_setting_str('GUI', 'home_layout')
-        self.HISTORY_LAYOUT = self.check_setting_str('GUI', 'history_layout')
-        self.HISTORY_LIMIT = self.check_setting_str('GUI', 'history_limit')
-        self.DISPLAY_SHOW_SPECIALS = self.check_setting_bool('GUI', 'display_show_specials')
-        self.COMING_EPS_LAYOUT = self.check_setting_str('GUI', 'coming_eps_layout')
-        self.COMING_EPS_DISPLAY_PAUSED = self.check_setting_bool('GUI', 'coming_eps_display_paused')
-        self.COMING_EPS_SORT = self.check_setting_str('GUI', 'coming_eps_sort')
-        self.COMING_EPS_MISSED_RANGE = self.check_setting_int('GUI', 'coming_eps_missed_range')
-        self.FUZZY_DATING = self.check_setting_bool('GUI', 'fuzzy_dating')
-        self.TRIM_ZERO = self.check_setting_bool('GUI', 'trim_zero')
-        self.DATE_PRESET = self.check_setting_str('GUI', 'date_preset')
-        self.TIME_PRESET_W_SECONDS = self.check_setting_str('GUI', 'time_preset')
-        self.TIME_PRESET = self.TIME_PRESET_W_SECONDS.replace(":%S", "")
-        self.TIMEZONE_DISPLAY = self.check_setting_str('GUI', 'timezone_display')
-        self.POSTER_SORTBY = self.check_setting_str('GUI', 'poster_sortby')
-        self.POSTER_SORTDIR = self.check_setting_int('GUI', 'poster_sortdir')
-        self.FILTER_ROW = self.check_setting_bool('GUI', 'filter_row')
+        self.gui_lang = self.check_setting_str('GUI', 'gui_lang')
+        self.theme_name = self.check_setting_str('GUI', 'theme_name')
+        self.fanart_background = self.check_setting_bool('GUI', 'fanart_background')
+        self.fanart_background_opacity = self.check_setting_float('GUI', 'fanart_background_opacity')
+        self.home_layout = self.check_setting_str('GUI', 'home_layout')
+        self.history_layout = self.check_setting_str('GUI', 'history_layout')
+        self.history_limit = self.check_setting_str('GUI', 'history_limit')
+        self.display_show_specials = self.check_setting_bool('GUI', 'display_show_specials')
+        self.coming_eps_layout = self.check_setting_str('GUI', 'coming_eps_layout')
+        self.coming_eps_display_paused = self.check_setting_bool('GUI', 'coming_eps_display_paused')
+        self.coming_eps_sort = self.check_setting_str('GUI', 'coming_eps_sort')
+        self.coming_eps_missed_range = self.check_setting_int('GUI', 'coming_eps_missed_range')
+        self.fuzzy_dating = self.check_setting_bool('GUI', 'fuzzy_dating')
+        self.trim_zero = self.check_setting_bool('GUI', 'trim_zero')
+        self.date_preset = self.check_setting_str('GUI', 'date_preset')
+        self.time_preset_w_seconds = self.check_setting_str('GUI', 'time_preset')
+        self.time_preset = self.time_preset_w_seconds.replace(":%S", "")
+        self.timezone_display = self.check_setting_str('GUI', 'timezone_display')
+        self.poster_sortby = self.check_setting_str('GUI', 'poster_sortby')
+        self.poster_sortdir = self.check_setting_int('GUI', 'poster_sortdir')
+        self.filter_row = self.check_setting_bool('GUI', 'filter_row')
 
         # BLACKHOLE SETTINGS
-        self.NZB_DIR = self.check_setting_str('Blackhole', 'nzb_dir')
-        self.TORRENT_DIR = self.check_setting_str('Blackhole', 'torrent_dir')
+        self.nzb_dir = self.check_setting_str('Blackhole', 'nzb_dir')
+        self.torrent_dir = self.check_setting_str('Blackhole', 'torrent_dir')
 
         # NZBS SETTINGS
-        self.NZBS = self.check_setting_bool('NZBs', 'nzbs')
-        self.NZBS_UID = self.check_setting_str('NZBs', 'nzbs_uid')
-        self.NZBS_HASH = self.check_setting_str('NZBs', 'nzbs_hash', censor=True)
+        self.nzbs = self.check_setting_bool('NZBs', 'nzbs')
+        self.nzbs_uid = self.check_setting_str('NZBs', 'nzbs_uid')
+        self.nzbs_hash = self.check_setting_str('NZBs', 'nzbs_hash', censor=True)
 
         # NEWZBIN SETTINGS
-        self.NEWZBIN = self.check_setting_bool('Newzbin', 'newzbin')
-        self.NEWZBIN_USERNAME = self.check_setting_str('Newzbin', 'newzbin_username', censor=True)
-        self.NEWZBIN_PASSWORD = self.check_setting_str('Newzbin', 'newzbin_password', censor=True)
+        self.newzbin = self.check_setting_bool('Newzbin', 'newzbin')
+        self.newzbin_username = self.check_setting_str('Newzbin', 'newzbin_username', censor=True)
+        self.newzbin_password = self.check_setting_str('Newzbin', 'newzbin_password', censor=True)
 
         # SABNZBD SETTINGS
-        self.SAB_USERNAME = self.check_setting_str('SABnzbd', 'sab_username', censor=True)
-        self.SAB_PASSWORD = self.check_setting_str('SABnzbd', 'sab_password', censor=True)
-        self.SAB_APIKEY = self.check_setting_str('SABnzbd', 'sab_apikey', censor=True)
-        self.SAB_CATEGORY = self.check_setting_str('SABnzbd', 'sab_category')
-        self.SAB_CATEGORY_BACKLOG = self.check_setting_str('SABnzbd', 'sab_category_backlog')
-        self.SAB_CATEGORY_ANIME = self.check_setting_str('SABnzbd', 'sab_category_anime')
-        self.SAB_CATEGORY_ANIME_BACKLOG = self.check_setting_str('SABnzbd', 'sab_category_anime_backlog')
-        self.SAB_HOST = self.check_setting_str('SABnzbd', 'sab_host')
-        self.SAB_FORCED = self.check_setting_bool('SABnzbd', 'sab_forced')
+        self.sab_username = self.check_setting_str('SABnzbd', 'sab_username', censor=True)
+        self.sab_password = self.check_setting_str('SABnzbd', 'sab_password', censor=True)
+        self.sab_apikey = self.check_setting_str('SABnzbd', 'sab_apikey', censor=True)
+        self.sab_category = self.check_setting_str('SABnzbd', 'sab_category')
+        self.sab_category_backlog = self.check_setting_str('SABnzbd', 'sab_category_backlog')
+        self.sab_category_anime = self.check_setting_str('SABnzbd', 'sab_category_anime')
+        self.sab_category_anime_backlog = self.check_setting_str('SABnzbd', 'sab_category_anime_backlog')
+        self.sab_host = self.check_setting_str('SABnzbd', 'sab_host')
+        self.sab_forced = self.check_setting_bool('SABnzbd', 'sab_forced')
 
         # NZBGET SETTINGS
-        self.NZBGET_USERNAME = self.check_setting_str('NZBget', 'nzbget_username', censor=True)
-        self.NZBGET_PASSWORD = self.check_setting_str('NZBget', 'nzbget_password', censor=True)
-        self.NZBGET_CATEGORY = self.check_setting_str('NZBget', 'nzbget_category')
-        self.NZBGET_CATEGORY_BACKLOG = self.check_setting_str('NZBget', 'nzbget_category_backlog')
-        self.NZBGET_CATEGORY_ANIME = self.check_setting_str('NZBget', 'nzbget_category_anime')
-        self.NZBGET_CATEGORY_ANIME_BACKLOG = self.check_setting_str('NZBget', 'nzbget_category_anime_backlog')
-        self.NZBGET_HOST = self.check_setting_str('NZBget', 'nzbget_host')
-        self.NZBGET_USE_HTTPS = self.check_setting_bool('NZBget', 'nzbget_use_https')
-        self.NZBGET_PRIORITY = self.check_setting_int('NZBget', 'nzbget_priority')
+        self.nzbget_username = self.check_setting_str('NZBget', 'nzbget_username', censor=True)
+        self.nzbget_password = self.check_setting_str('NZBget', 'nzbget_password', censor=True)
+        self.nzbget_category = self.check_setting_str('NZBget', 'nzbget_category')
+        self.nzbget_category_backlog = self.check_setting_str('NZBget', 'nzbget_category_backlog')
+        self.nzbget_category_anime = self.check_setting_str('NZBget', 'nzbget_category_anime')
+        self.nzbget_category_anime_backlog = self.check_setting_str('NZBget', 'nzbget_category_anime_backlog')
+        self.nzbget_host = self.check_setting_str('NZBget', 'nzbget_host')
+        self.nzbget_use_https = self.check_setting_bool('NZBget', 'nzbget_use_https')
+        self.nzbget_priority = self.check_setting_int('NZBget', 'nzbget_priority')
 
         # TORRENT SETTINGS
-        self.TORRENT_USERNAME = self.check_setting_str('TORRENT', 'torrent_username', censor=True)
-        self.TORRENT_PASSWORD = self.check_setting_str('TORRENT', 'torrent_password', censor=True)
-        self.TORRENT_HOST = self.check_setting_str('TORRENT', 'torrent_host')
-        self.TORRENT_PATH = self.check_setting_str('TORRENT', 'torrent_path')
-        self.TORRENT_SEED_TIME = self.check_setting_int('TORRENT', 'torrent_seed_time')
-        self.TORRENT_PAUSED = self.check_setting_bool('TORRENT', 'torrent_paused')
-        self.TORRENT_HIGH_BANDWIDTH = self.check_setting_bool('TORRENT', 'torrent_high_bandwidth')
-        self.TORRENT_LABEL = self.check_setting_str('TORRENT', 'torrent_label')
-        self.TORRENT_LABEL_ANIME = self.check_setting_str('TORRENT', 'torrent_label_anime')
-        self.TORRENT_VERIFY_CERT = self.check_setting_bool('TORRENT', 'torrent_verify_cert')
-        self.TORRENT_RPCURL = self.check_setting_str('TORRENT', 'torrent_rpcurl')
-        self.TORRENT_AUTH_TYPE = self.check_setting_str('TORRENT', 'torrent_auth_type')
+        self.torrent_username = self.check_setting_str('TORRENT', 'torrent_username', censor=True)
+        self.torrent_password = self.check_setting_str('TORRENT', 'torrent_password', censor=True)
+        self.torrent_host = self.check_setting_str('TORRENT', 'torrent_host')
+        self.torrent_path = self.check_setting_str('TORRENT', 'torrent_path')
+        self.torrent_seed_time = self.check_setting_int('TORRENT', 'torrent_seed_time')
+        self.torrent_paused = self.check_setting_bool('TORRENT', 'torrent_paused')
+        self.torrent_high_bandwidth = self.check_setting_bool('TORRENT', 'torrent_high_bandwidth')
+        self.torrent_label = self.check_setting_str('TORRENT', 'torrent_label')
+        self.torrent_label_anime = self.check_setting_str('TORRENT', 'torrent_label_anime')
+        self.torrent_verify_cert = self.check_setting_bool('TORRENT', 'torrent_verify_cert')
+        self.torrent_rpcurl = self.check_setting_str('TORRENT', 'torrent_rpcurl')
+        self.torrent_auth_type = self.check_setting_str('TORRENT', 'torrent_auth_type')
 
         # KODI SETTINGS
-        self.USE_KODI = self.check_setting_bool('KODI', 'use_kodi')
-        self.KODI_ALWAYS_ON = self.check_setting_bool('KODI', 'kodi_always_on')
-        self.KODI_NOTIFY_ONSNATCH = self.check_setting_bool('KODI', 'kodi_notify_onsnatch')
-        self.KODI_NOTIFY_ONDOWNLOAD = self.check_setting_bool('KODI', 'kodi_notify_ondownload')
-        self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('KODI', 'kodi_notify_onsubtitledownload')
-        self.KODI_UPDATE_LIBRARY = self.check_setting_bool('KODI', 'kodi_update_library')
-        self.KODI_UPDATE_FULL = self.check_setting_bool('KODI', 'kodi_update_full')
-        self.KODI_UPDATE_ONLYFIRST = self.check_setting_bool('KODI', 'kodi_update_onlyfirst')
-        self.KODI_HOST = self.check_setting_str('KODI', 'kodi_host')
-        self.KODI_USERNAME = self.check_setting_str('KODI', 'kodi_username', censor=True)
-        self.KODI_PASSWORD = self.check_setting_str('KODI', 'kodi_password', censor=True)
+        self.use_kodi = self.check_setting_bool('KODI', 'use_kodi')
+        self.kodi_always_on = self.check_setting_bool('KODI', 'kodi_always_on')
+        self.kodi_notify_onsnatch = self.check_setting_bool('KODI', 'kodi_notify_onsnatch')
+        self.kodi_notify_ondownload = self.check_setting_bool('KODI', 'kodi_notify_ondownload')
+        self.kodi_notify_onsubtitledownload = self.check_setting_bool('KODI', 'kodi_notify_onsubtitledownload')
+        self.kodi_update_library = self.check_setting_bool('KODI', 'kodi_update_library')
+        self.kodi_update_full = self.check_setting_bool('KODI', 'kodi_update_full')
+        self.kodi_update_onlyfirst = self.check_setting_bool('KODI', 'kodi_update_onlyfirst')
+        self.kodi_host = self.check_setting_str('KODI', 'kodi_host')
+        self.kodi_username = self.check_setting_str('KODI', 'kodi_username', censor=True)
+        self.kodi_password = self.check_setting_str('KODI', 'kodi_password', censor=True)
 
         # PLEX SETTINGS
-        self.USE_PLEX = self.check_setting_bool('Plex', 'use_plex')
-        self.PLEX_NOTIFY_ONSNATCH = self.check_setting_bool('Plex', 'plex_notify_onsnatch')
-        self.PLEX_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Plex', 'plex_notify_ondownload')
-        self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Plex', 'plex_notify_onsubtitledownload')
-        self.PLEX_UPDATE_LIBRARY = self.check_setting_bool('Plex', 'plex_update_library')
-        self.PLEX_SERVER_HOST = self.check_setting_str('Plex', 'plex_server_host')
-        self.PLEX_SERVER_TOKEN = self.check_setting_str('Plex', 'plex_server_token', censor=True)
-        self.PLEX_HOST = self.check_setting_str('Plex', 'plex_host')
-        self.PLEX_USERNAME = self.check_setting_str('Plex', 'plex_username', censor=True)
-        self.PLEX_PASSWORD = self.check_setting_str('Plex', 'plex_password', censor=True)
-        self.USE_PLEX_CLIENT = self.check_setting_bool('Plex', 'use_plex_client')
-        self.PLEX_CLIENT_USERNAME = self.check_setting_str('Plex', 'plex_client_username', censor=True)
-        self.PLEX_CLIENT_PASSWORD = self.check_setting_str('Plex', 'plex_client_password', censor=True)
+        self.use_plex = self.check_setting_bool('Plex', 'use_plex')
+        self.plex_notify_onsnatch = self.check_setting_bool('Plex', 'plex_notify_onsnatch')
+        self.plex_notify_ondownload = self.check_setting_bool('Plex', 'plex_notify_ondownload')
+        self.plex_notify_onsubtitledownload = self.check_setting_bool('Plex', 'plex_notify_onsubtitledownload')
+        self.plex_update_library = self.check_setting_bool('Plex', 'plex_update_library')
+        self.plex_server_host = self.check_setting_str('Plex', 'plex_server_host')
+        self.plex_server_token = self.check_setting_str('Plex', 'plex_server_token', censor=True)
+        self.plex_host = self.check_setting_str('Plex', 'plex_host')
+        self.plex_username = self.check_setting_str('Plex', 'plex_username', censor=True)
+        self.plex_password = self.check_setting_str('Plex', 'plex_password', censor=True)
+        self.use_plex_client = self.check_setting_bool('Plex', 'use_plex_client')
+        self.plex_client_username = self.check_setting_str('Plex', 'plex_client_username', censor=True)
+        self.plex_client_password = self.check_setting_str('Plex', 'plex_client_password', censor=True)
 
         # EMBY SETTINGS
-        self.USE_EMBY = self.check_setting_bool('Emby', 'use_emby')
-        self.EMBY_HOST = self.check_setting_str('Emby', 'emby_host')
-        self.EMBY_APIKEY = self.check_setting_str('Emby', 'emby_apikey', censor=True)
+        self.use_emby = self.check_setting_bool('Emby', 'use_emby')
+        self.emby_host = self.check_setting_str('Emby', 'emby_host')
+        self.emby_apikey = self.check_setting_str('Emby', 'emby_apikey', censor=True)
 
         # GROWL SETTINGS
-        self.USE_GROWL = self.check_setting_bool('Growl', 'use_growl')
-        self.GROWL_NOTIFY_ONSNATCH = self.check_setting_bool('Growl', 'growl_notify_onsnatch')
-        self.GROWL_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Growl', 'growl_notify_ondownload')
-        self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Growl', 'growl_notify_onsubtitledownload')
-        self.GROWL_HOST = self.check_setting_str('Growl', 'growl_host')
-        self.GROWL_PASSWORD = self.check_setting_str('Growl', 'growl_password', censor=True)
+        self.use_growl = self.check_setting_bool('Growl', 'use_growl')
+        self.growl_notify_onsnatch = self.check_setting_bool('Growl', 'growl_notify_onsnatch')
+        self.growl_notify_ondownload = self.check_setting_bool('Growl', 'growl_notify_ondownload')
+        self.growl_notify_onsubtitledownload = self.check_setting_bool('Growl', 'growl_notify_onsubtitledownload')
+        self.growl_host = self.check_setting_str('Growl', 'growl_host')
+        self.growl_password = self.check_setting_str('Growl', 'growl_password', censor=True)
 
         # FREEMOBILE SETTINGS
-        self.USE_FREEMOBILE = self.check_setting_bool('FreeMobile', 'use_freemobile')
-        self.FREEMOBILE_NOTIFY_ONSNATCH = self.check_setting_bool('FreeMobile', 'freemobile_notify_onsnatch')
-        self.FREEMOBILE_NOTIFY_ONDOWNLOAD = self.check_setting_bool('FreeMobile', 'freemobile_notify_ondownload')
-        self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('FreeMobile',
+        self.use_freemobile = self.check_setting_bool('FreeMobile', 'use_freemobile')
+        self.freemobile_notify_onsnatch = self.check_setting_bool('FreeMobile', 'freemobile_notify_onsnatch')
+        self.freemobile_notify_ondownload = self.check_setting_bool('FreeMobile', 'freemobile_notify_ondownload')
+        self.freemobile_notify_onsubtitledownload = self.check_setting_bool('FreeMobile',
                                                                             'freemobile_notify_onsubtitledownload')
-        self.FREEMOBILE_ID = self.check_setting_str('FreeMobile', 'freemobile_id')
-        self.FREEMOBILE_APIKEY = self.check_setting_str('FreeMobile', 'freemobile_apikey', censor=True)
+        self.freemobile_id = self.check_setting_str('FreeMobile', 'freemobile_id')
+        self.freemobile_apikey = self.check_setting_str('FreeMobile', 'freemobile_apikey', censor=True)
 
         # TELEGRAM SETTINGS
-        self.USE_TELEGRAM = self.check_setting_bool('TELEGRAM', 'use_telegram')
-        self.TELEGRAM_NOTIFY_ONSNATCH = self.check_setting_bool('TELEGRAM', 'telegram_notify_onsnatch')
-        self.TELEGRAM_NOTIFY_ONDOWNLOAD = self.check_setting_bool('TELEGRAM', 'telegram_notify_ondownload')
-        self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('TELEGRAM',
+        self.use_telegram = self.check_setting_bool('TELEGRAM', 'use_telegram')
+        self.telegram_notify_onsnatch = self.check_setting_bool('TELEGRAM', 'telegram_notify_onsnatch')
+        self.telegram_notify_ondownload = self.check_setting_bool('TELEGRAM', 'telegram_notify_ondownload')
+        self.telegram_notify_onsubtitledownload = self.check_setting_bool('TELEGRAM',
                                                                           'telegram_notify_onsubtitledownload')
-        self.TELEGRAM_ID = self.check_setting_str('TELEGRAM', 'telegram_id')
-        self.TELEGRAM_APIKEY = self.check_setting_str('TELEGRAM', 'telegram_apikey', censor=True)
+        self.telegram_id = self.check_setting_str('TELEGRAM', 'telegram_id')
+        self.telegram_apikey = self.check_setting_str('TELEGRAM', 'telegram_apikey', censor=True)
 
         # PROWL SETTINGS
-        self.USE_PROWL = self.check_setting_bool('Prowl', 'use_prowl')
-        self.PROWL_NOTIFY_ONSNATCH = self.check_setting_bool('Prowl', 'prowl_notify_onsnatch')
-        self.PROWL_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Prowl', 'prowl_notify_ondownload')
-        self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Prowl', 'prowl_notify_onsubtitledownload')
-        self.PROWL_API = self.check_setting_str('Prowl', 'prowl_api', censor=True)
-        self.PROWL_PRIORITY = self.check_setting_str('Prowl', 'prowl_priority')
+        self.use_prowl = self.check_setting_bool('Prowl', 'use_prowl')
+        self.prowl_notify_onsnatch = self.check_setting_bool('Prowl', 'prowl_notify_onsnatch')
+        self.prowl_notify_ondownload = self.check_setting_bool('Prowl', 'prowl_notify_ondownload')
+        self.prowl_notify_onsubtitledownload = self.check_setting_bool('Prowl', 'prowl_notify_onsubtitledownload')
+        self.prowl_api = self.check_setting_str('Prowl', 'prowl_api', censor=True)
+        self.prowl_priority = self.check_setting_str('Prowl', 'prowl_priority')
 
         # TWITTER SETTINGS
-        self.USE_TWITTER = self.check_setting_bool('Twitter', 'use_twitter')
-        self.TWITTER_NOTIFY_ONSNATCH = self.check_setting_bool('Twitter', 'twitter_notify_onsnatch')
-        self.TWITTER_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Twitter', 'twitter_notify_ondownload')
-        self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twitter', 'twitter_notify_onsubtitledownload')
-        self.TWITTER_USERNAME = self.check_setting_str('Twitter', 'twitter_username', censor=True)
-        self.TWITTER_PASSWORD = self.check_setting_str('Twitter', 'twitter_password', censor=True)
-        self.TWITTER_PREFIX = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
-        self.TWITTER_DMTO = self.check_setting_str('Twitter', 'twitter_dmto')
-        self.TWITTER_USEDM = self.check_setting_bool('Twitter', 'twitter_usedm')
+        self.use_twitter = self.check_setting_bool('Twitter', 'use_twitter')
+        self.twitter_notify_onsnatch = self.check_setting_bool('Twitter', 'twitter_notify_onsnatch')
+        self.twitter_notify_ondownload = self.check_setting_bool('Twitter', 'twitter_notify_ondownload')
+        self.twitter_notify_onsubtitledownload = self.check_setting_bool('Twitter', 'twitter_notify_onsubtitledownload')
+        self.twitter_username = self.check_setting_str('Twitter', 'twitter_username', censor=True)
+        self.twitter_password = self.check_setting_str('Twitter', 'twitter_password', censor=True)
+        self.twitter_prefix = self.check_setting_str('Twitter', 'twitter_prefix', 'SiCKRAGE')
+        self.twitter_dmto = self.check_setting_str('Twitter', 'twitter_dmto')
+        self.twitter_usedm = self.check_setting_bool('Twitter', 'twitter_usedm')
 
-        self.USE_TWILIO = self.check_setting_bool('Twilio', 'use_twilio')
-        self.TWILIO_NOTIFY_ONSNATCH = self.check_setting_bool('Twilio', 'twilio_notify_onsnatch')
-        self.TWILIO_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_ondownload')
-        self.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Twilio', 'twilio_notify_onsubtitledownload')
-        self.TWILIO_PHONE_SID = self.check_setting_str('Twilio', 'twilio_phone_sid', censor=True)
-        self.TWILIO_ACCOUNT_SID = self.check_setting_str('Twilio', 'twilio_account_sid', censor=True)
-        self.TWILIO_AUTH_TOKEN = self.check_setting_str('Twilio', 'twilio_auth_token', censor=True)
-        self.TWILIO_TO_NUMBER = self.check_setting_str('Twilio', 'twilio_to_number', censor=True)
+        self.use_twilio = self.check_setting_bool('Twilio', 'use_twilio')
+        self.twilio_notify_onsnatch = self.check_setting_bool('Twilio', 'twilio_notify_onsnatch')
+        self.twilio_notify_ondownload = self.check_setting_bool('Twilio', 'twilio_notify_ondownload')
+        self.twilio_notify_onsubtitledownload = self.check_setting_bool('Twilio', 'twilio_notify_onsubtitledownload')
+        self.twilio_phone_sid = self.check_setting_str('Twilio', 'twilio_phone_sid', censor=True)
+        self.twilio_account_sid = self.check_setting_str('Twilio', 'twilio_account_sid', censor=True)
+        self.twilio_auth_token = self.check_setting_str('Twilio', 'twilio_auth_token', censor=True)
+        self.twilio_to_number = self.check_setting_str('Twilio', 'twilio_to_number', censor=True)
 
-        self.USE_BOXCAR2 = self.check_setting_bool('Boxcar2', 'use_boxcar2')
-        self.BOXCAR2_NOTIFY_ONSNATCH = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsnatch')
-        self.BOXCAR2_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Boxcar2', 'boxcar2_notify_ondownload')
-        self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsubtitledownload')
-        self.BOXCAR2_ACCESSTOKEN = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', censor=True)
+        self.use_boxcar2 = self.check_setting_bool('Boxcar2', 'use_boxcar2')
+        self.boxcar2_notify_onsnatch = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsnatch')
+        self.boxcar2_notify_ondownload = self.check_setting_bool('Boxcar2', 'boxcar2_notify_ondownload')
+        self.boxcar2_notify_onsubtitledownload = self.check_setting_bool('Boxcar2', 'boxcar2_notify_onsubtitledownload')
+        self.boxcar2_accesstoken = self.check_setting_str('Boxcar2', 'boxcar2_accesstoken', censor=True)
 
-        self.USE_PUSHOVER = self.check_setting_bool('Pushover', 'use_pushover')
-        self.PUSHOVER_NOTIFY_ONSNATCH = self.check_setting_bool('Pushover', 'pushover_notify_onsnatch')
-        self.PUSHOVER_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushover', 'pushover_notify_ondownload')
-        self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushover',
+        self.use_pushover = self.check_setting_bool('Pushover', 'use_pushover')
+        self.pushover_notify_onsnatch = self.check_setting_bool('Pushover', 'pushover_notify_onsnatch')
+        self.pushover_notify_ondownload = self.check_setting_bool('Pushover', 'pushover_notify_ondownload')
+        self.pushover_notify_onsubtitledownload = self.check_setting_bool('Pushover',
                                                                           'pushover_notify_onsubtitledownload')
-        self.PUSHOVER_USERKEY = self.check_setting_str('Pushover', 'pushover_userkey', censor=True)
-        self.PUSHOVER_APIKEY = self.check_setting_str('Pushover', 'pushover_apikey', censor=True)
-        self.PUSHOVER_DEVICE = self.check_setting_str('Pushover', 'pushover_device')
-        self.PUSHOVER_SOUND = self.check_setting_str('Pushover', 'pushover_sound', 'pushover')
+        self.pushover_userkey = self.check_setting_str('Pushover', 'pushover_userkey', censor=True)
+        self.pushover_apikey = self.check_setting_str('Pushover', 'pushover_apikey', censor=True)
+        self.pushover_device = self.check_setting_str('Pushover', 'pushover_device')
+        self.pushover_sound = self.check_setting_str('Pushover', 'pushover_sound', 'pushover')
 
-        self.USE_LIBNOTIFY = self.check_setting_bool('Libnotify', 'use_libnotify')
-        self.LIBNOTIFY_NOTIFY_ONSNATCH = self.check_setting_bool('Libnotify', 'libnotify_notify_onsnatch')
-        self.LIBNOTIFY_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Libnotify', 'libnotify_notify_ondownload')
-        self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Libnotify',
+        self.use_libnotify = self.check_setting_bool('Libnotify', 'use_libnotify')
+        self.libnotify_notify_onsnatch = self.check_setting_bool('Libnotify', 'libnotify_notify_onsnatch')
+        self.libnotify_notify_ondownload = self.check_setting_bool('Libnotify', 'libnotify_notify_ondownload')
+        self.libnotify_notify_onsubtitledownload = self.check_setting_bool('Libnotify',
                                                                            'libnotify_notify_onsubtitledownload')
 
-        self.USE_NMJ = self.check_setting_bool('NMJ', 'use_nmj')
-        self.NMJ_HOST = self.check_setting_str('NMJ', 'nmj_host')
-        self.NMJ_DATABASE = self.check_setting_str('NMJ', 'nmj_database')
-        self.NMJ_MOUNT = self.check_setting_str('NMJ', 'nmj_mount')
+        self.use_nmj = self.check_setting_bool('NMJ', 'use_nmj')
+        self.nmj_host = self.check_setting_str('NMJ', 'nmj_host')
+        self.nmj_database = self.check_setting_str('NMJ', 'nmj_database')
+        self.nmj_mount = self.check_setting_str('NMJ', 'nmj_mount')
 
-        self.USE_NMJv2 = self.check_setting_bool('NMJv2', 'use_nmjv2')
-        self.NMJv2_HOST = self.check_setting_str('NMJv2', 'nmjv2_host')
-        self.NMJv2_DATABASE = self.check_setting_str('NMJv2', 'nmjv2_database')
-        self.NMJv2_DBLOC = self.check_setting_str('NMJv2', 'nmjv2_dbloc')
+        self.use_nmjv2 = self.check_setting_bool('NMJv2', 'use_nmjv2')
+        self.nmjv2_host = self.check_setting_str('NMJv2', 'nmjv2_host')
+        self.nmjv2_database = self.check_setting_str('NMJv2', 'nmjv2_database')
+        self.nmjv2_dbloc = self.check_setting_str('NMJv2', 'nmjv2_dbloc')
 
-        self.USE_SYNOINDEX = self.check_setting_bool('Synology', 'use_synoindex')
+        self.use_synoindex = self.check_setting_bool('Synology', 'use_synoindex')
 
-        self.USE_SYNOLOGYNOTIFIER = self.check_setting_bool('SynologyNotifier', 'use_synologynotifier')
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH = self.check_setting_bool('SynologyNotifier',
+        self.use_synologynotifier = self.check_setting_bool('SynologyNotifier', 'use_synologynotifier')
+        self.synologynotifier_notify_onsnatch = self.check_setting_bool('SynologyNotifier',
                                                                         'synologynotifier_notify_onsnatch')
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD = self.check_setting_bool('SynologyNotifier',
+        self.synologynotifier_notify_ondownload = self.check_setting_bool('SynologyNotifier',
                                                                           'synologynotifier_notify_ondownload')
-        self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('SynologyNotifier',
+        self.synologynotifier_notify_onsubtitledownload = self.check_setting_bool('SynologyNotifier',
                                                                                   'synologynotifier_notify_onsubtitledownload')
 
-        self.THETVDB_APITOKEN = self.check_setting_str('theTVDB', 'thetvdb_apitoken', censor=True)
+        self.thetvdb_apitoken = self.check_setting_str('theTVDB', 'thetvdb_apitoken', censor=True)
 
-        self.USE_SLACK = self.check_setting_bool('Slack', 'use_slack')
-        self.SLACK_NOTIFY_ONSNATCH = self.check_setting_bool('Slack', 'slack_notify_onsnatch')
-        self.SLACK_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Slack', 'slack_notify_ondownload')
-        self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Slack', 'slack_notify_onsubtitledownload')
-        self.SLACK_WEBHOOK = self.check_setting_str('Slack', 'slack_webhook')
+        self.use_slack = self.check_setting_bool('Slack', 'use_slack')
+        self.slack_notify_onsnatch = self.check_setting_bool('Slack', 'slack_notify_onsnatch')
+        self.slack_notify_ondownload = self.check_setting_bool('Slack', 'slack_notify_ondownload')
+        self.slack_notify_onsubtitledownload = self.check_setting_bool('Slack', 'slack_notify_onsubtitledownload')
+        self.slack_webhook = self.check_setting_str('Slack', 'slack_webhook')
 
-        self.USE_DISCORD = self.check_setting_bool('Discord', 'use_discord')
-        self.DISCORD_NOTIFY_ONSNATCH = self.check_setting_bool('Discord', 'discord_notify_onsnatch')
-        self.DISCORD_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Discord', 'discord_notify_ondownload')
-        self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Discord', 'discord_notify_onsubtitledownload')
-        self.DISCORD_WEBHOOK = self.check_setting_str('Discord', 'discord_webhook')
-        self.DISCORD_AVATAR_URL = self.check_setting_str('Discord', 'discord_avatar_url')
-        self.DISCORD_NAME = self.check_setting_str('Discord', 'discord_name')
-        self.DISCORD_TTS = self.check_setting_bool('Discord', 'discord_tts')
+        self.use_discord = self.check_setting_bool('Discord', 'use_discord')
+        self.discord_notify_onsnatch = self.check_setting_bool('Discord', 'discord_notify_onsnatch')
+        self.discord_notify_ondownload = self.check_setting_bool('Discord', 'discord_notify_ondownload')
+        self.discord_notify_onsubtitledownload = self.check_setting_bool('Discord', 'discord_notify_onsubtitledownload')
+        self.discord_webhook = self.check_setting_str('Discord', 'discord_webhook')
+        self.discord_avatar_url = self.check_setting_str('Discord', 'discord_avatar_url')
+        self.discord_name = self.check_setting_str('Discord', 'discord_name')
+        self.discord_tts = self.check_setting_bool('Discord', 'discord_tts')
 
-        self.USE_TRAKT = self.check_setting_bool('Trakt', 'use_trakt')
-        self.TRAKT_USERNAME = self.check_setting_str('Trakt', 'trakt_username', censor=True)
-        self.TRAKT_OAUTH_TOKEN = self.check_setting_pickle('Trakt', 'trakt_oauth_token')
-        self.TRAKT_REMOVE_WATCHLIST = self.check_setting_bool('Trakt', 'trakt_remove_watchlist')
-        self.TRAKT_REMOVE_SERIESLIST = self.check_setting_bool('Trakt', 'trakt_remove_serieslist')
-        self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE = self.check_setting_bool('Trakt', 'trakt_remove_show_from_sickrage')
-        self.TRAKT_SYNC_WATCHLIST = self.check_setting_bool('Trakt', 'trakt_sync_watchlist')
-        self.TRAKT_METHOD_ADD = self.check_setting_int('Trakt', 'trakt_method_add')
-        self.TRAKT_START_PAUSED = self.check_setting_bool('Trakt', 'trakt_start_paused')
-        self.TRAKT_USE_RECOMMENDED = self.check_setting_bool('Trakt', 'trakt_use_recommended')
-        self.TRAKT_SYNC = self.check_setting_bool('Trakt', 'trakt_sync')
-        self.TRAKT_SYNC_REMOVE = self.check_setting_bool('Trakt', 'trakt_sync_remove')
-        self.TRAKT_DEFAULT_INDEXER = self.check_setting_int('Trakt', 'trakt_default_indexer')
-        self.TRAKT_TIMEOUT = self.check_setting_int('Trakt', 'trakt_timeout')
-        self.TRAKT_BLACKLIST_NAME = self.check_setting_str('Trakt', 'trakt_blacklist_name')
+        self.use_trakt = self.check_setting_bool('Trakt', 'use_trakt')
+        self.trakt_username = self.check_setting_str('Trakt', 'trakt_username', censor=True)
+        self.trakt_oauth_token = self.check_setting_pickle('Trakt', 'trakt_oauth_token')
+        self.trakt_remove_watchlist = self.check_setting_bool('Trakt', 'trakt_remove_watchlist')
+        self.trakt_remove_serieslist = self.check_setting_bool('Trakt', 'trakt_remove_serieslist')
+        self.trakt_remove_show_from_sickrage = self.check_setting_bool('Trakt', 'trakt_remove_show_from_sickrage')
+        self.trakt_sync_watchlist = self.check_setting_bool('Trakt', 'trakt_sync_watchlist')
+        self.trakt_method_add = self.check_setting_int('Trakt', 'trakt_method_add')
+        self.trakt_start_paused = self.check_setting_bool('Trakt', 'trakt_start_paused')
+        self.trakt_use_recommended = self.check_setting_bool('Trakt', 'trakt_use_recommended')
+        self.trakt_sync = self.check_setting_bool('Trakt', 'trakt_sync')
+        self.trakt_sync_remove = self.check_setting_bool('Trakt', 'trakt_sync_remove')
+        self.trakt_default_indexer = self.check_setting_int('Trakt', 'trakt_default_indexer')
+        self.trakt_timeout = self.check_setting_int('Trakt', 'trakt_timeout')
+        self.trakt_blacklist_name = self.check_setting_str('Trakt', 'trakt_blacklist_name')
 
-        self.USE_PYTIVO = self.check_setting_bool('pyTivo', 'use_pytivo')
-        self.PYTIVO_NOTIFY_ONSNATCH = self.check_setting_bool('pyTivo', 'pytivo_notify_onsnatch')
-        self.PYTIVO_NOTIFY_ONDOWNLOAD = self.check_setting_bool('pyTivo', 'pytivo_notify_ondownload')
-        self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('pyTivo', 'pytivo_notify_onsubtitledownload')
-        self.PYTIVO_UPDATE_LIBRARY = self.check_setting_bool('pyTivo', 'pyTivo_update_library')
-        self.PYTIVO_HOST = self.check_setting_str('pyTivo', 'pytivo_host')
-        self.PYTIVO_SHARE_NAME = self.check_setting_str('pyTivo', 'pytivo_share_name')
-        self.PYTIVO_TIVO_NAME = self.check_setting_str('pyTivo', 'pytivo_tivo_name')
+        self.use_pytivo = self.check_setting_bool('pyTivo', 'use_pytivo')
+        self.pytivo_notify_onsnatch = self.check_setting_bool('pyTivo', 'pytivo_notify_onsnatch')
+        self.pytivo_notify_ondownload = self.check_setting_bool('pyTivo', 'pytivo_notify_ondownload')
+        self.pytivo_notify_onsubtitledownload = self.check_setting_bool('pyTivo', 'pytivo_notify_onsubtitledownload')
+        self.pytivo_update_library = self.check_setting_bool('pyTivo', 'pyTivo_update_library')
+        self.pytivo_host = self.check_setting_str('pyTivo', 'pytivo_host')
+        self.pytivo_share_name = self.check_setting_str('pyTivo', 'pytivo_share_name')
+        self.pytivo_tivo_name = self.check_setting_str('pyTivo', 'pytivo_tivo_name')
 
-        self.USE_NMA = self.check_setting_bool('NMA', 'use_nma')
-        self.NMA_NOTIFY_ONSNATCH = self.check_setting_bool('NMA', 'nma_notify_onsnatch')
-        self.NMA_NOTIFY_ONDOWNLOAD = self.check_setting_bool('NMA', 'nma_notify_ondownload')
-        self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('NMA', 'nma_notify_onsubtitledownload')
-        self.NMA_API = self.check_setting_str('NMA', 'nma_api', censor=True)
-        self.NMA_PRIORITY = self.check_setting_str('NMA', 'nma_priority')
+        self.use_nma = self.check_setting_bool('NMA', 'use_nma')
+        self.nma_notify_onsnatch = self.check_setting_bool('NMA', 'nma_notify_onsnatch')
+        self.nma_notify_ondownload = self.check_setting_bool('NMA', 'nma_notify_ondownload')
+        self.nma_notify_onsubtitledownload = self.check_setting_bool('NMA', 'nma_notify_onsubtitledownload')
+        self.nma_api = self.check_setting_str('NMA', 'nma_api', censor=True)
+        self.nma_priority = self.check_setting_str('NMA', 'nma_priority')
 
-        self.USE_PUSHALOT = self.check_setting_bool('Pushalot', 'use_pushalot')
-        self.PUSHALOT_NOTIFY_ONSNATCH = self.check_setting_bool('Pushalot', 'pushalot_notify_onsnatch')
-        self.PUSHALOT_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushalot', 'pushalot_notify_ondownload')
-        self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushalot',
+        self.use_pushalot = self.check_setting_bool('Pushalot', 'use_pushalot')
+        self.pushalot_notify_onsnatch = self.check_setting_bool('Pushalot', 'pushalot_notify_onsnatch')
+        self.pushalot_notify_ondownload = self.check_setting_bool('Pushalot', 'pushalot_notify_ondownload')
+        self.pushalot_notify_onsubtitledownload = self.check_setting_bool('Pushalot',
                                                                           'pushalot_notify_onsubtitledownload')
-        self.PUSHALOT_AUTHORIZATIONTOKEN = self.check_setting_str('Pushalot', 'pushalot_authorizationtoken',
+        self.pushalot_authorizationtoken = self.check_setting_str('Pushalot', 'pushalot_authorizationtoken',
                                                                   censor=True)
 
-        self.USE_PUSHBULLET = self.check_setting_bool('Pushbullet', 'use_pushbullet')
-        self.PUSHBULLET_NOTIFY_ONSNATCH = self.check_setting_bool('Pushbullet', 'pushbullet_notify_onsnatch')
-        self.PUSHBULLET_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Pushbullet', 'pushbullet_notify_ondownload')
-        self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Pushbullet',
+        self.use_pushbullet = self.check_setting_bool('Pushbullet', 'use_pushbullet')
+        self.pushbullet_notify_onsnatch = self.check_setting_bool('Pushbullet', 'pushbullet_notify_onsnatch')
+        self.pushbullet_notify_ondownload = self.check_setting_bool('Pushbullet', 'pushbullet_notify_ondownload')
+        self.pushbullet_notify_onsubtitledownload = self.check_setting_bool('Pushbullet',
                                                                             'pushbullet_notify_onsubtitledownload')
-        self.PUSHBULLET_API = self.check_setting_str('Pushbullet', 'pushbullet_api', censor=True)
-        self.PUSHBULLET_DEVICE = self.check_setting_str('Pushbullet', 'pushbullet_device')
+        self.pushbullet_api = self.check_setting_str('Pushbullet', 'pushbullet_api', censor=True)
+        self.pushbullet_device = self.check_setting_str('Pushbullet', 'pushbullet_device')
 
-        self.USE_EMAIL = self.check_setting_bool('Email', 'use_email')
-        self.EMAIL_NOTIFY_ONSNATCH = self.check_setting_bool('Email', 'email_notify_onsnatch')
-        self.EMAIL_NOTIFY_ONDOWNLOAD = self.check_setting_bool('Email', 'email_notify_ondownload')
-        self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD = self.check_setting_bool('Email', 'email_notify_onsubtitledownload')
-        self.EMAIL_HOST = self.check_setting_str('Email', 'email_host')
-        self.EMAIL_PORT = self.check_setting_int('Email', 'email_port')
-        self.EMAIL_TLS = self.check_setting_bool('Email', 'email_tls')
-        self.EMAIL_USER = self.check_setting_str('Email', 'email_user', censor=True)
-        self.EMAIL_PASSWORD = self.check_setting_str('Email', 'email_password', censor=True)
-        self.EMAIL_FROM = self.check_setting_str('Email', 'email_from')
-        self.EMAIL_LIST = self.check_setting_str('Email', 'email_list')
+        self.use_email = self.check_setting_bool('Email', 'use_email')
+        self.email_notify_onsnatch = self.check_setting_bool('Email', 'email_notify_onsnatch')
+        self.email_notify_ondownload = self.check_setting_bool('Email', 'email_notify_ondownload')
+        self.email_notify_onsubtitledownload = self.check_setting_bool('Email', 'email_notify_onsubtitledownload')
+        self.email_host = self.check_setting_str('Email', 'email_host')
+        self.email_port = self.check_setting_int('Email', 'email_port')
+        self.email_tls = self.check_setting_bool('Email', 'email_tls')
+        self.email_user = self.check_setting_str('Email', 'email_user', censor=True)
+        self.email_password = self.check_setting_str('Email', 'email_password', censor=True)
+        self.email_from = self.check_setting_str('Email', 'email_from')
+        self.email_list = self.check_setting_str('Email', 'email_list')
 
         # SUBTITLE SETTINGS
-        self.USE_SUBTITLES = self.check_setting_bool('Subtitles', 'use_subtitles')
-        self.SUBTITLES_LANGUAGES = self.check_setting_str('Subtitles', 'subtitles_languages').split(',')
-        self.SUBTITLES_DIR = self.check_setting_str('Subtitles', 'subtitles_dir')
-        self.SUBTITLES_SERVICES_LIST = self.check_setting_str('Subtitles', 'subtitles_services_list').split(',')
-        self.SUBTITLES_DEFAULT = self.check_setting_bool('Subtitles', 'subtitles_default')
-        self.SUBTITLES_HISTORY = self.check_setting_bool('Subtitles', 'subtitles_history')
-        self.SUBTITLES_HEARING_IMPAIRED = self.check_setting_bool('Subtitles', 'subtitles_hearing_impaired')
-        self.EMBEDDED_SUBTITLES_ALL = self.check_setting_bool('Subtitles', 'embedded_subtitles_all')
-        self.SUBTITLES_MULTI = self.check_setting_bool('Subtitles', 'subtitles_multi')
-        self.SUBTITLES_SERVICES_ENABLED = [int(x) for x in
+        self.use_subtitles = self.check_setting_bool('Subtitles', 'use_subtitles')
+        self.subtitles_languages = self.check_setting_str('Subtitles', 'subtitles_languages').split(',')
+        self.subtitles_dir = self.check_setting_str('Subtitles', 'subtitles_dir')
+        self.subtitles_services_list = self.check_setting_str('Subtitles', 'subtitles_services_list').split(',')
+        self.subtitles_default = self.check_setting_bool('Subtitles', 'subtitles_default')
+        self.subtitles_history = self.check_setting_bool('Subtitles', 'subtitles_history')
+        self.subtitles_hearing_impaired = self.check_setting_bool('Subtitles', 'subtitles_hearing_impaired')
+        self.embedded_subtitles_all = self.check_setting_bool('Subtitles', 'embedded_subtitles_all')
+        self.subtitles_multi = self.check_setting_bool('Subtitles', 'subtitles_multi')
+        self.subtitles_services_enabled = [int(x) for x in
                                            self.check_setting_str('Subtitles', 'subtitles_services_enabled').split('|')
                                            if x]
-        self.SUBTITLES_EXTRA_SCRIPTS = [x.strip() for x in
+        self.subtitles_extra_scripts = [x.strip() for x in
                                         self.check_setting_str('Subtitles', 'subtitles_extra_scripts').split('|') if
                                         x.strip()]
-        self.ADDIC7ED_USER = self.check_setting_str('Subtitles', 'addic7ed_username', censor=True)
-        self.ADDIC7ED_PASS = self.check_setting_str('Subtitles', 'addic7ed_password', censor=True)
-        self.LEGENDASTV_USER = self.check_setting_str('Subtitles', 'legendastv_username', censor=True)
-        self.LEGENDASTV_PASS = self.check_setting_str('Subtitles', 'legendastv_password', censor=True)
-        self.ITASA_USER = self.check_setting_str('Subtitles', 'itasa_username', censor=True)
-        self.ITASA_PASS = self.check_setting_str('Subtitles', 'itasa_password', censor=True)
-        self.OPENSUBTITLES_USER = self.check_setting_str('Subtitles', 'opensubtitles_username', censor=True)
-        self.OPENSUBTITLES_PASS = self.check_setting_str('Subtitles', 'opensubtitles_password', censor=True)
-        self.SUBTITLE_SEARCHER_FREQ = self.check_setting_int('Subtitles', 'subtitles_finder_frequency')
+        self.addic7ed_user = self.check_setting_str('Subtitles', 'addic7ed_username', censor=True)
+        self.addic7ed_pass = self.check_setting_str('Subtitles', 'addic7ed_password', censor=True)
+        self.legendastv_user = self.check_setting_str('Subtitles', 'legendastv_username', censor=True)
+        self.legendastv_pass = self.check_setting_str('Subtitles', 'legendastv_password', censor=True)
+        self.itasa_user = self.check_setting_str('Subtitles', 'itasa_username', censor=True)
+        self.itasa_pass = self.check_setting_str('Subtitles', 'itasa_password', censor=True)
+        self.opensubtitles_user = self.check_setting_str('Subtitles', 'opensubtitles_username', censor=True)
+        self.opensubtitles_pass = self.check_setting_str('Subtitles', 'opensubtitles_password', censor=True)
+        self.subtitle_searcher_freq = self.check_setting_int('Subtitles', 'subtitles_finder_frequency')
 
         # FAILED DOWNLOAD SETTINGS
-        self.USE_FAILED_DOWNLOADS = self.check_setting_bool('FailedDownloads', 'use_failed_downloads')
-        self.DELETE_FAILED = self.check_setting_bool('FailedDownloads', 'delete_failed')
+        self.use_failed_downloads = self.check_setting_bool('FailedDownloads', 'use_failed_downloads')
+        self.delete_failed = self.check_setting_bool('FailedDownloads', 'delete_failed')
 
         # ANIDB SETTINGS
-        self.USE_ANIDB = self.check_setting_bool('ANIDB', 'use_anidb')
-        self.ANIDB_USERNAME = self.check_setting_str('ANIDB', 'anidb_username', censor=True)
-        self.ANIDB_PASSWORD = self.check_setting_str('ANIDB', 'anidb_password', censor=True)
-        self.ANIDB_USE_MYLIST = self.check_setting_bool('ANIDB', 'anidb_use_mylist')
-        self.ANIME_SPLIT_HOME = self.check_setting_bool('ANIME', 'anime_split_home')
+        self.use_anidb = self.check_setting_bool('ANIDB', 'use_anidb')
+        self.anidb_username = self.check_setting_str('ANIDB', 'anidb_username', censor=True)
+        self.anidb_password = self.check_setting_str('ANIDB', 'anidb_password', censor=True)
+        self.anidb_use_mylist = self.check_setting_bool('ANIDB', 'anidb_use_mylist')
+        self.anime_split_home = self.check_setting_bool('ANIME', 'anime_split_home')
 
-        self.QUALITY_SIZES = self.check_setting_pickle('Quality', 'sizes')
+        self.quality_sizes = self.check_setting_pickle('Quality', 'sizes')
 
-        self.CUSTOM_PROVIDERS = self.check_setting_str('Providers', 'custom_providers')
+        self.custom_providers = self.check_setting_str('Providers', 'custom_providers')
 
         for providerID, providerObj in sickrage.app.search_providers.all().items():
             providerSettings = self.check_setting_str('Providers', providerID, '') or {}
@@ -1834,443 +1834,443 @@ class Config(object):
         new_config.update({
             'General': {
                 'config_version': self.config_version,
-                'encryption_version': int(self.ENCRYPTION_VERSION),
-                'encryption_secret': self.ENCRYPTION_SECRET,
-                'last_db_compact': self.LAST_DB_COMPACT,
-                'git_autoissues': int(self.GIT_AUTOISSUES),
-                'git_username': self.GIT_USERNAME,
-                'git_password': self.GIT_PASSWORD,
-                'git_reset': int(self.GIT_RESET),
-                'git_newver': int(self.GIT_NEWVER),
-                'log_nr': int(self.LOG_NR),
-                'log_size': int(self.LOG_SIZE),
-                'socket_timeout': self.SOCKET_TIMEOUT,
-                'web_port': self.WEB_PORT,
-                'web_host': self.WEB_HOST,
-                'web_ipv6': int(self.WEB_IPV6),
-                'web_log': int(self.WEB_LOG),
-                'web_root': self.WEB_ROOT,
-                'web_username': self.WEB_USERNAME,
-                'web_password': self.WEB_PASSWORD,
-                'web_cookie_secret': self.WEB_COOKIE_SECRET,
-                'web_use_gzip': int(self.WEB_USE_GZIP),
-                'ssl_verify': int(self.SSL_VERIFY),
-                'download_url': self.DOWNLOAD_URL,
-                'cpu_preset': self.CPU_PRESET,
-                'anon_redirect': self.ANON_REDIRECT,
-                'api_key': self.API_KEY,
-                'debug': int(self.DEBUG),
-                'default_page': self.DEFAULT_PAGE,
-                'enable_https': int(self.ENABLE_HTTPS),
-                'https_cert': self.HTTPS_CERT,
-                'https_key': self.HTTPS_KEY,
-                'handle_reverse_proxy': int(self.HANDLE_REVERSE_PROXY),
-                'use_nzbs': int(self.USE_NZBS),
-                'use_torrents': int(self.USE_TORRENTS),
-                'nzb_method': self.NZB_METHOD,
-                'torrent_method': self.TORRENT_METHOD,
-                'usenet_retention': int(self.USENET_RETENTION),
-                'autopostprocessor_frequency': int(self.AUTOPOSTPROCESSOR_FREQ),
-                'dailysearch_frequency': int(self.DAILY_SEARCHER_FREQ),
-                'backlog_frequency': int(self.BACKLOG_SEARCHER_FREQ),
-                'update_frequency': int(self.VERSION_UPDATER_FREQ),
-                'showupdate_hour': int(self.SHOWUPDATE_HOUR),
-                'showupdate_stale': int(self.SHOWUPDATE_STALE),
-                'download_propers': int(self.DOWNLOAD_PROPERS),
-                'enable_rss_cache': int(self.ENABLE_RSS_CACHE),
-                'enable_rss_cache_valid_shows': int(self.ENABLE_RSS_CACHE_VALID_SHOWS),
-                'torrent_file_to_magnet': int(self.TORRENT_FILE_TO_MAGNET),
-                'randomize_providers': int(self.RANDOMIZE_PROVIDERS),
-                'check_propers_interval': self.PROPER_SEARCHER_INTERVAL,
-                'allow_high_priority': int(self.ALLOW_HIGH_PRIORITY),
-                'skip_removed_files': int(self.SKIP_REMOVED_FILES),
-                'quality_default': int(self.QUALITY_DEFAULT),
-                'status_default': int(self.STATUS_DEFAULT),
-                'status_default_after': int(self.STATUS_DEFAULT_AFTER),
-                'flatten_folders_default': int(self.FLATTEN_FOLDERS_DEFAULT),
-                'indexer_default': int(self.INDEXER_DEFAULT),
-                'indexer_timeout': int(self.INDEXER_TIMEOUT),
-                'anime_default': int(self.ANIME_DEFAULT),
-                'scene_default': int(self.SCENE_DEFAULT),
-                'archive_default': int(self.ARCHIVE_DEFAULT),
-                'version_notify': int(self.VERSION_NOTIFY),
-                'auto_update': int(self.AUTO_UPDATE),
-                'notify_on_update': int(self.NOTIFY_ON_UPDATE),
-                'notify_on_login': int(self.NOTIFY_ON_LOGIN),
-                'naming_strip_year': int(self.NAMING_STRIP_YEAR),
-                'naming_pattern': self.NAMING_PATTERN,
-                'naming_custom_abd': int(self.NAMING_CUSTOM_ABD),
-                'naming_abd_pattern': self.NAMING_ABD_PATTERN,
-                'naming_custom_sports': int(self.NAMING_CUSTOM_SPORTS),
-                'naming_sports_pattern': self.NAMING_SPORTS_PATTERN,
-                'naming_custom_anime': int(self.NAMING_CUSTOM_ANIME),
-                'naming_anime_pattern': self.NAMING_ANIME_PATTERN,
-                'naming_multi_ep': int(self.NAMING_MULTI_EP),
-                'naming_anime_multi_ep': int(self.NAMING_ANIME_MULTI_EP),
-                'naming_anime': int(self.NAMING_ANIME),
-                'indexerDefaultLang': self.INDEXER_DEFAULT_LANGUAGE,
-                'ep_default_deleted_status': int(self.EP_DEFAULT_DELETED_STATUS),
-                'launch_browser': int(self.LAUNCH_BROWSER),
-                'trash_remove_show': int(self.TRASH_REMOVE_SHOW),
-                'trash_rotate_logs': int(self.TRASH_ROTATE_LOGS),
-                'sort_article': int(self.SORT_ARTICLE),
-                'proxy_setting': self.PROXY_SETTING,
-                'proxy_indexers': int(self.PROXY_INDEXERS),
-                'use_listview': int(self.USE_LISTVIEW),
-                'backlog_days': int(self.BACKLOG_DAYS),
-                'root_dirs': self.ROOT_DIRS,
-                'tv_download_dir': self.TV_DOWNLOAD_DIR,
-                'keep_processed_dir': int(self.KEEP_PROCESSED_DIR),
-                'process_method': self.PROCESS_METHOD,
-                'del_rar_contents': int(self.DELRARCONTENTS),
-                'move_associated_files': int(self.MOVE_ASSOCIATED_FILES),
-                'sync_files': self.SYNC_FILES,
-                'postpone_if_sync_files': int(self.POSTPONE_IF_SYNC_FILES),
-                'nfo_rename': int(self.NFO_RENAME),
-                'process_automatically': int(self.PROCESS_AUTOMATICALLY),
-                'no_delete': int(self.NO_DELETE),
-                'unpack': int(self.UNPACK),
-                'rename_episodes': int(self.RENAME_EPISODES),
-                'airdate_episodes': int(self.AIRDATE_EPISODES),
-                'file_timestamp_timezone': self.FILE_TIMESTAMP_TIMEZONE,
-                'create_missing_show_dirs': int(self.CREATE_MISSING_SHOW_DIRS),
-                'add_shows_wo_dir': int(self.ADD_SHOWS_WO_DIR),
-                'extra_scripts': '|'.join(self.EXTRA_SCRIPTS),
-                'pip_path': self.PIP_PATH,
-                'git_path': self.GIT_PATH,
-                'ignore_words': self.IGNORE_WORDS,
-                'require_words': self.REQUIRE_WORDS,
-                'ignored_subs_list': self.IGNORED_SUBS_LIST,
-                'calendar_unprotected': int(self.CALENDAR_UNPROTECTED),
-                'calendar_icons': int(self.CALENDAR_ICONS),
-                'no_restart': int(self.NO_RESTART),
-                'developer': int(self.DEVELOPER),
-                'display_all_seasons': int(self.DISPLAY_ALL_SEASONS),
-                'random_user_agent': int(self.RANDOM_USER_AGENT),
+                'encryption_version': int(self.encryption_version),
+                'encryption_secret': self.encryption_secret,
+                'last_db_compact': self.last_db_compact,
+                'git_autoissues': int(self.git_autoissues),
+                'git_username': self.git_username,
+                'git_password': self.git_password,
+                'git_reset': int(self.git_reset),
+                'git_newver': int(self.git_newver),
+                'log_nr': int(self.log_nr),
+                'log_size': int(self.log_size),
+                'socket_timeout': self.socket_timeout,
+                'web_port': self.web_port,
+                'web_host': self.web_host,
+                'web_ipv6': int(self.web_ipv6),
+                'web_log': int(self.web_log),
+                'web_root': self.web_root,
+                'web_username': self.web_username,
+                'web_password': self.web_password,
+                'web_cookie_secret': self.web_cookie_secret,
+                'web_use_gzip': int(self.web_use_gzip),
+                'ssl_verify': int(self.ssl_verify),
+                'download_url': self.download_url,
+                'cpu_preset': self.cpu_preset,
+                'anon_redirect': self.anon_redirect,
+                'api_key': self.api_key,
+                'debug': int(self.debug),
+                'default_page': self.default_page,
+                'enable_https': int(self.enable_https),
+                'https_cert': self.https_cert,
+                'https_key': self.https_key,
+                'handle_reverse_proxy': int(self.handle_reverse_proxy),
+                'use_nzbs': int(self.use_nzbs),
+                'use_torrents': int(self.use_torrents),
+                'nzb_method': self.nzb_method,
+                'torrent_method': self.torrent_method,
+                'usenet_retention': int(self.usenet_retention),
+                'autopostprocessor_frequency': int(self.autopostprocessor_freq),
+                'dailysearch_frequency': int(self.daily_searcher_freq),
+                'backlog_frequency': int(self.backlog_searcher_freq),
+                'update_frequency': int(self.version_updater_freq),
+                'showupdate_hour': int(self.showupdate_hour),
+                'showupdate_stale': int(self.showupdate_stale),
+                'download_propers': int(self.download_propers),
+                'enable_rss_cache': int(self.enable_rss_cache),
+                'enable_rss_cache_valid_shows': int(self.enable_rss_cache_valid_shows),
+                'torrent_file_to_magnet': int(self.torrent_file_to_magnet),
+                'randomize_providers': int(self.randomize_providers),
+                'check_propers_interval': self.proper_searcher_interval,
+                'allow_high_priority': int(self.allow_high_priority),
+                'skip_removed_files': int(self.skip_removed_files),
+                'quality_default': int(self.quality_default),
+                'status_default': int(self.status_default),
+                'status_default_after': int(self.status_default_after),
+                'flatten_folders_default': int(self.flatten_folders_default),
+                'indexer_default': int(self.indexer_default),
+                'indexer_timeout': int(self.indexer_timeout),
+                'anime_default': int(self.anime_default),
+                'scene_default': int(self.scene_default),
+                'archive_default': int(self.archive_default),
+                'version_notify': int(self.version_notify),
+                'auto_update': int(self.auto_update),
+                'notify_on_update': int(self.notify_on_update),
+                'notify_on_login': int(self.notify_on_login),
+                'naming_strip_year': int(self.naming_strip_year),
+                'naming_pattern': self.naming_pattern,
+                'naming_custom_abd': int(self.naming_custom_abd),
+                'naming_abd_pattern': self.naming_abd_pattern,
+                'naming_custom_sports': int(self.naming_custom_sports),
+                'naming_sports_pattern': self.naming_sports_pattern,
+                'naming_custom_anime': int(self.naming_custom_anime),
+                'naming_anime_pattern': self.naming_anime_pattern,
+                'naming_multi_ep': int(self.naming_multi_ep),
+                'naming_anime_multi_ep': int(self.naming_anime_multi_ep),
+                'naming_anime': int(self.naming_anime),
+                'indexerDefaultLang': self.indexer_default_language,
+                'ep_default_deleted_status': int(self.ep_default_deleted_status),
+                'launch_browser': int(self.launch_browser),
+                'trash_remove_show': int(self.trash_remove_show),
+                'trash_rotate_logs': int(self.trash_rotate_logs),
+                'sort_article': int(self.sort_article),
+                'proxy_setting': self.proxy_setting,
+                'proxy_indexers': int(self.proxy_indexers),
+                'use_listview': int(self.use_listview),
+                'backlog_days': int(self.backlog_days),
+                'root_dirs': self.root_dirs,
+                'tv_download_dir': self.tv_download_dir,
+                'keep_processed_dir': int(self.keep_processed_dir),
+                'process_method': self.process_method,
+                'del_rar_contents': int(self.delrarcontents),
+                'move_associated_files': int(self.move_associated_files),
+                'sync_files': self.sync_files,
+                'postpone_if_sync_files': int(self.postpone_if_sync_files),
+                'nfo_rename': int(self.nfo_rename),
+                'process_automatically': int(self.process_automatically),
+                'no_delete': int(self.no_delete),
+                'unpack': int(self.unpack),
+                'rename_episodes': int(self.rename_episodes),
+                'airdate_episodes': int(self.airdate_episodes),
+                'file_timestamp_timezone': self.file_timestamp_timezone,
+                'create_missing_show_dirs': int(self.create_missing_show_dirs),
+                'add_shows_wo_dir': int(self.add_shows_wo_dir),
+                'extra_scripts': '|'.join(self.extra_scripts),
+                'pip_path': self.pip_path,
+                'git_path': self.git_path,
+                'ignore_words': self.ignore_words,
+                'require_words': self.require_words,
+                'ignored_subs_list': self.ignored_subs_list,
+                'calendar_unprotected': int(self.calendar_unprotected),
+                'calendar_icons': int(self.calendar_icons),
+                'no_restart': int(self.no_restart),
+                'developer': int(self.developer),
+                'display_all_seasons': int(self.display_all_seasons),
+                'random_user_agent': int(self.random_user_agent),
             },
             'GUI': {
-                'gui_lang': self.GUI_LANG,
-                'theme_name': self.THEME_NAME,
-                'home_layout': self.HOME_LAYOUT,
-                'history_layout': self.HISTORY_LAYOUT,
-                'history_limit': self.HISTORY_LIMIT,
-                'display_show_specials': int(self.DISPLAY_SHOW_SPECIALS),
-                'coming_eps_layout': self.COMING_EPS_LAYOUT,
-                'coming_eps_display_paused': int(self.COMING_EPS_DISPLAY_PAUSED),
-                'coming_eps_sort': self.COMING_EPS_SORT,
-                'coming_eps_missed_range': int(self.COMING_EPS_MISSED_RANGE),
-                'fuzzy_dating': int(self.FUZZY_DATING),
-                'trim_zero': int(self.TRIM_ZERO),
-                'date_preset': self.DATE_PRESET,
-                'time_preset': self.TIME_PRESET_W_SECONDS,
-                'timezone_display': self.TIMEZONE_DISPLAY,
-                'poster_sortby': self.POSTER_SORTBY,
-                'poster_sortdir': self.POSTER_SORTDIR,
-                'filter_row': int(self.FILTER_ROW),
-                'fanart_background': int(self.FANART_BACKGROUND),
-                'fanart_background_opacity': self.FANART_BACKGROUND_OPACITY,
+                'gui_lang': self.gui_lang,
+                'theme_name': self.theme_name,
+                'home_layout': self.home_layout,
+                'history_layout': self.history_layout,
+                'history_limit': self.history_limit,
+                'display_show_specials': int(self.display_show_specials),
+                'coming_eps_layout': self.coming_eps_layout,
+                'coming_eps_display_paused': int(self.coming_eps_display_paused),
+                'coming_eps_sort': self.coming_eps_sort,
+                'coming_eps_missed_range': int(self.coming_eps_missed_range),
+                'fuzzy_dating': int(self.fuzzy_dating),
+                'trim_zero': int(self.trim_zero),
+                'date_preset': self.date_preset,
+                'time_preset': self.time_preset_w_seconds,
+                'timezone_display': self.timezone_display,
+                'poster_sortby': self.poster_sortby,
+                'poster_sortdir': self.poster_sortdir,
+                'filter_row': int(self.filter_row),
+                'fanart_background': int(self.fanart_background),
+                'fanart_background_opacity': self.fanart_background_opacity,
             },
             'Blackhole': {
-                'nzb_dir': self.NZB_DIR,
-                'torrent_dir': self.TORRENT_DIR,
+                'nzb_dir': self.nzb_dir,
+                'torrent_dir': self.torrent_dir,
             },
             'NZBs': {
-                'nzbs': int(self.NZBS),
-                'nzbs_uid': self.NZBS_UID,
-                'nzbs_hash': self.NZBS_HASH,
+                'nzbs': int(self.nzbs),
+                'nzbs_uid': self.nzbs_uid,
+                'nzbs_hash': self.nzbs_hash,
             },
             'Newzbin': {
-                'newzbin': int(self.NEWZBIN),
-                'newzbin_username': self.NEWZBIN_USERNAME,
-                'newzbin_password': self.NEWZBIN_PASSWORD,
+                'newzbin': int(self.newzbin),
+                'newzbin_username': self.newzbin_username,
+                'newzbin_password': self.newzbin_password,
             },
             'SABnzbd': {
-                'sab_username': self.SAB_USERNAME,
-                'sab_password': self.SAB_PASSWORD,
-                'sab_apikey': self.SAB_APIKEY,
-                'sab_category': self.SAB_CATEGORY,
-                'sab_category_backlog': self.SAB_CATEGORY_BACKLOG,
-                'sab_category_anime': self.SAB_CATEGORY_ANIME,
-                'sab_category_anime_backlog': self.SAB_CATEGORY_ANIME_BACKLOG,
-                'sab_host': self.SAB_HOST,
-                'sab_forced': int(self.SAB_FORCED),
+                'sab_username': self.sab_username,
+                'sab_password': self.sab_password,
+                'sab_apikey': self.sab_apikey,
+                'sab_category': self.sab_category,
+                'sab_category_backlog': self.sab_category_backlog,
+                'sab_category_anime': self.sab_category_anime,
+                'sab_category_anime_backlog': self.sab_category_anime_backlog,
+                'sab_host': self.sab_host,
+                'sab_forced': int(self.sab_forced),
             },
             'NZBget': {
-                'nzbget_username': self.NZBGET_USERNAME,
-                'nzbget_password': self.NZBGET_PASSWORD,
-                'nzbget_category': self.NZBGET_CATEGORY,
-                'nzbget_category_backlog': self.NZBGET_CATEGORY_BACKLOG,
-                'nzbget_category_anime': self.NZBGET_CATEGORY_ANIME,
-                'nzbget_category_anime_backlog': self.NZBGET_CATEGORY_ANIME_BACKLOG,
-                'nzbget_host': self.NZBGET_HOST,
-                'nzbget_use_https': int(self.NZBGET_USE_HTTPS),
-                'nzbget_priority': self.NZBGET_PRIORITY,
+                'nzbget_username': self.nzbget_username,
+                'nzbget_password': self.nzbget_password,
+                'nzbget_category': self.nzbget_category,
+                'nzbget_category_backlog': self.nzbget_category_backlog,
+                'nzbget_category_anime': self.nzbget_category_anime,
+                'nzbget_category_anime_backlog': self.nzbget_category_anime_backlog,
+                'nzbget_host': self.nzbget_host,
+                'nzbget_use_https': int(self.nzbget_use_https),
+                'nzbget_priority': self.nzbget_priority,
             },
             'TORRENT': {
-                'torrent_username': self.TORRENT_USERNAME,
-                'torrent_password': self.TORRENT_PASSWORD,
-                'torrent_host': self.TORRENT_HOST,
-                'torrent_path': self.TORRENT_PATH,
-                'torrent_seed_time': int(self.TORRENT_SEED_TIME),
-                'torrent_paused': int(self.TORRENT_PAUSED),
-                'torrent_high_bandwidth': int(self.TORRENT_HIGH_BANDWIDTH),
-                'torrent_label': self.TORRENT_LABEL,
-                'torrent_label_anime': self.TORRENT_LABEL_ANIME,
-                'torrent_verify_cert': int(self.TORRENT_VERIFY_CERT),
-                'torrent_rpcurl': self.TORRENT_RPCURL,
-                'torrent_auth_type': self.TORRENT_AUTH_TYPE,
+                'torrent_username': self.torrent_username,
+                'torrent_password': self.torrent_password,
+                'torrent_host': self.torrent_host,
+                'torrent_path': self.torrent_path,
+                'torrent_seed_time': int(self.torrent_seed_time),
+                'torrent_paused': int(self.torrent_paused),
+                'torrent_high_bandwidth': int(self.torrent_high_bandwidth),
+                'torrent_label': self.torrent_label,
+                'torrent_label_anime': self.torrent_label_anime,
+                'torrent_verify_cert': int(self.torrent_verify_cert),
+                'torrent_rpcurl': self.torrent_rpcurl,
+                'torrent_auth_type': self.torrent_auth_type,
             },
             'KODI': {
-                'use_kodi': int(self.USE_KODI),
-                'kodi_always_on': int(self.KODI_ALWAYS_ON),
-                'kodi_notify_onsnatch': int(self.KODI_NOTIFY_ONSNATCH),
-                'kodi_notify_ondownload': int(self.KODI_NOTIFY_ONDOWNLOAD),
-                'kodi_notify_onsubtitledownload': int(self.KODI_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'kodi_update_library': int(self.KODI_UPDATE_LIBRARY),
-                'kodi_update_full': int(self.KODI_UPDATE_FULL),
-                'kodi_update_onlyfirst': int(self.KODI_UPDATE_ONLYFIRST),
-                'kodi_host': self.KODI_HOST,
-                'kodi_username': self.KODI_USERNAME,
-                'kodi_password': self.KODI_PASSWORD,
+                'use_kodi': int(self.use_kodi),
+                'kodi_always_on': int(self.kodi_always_on),
+                'kodi_notify_onsnatch': int(self.kodi_notify_onsnatch),
+                'kodi_notify_ondownload': int(self.kodi_notify_ondownload),
+                'kodi_notify_onsubtitledownload': int(self.kodi_notify_onsubtitledownload),
+                'kodi_update_library': int(self.kodi_update_library),
+                'kodi_update_full': int(self.kodi_update_full),
+                'kodi_update_onlyfirst': int(self.kodi_update_onlyfirst),
+                'kodi_host': self.kodi_host,
+                'kodi_username': self.kodi_username,
+                'kodi_password': self.kodi_password,
             },
             'Plex': {
-                'use_plex': int(self.USE_PLEX),
-                'plex_notify_onsnatch': int(self.PLEX_NOTIFY_ONSNATCH),
-                'plex_notify_ondownload': int(self.PLEX_NOTIFY_ONDOWNLOAD),
-                'plex_notify_onsubtitledownload': int(self.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'plex_update_library': int(self.PLEX_UPDATE_LIBRARY),
-                'plex_server_host': self.PLEX_SERVER_HOST,
-                'plex_server_token': self.PLEX_SERVER_TOKEN,
-                'plex_host': self.PLEX_HOST,
-                'plex_username': self.PLEX_USERNAME,
-                'plex_password': self.PLEX_PASSWORD,
+                'use_plex': int(self.use_plex),
+                'plex_notify_onsnatch': int(self.plex_notify_onsnatch),
+                'plex_notify_ondownload': int(self.plex_notify_ondownload),
+                'plex_notify_onsubtitledownload': int(self.plex_notify_onsubtitledownload),
+                'plex_update_library': int(self.plex_update_library),
+                'plex_server_host': self.plex_server_host,
+                'plex_server_token': self.plex_server_token,
+                'plex_host': self.plex_host,
+                'plex_username': self.plex_username,
+                'plex_password': self.plex_password,
             },
             'Emby': {
-                'use_emby': int(self.USE_EMBY),
-                'emby_host': self.EMBY_HOST,
-                'emby_apikey': self.EMBY_APIKEY,
+                'use_emby': int(self.use_emby),
+                'emby_host': self.emby_host,
+                'emby_apikey': self.emby_apikey,
             },
             'Growl': {
-                'use_growl': int(self.USE_GROWL),
-                'growl_notify_onsnatch': int(self.GROWL_NOTIFY_ONSNATCH),
-                'growl_notify_ondownload': int(self.GROWL_NOTIFY_ONDOWNLOAD),
-                'growl_notify_onsubtitledownload': int(self.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'growl_host': self.GROWL_HOST,
-                'growl_password': self.GROWL_PASSWORD,
+                'use_growl': int(self.use_growl),
+                'growl_notify_onsnatch': int(self.growl_notify_onsnatch),
+                'growl_notify_ondownload': int(self.growl_notify_ondownload),
+                'growl_notify_onsubtitledownload': int(self.growl_notify_onsubtitledownload),
+                'growl_host': self.growl_host,
+                'growl_password': self.growl_password,
             },
             'FreeMobile': {
-                'use_freemobile': int(self.USE_FREEMOBILE),
-                'freemobile_notify_onsnatch': int(self.FREEMOBILE_NOTIFY_ONSNATCH),
-                'freemobile_notify_ondownload': int(self.FREEMOBILE_NOTIFY_ONDOWNLOAD),
-                'freemobile_notify_onsubtitledownload': int(self.FREEMOBILE_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'freemobile_id': self.FREEMOBILE_ID,
-                'freemobile_apikey': self.FREEMOBILE_APIKEY,
+                'use_freemobile': int(self.use_freemobile),
+                'freemobile_notify_onsnatch': int(self.freemobile_notify_onsnatch),
+                'freemobile_notify_ondownload': int(self.freemobile_notify_ondownload),
+                'freemobile_notify_onsubtitledownload': int(self.freemobile_notify_onsubtitledownload),
+                'freemobile_id': self.freemobile_id,
+                'freemobile_apikey': self.freemobile_apikey,
             },
             'TELEGRAM': {
-                'use_telegram': int(self.USE_TELEGRAM),
-                'telegram_notify_onsnatch': int(self.TELEGRAM_NOTIFY_ONSNATCH),
-                'telegram_notify_ondownload': int(self.TELEGRAM_NOTIFY_ONDOWNLOAD),
-                'telegram_notify_onsubtitledownload': int(self.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'telegram_id': self.TELEGRAM_ID,
-                'telegram_apikey': self.TELEGRAM_APIKEY,
+                'use_telegram': int(self.use_telegram),
+                'telegram_notify_onsnatch': int(self.telegram_notify_onsnatch),
+                'telegram_notify_ondownload': int(self.telegram_notify_ondownload),
+                'telegram_notify_onsubtitledownload': int(self.telegram_notify_onsubtitledownload),
+                'telegram_id': self.telegram_id,
+                'telegram_apikey': self.telegram_apikey,
             },
             'Prowl': {
-                'use_prowl': int(self.USE_PROWL),
-                'prowl_notify_onsnatch': int(self.PROWL_NOTIFY_ONSNATCH),
-                'prowl_notify_ondownload': int(self.PROWL_NOTIFY_ONDOWNLOAD),
-                'prowl_notify_onsubtitledownload': int(self.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'prowl_api': self.PROWL_API,
-                'prowl_priority': self.PROWL_PRIORITY,
+                'use_prowl': int(self.use_prowl),
+                'prowl_notify_onsnatch': int(self.prowl_notify_onsnatch),
+                'prowl_notify_ondownload': int(self.prowl_notify_ondownload),
+                'prowl_notify_onsubtitledownload': int(self.prowl_notify_onsubtitledownload),
+                'prowl_api': self.prowl_api,
+                'prowl_priority': self.prowl_priority,
             },
             'Twitter': {
-                'use_twitter': int(self.USE_TWITTER),
-                'twitter_notify_onsnatch': int(self.TWITTER_NOTIFY_ONSNATCH),
-                'twitter_notify_ondownload': int(self.TWITTER_NOTIFY_ONDOWNLOAD),
-                'twitter_notify_onsubtitledownload': int(self.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'twitter_username': self.TWITTER_USERNAME,
-                'twitter_password': self.TWITTER_PASSWORD,
-                'twitter_prefix': self.TWITTER_PREFIX,
-                'twitter_dmto': self.TWITTER_DMTO,
-                'twitter_usedm': int(self.TWITTER_USEDM),
+                'use_twitter': int(self.use_twitter),
+                'twitter_notify_onsnatch': int(self.twitter_notify_onsnatch),
+                'twitter_notify_ondownload': int(self.twitter_notify_ondownload),
+                'twitter_notify_onsubtitledownload': int(self.twitter_notify_onsubtitledownload),
+                'twitter_username': self.twitter_username,
+                'twitter_password': self.twitter_password,
+                'twitter_prefix': self.twitter_prefix,
+                'twitter_dmto': self.twitter_dmto,
+                'twitter_usedm': int(self.twitter_usedm),
             },
             'Twilio': {
-                'use_twilio': int(self.USE_TWILIO),
-                'twilio_notify_onsnatch': int(self.TWILIO_NOTIFY_ONSNATCH),
-                'twilio_notify_ondownload': int(self.TWILIO_NOTIFY_ONDOWNLOAD),
-                'twilio_notify_onsubtitledownload': int(self.TWILIO_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'twilio_phone_sid': self.TWILIO_PHONE_SID,
-                'twilio_account_sid': self.TWILIO_ACCOUNT_SID,
-                'twilio_auth_token': self.TWILIO_AUTH_TOKEN,
-                'twilio_to_number': self.TWILIO_TO_NUMBER,
+                'use_twilio': int(self.use_twilio),
+                'twilio_notify_onsnatch': int(self.twilio_notify_onsnatch),
+                'twilio_notify_ondownload': int(self.twilio_notify_ondownload),
+                'twilio_notify_onsubtitledownload': int(self.twilio_notify_onsubtitledownload),
+                'twilio_phone_sid': self.twilio_phone_sid,
+                'twilio_account_sid': self.twilio_account_sid,
+                'twilio_auth_token': self.twilio_auth_token,
+                'twilio_to_number': self.twilio_to_number,
             },
             'Boxcar2': {
-                'use_boxcar2': int(self.USE_BOXCAR2),
-                'boxcar2_notify_onsnatch': int(self.BOXCAR2_NOTIFY_ONSNATCH),
-                'boxcar2_notify_ondownload': int(self.BOXCAR2_NOTIFY_ONDOWNLOAD),
-                'boxcar2_notify_onsubtitledownload': int(self.BOXCAR2_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'boxcar2_accesstoken': self.BOXCAR2_ACCESSTOKEN,
+                'use_boxcar2': int(self.use_boxcar2),
+                'boxcar2_notify_onsnatch': int(self.boxcar2_notify_onsnatch),
+                'boxcar2_notify_ondownload': int(self.boxcar2_notify_ondownload),
+                'boxcar2_notify_onsubtitledownload': int(self.boxcar2_notify_onsubtitledownload),
+                'boxcar2_accesstoken': self.boxcar2_accesstoken,
             },
             'Pushover': {
-                'use_pushover': int(self.USE_PUSHOVER),
-                'pushover_notify_onsnatch': int(self.PUSHOVER_NOTIFY_ONSNATCH),
-                'pushover_notify_ondownload': int(self.PUSHOVER_NOTIFY_ONDOWNLOAD),
-                'pushover_notify_onsubtitledownload': int(self.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'pushover_userkey': self.PUSHOVER_USERKEY,
-                'pushover_apikey': self.PUSHOVER_APIKEY,
-                'pushover_device': self.PUSHOVER_DEVICE,
-                'pushover_sound': self.PUSHOVER_SOUND,
+                'use_pushover': int(self.use_pushover),
+                'pushover_notify_onsnatch': int(self.pushover_notify_onsnatch),
+                'pushover_notify_ondownload': int(self.pushover_notify_ondownload),
+                'pushover_notify_onsubtitledownload': int(self.pushover_notify_onsubtitledownload),
+                'pushover_userkey': self.pushover_userkey,
+                'pushover_apikey': self.pushover_apikey,
+                'pushover_device': self.pushover_device,
+                'pushover_sound': self.pushover_sound,
             },
             'Libnotify': {
-                'use_libnotify': int(self.USE_LIBNOTIFY),
-                'libnotify_notify_onsnatch': int(self.LIBNOTIFY_NOTIFY_ONSNATCH),
-                'libnotify_notify_ondownload': int(self.LIBNOTIFY_NOTIFY_ONDOWNLOAD),
-                'libnotify_notify_onsubtitledownload': int(self.LIBNOTIFY_NOTIFY_ONSUBTITLEDOWNLOAD)
+                'use_libnotify': int(self.use_libnotify),
+                'libnotify_notify_onsnatch': int(self.libnotify_notify_onsnatch),
+                'libnotify_notify_ondownload': int(self.libnotify_notify_ondownload),
+                'libnotify_notify_onsubtitledownload': int(self.libnotify_notify_onsubtitledownload)
             },
             'NMJ': {
-                'use_nmj': int(self.USE_NMJ),
-                'nmj_host': self.NMJ_HOST,
-                'nmj_database': self.NMJ_DATABASE,
-                'nmj_mount': self.NMJ_MOUNT,
+                'use_nmj': int(self.use_nmj),
+                'nmj_host': self.nmj_host,
+                'nmj_database': self.nmj_database,
+                'nmj_mount': self.nmj_mount,
             },
             'NMJv2': {
-                'use_nmjv2': int(self.USE_NMJv2),
-                'nmjv2_host': self.NMJv2_HOST,
-                'nmjv2_database': self.NMJv2_DATABASE,
-                'nmjv2_dbloc': self.NMJv2_DBLOC,
+                'use_nmjv2': int(self.use_nmjv2),
+                'nmjv2_host': self.nmjv2_host,
+                'nmjv2_database': self.nmjv2_database,
+                'nmjv2_dbloc': self.nmjv2_dbloc,
             },
             'Synology': {
-                'use_synoindex': int(self.USE_SYNOINDEX),
+                'use_synoindex': int(self.use_synoindex),
             },
             'SynologyNotifier': {
-                'use_synologynotifier': int(self.USE_SYNOLOGYNOTIFIER),
-                'synologynotifier_notify_onsnatch': int(self.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH),
-                'synologynotifier_notify_ondownload': int(self.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD),
-                'synologynotifier_notify_onsubtitledownload': int(self.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD),
+                'use_synologynotifier': int(self.use_synologynotifier),
+                'synologynotifier_notify_onsnatch': int(self.synologynotifier_notify_onsnatch),
+                'synologynotifier_notify_ondownload': int(self.synologynotifier_notify_ondownload),
+                'synologynotifier_notify_onsubtitledownload': int(self.synologynotifier_notify_onsubtitledownload),
             },
             'theTVDB': {
-                'thetvdb_apitoken': self.THETVDB_APITOKEN,
+                'thetvdb_apitoken': self.thetvdb_apitoken,
             },
             'Slack': {
-                'use_slack': int(self.USE_SLACK),
-                'slack_notify_onsnatch': int(self.SLACK_NOTIFY_ONSNATCH),
-                'slack_notify_ondownload': int(self.SLACK_NOTIFY_ONDOWNLOAD),
-                'slack_notify_onsubtitledownload': int(self.SLACK_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'slack_webhook': self.SLACK_WEBHOOK
+                'use_slack': int(self.use_slack),
+                'slack_notify_onsnatch': int(self.slack_notify_onsnatch),
+                'slack_notify_ondownload': int(self.slack_notify_ondownload),
+                'slack_notify_onsubtitledownload': int(self.slack_notify_onsubtitledownload),
+                'slack_webhook': self.slack_webhook
             },
             'Discord': {
-                'use_discord': int(self.USE_DISCORD),
-                'discord_notify_onsnatch': int(self.DISCORD_NOTIFY_ONSNATCH),
-                'discord_notify_ondownload': int(self.DISCORD_NOTIFY_ONDOWNLOAD),
-                'discord_notify_onsubtitledownload': int(self.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'discord_webhook': self.DISCORD_WEBHOOK,
-                'discord_name': self.DISCORD_NAME,
-                'discord_avatar_url': self.DISCORD_AVATAR_URL,
-                'discord_tts': int(self.DISCORD_TTS)
+                'use_discord': int(self.use_discord),
+                'discord_notify_onsnatch': int(self.discord_notify_onsnatch),
+                'discord_notify_ondownload': int(self.discord_notify_ondownload),
+                'discord_notify_onsubtitledownload': int(self.discord_notify_onsubtitledownload),
+                'discord_webhook': self.discord_webhook,
+                'discord_name': self.discord_name,
+                'discord_avatar_url': self.discord_avatar_url,
+                'discord_tts': int(self.discord_tts)
             },
             'Trakt': {
-                'use_trakt': int(self.USE_TRAKT),
-                'trakt_username': self.TRAKT_USERNAME,
-                'trakt_oauth_token': pickle.dumps(self.TRAKT_OAUTH_TOKEN),
-                'trakt_remove_watchlist': int(self.TRAKT_REMOVE_WATCHLIST),
-                'trakt_remove_serieslist': int(self.TRAKT_REMOVE_SERIESLIST),
-                'trakt_remove_show_from_sickrage': int(self.TRAKT_REMOVE_SHOW_FROM_SICKRAGE),
-                'trakt_sync_watchlist': int(self.TRAKT_SYNC_WATCHLIST),
-                'trakt_method_add': int(self.TRAKT_METHOD_ADD),
-                'trakt_start_paused': int(self.TRAKT_START_PAUSED),
-                'trakt_use_recommended': int(self.TRAKT_USE_RECOMMENDED),
-                'trakt_sync': int(self.TRAKT_SYNC),
-                'trakt_sync_remove': int(self.TRAKT_SYNC_REMOVE),
-                'trakt_default_indexer': int(self.TRAKT_DEFAULT_INDEXER),
-                'trakt_timeout': int(self.TRAKT_TIMEOUT),
-                'trakt_blacklist_name': self.TRAKT_BLACKLIST_NAME,
+                'use_trakt': int(self.use_trakt),
+                'trakt_username': self.trakt_username,
+                'trakt_oauth_token': pickle.dumps(self.trakt_oauth_token),
+                'trakt_remove_watchlist': int(self.trakt_remove_watchlist),
+                'trakt_remove_serieslist': int(self.trakt_remove_serieslist),
+                'trakt_remove_show_from_sickrage': int(self.trakt_remove_show_from_sickrage),
+                'trakt_sync_watchlist': int(self.trakt_sync_watchlist),
+                'trakt_method_add': int(self.trakt_method_add),
+                'trakt_start_paused': int(self.trakt_start_paused),
+                'trakt_use_recommended': int(self.trakt_use_recommended),
+                'trakt_sync': int(self.trakt_sync),
+                'trakt_sync_remove': int(self.trakt_sync_remove),
+                'trakt_default_indexer': int(self.trakt_default_indexer),
+                'trakt_timeout': int(self.trakt_timeout),
+                'trakt_blacklist_name': self.trakt_blacklist_name,
             },
             'pyTivo': {
-                'use_pytivo': int(self.USE_PYTIVO),
-                'pytivo_notify_onsnatch': int(self.PYTIVO_NOTIFY_ONSNATCH),
-                'pytivo_notify_ondownload': int(self.PYTIVO_NOTIFY_ONDOWNLOAD),
-                'pytivo_notify_onsubtitledownload': int(self.PYTIVO_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'pyTivo_update_library': int(self.PYTIVO_UPDATE_LIBRARY),
-                'pytivo_host': self.PYTIVO_HOST,
-                'pytivo_share_name': self.PYTIVO_SHARE_NAME,
-                'pytivo_tivo_name': self.PYTIVO_TIVO_NAME,
+                'use_pytivo': int(self.use_pytivo),
+                'pytivo_notify_onsnatch': int(self.pytivo_notify_onsnatch),
+                'pytivo_notify_ondownload': int(self.pytivo_notify_ondownload),
+                'pytivo_notify_onsubtitledownload': int(self.pytivo_notify_onsubtitledownload),
+                'pyTivo_update_library': int(self.pytivo_update_library),
+                'pytivo_host': self.pytivo_host,
+                'pytivo_share_name': self.pytivo_share_name,
+                'pytivo_tivo_name': self.pytivo_tivo_name,
             },
             'NMA': {
-                'use_nma': int(self.USE_NMA),
-                'nma_notify_onsnatch': int(self.NMA_NOTIFY_ONSNATCH),
-                'nma_notify_ondownload': int(self.NMA_NOTIFY_ONDOWNLOAD),
-                'nma_notify_onsubtitledownload': int(self.NMA_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'nma_api': self.NMA_API,
-                'nma_priority': self.NMA_PRIORITY,
+                'use_nma': int(self.use_nma),
+                'nma_notify_onsnatch': int(self.nma_notify_onsnatch),
+                'nma_notify_ondownload': int(self.nma_notify_ondownload),
+                'nma_notify_onsubtitledownload': int(self.nma_notify_onsubtitledownload),
+                'nma_api': self.nma_api,
+                'nma_priority': self.nma_priority,
             },
             'Pushalot': {
-                'use_pushalot': int(self.USE_PUSHALOT),
-                'pushalot_notify_onsnatch': int(self.PUSHALOT_NOTIFY_ONSNATCH),
-                'pushalot_notify_ondownload': int(self.PUSHALOT_NOTIFY_ONDOWNLOAD),
-                'pushalot_notify_onsubtitledownload': int(self.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'pushalot_authorizationtoken': self.PUSHALOT_AUTHORIZATIONTOKEN,
+                'use_pushalot': int(self.use_pushalot),
+                'pushalot_notify_onsnatch': int(self.pushalot_notify_onsnatch),
+                'pushalot_notify_ondownload': int(self.pushalot_notify_ondownload),
+                'pushalot_notify_onsubtitledownload': int(self.pushalot_notify_onsubtitledownload),
+                'pushalot_authorizationtoken': self.pushalot_authorizationtoken,
             },
             'Pushbullet': {
-                'use_pushbullet': int(self.USE_PUSHBULLET),
-                'pushbullet_notify_onsnatch': int(self.PUSHBULLET_NOTIFY_ONSNATCH),
-                'pushbullet_notify_ondownload': int(self.PUSHBULLET_NOTIFY_ONDOWNLOAD),
-                'pushbullet_notify_onsubtitledownload': int(self.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'pushbullet_api': self.PUSHBULLET_API,
-                'pushbullet_device': self.PUSHBULLET_DEVICE,
+                'use_pushbullet': int(self.use_pushbullet),
+                'pushbullet_notify_onsnatch': int(self.pushbullet_notify_onsnatch),
+                'pushbullet_notify_ondownload': int(self.pushbullet_notify_ondownload),
+                'pushbullet_notify_onsubtitledownload': int(self.pushbullet_notify_onsubtitledownload),
+                'pushbullet_api': self.pushbullet_api,
+                'pushbullet_device': self.pushbullet_device,
             },
             'Email': {
-                'use_email': int(self.USE_EMAIL),
-                'email_notify_onsnatch': int(self.EMAIL_NOTIFY_ONSNATCH),
-                'email_notify_ondownload': int(self.EMAIL_NOTIFY_ONDOWNLOAD),
-                'email_notify_onsubtitledownload': int(self.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD),
-                'email_host': self.EMAIL_HOST,
-                'email_port': int(self.EMAIL_PORT),
-                'email_tls': int(self.EMAIL_TLS),
-                'email_user': self.EMAIL_USER,
-                'email_password': self.EMAIL_PASSWORD,
-                'email_from': self.EMAIL_FROM,
-                'email_list': self.EMAIL_LIST,
+                'use_email': int(self.use_email),
+                'email_notify_onsnatch': int(self.email_notify_onsnatch),
+                'email_notify_ondownload': int(self.email_notify_ondownload),
+                'email_notify_onsubtitledownload': int(self.email_notify_onsubtitledownload),
+                'email_host': self.email_host,
+                'email_port': int(self.email_port),
+                'email_tls': int(self.email_tls),
+                'email_user': self.email_user,
+                'email_password': self.email_password,
+                'email_from': self.email_from,
+                'email_list': self.email_list,
             },
             'Subtitles': {
-                'use_subtitles': int(self.USE_SUBTITLES),
-                'subtitles_languages': ','.join(self.SUBTITLES_LANGUAGES),
-                'subtitles_services_list': ','.join(self.SUBTITLES_SERVICES_LIST),
-                'subtitles_services_enabled': '|'.join([str(x) for x in self.SUBTITLES_SERVICES_ENABLED]),
-                'subtitles_dir': self.SUBTITLES_DIR,
-                'subtitles_default': int(self.SUBTITLES_DEFAULT),
-                'subtitles_history': int(self.SUBTITLES_HISTORY),
-                'embedded_subtitles_all': int(self.EMBEDDED_SUBTITLES_ALL),
-                'subtitles_hearing_impaired': int(self.SUBTITLES_HEARING_IMPAIRED),
-                'subtitles_finder_frequency': int(self.SUBTITLE_SEARCHER_FREQ),
-                'subtitles_multi': int(self.SUBTITLES_MULTI),
-                'subtitles_extra_scripts': '|'.join(self.SUBTITLES_EXTRA_SCRIPTS),
-                'addic7ed_username': self.ADDIC7ED_USER,
-                'addic7ed_password': self.ADDIC7ED_PASS,
-                'legendastv_username': self.LEGENDASTV_USER,
-                'legendastv_password': self.LEGENDASTV_PASS,
-                'itasa_username': self.ITASA_USER,
-                'itasa_password': self.ITASA_PASS,
-                'opensubtitles_username': self.OPENSUBTITLES_USER,
-                'opensubtitles_password': self.OPENSUBTITLES_PASS,
+                'use_subtitles': int(self.use_subtitles),
+                'subtitles_languages': ','.join(self.subtitles_languages),
+                'subtitles_services_list': ','.join(self.subtitles_services_list),
+                'subtitles_services_enabled': '|'.join([str(x) for x in self.subtitles_services_enabled]),
+                'subtitles_dir': self.subtitles_dir,
+                'subtitles_default': int(self.subtitles_default),
+                'subtitles_history': int(self.subtitles_history),
+                'embedded_subtitles_all': int(self.embedded_subtitles_all),
+                'subtitles_hearing_impaired': int(self.subtitles_hearing_impaired),
+                'subtitles_finder_frequency': int(self.subtitle_searcher_freq),
+                'subtitles_multi': int(self.subtitles_multi),
+                'subtitles_extra_scripts': '|'.join(self.subtitles_extra_scripts),
+                'addic7ed_username': self.addic7ed_user,
+                'addic7ed_password': self.addic7ed_pass,
+                'legendastv_username': self.legendastv_user,
+                'legendastv_password': self.legendastv_pass,
+                'itasa_username': self.itasa_user,
+                'itasa_password': self.itasa_pass,
+                'opensubtitles_username': self.opensubtitles_user,
+                'opensubtitles_password': self.opensubtitles_pass,
             },
             'FailedDownloads': {
-                'use_failed_downloads': int(self.USE_FAILED_DOWNLOADS),
-                'delete_failed': int(self.DELETE_FAILED),
+                'use_failed_downloads': int(self.use_failed_downloads),
+                'delete_failed': int(self.delete_failed),
             },
             'ANIDB': {
-                'use_anidb': int(self.USE_ANIDB),
-                'anidb_username': self.ANIDB_USERNAME,
-                'anidb_password': self.ANIDB_PASSWORD,
-                'anidb_use_mylist': int(self.ANIDB_USE_MYLIST),
+                'use_anidb': int(self.use_anidb),
+                'anidb_username': self.anidb_username,
+                'anidb_password': self.anidb_password,
+                'anidb_use_mylist': int(self.anidb_use_mylist),
             },
             'ANIME': {
-                'anime_split_home': int(self.ANIME_SPLIT_HOME),
+                'anime_split_home': int(self.anime_split_home),
             },
             'Quality': {
-                'sizes': pickle.dumps(self.QUALITY_SIZES),
+                'sizes': pickle.dumps(self.quality_sizes),
             },
             'Providers': {
                 'providers_order': sickrage.app.search_providers.provider_order,
-                'custom_providers': self.CUSTOM_PROVIDERS,
+                'custom_providers': self.custom_providers,
             },
             'MetadataProviders': {}
         })
@@ -2300,7 +2300,7 @@ class Config(object):
             pass
         else:
             try:
-                if self.ENCRYPTION_VERSION == 1:
+                if self.encryption_version == 1:
                     unique_key1 = hex(uuid.getnode() ** 2)
 
                     if _decrypt:
@@ -2310,15 +2310,15 @@ class Config(object):
                     else:
                         section[key] = base64.encodestring(
                             ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(unique_key1)))).strip()
-                elif self.ENCRYPTION_VERSION == 2:
+                elif self.encryption_version == 2:
                     if _decrypt:
                         section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
                                                izip(base64.decodestring(section[key]),
-                                                    cycle(sickrage.app.config.ENCRYPTION_SECRET)))
+                                                    cycle(sickrage.app.config.encryption_secret)))
                     else:
                         section[key] = base64.encodestring(
                             ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(
-                                sickrage.app.config.ENCRYPTION_SECRET)))).strip()
+                                sickrage.app.config.encryption_secret)))).strip()
             except:
                 pass
 

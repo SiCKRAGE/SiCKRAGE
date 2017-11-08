@@ -209,7 +209,7 @@ class GenericProvider(object):
                 episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
                 episode_string += '{episode:0>2}'.format(episode=ep)
             else:
-                episode_string += sickrage.app.config.NAMING_EP_TYPE[2] % {
+                episode_string += sickrage.app.config.naming_ep_type[2] % {
                     'seasonnumber': episode.scene_season,
                     'episodenumber': episode.scene_episode,
                 }
@@ -634,12 +634,12 @@ class TorrentProvider(GenericProvider):
 
     @property
     def isActive(self):
-        return sickrage.app.config.USE_TORRENTS and self.isEnabled
+        return sickrage.app.config.use_torrents and self.isEnabled
 
     @property
     def imageName(self):
         if os.path.isfile(
-                os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'images', 'providers', self.id + '.png')):
+                os.path.join(sickrage.app.config.gui_static_dir, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
 
@@ -724,7 +724,7 @@ class TorrentProvider(GenericProvider):
         return super(TorrentProvider, self).make_url(url)
 
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.TORRENT_DIR,
+        return os.path.join(sickrage.app.config.torrent_dir,
                             '{}.torrent'.format(sanitizeFileName(name)))
 
     def add_trackers(self, result):
@@ -769,12 +769,12 @@ class NZBProvider(GenericProvider):
 
     @property
     def isActive(self):
-        return sickrage.app.config.USE_NZBS and self.isEnabled
+        return sickrage.app.config.use_nzbs and self.isEnabled
 
     @property
     def imageName(self):
         if os.path.isfile(
-                os.path.join(sickrage.app.config.GUI_STATIC_DIR, 'images', 'providers', self.id + '.png')):
+                os.path.join(sickrage.app.config.gui_static_dir, 'images', 'providers', self.id + '.png')):
             return self.id + '.png'
         return self.type + '.png'
 
@@ -827,7 +827,7 @@ class NZBProvider(GenericProvider):
         return super(NZBProvider, self).make_url(url)
 
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.NZB_DIR,
+        return os.path.join(sickrage.app.config.nzb_dir,
                             '{}.nzb'.format(sanitizeFileName(name)))
 
     @classmethod
@@ -949,7 +949,7 @@ class TorrentRssProvider(TorrentProvider):
         providers = cls.getDefaultProviders()
 
         try:
-            for curProviderStr in sickrage.app.config.CUSTOM_PROVIDERS.split('!!!'):
+            for curProviderStr in sickrage.app.config.custom_providers.split('!!!'):
                 if not len(curProviderStr):
                     continue
 
@@ -1111,7 +1111,7 @@ class NewznabProvider(NZBProvider):
                 'limit': 100,
                 'offset': 0,
                 'cat': self.catIDs.strip(', ') or '5030,5040',
-                'maxage': sickrage.app.config.USENET_RETENTION
+                'maxage': sickrage.app.config.usenet_retention
             }
 
             if self.private and self.key:
@@ -1147,7 +1147,7 @@ class NewznabProvider(NZBProvider):
                     if search_params['t'] != 'tvsearch':
                         search_params['q'] = search_string
 
-                sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
+                sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
                 try:
                     response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'),
@@ -1236,7 +1236,7 @@ class NewznabProvider(NZBProvider):
         providers = cls.getDefaultProviders()
 
         try:
-            for curProviderStr in sickrage.app.config.CUSTOM_PROVIDERS.split('!!!'):
+            for curProviderStr in sickrage.app.config.custom_providers.split('!!!'):
                 if not len(curProviderStr):
                     continue
 

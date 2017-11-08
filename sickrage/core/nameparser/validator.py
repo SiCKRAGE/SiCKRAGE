@@ -61,10 +61,10 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     :return: true if season folders need to be forced on or false otherwise.
     """
     if pattern is None:
-        pattern = sickrage.app.config.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.app.config.NAMING_ANIME
+        anime_type = sickrage.app.config.naming_anime
 
     return not validate_name(pattern, multi, anime_type, file_only=True)
 
@@ -79,10 +79,10 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.app.config.NAMING_ANIME
+        anime_type = sickrage.app.config.naming_anime
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid")
     return validate_name(pattern, multi, anime_type)
@@ -96,7 +96,7 @@ def check_valid_abd_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
@@ -112,7 +112,7 @@ def check_valid_sports_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.app.config.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)

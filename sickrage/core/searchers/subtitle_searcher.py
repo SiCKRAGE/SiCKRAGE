@@ -39,7 +39,7 @@ class SubtitleSearcher(object):
         self.amActive = False
 
     def run(self, force=False):
-        if self.amActive or sickrage.app.config.DEVELOPER:
+        if self.amActive or sickrage.app.config.developer:
             return
 
         self.amActive = True

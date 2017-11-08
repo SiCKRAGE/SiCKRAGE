@@ -129,7 +129,7 @@ class PostProcessorQueue(srQueue):
                              sickrage.app.log.WARNING)
 
         if not delete_on:
-            delete_on = (False, (not sickrage.app.config.NO_DELETE, True)[process_method == "move"])[
+            delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[
                 proc_type == "auto"]
 
         item = self.find_in_queue(dirName, proc_type)
@@ -209,6 +209,6 @@ class PostProcessorItem(srQueueItem):
                 "Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             # give the CPU a break
-            sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
+            sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())

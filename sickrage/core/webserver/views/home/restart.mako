@@ -7,7 +7,7 @@
 try:
     themeSpinner = srThemeName
 except NameError:
-    themeSpinner = sickrage.app.config.THEME_NAME
+    themeSpinner = sickrage.app.config.theme_name
 %>
 <h2>${_('Performing Restart')}</h2>
 <div class="messages">

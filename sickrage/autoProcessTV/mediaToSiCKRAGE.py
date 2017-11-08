@@ -26,7 +26,7 @@ import os
 import sys
 import time
 
-import sickrage
+import requests
 
 sickragePath = os.path.split(os.path.split(sys.argv[0])[0])[0]
 sys.path.append(sickragePath)
@@ -36,11 +36,11 @@ config = ConfigParser.ConfigParser()
 
 try:
     with io.open(configFilename, "r") as fp:
-        sickrage.app.config.readfp(fp)
+        config.readfp(fp)
 except IOError as e:
     print("Could not find/read SiCKRAGE config.ini: " + str(e))
-    print(
-        'Possibly wrong mediaToSiCKRAGE.py location. Ensure the file is in the autoProcessTV subdir of your SiCKRAGE installation')
+    print('Possibly wrong mediaToSiCKRAGE.py location. Ensure the file is in the autoProcessTV subdir of your '
+          'SiCKRAGE installation')
     time.sleep(3)
     sys.exit(1)
 
@@ -48,11 +48,10 @@ scriptlogger = logging.getLogger('mediaToSiCKRAGE')
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s MEDIATOSICKRAGE :: %(message)s', '%b-%d %H:%M:%S')
 
 # Get the log dir setting from SB config
-logdirsetting = sickrage.app.config.get("General", "log_dir") if sickrage.app.config.get("General",
-                                                                                                   "log_dir") else 'Logs'
+logdirsetting = config.get("General", "log_dir") if config.get("General", "log_dir") else 'logs'
 # put the log dir inside the SiCKRAGE dir, unless an absolute path
 logdir = os.path.normpath(os.path.join(sickragePath, logdirsetting))
-logfile = os.path.join(logdir, 'SiCKRAGE.log')
+logfile = os.path.join(logdir, 'sickrage.log')
 
 try:
     handler = logging.FileHandler(logfile)
@@ -120,51 +119,26 @@ def blackhole():
 
     return (dirName, nzbName)
 
-
-# def sabnzb():
-#    if len(sys.argv) < 2:
-#        scriptlogger.error('No folder supplied - is this being called from SABnzbd?')
-#        print "No folder supplied - is this being called from SABnzbd?"
-#        sys.exit()
-#    elif len(sys.argv) >= 3:
-#        dirName = sys.argv[1]
-#        nzbName = sys.argv[2]
-#    else:
-#        dirName = sys.argv[1]
-#        
-#    return (dirName, nzbName)    
-#
-# def hella():
-#    if len(sys.argv) < 4:
-#        scriptlogger.error('No folder supplied - is this being called from HellaVCR?')
-#        print "No folder supplied - is this being called from HellaVCR?"
-#        sys.exit()
-#    else:
-#        dirName = sys.argv[3]
-#        nzbName = sys.argv[2]
-#        
-#    return (dirName, nzbName)    
-
 def main():
     scriptlogger.info('Starting external PostProcess script ' + __file__)
 
-    host = sickrage.app.config.get("General", "web_host")
-    port = sickrage.app.config.get("General", "web_port")
-    username = sickrage.app.config.get("General", "web_username")
-    password = sickrage.app.config.get("General", "web_password")
+    host = config.get("General", "web_host")
+    port = config.get("General", "web_port")
+    username = config.get("General", "web_username")
+    password = config.get("General", "web_password")
     try:
-        ssl = int(sickrage.app.config.get("General", "enable_https"))
+        ssl = int(config.get("General", "enable_https"))
     except (ConfigParser.NoOptionError, ValueError):
         ssl = 0
 
     try:
-        web_root = sickrage.app.config.get("General", "web_root")
+        web_root = config.get("General", "web_root")
     except ConfigParser.NoOptionError:
         web_root = ""
 
-    tv_dir = sickrage.app.config.get("General", "tv_download_dir")
-    use_torrents = int(sickrage.app.config.get("General", "use_torrents"))
-    torrent_method = sickrage.app.config.get("General", "torrent_method")
+    tv_dir = config.get("General", "tv_download_dir")
+    use_torrents = int(config.get("General", "use_torrents"))
+    torrent_method = config.get("General", "torrent_method")
 
     if not use_torrents:
         scriptlogger.error('Enable Use Torrent on SiCKRAGE to use this Script. Aborting!')
@@ -209,23 +183,29 @@ def main():
         host = 'localhost'
 
     url = protocol + host + ":" + port + web_root + "/home/postprocess/processEpisode"
+    login_url = protocol + host + ':' + port + web_root + '/login'
 
     scriptlogger.debug("Opening URL: " + url + ' with params=' + str(params))
     print("Opening URL: " + url + ' with params=' + str(params))
 
     try:
-        response = sickrage.app.wsession.get(url, auth=(username, password), params=params, verify=False)
+        sess = requests.Session()
+        sess.post(login_url, data={'username': username, 'password': password}, stream=True, verify=False)
+        response = sess.get(url, auth=(username, password), params=params, verify=False,  allow_redirects=False)
     except Exception as err:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(err))
+        time.sleep(3)
         sys.exit('Unknown exception raised when opening url: ' + str(err))
 
     if response.status_code == 401:
         scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')
+        time.sleep(3)
         sys.exit('Invalid SiCKRAGE Username or Password, check your config')
 
     if response.ok:
         scriptlogger.info('Script ' + __file__ + ' Succesfull')
         print('Script ' + __file__ + ' Succesfull')
+        time.sleep(3)
         sys.exit()
 
 

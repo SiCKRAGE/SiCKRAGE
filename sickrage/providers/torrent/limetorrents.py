@@ -91,7 +91,7 @@ class LimeTorrentsProvider(TorrentProvider):
                     # because we want to use magnets if connecting direct to client
                     # so that proxies work.
                     download_url = item.enclosure['url']
-                    if sickrage.app.config.TORRENT_METHOD != "blackhole" or 'itorrents' not in download_url:
+                    if sickrage.app.config.torrent_method != "blackhole" or 'itorrents' not in download_url:
                         download_url = item.enclosure['url']
                         # http://itorrents.org/torrent/C7203982B6F000393B1CE3A013504E5F87A46A7F.torrent?title=The-Night-of-the-Generals-(1967)[BRRip-1080p-x264-by-alE13-DTS-AC3][Lektor-i-Napisy-PL-Eng][Eng]
                         # Keep the hash a separate string for when its needed for failed

@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="process_automatically"
-                               id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.PROCESS_AUTOMATICALLY)]}/>
+                               id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
                         <label for="process_automatically">
                             ${_('Enable the automatic post processor to scan and process any files in your')}
                             <i>${_('Post Processing Dir')}</i>?<br>
@@ -51,7 +51,7 @@
                                         <span class="glyphicon glyphicon-folder-open"></span>
                                     </div>
                                     <input name="tv_download_dir" id="tv_download_dir"
-                                           value="${sickrage.app.config.TV_DOWNLOAD_DIR}"
+                                           value="${sickrage.app.config.tv_download_dir}"
                                            class="form-control"
                                            autocapitalize="off"/>
                                 </div>
@@ -83,7 +83,7 @@
                                             title="Processing method">
                                         <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"), 'symlink_reversed' : _('Symbolic Link Reversed')} %>
                                         % for curAction in process_method_text:
-                                            <option value="${curAction}" ${('', 'selected')[sickrage.app.config.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                            <option value="${curAction}" ${('', 'selected')[sickrage.app.config.process_method == curAction]}>${process_method_text[curAction]}</option>
                                         % endfor
                                     </select>
                                 </div>
@@ -110,7 +110,7 @@
                             </div>
                             <input type="number" min="10" name="autopostprocessor_frequency"
                                    id="autopostprocessor_frequency"
-                                   value="${sickrage.app.config.AUTOPOSTPROCESSOR_FREQ}"
+                                   value="${sickrage.app.config.autopostprocessor_freq}"
                                    title="Time in minutes to check for new files to auto post-process (min 10)"
                                    class="form-control"/>
                             <div class="input-group-addon">
@@ -125,7 +125,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="postpone_if_sync_files"
-                               id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.POSTPONE_IF_SYNC_FILES)]}/>
+                               id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.postpone_if_sync_files)]}/>
                         <label for="postpone_if_sync_files">
                             ${_('Wait to process a folder if sync files are present.')}
                         </label>
@@ -141,7 +141,7 @@
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
                             <input name="sync_files" id="sync_files"
-                                   value="${sickrage.app.config.SYNC_FILES}"
+                                   value="${sickrage.app.config.sync_files}"
                                    placeholder="${_('ext1,ext2')}"
                                    title="comma separated list of extensions SiCKRAGE ignores when Post Processing"
                                    class="form-control" autocapitalize="off"/>
@@ -154,7 +154,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename episode using the Episode')}
                         <input type="checkbox" name="rename_episodes"
-                               id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.RENAME_EPISODES)]}/>
+                               id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
                         <label for="rename_episodes">
                             ${_('Naming settings?')}
                         </label>
@@ -166,7 +166,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Create missing show directories')}
                         <input type="checkbox" name="create_missing_show_dirs"
-                               id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.CREATE_MISSING_SHOW_DIRS)]}/>
+                               id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                         <label for="create_missing_show_dirs">
                             ${_('when they get deleted')}
                         </label>
@@ -178,7 +178,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Add shows without creating a')}
                         <input type="checkbox" name="add_shows_wo_dir"
-                               id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.ADD_SHOWS_WO_DIR)]}/>
+                               id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                         <label for="add_shows_wo_dir">
                             ${_('directory (not recommended)')}
                         </label>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Move srr/srt/sfv/etc files with the')}
                         <input type="checkbox" name="move_associated_files"
-                               id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.MOVE_ASSOCIATED_FILES)]}/>
+                               id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                         <label for="move_associated_files">
                             ${_('episode when processed?')}
                         </label>
@@ -202,7 +202,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename the original .nfo file to')}
                         <input type="checkbox" name="nfo_rename"
-                               id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.NFO_RENAME)]}/>
+                               id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                         <label for="nfo_rename">
                             ${_('.nfo-orig to avoid conflicts?')}
                         </label>
@@ -214,7 +214,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="airdate_episodes"
-                               id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.AIRDATE_EPISODES)]}/>
+                               id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
                         <label for="airdate_episodes">
                             ${_('Set last modified filedate to the date that the episode aired?')}<br/>
                             <b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
@@ -234,7 +234,7 @@
                                     title="What timezone should be used to change File Date?"
                                     class="form-control">
                                 % for curTimezone in ('local','network'):
-                                    <option value="${curTimezone}" ${('', 'selected')[sickrage.app.config.FILE_TIMESTAMP_TIMEZONE == curTimezone]}>${curTimezone}</option>
+                                    <option value="${curTimezone}" ${('', 'selected')[sickrage.app.config.file_timestamp_timezone == curTimezone]}>${curTimezone}</option>
                                 % endfor
                             </select>
                         </div>
@@ -246,7 +246,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="unpack" type="checkbox"
-                               name="unpack" ${('', 'checked')[bool(sickrage.app.config.UNPACK)]} />
+                               name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                         <label for="unpack">
                             ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
                             <b>${_('NOTE:')}</b> ${_('Only working with RAR archive')}
@@ -259,7 +259,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="del_rar_contents"
-                               id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.DELRARCONTENTS)]}/>
+                               id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
                         <label for="del_rar_contents">
                             ${_('Delete content of RAR files, even if Process Method not set to move?')}
                         </label>
@@ -271,7 +271,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="no_delete"
-                               id="no_delete" ${('', 'checked')[bool(sickrage.app.config.NO_DELETE)]}/>
+                               id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
                         <label for="no_delete">
                             ${_('Leave empty folders when Post Processing?')}<br/>
                             <b>${_('NOTE:')}</b> ${_('Can be overridden using manual Post Processing')}
@@ -284,7 +284,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input id="use_failed_downloads" type="checkbox" class="enabler"
-                               name="use_failed_downloads" ${('', 'checked')[bool(sickrage.app.config.USE_FAILED_DOWNLOADS)]}/>
+                               name="use_failed_downloads" ${('', 'checked')[bool(sickrage.app.config.use_failed_downloads)]}/>
                         <label for="use_failed_downloads">${_('Use Failed Download Handling?')}</label>
                     </div>
                 </div>
@@ -295,7 +295,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input id="delete_failed" type="checkbox"
-                                   name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.DELETE_FAILED)]}/>
+                                   name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
                             <label for="delete_failed">
                                 ${_('Delete files left over from a failed download?')}<br/>
                                 <b>${_('NOTE:')}</b> ${_('This only works if Use Failed Downloads is enabled.')}
@@ -313,7 +313,7 @@
                                 <span class="glyphicon glyphicon-file"></span>
                             </div>
                             <input name="extra_scripts" id="extra_scripts"
-                                   value="${'|'.join(sickrage.app.config.EXTRA_SCRIPTS)}"
+                                   value="${'|'.join(sickrage.app.config.extra_scripts)}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
                         <label for="extra_scripts">${_('See')} <a
@@ -351,12 +351,12 @@
                                 <% is_custom = True %>
                                 % for cur_preset in validator.name_presets:
                                 <% tmp = validator.test_name(cur_preset, anime_type=3) %>
-                                % if cur_preset == sickrage.app.config.NAMING_PATTERN:
+                                % if cur_preset == sickrage.app.config.naming_pattern:
                                     <% is_custom = False %>
                                 % endif
-                                    <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.NAMING_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                    <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.naming_pattern == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                 % endfor
-                                <option id="${sickrage.app.config.NAMING_PATTERN}" ${('', 'selected')[bool(is_custom)]}>
+                                <option id="${sickrage.app.config.naming_pattern}" ${('', 'selected')[bool(is_custom)]}>
                                     Custom...
                                 </option>
                             </select>
@@ -375,7 +375,7 @@
                                          class="legend" class="legend"/>
                                 </div>
                                 <input name="naming_pattern" id="naming_pattern"
-                                       value="${sickrage.app.config.NAMING_PATTERN}"
+                                       value="${sickrage.app.config.naming_pattern}"
                                        class="form-control"/>
                             </div>
                             <label for="naming_pattern">
@@ -545,7 +545,7 @@
                             <select id="naming_multi_ep" name="naming_multi_ep" class="form-control"
                                     title="Choose a Multi-Episode Style">
                                 % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                    <option value="${cur_multi_ep[0]}" ${('', 'selected')[cur_multi_ep[0] == sickrage.app.config.NAMING_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                    <option value="${cur_multi_ep[0]}" ${('', 'selected')[cur_multi_ep[0] == sickrage.app.config.naming_multi_ep]}>${cur_multi_ep[1]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -580,7 +580,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" id="naming_strip_year"
-                               name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.NAMING_STRIP_YEAR)]}/>
+                               name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
                         <label for="naming_strip_year">
                             ${_('Remove the TV show\'s year when renaming the file?')}<br/>
                             <b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}
@@ -594,7 +594,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_abd"
-                               name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.NAMING_CUSTOM_ABD)]}/>
+                               name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.naming_custom_abd)]}/>
                         <label for="naming_custom_abd">
                             ${_('Name Air-By-Date shows differently than regular shows?')}
                         </label>
@@ -615,12 +615,12 @@
                                     <% is_abd_custom = True %>
                                     % for cur_preset in validator.name_abd_presets:
                                     <% tmp = validator.test_name(cur_preset) %>
-                                    % if cur_preset == sickrage.app.config.NAMING_ABD_PATTERN:
+                                    % if cur_preset == sickrage.app.config.naming_abd_pattern:
                                         <% is_abd_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.NAMING_ABD_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.naming_abd_pattern == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.app.config.NAMING_ABD_PATTERN}" ${('', 'selected')[bool(is_abd_custom)]}>
+                                    <option id="${sickrage.app.config.naming_abd_pattern}" ${('', 'selected')[bool(is_abd_custom)]}>
                                         Custom...
                                     </option>
                                 </select>
@@ -639,7 +639,7 @@
                                              title="Toggle ABD Naming Legend" class="legend"/>
                                     </div>
                                     <input name="naming_abd_pattern" id="naming_abd_pattern"
-                                           value="${sickrage.app.config.NAMING_ABD_PATTERN}"
+                                           value="${sickrage.app.config.naming_abd_pattern}"
                                            title="Air-by-date naming pattern"
                                            class="form-control"/>
                                 </div>
@@ -804,7 +804,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_sports"
-                               name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.NAMING_CUSTOM_SPORTS)]}/>
+                               name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.naming_custom_sports)]}/>
                         <label for="naming_custom_sports">
                             ${_('Name Sports shows differently than regular shows?')}
                         </label>
@@ -825,12 +825,12 @@
                                     <% is_sports_custom = True %>
                                     % for cur_preset in validator.name_sports_presets:
                                     <% tmp = validator.test_name(cur_preset) %>
-                                    % if cur_preset == sickrage.app.config.NAMING_SPORTS_PATTERN:
+                                    % if cur_preset == sickrage.app.config.naming_sports_pattern:
                                         <% is_sports_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.NAMING_SPORTS_PATTERN == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[sickrage.app.config.naming_sports_pattern == cur_preset]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.app.config.NAMING_SPORTS_PATTERN}" ${('', 'selected')[bool(is_sports_custom)]}>
+                                    <option id="${sickrage.app.config.naming_sports_pattern}" ${('', 'selected')[bool(is_sports_custom)]}>
                                         ${_('Custom...')}
                                     </option>
                                 </select>
@@ -849,7 +849,7 @@
                                              title="Toggle Sports Naming Legend" class="legend"/>
                                     </div>
                                     <input name="naming_sports_pattern" id="naming_sports_pattern"
-                                           value="${sickrage.app.config.NAMING_SPORTS_PATTERN}"
+                                           value="${sickrage.app.config.naming_sports_pattern}"
                                            title="Sports naming pattern"
                                            class="form-control"/>
                                 </div>
@@ -1015,7 +1015,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_anime"
-                               name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.NAMING_CUSTOM_ANIME)]}/>
+                               name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.naming_custom_anime)]}/>
                         <label for="naming_custom_anime">
                             ${_('Name Anime shows differently than regular shows?')}
                         </label>
@@ -1036,12 +1036,12 @@
                                     <% is_anime_custom = True %>
                                     % for cur_preset in validator.name_anime_presets:
                                     <% tmp = validator.test_name(cur_preset) %>
-                                    % if cur_preset == sickrage.app.config.NAMING_ANIME_PATTERN:
+                                    % if cur_preset == sickrage.app.config.naming_anime_pattern:
                                         <% is_anime_custom = False %>
                                     % endif
-                                        <option id="${cur_preset}" ${('', 'selected')[cur_preset == sickrage.app.config.NAMING_ANIME_PATTERN]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
+                                        <option id="${cur_preset}" ${('', 'selected')[cur_preset == sickrage.app.config.naming_anime_pattern]}>${os.path.join(tmp['dir'], tmp['name'])}</option>
                                     % endfor
-                                    <option id="${sickrage.app.config.NAMING_ANIME_PATTERN}" ${('', 'selected')[bool(is_anime_custom)]}>
+                                    <option id="${sickrage.app.config.naming_anime_pattern}" ${('', 'selected')[bool(is_anime_custom)]}>
                                         ${_('Custom...')}
                                     </option>
                                 </select>
@@ -1064,7 +1064,7 @@
                                              title="Toggle Anime Naming Legend" class="legend"/>
                                     </div>
                                     <input name="naming_anime_pattern" id="naming_anime_pattern"
-                                           value="${sickrage.app.config.NAMING_ANIME_PATTERN}"
+                                           value="${sickrage.app.config.naming_anime_pattern}"
                                            title="Anime naming pattern"
                                            class="form-control"/>
                                 </div>
@@ -1219,7 +1219,7 @@
                                         title="Multi-Episode Style"
                                         class="form-control">
                                     % for cur_multi_ep in sorted(multiEpStrings.items(), key=lambda x: x[1]):
-                                        <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.app.config.NAMING_ANIME_MULTI_EP]}>${cur_multi_ep[1]}</option>
+                                        <option value="${cur_multi_ep[0]}" ${('', 'selected="selected" class="selected"')[cur_multi_ep[0] == sickrage.app.config.naming_anime_multi_ep]}>${cur_multi_ep[1]}</option>
                                     % endfor
                                 </select>
                             </div>
@@ -1254,7 +1254,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime"
-                                   value="1" ${('', 'checked')[sickrage.app.config.NAMING_ANIME == 1]}/>
+                                   value="1" ${('', 'checked')[sickrage.app.config.naming_anime == 1]}/>
                             <label for="naming_anime">
                                 ${_('Add the absolute number to the season/episode format?')}<br/>
                                 <b>${_('NOTE:')}</b> ${_('Only applies to animes. (eg. S15E45 - 310 vs S15E45)')}
@@ -1268,7 +1268,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime_only"
-                                   value="2" ${('', 'checked')[sickrage.app.config.NAMING_ANIME == 2]}/>
+                                   value="2" ${('', 'checked')[sickrage.app.config.naming_anime == 2]}/>
                             <label for="naming_anime_only">
                                 ${_('Replace season/episode format with absolute number')}<br/>
                                 <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}
@@ -1282,7 +1282,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <input type="radio" name="naming_anime" id="naming_anime_none"
-                                   value="3" ${('', 'checked')[sickrage.app.config.NAMING_ANIME == 3]}/>
+                                   value="3" ${('', 'checked')[sickrage.app.config.naming_anime == 3]}/>
                             <label for="naming_anime_none">
                                 ${_('Dont include the absolute number')}<br/>
                                 <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}

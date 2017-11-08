@@ -49,9 +49,9 @@ class PLEXNotifier(Notifiers):
 
         # fill in omitted parameters
         if not username:
-            username = sickrage.app.config.PLEX_CLIENT_USERNAME
+            username = sickrage.app.config.plex_client_username
         if not password:
-            password = sickrage.app.config.PLEX_CLIENT_PASSWORD
+            password = sickrage.app.config.plex_client_password
 
         if not host:
             sickrage.app.log.warning('PLEX: No host specified, check your settings')
@@ -107,16 +107,16 @@ class PLEXNotifier(Notifiers):
         """
 
         # suppress notifications if the notifier is disabled but the notify options are checked
-        if not sickrage.app.config.USE_PLEX_CLIENT and not force:
+        if not sickrage.app.config.use_plex_client and not force:
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.app.config.PLEX_HOST
+            host = sickrage.app.config.plex_host
         if not username:
-            username = sickrage.app.config.PLEX_CLIENT_USERNAME
+            username = sickrage.app.config.plex_client_username
         if not password:
-            password = sickrage.app.config.PLEX_CLIENT_PASSWORD
+            password = sickrage.app.config.plex_client_password
 
         result = ''
         for curHost in [x.strip() for x in host.split(',')]:
@@ -135,19 +135,19 @@ class PLEXNotifier(Notifiers):
     ##############################################################################
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.PLEX_NOTIFY_ONSNATCH:
+        if sickrage.app.config.plex_notify_onsnatch:
             self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.PLEX_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.plex_notify_ondownload:
             self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.PLEX_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.plex_notify_onsubtitledownload:
             self._notify_pmc(ep_name + ': ' + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version='??'):
-        if sickrage.app.config.USE_PLEX:
+        if sickrage.app.config.use_plex:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             if update_text and title and new_version:
@@ -171,21 +171,21 @@ class PLEXNotifier(Notifiers):
 
         """
 
-        if sickrage.app.config.USE_PLEX and sickrage.app.config.PLEX_UPDATE_LIBRARY:
+        if sickrage.app.config.use_plex and sickrage.app.config.plex_update_library:
 
-            if not sickrage.app.config.PLEX_SERVER_HOST:
+            if not sickrage.app.config.plex_server_host:
                 sickrage.app.log.debug('PLEX: No Plex Media Server host specified, check your settings')
                 return False
 
             if not host:
-                host = sickrage.app.config.PLEX_SERVER_HOST
+                host = sickrage.app.config.plex_server_host
             if not username:
-                username = sickrage.app.config.PLEX_USERNAME
+                username = sickrage.app.config.plex_username
             if not password:
-                password = sickrage.app.config.PLEX_PASSWORD
+                password = sickrage.app.config.plex_password
 
             if not plex_server_token:
-                plex_server_token = sickrage.app.config.PLEX_SERVER_TOKEN
+                plex_server_token = sickrage.app.config.plex_server_token
 
             # if username and password were provided, fetch the auth token from plex.tv
             token_arg = ''

@@ -26,8 +26,8 @@
 
                     if curDir['existing_info'][0]:
                         indexer = curDir['existing_info'][2]
-                    elif sickrage.app.config.INDEXER_DEFAULT > 0:
-                        indexer = sickrage.app.config.INDEXER_DEFAULT
+                    elif sickrage.app.config.indexer_default > 0:
+                        indexer = sickrage.app.config.indexer_default
                 %>
 
                 <tr>

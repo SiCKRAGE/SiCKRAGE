@@ -42,29 +42,29 @@ class SabNZBd(object):
 
         # set up a dict with the URL params in it
         params = {}
-        if sickrage.app.config.SAB_USERNAME is not None:
-            params['ma_username'] = sickrage.app.config.SAB_USERNAME
-        if sickrage.app.config.SAB_PASSWORD is not None:
-            params['ma_password'] = sickrage.app.config.SAB_PASSWORD
-        if sickrage.app.config.SAB_APIKEY is not None:
-            params['apikey'] = sickrage.app.config.SAB_APIKEY
-        category = sickrage.app.config.SAB_CATEGORY
+        if sickrage.app.config.sab_username is not None:
+            params['ma_username'] = sickrage.app.config.sab_username
+        if sickrage.app.config.sab_password is not None:
+            params['ma_password'] = sickrage.app.config.sab_password
+        if sickrage.app.config.sab_apikey is not None:
+            params['apikey'] = sickrage.app.config.sab_apikey
+        category = sickrage.app.config.sab_category
         if nzb.show.is_anime:
-            category = sickrage.app.config.SAB_CATEGORY_ANIME
+            category = sickrage.app.config.sab_category_anime
 
         # if it aired more than 7 days ago, override with the backlog category IDs
         for curEp in nzb.episodes:
             if datetime.date.today() - curEp.airdate > datetime.timedelta(days=7):
-                category = sickrage.app.config.SAB_CATEGORY_BACKLOG
+                category = sickrage.app.config.sab_category_backlog
                 if nzb.show.is_anime:
-                    category = sickrage.app.config.SAB_CATEGORY_ANIME_BACKLOG
+                    category = sickrage.app.config.sab_category_anime_backlog
 
         if category is not None:
             params['cat'] = category
 
         # use high priority if specified (recently aired episode)
         if nzb.priority == 1:
-            if sickrage.app.config.SAB_FORCED == 1:
+            if sickrage.app.config.sab_forced == 1:
                 params['priority'] = 2
             else:
                 params['priority'] = 1
@@ -87,7 +87,7 @@ class SabNZBd(object):
                     params['mode'] = 'addurl'
                     params['name'] = nzb.url
 
-                url = sickrage.app.config.SAB_HOST + "api?" + urllib.urlencode(params)
+                url = sickrage.app.config.sab_host + "api?" + urllib.urlencode(params)
                 sickrage.app.log.info("Sending NZB to SABnzbd")
                 sickrage.app.log.debug("URL: " + url)
 
@@ -99,7 +99,7 @@ class SabNZBd(object):
                 params['mode'] = 'addfile'
                 multiPartParams = {"nzbfile": (nzb.name + ".nzb", nzb.extraInfo[0])}
 
-                url = sickrage.app.config.SAB_HOST + "api?" + urllib.urlencode(params)
+                url = sickrage.app.config.sab_host + "api?" + urllib.urlencode(params)
                 sickrage.app.log.info("Sending NZB to SABnzbd")
                 sickrage.app.log.debug("URL: " + url)
 

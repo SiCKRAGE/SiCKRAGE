@@ -86,7 +86,7 @@ class PostProcessor(object):
         # name of the NZB that resulted in this folder
         self.nzb_name = nzb_name
 
-        self.process_method = process_method if process_method else sickrage.app.config.PROCESS_METHOD
+        self.process_method = process_method if process_method else sickrage.app.config.process_method
 
         self.in_history = False
 
@@ -323,7 +323,7 @@ class PostProcessor(object):
                     cur_extension = cur_lang + os.path.splitext(cur_extension)[1]
 
             # replace .nfo with .nfo-orig to avoid conflicts
-            if cur_extension == 'nfo' and sickrage.app.config.NFO_RENAME == True:
+            if cur_extension == 'nfo' and sickrage.app.config.nfo_rename == True:
                 cur_extension = 'nfo-orig'
 
             # If new base name then convert name
@@ -333,8 +333,8 @@ class PostProcessor(object):
             else:
                 new_file_name = replaceExtension(cur_file_name, cur_extension)
 
-            if sickrage.app.config.SUBTITLES_DIR and cur_extension in subtitle_extensions:
-                subs_new_path = os.path.join(new_path, sickrage.app.config.SUBTITLES_DIR)
+            if sickrage.app.config.subtitles_dir and cur_extension in subtitle_extensions:
+                subs_new_path = os.path.join(new_path, sickrage.app.config.subtitles_dir)
                 dir_exists = makeDir(subs_new_path)
                 if not dir_exists:
                     sickrage.app.log.error("Unable to create subtitles folder " + subs_new_path)
@@ -830,7 +830,7 @@ class PostProcessor(object):
 
         :param ep_obj: The object to use when calling the extra script
         """
-        for curScriptName in sickrage.app.config.EXTRA_SCRIPTS:
+        for curScriptName in sickrage.app.config.extra_scripts:
 
             # generate a safe command line string to execute the script and provide all the parameters
             script_cmd = [piece for piece in re.split("( |\\\".*?\\\"|'.*?')", curScriptName) if piece.strip()]
@@ -1025,7 +1025,7 @@ class PostProcessor(object):
                 #    curEp.status = Quality.compositeStatus(SNATCHED, new_ep_quality)
 
         # if the show directory doesn't exist then make it if allowed
-        if not os.path.isdir(ep_obj.show.location) and sickrage.app.config.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(ep_obj.show.location) and sickrage.app.config.create_missing_show_dirs:
             self._log("Show directory doesn't exist, creating it", sickrage.app.log.DEBUG)
 
             try:
@@ -1095,7 +1095,7 @@ class PostProcessor(object):
         make_dirs(dest_path)
 
         # figure out the base name of the resulting episode file
-        if sickrage.app.config.RENAME_EPISODES:
+        if sickrage.app.config.rename_episodes:
             orig_extension = self.file_name.rpartition('.')[-1]
             new_base_name = os.path.basename(proper_path)
             new_file_name = new_base_name + '.' + orig_extension
@@ -1106,7 +1106,7 @@ class PostProcessor(object):
             new_file_name = self.file_name
 
         # add to anidb
-        if ep_obj.show.is_anime and sickrage.app.config.ANIDB_USE_MYLIST:
+        if ep_obj.show.is_anime and sickrage.app.config.anidb_use_mylist:
             self._add_to_anidb_mylist(self.file_path)
 
         try:
@@ -1114,25 +1114,25 @@ class PostProcessor(object):
             if self.process_method == self.PROCESS_METHOD_COPY:
                 if isFileLocked(self.file_path, False):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
-                self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.MOVE_ASSOCIATED_FILES,
-                           sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
+                           sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
-                self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.MOVE_ASSOCIATED_FILES,
-                           sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._move(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
+                           sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_HARDLINK:
-                self._hardlink(self.file_path, dest_path, new_base_name, sickrage.app.config.MOVE_ASSOCIATED_FILES,
-                               sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._hardlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
+                               sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
-                                     sickrage.app.config.MOVE_ASSOCIATED_FILES,
-                                     sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles)
+                                     sickrage.app.config.move_associated_files,
+                                     sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK_REVERSED:
-                self._symlink(self.file_path, dest_path, new_base_name, sickrage.app.config.MOVE_ASSOCIATED_FILES,
-                              sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles)
+                self._symlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
+                              sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
             else:
                 sickrage.app.log.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
@@ -1140,7 +1140,7 @@ class PostProcessor(object):
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
         # download subtitles
-        if sickrage.app.config.USE_SUBTITLES and ep_obj.show.subtitles:
+        if sickrage.app.config.use_subtitles and ep_obj.show.subtitles:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
@@ -1154,7 +1154,7 @@ class PostProcessor(object):
                 cur_ep.saveToDB()
 
         # set file modify stamp to show airdate
-        if sickrage.app.config.AIRDATE_EPISODES:
+        if sickrage.app.config.airdate_episodes:
             for cur_ep in [ep_obj] + ep_obj.relatedEps:
                 with cur_ep.lock:
                     cur_ep.airdateModifyStamp()

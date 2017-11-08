@@ -120,7 +120,7 @@ class BTNProvider(TorrentProvider):
         try:
             api = jsonrpclib.Server('http://' + self.urls['base_url'])
             parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
-            time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
+            time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except jsonrpclib.jsonrpc.ProtocolError as e:
             if e.message[1] == 'Call Limit Exceeded':
                 sickrage.app.log.warning("You have exceeded the limit of 150 calls per hour.")

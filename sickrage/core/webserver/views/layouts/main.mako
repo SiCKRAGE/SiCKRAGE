@@ -31,9 +31,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no">
 
-    % if sickrage.app.config.THEME_NAME == "dark":
+    % if sickrage.app.config.theme_name == "dark":
         <meta name="theme-color" content="#15528F">
-    % elif sickrage.app.config.THEME_NAME == "light":
+    % elif sickrage.app.config.theme_name == "light":
         <meta name="theme-color" content="#333333">
     % endif
 
@@ -44,37 +44,37 @@
     <meta data-var="srPID" data-content="${srPID}">
     <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
     <meta data-var="srWebRoot" data-content="${srWebRoot}">
-    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.app.config.THEME_NAME == 'dark']}">
-    <meta data-var="anonURL" data-content="${sickrage.app.config.ANON_REDIRECT}">
-    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.app.config.ANIME_SPLIT_HOME}">
-    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.app.config.COMING_EPS_LAYOUT}">
-    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.app.config.COMING_EPS_SORT}">
-    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.app.config.DATE_PRESET}">
-    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.app.config.FILTER_ROW}">
-    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.app.config.FUZZY_DATING}">
-    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.app.config.HISTORY_LAYOUT}">
-    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.app.config.HOME_LAYOUT}">
-    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.app.config.POSTER_SORTBY}">
-    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.app.config.POSTER_SORTDIR}">
-    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.app.config.ROOT_DIRS}">
-    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.SORT_ARTICLE}">
-    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.app.config.TIME_PRESET}">
-    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.app.config.TRIM_ZERO}">
-    <meta data-var="sickrage.FANART_BACKGROUND" data-content="${sickrage.app.config.FANART_BACKGROUND}">
+    <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.app.config.theme_name == 'dark']}">
+    <meta data-var="anonURL" data-content="${sickrage.app.config.anon_redirect}">
+    <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.app.config.anime_split_home}">
+    <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.app.config.coming_eps_layout}">
+    <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.app.config.coming_eps_sort}">
+    <meta data-var="sickrage.DATE_PRESET" data-content="${sickrage.app.config.date_preset}">
+    <meta data-var="sickrage.FILTER_ROW" data-content="${sickrage.app.config.filter_row}">
+    <meta data-var="sickrage.FUZZY_DATING" data-content="${sickrage.app.config.fuzzy_dating}">
+    <meta data-var="sickrage.HISTORY_LAYOUT" data-content="${sickrage.app.config.history_layout}">
+    <meta data-var="sickrage.HOME_LAYOUT" data-content="${sickrage.app.config.home_layout}">
+    <meta data-var="sickrage.POSTER_SORTBY" data-content="${sickrage.app.config.poster_sortby}">
+    <meta data-var="sickrage.POSTER_SORTDIR" data-content="${sickrage.app.config.poster_sortdir}">
+    <meta data-var="sickrage.ROOT_DIRS" data-content="${sickrage.app.config.root_dirs}">
+    <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
+    <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.app.config.time_preset}">
+    <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.app.config.trim_zero}">
+    <meta data-var="sickrage.FANART_BACKGROUND" data-content="${sickrage.app.config.fanart_background}">
     <meta data-var="sickrage.FANART_BACKGROUND_OPACITY"
-          data-content="${sickrage.app.config.FANART_BACKGROUND_OPACITY}">
+          data-content="${sickrage.app.config.fanart_background_opacity}">
     <%block name="metas" />
 
     <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/favicon.png">
 
-    % if sickrage.app.config.GUI_LANG:
+    % if sickrage.app.config.gui_lang:
         <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
     % endif
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <link rel="stylesheet" type="text/css"
-          href="${srWebRoot}/css/themes/${sickrage.app.config.THEME_NAME}.min.css"/>
+          href="${srWebRoot}/css/themes/${sickrage.app.config.theme_name}.min.css"/>
     <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
@@ -118,9 +118,9 @@
                                         <i class="menu-icon-postprocess"></i>&nbsp;${_('Manual Post-Processing')}
                                     </a>
                                 </li>
-                                % if sickrage.app.config.SHOWS_RECENT:
+                                % if sickrage.app.config.shows_recent:
                                     <li class="divider"></li>
-                                % for recentShow in sickrage.app.config.SHOWS_RECENT:
+                                % for recentShow in sickrage.app.config.shows_recent:
                                     <li>
                                         <a href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
                                             <i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}
@@ -159,28 +159,28 @@
                                         <i class="menu-icon-backlog"></i>&nbsp;${_('Episode Status Management')}
                                     </a>
                                 </li>
-                                % if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_OAUTH_TOKEN != "":
+                                % if sickrage.app.config.use_trakt and sickrage.app.config.trakt_oauth_token != "":
                                     <li>
                                         <a href="${srWebRoot}/home/syncTrakt/">
                                             <i class="menu-icon-backlog-view"></i>&nbsp;${_('Sync Trakt')}
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.USE_PLEX and sickrage.app.config.PLEX_SERVER_HOST != "":
+                                % if sickrage.app.config.use_plex and sickrage.app.config.plex_server_host != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updatePLEX/">
                                             <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update PLEX')}
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.USE_KODI and sickrage.app.config.KODI_HOST != "":
+                                % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updateKODI/">
                                             <i class="menu-icon-kodi"></i>&nbsp;${_('Update KODI')}
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.USE_EMBY and sickrage.app.config.EMBY_HOST != "" and sickrage.app.config.EMBY_APIKEY != "":
+                                % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
                                     <li>
                                         <a href="${srWebRoot}/home/updateEMBY/">
                                             <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update Emby')}
@@ -194,14 +194,14 @@
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.USE_FAILED_DOWNLOADS:
+                                % if sickrage.app.config.use_failed_downloads:
                                     <li>
                                         <a href="${srWebRoot}/manage/failedDownloads/">
                                             <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.USE_SUBTITLES:
+                                % if sickrage.app.config.use_subtitles:
                                     <li>
                                         <a href="${srWebRoot}/manage/subtitleMissed/">
                                             <i class="menu-icon-backlog"></i>&nbsp;${_('Missed Subtitle Management')}
@@ -316,7 +316,7 @@
                                 </li>
                                 <li>
                                     <a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
-                                       onclick="window.open('${sickrage.app.config.ANON_REDIRECT}' + this.href); return false;">
+                                       onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                         <i class="fa fa-money"></i>&nbsp;${_('Donate')}
                                     </a>
                                 </li>

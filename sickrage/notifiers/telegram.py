@@ -53,8 +53,8 @@ class TelegramNotifier(Notifiers):
 
         :returns: True if the message succeeded, False otherwise
         """
-        id = sickrage.app.config.TELEGRAM_ID or id
-        api_key = sickrage.app.config.TELEGRAM_APIKEY or api_key
+        id = sickrage.app.config.telegram_id or id
+        api_key = sickrage.app.config.telegram_apikey or api_key
 
         sickrage.app.log.debug('Telegram in use with API KEY: {}'.format(api_key))
 
@@ -96,7 +96,7 @@ class TelegramNotifier(Notifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
-        if sickrage.app.config.TELEGRAM_NOTIFY_ONSNATCH:
+        if sickrage.app.config.telegram_notify_onsnatch:
             self._notify_telegram(title, ep_name)
 
     def _notify_download(self, ep_name, title=None):
@@ -109,7 +109,7 @@ class TelegramNotifier(Notifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
-        if sickrage.app.config.TELEGRAM_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.telegram_notify_ondownload:
             self._notify_telegram(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=None):
@@ -123,7 +123,7 @@ class TelegramNotifier(Notifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
-        if sickrage.app.config.TELEGRAM_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.telegram_notify_onsubtitledownload:
             self._notify_telegram(title, '{}: {}'.format(ep_name, lang))
 
     def _notify_version_update(self, new_version='??'):
@@ -132,7 +132,7 @@ class TelegramNotifier(Notifiers):
 
         :param new_version: The new version available from git
         """
-        if sickrage.app.config.USE_TELEGRAM:
+        if sickrage.app.config.use_telegram:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_telegram(title, update_text + new_version)
@@ -143,7 +143,7 @@ class TelegramNotifier(Notifiers):
 
         :param ipaddress: The ip address the login is originating from
         """
-        if sickrage.app.config.USE_TELEGRAM:
+        if sickrage.app.config.use_telegram:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notify_telegram(title, update_text.format(ipaddress))
@@ -161,7 +161,7 @@ class TelegramNotifier(Notifiers):
         :returns: the message to send
         """
 
-        if not (force or sickrage.app.config.USE_TELEGRAM):
+        if not (force or sickrage.app.config.use_telegram):
             sickrage.app.log.debug('Notification for Telegram not enabled, skipping this notification')
             return False, 'Disabled'
 

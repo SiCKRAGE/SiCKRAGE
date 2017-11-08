@@ -40,8 +40,8 @@ resultFilters = [
     "dub(bed)?"
 ]
 
-if hasattr('General', 'ignored_subs_list') and sickrage.app.config.IGNORED_SUBS_LIST:
-    resultFilters.append("(" + sickrage.app.config.IGNORED_SUBS_LIST.replace(",", "|") + ")sub(bed|ed|s)?")
+if hasattr('General', 'ignored_subs_list') and sickrage.app.config.ignored_subs_list:
+    resultFilters.append("(" + sickrage.app.config.ignored_subs_list.replace(",", "|") + ")sub(bed|ed|s)?")
 
 
 def containsAtLeastOneWord(name, words):
@@ -94,19 +94,19 @@ def filterBadReleases(name, parse=True):
 
     # if any of the bad strings are in the name then say no
     ignore_words = list(resultFilters)
-    if sickrage.app.config.IGNORE_WORDS:
-        ignore_words.extend(sickrage.app.config.IGNORE_WORDS.split(','))
+    if sickrage.app.config.ignore_words:
+        ignore_words.extend(sickrage.app.config.ignore_words.split(','))
     word = containsAtLeastOneWord(name, ignore_words)
     if word:
         sickrage.app.log.debug("Invalid scene release: " + name + " contains " + word + ", ignoring it")
         return False
 
     # if any of the good strings aren't in the name then say no
-    if sickrage.app.config.REQUIRE_WORDS:
-        require_words = sickrage.app.config.REQUIRE_WORDS
+    if sickrage.app.config.require_words:
+        require_words = sickrage.app.config.require_words
         if not containsAtLeastOneWord(name, require_words):
             sickrage.app.log.debug(
-                "Invalid scene release: " + name + " doesn't contain any of " + sickrage.app.config.REQUIRE_WORDS +
+                "Invalid scene release: " + name + " doesn't contain any of " + sickrage.app.config.require_words +
                 ", ignoring it")
             return False
 

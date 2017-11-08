@@ -46,7 +46,7 @@ class ProperSearcher(object):
         Start looking for new propers
         :param force: Start even if already running (currently not used, defaults to False)
         """
-        if self.amActive or sickrage.app.config.DEVELOPER and not force:
+        if self.amActive or sickrage.app.config.developer and not force:
             return
 
         self.amActive = True
@@ -90,12 +90,12 @@ class ProperSearcher(object):
 
         # for each provider get a list of the
         for providerID, providerObj in sickrage.app.search_providers.sort(
-                randomize=sickrage.app.config.RANDOMIZE_PROVIDERS).items():
+                randomize=sickrage.app.config.randomize_providers).items():
             # check provider type and provider is enabled
-            if not sickrage.app.config.USE_NZBS and providerObj.type in [NZBProvider.type,
+            if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type,
                                                                               NewznabProvider.type]:
                 continue
-            elif not sickrage.app.config.USE_TORRENTS and providerObj.type in [TorrentProvider.type,
+            elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
                                                                                     TorrentRssProvider.type]:
                 continue
             elif not providerObj.isEnabled:
@@ -280,7 +280,7 @@ class ProperSearcher(object):
 
                 # snatch it
                 snatchEpisode(result, SNATCHED_PROPER)
-                time.sleep(cpu_presets[sickrage.app.config.CPU_PRESET])
+                time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()

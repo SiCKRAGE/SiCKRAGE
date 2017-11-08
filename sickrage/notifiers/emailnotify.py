@@ -56,7 +56,7 @@ class EmailNotifier(Notifiers):
         """
         ep_name = ep_name
 
-        if sickrage.app.config.EMAIL_NOTIFY_ONSNATCH:
+        if sickrage.app.config.email_notify_onsnatch:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -77,13 +77,13 @@ class EmailNotifier(Notifiers):
                         msg = MIMEText("Episode Snatched")
 
                 msg['Subject'] = 'Snatched: ' + ep_name
-                msg['From'] = sickrage.app.config.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.app.config.EMAIL_HOST, sickrage.app.config.EMAIL_PORT,
-                                  sickrage.app.config.EMAIL_FROM,
-                                  sickrage.app.config.EMAIL_TLS,
-                                  sickrage.app.config.EMAIL_USER, sickrage.app.config.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
                     sickrage.app.log.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
@@ -98,7 +98,7 @@ class EmailNotifier(Notifiers):
         """
         ep_name = ep_name
 
-        if sickrage.app.config.EMAIL_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.email_notify_ondownload:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -119,13 +119,13 @@ class EmailNotifier(Notifiers):
                         msg = MIMEText('Episode Downloaded')
 
                 msg['Subject'] = 'Downloaded: ' + ep_name
-                msg['From'] = sickrage.app.config.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.app.config.EMAIL_HOST, sickrage.app.config.EMAIL_PORT,
-                                  sickrage.app.config.EMAIL_FROM,
-                                  sickrage.app.config.EMAIL_TLS,
-                                  sickrage.app.config.EMAIL_USER, sickrage.app.config.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
                     sickrage.app.log.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
@@ -140,7 +140,7 @@ class EmailNotifier(Notifiers):
         """
         ep_name = ep_name
 
-        if sickrage.app.config.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.email_notify_onsubtitledownload:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
@@ -161,12 +161,12 @@ class EmailNotifier(Notifiers):
                         msg = MIMEText("Episode Subtitle Downloaded")
 
                 msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
-                msg['From'] = sickrage.app.config.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
-                if self._sendmail(sickrage.app.config.EMAIL_HOST, sickrage.app.config.EMAIL_PORT,
-                                  sickrage.app.config.EMAIL_FROM,
-                                  sickrage.app.config.EMAIL_TLS,
-                                  sickrage.app.config.EMAIL_USER, sickrage.app.config.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
                     sickrage.app.log.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
@@ -179,7 +179,7 @@ class EmailNotifier(Notifiers):
         addrs = []
 
         # Grab the global recipients
-        for addr in sickrage.app.config.EMAIL_LIST.split(','):
+        for addr in sickrage.app.config.email_list.split(','):
             if (len(addr.strip()) > 0):
                 addrs.append(addr)
 

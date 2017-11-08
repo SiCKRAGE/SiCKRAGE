@@ -282,7 +282,7 @@ def isSyncFile(filename):
 
     extension = filename.rpartition(".")[2].lower()
     # if extension == '!sync' or extension == 'lftp-pget-status' or extension == 'part' or extension == 'bts':
-    syncfiles = sickrage.app.config.SYNC_FILES
+    syncfiles = sickrage.app.config.sync_files
     if extension in syncfiles.split(",") or filename.startswith('.syncthing'):
         return True
     else:
@@ -843,7 +843,7 @@ def anon_url(*url):
     if not re.search(unicode_uri_pattern, url):
         url = 'http://' + url
 
-    return '{}{}'.format(sickrage.app.config.ANON_REDIRECT, url)
+    return '{}{}'.format(sickrage.app.config.anon_redirect, url)
 
 
 def full_sanitizeSceneName(name):
@@ -1605,14 +1605,14 @@ def validate_url(value):
 
 
 def torrent_webui_url():
-    if not sickrage.app.config.USE_TORRENTS or \
-            not sickrage.app.config.TORRENT_HOST.lower().startswith('http') or \
-                    sickrage.app.config.TORRENT_METHOD == 'blackhole' or sickrage.app.config.ENABLE_HTTPS and \
-            not sickrage.app.config.TORRENT_HOST.lower().startswith('https'):
+    if not sickrage.app.config.use_torrents or \
+            not sickrage.app.config.torrent_host.lower().startswith('http') or \
+                    sickrage.app.config.torrent_method == 'blackhole' or sickrage.app.config.enable_https and \
+            not sickrage.app.config.torrent_host.lower().startswith('https'):
         return ''
 
-    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.WEB_HOST or get_lan_ip(),
-                            sickrage.app.config.TORRENT_HOST or '', re.I)
+    torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.web_host or get_lan_ip(),
+                            sickrage.app.config.torrent_host or '', re.I)
 
     def test_exists(url):
         try:
@@ -1621,9 +1621,9 @@ def torrent_webui_url():
         except (requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout):
             return False
 
-    if sickrage.app.config.TORRENT_METHOD == 'utorrent':
+    if sickrage.app.config.torrent_method == 'utorrent':
         torrent_ui_url = '/'.join(s.strip('/') for s in (torrent_ui_url, 'gui/'))
-    elif sickrage.app.config.TORRENT_METHOD == 'download_station':
+    elif sickrage.app.config.torrent_method == 'download_station':
         if test_exists(urlparse.urljoin(torrent_ui_url, 'download/')):
             torrent_ui_url = urlparse.urljoin(torrent_ui_url, 'download/')
 

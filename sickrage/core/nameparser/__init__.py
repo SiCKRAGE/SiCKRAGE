@@ -283,7 +283,7 @@ class NameParser(object):
                         lINDEXER_API_PARMS = IndexerApi(bestResult.show.indexer).api_params.copy()
 
                         lINDEXER_API_PARMS[
-                            'language'] = bestResult.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+                            'language'] = bestResult.show.lang or sickrage.app.config.indexer_default_language
 
                         t = IndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 

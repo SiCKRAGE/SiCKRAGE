@@ -94,7 +94,7 @@ class Logger(logging.getLoggerClass()):
 
         # file log handlers
         if self.logFile and makeDir(os.path.dirname(self.logFile)):
-            if sickrage.app.config.DEVELOPER:
+            if sickrage.app.config.developer:
                 rfh = FileHandler(
                     filename=self.logFile,
                 )
@@ -146,7 +146,7 @@ class Logger(logging.getLoggerClass()):
             return record
 
     def set_level(self):
-        self.debugLogging = sickrage.app.config.DEBUG
+        self.debugLogging = sickrage.app.config.debug
         level = DEBUG if self.debugLogging else INFO
         for __, logger in self.loggers.items():
             logger.setLevel(level)

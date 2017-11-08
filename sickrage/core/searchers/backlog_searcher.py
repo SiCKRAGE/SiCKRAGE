@@ -39,14 +39,14 @@ class BacklogSearcher(object):
         self._resetPI()
 
     def run(self, force=False):
-        if self.amActive or sickrage.app.config.DEVELOPER and not force:
+        if self.amActive or sickrage.app.config.developer and not force:
             return
 
         # set thread name
         threading.currentThread().setName(self.name)
 
         # set cycle time
-        self.cycleTime = sickrage.app.config.BACKLOG_SEARCHER_FREQ / 60 / 24
+        self.cycleTime = sickrage.app.config.backlog_searcher_freq / 60 / 24
 
         try:
             self.searchBacklog()
@@ -99,8 +99,8 @@ class BacklogSearcher(object):
         if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
             sickrage.app.log.info(
                 "Running limited backlog on missed episodes " + str(
-                    sickrage.app.config.BACKLOG_DAYS) + " day(s) and older only")
-            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.BACKLOG_DAYS)
+                    sickrage.app.config.backlog_days) + " day(s) and older only")
+            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
@@ -197,4 +197,4 @@ class BacklogSearcher(object):
             sickrage.app.main_db.db.update(dbData[0])
 
     def get_backlog_cycle_time(self):
-        return max([sickrage.app.config.DAILY_SEARCHER_FREQ * 4, 30])
+        return max([sickrage.app.config.daily_searcher_freq * 4, 30])

@@ -82,12 +82,12 @@ class NMJv2Notifier(Notifiers):
                                                                                              '').replace(
                         '</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
-                        sickrage.app.config.NMJv2_HOST = host
-                        sickrage.app.config.NMJv2_DATABASE = DB_path
+                        sickrage.app.config.nmjv2_host = host
+                        sickrage.app.config.nmjv2_database = DB_path
                         return True
                     if dbloc == "network" and DB_path.find("://") > -1:
-                        sickrage.app.config.NMJv2_HOST = host
-                        sickrage.app.config.NMJv2_DATABASE = DB_path
+                        sickrage.app.config.nmjv2_host = host
+                        sickrage.app.config.nmjv2_database = DB_path
                         return True
 
         except IOError as e:
@@ -108,9 +108,9 @@ class NMJv2Notifier(Notifiers):
 
         # if a host is provided then attempt to open a handle to that URL
         try:
-            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.app.config.NMJv2_DATABASE + "&arg2=&arg3=update_all"
+            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=&arg3=update_all"
             sickrage.app.log.debug("NMJ scan update command sent to host: %s" % (host))
-            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.app.config.NMJv2_DATABASE + "&arg2=background&arg3="
+            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=background&arg3="
             sickrage.app.log.debug("Try to mount network drive via url: %s" % (host))
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)
@@ -168,13 +168,13 @@ class NMJv2Notifier(Notifiers):
         mount: The mount URL (optional, defaults to the mount URL in the config)
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
-        if not sickrage.app.config.USE_NMJv2 and not force:
+        if not sickrage.app.config.use_nmjv2 and not force:
             sickrage.app.log.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.app.config.NMJv2_HOST
+            host = sickrage.app.config.nmjv2_host
 
         sickrage.app.log.debug("Sending scan command for NMJ ")
 

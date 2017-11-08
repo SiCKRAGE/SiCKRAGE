@@ -47,12 +47,12 @@ class pyTivoNotifier(Notifiers):
 
         # Values from config
 
-        if not sickrage.app.config.USE_PYTIVO:
+        if not sickrage.app.config.use_pytivo:
             return False
 
-        host = sickrage.app.config.PYTIVO_HOST
-        shareName = sickrage.app.config.PYTIVO_SHARE_NAME
-        tsn = sickrage.app.config.PYTIVO_TIVO_NAME
+        host = sickrage.app.config.pytivo_host
+        shareName = sickrage.app.config.pytivo_share_name
+        tsn = sickrage.app.config.pytivo_tivo_name
 
         # There are two more values required, the container and file.
         #

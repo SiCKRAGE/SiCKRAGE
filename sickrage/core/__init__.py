@@ -184,23 +184,23 @@ class Core(object):
         self.config.load()
 
         # set language
-        self.config.change_gui_lang(self.config.GUI_LANG)
+        self.config.change_gui_lang(self.config.gui_lang)
 
         # set socket timeout
-        socket.setdefaulttimeout(self.config.SOCKET_TIMEOUT)
+        socket.setdefaulttimeout(self.config.socket_timeout)
 
         # setup logger settings
-        self.log.logSize = self.config.LOG_SIZE
-        self.log.logNr = self.config.LOG_NR
+        self.log.logSize = self.config.log_size
+        self.log.logNr = self.config.log_nr
         self.log.logFile = os.path.join(self.data_dir, 'logs', 'sickrage.log')
-        self.log.debugLogging = self.config.DEBUG
+        self.log.debugLogging = self.config.debug
         self.log.consoleLogging = not self.quite
 
         # start logger
         self.log.start()
 
         # user agent
-        if self.config.RANDOM_USER_AGENT:
+        if self.config.random_user_agent:
             self.user_agent = UserAgent().random
 
         urlparse.uses_netloc.append('scgi')
@@ -231,9 +231,9 @@ class Core(object):
             db.cleanup()
 
         # compact main database
-        if not self.config.DEVELOPER and self.config.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
+        if not self.config.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
             self.main_db.compact()
-            self.config.LAST_DB_COMPACT = int(time.time())
+            self.config.last_db_compact = int(time.time())
 
         # load name cache
         self.name_cache.load()
@@ -241,8 +241,8 @@ class Core(object):
         # load data for shows from database
         self.load_shows()
 
-        if self.config.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
-            self.config.DEFAULT_PAGE = 'home'
+        if self.config.default_page not in ('home', 'schedule', 'history', 'news', 'IRC'):
+            self.config.default_page = 'home'
 
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
@@ -252,61 +252,61 @@ class Core(object):
                 continue
 
         # init anidb connection
-        if self.config.USE_ANIDB:
+        if self.config.use_anidb:
             def anidb_logger(msg):
                 return self.log.debug("AniDB: {} ".format(msg))
 
             try:
                 self.adba_connection = adba.Connection(keepAlive=True, log=anidb_logger)
-                self.adba_connection.auth(self.config.ANIDB_USERNAME, self.config.ANIDB_PASSWORD)
+                self.adba_connection.auth(self.config.anidb_username, self.config.anidb_password)
             except Exception as e:
                 self.log.warning("AniDB exception msg: %r " % repr(e))
 
-        if self.config.WEB_PORT < 21 or self.config.WEB_PORT > 65535:
-            self.config.WEB_PORT = 8081
+        if self.config.web_port < 21 or self.config.web_port > 65535:
+            self.config.web_port = 8081
 
-        if not self.config.WEB_COOKIE_SECRET:
-            self.config.WEB_COOKIE_SECRET = generateCookieSecret()
+        if not self.config.web_cookie_secret:
+            self.config.web_cookie_secret = generateCookieSecret()
 
         # attempt to help prevent users from breaking links by using a bad url
-        if not self.config.ANON_REDIRECT.endswith('?'):
-            self.config.ANON_REDIRECT = ''
+        if not self.config.anon_redirect.endswith('?'):
+            self.config.anon_redirect = ''
 
-        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', self.config.ROOT_DIRS):
-            self.config.ROOT_DIRS = ''
+        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', self.config.root_dirs):
+            self.config.root_dirs = ''
 
-        self.config.NAMING_FORCE_FOLDERS = check_force_season_folders()
+        self.config.naming_force_folders = check_force_season_folders()
 
-        if self.config.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
-            self.config.NZB_METHOD = 'blackhole'
+        if self.config.nzb_method not in ('blackhole', 'sabnzbd', 'nzbget'):
+            self.config.nzb_method = 'blackhole'
 
-        if self.config.TORRENT_METHOD not in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged',
+        if self.config.torrent_method not in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged',
                                               'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
-            self.config.TORRENT_METHOD = 'blackhole'
+            self.config.torrent_method = 'blackhole'
 
-        if self.config.AUTOPOSTPROCESSOR_FREQ < self.config.MIN_AUTOPOSTPROCESSOR_FREQ:
-            self.config.AUTOPOSTPROCESSOR_FREQ = self.config.MIN_AUTOPOSTPROCESSOR_FREQ
-        if self.config.DAILY_SEARCHER_FREQ < self.config.MIN_DAILY_SEARCHER_FREQ:
-            self.config.DAILY_SEARCHER_FREQ = self.config.MIN_DAILY_SEARCHER_FREQ
-        self.config.MIN_BACKLOG_SEARCHER_FREQ = self.backlog_searcher.get_backlog_cycle_time()
-        if self.config.BACKLOG_SEARCHER_FREQ < self.config.MIN_BACKLOG_SEARCHER_FREQ:
-            self.config.BACKLOG_SEARCHER_FREQ = self.config.MIN_BACKLOG_SEARCHER_FREQ
-        if self.config.VERSION_UPDATER_FREQ < self.config.MIN_VERSION_UPDATER_FREQ:
-            self.config.VERSION_UPDATER_FREQ = self.config.MIN_VERSION_UPDATER_FREQ
-        if self.config.SUBTITLE_SEARCHER_FREQ < self.config.MIN_SUBTITLE_SEARCHER_FREQ:
-            self.config.SUBTITLE_SEARCHER_FREQ = self.config.MIN_SUBTITLE_SEARCHER_FREQ
-        if self.config.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
-            self.config.PROPER_SEARCHER_INTERVAL = 'daily'
-        if self.config.SHOWUPDATE_HOUR < 0 or self.config.SHOWUPDATE_HOUR > 23:
-            self.config.SHOWUPDATE_HOUR = 0
-        if self.config.SUBTITLES_LANGUAGES[0] == '':
-            self.config.SUBTITLES_LANGUAGES = []
+        if self.config.autopostprocessor_freq < self.config.min_autopostprocessor_freq:
+            self.config.autopostprocessor_freq = self.config.min_autopostprocessor_freq
+        if self.config.daily_searcher_freq < self.config.min_daily_searcher_freq:
+            self.config.daily_searcher_freq = self.config.min_daily_searcher_freq
+        self.config.min_backlog_searcher_freq = self.backlog_searcher.get_backlog_cycle_time()
+        if self.config.backlog_searcher_freq < self.config.min_backlog_searcher_freq:
+            self.config.backlog_searcher_freq = self.config.min_backlog_searcher_freq
+        if self.config.version_updater_freq < self.config.min_version_updater_freq:
+            self.config.version_updater_freq = self.config.min_version_updater_freq
+        if self.config.subtitle_searcher_freq < self.config.min_subtitle_searcher_freq:
+            self.config.subtitle_searcher_freq = self.config.min_subtitle_searcher_freq
+        if self.config.proper_searcher_interval not in ('15m', '45m', '90m', '4h', 'daily'):
+            self.config.proper_searcher_interval = 'daily'
+        if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
+            self.config.showupdate_hour = 0
+        if self.config.subtitles_languages[0] == '':
+            self.config.subtitles_languages = []
 
         # add version checker job
         self.scheduler.add_job(
             self.version_updater.run,
             IntervalTrigger(
-                hours=self.config.VERSION_UPDATER_FREQ
+                hours=self.config.version_updater_freq
             ),
             name="VERSIONUPDATER",
             id="VERSIONUPDATER"
@@ -327,7 +327,7 @@ class Core(object):
             self.show_updater.run,
             IntervalTrigger(
                 days=1,
-                start_date=utc.localize(datetime.datetime.now().replace(hour=self.config.SHOWUPDATE_HOUR)).astimezone(
+                start_date=utc.localize(datetime.datetime.now().replace(hour=self.config.showupdate_hour)).astimezone(
                     get_localzone())
             ),
             name="SHOWUPDATER",
@@ -338,7 +338,7 @@ class Core(object):
         self.scheduler.add_job(
             self.daily_searcher.run,
             IntervalTrigger(
-                minutes=self.config.DAILY_SEARCHER_FREQ,
+                minutes=self.config.daily_searcher_freq,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=4)).astimezone(
                     get_localzone())
             ),
@@ -350,7 +350,7 @@ class Core(object):
         self.scheduler.add_job(
             self.backlog_searcher.run,
             IntervalTrigger(
-                minutes=self.config.BACKLOG_SEARCHER_FREQ,
+                minutes=self.config.backlog_searcher_freq,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=30)).astimezone(
                     get_localzone())
             ),
@@ -362,7 +362,7 @@ class Core(object):
         self.scheduler.add_job(
             self.auto_postprocessor.run,
             IntervalTrigger(
-                minutes=self.config.AUTOPOSTPROCESSOR_FREQ
+                minutes=self.config.autopostprocessor_freq
             ),
             name="POSTPROCESSOR",
             id="POSTPROCESSOR"
@@ -373,7 +373,7 @@ class Core(object):
             self.proper_searcher.run,
             IntervalTrigger(
                 minutes={'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
-                    self.config.PROPER_SEARCHER_INTERVAL]
+                    self.config.proper_searcher_interval]
             ),
             name="PROPERSEARCHER",
             id="PROPERSEARCHER"
@@ -393,7 +393,7 @@ class Core(object):
         self.scheduler.add_job(
             self.subtitle_searcher.run,
             IntervalTrigger(
-                hours=self.config.SUBTITLE_SEARCHER_FREQ
+                hours=self.config.subtitle_searcher_freq
             ),
             name="SUBTITLESEARCHER",
             id="SUBTITLESEARCHER"
@@ -405,22 +405,22 @@ class Core(object):
         # Pause/Resume PROPERSEARCHER job
         (self.scheduler.get_job('PROPERSEARCHER').pause,
          self.scheduler.get_job('PROPERSEARCHER').resume
-         )[self.config.DOWNLOAD_PROPERS]()
+         )[self.config.download_propers]()
 
         # Pause/Resume TRAKTSEARCHER job
         (self.scheduler.get_job('TRAKTSEARCHER').pause,
          self.scheduler.get_job('TRAKTSEARCHER').resume
-         )[self.config.USE_TRAKT]()
+         )[self.config.use_trakt]()
 
         # Pause/Resume SUBTITLESEARCHER job
         (self.scheduler.get_job('SUBTITLESEARCHER').pause,
          self.scheduler.get_job('SUBTITLESEARCHER').resume
-         )[self.config.USE_SUBTITLES]()
+         )[self.config.use_subtitles]()
 
         # Pause/Resume POSTPROCESS job
         (self.scheduler.get_job('POSTPROCESSOR').pause,
          self.scheduler.get_job('POSTPROCESSOR').resume
-         )[self.config.PROCESS_AUTOMATICALLY]()
+         )[self.config.process_automatically]()
 
         # start queue's
         self.search_queue.start()
@@ -482,9 +482,9 @@ class Core(object):
     def save_all(self):
         # write all shows
         self.log.info("Saving all shows to the database")
-        for SHOW in self.showlist:
+        for show in self.showlist:
             try:
-                SHOW.saveToDB()
+                show.saveToDB()
             except Exception:
                 continue
 

@@ -61,14 +61,14 @@ class TVShow(object):
         self._classification = 'Scripted'
         self._runtime = 0
         self._imdb_info = {}
-        self._quality = try_int(sickrage.app.config.QUALITY_DEFAULT, UNKNOWN)
-        self._flatten_folders = int(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT)
+        self._quality = try_int(sickrage.app.config.quality_default, UNKNOWN)
+        self._flatten_folders = int(sickrage.app.config.flatten_folders_default)
         self._status = "Unknown"
         self._airs = ""
         self._startyear = 0
         self._paused = 0
         self._air_by_date = 0
-        self._subtitles = int(sickrage.app.config.SUBTITLES_DEFAULT)
+        self._subtitles = int(sickrage.app.config.subtitles_default)
         self._subtitles_sr_metadata = 0
         self._dvdorder = 0
         self._archive_firstmatch = 0
@@ -416,7 +416,7 @@ class TVShow(object):
 
     @location.setter
     def location(self, new_location):
-        if sickrage.app.config.ADD_SHOWS_WO_DIR or os.path.isdir(new_location):
+        if sickrage.app.config.add_shows_wo_dir or os.path.isdir(new_location):
             sickrage.app.log.debug("Show location set to " + new_location)
             self.dirty = True
             self._location = new_location
@@ -660,7 +660,7 @@ class TVShow(object):
                 curEpisode.release_name = ep_file_name
 
             # store the reference in the show
-            if self.subtitles and sickrage.app.config.USE_SUBTITLES:
+            if self.subtitles and sickrage.app.config.use_subtitles:
                 try:
                     curEpisode.refreshSubtitles()
                 except Exception:
@@ -676,7 +676,7 @@ class TVShow(object):
 
         lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
 
-        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
 
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
@@ -725,7 +725,7 @@ class TVShow(object):
         lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
         lINDEXER_API_PARMS['cache'] = cache
 
-        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
 
         if self.dvdorder != 0:
             lINDEXER_API_PARMS['dvdorder'] = True
@@ -994,7 +994,7 @@ class TVShow(object):
                 lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
                 lINDEXER_API_PARMS['cache'] = cache
 
-                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+                lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
 
                 if self.dvdorder != 0:
                     lINDEXER_API_PARMS['dvdorder'] = True
@@ -1145,7 +1145,7 @@ class TVShow(object):
          sickrage.app.main_db.db.get_many('xem_refresh', self.indexerid, with_doc=True)]
         [sickrage.app.main_db.db.delete(x['doc']) for x in
          sickrage.app.main_db.db.get_many('scene_numbering', self.indexerid, with_doc=True)]
-        action = ('delete', 'trash')[sickrage.app.config.TRASH_REMOVE_SHOW]
+        action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove self from show list
         sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]
@@ -1155,7 +1155,7 @@ class TVShow(object):
         for cache_file in glob.glob(os.path.join(image_cache_dir, str(self.indexerid) + '.*')):
             sickrage.app.log.info('Attempt to %s cache file %s' % (action, cache_file))
             try:
-                if sickrage.app.config.TRASH_REMOVE_SHOW:
+                if sickrage.app.config.trash_remove_show:
                     send2trash.send2trash(cache_file)
                 else:
                     os.remove(cache_file)
@@ -1180,18 +1180,18 @@ class TVShow(object):
                         except Exception:
                             sickrage.app.log.warning('Unable to change permissions of %s' % self.location)
 
-                    if sickrage.app.config.TRASH_REMOVE_SHOW:
+                    if sickrage.app.config.trash_remove_show:
                         send2trash.send2trash(self.location)
                     else:
                         shutil.rmtree(self.location)
 
                     sickrage.app.log.info('%s show folder %s' %
-                                                  (('Deleted', 'Trashed')[sickrage.app.config.TRASH_REMOVE_SHOW],
+                                                  (('Deleted', 'Trashed')[sickrage.app.config.trash_remove_show],
                                                    self.location))
             except OSError as e:
                 sickrage.app.log.warning('Unable to %s %s: %s / %s' % (action, self.location, repr(e), str(e)))
 
-        if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST:
+        if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist:
             sickrage.app.log.debug(
                 "Removing show: {}, {} from watchlist".format(self.indexerid, self.name))
             sickrage.app.notifier_providers['trakt'].update_watchlist(self, update="remove")
@@ -1202,7 +1202,7 @@ class TVShow(object):
 
     def refreshDir(self):
         # make sure the show dir is where we think it is unless dirs are created on the fly
-        if not os.path.isdir(self.location) and not sickrage.app.config.CREATE_MISSING_SHOW_DIRS:
+        if not os.path.isdir(self.location) and not sickrage.app.config.create_missing_show_dirs:
             return False
 
         # load from dir
@@ -1234,16 +1234,16 @@ class TVShow(object):
                     os.path.normpath(self.location)):
 
                 # check if downloaded files still exist, update our data if this has changed
-                if not sickrage.app.config.SKIP_REMOVED_FILES:
+                if not sickrage.app.config.skip_removed_files:
                     with curEp.lock:
                         # if it used to have a file associated with it and it doesn't anymore then set it to sickrage.EP_DEFAULT_DELETED_STATUS
                         if curEp.location and curEp.status in Quality.DOWNLOADED:
 
-                            if sickrage.app.config.EP_DEFAULT_DELETED_STATUS == ARCHIVED:
+                            if sickrage.app.config.ep_default_deleted_status == ARCHIVED:
                                 __, oldQuality = Quality.splitCompositeStatus(curEp.status)
                                 new_status = Quality.compositeStatus(ARCHIVED, oldQuality)
                             else:
-                                new_status = sickrage.app.config.EP_DEFAULT_DELETED_STATUS
+                                new_status = sickrage.app.config.ep_default_deleted_status
 
                             sickrage.app.log.debug(
                                 "%s: Location for S%02dE%02d doesn't exist, removing it and changing our status to %s" %
@@ -1262,7 +1262,7 @@ class TVShow(object):
                         curEp.saveToDB()
             else:
                 # the file exists, set its modify file stamp
-                if sickrage.app.config.AIRDATE_EPISODES:
+                if sickrage.app.config.airdate_episodes:
                     with curEp.lock:
                         curEp.airdateModifyStamp()
 

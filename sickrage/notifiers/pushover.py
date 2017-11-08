@@ -53,13 +53,13 @@ class PushoverNotifier(Notifiers):
         """
 
         if userKey is None:
-            userKey = sickrage.app.config.PUSHOVER_USERKEY
+            userKey = sickrage.app.config.pushover_userkey
 
         if apiKey is None:
-            apiKey = sickrage.app.config.PUSHOVER_APIKEY
+            apiKey = sickrage.app.config.pushover_apikey
 
         if sound is None:
-            sound = sickrage.app.config.PUSHOVER_SOUND
+            sound = sickrage.app.config.pushover_sound
 
         sickrage.app.log.debug("Pushover API KEY in use: " + apiKey)
 
@@ -68,7 +68,7 @@ class PushoverNotifier(Notifiers):
 
         # send the request to pushover
         try:
-            if sickrage.app.config.PUSHOVER_SOUND != "default":
+            if sickrage.app.config.pushover_sound != "default":
                 args = {"token": apiKey,
                         "user": userKey,
                         "title": title.encode('utf-8'),
@@ -89,8 +89,8 @@ class PushoverNotifier(Notifiers):
                         "expire": 3600,
                         }
 
-            if sickrage.app.config.PUSHOVER_DEVICE:
-                args["device"] = sickrage.app.config.PUSHOVER_DEVICE
+            if sickrage.app.config.pushover_device:
+                args["device"] = sickrage.app.config.pushover_device
 
             conn = httplib.HTTPSConnection("api.pushover.net:443")
             conn.request("POST", "/1/messages.json",
@@ -139,25 +139,25 @@ class PushoverNotifier(Notifiers):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
-        if sickrage.app.config.PUSHOVER_NOTIFY_ONSNATCH:
+        if sickrage.app.config.pushover_notify_onsnatch:
             self._notifyPushover(title, ep_name)
 
     def _notify_download(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
-        if sickrage.app.config.PUSHOVER_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.pushover_notify_ondownload:
             self._notifyPushover(title, ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
-        if sickrage.app.config.PUSHOVER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.pushover_notify_onsubtitledownload:
             self._notifyPushover(title, ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_PUSHOVER:
+        if sickrage.app.config.use_pushover:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyPushover(title, update_text + new_version)
@@ -174,7 +174,7 @@ class PushoverNotifier(Notifiers):
         force: Enforce sending, for instance for testing
         """
 
-        if not sickrage.app.config.USE_PUSHOVER and not force:
+        if not sickrage.app.config.use_pushover and not force:
             sickrage.app.log.debug("Notification for Pushover not enabled, skipping this notification")
             return False
 

@@ -145,19 +145,19 @@ class NMA_Notifier(Notifiers):
                              force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.NMA_NOTIFY_ONSNATCH:
+        if sickrage.app.config.nma_notify_onsnatch:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SNATCH], message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.NMA_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.nma_notify_ondownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_DOWNLOAD], message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.NMA_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.nma_notify_onsubtitledownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_NMA:
+        if sickrage.app.config.use_nma:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendNMA(event=title, message=update_text + new_version)
@@ -166,14 +166,14 @@ class NMA_Notifier(Notifiers):
 
         title = 'SiCKRAGE'
 
-        if not sickrage.app.config.USE_NMA and not force:
+        if not sickrage.app.config.use_nma and not force:
             return False
 
         if nma_api is None:
-            nma_api = sickrage.app.config.NMA_API
+            nma_api = sickrage.app.config.nma_api
 
         if nma_priority is None:
-            nma_priority = sickrage.app.config.NMA_PRIORITY
+            nma_priority = sickrage.app.config.nma_priority
 
         batch = False
 

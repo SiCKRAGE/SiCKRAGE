@@ -38,34 +38,34 @@ class PushalotNotifier(Notifiers):
                                   message="Testing Pushalot settings from SiCKRAGE", force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.PUSHALOT_NOTIFY_ONSNATCH:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_onsnatch:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SNATCH],
                                message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.PUSHALOT_NOTIFY_ONDOWNLOAD:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_ondownload:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                                message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_onsubtitledownload:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_PUSHALOT:
+        if sickrage.app.config.use_pushalot:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.PUSHALOT_AUTHORIZATIONTOKEN,
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=title,
                                message=update_text + new_version)
 
     def _sendPushalot(self, pushalot_authorizationtoken=None, event=None, message=None, force=False):
 
-        if not sickrage.app.config.USE_PUSHALOT and not force:
+        if not sickrage.app.config.use_pushalot and not force:
             return False
 
         sickrage.app.log.debug("Pushalot event: " + event)

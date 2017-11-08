@@ -79,7 +79,7 @@ class Notifiers(object):
 
     @staticmethod
     def notify_version_update(new_version=""):
-        if sickrage.app.config.NOTIFY_ON_UPDATE:
+        if sickrage.app.config.notify_on_update:
             for n in sickrage.app.notifier_providers.values():
                 try:
                     n._notify_version_update(new_version)
@@ -88,7 +88,7 @@ class Notifiers(object):
 
     @staticmethod
     def notify_login(ipaddress):
-        if sickrage.app.config.NOTIFY_ON_LOGIN and not is_ip_private(ipaddress):
+        if sickrage.app.config.notify_on_login and not is_ip_private(ipaddress):
             for n in sickrage.app.notifier_providers.values():
                 try:
                     n._notify_login(ipaddress)

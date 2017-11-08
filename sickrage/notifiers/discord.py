@@ -33,25 +33,25 @@ class DiscordNotifier(Notifiers):
         self.name = 'discord'
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.DISCORD_NOTIFY_ONSNATCH:
+        if sickrage.app.config.discord_notify_onsnatch:
             self._notify_discord(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.DISCORD_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.discord_notify_ondownload:
             self._notify_discord(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.DISCORD_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.discord_notify_onsubtitledownload:
             self._notify_discord(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_DISCORD:
+        if sickrage.app.config.use_discord:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_discord(title + " - " + update_text + new_version)
 
     def notify_login(self, ipaddress=""):
-        if sickrage.app.config.USE_DISCORD:
+        if sickrage.app.config.use_discord:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]
             self._notify_discord(title + " - " + update_text.format(ipaddress))
@@ -60,10 +60,10 @@ class DiscordNotifier(Notifiers):
         return self._notify_discord("This is a test notification from SickRage", force=True)
 
     def _send_discord(self, message=None):
-        discord_webhook = sickrage.app.config.DISCORD_WEBHOOK
-        discord_name = sickrage.app.config.DISCORD_NAME
-        avatar_icon = sickrage.app.config.DISCORD_AVATAR_URL
-        discord_tts = bool(sickrage.app.config.DISCORD_TTS)
+        discord_webhook = sickrage.app.config.discord_webhook
+        discord_name = sickrage.app.config.discord_name
+        avatar_icon = sickrage.app.config.discord_avatar_url
+        discord_tts = bool(sickrage.app.config.discord_tts)
 
         sickrage.app.log.info("Sending discord message: " + message)
         sickrage.app.log.info("Sending discord message  to url: " + discord_webhook)
@@ -85,7 +85,7 @@ class DiscordNotifier(Notifiers):
         return True
 
     def _notify_discord(self, message='', force=False):
-        if not sickrage.app.config.USE_DISCORD and not force:
+        if not sickrage.app.config.use_discord and not force:
             return False
 
         return self._send_discord(message)

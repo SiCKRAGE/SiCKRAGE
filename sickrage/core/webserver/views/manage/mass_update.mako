@@ -20,7 +20,7 @@
                         <button class="btn" id="submitMassRename">${_('Mass Rename')}</button>
                         <button class="btn" id="submitMassDelete">${_('Mass Delete')}</button>
                         <button class="btn" id="submitMassRemove">${_('Mass Remove')}</button>
-                        % if sickrage.app.config.USE_SUBTITLES:
+                        % if sickrage.app.config.use_subtitles:
                             <input class="btn pull-left" type="button" value="${_('Mass Subtitle')}"
                                    id="submitMassSubtitle"/>
                         % endif

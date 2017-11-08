@@ -6,7 +6,7 @@
 %>
 
 <%block name="metas">
-    <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.INDEXER_DEFAULT_LANGUAGE}">
+    <meta data-var="sickrage.DEFAULT_LANGUAGE" data-content="${sickrage.app.config.indexer_default_language}">
     <meta data-var="sickrage.LANGUAGES" data-content="${','.join(IndexerApi().indexer().languages.keys())}">
 </%block>
 
@@ -24,14 +24,14 @@
                     <section data-step="0">
                         <div class="form-group">
                             <input type="hidden" id="indexer_timeout"
-                                   value="${sickrage.app.config.INDEXER_TIMEOUT}"/>
+                                   value="${sickrage.app.config.indexer_timeout}"/>
                             % if use_provided_info:
                             ${_('Show retrieved from existing metadata:')}
                                 <a href="${anon_url(IndexerApi(provided_indexer).config['show_url'], provided_indexer_id)}">
                                     ${provided_indexer_name}
                                 </a>
                                 <input type="hidden" id="indexerLang" name="indexerLang"
-                                       value="${sickrage.app.config.INDEXER_DEFAULT_LANGUAGE}"/>
+                                       value="${sickrage.app.config.indexer_default_language}"/>
                                 <input type="hidden" id="whichSeries" name="whichSeries"
                                        value="${provided_indexer_id}"/>
                                 <input type="hidden" id="providedIndexer" name="providedIndexer"

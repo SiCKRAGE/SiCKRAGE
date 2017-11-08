@@ -40,19 +40,19 @@ class GrowlNotifier(Notifiers):
                                force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.GROWL_NOTIFY_ONSNATCH:
+        if sickrage.app.config.growl_notify_onsnatch:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_SNATCH], ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.GROWL_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.growl_notify_ondownload:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_DOWNLOAD], ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.GROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.growl_notify_onsubtitledownload:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_GROWL:
+        if sickrage.app.config.use_growl:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendGrowl(title, update_text + new_version)
@@ -100,14 +100,14 @@ class GrowlNotifier(Notifiers):
 
     def _sendGrowl(self, title="SiCKRAGE Notification", message=None, name=None, host=None, password=None,
                    force=False):
-        if not sickrage.app.config.USE_GROWL and not force:
+        if not sickrage.app.config.use_growl and not force:
             return False
 
         if name is None:
             name = title
 
         if host is None:
-            hostParts = sickrage.app.config.GROWL_HOST.split(':')
+            hostParts = sickrage.app.config.growl_host.split(':')
         else:
             hostParts = host.split(':')
 
@@ -121,7 +121,7 @@ class GrowlNotifier(Notifiers):
         opts = {'name': name, 'title': title, 'app': 'SiCKRAGE', 'sticky': None, 'priority': None, 'debug': False}
 
         if password is None:
-            opts['password'] = sickrage.app.config.GROWL_PASSWORD
+            opts['password'] = sickrage.app.config.growl_password
         else:
             opts['password'] = password
 
@@ -150,7 +150,7 @@ class GrowlNotifier(Notifiers):
         opts = {}
 
         if host is None:
-            hostParts = sickrage.app.config.GROWL_HOST.split(':')
+            hostParts = sickrage.app.config.growl_host.split(':')
         else:
             hostParts = host.split(':')
 
@@ -163,7 +163,7 @@ class GrowlNotifier(Notifiers):
         opts['port'] = port
 
         if password is None:
-            opts['password'] = sickrage.app.config.GROWL_PASSWORD
+            opts['password'] = sickrage.app.config.growl_password
         else:
             opts['password'] = password
 

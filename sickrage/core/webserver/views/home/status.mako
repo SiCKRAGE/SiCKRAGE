@@ -193,10 +193,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                    % if sickrage.app.config.TV_DOWNLOAD_DIR:
+                    % if sickrage.app.config.tv_download_dir:
                         <tr>
                             <td>${_('TV Download Directory')}</td>
-                            <td>${sickrage.app.config.TV_DOWNLOAD_DIR}</td>
+                            <td>${sickrage.app.config.tv_download_dir}</td>
                             % if tvdirFree is not False:
                                 <td align="middle">${tvdirFree}</td>
                             % else:

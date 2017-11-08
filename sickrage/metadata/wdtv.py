@@ -181,7 +181,7 @@ class WDTVMetadata(GenericMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
         try:
             lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()

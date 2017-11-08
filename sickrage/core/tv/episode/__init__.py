@@ -441,7 +441,7 @@ class TVEpisode(object):
             self.show.indexerid, indexer_name, season or 0, episode or 0)
         )
 
-        indexer_lang = self.show.lang or sickrage.app.config.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = self.show.lang or sickrage.app.config.indexer_default_language
 
         try:
             if cachedSeason is None:
@@ -537,7 +537,7 @@ class TVEpisode(object):
 
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(
-                self.show.location) and not sickrage.app.config.CREATE_MISSING_SHOW_DIRS and not sickrage.app.config.ADD_SHOWS_WO_DIR:
+                self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
             sickrage.app.log.info(
                 "The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show.location)
             return False
@@ -725,7 +725,7 @@ class TVEpisode(object):
          if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
-        if sickrage.app.config.USE_TRAKT and sickrage.app.config.TRAKT_SYNC_WATCHLIST and data:
+        if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
             sickrage.app.log.debug("Deleting myself from Trakt")
             sickrage.app.notifier_providers['trakt'].update_watchlist(self.show, data_episode=data, update="remove")
 
@@ -834,14 +834,14 @@ class TVEpisode(object):
         Figures out the path where this episode SHOULD live according to the renaming rules, relative from the show dir
         """
 
-        anime_type = sickrage.app.config.NAMING_ANIME
+        anime_type = sickrage.app.config.naming_anime
         if not self.show.is_anime:
             anime_type = 3
 
         result = self.formatted_filename(anime_type=anime_type)
 
         # if they want us to flatten it and we're allowed to flatten it then we will
-        if self.show.flatten_folders and not sickrage.app.config.NAMING_FORCE_FOLDERS:
+        if self.show.flatten_folders and not sickrage.app.config.naming_force_folders:
             return result
 
         # if not we append the folder on and use that
@@ -886,12 +886,12 @@ class TVEpisode(object):
             self.location, base_name_only=True, subfolders=True)
 
         # This is wrong. Cause of pp not moving subs.
-        if self.show.subtitles and sickrage.app.config.SUBTITLES_DIR != '':
+        if self.show.subtitles and sickrage.app.config.subtitles_dir != '':
             related_subs = PostProcessor(self.location).list_associated_files(
-                sickrage.app.config.SUBTITLES_DIR,
+                sickrage.app.config.subtitles_dir,
                 subtitles_only=True,
                 subfolders=True)
-            absolute_proper_subs_path = os.path.join(sickrage.app.config.SUBTITLES_DIR, self.formatted_filename())
+            absolute_proper_subs_path = os.path.join(sickrage.app.config.subtitles_dir, self.formatted_filename())
 
         sickrage.app.log.debug("Files associated to " + self.location + ": " + str(related_files))
 
@@ -914,7 +914,7 @@ class TVEpisode(object):
                 sickrage.app.log.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
-            absolute_proper_subs_path = os.path.join(sickrage.app.config.SUBTITLES_DIR, self.formatted_filename())
+            absolute_proper_subs_path = os.path.join(sickrage.app.config.subtitles_dir, self.formatted_filename())
             cur_result = self.rename_ep_file(cur_related_sub, absolute_proper_subs_path,
                                              absolute_current_path_no_ext_length)
             if not cur_result:
@@ -943,7 +943,7 @@ class TVEpisode(object):
 
         """
 
-        if not all([sickrage.app.config.AIRDATE_EPISODES, self.airdate, self.location, self.show, self.show.airs,
+        if not all([sickrage.app.config.airdate_episodes, self.airdate, self.location, self.show, self.show.airs,
                     self.show.network]): return
 
         try:
@@ -953,7 +953,7 @@ class TVEpisode(object):
 
             airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
 
-            if sickrage.app.config.FILE_TIMESTAMP_TIMEZONE == 'local':
+            if sickrage.app.config.file_timestamp_timezone == 'local':
                 airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
 
             filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
@@ -1059,7 +1059,7 @@ class TVEpisode(object):
 
         __, epQual = Quality.splitCompositeStatus(self.status)
 
-        if sickrage.app.config.NAMING_STRIP_YEAR:
+        if sickrage.app.config.naming_strip_year:
             show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()
         else:
             show_name = self.show.name
@@ -1154,14 +1154,14 @@ class TVEpisode(object):
         """
 
         if pattern is None:
-            pattern = sickrage.app.config.NAMING_PATTERN
+            pattern = sickrage.app.config.naming_pattern
 
         if multi is None:
-            multi = sickrage.app.config.NAMING_MULTI_EP
+            multi = sickrage.app.config.naming_multi_ep
 
-        if sickrage.app.config.NAMING_CUSTOM_ANIME:
+        if sickrage.app.config.naming_custom_anime:
             if anime_type is None:
-                anime_type = sickrage.app.config.NAMING_ANIME
+                anime_type = sickrage.app.config.naming_anime
         else:
             anime_type = 3
 
@@ -1326,14 +1326,14 @@ class TVEpisode(object):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.NAMING_CUSTOM_ABD and not self.relatedEps:
-                pattern = sickrage.app.config.NAMING_ABD_PATTERN
-            elif self.show.sports and sickrage.app.config.NAMING_CUSTOM_SPORTS and not self.relatedEps:
-                pattern = sickrage.app.config.NAMING_SPORTS_PATTERN
-            elif self.show.anime and sickrage.app.config.NAMING_CUSTOM_ANIME:
-                pattern = sickrage.app.config.NAMING_ANIME_PATTERN
+            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.relatedEps:
+                pattern = sickrage.app.config.naming_abd_pattern
+            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.relatedEps:
+                pattern = sickrage.app.config.naming_sports_pattern
+            elif self.show.anime and sickrage.app.config.naming_custom_anime:
+                pattern = sickrage.app.config.naming_anime_pattern
             else:
-                pattern = sickrage.app.config.NAMING_PATTERN
+                pattern = sickrage.app.config.naming_pattern
 
         # split off the dirs only, if they exist
         name_groups = re.split(r'[\\/]', pattern)
@@ -1347,14 +1347,14 @@ class TVEpisode(object):
 
         if pattern is None:
             # we only use ABD if it's enabled, this is an ABD show, AND this is not a multi-ep
-            if self.show.air_by_date and sickrage.app.config.NAMING_CUSTOM_ABD and not self.relatedEps:
-                pattern = sickrage.app.config.NAMING_ABD_PATTERN
-            elif self.show.sports and sickrage.app.config.NAMING_CUSTOM_SPORTS and not self.relatedEps:
-                pattern = sickrage.app.config.NAMING_SPORTS_PATTERN
-            elif self.show.anime and sickrage.app.config.NAMING_CUSTOM_ANIME:
-                pattern = sickrage.app.config.NAMING_ANIME_PATTERN
+            if self.show.air_by_date and sickrage.app.config.naming_custom_abd and not self.relatedEps:
+                pattern = sickrage.app.config.naming_abd_pattern
+            elif self.show.sports and sickrage.app.config.naming_custom_sports and not self.relatedEps:
+                pattern = sickrage.app.config.naming_sports_pattern
+            elif self.show.anime and sickrage.app.config.naming_custom_anime:
+                pattern = sickrage.app.config.naming_anime_pattern
             else:
-                pattern = sickrage.app.config.NAMING_PATTERN
+                pattern = sickrage.app.config.naming_pattern
 
         # split off the dirs only, if they exist
         name_groups = re.split(r'[\\/]', pattern)

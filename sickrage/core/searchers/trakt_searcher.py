@@ -76,19 +76,19 @@ class TraktSearcher(object):
         threading.currentThread().setName(self.name)
 
         self.todoWanted = []  # its about to all get re-added
-        if len(sickrage.app.config.ROOT_DIRS.split('|')) < 2:
+        if len(sickrage.app.config.root_dirs.split('|')) < 2:
             sickrage.app.log.warning("No default root directory")
             return
 
         # add shows from tv watchlist
-        if sickrage.app.config.TRAKT_SYNC_WATCHLIST:
+        if sickrage.app.config.trakt_sync_watchlist:
             try:
                 self.syncWatchlist()
             except Exception:
                 sickrage.app.log.debug(traceback.format_exc())
 
         # add shows from tv collection
-        if sickrage.app.config.TRAKT_SYNC:
+        if sickrage.app.config.trakt_sync:
             try:
                 self.syncCollection()
             except Exception:
@@ -97,7 +97,7 @@ class TraktSearcher(object):
         self.amActive = False
 
     def syncWatchlist(self):
-        if sickrage.app.config.TRAKT_SYNC_WATCHLIST and sickrage.app.config.USE_TRAKT:
+        if sickrage.app.config.trakt_sync_watchlist and sickrage.app.config.use_trakt:
             sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")
 
             self.removeShowFromSickRage()
@@ -108,7 +108,7 @@ class TraktSearcher(object):
 
             if self._getEpisodeWatchlist():
                 self.addEpisodesToTraktWatchList()
-                if sickrage.app.config.TRAKT_REMOVE_SHOW_FROM_SICKRAGE:
+                if sickrage.app.config.trakt_remove_show_from_sickrage:
                     self.removeEpisodesFromTraktWatchList()
                 self.updateEpisodes()
 
@@ -116,7 +116,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Collection")
         if self._getShowCollection():
             self.addEpisodesToTraktCollection()
-            if sickrage.app.config.TRAKT_SYNC_REMOVE:
+            if sickrage.app.config.trakt_sync_remove:
                 self.removeEpisodesFromTraktCollection()
 
     def findShowMatch(self, indexer, indexerid):
@@ -365,12 +365,12 @@ class TraktSearcher(object):
                 continue
 
             if trakt_id == IndexerApi(indexer).trakt_id:
-                if int(sickrage.app.config.TRAKT_METHOD_ADD) != 2:
+                if int(sickrage.app.config.trakt_method_add) != 2:
                     self.addDefaultShow(indexer, indexer_id, show.title, SKIPPED)
                 else:
                     self.addDefaultShow(indexer, indexer_id, show.title, WANTED)
 
-                if int(sickrage.app.config.TRAKT_METHOD_ADD) == 1:
+                if int(sickrage.app.config.trakt_method_add) == 1:
                     newShow = findCertainShow(sickrage.app.showlist, indexer_id)
 
                     if newShow is not None:
@@ -430,7 +430,7 @@ class TraktSearcher(object):
         """
         if not findCertainShow(sickrage.app.showlist, int(indexer_id)):
             sickrage.app.log.info("Adding show " + str(indexer_id))
-            root_dirs = sickrage.app.config.ROOT_DIRS.split('|')
+            root_dirs = sickrage.app.config.root_dirs.split('|')
 
             try:
                 location = root_dirs[int(root_dirs[0]) + 1]
@@ -449,11 +449,11 @@ class TraktSearcher(object):
 
                 sickrage.app.show_queue.addShow(int(indexer), int(indexer_id), showPath,
                                                   default_status=status,
-                                                  quality=int(sickrage.app.config.QUALITY_DEFAULT),
-                                                  flatten_folders=int(sickrage.app.config.FLATTEN_FOLDERS_DEFAULT),
-                                                  paused=sickrage.app.config.TRAKT_START_PAUSED,
+                                                  quality=int(sickrage.app.config.quality_default),
+                                                  flatten_folders=int(sickrage.app.config.flatten_folders_default),
+                                                  paused=sickrage.app.config.trakt_start_paused,
                                                   default_status_after=status,
-                                                  archive=sickrage.app.config.ARCHIVE_DEFAULT)
+                                                  archive=sickrage.app.config.archive_default)
             else:
                 sickrage.app.log.warning(
                     "There was an error creating the show, no root directory setting found")

@@ -40,10 +40,10 @@ class rTorrentAPI(GenericClient):
             return
 
         tp_kwargs = {}
-        if sickrage.app.config.TORRENT_AUTH_TYPE.lower() != 'none':
-            tp_kwargs['authtype'] = sickrage.app.config.TORRENT_AUTH_TYPE
+        if sickrage.app.config.torrent_auth_type.lower() != 'none':
+            tp_kwargs['authtype'] = sickrage.app.config.torrent_auth_type
 
-        if not sickrage.app.config.TORRENT_VERIFY_CERT:
+        if not sickrage.app.config.torrent_verify_cert:
             tp_kwargs['check_ssl_cert'] = False
 
         if self.username and self.password:
@@ -69,14 +69,14 @@ class rTorrentAPI(GenericClient):
                 return False
 
             # Set label
-            label = sickrage.app.config.TORRENT_LABEL
+            label = sickrage.app.config.torrent_label
             if result.show.is_anime:
-                label = sickrage.app.config.TORRENT_LABEL_ANIME
+                label = sickrage.app.config.torrent_label_anime
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.app.config.TORRENT_PATH:
-                torrent.set_directory(sickrage.app.config.TORRENT_PATH)
+            if sickrage.app.config.torrent_path:
+                torrent.set_directory(sickrage.app.config.torrent_path)
 
             # Start torrent
             torrent.start()
@@ -104,14 +104,14 @@ class rTorrentAPI(GenericClient):
                 return False
 
             # Set label
-            label = sickrage.app.config.TORRENT_LABEL
+            label = sickrage.app.config.torrent_label
             if result.show.is_anime:
-                label = sickrage.app.config.TORRENT_LABEL_ANIME
+                label = sickrage.app.config.torrent_label_anime
             if label:
                 torrent.set_custom(1, label)
 
-            if sickrage.app.config.TORRENT_PATH:
-                torrent.set_directory(sickrage.app.config.TORRENT_PATH)
+            if sickrage.app.config.torrent_path:
+                torrent.set_directory(sickrage.app.config.torrent_path)
 
             # Set Ratio Group
             # torrent.set_visible(group_name)

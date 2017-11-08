@@ -30,19 +30,19 @@ class synologyNotifier(Notifiers):
         self.name = 'synology'
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.SYNOLOGYNOTIFIER_NOTIFY_ONSNATCH:
+        if sickrage.app.config.synologynotifier_notify_onsnatch:
             self._send_synologyNotifier(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.SYNOLOGYNOTIFIER_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.synologynotifier_notify_ondownload:
             self._send_synologyNotifier(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.SYNOLOGYNOTIFIER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.synologynotifier_notify_onsubtitledownload:
             self._send_synologyNotifier(ep_name + ": " + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_SYNOLOGYNOTIFIER:
+        if sickrage.app.config.use_synologynotifier:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._send_synologyNotifier(update_text + new_version, title)

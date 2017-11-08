@@ -115,7 +115,7 @@ class DownloadStationAPI(GenericClient):
             # login to API
             self.response = sickrage.app.wsession.get(self.urls['auth'],
                                                              params=params,
-                                                             verify=bool(sickrage.app.config.TORRENT_VERIFY_CERT))
+                                                             verify=bool(sickrage.app.config.torrent_verify_cert))
 
             # get sid
             self.auth = self.response
@@ -138,8 +138,8 @@ class DownloadStationAPI(GenericClient):
 
     def _send_dsm_request(self, method, data, **kwargs):
 
-        if sickrage.app.config.TORRENT_PATH:
-            data['destination'] = sickrage.app.config.TORRENT_PATH
+        if sickrage.app.config.torrent_path:
+            data['destination'] = sickrage.app.config.torrent_path
 
         self._request(method=method, data=data, **kwargs)
         return self.response

@@ -41,19 +41,19 @@ class TwitterNotifier(Notifiers):
         self.name = 'twitter'
 
     def _notify_snatch(self, ep_name):
-        if sickrage.app.config.TWITTER_NOTIFY_ONSNATCH:
+        if sickrage.app.config.twitter_notify_onsnatch:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.app.config.TWITTER_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.twitter_notify_ondownload:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.app.config.TWITTER_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.twitter_notify_onsubtitledownload:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.app.config.USE_TWITTER:
+        if sickrage.app.config.use_twitter:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notifyTwitter(title + " - " + update_text + new_version)
@@ -76,14 +76,14 @@ class TwitterNotifier(Notifiers):
         else:
             request_token = dict(parse_qsl(content))
 
-            sickrage.app.config.TWITTER_USERNAME = request_token['oauth_token']
-            sickrage.app.config.TWITTER_PASSWORD = request_token['oauth_token_secret']
+            sickrage.app.config.twitter_username = request_token['oauth_token']
+            sickrage.app.config.twitter_password = request_token['oauth_token_secret']
 
             return self.AUTHORIZATION_URL + "?oauth_token=" + request_token['oauth_token']
 
     def _get_credentials(self, key):
-        request_token = {'oauth_token': sickrage.app.config.TWITTER_USERNAME,
-                         'oauth_token_secret': sickrage.app.config.TWITTER_PASSWORD,
+        request_token = {'oauth_token': sickrage.app.config.twitter_username,
+                         'oauth_token_secret': sickrage.app.config.twitter_password,
                          'oauth_callback_confirmed': 'true'}
 
         token = oauth2.Token(request_token['oauth_token'], request_token['oauth_token_secret'])
@@ -109,16 +109,16 @@ class TwitterNotifier(Notifiers):
         else:
             sickrage.app.log.debug('Your Twitter Access Token key: %s' % access_token['oauth_token'])
             sickrage.app.log.debug('Access Token secret: %s' % access_token['oauth_token_secret'])
-            sickrage.app.config.TWITTER_USERNAME = access_token['oauth_token']
-            sickrage.app.config.TWITTER_PASSWORD = access_token['oauth_token_secret']
+            sickrage.app.config.twitter_username = access_token['oauth_token']
+            sickrage.app.config.twitter_password = access_token['oauth_token_secret']
             return True
 
     def _send_tweet(self, message=None):
 
         username = self.consumer_key
         password = self.consumer_secret
-        access_token_key = sickrage.app.config.TWITTER_USERNAME
-        access_token_secret = sickrage.app.config.TWITTER_PASSWORD
+        access_token_key = sickrage.app.config.twitter_username
+        access_token_secret = sickrage.app.config.twitter_password
 
         sickrage.app.log.debug("Sending tweet: " + message)
 
@@ -136,9 +136,9 @@ class TwitterNotifier(Notifiers):
 
         username = self.consumer_key
         password = self.consumer_secret
-        dmdest = sickrage.app.config.TWITTER_DMTO
-        access_token_key = sickrage.app.config.TWITTER_USERNAME
-        access_token_secret = sickrage.app.config.TWITTER_PASSWORD
+        dmdest = sickrage.app.config.twitter_dmto
+        access_token_key = sickrage.app.config.twitter_username
+        access_token_secret = sickrage.app.config.twitter_password
 
         sickrage.app.log.debug("Sending DM: " + dmdest + " " + message)
 
@@ -153,12 +153,12 @@ class TwitterNotifier(Notifiers):
         return True
 
     def _notifyTwitter(self, message='', force=False):
-        prefix = sickrage.app.config.TWITTER_PREFIX
+        prefix = sickrage.app.config.twitter_prefix
 
-        if not sickrage.app.config.USE_TWITTER and not force:
+        if not sickrage.app.config.use_twitter and not force:
             return False
 
-        if sickrage.app.config.TWITTER_USEDM and sickrage.app.config.TWITTER_DMTO:
+        if sickrage.app.config.twitter_usedm and sickrage.app.config.twitter_dmto:
             return self._send_dm(prefix + ": " + message)
         else:
             return self._send_tweet(prefix + ": " + message)
