@@ -264,7 +264,7 @@ def main():
         if not os.path.isabs(app.config_file):
             app.config_file = os.path.join(app.data_dir, app.config_file)
 
-        if not os.path.abspath(pid_file):
+        if not os.path.isabs(pid_file):
             pid_file = os.path.join(app.data_dir, pid_file)
 
         # check lib requirements

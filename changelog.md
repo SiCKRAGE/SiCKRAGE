@@ -1,6 +1,7 @@
 # Changelog
 
-- * eca44ca - 2017-11-08: Fixed bad reference 
+- * d480f02 - 2017-11-08: Fixed issue with daemonizing and pidfile&#x27;s 
+- * 90b402d - 2017-11-08: Fixed bad reference 
 - * 73ee12e - 2017-11-08: refactored core config instance variables fixed issues with mediaToSiCKRAGE code 
 - * 79026f8 - 2017-11-08: Spelling corrections 
 - * dd5db5c - 2017-11-08: Updated ThePirateBay url 
