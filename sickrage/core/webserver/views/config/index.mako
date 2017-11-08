@@ -52,7 +52,7 @@
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
                                 class="icons-sickrage icons-sickrage-locale"></i> ${_('SR Locale:')}
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.app.SYS_ENCODING}</div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.app.sys_encoding}</div>
                     </div>
                     <br/>
                     <div class="row">
@@ -60,7 +60,7 @@
                             <i class="icons-sickrage icons-sickrage-cfg"></i> ${_('SR Config:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.app.CONFIG_FILE}
+                            ${sickrage.app.config_file}
                         </div>
                     </div>
                     <br/>
@@ -69,7 +69,7 @@
                             <i class="icons-sickrage icons-sickrage-cache"></i> ${_('SR Cache Dir:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.app.CACHE_DIR}
+                            ${sickrage.app.cache_dir}
                         </div>
                     </div>
                     <br/>

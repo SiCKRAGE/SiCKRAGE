@@ -89,7 +89,7 @@ class BacklogSearcher(object):
         if which_shows:
             show_list = which_shows
         else:
-            show_list = sickrage.app.SHOWLIST
+            show_list = sickrage.app.showlist
 
         self._lastBacklog = self._get_lastBacklog()
 

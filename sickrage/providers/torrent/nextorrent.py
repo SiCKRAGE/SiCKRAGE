@@ -92,7 +92,7 @@ class NextorrentProvider(TorrentProvider):
                         try:
                             fileType = ''.join(link.find_previous('i')["class"])
                             fileType = unicodedata.normalize('NFKD', fileType). \
-                                encode(sickrage.app.SYS_ENCODING, 'ignore')
+                                encode(sickrage.app.sys_encoding, 'ignore')
 
                             if fileType == "Series":
                                 title = link.get_text(strip=True)

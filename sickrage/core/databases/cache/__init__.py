@@ -48,4 +48,4 @@ class CacheDB(srDatabase):
 
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
-        self.old_db_path = os.path.join(sickrage.app.DATA_DIR, 'cache.db')
+        self.old_db_path = os.path.join(sickrage.app.data_dir, 'cache.db')

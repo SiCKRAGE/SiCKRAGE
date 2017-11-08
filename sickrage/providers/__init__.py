@@ -464,7 +464,7 @@ class GenericProvider(object):
         results = []
 
         for episode in episodes:
-            show = findCertainShow(sickrage.app.SHOWLIST, int(episode["showid"]))
+            show = findCertainShow(sickrage.app.showlist, int(episode["showid"]))
             if not show:
                 continue
 
@@ -929,7 +929,7 @@ class TorrentRssProvider(TorrentProvider):
 
     @staticmethod
     def dumpHTML(data):
-        dumpName = os.path.join(sickrage.app.CACHE_DIR, 'custom_torrent.html')
+        dumpName = os.path.join(sickrage.app.cache_dir, 'custom_torrent.html')
 
         try:
             with io.open(dumpName, 'wb') as fileOut:

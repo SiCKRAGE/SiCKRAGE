@@ -411,11 +411,11 @@
         % endif
     </div>
 
-    % if current_user and sickrage.app.NEWEST_VERSION_STRING:
+    % if current_user and sickrage.app.newest_version_string:
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                 <div class="alert alert-success upgrade-notification text-center">
-                    <span>${sickrage.app.NEWEST_VERSION_STRING}</span>
+                    <span>${sickrage.app.newest_version_string}</span>
                 </div>
             </div>
         </div>

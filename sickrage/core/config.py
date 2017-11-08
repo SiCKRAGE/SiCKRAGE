@@ -45,11 +45,11 @@ class Config(object):
     def __init__(self):
         self.loaded = False
 
+        self.config_obj = None
+        self.config_version = 0
+
         self.DEBUG = False
         self.DEVELOPER = False
-
-        self.CONFIG_OBJ = None
-        self.CONFIG_VERSION = 11
         self.ENCRYPTION_VERSION = 0
         self.ENCRYPTION_SECRET = generateCookieSecret()
 
@@ -930,7 +930,7 @@ class Config(object):
     def change_unrar_tool(self, unrar_tool, unrar_alt_tool):
         # Check for failed unrar attempt, and remove it
         # Must be done before unrar is ever called or the self-extractor opens and locks startup
-        bad_unrar = os.path.join(sickrage.app.DATA_DIR, 'unrar.exe')
+        bad_unrar = os.path.join(sickrage.app.data_dir, 'unrar.exe')
         if os.path.exists(bad_unrar) and os.path.getsize(bad_unrar) == 447440:
             try:
                 os.remove(bad_unrar)
@@ -1127,9 +1127,9 @@ class Config(object):
         """
         self.AUTOPOSTPROCESSOR_FREQ = try_int(freq, self.DEFAULT_AUTOPOSTPROCESSOR_FREQ)
         sickrage.app.scheduler.modify_job('POSTPROCESSOR',
-                                               trigger=IntervalTrigger(
-                                                   minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              minutes=self.AUTOPOSTPROCESSOR_FREQ if self.AUTOPOSTPROCESSOR_FREQ >= self.MIN_AUTOPOSTPROCESSOR_FREQ else self.MIN_AUTOPOSTPROCESSOR_FREQ
+                                          ))
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -1139,9 +1139,9 @@ class Config(object):
         """
         self.DAILY_SEARCHER_FREQ = try_int(freq, self.DEFAULT_DAILY_SEARCHER_FREQ)
         sickrage.app.scheduler.modify_job('DAILYSEARCHER',
-                                               trigger=IntervalTrigger(
-                                                   minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              minutes=self.DAILY_SEARCHER_FREQ if self.DAILY_SEARCHER_FREQ >= self.MIN_DAILY_SEARCHER_FREQ else self.MIN_DAILY_SEARCHER_FREQ
+                                          ))
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -1152,9 +1152,9 @@ class Config(object):
         self.BACKLOG_SEARCHER_FREQ = try_int(freq, self.DEFAULT_BACKLOG_SEARCHER_FREQ)
         self.MIN_BACKLOG_SEARCHER_FREQ = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
         sickrage.app.scheduler.modify_job('BACKLOG',
-                                               trigger=IntervalTrigger(
-                                                   minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              minutes=self.BACKLOG_SEARCHER_FREQ if self.BACKLOG_SEARCHER_FREQ >= self.MIN_BACKLOG_SEARCHER_FREQ else self.MIN_BACKLOG_SEARCHER_FREQ
+                                          ))
 
     def change_updater_freq(self, freq):
         """
@@ -1164,9 +1164,9 @@ class Config(object):
         """
         self.VERSION_UPDATER_FREQ = try_int(freq, self.DEFAULT_VERSION_UPDATE_FREQ)
         sickrage.app.scheduler.modify_job('VERSIONUPDATER',
-                                               trigger=IntervalTrigger(
-                                                   hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              hours=self.VERSION_UPDATER_FREQ if self.VERSION_UPDATER_FREQ >= self.MIN_VERSION_UPDATER_FREQ else self.MIN_VERSION_UPDATER_FREQ
+                                          ))
 
     def change_showupdate_hour(self, freq):
         """
@@ -1176,11 +1176,11 @@ class Config(object):
         """
         self.SHOWUPDATE_HOUR = try_int(freq, self.DEFAULT_SHOWUPDATE_HOUR)
         sickrage.app.scheduler.modify_job('SHOWUPDATER',
-                                               trigger=IntervalTrigger(
-                                                   hours=1,
-                                                   start_date=datetime.datetime.now().replace(
-                                                       hour=self.SHOWUPDATE_HOUR if self.SHOWUPDATE_HOUR >= 0 and self.SHOWUPDATE_HOUR <= 23 else 0)
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              hours=1,
+                                              start_date=datetime.datetime.now().replace(
+                                                  hour=self.SHOWUPDATE_HOUR if self.SHOWUPDATE_HOUR >= 0 and self.SHOWUPDATE_HOUR <= 23 else 0)
+                                          ))
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -1190,9 +1190,9 @@ class Config(object):
         """
         self.SUBTITLE_SEARCHER_FREQ = try_int(freq, self.DEFAULT_SUBTITLE_SEARCHER_FREQ)
         sickrage.app.scheduler.modify_job('SUBTITLESEARCHER',
-                                               trigger=IntervalTrigger(
-                                                   hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
-                                               ))
+                                          trigger=IntervalTrigger(
+                                              hours=self.SUBTITLE_SEARCHER_FREQ if self.SUBTITLE_SEARCHER_FREQ >= self.MIN_SUBTITLE_SEARCHER_FREQ else self.MIN_SUBTITLE_SEARCHER_FREQ
+                                          ))
 
     def change_version_notify(self, version_notify):
         """
@@ -1202,7 +1202,7 @@ class Config(object):
         """
         self.VERSION_NOTIFY = checkbox_to_value(version_notify)
         if not self.VERSION_NOTIFY:
-            sickrage.app.NEWEST_VERSION_STRING = None
+            sickrage.app.newest_version_string = None
 
     def change_download_propers(self, download_propers):
         """
@@ -1254,7 +1254,7 @@ class Config(object):
     def check_setting_int(self, section, key, def_val=None, silent=True):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
-        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
+        my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
 
         if str(my_val).lower() == "true":
             my_val = 1
@@ -1278,7 +1278,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = float(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+            my_val = float(self.config_obj.get(section, {section: key}).get(key, def_val))
         except Exception:
             my_val = def_val
 
@@ -1293,7 +1293,7 @@ class Config(object):
     def check_setting_str(self, section, key, def_val=None, silent=True, censor=False):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
-        my_val = self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val)
+        my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
 
         if censor or (section, key) in sickrage.app.log.CENSORED_ITEMS:
             sickrage.app.log.CENSORED_ITEMS[section, key] = my_val
@@ -1310,7 +1310,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = pickle.loads(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+            my_val = pickle.loads(self.config_obj.get(section, {section: key}).get(key, def_val))
         except Exception:
             my_val = def_val
 
@@ -1326,7 +1326,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = checkbox_to_value(self.CONFIG_OBJ.get(section, {section: key}).get(key, def_val))
+            my_val = checkbox_to_value(self.config_obj.get(section, {section: key}).get(key, def_val))
         except Exception:
             my_val = bool(def_val)
 
@@ -1337,33 +1337,37 @@ class Config(object):
 
     def load(self, defaults=False):
         # Make sure we can write to the config file
-        if not os.path.isabs(sickrage.app.CONFIG_FILE):
-            sickrage.app.CONFIG_FILE = os.path.abspath(os.path.join(sickrage.app.DATA_DIR, sickrage.app.CONFIG_FILE))
+        if not os.path.isabs(sickrage.app.config_file):
+            sickrage.app.config_file = os.path.abspath(os.path.join(sickrage.app.data_dir, sickrage.app.config_file))
 
-        if not os.access(sickrage.app.CONFIG_FILE, os.W_OK):
-            if os.path.isfile(sickrage.app.CONFIG_FILE):
-                raise SystemExit("Config file '" + sickrage.app.CONFIG_FILE + "' must be writeable.")
-            elif not os.access(os.path.dirname(sickrage.app.CONFIG_FILE), os.W_OK):
+        if not os.access(sickrage.app.config_file, os.W_OK):
+            if os.path.isfile(sickrage.app.config_file):
+                raise SystemExit("Config file '" + sickrage.app.config_file + "' must be writeable.")
+            elif not os.access(os.path.dirname(sickrage.app.config_file), os.W_OK):
                 raise SystemExit(
-                    "Config file root dir '" + os.path.dirname(sickrage.app.CONFIG_FILE) + "' must be writeable.")
+                    "Config file root dir '" + os.path.dirname(sickrage.app.config_file) + "' must be writeable.")
 
         # load config
-        self.CONFIG_OBJ = ConfigObj(sickrage.app.CONFIG_FILE, encoding='utf8')
+        self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
 
         # use defaults
-        if defaults: self.CONFIG_OBJ.clear()
+        if defaults: self.config_obj.clear()
 
         # decrypt settings
         self.ENCRYPTION_VERSION = self.check_setting_int('General', 'encryption_version')
         self.ENCRYPTION_SECRET = self.check_setting_str('General', 'encryption_secret', censor=True)
-        self.CONFIG_OBJ.walk(self.decrypt)
+        self.config_obj.walk(self.decrypt)
 
         # migrate config
-        self.CONFIG_OBJ = ConfigMigrator(self.CONFIG_OBJ).migrate_config()
+        self.config_obj = ConfigMigrator(self.config_obj).migrate_config(
+            current_version=self.check_setting_int('General', 'config_version'),
+            expected_version=self.defaults['General']['config_version']
+        )
 
         # GENERAL SETTINGS
-        self.DEBUG = sickrage.app.DEBUG or self.check_setting_bool('General', 'debug')
-        self.DEVELOPER = sickrage.app.DEVELOPER or self.check_setting_bool('General', 'developer')
+        self.config_version = self.check_setting_int('General', 'config_version')
+        self.DEBUG = sickrage.app.debug or self.check_setting_bool('General', 'debug')
+        self.DEVELOPER = sickrage.app.developer or self.check_setting_bool('General', 'developer')
         self.LAST_DB_COMPACT = self.check_setting_int('General', 'last_db_compact')
         self.LOG_NR = self.check_setting_int('General', 'log_nr')
         self.LOG_SIZE = self.check_setting_int('General', 'log_size')
@@ -1376,7 +1380,7 @@ class Config(object):
         self.GIT_PASSWORD = self.check_setting_str('General', 'git_password', censor=True)
         self.GIT_NEWVER = self.check_setting_bool('General', 'git_newver')
         self.GIT_RESET = self.check_setting_bool('General', 'git_reset')
-        self.WEB_PORT = sickrage.app.WEB_PORT or self.check_setting_int('General', 'web_port')
+        self.WEB_PORT = sickrage.app.web_port or self.check_setting_int('General', 'web_port')
         self.WEB_HOST = self.check_setting_str('General', 'web_host')
         self.WEB_IPV6 = self.check_setting_bool('General', 'web_ipv6')
         self.WEB_ROOT = self.check_setting_str('General', 'web_root').rstrip("/")
@@ -1822,14 +1826,14 @@ class Config(object):
         if not self.loaded:
             return
 
-        new_config = ConfigObj(sickrage.app.CONFIG_FILE, indent_type='  ', encoding='utf8')
+        new_config = ConfigObj(sickrage.app.config_file, indent_type='  ', encoding='utf8')
         new_config.clear()
 
         sickrage.app.log.debug("Saving all settings to disk")
 
         new_config.update({
             'General': {
-                'config_version': self.CONFIG_VERSION,
+                'config_version': self.config_version,
                 'encryption_version': int(self.ENCRYPTION_VERSION),
                 'encryption_secret': self.ENCRYPTION_SECRET,
                 'last_db_compact': self.LAST_DB_COMPACT,
@@ -2323,17 +2327,13 @@ class Config(object):
 
 
 class ConfigMigrator(Config):
-    def __init__(self, configobj):
+    def __init__(self, config_obj):
         """
         Initializes a config migrator that can take the config from the version indicated in the config
         file up to the latest version
         """
         super(ConfigMigrator, self).__init__()
-        self.CONFIG_OBJ = configobj
-
-        # check the version of the config
-        self.config_version = self.check_setting_int('General', 'config_version', self.CONFIG_VERSION)
-        self.expected_config_version = self.CONFIG_VERSION
+        self.config_obj = config_obj
 
         self.migration_names = {
             1: 'Sync backup number with version number',
@@ -2349,23 +2349,21 @@ class ConfigMigrator(Config):
             11: 'Rename all metadata settings'
         }
 
-    def migrate_config(self):
+    def migrate_config(self, current_version=0, expected_version=0):
         """
         Calls each successive migration until the config is the same version as SB expects
         """
 
-        if self.config_version > self.expected_config_version:
-            sickrage.app.log.error(
-                """Your config version (%i) has been incremented past what this version of supports (%i).
-                    If you have used other forks or a newer version of  your config file may be unusable due to their modifications.""" %
-                (self.config_version, self.expected_config_version)
-            )
+        if current_version > expected_version:
+            sickrage.app.log.error("Your config version (%i) has been incremented past what this version of supports "
+                                   "(%i). If you have used other forks or a newer version of  your config file may be "
+                                   "unusable due to their modifications." % (current_version,
+                                                                             expected_version)
+                                   )
             sys.exit(1)
 
-        self.CONFIG_VERSION = self.config_version
-
-        while self.config_version < self.expected_config_version:
-            next_version = self.config_version + 1
+        while current_version < expected_version:
+            next_version = current_version + 1
 
             if next_version in self.migration_names:
                 migration_name = ': ' + self.migration_names[next_version]
@@ -2373,7 +2371,7 @@ class ConfigMigrator(Config):
                 migration_name = ''
 
             sickrage.app.log.info("Backing up config before upgrade")
-            if not backupVersionedFile(sickrage.app.CONFIG_FILE, self.config_version):
+            if not backupVersionedFile(sickrage.app.config_file, current_version):
                 sickrage.app.log.exit("Config backup failed, abort upgrading config")
                 sys.exit(1)
             else:
@@ -2381,50 +2379,50 @@ class ConfigMigrator(Config):
 
             # do the migration, expect a method named _migrate_v<num>
             sickrage.app.log.info("Migrating config up to version " + str(next_version) + migration_name)
-            self.CONFIG_OBJ = getattr(self, '_migrate_v' + str(next_version))()
-            self.config_version = next_version
+            self.config_obj = getattr(self, '_migrate_v' + str(next_version))()
+            current_version = next_version
 
             # update config version to newest
-            self.CONFIG_VERSION = self.config_version
+            self.config_obj['General']['config_version'] = current_version
 
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v1: Dummy migration to sync backup number with config version number
     def _migrate_v1(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v2: Dummy migration to sync backup number with config version number
     def _migrate_v2(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v3: Dummy migration to sync backup number with config version number
     def _migrate_v3(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v4: Dummy migration to sync backup number with config version number
     def _migrate_v4(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v5: Dummy migration to sync backup number with config version number
     def _migrate_v5(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v6: Dummy migration to sync backup number with config version number
     def _migrate_v6(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v6: Dummy migration to sync backup number with config version number
     def _migrate_v7(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v8: Use version 2 for password encryption
     def _migrate_v8(self):
-        self.CONFIG_OBJ['General']['encryption_version'] = 2
-        return self.CONFIG_OBJ
+        self.config_obj['General']['encryption_version'] = 2
+        return self.config_obj
 
     # Migration v9: Dummy migration to sync backup number with config version number
     def _migrate_v9(self):
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v10: Metadata upgrade to add enabled attribute
     def _migrate_v10(self):
@@ -2474,15 +2472,15 @@ class ConfigMigrator(Config):
 
             return metadata
 
-        self.CONFIG_OBJ['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi)
-        self.CONFIG_OBJ['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus)
-        self.CONFIG_OBJ['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser)
-        self.CONFIG_OBJ['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3)
-        self.CONFIG_OBJ['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv)
-        self.CONFIG_OBJ['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo)
-        self.CONFIG_OBJ['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er)
+        self.config_obj['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi)
+        self.config_obj['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus)
+        self.config_obj['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser)
+        self.config_obj['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3)
+        self.config_obj['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv)
+        self.config_obj['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo)
+        self.config_obj['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er)
 
-        return self.CONFIG_OBJ
+        return self.config_obj
 
     # Migration v11: Renames metadata setting keys
     def _migrate_v11(self):
@@ -2498,13 +2496,13 @@ class ConfigMigrator(Config):
         metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
         metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
 
-        self.CONFIG_OBJ['MetadataProviders'] = {}
-        self.CONFIG_OBJ['MetadataProviders']['kodi'] = metadata_kodi
-        self.CONFIG_OBJ['MetadataProviders']['kodi_12plus'] = metadata_kodi_12plus
-        self.CONFIG_OBJ['MetadataProviders']['mediabrowser'] = metadata_mediabrowser
-        self.CONFIG_OBJ['MetadataProviders']['sony_ps3'] = metadata_ps3
-        self.CONFIG_OBJ['MetadataProviders']['wdtv'] = metadata_wdtv
-        self.CONFIG_OBJ['MetadataProviders']['tivo'] = metadata_tivo
-        self.CONFIG_OBJ['MetadataProviders']['mede8er'] = metadata_mede8er
+        self.config_obj['MetadataProviders'] = {}
+        self.config_obj['MetadataProviders']['kodi'] = metadata_kodi
+        self.config_obj['MetadataProviders']['kodi_12plus'] = metadata_kodi_12plus
+        self.config_obj['MetadataProviders']['mediabrowser'] = metadata_mediabrowser
+        self.config_obj['MetadataProviders']['sony_ps3'] = metadata_ps3
+        self.config_obj['MetadataProviders']['wdtv'] = metadata_wdtv
+        self.config_obj['MetadataProviders']['tivo'] = metadata_tivo
+        self.config_obj['MetadataProviders']['mede8er'] = metadata_mede8er
 
-        return self.CONFIG_OBJ
+        return self.config_obj

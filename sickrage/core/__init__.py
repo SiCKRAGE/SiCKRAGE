@@ -77,26 +77,26 @@ from sickrage.providers import SearchProviders
 
 class Core(object):
     def __init__(self):
-        self.STARTED = False
-        self.DAEMON = None
+        self.started = False
+        self.daemon = None
         self.io_loop = IOLoop().instance()
 
-        self.CONFIG_FILE = None
-        self.DATA_DIR = None
-        self.CACHE_DIR = None
-        self.QUITE = None
-        self.NOLAUNCH = None
-        self.WEB_PORT = None
-        self.DEVELOPER = None
-        self.DEBUG = None
-        self.NEWEST_VERSION = None
-        self.NEWEST_VERSION_STRING = None
+        self.config_file = None
+        self.data_dir = None
+        self.cache_dir = None
+        self.quite = None
+        self.no_launch = None
+        self.web_port = None
+        self.developer = None
+        self.debug = None
+        self.newest_version = None
+        self.newest_version_string = None
 
-        self.PID = os.getpid()
-        self.USER_AGENT = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
-        self.SYS_ENCODING = get_sys_encoding()
-        self.LANGUAGES = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
-        self.SHOWLIST = []
+        self.pid = os.getpid()
+        self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
+        self.sys_encoding = get_sys_encoding()
+        self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+        self.showlist = []
 
         self.adba_connection = None
         self.notifier_providers = None
@@ -129,7 +129,7 @@ class Core(object):
         patch_modules()
 
     def start(self):
-        self.STARTED = True
+        self.started = True
 
         # thread name
         threading.currentThread().setName('CORE')
@@ -162,23 +162,23 @@ class Core(object):
         self.auto_postprocessor = AutoPostProcessor()
 
         # Check if we need to perform a restore first
-        if os.path.exists(os.path.abspath(os.path.join(self.DATA_DIR, 'restore'))):
-            success = restoreSR(os.path.abspath(os.path.join(self.DATA_DIR, 'restore')), self.DATA_DIR)
+        if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
+            success = restoreSR(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
-                shutil.rmtree(os.path.abspath(os.path.join(self.DATA_DIR, 'restore')), ignore_errors=True)
+                shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
-        if os.path.isfile(os.path.abspath(os.path.join(self.DATA_DIR, 'sickbeard.db'))):
-            if os.path.isfile(os.path.join(self.DATA_DIR, 'sickrage.db')):
-                helpers.moveFile(os.path.join(self.DATA_DIR, 'sickrage.db'),
-                                 os.path.join(self.DATA_DIR, '{}.bak-{}'
+        if os.path.isfile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db'))):
+            if os.path.isfile(os.path.join(self.data_dir, 'sickrage.db')):
+                helpers.moveFile(os.path.join(self.data_dir, 'sickrage.db'),
+                                 os.path.join(self.data_dir, '{}.bak-{}'
                                               .format('sickrage.db',
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(self.DATA_DIR, 'sickbeard.db')),
-                             os.path.abspath(os.path.join(self.DATA_DIR, 'sickrage.db')))
+            helpers.moveFile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
+                             os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
         # load config
         self.config.load()
@@ -192,23 +192,23 @@ class Core(object):
         # setup logger settings
         self.log.logSize = self.config.LOG_SIZE
         self.log.logNr = self.config.LOG_NR
-        self.log.logFile = os.path.join(self.DATA_DIR, 'logs', 'sickrage.log')
+        self.log.logFile = os.path.join(self.data_dir, 'logs', 'sickrage.log')
         self.log.debugLogging = self.config.DEBUG
-        self.log.consoleLogging = not self.QUITE
+        self.log.consoleLogging = not self.quite
 
         # start logger
         self.log.start()
 
         # user agent
         if self.config.RANDOM_USER_AGENT:
-            self.USER_AGENT = UserAgent().random
+            self.user_agent = UserAgent().random
 
         urlparse.uses_netloc.append('scgi')
-        urllib.FancyURLopener.version = self.USER_AGENT
+        urllib.FancyURLopener.version = self.user_agent
 
         # Check available space
         try:
-            total_space, available_space = getFreeSpace(self.DATA_DIR)
+            total_space, available_space = getFreeSpace(self.data_dir)
             if available_space < 100:
                 self.log.error('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data '
                                'otherwise. Only %sMB left', available_space)
@@ -247,7 +247,7 @@ class Core(object):
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(sickrage.app.CACHE_DIR, folder), ignore_errors=True)
+                shutil.rmtree(os.path.join(sickrage.app.cache_dir, folder), ignore_errors=True)
             except Exception:
                 continue
 
@@ -431,7 +431,7 @@ class Core(object):
         self.wserver.start()
 
     def shutdown(self, restart=False):
-        if self.STARTED:
+        if self.started:
             self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown webserver
@@ -477,12 +477,12 @@ class Core(object):
         elif sickrage.app.daemon:
             sickrage.app.daemon.stop()
 
-        self.STARTED = False
+        self.started = False
 
     def save_all(self):
         # write all shows
         self.log.info("Saving all shows to the database")
-        for SHOW in self.SHOWLIST:
+        for SHOW in self.showlist:
             try:
                 SHOW.saveToDB()
             except Exception:
@@ -502,6 +502,6 @@ class Core(object):
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
                 show.nextEpisode()
                 self.name_cache.build(show)
-                self.SHOWLIST += [show]
+                self.showlist += [show]
             except Exception as e:
                 self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))

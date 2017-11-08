@@ -40,7 +40,7 @@ class Media(object):
         :return: The url to the desired media file
         """
 
-        path = self.get_static_media_path().replace(sickrage.app.CACHE_DIR, "")
+        path = self.get_static_media_path().replace(sickrage.app.cache_dir, "")
         path = path.replace(sickrage.app.config.GUI_STATIC_DIR, "")
         return url_escape(path.replace('\\', '/'), False)
 
@@ -87,7 +87,7 @@ class Media(object):
         """
 
         try:
-            return findCertainShow(sickrage.app.SHOWLIST, self.indexer_id)
+            return findCertainShow(sickrage.app.showlist, self.indexer_id)
         except MultipleShowObjectsException:
             return None
 

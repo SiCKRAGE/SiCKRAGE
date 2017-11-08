@@ -64,7 +64,7 @@ class ShowUpdater(object):
 
         # start update process
         pi_list = []
-        for show in sickrage.app.SHOWLIST:
+        for show in sickrage.app.showlist:
             if show.paused:
                 sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show.name))
             try:

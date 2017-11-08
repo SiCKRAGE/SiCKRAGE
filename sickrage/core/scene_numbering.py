@@ -46,7 +46,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     if indexer_id is None or season is None or episode is None:
         return season, episode
 
-    showObj = findCertainShow(sickrage.app.SHOWLIST, int(indexer_id))
+    showObj = findCertainShow(sickrage.app.showlist, int(indexer_id))
     if showObj and not showObj.is_scene:
         return season, episode
 
@@ -100,7 +100,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    showObj = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
+    showObj = findCertainShow(sickrage.app.showlist, indexer_id)
     if showObj and not showObj.is_scene:
         return absolute_number
 
@@ -244,7 +244,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             })
 
     # Reload data from DB so that cache and db are in sync
-    show = findCertainShow(sickrage.app.SHOWLIST, indexer_id)
+    show = findCertainShow(sickrage.app.showlist, indexer_id)
     show.flushEpisodes()
 
 

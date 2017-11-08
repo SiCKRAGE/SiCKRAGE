@@ -458,7 +458,7 @@ def searchForNeededEpisodes():
 
     results = []
 
-    for curShow in sickrage.app.SHOWLIST:
+    for curShow in sickrage.app.showlist:
         if curShow.paused:
             continue
 

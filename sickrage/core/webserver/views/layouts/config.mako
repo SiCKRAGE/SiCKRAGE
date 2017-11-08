@@ -36,7 +36,7 @@
                         <b>
                             <span class="config-path-title">
                                 ${_('All non-absolute folder locations are relative to')}
-                                <span style="white-space:pre" class="path pull-right">${sickrage.app.DATA_DIR}</span>
+                                <span style="white-space:pre" class="path pull-right">${sickrage.app.data_dir}</span>
                             </span>
                         </b>
                     </h6>

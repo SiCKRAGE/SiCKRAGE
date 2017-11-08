@@ -65,7 +65,7 @@ class MainDB(srDatabase):
 
     def __init__(self, name='main'):
         super(MainDB, self).__init__(name)
-        self.old_db_path = os.path.join(sickrage.app.DATA_DIR, 'sickrage.db')
+        self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
 
     def cleanup(self):
         self.fix_dupe_shows()

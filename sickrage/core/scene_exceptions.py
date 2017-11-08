@@ -283,7 +283,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
 def _anidb_exceptions_fetcher():
     if shouldRefresh('anidb'):
         sickrage.app.log.info("Checking for AniDB scene exception updates")
-        for show in sickrage.app.SHOWLIST:
+        for show in sickrage.app.showlist:
             if show.is_anime and show.indexer == 1:
                 try:
                     anime = Anime(None, name=show.name, tvdbid=show.indexerid, autoCorrectName=True)

@@ -57,7 +57,7 @@ class PPBasicTests(SiCKRAGETestDBCase):
         show.location = SHOWDIR
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
-        sickrage.app.SHOWLIST = [show]
+        sickrage.app.showlist = [show]
         ep = TVEpisode(show, SEASON, EPISODE)
         ep.name = "some ep name"
         ep.saveToDB()

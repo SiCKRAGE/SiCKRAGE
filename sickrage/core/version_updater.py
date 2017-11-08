@@ -81,7 +81,7 @@ class VersionUpdater(object):
             sickrage.app.log.info("Config backup in progress...")
             sickrage.app.alerts.message(_('Backup'), _('Config backup in progress...'))
             try:
-                backupDir = os.path.join(sickrage.app.DATA_DIR, 'backup')
+                backupDir = os.path.join(sickrage.app.data_dir, 'backup')
                 if not os.path.isdir(backupDir):
                     os.mkdir(backupDir)
 
@@ -152,7 +152,7 @@ class VersionUpdater(object):
             if self.updater.need_update():
                 if self.updater.update():
                     # Clean up after update
-                    to_clean = os.path.join(sickrage.app.CACHE_DIR, 'mako')
+                    to_clean = os.path.join(sickrage.app.cache_dir, 'mako')
 
                     for root, dirs, files in os.walk(to_clean, topdown=False):
                         [os.remove(os.path.join(root, name)) for name in files]
@@ -210,7 +210,7 @@ class UpdateManager(object):
         error_message = _('Unable to find your git executable - Set your git path from Settings->General->Advanced OR '
                           'delete your .git folder and run from source to enable updates.')
 
-        sickrage.app.NEWEST_VERSION_STRING = error_message
+        sickrage.app.newest_version_string = error_message
 
         return None
 
@@ -255,7 +255,7 @@ class UpdateManager(object):
 
         # Still haven't found a working git
         error_message = _('Unable to find your pip executable - Set your pip path from Settings->General->Advanced')
-        sickrage.app.NEWEST_VERSION_STRING = error_message
+        sickrage.app.newest_version_string = error_message
 
         return None
 
@@ -338,7 +338,7 @@ class UpdateManager(object):
 
     @staticmethod
     def get_update_url():
-        return "{}/home/update/?pid={}".format(sickrage.app.config.WEB_ROOT, sickrage.app.PID)
+        return "{}/home/update/?pid={}".format(sickrage.app.config.WEB_ROOT, sickrage.app.pid)
 
     def install_requirements(self):
         __, __, exit_status = self._pip_cmd(self._pip_path,
@@ -395,14 +395,14 @@ class GitUpdateManager(UpdateManager):
 
     def set_newest_text(self):
         # if we're up to date then don't set this
-        sickrage.app.NEWEST_VERSION_STRING = None
+        sickrage.app.newest_version_string = None
 
         if self.version != self.get_newest_version:
             newest_text = _(
                 'There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>').format(
                 self.get_newest_version, self.get_update_url())
 
-            sickrage.app.NEWEST_VERSION_STRING = newest_text
+            sickrage.app.newest_version_string = newest_text
 
     def need_update(self):
         try:
@@ -536,7 +536,7 @@ class SourceUpdateManager(UpdateManager):
 
     def set_newest_text(self):
         # if we're up to date then don't set this
-        sickrage.app.NEWEST_VERSION_STRING = None
+        sickrage.app.newest_version_string = None
 
         if not self.version:
             sickrage.app.log.debug("Unknown current version number, don't know if we should update or not")
@@ -548,7 +548,7 @@ class SourceUpdateManager(UpdateManager):
             newest_text = _("There is a newer version available, version {} &mdash; "
                             "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
-        sickrage.app.NEWEST_VERSION_STRING = newest_text
+        sickrage.app.newest_version_string = newest_text
 
     def update(self):
         """
@@ -685,7 +685,7 @@ class PipUpdateManager(UpdateManager):
     def set_newest_text(self):
 
         # if we're up to date then don't set this
-        sickrage.app.NEWEST_VERSION_STRING = None
+        sickrage.app.newest_version_string = None
 
         if not self.version:
             sickrage.app.log.debug("Unknown current version number, don't know if we should update or not")
@@ -694,7 +694,7 @@ class PipUpdateManager(UpdateManager):
             newest_text = _("New SiCKRAGE update found on PyPy servers, version {} &mdash; "
                             "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
-        sickrage.app.NEWEST_VERSION_STRING = newest_text
+        sickrage.app.newest_version_string = newest_text
 
     def update(self):
         """

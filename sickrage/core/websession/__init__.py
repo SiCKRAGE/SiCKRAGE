@@ -72,7 +72,7 @@ class WebSession(cfscrape.CloudflareScraper):
         if proxies is None: proxies = {}
 
         headers['Accept-Encoding'] = 'gzip, deflate'
-        headers["User-Agent"] = sickrage.app.USER_AGENT
+        headers["User-Agent"] = sickrage.app.user_agent
 
         # request session ssl verify
         if sickrage.app.config.SSL_VERIFY:
@@ -92,7 +92,7 @@ class WebSession(cfscrape.CloudflareScraper):
 
         # setup caching adapter
         if cache:
-            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.app.DATA_DIR, 'sessions.db'))))
+            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.app.data_dir, 'sessions.db'))))
             self.mount('http://', adapter)
             self.mount('https://', adapter)
 

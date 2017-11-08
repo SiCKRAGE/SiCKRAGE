@@ -78,7 +78,7 @@ class PLEXNotifier(Notifiers):
 
             response = urllib2.urlopen(req)
 
-            result = response.read().decode(sickrage.app.SYS_ENCODING)
+            result = response.read().decode(sickrage.app.sys_encoding)
             response.close()
 
             sickrage.app.log.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
@@ -198,7 +198,7 @@ class PLEXNotifier(Notifiers):
                 req.add_header('Authorization', authheader)
                 req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
                 req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
-                req.add_header('X-Plex-Client-Identifier', sickrage.app.USER_AGENT)
+                req.add_header('X-Plex-Client-Identifier', sickrage.app.user_agent)
                 req.add_header('X-Plex-Version', '1.0')
 
                 try:

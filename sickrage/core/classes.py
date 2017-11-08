@@ -184,7 +184,7 @@ class ShowListUI(object):
     def selectSeries(self, allSeries, *args, **kwargs):
         try:
             # try to pick a show that's in my show list
-            showIDList = [int(x.indexerid) for x in sickrage.app.SHOWLIST]
+            showIDList = [int(x.indexerid) for x in sickrage.app.showlist]
             for curShow in allSeries:
                 if int(curShow['id']) in showIDList:
                     return curShow

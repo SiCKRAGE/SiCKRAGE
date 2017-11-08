@@ -232,8 +232,8 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
         subtitles_path = subtitles_path.encode('utf-8')
     except UnicodeEncodeError:
         # Fallback to system encoding. This should never happen.
-        video_path = video_path.encode(sickrage.app.SYS_ENCODING)
-        subtitles_path = subtitles_path.encode(sickrage.app.SYS_ENCODING)
+        video_path = video_path.encode(sickrage.app.sys_encoding)
+        subtitles_path = subtitles_path.encode(sickrage.app.sys_encoding)
 
     try:
         video = subliminal.scan_video(video_path)
@@ -280,7 +280,7 @@ def get_subtitles_path(video_path):
         new_subtitles_path = new_subtitles_path.encode('utf-8')
     except UnicodeEncodeError:
         # Fallback to system encoding. This should never happen.
-        new_subtitles_path = new_subtitles_path.encode(sickrage.app.SYS_ENCODING)
+        new_subtitles_path = new_subtitles_path.encode(sickrage.app.sys_encoding)
 
     return new_subtitles_path
 

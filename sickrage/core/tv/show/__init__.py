@@ -88,7 +88,7 @@ class TVShow(object):
         self.next_aired = ""
         self.release_groups = None
 
-        otherShow = findCertainShow(sickrage.app.SHOWLIST, self.indexerid)
+        otherShow = findCertainShow(sickrage.app.showlist, self.indexerid)
         if otherShow is not None:
             raise MultipleShowObjectsException("Can't create a show if it already exists")
 
@@ -1148,10 +1148,10 @@ class TVShow(object):
         action = ('delete', 'trash')[sickrage.app.config.TRASH_REMOVE_SHOW]
 
         # remove self from show list
-        sickrage.app.SHOWLIST = [x for x in sickrage.app.SHOWLIST if int(x.indexerid) != self.indexerid]
+        sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]
 
         # clear the cache
-        image_cache_dir = os.path.join(sickrage.app.CACHE_DIR, 'images')
+        image_cache_dir = os.path.join(sickrage.app.cache_dir, 'images')
         for cache_file in glob.glob(os.path.join(image_cache_dir, str(self.indexerid) + '.*')):
             sickrage.app.log.info('Attempt to %s cache file %s' % (action, cache_file))
             try:

@@ -353,7 +353,7 @@
                                         <option value="" ${('', 'selected')[sickrage.app.config.GUI_LANG == ""]}>
                                             ${_('System Language')}
                                         </option>
-                                        % for lang in sickrage.app.LANGUAGES:
+                                        % for lang in sickrage.app.languages:
                                             <option value="${lang}" ${('', 'selected')[sickrage.app.config.GUI_LANG == lang]}>${tornado.locale.get(lang).name}</option>
                                         % endfor
                                     </select>
@@ -488,7 +488,7 @@
                                 id="date_presets${('_na', '')[bool(sickrage.app.config.FUZZY_DATING)]}"
                                 name="date_preset${('_na', '')[bool(sickrage.app.config.FUZZY_DATING)]}">
                             % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.DATE_PRESET == cur_preset or ("%x" == sickrage.app.config.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.SYS_ENCODING)}</option>
+                                <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.DATE_PRESET == cur_preset or ("%x" == sickrage.app.config.DATE_PRESET and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.sys_encoding)}</option>
                             % endfor
                         </select>
                         <div class="input-group input350">
@@ -502,7 +502,7 @@
                                     ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.SYS_ENCODING)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.DATE_PRESET == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.sys_encoding)}</option>
                                 % endfor
                             </select>
                         </div>
@@ -924,7 +924,7 @@
                         <input type="checkbox" name="encryption_version"
                                id="encryption_version" ${('', 'checked')[bool(sickrage.app.config.ENCRYPTION_VERSION)]}/>
                         <label for="encryption_version">
-                            ${_('in the')} <code>${sickrage.app.CONFIG_FILE}</code> ${_('file.')}
+                            ${_('in the')} <code>${sickrage.app.config_file}</code> ${_('file.')}
                         </label>
                     </div>
 

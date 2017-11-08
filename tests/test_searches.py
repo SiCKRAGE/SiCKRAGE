@@ -47,7 +47,7 @@ def test_generator(curData, name, provider, forceSearch):
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
 
-        sickrage.app.SHOWLIST.append(show)
+        sickrage.app.showlist.append(show)
 
         for epNumber in curData["e"]:
             episode = TVEpisode(show, curData["s"], epNumber)

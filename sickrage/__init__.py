@@ -250,22 +250,22 @@ def main():
 
         # Parse startup args
         args = parser.parse_args()
-        app.QUITE = args.quite
-        app.WEB_PORT = int(args.port)
-        app.NOLAUNCH = args.nolaunch
-        app.DEVELOPER = args.dev
-        app.DEBUG = args.debug
-        app.DATA_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
-        app.CACHE_DIR = os.path.abspath(os.path.realpath(os.path.join(app.DATA_DIR, 'cache')))
-        app.CONFIG_FILE = args.config
+        app.quite = args.quite
+        app.web_port = int(args.port)
+        app.no_launch = args.nolaunch
+        app.developer = args.dev
+        app.debug = args.debug
+        app.data_dir = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
+        app.cache_dir = os.path.abspath(os.path.realpath(os.path.join(app.data_dir, 'cache')))
+        app.config_file = args.config
         DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
         PID_FILE = args.pidfile
 
-        if not os.path.isabs(app.CONFIG_FILE):
-            app.CONFIG_FILE = os.path.join(app.DATA_DIR, app.CONFIG_FILE)
+        if not os.path.isabs(app.config_file):
+            app.config_file = os.path.join(app.data_dir, app.config_file)
 
         if not os.path.abspath(PID_FILE):
-            PID_FILE = os.path.join(app.DATA_DIR, PID_FILE)
+            PID_FILE = os.path.join(app.data_dir, PID_FILE)
 
         # check lib requirements
         check_requirements()
@@ -277,39 +277,39 @@ def main():
             sys.path.extend(remainder)
 
         # Make sure that we can create the data dir
-        if not os.access(app.DATA_DIR, os.F_OK):
+        if not os.access(app.data_dir, os.F_OK):
             try:
-                os.makedirs(app.DATA_DIR, 0o744)
+                os.makedirs(app.data_dir, 0o744)
             except os.error:
-                sys.exit("Unable to create data directory '" + app.DATA_DIR + "'")
+                sys.exit("Unable to create data directory '" + app.data_dir + "'")
 
         # Make sure we can write to the data dir
-        if not os.access(app.DATA_DIR, os.W_OK):
-            sys.exit("Data directory must be writeable '" + app.DATA_DIR + "'")
+        if not os.access(app.data_dir, os.W_OK):
+            sys.exit("Data directory must be writeable '" + app.data_dir + "'")
 
         # Make sure that we can create the cache dir
-        if not os.access(app.CACHE_DIR, os.F_OK):
+        if not os.access(app.cache_dir, os.F_OK):
             try:
-                os.makedirs(app.CACHE_DIR, 0o744)
+                os.makedirs(app.cache_dir, 0o744)
             except os.error:
-                sys.exit("Unable to create cache directory '" + app.CACHE_DIR + "'")
+                sys.exit("Unable to create cache directory '" + app.cache_dir + "'")
 
         # Make sure we can write to the cache dir
-        if not os.access(app.CACHE_DIR, os.W_OK):
-            sys.exit("Cache directory must be writeable '" + app.CACHE_DIR + "'")
+        if not os.access(app.cache_dir, os.W_OK):
+            sys.exit("Cache directory must be writeable '" + app.cache_dir + "'")
 
         # daemonize if requested
         if DAEMONIZE:
-            app.NOLAUNCH = True
-            app.QUITE = True
-            app.DAEMON = Daemon(PID_FILE, app.DATA_DIR)
-            app.DAEMON.daemonize()
+            app.no_launch = True
+            app.quite = True
+            app.daemon = Daemon(PID_FILE, app.data_dir)
+            app.daemon.daemonize()
 
         # start app
         app.start()
 
         # main thread loop
-        while app.STARTED: time.sleep(1)
+        while app.started: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
         if app: app.shutdown()
     except ImportError:

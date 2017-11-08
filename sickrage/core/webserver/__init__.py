@@ -40,8 +40,8 @@ class StaticImageHandler(StaticFileHandler):
 
     def get(self, path, include_body=True):
         # image cache check
-        self.root = (self.root, os.path.join(sickrage.app.CACHE_DIR, 'images'))[
-            os.path.exists(os.path.normpath(os.path.join(sickrage.app.CACHE_DIR, 'images', path)))
+        self.root = (self.root, os.path.join(sickrage.app.cache_dir, 'images'))[
+            os.path.exists(os.path.normpath(os.path.join(sickrage.app.cache_dir, 'images', path)))
         ]
 
         return super(StaticImageHandler, self).get(path, include_body)
@@ -64,7 +64,7 @@ class WebServer(threading.Thread):
         tornado.locale.load_gettext_translations(sickrage.LOCALE_DIR, 'messages')
 
         # clear mako cache folder
-        mako_cache = os.path.join(sickrage.app.CACHE_DIR, 'mako')
+        mako_cache = os.path.join(sickrage.app.cache_dir, 'mako')
         if os.path.isdir(mako_cache):
             shutil.rmtree(mako_cache)
 
@@ -169,21 +169,21 @@ class WebServer(threading.Thread):
         }
 
         try:
-            self.server.listen(sickrage.app.WEB_PORT or sickrage.app.config.WEB_PORT, None)
+            self.server.listen(sickrage.app.config.WEB_PORT, None)
 
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.log.info(
                 "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.version_updater.version))
             sickrage.app.log.info(
-                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.CONFIG_FILE, sickrage.app.config.CONFIG_VERSION))
+                "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.config_file, sickrage.app.config.config_version))
             sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}/]".format(
                     ('http', 'https')[sickrage.app.config.ENABLE_HTTPS],
                     sickrage.app.config.WEB_HOST, sickrage.app.config.WEB_PORT))
 
             # launch browser window
-            if all([not sickrage.app.NOLAUNCH, sickrage.app.config.LAUNCH_BROWSER]):
+            if all([not sickrage.app.no_launch, sickrage.app.config.LAUNCH_BROWSER]):
                 threading.Thread(None,
                                  lambda: launch_browser(
                                      ('http', 'https')[sickrage.app.config.ENABLE_HTTPS],

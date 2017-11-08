@@ -59,13 +59,13 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self):
-        sickrage.app.SHOWLIST = []
+        sickrage.app.showlist = []
         setUp_test_db()
         setUp_test_episode_file()
         setUp_test_show_dir()
 
     def tearDown(self, web=False):
-        sickrage.app.SHOWLIST = []
+        sickrage.app.showlist = []
         tearDown_test_episode_file()
         tearDown_test_show_dir()
         if web:

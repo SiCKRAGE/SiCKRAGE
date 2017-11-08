@@ -980,7 +980,7 @@ def backupSR(backupDir, keep_latest=False):
     filesList = ['sickrage.db',
                  'failed.db',
                  'cache.db',
-                 os.path.basename(sickrage.app.CONFIG_FILE)]
+                 os.path.basename(sickrage.app.config_file)]
 
     def _keep_latest_backup():
         import glob
@@ -1003,25 +1003,25 @@ def backupSR(backupDir, keep_latest=False):
 
     # individual files
     for f in filesList:
-        fp = os.path.join(sickrage.app.DATA_DIR, f)
+        fp = os.path.join(sickrage.app.data_dir, f)
         if os.path.exists(fp):
             source += [fp]
 
     # database folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.app.DATA_DIR, 'database'), topdown=True):
+    for (path, __, files) in os.walk(os.path.join(sickrage.app.data_dir, 'database'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
     # db_backup folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.app.DATA_DIR, 'db_backup'), topdown=True):
+    for (path, __, files) in os.walk(os.path.join(sickrage.app.data_dir, 'db_backup'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
     # cache folder
-    if sickrage.app.CACHE_DIR:
-        for (path, dirs, files) in os.walk(sickrage.app.CACHE_DIR, topdown=True):
+    if sickrage.app.cache_dir:
+        for (path, dirs, files) in os.walk(sickrage.app.cache_dir, topdown=True):
             for dirname in dirs:
-                if path == sickrage.app.CACHE_DIR and dirname not in ['images']:
+                if path == sickrage.app.cache_dir and dirname not in ['images']:
                     dirs.remove(dirname)
 
             for filename in files:
@@ -1030,7 +1030,7 @@ def backupSR(backupDir, keep_latest=False):
     # ZIP filename
     target = os.path.join(backupDir, 'sickrage-{}.zip'.format(datetime.datetime.now().strftime('%Y%m%d%H%M%S')))
 
-    return create_zipfile(source, target, sickrage.app.DATA_DIR)
+    return create_zipfile(source, target, sickrage.app.data_dir)
 
 
 def restoreSR(srcDir, dstDir):
@@ -1039,7 +1039,7 @@ def restoreSR(srcDir, dstDir):
                      'sickbeard.db',
                      'failed.db',
                      'cache.db',
-                     os.path.basename(sickrage.app.CONFIG_FILE)]
+                     os.path.basename(sickrage.app.config_file)]
 
         for filename in filesList:
             srcFile = os.path.join(srcDir, filename)
@@ -1530,7 +1530,7 @@ def clean_url(url):
 
 
 def overall_stats():
-    shows = sickrage.app.SHOWLIST
+    shows = sickrage.app.showlist
     today = str(datetime.date.today().toordinal())
 
     downloaded_status = Quality.DOWNLOADED + Quality.ARCHIVED

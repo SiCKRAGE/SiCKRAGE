@@ -30,7 +30,7 @@ def getFeed(url, params=None, request_headers=None, handlers=None):
         if resp.ok:
             return feedparser.parse(
                 resp.text,
-                agent=sickrage.app.USER_AGENT,
+                agent=sickrage.app.user_agent,
                 etag=False,
                 modified=False,
                 request_headers=request_headers,

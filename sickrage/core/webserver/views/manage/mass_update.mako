@@ -61,7 +61,7 @@
             </thead>
 
             <tbody>
-                <% myShowList = sickrage.app.SHOWLIST %>
+                <% myShowList = sickrage.app.showlist %>
                 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 
                 % for curShow in myShowList:

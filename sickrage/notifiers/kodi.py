@@ -139,7 +139,7 @@ class KODINotifier(Notifiers):
                         title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
                     if notifyResult and notifyResult.get('result'):
-                        result += curHost + ':' + notifyResult["result"].decode(sickrage.app.SYS_ENCODING)
+                        result += curHost + ':' + notifyResult["result"].decode(sickrage.app.sys_encoding)
             else:
                 if sickrage.app.config.KODI_ALWAYS_ON or force:
                     sickrage.app.log.warning(
@@ -240,7 +240,7 @@ class KODINotifier(Notifiers):
                 sickrage.app.log.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
                 return False
 
-            result = response.read().decode(sickrage.app.SYS_ENCODING)
+            result = response.read().decode(sickrage.app.sys_encoding)
             response.close()
 
             sickrage.app.log.debug("KODI HTTP response: " + result.replace('\n', ''))
@@ -314,7 +314,7 @@ class KODINotifier(Notifiers):
 
             for path in paths:
                 # we do not need it double-encoded, gawd this is dumb
-                unEncPath = urllib.unquote(path.text).decode(sickrage.app.SYS_ENCODING)
+                unEncPath = urllib.unquote(path.text).decode(sickrage.app.sys_encoding)
                 sickrage.app.log.debug("KODI Updating " + showName + " on " + host + " at " + unEncPath)
                 updateCommand = {'command': 'ExecBuiltIn', 'parameter': 'KODI.updatelibrary(video, %s)' % (unEncPath)}
                 request = self._send_to_kodi(updateCommand, host)

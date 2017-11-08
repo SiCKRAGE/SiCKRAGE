@@ -119,13 +119,13 @@ def delete_files(processPath, notwantedFiles, result, force=False):
             except OSError as e:
                 result.output += logHelper(
                     "Cannot change permissions of %s: %s" % (
-                        cur_file, str(e.strerror).decode(sickrage.app.SYS_ENCODING)),
+                        cur_file, str(e.strerror).decode(sickrage.app.sys_encoding)),
                     sickrage.app.log.DEBUG)
         try:
             os.remove(cur_file_path)
         except OSError as e:
             result.output += logHelper(
-                "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.app.SYS_ENCODING)),
+                "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.app.sys_encoding)),
                 sickrage.app.log.DEBUG)
 
 

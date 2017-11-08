@@ -93,7 +93,7 @@ class BaseHandler(RequestHandler):
         # template settings
         self.mako_lookup = TemplateLookup(
             directories=[sickrage.app.config.GUI_VIEWS_DIR],
-            module_directory=os.path.join(sickrage.app.CACHE_DIR, 'mako'),
+            module_directory=os.path.join(sickrage.app.cache_dir, 'mako'),
             filesystem_checks=True,
             strict_undefined=True,
             input_encoding='utf-8',
@@ -168,7 +168,7 @@ class BaseHandler(RequestHandler):
             'submenu': "",
             'controller': "home",
             'action': "index",
-            'srPID': sickrage.app.PID,
+            'srPID': sickrage.app.pid,
             'srHttpsEnabled': sickrage.app.config.ENABLE_HTTPS or bool(
                 self.request.headers.get('X-Forwarded-Proto') == 'https'),
             'srHost': self.request.headers.get('X-Forwarded-Host', self.request.host.split(':')[0]),
@@ -386,7 +386,7 @@ class WebRoot(WebHandler):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.SORT_ARTICLE]
 
-        shows = sorted(sickrage.app.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))
+        shows = sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
         for result in sorted([x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)],
@@ -608,7 +608,7 @@ class Home(WebHandler):
         if show is None:
             return _("Invalid show parameters")
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return _("Invalid show paramaters")
@@ -626,20 +626,20 @@ class Home(WebHandler):
         return epObj
 
     def index(self):
-        if not len(sickrage.app.SHOWLIST):
+        if not len(sickrage.app.showlist):
             return self.redirect('/home/addShows/')
 
         if sickrage.app.config.ANIME_SPLIT_HOME:
             shows = []
             anime = []
-            for show in sickrage.app.SHOWLIST:
+            for show in sickrage.app.showlist:
                 if show.is_anime:
                     anime.append(show)
                 else:
                     shows.append(show)
             showlists = [["Shows", shows], ["Anime", anime]]
         else:
-            showlists = [["Shows", sickrage.app.SHOWLIST]]
+            showlists = [["Shows", sickrage.app.showlist]]
 
         stats = self.show_statistics()
         return self.render(
@@ -708,7 +708,7 @@ class Home(WebHandler):
         self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
         if sickrage.app.started:
-            return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.app.PID))
+            return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.app.pid))
         else:
             return "%s({'msg':%s})" % (kwargs['srcallback'], "nope")
 
@@ -1103,14 +1103,14 @@ class Home(WebHandler):
         )
 
     def shutdown(self, pid=None):
-        if str(pid) != str(sickrage.app.PID):
+        if str(pid) != str(sickrage.app.pid):
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.app.shutdown()
 
     def restart(self, pid=None, force=False):
-        if str(pid) != str(sickrage.app.PID) and not force:
+        if str(pid) != str(sickrage.app.pid) and not force:
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
         # clear current user to disable header and footer
@@ -1129,7 +1129,7 @@ class Home(WebHandler):
         ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
-        if str(pid) != str(sickrage.app.PID):
+        if str(pid) != str(sickrage.app.pid):
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
         # check for new app updates
@@ -1139,11 +1139,11 @@ class Home(WebHandler):
         return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
     def update(self, pid=None):
-        if str(pid) != str(sickrage.app.PID):
+        if str(pid) != str(sickrage.app.pid):
             return self.redirect('/' + sickrage.app.config.DEFAULT_PAGE + '/')
 
         if sickrage.app.version_updater.update():
-            sickrage.app.NEWEST_VERSION_STRING = None
+            sickrage.app.newest_version_string = None
             return self.restart(pid)
         else:
             self._genericMessage(_("Update Failed"),
@@ -1170,7 +1170,7 @@ class Home(WebHandler):
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
             if sickrage.app.version_updater.updater.checkout_branch(branch):
                 sickrage.app.alerts.message(_('Branch checkout successful, restarting: '), branch)
-                return self.restart(sickrage.app.PID)
+                return self.restart(sickrage.app.pid)
         else:
             sickrage.app.alerts.message(_('Already on branch: '), branch)
 
@@ -1180,7 +1180,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.showlist, int(show))
 
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1283,7 +1283,7 @@ class Home(WebHandler):
         if sickrage.app.config.ANIME_SPLIT_HOME:
             shows = []
             anime = []
-            for show in sickrage.app.SHOWLIST:
+            for show in sickrage.app.showlist:
                 if show.is_anime:
                     anime.append(show)
                 else:
@@ -1293,7 +1293,7 @@ class Home(WebHandler):
                                ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
         else:
             sortedShowLists = [
-                ["Shows", sorted(sickrage.app.SHOWLIST, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+                ["Shows", sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
 
         bwl = None
         if showObj.is_anime:
@@ -1361,7 +1361,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errString)
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if not showObj:
             errString = _("Unable to find the specified show: ") + str(show)
@@ -1574,7 +1574,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1592,7 +1592,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1619,7 +1619,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1637,7 +1637,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1658,7 +1658,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1675,7 +1675,7 @@ class Home(WebHandler):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.showlist, int(show))
             if showObj:
                 showName = urllib.quote_plus(showObj.name.encode('utf-8'))
 
@@ -1709,7 +1709,7 @@ class Home(WebHandler):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+            showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if sickrage.app.notifier_providers['emby'].update_library(showObj):
             sickrage.app.alerts.message(
@@ -1739,7 +1739,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
@@ -1796,7 +1796,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if not showObj:
             errMsg = _("Error", "Show not in show list")
@@ -1930,7 +1930,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("You must specify a show"))
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1981,7 +1981,7 @@ class Home(WebHandler):
             errMsg = _("You must specify a show and at least one episode")
             return self._genericMessage(_("Error"), errMsg)
 
-        show_obj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        show_obj = findCertainShow(sickrage.app.showlist, int(show))
 
         if show_obj is None:
             errMsg = _("Show not in show list")
@@ -2039,7 +2039,7 @@ class Home(WebHandler):
     def getManualSearchStatus(self, show=None):
         def getEpisodes(searchThread, searchstatus):
             results = []
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(searchThread.show.indexerid))
+            showObj = findCertainShow(sickrage.app.showlist, int(searchThread.show.indexerid))
 
             if not showObj:
                 sickrage.app.log.error(
@@ -2153,7 +2153,7 @@ class Home(WebHandler):
         if sceneAbsolute in ['null', '']:
             sceneAbsolute = None
 
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(show))
+        showObj = findCertainShow(sickrage.app.showlist, int(show))
 
         if showObj.is_anime:
             result = {
@@ -2453,7 +2453,7 @@ class HomeAddShows(Home):
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if showid and findCertainShow(sickrage.app.SHOWLIST, showid): cur_dir['added_already'] = True
+                if showid and findCertainShow(sickrage.app.showlist, showid): cur_dir['added_already'] = True
 
         return self.render(
             "/home/mass_add_table.mako",
@@ -2531,7 +2531,7 @@ class HomeAddShows(Home):
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
-                       'tvdb' in x.ids and not findCertainShow(sickrage.app.SHOWLIST, int(x.ids['tvdb']))]
+                       'tvdb' in x.ids and not findCertainShow(sickrage.app.showlist, int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
@@ -2591,7 +2591,7 @@ class HomeAddShows(Home):
             t = IndexerApi(1).indexer(**lINDEXER_API_PARMS)
             indexer_id = t[indexer_id]['id']
 
-        if findCertainShow(sickrage.app.SHOWLIST, int(indexer_id)):
+        if findCertainShow(sickrage.app.showlist, int(indexer_id)):
             return
 
         if sickrage.app.config.ROOT_DIRS:
@@ -3062,13 +3062,13 @@ class Manage(Home, WebRoot):
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = findCertainShow(sickrage.app.SHOWLIST, int(cur_indexer_id))
+                show = findCertainShow(sickrage.app.showlist, int(cur_indexer_id))
                 show.getEpisode(int(season), int(episode)).downloadSubtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 
     def backlogShow(self, indexer_id):
-        show_obj = findCertainShow(sickrage.app.SHOWLIST, int(indexer_id))
+        show_obj = findCertainShow(sickrage.app.showlist, int(indexer_id))
 
         if show_obj:
             sickrage.app.BACKLOGSEARCHER.searchBacklog([show_obj])
@@ -3080,7 +3080,7 @@ class Manage(Home, WebRoot):
         showCats = {}
         showResults = {}
 
-        for curShow in sickrage.app.SHOWLIST:
+        for curShow in sickrage.app.showlist:
 
             epCounts = {}
             epCats = {}
@@ -3126,7 +3126,7 @@ class Manage(Home, WebRoot):
         showNames = []
         for curID in showIDs:
             curID = int(curID)
-            showObj = findCertainShow(sickrage.app.SHOWLIST, curID)
+            showObj = findCertainShow(sickrage.app.showlist, curID)
             if showObj:
                 showList.append(showObj)
                 showNames.append(showObj.name)
@@ -3286,7 +3286,7 @@ class Manage(Home, WebRoot):
         errors = []
         for curShow in showIDs:
             curErrors = []
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(curShow))
+            showObj = findCertainShow(sickrage.app.showlist, int(curShow))
             if not showObj:
                 continue
 
@@ -3432,7 +3432,7 @@ class Manage(Home, WebRoot):
             if curShowID == '':
                 continue
 
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(curShowID))
+            showObj = findCertainShow(sickrage.app.showlist, int(curShowID))
 
             if showObj is None:
                 continue
@@ -3732,7 +3732,7 @@ class Config(WebHandler):
     def reset(self):
         sickrage.app.config.load(True)
         sickrage.app.alerts.message(_('Configuration Reset to Defaults'),
-                                             os.path.join(sickrage.app.CONFIG_FILE))
+                                             os.path.join(sickrage.app.config_file))
         return self.redirect("/config/general")
 
 
@@ -3904,7 +3904,7 @@ class ConfigGeneral(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[GENERAL] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/general/")
 
@@ -3947,7 +3947,7 @@ class ConfigBackupRestore(Config):
 
         if backupFile:
             source = backupFile
-            target_dir = os.path.join(sickrage.app.DATA_DIR, 'restore')
+            target_dir = os.path.join(sickrage.app.data_dir, 'restore')
 
             restore_database = checkbox_to_value(restore_database)
             restore_config = checkbox_to_value(restore_config)
@@ -4077,7 +4077,7 @@ class ConfigSearch(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[SEARCH] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/search/")
 
@@ -4201,7 +4201,7 @@ class ConfigPostProcessing(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[POST-PROCESSING] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/postProcessing/")
 
@@ -4422,7 +4422,7 @@ class ConfigProviders(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[PROVIDERS] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/providers/")
 
@@ -4749,7 +4749,7 @@ class ConfigNotifications(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[NOTIFICATIONS] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/notifications/")
 
@@ -4830,7 +4830,7 @@ class ConfigSubtitles(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[SUBTITLES] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/subtitles/")
 
@@ -4869,7 +4869,7 @@ class ConfigAnime(Config):
             sickrage.app.alerts.error(_('Error(s) Saving Configuration'), '<br>\n'.join(results))
         else:
             sickrage.app.alerts.message(_('[ANIME] Configuration Saved'),
-                                                 os.path.join(sickrage.app.CONFIG_FILE))
+                                                 os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/anime/")
 
@@ -4896,7 +4896,7 @@ class ConfigQualitySettings(Config):
         sickrage.app.config.save()
 
         sickrage.app.alerts.message(_('[QUALITY SETTINGS] Configuration Saved'),
-                                             os.path.join(sickrage.app.CONFIG_FILE))
+                                             os.path.join(sickrage.app.config_file))
 
         return self.redirect("/config/qualitySettings/")
 

@@ -50,7 +50,7 @@ class srDatabase(object):
         self.name = name
         self.old_db_path = ''
 
-        self.db_path = os.path.join(sickrage.app.DATA_DIR, 'database', self.name)
+        self.db_path = os.path.join(sickrage.app.data_dir, 'database', self.name)
         self.db = SuperThreadSafeDatabase(self.db_path)
 
     def initialize(self):
@@ -61,7 +61,7 @@ class srDatabase(object):
 
         if self.db.exists():
             # Backup before start and cleanup old backups
-            backup_path = os.path.join(sickrage.app.DATA_DIR, 'db_backup', self.name)
+            backup_path = os.path.join(sickrage.app.data_dir, 'db_backup', self.name)
             backup_count = 5
             existing_backups = []
             if not os.path.isdir(backup_path): os.makedirs(backup_path)

@@ -121,7 +121,7 @@ class SubtitleSearcher(object):
                 sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (
                     epToSub['season'], epToSub['episode'], epToSub['show_name']))
 
-                showObj = findCertainShow(sickrage.app.SHOWLIST, int(epToSub['showid']))
+                showObj = findCertainShow(sickrage.app.showlist, int(epToSub['showid']))
                 if not showObj:
                     sickrage.app.log.debug('Show not found')
                     return

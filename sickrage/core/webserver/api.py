@@ -716,7 +716,7 @@ class CMD_Episode(ApiCall):
 
     def run(self):
         """ Get detailed information about an episode """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -779,7 +779,7 @@ class CMD_EpisodeSearch(ApiCall):
 
     def run(self):
         """ Search for an episode """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -833,7 +833,7 @@ class CMD_EpisodeSetStatus(ApiCall):
 
     def run(self):
         """ Set the status of an episode or a season (when no episode is provided) """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -940,7 +940,7 @@ class CMD_SubtitleSearch(ApiCall):
 
     def run(self):
         """ Search for an episode subtitles """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -997,7 +997,7 @@ class CMD_Exceptions(ApiCall):
                     scene_exceptions[indexerid] = []
                 scene_exceptions[indexerid].append(dbData['show_name'])
         else:
-            showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+            showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1120,7 +1120,7 @@ class CMD_Backlog(ApiCall):
 
         shows = []
 
-        for s in sickrage.app.SHOWLIST:
+        for s in sickrage.app.showlist:
             showEps = []
             for e in sorted(
                     [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
@@ -1352,7 +1352,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         backlogPaused = sickrage.app.search_queue.is_backlog_paused()  # @UndefinedVariable
         backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()  # @UndefinedVariable
         nextBacklog = sickrage.app.BACKLOGSEARCHER.nextRun().strftime(dateFormat).decode(
-            sickrage.app.SYS_ENCODING)
+            sickrage.app.sys_encoding)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
                 "last_backlog": _ordinal_to_dateForm(last_backlog),
@@ -1485,7 +1485,7 @@ class CMD_SiCKRAGEPing(ApiCall):
     def run(self):
         """ Ping SiCKRAGE to check if it is running """
         if sickrage.app.started:
-            return _responds(RESULT_SUCCESS, {"pid": sickrage.app.PID}, "Pong")
+            return _responds(RESULT_SUCCESS, {"pid": sickrage.app.pid}, "Pong")
         else:
             return _responds(RESULT_SUCCESS, msg="Pong")
 
@@ -1748,7 +1748,7 @@ class CMD_Show(ApiCall):
 
     def run(self):
         """ Get detailed information about a show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -1853,7 +1853,7 @@ class CMD_ShowAddExisting(ApiCall):
 
     def run(self):
         """ Add an existing show in SiCKRAGE """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if showObj:
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in the database")
 
@@ -1967,7 +1967,7 @@ class CMD_ShowAddNew(ApiCall):
 
     def run(self):
         """ Add a new show to SiCKRAGE """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if showObj:
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
 
@@ -2101,7 +2101,7 @@ class CMD_ShowCache(ApiCall):
 
     def run(self):
         """ Check SiCKRAGE's cache to see if the images (poster, banner, fanart) for a show are valid """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2143,7 +2143,7 @@ class CMD_ShowDelete(ApiCall):
 
     def run(self):
         """ Delete a show in SiCKRAGE """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2173,7 +2173,7 @@ class CMD_ShowGetQuality(ApiCall):
 
     def run(self):
         """ Get the quality setting of a show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2300,7 +2300,7 @@ class CMD_ShowPause(ApiCall):
 
     def run(self):
         """ Pause or unpause a show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2332,7 +2332,7 @@ class CMD_ShowRefresh(ApiCall):
 
     def run(self):
         """ Refresh a show in SiCKRAGE """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2364,7 +2364,7 @@ class CMD_ShowSeasonList(ApiCall):
 
     def run(self):
         """ Get the list of seasons of a show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2402,7 +2402,7 @@ class CMD_ShowSeasons(ApiCall):
 
     def run(self):
         """ Get the list of episodes for one or all seasons of a show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2488,7 +2488,7 @@ class CMD_ShowSetQuality(ApiCall):
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2541,7 +2541,7 @@ class CMD_ShowStats(ApiCall):
 
     def run(self):
         """ Get episode statistics for a given show """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2645,7 +2645,7 @@ class CMD_ShowUpdate(ApiCall):
 
     def run(self):
         """ Update a show in SiCKRAGE """
-        showObj = findCertainShow(sickrage.app.SHOWLIST, int(self.indexerid))
+        showObj = findCertainShow(sickrage.app.showlist, int(self.indexerid))
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
@@ -2675,7 +2675,7 @@ class CMD_Shows(ApiCall):
     def run(self):
         """ Get all shows in SiCKRAGE """
         shows = {}
-        for curShow in sickrage.app.SHOWLIST:
+        for curShow in sickrage.app.showlist:
 
             if self.paused is not None and bool(self.paused) != bool(curShow.paused):
                 continue

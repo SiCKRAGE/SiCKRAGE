@@ -38,7 +38,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
-                sickrage.app.SHOWLIST.append(curShow)
+                sickrage.app.showlist.append(curShow)
             except Exception:
                 pass
 
@@ -52,7 +52,7 @@ class XEMBasicTests(SiCKRAGETestDBCase):
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
-                sickrage.app.SHOWLIST.append(curShow)
+                sickrage.app.showlist.append(curShow)
             except Exception as e:
                 print "There was an error creating the show"
 

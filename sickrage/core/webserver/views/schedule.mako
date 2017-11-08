@@ -280,13 +280,13 @@
                             % elif cur_ep_enddate >= today and cur_ep_airdate < next_week.date():
                                 % if cur_ep_airdate == today.date():
                                     <br/>
-                                    <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.SYS_ENCODING).capitalize()}
+                                    <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.sys_encoding).capitalize()}
                                         <span style="font-size: 14px; vertical-align: top;">[Today]</span>
                                     </h2>
                                 <% today_header = True %>
                                 % else:
                                     <br/>
-                                    <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.SYS_ENCODING).capitalize()}</h2>
+                                    <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.sys_encoding).capitalize()}</h2>
                                 % endif
                             % endif
                             <% cur_segment = cur_ep_airdate %>
@@ -295,7 +295,7 @@
                         % if cur_ep_airdate == today.date() and not today_header:
                             <div>
                                 <br/>
-                                <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.SYS_ENCODING).capitalize()}
+                                <h2 class="day">${datetime.date.fromordinal(cur_ep_airdate.toordinal()).strftime('%A').decode(sickrage.app.sys_encoding).capitalize()}
                                     <span style="font-size: 14px; vertical-align: top;">[Today]</span>
                                 </h2>
                             </div>
@@ -432,7 +432,7 @@
                                cellspacing="0" border="0" cellpadding="0">
                             <thead>
                             <tr>
-                                <th>${day.strftime('%A').decode(sickrage.app.SYS_ENCODING).capitalize()}</th>
+                                <th>${day.strftime('%A').decode(sickrage.app.sys_encoding).capitalize()}</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -447,7 +447,7 @@
                                         % if airday == day:
                                             % try:
                                             <% day_has_show = True %>
-                                            <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple())).srftime().decode(sickrage.app.SYS_ENCODING) %>
+                                            <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple())).srftime().decode(sickrage.app.sys_encoding) %>
                                             % if sickrage.app.config.TRIM_ZERO:
                                                 <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                                             % endif

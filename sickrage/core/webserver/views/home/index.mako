@@ -294,7 +294,7 @@
                     % if sickrage.app.show_queue.loadingShowList:
                         <tbody class="tablesorter-infoOnly">
                             % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
-                                % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.SHOWLIST:
+                                % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
                                     <tr>
                                         <td align="center">(${_('loading')})</td>
                                         <td></td>

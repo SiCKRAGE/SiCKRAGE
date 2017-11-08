@@ -72,7 +72,7 @@ def test_generator(tvdbdid, show_name, curData, forceSearch):
         show.quality = curData["q"]
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
-        sickrage.app.SHOWLIST.append(show)
+        sickrage.app.showlist.append(show)
         episode = None
 
         for epNumber in curData["e"]:

@@ -108,7 +108,7 @@ class NMA_Notifier(Notifiers):
         return results
 
     def callapi(self, method, args):
-        headers = {'User-Agent': sickrage.app.USER_AGENT}
+        headers = {'User-Agent': sickrage.app.user_agent}
         if method == "POST":
             headers['Content-type'] = "application/x-www-form-urlencoded"
 

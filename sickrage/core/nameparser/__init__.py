@@ -62,7 +62,7 @@ class NameParser(object):
         show_id = 0
         fromCache = False
 
-        if not all([name, sickrage.app.SHOWLIST]): return show, show_id
+        if not all([name, sickrage.app.showlist]): return show, show_id
 
         try:
             # check cache for show
@@ -88,7 +88,7 @@ class NameParser(object):
                     pass
 
             # create show object
-            show = findCertainShow(sickrage.app.SHOWLIST, int(show_id)) if show_id else None
+            show = findCertainShow(sickrage.app.showlist, int(show_id)) if show_id else None
 
             # add show to cache
             if show and not fromCache:
