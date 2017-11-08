@@ -1,6 +1,7 @@
 # Changelog
 
-- * 402716d - 2017-11-08: Fixed issues with posters overlapping on show list 
+- * fab227a - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
+- * 5127668 - 2017-11-08: Fixed issues with posters overlapping on show list 
 - * 325ab75 - 2017-11-08: Decreased app startup time 
 - * 5cca270 - 2017-11-08: Fixed issue with daemonizing and pidfile&#x27;s 
 - * 90b402d - 2017-11-08: Fixed bad reference 

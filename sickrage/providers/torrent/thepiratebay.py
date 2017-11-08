@@ -107,25 +107,27 @@ class ThePirateBayProvider(TorrentProvider):
             labels = [process_column_header(label) for label in torrent_rows[0]("th")]
 
             # Skip column headers
-            for result in torrent_rows[1:]:
+            for row in torrent_rows[1:]:
+                cells = row('td')
+                if len(cells) < len(labels):
+                    continue
+
                 try:
-                    cells = result("td")
-
-                    # Funky js on page messing up titles, this fixes that
-                    title = result.find(class_="detLink")['title'].split('Details for ', 1)[-1]
-                    download_url = result.find(title="Download this torrent using magnet")["href"]
+                    title = row.find(class_='detName')
+                    title = title.get_text(strip=True) if title else None
+                    download_url = row.find(title='Download this torrent using magnet')
+                    download_url = download_url['href']
                     if download_url and 'magnet:?' not in download_url:
-                        sickrage.app.log.debug("Invalid ThePirateBay proxy please try another one")
+                        sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
                         continue
-
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True))
+                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True), 1)
                     leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
 
                     # Accept Torrent only from Good People for every Episode Search
-                    if self.confirmed and not result.find(alt=re.compile(r"VIP|Trusted")):
+                    if self.confirmed and not row.find(alt=re.compile(r"VIP|Trusted")):
                         if mode != "RSS":
                             sickrage.app.log.debug(
                                 "Found result: {0} but that doesn't seem like a trusted result so I'm "
