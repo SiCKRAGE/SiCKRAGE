@@ -32,8 +32,8 @@ class ThePirateBayProvider(TorrentProvider):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
         self.urls.update({
-            "rss": "{base_url}/browse/200/0/4/0".format(**self.urls),
-            "search": "{base_url}/s".format(**self.urls),
+            "rss": "{base_url}/tv/latest".format(**self.urls),
+            "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
         })
 
         self.confirmed = True
@@ -47,14 +47,6 @@ class ThePirateBayProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
-        # oder_by is 7 in browse for seeders, but 8 in search!
-        search_params = {
-            "type": "search",
-            "orderby": 3,
-            "page": 0,
-            "category": 200
-        }
-
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
@@ -66,11 +58,11 @@ class ThePirateBayProvider(TorrentProvider):
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
                 if mode != "RSS":
-                    search_params["q"] = search_string
+                    search_url = search_url % search_string
                     sickrage.app.log.debug("Search string: {}".format(search_string))
 
                 try:
-                    data = sickrage.app.wsession.get(search_url, params=search_params).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

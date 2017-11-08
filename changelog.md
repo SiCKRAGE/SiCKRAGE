@@ -1,6 +1,7 @@
 # Changelog
 
-- * fab227a - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
+- * 58b1c51 - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
+- * 66c64ae - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
 - * 5127668 - 2017-11-08: Fixed issues with posters overlapping on show list 
 - * 325ab75 - 2017-11-08: Decreased app startup time 
 - * 5cca270 - 2017-11-08: Fixed issue with daemonizing and pidfile&#x27;s 
