@@ -108,7 +108,7 @@
                                 <span class="fa ${('fa-unlock green-text','fa-lock red-text')[bool(providerObj.private)]} pull-right"
                                       style="vertical-align:middle;"></span>
                                 ${('<span class="yellow-text fa fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
-                                ${('<span class="red-text fa fa-exclamation-circle pull-right"></span>', '')[bool(not providerObj.isAlive)]}
+                                ${('<span class="red-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
                             </li>
                         % endif
                     % endfor

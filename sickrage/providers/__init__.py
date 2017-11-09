@@ -32,7 +32,6 @@ from urlparse import urljoin
 from xml.sax import SAXParseException
 
 import bencode
-import requests
 from feedparser import FeedParserDict
 from pynzb import nzb_parser
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
@@ -97,11 +96,7 @@ class GenericProvider(object):
 
     @property
     def isAlive(self):
-        try:
-            r = requests.head(self.urls['base_url'])
-            return r.status_code == 200
-        except Exception:
-            pass
+        return True
 
     def _check_auth(self):
         return True
@@ -570,7 +565,7 @@ class GenericProvider(object):
                 return False
         else:
             sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
-                                             'settings')
+                                     'settings')
 
             sickrage.app.alerts.notifications.error(
                 'Failed to auth with {provider}'.format(provider=self.name),
@@ -581,7 +576,7 @@ class GenericProvider(object):
         if any([not response, not (response.text and response.status_code == 200),
                 check_login_text.lower() in response.text.lower()]):
             sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
-                                             'provider settings')
+                                     'provider settings')
 
             sickrage.app.alerts.notifications.error(
                 'Wrong cookies for {}'.format(self.name),
@@ -1164,7 +1159,7 @@ class NewznabProvider(NZBProvider):
 
                 try:
                     response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'),
-                                                                params=search_params).text
+                                                         params=search_params).text
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
                     continue
@@ -1180,8 +1175,8 @@ class NewznabProvider(NZBProvider):
 
                     if not html('item'):
                         sickrage.app.log.debug('No results returned from provider. Check chosen Newznab '
-                                                       'search categories in provider settings and/or usenet '
-                                                       'retention')
+                                               'search categories in provider settings and/or usenet '
+                                               'retention')
                         continue
 
                     for item in html('item'):
