@@ -71,7 +71,7 @@ class GenericProvider(object):
 
         self.bt_cache_urls = [
             'https://torrentproject.se/torrent/{info_hash}.torrent',
-            'https://torrent.cd/torrents/download/{info_hash}/.torrent',
+            'https://torrent.cd/torrents/download/{info_hash}.torrent',
             'https://asnet.pw/download/{info_hash}/',
             'https://btdig.com/torrent/{info_hash}',
             'https://torrage.info/torrent/{info_hash}.torrent',
