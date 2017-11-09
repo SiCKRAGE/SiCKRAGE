@@ -63,7 +63,10 @@ def _verify_result(result):
 
             sickrage.app.log.debug("Verifiying a result from " + resProvider.name + " at " + url)
 
-            result.content = sickrage.app.wsession.get(url, verify=False, headers=headers).content
+            try:
+                result.content = sickrage.app.wsession.get(url, verify=False, headers=headers).content
+            except Exception:
+                result.content = None
 
             if result.resultType == "torrent":
                 try:

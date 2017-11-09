@@ -1,6 +1,7 @@
 # Changelog
 
-- * d7c88db - 2017-11-09: Fixed issue with a bt cache url 
+- * 35679bf - 2017-11-09: Added exception handling for verifying result url&#x27;s 
+- * 58564e1 - 2017-11-09: Fixed issue with a bt cache url 
 - * f2ba6fa - 2017-11-09: Fixed issue with a bt cache url 
 - * 3b8284e - 2017-11-09: Fixed IndexError with SkyTorrents for hash 
 - * 27af54e - 2017-11-09: Fixed issue with BitCannon torrent provider 
