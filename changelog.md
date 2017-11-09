@@ -1,6 +1,7 @@
 # Changelog
 
-- * 100c244 - 2017-11-09: Fixed issue with a bt cache url 
+- * d7c88db - 2017-11-09: Fixed issue with a bt cache url 
+- * f2ba6fa - 2017-11-09: Fixed issue with a bt cache url 
 - * 3b8284e - 2017-11-09: Fixed IndexError with SkyTorrents for hash 
 - * 27af54e - 2017-11-09: Fixed issue with BitCannon torrent provider 
 - * 718179c - 2017-11-09: Decreased time it takes to search with Newpct torrent provider 
