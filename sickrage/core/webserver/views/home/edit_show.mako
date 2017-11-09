@@ -12,6 +12,7 @@
 </%block>
 
 <%block name="content">
+    <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
     <div id="show">
         <div class="row">
             <div class="col-md-12">
@@ -61,8 +62,7 @@
                                             <label class="component-title">${_('Preferred Quality')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <% qualities = Quality.splitQuality(int(show.quality)) %>
-                                            <%include file="../includes/quality_chooser.mako"/>
+                                            ${QualityChooser(*Quality.splitQuality(int(show.quality)))}
                                         </div>
                                     </div>
 

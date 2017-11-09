@@ -3,6 +3,7 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings, statusStrings
 %>
+<%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
 % if sickrage.app.config.use_subtitles:
     <div class="row field-pair">
         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -107,7 +108,7 @@
         <label class="component-title">${_('Preferred Quality')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-            <%include file="quality_chooser.mako"/>
+        ${QualityChooser()}
     </div>
 </div>
 <br/>

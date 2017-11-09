@@ -32,6 +32,7 @@ from urlparse import urljoin
 from xml.sax import SAXParseException
 
 import bencode
+import requests
 from feedparser import FeedParserDict
 from pynzb import nzb_parser
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
@@ -93,6 +94,14 @@ class GenericProvider(object):
     @property
     def seed_ratio(self):
         return ''
+
+    @property
+    def isAlive(self):
+        try:
+            r = requests.head(self.urls['base_url'])
+            return r.status_code == 200
+        except Exception:
+            pass
 
     def _check_auth(self):
         return True

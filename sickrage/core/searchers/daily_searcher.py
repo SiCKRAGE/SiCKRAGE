@@ -23,15 +23,14 @@ import datetime
 import threading
 
 import sickrage
-from sickrage.core import findCertainShow
-from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
+from sickrage.core import findCertainShow, common
 from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.updaters import tz_updater
 
 
 class DailySearcher(object):
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self.name = "DAILYSEARCHER"
         self.lock = threading.Lock()
         self.amActive = False
@@ -65,7 +64,7 @@ class DailySearcher(object):
         show = None
 
         episodes = [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)
-                    if x['doc']['status'] == UNAIRED
+                    if x['doc']['status'] == common.UNAIRED
                     and x['doc']['season'] > 0
                     and curDate.toordinal() >= x['doc']['airdate'] > 1]
 
@@ -88,20 +87,16 @@ class DailySearcher(object):
                 # so they are snatched faster
                 if air_time > curTime: continue
 
-            ep = show.getEpisode(int(episode['season']), int(episode['episode']))
-            with ep.lock:
-                if ep.season == 0:
-                    sickrage.app.log.info(
-                        "New episode {} airs today, setting status to SKIPPED because is a special season".format(
-                            ep.prettyName()))
-                    ep.status = SKIPPED
-                else:
-                    sickrage.app.log.info(
-                        "New episode {} airs today, setting to default episode status for this show: {}".format(
-                            ep.prettyName(), statusStrings[ep.show.default_ep_status]))
-                    ep.status = ep.show.default_ep_status
+            ep_obj = show.getEpisode(int(episode['season']), int(episode['episode']))
+            with ep_obj.lock:
+                ep_obj.status = show.default_ep_status if ep_obj.season else common.SKIPPED
+                sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
+                    name=ep_obj.pretty_name(),
+                    status=common.statusStrings[ep_obj.status],
+                    special='(specials are not supported)' if not ep_obj.season else '',
+                ))
 
-                ep.saveToDB()
+                ep_obj.saveToDB()
         else:
             sickrage.app.log.info("{}: No new released episodes found".format(self.name))
 

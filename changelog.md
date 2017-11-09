@@ -1,6 +1,7 @@
 # Changelog
 
-- * d926209 - 2017-11-09: Updated EliteTorrent provider url 
+- * dc2b4a9 - 2017-11-09: Fixed issues with displaying correct show quality when editing a show 
+- * a95d1f5 - 2017-11-09: Updated EliteTorrent provider url 
 - * 1970e1d - 2017-11-09: Release v9.1.68 
 - * eaf2a97 - 2017-11-09: refactored Daemonize class to use os exits when forking instead of sys exits 
 - * 1a61bc4 - 2017-11-08: Release v9.1.67 

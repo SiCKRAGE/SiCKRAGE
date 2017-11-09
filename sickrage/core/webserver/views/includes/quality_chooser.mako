@@ -3,8 +3,10 @@
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
 %>
 
+<%def name="QualityChooser(anyQualities=None, bestQualities=None)">
 <%
-    anyQualities, bestQualities = Quality.splitQuality(sickrage.app.config.quality_default)
+    if not anyQualities and not bestQualities:
+        anyQualities, bestQualities = Quality.splitQuality(sickrage.app.config.quality_default)
     overall_quality = Quality.combineQualities(anyQualities, bestQualities)
     selected = None
 %>
@@ -65,3 +67,4 @@
         </div>
     </div>
 </div>
+</%def>
