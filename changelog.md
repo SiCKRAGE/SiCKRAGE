@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2d29fad - 2017-11-09: Added exception handling for verifying result url&#x27;s 
+- * 8b789bc - 2017-11-09: Fixed size conversion for HD-Torrents 
+- * 46096bf - 2017-11-09: Added exception handling for verifying result url&#x27;s 
 - * 73120c8 - 2017-11-09: Added exception handling for verifying result url&#x27;s 
 - * 58564e1 - 2017-11-09: Fixed issue with a bt cache url 
 - * f2ba6fa - 2017-11-09: Fixed issue with a bt cache url 

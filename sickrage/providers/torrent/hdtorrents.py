@@ -161,7 +161,7 @@ class HDTorrentsProvider(TorrentProvider):
                     seeders = try_int(cells[labels.index('S')].get_text(strip=True))
                     leechers = try_int(cells[labels.index('L')].get_text(strip=True))
                     torrent_size = cells[labels.index('Size')].get_text()
-                    size = convert_size(torrent_size, -1)
+                    size = convert_size(torrent_size, -1, ['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': ''}
