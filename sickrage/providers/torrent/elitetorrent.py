@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class EliteTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(EliteTorrentProvider, self).__init__('EliteTorrent', 'http://www.elitetorrent.net', True)
+        super(EliteTorrentProvider, self).__init__('EliteTorrent', 'http://www.elitetorrent.eu', True)
 
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls)

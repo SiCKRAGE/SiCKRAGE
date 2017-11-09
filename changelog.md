@@ -1,6 +1,7 @@
 # Changelog
 
-- * da90f8a - 2017-11-09: Release v9.1.68 
+- * d926209 - 2017-11-09: Updated EliteTorrent provider url 
+- * 1970e1d - 2017-11-09: Release v9.1.68 
 - * eaf2a97 - 2017-11-09: refactored Daemonize class to use os exits when forking instead of sys exits 
 - * 1a61bc4 - 2017-11-08: Release v9.1.67 
 - * 5d18ffb - 2017-11-08: Fixed issues with verifying torrent metadata 
