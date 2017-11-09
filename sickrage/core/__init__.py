@@ -80,6 +80,7 @@ class Core(object):
         self.started = False
         self.daemon = None
         self.io_loop = IOLoop().instance()
+        self.pid = os.getpid()
 
         self.config_file = None
         self.data_dir = None
@@ -92,7 +93,6 @@ class Core(object):
         self.newest_version = None
         self.newest_version_string = None
 
-        self.pid = os.getpid()
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.sys_encoding = get_sys_encoding()
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
@@ -474,7 +474,8 @@ class Core(object):
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)
-        elif sickrage.app.daemon:
+
+        if sickrage.app.daemon:
             sickrage.app.daemon.stop()
 
         self.started = False

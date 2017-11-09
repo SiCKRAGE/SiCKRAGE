@@ -61,21 +61,20 @@ class Daemon(object):
             pid = os.fork()
             if pid > 0:
                 # exit first parent
-                sys.exit(0)
+                os._exit(0)
         except OSError, e:
             sys.stderr.write("fork #1 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
 
         os.setsid()
-        os.umask(0o27)
-        os.chdir(self.working_dir)
+        os.umask(0)
 
         # do second fork
         try:
             pid = os.fork()
             if pid > 0:
                 # exit from second parent
-                sys.exit(0)
+                os._exit(0)
         except OSError, e:
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
