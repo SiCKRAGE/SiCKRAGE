@@ -3071,7 +3071,7 @@ class Manage(Home, WebRoot):
         show_obj = findCertainShow(sickrage.app.showlist, int(indexer_id))
 
         if show_obj:
-            sickrage.app.BACKLOGSEARCHER.searchBacklog([show_obj])
+            sickrage.app.backlog_searcher.searchBacklog([show_obj])
 
         return self.redirect("/manage/backlogOverview/")
 
@@ -3550,7 +3550,7 @@ class ManageQueues(Manage):
             backlogPaused=sickrage.app.search_queue.is_backlog_paused(),
             backlogRunning=sickrage.app.search_queue.is_backlog_in_progress(),
             dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
-            findPropersStatus=sickrage.app.PROPERSEARCHER.amActive,
+            findPropersStatus=sickrage.app.proper_searcher.amActive,
             searchQueueLength=sickrage.app.search_queue.queue_length(),
             postProcessorPaused=sickrage.app.postprocessor_queue.is_paused,
             postProcessorRunning=sickrage.app.postprocessor_queue.is_in_progress,

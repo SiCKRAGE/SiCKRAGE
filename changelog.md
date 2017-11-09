@@ -1,6 +1,7 @@
 # Changelog
 
-- * a7b87c7 - 2017-11-08: Fixed search issues for HDTorrents provider 
+- * 1d0a326 - 2017-11-08: Misc typo corrections brought over from previous code refactoring 
+- * d21a0b7 - 2017-11-08: Fixed search issues for HDTorrents provider 
 - * 253e942 - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
 - * 66c64ae - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
 - * 5127668 - 2017-11-08: Fixed issues with posters overlapping on show list 

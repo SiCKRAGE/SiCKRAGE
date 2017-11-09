@@ -417,7 +417,7 @@ class QueueItemAdd(ShowQueueItem):
         # if they set default ep status to WANTED then run the backlog to search for episodes
         if self.show.default_ep_status == WANTED:
             sickrage.app.log.info("Launching backlog for this show since its episodes are WANTED")
-            sickrage.app.BACKLOGSEARCHER.searchBacklog([self.show])
+            sickrage.app.backlog_searcher.searchBacklog([self.show])
 
         self.show.writeMetadata()
         self.show.updateMetadata()
@@ -425,11 +425,11 @@ class QueueItemAdd(ShowQueueItem):
 
         if sickrage.app.config.use_trakt:
             # if there are specific episodes that need to be added by trakt
-            sickrage.app.TRAKTSEARCHER.manageNewShow(self.show)
+            sickrage.app.trakt_searcher.manageNewShow(self.show)
 
             # add show to trakt.tv library
             if sickrage.app.config.trakt_sync:
-                sickrage.app.TRAKTSEARCHER.addShowToTraktLibrary(self.show)
+                sickrage.app.trakt_searcher.addShowToTraktLibrary(self.show)
 
             if sickrage.app.config.trakt_sync_watchlist:
                 sickrage.app.log.info("update watchlist")
@@ -635,7 +635,7 @@ class QueueItemRemove(ShowQueueItem):
 
         if sickrage.app.config.use_trakt:
             try:
-                sickrage.app.TRAKTSEARCHER.removeShowFromTraktLibrary(self.show)
+                sickrage.app.trakt_searcher.removeShowFromTraktLibrary(self.show)
             except Exception as e:
                 sickrage.app.log.warning(
                     "Unable to delete show from Trakt: %s. Error: %s" % (self.show.name, e))

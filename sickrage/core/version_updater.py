@@ -59,7 +59,7 @@ class VersionUpdater(object):
 
         try:
             if self.check_for_new_version(force) and sickrage.app.config.auto_update:
-                if sickrage.app.SHOWUPDATER.amActive:
+                if sickrage.app.show_updater.amActive:
                     sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
                     return
 

@@ -69,6 +69,14 @@ class GenericProvider(object):
         self.required_cookies = []
         self.cookies = ''
 
+        self.bt_cache_urls = [
+            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
+            'https://torrent.cd/torrents/download/{info_hash}/.torrent',
+            'https://asnet.pw/download/{info_hash}/',
+            'http://p2pdl.com/download/{info_hash}',
+            'http://itorrents.org/torrent/{info_hash}.torrent',
+        ]
+
     @property
     def id(self):
         return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
@@ -108,30 +116,22 @@ class GenericProvider(object):
     def make_url(self, url):
         urls = [url]
 
-        bt_cache_urls = [
-            'https://torrentproject.se/torrent/{torrent_hash}.torrent',
-            'https://btdig.com/torrent/{torrent_hash}.torrent',
-            'https://torrage.info/torrent/{torrent_hash}.torrent',
-            'https://thetorrent.org/torrent/{torrent_hash}.torrent',
-            'https://itorrents.org/torrent/{torrent_hash}.torrent'
-        ]
-
         if url.startswith('magnet'):
-            torrent_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
+            info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
 
             try:
                 torrent_name = re.findall('dn=([^&]+)', url)[0]
             except Exception:
                 torrent_name = 'NO_DOWNLOAD_NAME'
 
-            if len(torrent_hash) == 32:
-                torrent_hash = b16encode(b32decode(torrent_hash)).upper()
+            if len(info_hash) == 32:
+                info_hash = b16encode(b32decode(info_hash)).upper()
 
-            if not torrent_hash:
+            if not info_hash:
                 sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
-            urls = [x.format(torrent_hash=torrent_hash, torrent_name=torrent_name) for x in bt_cache_urls]
+            urls = [x.format(info_hash=info_hash, torrent_name=torrent_name) for x in self.bt_cache_urls]
 
         random.shuffle(urls)
 

@@ -1150,7 +1150,7 @@ class Config(object):
         :param freq: New frequency
         """
         self.backlog_searcher_freq = try_int(freq, self.default_backlog_searcher_freq)
-        self.min_backlog_searcher_freq = sickrage.app.BACKLOGSEARCHER.get_backlog_cycle_time()
+        self.min_backlog_searcher_freq = sickrage.app.backlog_searcher.get_backlog_cycle_time()
         sickrage.app.scheduler.modify_job('BACKLOG',
                                           trigger=IntervalTrigger(
                                               minutes=self.backlog_searcher_freq if self.backlog_searcher_freq >= self.min_backlog_searcher_freq else self.min_backlog_searcher_freq
