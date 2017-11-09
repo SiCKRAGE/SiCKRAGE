@@ -1,6 +1,7 @@
 # Changelog
 
-- * bb97fe1 - 2017-11-09: Decreased time it takes to search with Newpct torrent provider 
+- * f5077f3 - 2017-11-09: Fixed issue with BitCannon torrent provider 
+- * 718179c - 2017-11-09: Decreased time it takes to search with Newpct torrent provider 
 - * 9349846 - 2017-11-09: Fixed issues with displaying correct show quality when editing a show 
 - * a95d1f5 - 2017-11-09: Updated EliteTorrent provider url 
 - * 1970e1d - 2017-11-09: Release v9.1.68 
