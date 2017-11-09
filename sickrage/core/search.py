@@ -65,21 +65,20 @@ def _verify_result(result):
 
             try:
                 result.content = sickrage.app.wsession.get(url, verify=False, headers=headers).content
+                if result.resultType == "torrent":
+                    try:
+                        meta_info = bencode.bdecode(result.content)
+                        if meta_info.get('info'):
+                            if result.resultType == "torrent" and not resProvider.private:
+                                # add public trackers to torrent result
+                                result = resProvider.add_trackers(result)
+                            return result
+                    except BTFailure:
+                        pass
+                else:
+                    return result
             except Exception:
-                result.content = None
-
-            if result.resultType == "torrent":
-                try:
-                    meta_info = bencode.bdecode(result.content)
-                    if meta_info.get('info'):
-                        if result.resultType == "torrent" and not resProvider.private:
-                            # add public trackers to torrent result
-                            result = resProvider.add_trackers(result)
-                        return result
-                except BTFailure:
-                    pass
-            else:
-                return result
+                pass
 
             sickrage.app.log.debug("Failed to verify result: %s" % url)
 
