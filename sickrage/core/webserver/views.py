@@ -2264,12 +2264,13 @@ class changelog(WebHandler):
         super(changelog, self).__init__(*args, **kwargs)
 
     def index(self):
+        url = sickrage.app.config.changelog_url.format(branch=sickrage.app.version_updater.branch)
+
         try:
-            changes = sickrage.app.wsession.get(sickrage.app.config.changes_url).text
+            changes = sickrage.app.wsession.get(url).text
         except Exception:
             sickrage.app.log.debug('Could not load changes from repo, giving a link!')
-            changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(
-                sickrage.app.config.changes_url)
+            changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(url)
 
         data = markdown2.markdown(
             changes if changes else _("The was a problem connecting to github, please refresh and try again"),

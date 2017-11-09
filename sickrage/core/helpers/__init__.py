@@ -824,9 +824,9 @@ def create_https_certificates(ssl_cert, ssl_key):
 
 
 def get_lan_ip():
-    """Returns IP of system"""
+    """Return IP of system."""
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
+    s.connect(('8.8.8.8', 1))
     return s.getsockname()[0]
 
 

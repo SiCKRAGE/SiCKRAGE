@@ -1,6 +1,7 @@
 # Changelog
 
-- * 07c1b0f - 2017-11-08: Fixed issues with verifying torrent metadata 
+- * 7a65325 - 2017-11-08: Release v9.1.67 
+- * 5d18ffb - 2017-11-08: Fixed issues with verifying torrent metadata 
 - * 53aa1b8 - 2017-11-08: Updated bt cache urls and method for verifying data from them 
 - * a6240ce - 2017-11-08: Misc typo corrections brought over from previous code refactoring 
 - * d21a0b7 - 2017-11-08: Fixed search issues for HDTorrents provider 

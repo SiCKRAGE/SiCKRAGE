@@ -85,16 +85,16 @@ class Config(object):
         self.git_path = ""
         self.git_autoissues = False
         self.git_newver = False
-        self.changes_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/changelog.md'
+        self.changelog_url = 'https://cdn.sickrage.ca/changelog/?q={branch}'
         self.socket_timeout = 30
-        self.web_host = get_lan_ip()
+        self.web_host = ""
         self.web_port = 8081
         self.web_log = False
         self.web_root = ""
         self.web_username = ""
         self.web_password = ""
         self.web_ipv6 = False
-        self.web_cookie_secret = generateCookieSecret()
+        self.web_cookie_secret = ""
         self.web_use_gzip = True
         self.handle_reverse_proxy = False
         self.proxy_setting = ""
@@ -760,7 +760,7 @@ class Config(object):
                 'naming_anime_pattern': 'Season %0S/%SN - S%0SE%0E - %EN',
                 'naming_custom_anime': False,
                 'randomize_providers': False,
-                'web_host': '192.168.1.203',
+                'web_host': get_lan_ip(),
                 'config_version': 11,
                 'process_automatically': False,
                 'git_path': 'git',

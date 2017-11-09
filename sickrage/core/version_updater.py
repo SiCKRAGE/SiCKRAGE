@@ -358,6 +358,20 @@ class GitUpdateManager(UpdateManager):
     def get_newest_version(self):
         return self._check_for_new_version() or self.version
 
+    @property
+    def current_branch(self):
+        branch, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
+        return ("", branch)[exit_status == 0 and branch is not None]
+
+    @property
+    def remote_branches(self):
+        branches, __, exit_status = self._git_cmd(self._git_path,
+                                                  'ls-remote --heads {}'.format(sickrage.app.config.git_remote))
+        if exit_status == 0 and branches:
+            return re.findall(r'refs/heads/(.*)', branches)
+
+        return []
+
     def _find_installed_version(self):
         """
         Attempts to find the currently installed version of SiCKRAGE.
@@ -487,20 +501,6 @@ class GitUpdateManager(UpdateManager):
             self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.config.git_remote,
                                                                         sickrage.app.config.git_remote_url))
 
-    @property
-    def current_branch(self):
-        branch, __, exit_status = self._git_cmd(self._git_path, 'rev-parse --abbrev-ref HEAD')
-        return ("", branch)[exit_status == 0 and branch is not None]
-
-    @property
-    def remote_branches(self):
-        branches, __, exit_status = self._git_cmd(self._git_path,
-                                                  'ls-remote --heads {}'.format(sickrage.app.config.git_remote))
-        if exit_status == 0 and branches:
-            return re.findall(r'refs/heads/(.*)', branches)
-
-        return []
-
 
 class SourceUpdateManager(UpdateManager):
     def __init__(self):
@@ -513,6 +513,10 @@ class SourceUpdateManager(UpdateManager):
     @property
     def get_newest_version(self):
         return self._check_for_new_version() or self.version
+
+    @property
+    def current_branch(self):
+        return 'master'
 
     @staticmethod
     def _find_installed_version():
@@ -651,6 +655,10 @@ class PipUpdateManager(UpdateManager):
     @property
     def get_newest_version(self):
         return self._check_for_new_version() or self.version
+
+    @property
+    def current_branch(self):
+        return 'master'
 
     def _find_installed_version(self):
         out, __, exit_status = self._pip_cmd(self._pip_path, 'show sickrage')
