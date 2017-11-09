@@ -748,6 +748,9 @@ class TorrentProvider(GenericProvider):
             # adds public torrent trackers to content
             if result.content:
                 decoded_data = bencode.bdecode(result.content)
+                if not decoded_data.get('announce-list'):
+                    decoded_data[b'announce-list'] = []
+
                 for tracker in trackers_list:
                     if tracker not in decoded_data['announce-list']:
                         decoded_data['announce-list'].append([str(tracker)])
