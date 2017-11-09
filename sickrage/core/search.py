@@ -25,8 +25,8 @@ import re
 import threading
 from datetime import date, timedelta
 
-from hachoir_core.stream import StringInputStream
-from hachoir_parser import guessParser
+import bencode
+from bencode import BTFailure
 
 import sickrage
 from sickrage.clients import getClientIstance
@@ -67,13 +67,13 @@ def _verify_result(result):
 
             if result.resultType == "torrent":
                 try:
-                    parser = guessParser(StringInputStream(result.content))
-                    if parser and parser._getMimeType() == 'application/x-bittorrent':
+                    meta_info = bencode.bdecode(result.content)
+                    if meta_info.get('info'):
                         if result.resultType == "torrent" and not resProvider.private:
                             # add public trackers to torrent result
                             result = resProvider.add_trackers(result)
                         return result
-                except Exception:
+                except BTFailure:
                     pass
             else:
                 return result

@@ -70,10 +70,11 @@ class GenericProvider(object):
         self.cookies = ''
 
         self.bt_cache_urls = [
-            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
+            'https://torrentproject.se/torrent/{info_hash}.torrent',
             'https://torrent.cd/torrents/download/{info_hash}/.torrent',
             'https://asnet.pw/download/{info_hash}/',
-            'http://p2pdl.com/download/{info_hash}',
+            'https://btdig.com/torrent/{info_hash}',
+            'https://torrage.info/torrent/{info_hash}.torrent',
             'http://itorrents.org/torrent/{info_hash}.torrent',
         ]
 
