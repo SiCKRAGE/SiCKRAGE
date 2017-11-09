@@ -25,10 +25,10 @@ from urllib import urlencode
 from requests.exceptions import SSLError
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class ProwlNotifier(srNotifiers):
+class ProwlNotifier(Notifiers):
     def __init__(self):
         super(ProwlNotifier, self).__init__()
         self.name = 'prowl'
@@ -38,22 +38,22 @@ class ProwlNotifier(srNotifiers):
                                message="Testing Prowl settings from SiCKRAGE", force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.PROWL_NOTIFY_ONSNATCH:
+        if sickrage.app.config.prowl_notify_onsnatch:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_SNATCH],
                             message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.PROWL_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.prowl_notify_ondownload:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                             message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.PROWL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.prowl_notify_onsubtitledownload:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.srConfig.USE_PROWL:
+        if sickrage.app.config.use_prowl:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendProwl(prowl_api=None, prowl_priority=None,
@@ -61,18 +61,18 @@ class ProwlNotifier(srNotifiers):
 
     def _sendProwl(self, prowl_api=None, prowl_priority=None, event=None, message=None, force=False):
 
-        if not sickrage.srCore.srConfig.USE_PROWL and not force:
+        if not sickrage.app.config.use_prowl and not force:
             return False
 
         if prowl_api is None:
-            prowl_api = sickrage.srCore.srConfig.PROWL_API
+            prowl_api = sickrage.app.config.prowl_api
 
         if prowl_priority is None:
-            prowl_priority = sickrage.srCore.srConfig.PROWL_PRIORITY
+            prowl_priority = sickrage.app.config.prowl_priority
 
         title = "SiCKRAGE"
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.log.debug(
             "PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
                 event, message, prowl_priority, prowl_api))
 
@@ -90,17 +90,17 @@ class ProwlNotifier(srNotifiers):
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            sickrage.srCore.srLogger.error("Prowl notification failed.")
+            sickrage.app.log.error("Prowl notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            sickrage.srCore.srLogger.info("Prowl notifications sent.")
+            sickrage.app.log.info("Prowl notifications sent.")
             return True
         elif request_status == 401:
-            sickrage.srCore.srLogger.error("Prowl auth failed: %s" % response.reason)
+            sickrage.app.log.error("Prowl auth failed: %s" % response.reason)
             return False
         else:
-            sickrage.srCore.srLogger.error("Prowl notification failed.")
+            sickrage.app.log.error("Prowl notification failed.")
             return False

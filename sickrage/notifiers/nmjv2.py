@@ -25,10 +25,10 @@ from xml.dom.minidom import parseString
 from xml.etree import ElementTree
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class NMJv2Notifier(srNotifiers):
+class NMJv2Notifier(Notifiers):
     def __init__(self):
         super(NMJv2Notifier, self).__init__()
         self.name = 'nmjv2'
@@ -82,16 +82,16 @@ class NMJv2Notifier(srNotifiers):
                                                                                              '').replace(
                         '</database_path>', '').replace('[=]', '')
                     if dbloc == "local" and DB_path.find("localhost") > -1:
-                        sickrage.srCore.srConfig.NMJv2_HOST = host
-                        sickrage.srCore.srConfig.NMJv2_DATABASE = DB_path
+                        sickrage.app.config.nmjv2_host = host
+                        sickrage.app.config.nmjv2_database = DB_path
                         return True
                     if dbloc == "network" and DB_path.find("://") > -1:
-                        sickrage.srCore.srConfig.NMJv2_HOST = host
-                        sickrage.srCore.srConfig.NMJv2_DATABASE = DB_path
+                        sickrage.app.config.nmjv2_host = host
+                        sickrage.app.config.nmjv2_database = DB_path
                         return True
 
         except IOError as e:
-            sickrage.srCore.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         return False
 
@@ -108,10 +108,10 @@ class NMJv2Notifier(srNotifiers):
 
         # if a host is provided then attempt to open a handle to that URL
         try:
-            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.srCore.srConfig.NMJv2_DATABASE + "&arg2=&arg3=update_all"
-            sickrage.srCore.srLogger.debug("NMJ scan update command sent to host: %s" % (host))
-            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.srCore.srConfig.NMJv2_DATABASE + "&arg2=background&arg3="
-            sickrage.srCore.srLogger.debug("Try to mount network drive via url: %s" % (host))
+            url_scandir = "http://" + host + ":8008/metadata_database?arg0=update_scandir&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=&arg3=update_all"
+            sickrage.app.log.debug("NMJ scan update command sent to host: %s" % (host))
+            url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=background&arg3="
+            sickrage.app.log.debug("Try to mount network drive via url: %s" % (host))
             prereq = urllib2.Request(url_scandir)
             req = urllib2.Request(url_updatedb)
             handle1 = urllib2.urlopen(prereq)
@@ -120,20 +120,20 @@ class NMJv2Notifier(srNotifiers):
             handle2 = urllib2.urlopen(req)
             response2 = handle2.read()
         except IOError as e:
-            sickrage.srCore.srLogger.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
+            sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         try:
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.log.error(
                 "Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e.message))
             return False
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.log.error(
                 "Unable to parse XML returned from the Popcorn Hour: scanner_start, {}".format(e.message))
             return False
 
@@ -148,15 +148,15 @@ class NMJv2Notifier(srNotifiers):
                           "Read only file system"]
         if int(result1) > 0:
             index = error_codes.index(result1)
-            sickrage.srCore.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+            sickrage.app.log.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
             return False
         else:
             if int(result2) > 0:
                 index = error_codes.index(result2)
-                sickrage.srCore.srLogger.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
+                sickrage.app.log.error("Popcorn Hour returned an error: %s" % (error_messages[index]))
                 return False
             else:
-                sickrage.srCore.srLogger.info("NMJv2 started background scan")
+                sickrage.app.log.info("NMJv2 started background scan")
                 return True
 
     def _notifyNMJ(self, host=None, force=False):
@@ -168,14 +168,14 @@ class NMJv2Notifier(srNotifiers):
         mount: The mount URL (optional, defaults to the mount URL in the config)
         force: If True then the notification will be sent even if NMJ is disabled in the config
         """
-        if not sickrage.srCore.srConfig.USE_NMJv2 and not force:
-            sickrage.srCore.srLogger.debug("Notification for NMJ scan update not enabled, skipping this notification")
+        if not sickrage.app.config.use_nmjv2 and not force:
+            sickrage.app.log.debug("Notification for NMJ scan update not enabled, skipping this notification")
             return False
 
         # fill in omitted parameters
         if not host:
-            host = sickrage.srCore.srConfig.NMJv2_HOST
+            host = sickrage.app.config.nmjv2_host
 
-        sickrage.srCore.srLogger.debug("Sending scan command for NMJ ")
+        sickrage.app.log.debug("Sending scan command for NMJ ")
 
         return self._sendNMJ(host)

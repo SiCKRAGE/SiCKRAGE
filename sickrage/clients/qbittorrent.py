@@ -32,8 +32,8 @@ class qbittorrentAPI(GenericClient):
         """Get API version."""
         try:
             self.url = '{}version/api'.format(self.host)
-            version = int(sickrage.srCore.srWebSession.get(self.url,
-                                                           verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT).content)
+            version = int(sickrage.app.wsession.get(self.url,
+                                                    verify=sickrage.app.config.torrent_verify_cert).content)
         except Exception:
             version = 1
 
@@ -47,28 +47,28 @@ class qbittorrentAPI(GenericClient):
                 'password': self.password,
             }
             try:
-                self.response = sickrage.srCore.srWebSession.post(self.url, data=data)
+                self.response = sickrage.app.wsession.post(self.url, data=data)
             except Exception:
                 return None
 
         else:
             try:
-                self.response = sickrage.srCore.srWebSession.get(self.host,
-                                                                 verify=sickrage.srCore.srConfig.TORRENT_VERIFY_CERT)
+                self.response = sickrage.app.wsession.get(self.host,
+                                                          verify=sickrage.app.config.torrent_verify_cert)
                 self.auth = self.response.content
             except Exception:
                 return None
 
-        sickrage.srCore.srWebSession.cookies = self.response.cookies
+        sickrage.app.wsession.cookies = self.response.cookies
         self.auth = self.response.content
 
         return self.auth if not self.response.status_code == 404 else None
 
     def _set_torrent_label(self, result):
 
-        label = sickrage.srCore.srConfig.TORRENT_LABEL
+        label = sickrage.app.config.torrent_label
         if result.show.is_anime:
-            label = sickrage.srCore.srConfig.TORRENT_LABEL_ANIME
+            label = sickrage.app.config.torrent_label_anime
 
         if self.api > 6 and label:
             label_key = 'Category' if self.api >= 10 else 'Label'
@@ -77,35 +77,35 @@ class qbittorrentAPI(GenericClient):
                 'hashes': result.hash.lower(),
                 label_key.lower(): label.replace(' ', '_'),
             }
-            return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
+            return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
         return True
 
     def _add_torrent_uri(self, result):
         self.url = '{}command/download'.format(self.host)
         data = {'urls': result.url}
-        return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def _add_torrent_file(self, result):
         self.url = '{}command/upload'.format(self.host)
         files = {'torrent': result.content}
-        return self._request(method='post', files=files, cookies=sickrage.srCore.srWebSession.cookies)
+        return self._request(method='post', files=files, cookies=sickrage.app.wsession.cookies)
 
     def _set_torrent_priority(self, result):
         self.url = '{}command/{}Prio'.format(self.host, 'increase' if result.priority == 1 else 'decrease')
         data = {'hashes': result.hash}
-        return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def _set_torrent_pause(self, result):
-        self.url = '{}command/{}'.format(self.host, 'pause' if sickrage.srCore.srConfig.TORRENT_PAUSED else 'resume')
+        self.url = '{}command/{}'.format(self.host, 'pause' if sickrage.app.config.torrent_paused else 'resume')
         data = {'hash': result.hash}
-        return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
     def remove_torrent(self, info_hash):
         self.url = '{}command/deletePerm'.format(self.host)
         data = {
             'hashes': info_hash.lower(),
         }
-        return self._request(method='post', data=data, cookies=sickrage.srCore.srWebSession.cookies)
+        return self._request(method='post', data=data, cookies=sickrage.app.wsession.cookies)
 
 
 api = qbittorrentAPI()

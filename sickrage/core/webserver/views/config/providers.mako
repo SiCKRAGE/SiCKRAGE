@@ -11,10 +11,10 @@
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Provider Priorities')}</a></li>
     <li><a data-toggle="tab" href="#core-tab-pane2">${_('Provider Options')}</a></li>
-    % if sickrage.srCore.srConfig.USE_NZBS:
+    % if sickrage.app.config.use_nzbs:
         <li><a data-toggle="tab" href="#core-tab-pane3">${_('Custom Newznab Providers')}</a></li>
     % endif
-    % if sickrage.srCore.srConfig.USE_TORRENTS:
+    % if sickrage.app.config.use_torrents:
         <li><a data-toggle="tab" href="#core-tab-pane4">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>
@@ -24,8 +24,8 @@
         newznab_providers = ''
         torrentrss_providers = ''
 
-        if sickrage.srCore.srConfig.USE_NZBS:
-            for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
+        if sickrage.app.config.use_nzbs:
+            for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                 if providerObj.default:
                     continue
 
@@ -36,10 +36,10 @@
                         providerObj.key,
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
-                        ("false", "true")[bool(sickrage.srCore.srConfig.USE_NZBS)]]))
+                        ("false", "true")[bool(sickrage.app.config.use_nzbs)]]))
 
-        if sickrage.srCore.srConfig.USE_TORRENTS:
-            for providerID, providerObj in sickrage.srCore.providersDict.torrentrss().items():
+        if sickrage.app.config.use_torrents:
+            for providerID, providerObj in sickrage.app.search_providers.torrentrss().items():
                 if providerObj.default:
                     continue
 
@@ -50,7 +50,7 @@
                               providerObj.cookies,
                               providerObj.titleTAG,
                               ("false", "true")[bool(providerObj.default)],
-                              ("false", "true")[bool(sickrage.srCore.srConfig.USE_TORRENTS)]]))
+                              ("false", "true")[bool(sickrage.app.config.use_torrents)]]))
     %>
     <meta data-var="NEWZNAB_PROVIDERS" data-content="${newznab_providers}">
     <meta data-var="TORRENTRSS_PROVIDERS" data-content="${torrentrss_providers}">
@@ -64,7 +64,7 @@
                 <p>${_('Check off and drag the providers into the order you want them to be used.')}</p>
                 <p>${_('At least one provider is required but two are recommended.')}</p>
 
-                % if not sickrage.srCore.srConfig.USE_NZBS or not sickrage.srCore.srConfig.USE_TORRENTS:
+                % if not sickrage.app.config.use_nzbs or not sickrage.app.config.use_torrents:
                     <blockquote style="margin: 20px 0;">
                         ${_('NZB/Torrent providers can be toggled in')}
                         <b>
@@ -85,8 +85,8 @@
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <ul id="provider_order_list">
-                    % for providerID, providerObj in sickrage.srCore.providersDict.sort().items():
-                        % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.srCore.srConfig.USE_NZBS) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.srCore.srConfig.USE_TORRENTS):
+                    % for providerID, providerObj in sickrage.app.search_providers.sort().items():
+                        % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.use_nzbs) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.use_torrents):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
                         % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
                             <% provider_url = providerObj.custom_url %>
@@ -113,7 +113,7 @@
                     % endfor
                 </ul>
                 <input type="hidden" name="provider_order" id="provider_order"
-                       value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.srCore.providersDict.all().items()])}"/>
+                       value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
                 <br><input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
             </fieldset>
         </div>
@@ -138,7 +138,7 @@
                                 <span class="glyphicon glyphicon-search"></span>
                             </div>
                             <select id="editAProvider" class="form-control" title="Choose a search provider">
-                                % for providerID, providerObj in sickrage.srCore.providersDict.enabled().items():
+                                % for providerID, providerObj in sickrage.app.search_providers.enabled().items():
                                     <option value="${providerID}">${providerObj.name}</option>
                                 % endfor
                             </select>
@@ -148,7 +148,7 @@
 
 
                 <!-- start div for editing providers //-->
-                % for providerID, providerObj in sickrage.srCore.providersDict.newznab().items():
+                % for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if not providerObj.default:
                             <div class="row field-pair">
@@ -279,7 +279,7 @@
                     </div>
                 % endfor
 
-                % for providerID, providerObj in sickrage.srCore.providersDict.nzb().items():
+                % for providerID, providerObj in sickrage.app.search_providers.nzb().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'username'):
                             <div class="row field-pair">
@@ -408,7 +408,7 @@
                     </div>
                 % endfor
 
-                % for providerID, providerObj in sickrage.srCore.providersDict.all_torrent().items():
+                % for providerID, providerObj in sickrage.app.search_providers.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'custom_url'):
                             <div class="row field-pair">
@@ -911,7 +911,7 @@
         </div>
     </div><!-- /tab-pane2 //-->
 
-    % if sickrage.srCore.srConfig.USE_NZBS:
+    % if sickrage.app.config.use_nzbs:
         <div id="core-tab-pane3" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
@@ -1035,7 +1035,7 @@
         </div><!-- /tab-pane3 //-->
     % endif
 
-    % if sickrage.srCore.srConfig.USE_TORRENTS:
+    % if sickrage.app.config.use_torrents:
         <div id="core-tab-pane4" class="tab-pane fade">
             <div class="row tab-pane">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">

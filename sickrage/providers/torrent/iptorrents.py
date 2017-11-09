@@ -62,10 +62,10 @@ class IPTorrentsProvider(TorrentProvider):
         freeleech = '&free=on' if self.freeleech else ''
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 # URL with 50 tv-show results, or max 150 if adjusted in IPTorrents profile
                 search_url = self.urls['search'] % (self.categories, freeleech, search_string)
@@ -73,17 +73,17 @@ class IPTorrentsProvider(TorrentProvider):
 
                 if self.custom_url:
                     if not validate_url(self.custom_url):
-                        sickrage.srCore.srLogger.warning("Invalid custom url: {}".format(self.custom_url))
+                        sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-                sickrage.srCore.srLogger.debug("Search URL: %s" % search_url)
+                sickrage.app.log.debug("Search URL: %s" % search_url)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -105,7 +105,7 @@ class IPTorrentsProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrents) < 2 or html.find(text='No Torrents Found!'):
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for torrent in torrents[1:]:
@@ -123,10 +123,10 @@ class IPTorrentsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

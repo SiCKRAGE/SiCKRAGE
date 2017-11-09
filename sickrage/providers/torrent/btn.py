@@ -45,7 +45,7 @@ class BTNProvider(TorrentProvider):
 
     def _check_auth(self):
         if not self.api_key:
-            sickrage.srCore.srLogger.warning("Invalid api key. Check your settings")
+            sickrage.app.log.warning("Invalid api key. Check your settings")
 
         return True
 
@@ -69,11 +69,11 @@ class BTNProvider(TorrentProvider):
 
         if search_params:
             params.update(search_params)
-            sickrage.srCore.srLogger.debug("Search string: %s" % search_params)
+            sickrage.app.log.debug("Search string: %s" % search_params)
 
         parsedJSON = self._api_call(apikey, params)
         if not parsedJSON:
-            sickrage.srCore.srLogger.debug("No data returned from provider")
+            sickrage.app.log.debug("No data returned from provider")
             return results
 
         if self._check_auth_from_data(parsedJSON):
@@ -108,7 +108,7 @@ class BTNProvider(TorrentProvider):
 
                 (title, url) = self._get_title_and_url(torrent_info)
                 if title and url:
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.log.debug("Found result: {}".format(title))
                     results.append(torrent_info)
 
         # FIXME SORT RESULTS
@@ -120,17 +120,17 @@ class BTNProvider(TorrentProvider):
         try:
             api = jsonrpclib.Server('http://' + self.urls['base_url'])
             parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
-            time.sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+            time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except jsonrpclib.jsonrpc.ProtocolError as e:
             if e.message[1] == 'Call Limit Exceeded':
-                sickrage.srCore.srLogger.warning("You have exceeded the limit of 150 calls per hour.")
+                sickrage.app.log.warning("You have exceeded the limit of 150 calls per hour.")
             elif e.message[1] == 'Invalid API Key':
-                sickrage.srCore.srLogger.warning("Incorrect authentication credentials.")
+                sickrage.app.log.warning("Incorrect authentication credentials.")
             else:
-                sickrage.srCore.srLogger.error(
+                sickrage.app.log.error(
                     "JSON-RPC protocol error while accessing provider. Error: {}".format(e.message[1]))
         except (socket.error, socket.timeout, ValueError) as e:
-            sickrage.srCore.srLogger.warning("Error while accessing provider. Error: {}".format(e))
+            sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))
 
         return parsedJSON
 
@@ -251,7 +251,7 @@ class BTNCache(TVCache):
 
         # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
         if seconds_since_last_update > 86400:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
             seconds_since_last_update = 86400
 

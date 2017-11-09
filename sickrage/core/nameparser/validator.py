@@ -61,10 +61,10 @@ def check_force_season_folders(pattern=None, multi=None, anime_type=None):
     :return: true if season folders need to be forced on or false otherwise.
     """
     if pattern is None:
-        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.srCore.srConfig.NAMING_ANIME
+        anime_type = sickrage.app.config.naming_anime
 
     return not validate_name(pattern, multi, anime_type, file_only=True)
 
@@ -79,12 +79,12 @@ def check_valid_naming(pattern=None, multi=None, anime_type=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
     if anime_type is None:
-        anime_type = sickrage.srCore.srConfig.NAMING_ANIME
+        anime_type = sickrage.app.config.naming_anime
 
-    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid")
+    sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid")
     return validate_name(pattern, multi, anime_type)
 
 
@@ -96,9 +96,9 @@ def check_valid_abd_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
-    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
+    sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an air-by-date episode")
     valid = validate_name(pattern, abd=True)
 
     return valid
@@ -112,9 +112,9 @@ def check_valid_sports_naming(pattern=None):
     :return: true if the naming is valid, false if not.
     """
     if pattern is None:
-        pattern = sickrage.srCore.srConfig.NAMING_PATTERN
+        pattern = sickrage.app.config.naming_pattern
 
-    sickrage.srCore.srLogger.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
+    sickrage.app.log.debug("Checking whether the pattern " + pattern + " is valid for an sports episode")
     valid = validate_name(pattern, sports=True)
 
     return valid
@@ -140,36 +140,36 @@ def validate_name(pattern, multi=None, anime_type=None, file_only=False, abd=Fal
         new_name = os.path.join(new_path, new_name)
 
     if not new_name:
-        sickrage.srCore.srLogger.debug("Unable to create a name out of " + pattern)
+        sickrage.app.log.debug("Unable to create a name out of " + pattern)
         return False
 
-    sickrage.srCore.srLogger.debug("Trying to parse " + new_name)
+    sickrage.app.log.debug("Trying to parse " + new_name)
 
     parser = NameParser(True, showObj=ep.show, naming_pattern=True)
 
     try:
         result = parser.parse(new_name)
     except Exception:
-        sickrage.srCore.srLogger.debug("Unable to parse " + new_name + ", not valid")
+        sickrage.app.log.debug("Unable to parse " + new_name + ", not valid")
         return False
 
-    sickrage.srCore.srLogger.debug("Parsed " + new_name + " into " + str(result))
+    sickrage.app.log.debug("Parsed " + new_name + " into " + str(result))
 
     if abd or sports:
         if result.air_date != ep.airdate:
-            sickrage.srCore.srLogger.debug("Air date incorrect in parsed episode, pattern isn't valid")
+            sickrage.app.log.debug("Air date incorrect in parsed episode, pattern isn't valid")
             return False
     elif anime_type != 3:
         if len(result.ab_episode_numbers) and result.ab_episode_numbers != [x.absolute_number for x in
                                                                             [ep] + ep.relatedEps]:
-            sickrage.srCore.srLogger.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.app.log.debug("Absolute numbering incorrect in parsed episode, pattern isn't valid")
             return False
     else:
         if result.season_number != ep.season:
-            sickrage.srCore.srLogger.debug("Season number incorrect in parsed episode, pattern isn't valid")
+            sickrage.app.log.debug("Season number incorrect in parsed episode, pattern isn't valid")
             return False
         if result.episode_numbers != [x.episode for x in [ep] + ep.relatedEps]:
-            sickrage.srCore.srLogger.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
+            sickrage.app.log.debug("Episode numbering incorrect in parsed episode, pattern isn't valid")
             return False
 
     return True

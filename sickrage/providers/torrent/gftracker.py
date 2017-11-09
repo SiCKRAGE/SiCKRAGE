@@ -54,25 +54,25 @@ class GFTrackerProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         # Save cookies from response
         if re.search('Username or password incorrect', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
-        requests.utils.add_dict_to_cookiejar(sickrage.srCore.srWebSession.cookies, self.cookies)
+        requests.utils.add_dict_to_cookiejar(sickrage.app.wsession.cookies, self.cookies)
 
         return True
 
@@ -83,23 +83,23 @@ class GFTrackerProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (self.categories, search_string)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
                 # Returns top 30 results by default, expandable in user profile
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL, cookies=self.cookies).text
+                    data = sickrage.app.wsession.get(searchURL, cookies=self.cookies).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
                     continue
 
         return results
@@ -120,7 +120,7 @@ class GFTrackerProvider(TorrentProvider):
 
             # Continue only if at least one release is found
             if len(torrent_rows) < 1:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             for result in torrent_rows[1:]:
@@ -151,10 +151,10 @@ class GFTrackerProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider.")
+                    sickrage.app.log.error("Failed parsing provider.")
 
         return results

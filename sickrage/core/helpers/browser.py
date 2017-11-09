@@ -135,7 +135,7 @@ def foldersAtPath(path, includeParent=False, includeFiles=False, fileTypes=None)
     try:
         file_list = getFileList(path, includeFiles, fileTypes)
     except OSError as e:
-        sickrage.srCore.srLogger.warning('Unable to open {}: {} / {}'.format(path, repr(e), str(e)))
+        sickrage.app.log.warning('Unable to open {}: {} / {}'.format(path, repr(e), str(e)))
         file_list = getFileList(parent_path, includeFiles, fileTypes)
 
     entries = [{'currentPath': path}]

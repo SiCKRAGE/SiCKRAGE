@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 import unittest
 import urlparse
 
-from sickrage.core import srSession
+from sickrage.core import WebSession
 from sickrage.core.helpers import bs4_parser
 from tests import SiCKRAGETestDBCase
 
@@ -32,7 +32,7 @@ class TorrentBasicTests(SiCKRAGETestDBCase):
         self.url = 'kickass.unblocked.li'
         searchURL = '{}/usearch/American%20Dad%20S08/'.format(self.url)
 
-        data = srSession().get(searchURL)
+        data = WebSession().get(searchURL)
         if not data:
             return
 

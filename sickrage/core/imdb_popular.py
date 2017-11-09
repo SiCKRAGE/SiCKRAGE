@@ -47,7 +47,7 @@ class imdbPopular(object):
         popular_shows = []
 
         try:
-            data = sickrage.srCore.srWebSession.get(self.url,
+            data = sickrage.app.wsession.get(self.url,
                                                     headers={'Referer': 'http://akas.imdb.com/'},
                                                     params=self.params).text
         except Exception:
@@ -116,7 +116,7 @@ class imdbPopular(object):
         Store cache of image in cache dir
         :param image_url: Source URL
         """
-        path = os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images', 'imdb_popular'))
+        path = os.path.abspath(os.path.join(sickrage.app.cache_dir, 'images', 'imdb_popular'))
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -124,4 +124,4 @@ class imdbPopular(object):
         full_path = os.path.join(path, os.path.basename(image_url))
 
         if not os.path.isfile(full_path):
-            sickrage.srCore.srWebSession.download(image_url, full_path)
+            sickrage.app.wsession.download(image_url, full_path)

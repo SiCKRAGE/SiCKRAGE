@@ -25,7 +25,7 @@ import os
 import sickrage
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import chmodAsParent
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -142,7 +142,7 @@ class TIVOMetadata(GenericMetadata):
             metadata_dir_name = os.path.join(os.path.dirname(ep_obj.location), '.meta')
             metadata_file_path = os.path.join(metadata_dir_name, metadata_file_name)
         else:
-            sickrage.srCore.srLogger.debug("Episode location doesn't exist: " + str(ep_obj.location))
+            sickrage.app.log.debug("Episode location doesn't exist: " + str(ep_obj.location))
             return ''
         return metadata_file_path
 
@@ -168,22 +168,22 @@ class TIVOMetadata(GenericMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
         try:
-            lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(str(e))
         except indexer_error as e:
-            sickrage.srCore.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + IndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - " + str(e))
             return False
 
@@ -192,9 +192,9 @@ class TIVOMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srCore.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s, has it been removed? Should I delete from db?" % (
-                    curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                        curEpToWrite.season, curEpToWrite.episode, IndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):
@@ -313,11 +313,11 @@ class TIVOMetadata(GenericMetadata):
 
         try:
             if not os.path.isdir(nfo_file_dir):
-                sickrage.srCore.srLogger.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
+                sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
                 chmodAsParent(nfo_file_dir)
 
-            sickrage.srCore.srLogger.debug("Writing episode nfo file to " + nfo_file_path)
+            sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
             with io.open(nfo_file_path, 'w') as nfo_file:
                 # Calling encode directly, b/c often descriptions have wonky characters.
@@ -326,7 +326,7 @@ class TIVOMetadata(GenericMetadata):
             chmodAsParent(nfo_file_path)
 
         except EnvironmentError as e:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.log.error(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
                     e.message))
             return False

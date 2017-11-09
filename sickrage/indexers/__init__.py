@@ -25,7 +25,7 @@ from sickrage.core.classes import ShowListUI
 from sickrage.indexers.config import indexerConfig
 
 
-class srIndexerApi(object):
+class IndexerApi(object):
     def __init__(self, indexerID=1):
         self.indexerID = indexerID
         self.module = indexerConfig[self.indexerID]['module']
@@ -47,8 +47,8 @@ class srIndexerApi(object):
 
     @property
     def api_params(self):
-        if sickrage.srCore.srConfig.PROXY_SETTING and sickrage.srCore.srConfig.PROXY_INDEXERS:
-            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.srCore.srConfig.PROXY_SETTING
+        if sickrage.app.config.proxy_setting and sickrage.app.config.proxy_indexers:
+            indexerConfig[self.indexerID]['api_params']['proxy'] = sickrage.app.config.proxy_setting
 
         return indexerConfig[self.indexerID]['api_params']
 
@@ -82,7 +82,7 @@ class srIndexerApi(object):
         t = self.indexer(**lINDEXER_API_PARMS)
 
         for name in showNames:
-            sickrage.srCore.srLogger.debug("Trying to find show {} on indexer {}".format(name, self.name))
+            sickrage.app.log.debug("Trying to find show {} on indexer {}".format(name, self.name))
 
             try:
                 search = t[showid] if showid else t[name]

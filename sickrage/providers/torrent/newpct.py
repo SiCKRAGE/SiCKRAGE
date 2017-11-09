@@ -66,16 +66,16 @@ class NewpctProvider(TorrentProvider):
         lang_info = '' if not ep_obj or not ep_obj.show else ep_obj.show.lang
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug('Search mode: {}'.format(mode))
+            sickrage.app.log.debug('Search mode: {}'.format(mode))
 
             # Only search if user conditions are true
             if self.onlyspasearch and lang_info != 'es' and mode != 'RSS':
-                sickrage.srCore.srLogger.debug('Show info is not spanish, skipping provider search')
+                sickrage.app.log.debug('Show info is not spanish, skipping provider search')
                 continue
 
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 for search_url in self.urls['search']:
                     pg = 1
@@ -84,12 +84,12 @@ class NewpctProvider(TorrentProvider):
                         searchURL = search_url + '/' + search_string + '//pg/' + str(pg)
 
                         try:
-                            data = sickrage.srCore.srWebSession.get(searchURL).text
+                            data = sickrage.app.wsession.get(searchURL).text
                             items = self.parse(data, mode)
                             if not len(items): break
                             results += items
                         except Exception:
-                            sickrage.srCore.srLogger.debug('No data returned from provider')
+                            sickrage.app.log.debug('No data returned from provider')
                             break
 
                         pg += 1
@@ -114,14 +114,14 @@ class NewpctProvider(TorrentProvider):
 
             # Continue only if at least one release is found
             if not len(torrent_rows):
-                sickrage.srCore.srLogger.debug('Data returned from provider does not contain any torrents')
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            for row in torrent_rows[1:-1]:
+            for row in torrent_rows:
                 try:
                     torrent_anchor = row.find_all('a')[1]
                     details_url = torrent_anchor.get('href', '')
-                    with bs4_parser(sickrage.srCore.srWebSession.get(details_url).text) as details:
+                    with bs4_parser(sickrage.app.wsession.get(details_url).text) as details:
                         title = self._process_title(details.find('h1').get_text().split('/')[1])
                         download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
                                                 details.get_text(), re.DOTALL).group(1)
@@ -144,11 +144,11 @@ class NewpctProvider(TorrentProvider):
                             'leechers': leechers,
                         }
                         if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                            sickrage.app.log.debug('Found result: {}'.format(title))
 
                             results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error('Failed parsing provider')
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results
 
@@ -173,7 +173,7 @@ class NewpctProvider(TorrentProvider):
 
     def _process_link(self, url):
         try:
-            url = sickrage.srCore.srWebSession.get(url).text
+            url = sickrage.app.wsession.get(url).text
             download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
             url = self.urls['download'] % download_id
         except Exception as e:
@@ -186,7 +186,7 @@ class NewpctCache(TVCache):
     def _get_rss_data(self):
         results = {'entries': []}
 
-        sickrage.srCore.srLogger.debug("Cache update URL: %s" % self.provider.urls['rss'])
+        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['rss'])
 
         for result in self.getRSSFeed(self.provider.urls['rss']).entries:
             if 'Series' in result.category:

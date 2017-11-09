@@ -40,8 +40,8 @@ class Media(object):
         :return: The url to the desired media file
         """
 
-        path = self.get_static_media_path().replace(sickrage.CACHE_DIR, "")
-        path = path.replace(sickrage.srCore.srConfig.GUI_STATIC_DIR, "")
+        path = self.get_static_media_path().replace(sickrage.app.cache_dir, "")
+        path = path.replace(sickrage.app.config.gui_static_dir, "")
         return url_escape(path.replace('\\', '/'), False)
 
     @property
@@ -79,7 +79,7 @@ class Media(object):
         :return: The root folder containing the media
         """
 
-        return os.path.join(sickrage.srCore.srConfig.GUI_STATIC_DIR)
+        return os.path.join(sickrage.app.config.gui_static_dir)
 
     def get_show(self):
         """
@@ -87,7 +87,7 @@ class Media(object):
         """
 
         try:
-            return findCertainShow(sickrage.srCore.SHOWLIST, self.indexer_id)
+            return findCertainShow(sickrage.app.showlist, self.indexer_id)
         except MultipleShowObjectsException:
             return None
 

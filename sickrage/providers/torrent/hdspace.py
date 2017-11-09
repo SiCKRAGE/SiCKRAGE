@@ -58,29 +58,29 @@ class HDSpaceProvider(TorrentProvider):
 
     def _check_auth(self):
         if not self.username or not self.password:
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
 
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
-        if 'pass' in dict_from_cookiejar(sickrage.srCore.srWebSession.cookies):
+        if 'pass' in dict_from_cookiejar(sickrage.app.wsession.cookies):
             return True
 
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Password Incorrect', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -93,20 +93,20 @@ class HDSpaceProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s" % search_string)
+                    sickrage.app.log.debug("Search string: %s" % search_string)
                     searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls['search'] % ''
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.wsession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
                     continue
 
         return results
@@ -124,7 +124,7 @@ class HDSpaceProvider(TorrentProvider):
         try:
             data = data.split('<div id="information"></div>')[1]
         except ValueError:
-            sickrage.srCore.srLogger.error("Could not find main torrent table")
+            sickrage.app.log.error("Could not find main torrent table")
             return results
 
         with bs4_parser(data[data.index('<table'):]) as html:
@@ -153,10 +153,10 @@ class HDSpaceProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

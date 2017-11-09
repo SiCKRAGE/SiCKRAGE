@@ -29,11 +29,11 @@ from sickrage.providers import TorrentProvider
 
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
-        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.se', False)
+        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
         self.urls.update({
-            "rss": "{base_url}/browse/200/0/4/0".format(**self.urls),
-            "search": "{base_url}/s".format(**self.urls),
+            "rss": "{base_url}/tv/latest".format(**self.urls),
+            "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
         })
 
         self.confirmed = True
@@ -47,33 +47,25 @@ class ThePirateBayProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
-        # oder_by is 7 in browse for seeders, but 8 in search!
-        search_params = {
-            "type": "search",
-            "orderby": 3,
-            "page": 0,
-            "category": 200
-        }
-
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.log.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 search_url = (self.urls["search"], self.urls["rss"])[mode == "RSS"]
                 if self.custom_url:
                     if not validate_url(self.custom_url):
-                        sickrage.srCore.srLogger.warning("Invalid custom url: {0}".format(self.custom_url))
+                        sickrage.app.log.warning("Invalid custom url: {0}".format(self.custom_url))
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
                 if mode != "RSS":
-                    search_params["q"] = search_string
-                    sickrage.srCore.srLogger.debug("Search string: {}".format(search_string))
+                    search_url = search_url % search_string
+                    sickrage.app.log.debug("Search string: {}".format(search_string))
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url, params=search_params).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -101,33 +93,35 @@ class ThePirateBayProvider(TorrentProvider):
 
             # Continue only if at least one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             labels = [process_column_header(label) for label in torrent_rows[0]("th")]
 
             # Skip column headers
-            for result in torrent_rows[1:]:
+            for row in torrent_rows[1:]:
+                cells = row('td')
+                if len(cells) < len(labels):
+                    continue
+
                 try:
-                    cells = result("td")
-
-                    # Funky js on page messing up titles, this fixes that
-                    title = result.find(class_="detLink")['title'].split('Details for ', 1)[-1]
-                    download_url = result.find(title="Download this torrent using magnet")["href"]
+                    title = row.find(class_='detName')
+                    title = title.get_text(strip=True) if title else None
+                    download_url = row.find(title='Download this torrent using magnet')
+                    download_url = download_url['href']
                     if download_url and 'magnet:?' not in download_url:
-                        sickrage.srCore.srLogger.debug("Invalid ThePirateBay proxy please try another one")
+                        sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
                         continue
-
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True))
+                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True), 1)
                     leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
 
                     # Accept Torrent only from Good People for every Episode Search
-                    if self.confirmed and not result.find(alt=re.compile(r"VIP|Trusted")):
+                    if self.confirmed and not row.find(alt=re.compile(r"VIP|Trusted")):
                         if mode != "RSS":
-                            sickrage.srCore.srLogger.debug(
+                            sickrage.app.log.debug(
                                 "Found result: {0} but that doesn't seem like a trusted result so I'm "
                                 "ignoring it".format(title))
                         continue
@@ -142,10 +136,10 @@ class ThePirateBayProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != "RSS":
-                        sickrage.srCore.srLogger.debug("Found result: {0}".format(title))
+                        sickrage.app.log.debug("Found result: {0}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error("Failed parsing provider")
+                    sickrage.app.log.error("Failed parsing provider")
 
         return results

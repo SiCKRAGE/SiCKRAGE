@@ -35,7 +35,7 @@
                                     class="form-control form-control-inline input-sm">
                                 <% process_method_text = {'copy': _("Copy"), 'move': _("Move"), 'hardlink': _("Hard Link"), 'symlink' : _("Symbolic Link"),'symlink_reversed' : _("Symbolic Link Reversed")} %>
                                 % for curAction in process_method_text:
-                                    <option value="${curAction}" ${('', 'selected')[sickrage.srCore.srConfig.PROCESS_METHOD == curAction]}>${process_method_text[curAction]}</option>
+                                    <option value="${curAction}" ${('', 'selected')[sickrage.app.config.process_method == curAction]}>${process_method_text[curAction]}</option>
                                 % endfor
                             </select>
                         </div>
@@ -82,7 +82,7 @@
                         </span>
                     </div>
                 </div>
-                % if sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                % if sickrage.app.config.use_failed_downloads:
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <b>${_('Mark download as failed:')}</b>

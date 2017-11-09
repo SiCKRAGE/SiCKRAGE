@@ -25,10 +25,10 @@ from xml.dom.minidom import parseString
 from requests import request
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class NMA_Notifier(srNotifiers):
+class NMA_Notifier(Notifiers):
     def __init__(self):
         super(NMA_Notifier, self).__init__()
         self.name = 'nma'
@@ -108,7 +108,7 @@ class NMA_Notifier(srNotifiers):
         return results
 
     def callapi(self, method, args):
-        headers = {'User-Agent': sickrage.srCore.USER_AGENT}
+        headers = {'User-Agent': sickrage.app.user_agent}
         if method == "POST":
             headers['Content-type'] = "application/x-www-form-urlencoded"
 
@@ -145,19 +145,19 @@ class NMA_Notifier(srNotifiers):
                              force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.NMA_NOTIFY_ONSNATCH:
+        if sickrage.app.config.nma_notify_onsnatch:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SNATCH], message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.NMA_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.nma_notify_ondownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_DOWNLOAD], message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.NMA_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.nma_notify_onsubtitledownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.srConfig.USE_NMA:
+        if sickrage.app.config.use_nma:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._sendNMA(event=title, message=update_text + new_version)
@@ -166,14 +166,14 @@ class NMA_Notifier(srNotifiers):
 
         title = 'SiCKRAGE'
 
-        if not sickrage.srCore.srConfig.USE_NMA and not force:
+        if not sickrage.app.config.use_nma and not force:
             return False
 
         if nma_api is None:
-            nma_api = sickrage.srCore.srConfig.NMA_API
+            nma_api = sickrage.app.config.nma_api
 
         if nma_priority is None:
-            nma_priority = sickrage.srCore.srConfig.NMA_PRIORITY
+            nma_priority = sickrage.app.config.nma_priority
 
         batch = False
 
@@ -182,7 +182,7 @@ class NMA_Notifier(srNotifiers):
 
         if len(keys) > 1: batch = True
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.log.debug(
             "NMA: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, batch=%s" % (
                 event, message, nma_priority, batch))
 
@@ -195,8 +195,8 @@ class NMA_Notifier(srNotifiers):
         )
 
         if not response[nma_api]['code'] == '200':
-            sickrage.srCore.srLogger.error('Could not send notification to NotifyMyAndroid')
+            sickrage.app.log.error('Could not send notification to NotifyMyAndroid')
             return False
         else:
-            sickrage.srCore.srLogger.info("NMA: Notification sent to NotifyMyAndroid")
+            sickrage.app.log.info("NMA: Notification sent to NotifyMyAndroid")
             return True

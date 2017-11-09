@@ -20,11 +20,11 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.traktapi import srTraktAPI
-from sickrage.indexers import srIndexerApi
-from sickrage.notifiers import srNotifiers
+from sickrage.indexers import IndexerApi
+from sickrage.notifiers import Notifiers
 
 
-class TraktNotifier(srNotifiers):
+class TraktNotifier(Notifiers):
     """
     A "notifier" for trakt.tv which keeps track of what has and hasn't been added to your library.
     """
@@ -52,7 +52,7 @@ class TraktNotifier(srNotifiers):
         ep_obj: The TVEpisode object to add to trakt
         """
 
-        if sickrage.srCore.srConfig.USE_TRAKT:
+        if sickrage.app.config.use_trakt:
             try:
                 # URL parameters
                 data = {
@@ -60,13 +60,13 @@ class TraktNotifier(srNotifiers):
                         {
                             'title': ep_obj.show.name,
                             'year': ep_obj.show.startyear,
-                            'ids': {srIndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
+                            'ids': {IndexerApi(ep_obj.show.indexer).trakt_id: ep_obj.show.indexerid},
                         }
                     ]
                 }
 
-                if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.srCore.srConfig.TRAKT_REMOVE_SERIESLIST:
+                if sickrage.app.config.trakt_sync_watchlist:
+                    if sickrage.app.config.trakt_remove_serieslist:
                         srTraktAPI()["sync/watchlist"].remove(data)
 
                 # Add Season and Episode + Related Episodes
@@ -75,15 +75,15 @@ class TraktNotifier(srNotifiers):
                 for relEp_Obj in [ep_obj] + ep_obj.relatedEps:
                     data['shows'][0]['seasons'][0]['episodes'].append({'number': relEp_Obj.episode})
 
-                if sickrage.srCore.srConfig.TRAKT_SYNC_WATCHLIST:
-                    if sickrage.srCore.srConfig.TRAKT_REMOVE_WATCHLIST:
+                if sickrage.app.config.trakt_sync_watchlist:
+                    if sickrage.app.config.trakt_remove_watchlist:
                         srTraktAPI()["sync/watchlist"].remove(data)
 
                 # update library
                 srTraktAPI()["sync/collection"].add(data)
 
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
 
     def update_watchlist(self, show_obj=None, s=None, e=None, data_show=None, data_episode=None, update="add"):
 
@@ -98,7 +98,7 @@ class TraktNotifier(srNotifiers):
         update: type o action add or remove
         """
 
-        if sickrage.srCore.srConfig.USE_TRAKT:
+        if sickrage.app.config.use_trakt:
             data = {}
             try:
                 # URL parameters
@@ -108,7 +108,7 @@ class TraktNotifier(srNotifiers):
                             {
                                 'title': show_obj.name,
                                 'year': show_obj.startyear,
-                                'ids': {srIndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
+                                'ids': {IndexerApi(show_obj.indexer).trakt_id: show_obj.indexerid},
                             }
                         ]
                     }
@@ -116,7 +116,7 @@ class TraktNotifier(srNotifiers):
                 elif data_show is not None:
                     data.update(data_show)
                 else:
-                    sickrage.srCore.srLogger.warning(
+                    sickrage.app.log.warning(
                         "there's a coding problem contact developer. It's needed to be provided at lest one of the two: data_show or show_obj")
                     return False
 
@@ -154,7 +154,7 @@ class TraktNotifier(srNotifiers):
                     srTraktAPI()[trakt_url].add(data)
 
             except Exception as e:
-                sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
+                sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
                 return False
 
         return True
@@ -165,7 +165,7 @@ class TraktNotifier(srNotifiers):
         for indexer, indexerid, title, year in data:
             show = {'title': title,
                     'year': year,
-                    'ids': {srIndexerApi(indexer).trakt_id: indexerid}}
+                    'ids': {IndexerApi(indexer).trakt_id: indexerid}}
 
             showList.append(show)
 
@@ -211,5 +211,5 @@ class TraktNotifier(srNotifiers):
                     return "Trakt blacklist doesn't exists"
             return "Test notice sent successfully to Trakt"
         except Exception as e:
-            sickrage.srCore.srLogger.warning("Could not connect to Trakt service: %s" % e)
+            sickrage.app.log.warning("Could not connect to Trakt service: %s" % e)
             return "Test notice failed to Trakt: %s" % e

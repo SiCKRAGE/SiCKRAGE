@@ -64,18 +64,18 @@ class DanishbitsProvider(TorrentProvider):
         }
 
         for mode in search_strings:
-            sickrage.srCore.srLogger.debug("Search Mode: {0}".format(mode))
+            sickrage.app.log.debug("Search Mode: {0}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: {0}".format(search_string))
+                    sickrage.app.log.debug("Search string: {0}".format(search_string))
 
                 search_params['search'] = search_string
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -109,10 +109,10 @@ class DanishbitsProvider(TorrentProvider):
                             'leechers': leechers, 'hash': ''}
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                        sickrage.app.log.debug("Found result: {}".format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error('Failed parsing provider')
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results

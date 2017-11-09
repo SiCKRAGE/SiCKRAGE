@@ -38,4 +38,4 @@ class FailedDB(srDatabase):
 
     def __init__(self, name='failed'):
         super(FailedDB, self).__init__(name)
-        self.old_db_path = os.path.join(sickrage.DATA_DIR, 'failed.db')
+        self.old_db_path = os.path.join(sickrage.app.data_dir, 'failed.db')

@@ -34,7 +34,7 @@ from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
 from sickrage.core.traktapi import srTraktAPI
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
 
@@ -62,11 +62,11 @@ class NameParser(object):
         show_id = 0
         fromCache = False
 
-        if not all([name, sickrage.srCore.SHOWLIST]): return show, show_id
+        if not all([name, sickrage.app.showlist]): return show, show_id
 
         try:
             # check cache for show
-            cache = sickrage.srCore.NAMECACHE.get(name)
+            cache = sickrage.app.name_cache.get(name)
             if cache:
                 fromCache = True
                 show_id = cache
@@ -74,7 +74,7 @@ class NameParser(object):
             # try indexers
             if not show_id and self.tryIndexers:
                 try:
-                    show_id1 = int(srIndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                    show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
                     show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
                     show_id = (show_id, show_id1)[show_id1 == show_id2]
                 except Exception:
@@ -88,13 +88,13 @@ class NameParser(object):
                     pass
 
             # create show object
-            show = findCertainShow(sickrage.srCore.SHOWLIST, int(show_id)) if show_id else None
+            show = findCertainShow(sickrage.app.showlist, int(show_id)) if show_id else None
 
             # add show to cache
             if show and not fromCache:
-                sickrage.srCore.NAMECACHE.put(name, show.indexerid)
+                sickrage.app.name_cache.put(name, show.indexerid)
         except Exception as e:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
         return show, show_id
@@ -134,7 +134,7 @@ class NameParser(object):
                 try:
                     cur_regex = re.compile(cur_pattern, re.VERBOSE | re.IGNORECASE)
                 except re.error as errormsg:
-                    sickrage.srCore.srLogger.info(
+                    sickrage.app.log.info(
                         "WARNING: Invalid episode_pattern using %s regexs, %s. %s" % (
                             dbg_str, errormsg, cur_pattern))
                 else:
@@ -268,7 +268,7 @@ class NameParser(object):
                 airdate = bestResult.air_date.toordinal()
 
                 dbData = [x['doc'] for x in
-                          sickrage.srCore.mainDB.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
+                          sickrage.app.main_db.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
                           if x['doc']['indexer'] == bestResult.show.indexer and x['doc']['airdate'] == airdate]
 
                 season_number = None
@@ -280,24 +280,24 @@ class NameParser(object):
 
                 if not season_number or not len(episode_numbers):
                     try:
-                        lINDEXER_API_PARMS = srIndexerApi(bestResult.show.indexer).api_params.copy()
+                        lINDEXER_API_PARMS = IndexerApi(bestResult.show.indexer).api_params.copy()
 
                         lINDEXER_API_PARMS[
-                            'language'] = bestResult.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+                            'language'] = bestResult.show.lang or sickrage.app.config.indexer_default_language
 
-                        t = srIndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
+                        t = IndexerApi(bestResult.show.indexer).indexer(**lINDEXER_API_PARMS)
 
                         epObj = t[bestResult.show.indexerid].airedOn(bestResult.air_date)[0]
 
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
-                        sickrage.srCore.srLogger.warning(
+                        sickrage.app.log.warning(
                             "Unable to find episode with date " + bestResult.air_date + " for show " + bestResult.show.name + ", skipping")
                         episode_numbers = []
                     except indexer_error as e:
-                        sickrage.srCore.srLogger.warning(
-                            "Unable to contact " + srIndexerApi(bestResult.show.indexer).name + ": {}".format(
+                        sickrage.app.log.warning(
+                            "Unable to contact " + IndexerApi(bestResult.show.indexer).name + ": {}".format(
                                 e))
                         episode_numbers = []
 
@@ -374,7 +374,7 @@ class NameParser(object):
                 bestResult.season_number = new_season_numbers[0]
 
             if bestResult.show.is_scene and not skip_scene_detection:
-                sickrage.srCore.srLogger.debug(
+                sickrage.app.log.debug(
                     "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
@@ -509,7 +509,7 @@ class NameParser(object):
         if cache_result:
             name_parser_cache.add(name, final_result)
 
-        sickrage.srCore.srLogger.debug("Parsed {} into {}".format(name, final_result))
+        sickrage.app.log.debug("Parsed {} into {}".format(name, final_result))
         return final_result
 
 
@@ -642,7 +642,7 @@ class NameParserCache(object):
         with self.lock:
             value = self.data.get(key)
             if value:
-                sickrage.srCore.srLogger.debug("Using cached parse result for: {}".format(key))
+                sickrage.app.log.debug("Using cached parse result for: {}".format(key))
             return value
 
     def add(self, key, value):

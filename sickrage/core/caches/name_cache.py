@@ -29,7 +29,7 @@ from sickrage.core.helpers import full_sanitizeSceneName
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
-class srNameCache(object):
+class NameCache(object):
     def __init__(self, *args, **kwargs):
         self.min_time = 10
         self.last_update = {}
@@ -55,19 +55,19 @@ class srNameCache(object):
             self.cache[name] = int(indexer_id)
 
             try:
-                dbData = [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('scene_names', name, with_doc=True) if
+                dbData = [x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
                           x['doc']['indexer_id'] == indexer_id]
 
                 if not len(dbData):
                     # insert name into cache
-                    sickrage.srCore.cacheDB.db.insert({
+                    sickrage.app.cache_db.db.insert({
                         '_t': 'scene_names',
                         'indexer_id': indexer_id,
                         'name': name
                     })
             except RecordNotFound:
                 # insert name into cache
-                sickrage.srCore.cacheDB.db.insert({
+                sickrage.app.cache_db.db.insert({
                     '_t': 'scene_names',
                     'indexer_id': indexer_id,
                     'name': name
@@ -88,8 +88,8 @@ class srNameCache(object):
         """
         Deletes all "unknown" entries from the cache (names with indexer_id of 0).
         """
-        [sickrage.srCore.cacheDB.db.delete(x['doc']) for x in
-         sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True)
+        [sickrage.app.cache_db.db.delete(x['doc']) for x in
+         sickrage.app.cache_db.db.all('scene_names', with_doc=True)
          if x['doc']['indexer_id'] in [indexerid, 0]]
 
         for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
@@ -97,21 +97,21 @@ class srNameCache(object):
 
     def load(self):
         self.cache = dict(
-            [(key, d['doc'][key]) for d in sickrage.srCore.cacheDB.db.all('scene_names', with_doc=True) for key in
+            [(key, d['doc'][key]) for d in sickrage.app.cache_db.db.all('scene_names', with_doc=True) for key in
              d['doc']])
 
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
             try:
-                dbData = [x['doc'] for x in sickrage.srCore.cacheDB.db.get_many('scene_names', name, with_doc=True) if
+                dbData = [x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
                           x['doc']['indexer_id'] == indexer_id]
                 if len(dbData): continue
             except RecordNotFound:
                 pass
 
             # insert name into cache
-            sickrage.srCore.cacheDB.db.insert({
+            sickrage.app.cache_db.db.insert({
                 '_t': 'scene_names',
                 'indexer_id': indexer_id,
                 'name': name

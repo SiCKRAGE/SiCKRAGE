@@ -27,10 +27,10 @@ from CodernityDB.database import RecordNotFound
 import sickrage
 from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 
 
-class srShowUpdater(object):
+class ShowUpdater(object):
     def __init__(self):
         self.name = "SHOWUPDATER"
         self.lock = threading.Lock()
@@ -48,36 +48,38 @@ class srShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = sickrage.srCore.cacheDB.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
             last_update = int(dbData['time'])
         except RecordNotFound:
             last_update = update_timestamp
-            dbData = sickrage.srCore.cacheDB.db.insert({
+            dbData = sickrage.app.cache_db.db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
                 'time': 0
             })
 
         # get indexer updated show ids
-        updated_shows = set(d["id"] for d in
-                            srIndexerApi().indexer(**srIndexerApi().api_params.copy()).updated(last_update) or {})
+        indexer_api = IndexerApi().indexer(**IndexerApi().api_params.copy())
+        updated_shows = set(s["id"] for s in indexer_api.updated(last_update) or {})
 
         # start update process
         pi_list = []
-        for curShow in sickrage.srCore.SHOWLIST:
+        for show in sickrage.app.showlist:
+            if show.paused:
+                sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show.name))
             try:
-                curShow.nextEpisode()
-                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(curShow.last_update)).days > 7
-                if curShow.indexerid in updated_shows or stale:
-                    pi_list.append(sickrage.srCore.SHOWQUEUE.updateShow(curShow, False))
+                show.nextEpisode()
+                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days > 7
+                if show.indexerid in updated_shows or stale:
+                    pi_list.append(sickrage.app.show_queue.updateShow(show, False))
                 else:
-                    pi_list.append(sickrage.srCore.SHOWQUEUE.refreshShow(curShow, False))
+                    pi_list.append(sickrage.app.show_queue.refreshShow(show, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.srCore.srLogger.debug("Automatic update failed: {}".format(e.message))
+                sickrage.app.log.debug("Automatic update failed: {}".format(e.message))
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData['time'] = update_timestamp
-        sickrage.srCore.cacheDB.db.update(dbData)
+        sickrage.app.cache_db.db.update(dbData)
 
         self.amActive = False

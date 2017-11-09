@@ -21,7 +21,7 @@
         % endif
 
         <form action="${srWebRoot}/manage/subtitleMissed" method="get">
-            % if sickrage.srCore.srConfig.SUBTITLES_MULTI:
+            % if sickrage.app.config.subtitles_multi:
             ${_('Manage episodes without')}
                 <select name="whichSubs" class="form-control form-control-inline input-sm">
                     <option value="all">All</option>
@@ -50,7 +50,7 @@
         <input type="hidden" id="selectSubLang" name="selectSubLang" value="${whichSubs}"/>
 
         <form action="${srWebRoot}/manage/downloadSubtitleMissed" method="post">
-            % if sickrage.srCore.srConfig.SUBTITLES_MULTI:
+            % if sickrage.app.config.subtitles_multi:
                 <h2>${_('Episodes without')} ${subsLanguage} ${_('subtitles.')}</h2>
             % else:
                 % for index, sub_code in enumerate(sickrage.subtitles.wanted_languages()):

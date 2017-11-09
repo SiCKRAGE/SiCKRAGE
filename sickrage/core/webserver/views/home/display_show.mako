@@ -12,7 +12,7 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
     from sickrage.core.media.util import showImage
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
@@ -57,14 +57,14 @@
                     % else:
                         <% season_special = 0 %>
                     % endif
-                    % if not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and season_special:
+                    % if not sickrage.app.config.display_show_specials and season_special:
                         <% lastSeason = seasonResults.pop(-1) %>
                     % endif
                         <span class="h2footer pull-right">
                             % if season_special:
                             ${_('Display Specials:')}
                                 <a class="inner"
-                                   href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS)]}</a>
+                                   href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}</a>
                             % endif
                         </span>
                         <div class="h2footer pull-right">
@@ -198,11 +198,11 @@
                                                          style="margin-top: -1px; vertical-align:middle;"/>
                                                 </a>
                                             % endif
-                                            <a href="${anon_url(srIndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                            <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
                                                onclick="window.open(this.href, '_blank'); return false;"
-                                               title="<% srIndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>"><img
-                                                    alt="${srIndexerApi(show.indexer).name}" height="16" width="16"
-                                                    src="${srWebRoot}/images/${srIndexerApi(show.indexer).config["icon"]}"
+                                               title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>"><img
+                                                    alt="${IndexerApi(show.indexer).name}" height="16" width="16"
+                                                    src="${srWebRoot}/images/${IndexerApi(show.indexer).config["icon"]}"
                                                     style="margin-top: -1px; vertical-align:middle;"/></a>
                                             % if xem_numbering or xem_absolute_numbering:
                                                 <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
@@ -311,7 +311,7 @@
                                                  onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                                         </td>
                                     </tr>
-                                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                                    % if sickrage.app.config.use_subtitles:
                                         <tr>
                                             <td class="showLegend">${_('Subtitles:')}</td>
                                             <td><img
@@ -331,8 +331,8 @@
                                     <tr>
                                         <td class="showLegend">${_('Season Folders:')}</td>
                                         <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
-                                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.srCore.srConfig.NAMING_FORCE_FOLDERS)]}"
+                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"
+                                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"
                                                 width="16" height="16"/></td>
                                     </tr>
                                     <tr>
@@ -392,10 +392,10 @@
                         <div class="input-group input350 input-group-sm">
                             <select id="statusSelect" title="Change selected episode statuses" class="form-control">
                                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                                % if not sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                                % if not sickrage.app.config.use_failed_downloads:
                                     <% availableStatus.remove(FAILED) %>
                                 % endif
-                                % if sickrage.srCore.srConfig.DEVELOPER:
+                                % if sickrage.app.config.developer:
                                     <% availableStatus.append(UNAIRED) %>
                                 % endif
                                 % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
@@ -476,7 +476,7 @@
             % for epResult in episodeResults:
             <%
                 epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
-                if not epStr in epCats or not sickrage.srCore.srConfig.DISPLAY_SHOW_SPECIALS and int(epResult["season"]) == 0:
+                if not epStr in epCats or not sickrage.app.config.display_show_specials and int(epResult["season"]) == 0:
                                 next
 
                 scene = False
@@ -524,7 +524,7 @@
                             <a name="season-${epResult["season"]}"></a>
                             ${("Specials", "Season " + str(epResult["season"]))[bool(int(epResult["season"]))]}
                         </h3>
-                        % if not sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS:
+                        % if not sickrage.app.config.display_all_seasons:
                             % if curSeason == -1:
                                 <button id="showseason-${epResult['season']}" type="button"
                                         class="btn btn-xs pull-right" data-toggle="collapse"
@@ -568,7 +568,7 @@
             % endif
 
                 <tbody
-                    % if sickrage.srCore.srConfig.DISPLAY_ALL_SEASONS == False:
+                    % if sickrage.app.config.display_all_seasons == False:
                         class="collapse${("", " in")[curSeason == -1]}"
                         id="collapseSeason-${epResult['season']}"
                     % endif
@@ -673,13 +673,13 @@
                     </td>
 
                     <td>
-                        % if sickrage.srCore.srConfig.DOWNLOAD_URL and epResult['location']:
+                        % if sickrage.app.config.download_url and epResult['location']:
                         <%
                             filename = epResult['location']
-                            for rootDir in sickrage.srCore.srConfig.ROOT_DIRS.split('|'):
+                            for rootDir in sickrage.app.config.root_dirs.split('|'):
                                                 if rootDir.startswith('/'):
                                                     filename = filename.replace(rootDir, "")
-                            filename = sickrage.srCore.srConfig.DOWNLOAD_URL + urllib.quote(filename.encode('utf8'))
+                            filename = sickrage.app.config.download_url + urllib.quote(filename.encode('utf8'))
                         %>
                             <div style="text-align: center;"><a href="${filename}">${_('Download')}</a></div>
                         % endif
@@ -711,7 +711,7 @@
 
                     <td class="col-search">
                         % if int(epResult["season"]) != 0:
-                            % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.srCore.srConfig.USE_FAILED_DOWNLOADS:
+                            % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.app.config.use_failed_downloads:
                                 <a class="epRetry"
                                    id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                    name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
@@ -729,7 +729,7 @@
                                 </a>
                             % endif
                         % endif
-                        % if sickrage.srCore.srConfig.USE_SUBTITLES and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
+                        % if sickrage.app.config.use_subtitles and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                             <a class="epSubtitlesSearch"
                                href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
                                 <img src="${srWebRoot}/images/closed_captioning.png" height="16" alt="search subtitles"

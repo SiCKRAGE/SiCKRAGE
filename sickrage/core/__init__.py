@@ -37,122 +37,93 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from fake_useragent import UserAgent
 from pytz import utc
+from tornado.ioloop import IOLoop
 from tzlocal import get_localzone
 
 import sickrage
-from sickrage.core.caches.name_cache import srNameCache
+from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.common import SD, SKIPPED, WANTED
+from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.google import googleAuth
+from sickrage.core.google import GoogleAuth
 from sickrage.core.helpers import findCertainShow, \
     generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
+from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
-from sickrage.core.processors.auto_postprocessor import srPostProcessor
-from sickrage.core.queues.postprocessor import srPostProcessorQueue
-from sickrage.core.queues.search import srSearchQueue
-from sickrage.core.queues.show import srShowQueue
-from sickrage.core.searchers.backlog_searcher import srBacklogSearcher
-from sickrage.core.searchers.daily_searcher import srDailySearcher
-from sickrage.core.searchers.proper_searcher import srProperSearcher
-from sickrage.core.searchers.subtitle_searcher import srSubtitleSearcher
-from sickrage.core.searchers.trakt_searcher import srTraktSearcher
-from sickrage.core.srconfig import srConfig
-from sickrage.core.srlogger import srLogger
+from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
+from sickrage.core.queues.postprocessor import PostProcessorQueue
+from sickrage.core.queues.search import SearchQueue
+from sickrage.core.queues.show import ShowQueue
+from sickrage.core.searchers.backlog_searcher import BacklogSearcher
+from sickrage.core.searchers.daily_searcher import DailySearcher
+from sickrage.core.searchers.proper_searcher import ProperSearcher
+from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
+from sickrage.core.searchers.trakt_searcher import TraktSearcher
 from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import Notifications
-from sickrage.core.updaters.show_updater import srShowUpdater
+from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
-from sickrage.core.version_updater import srVersionUpdater
-from sickrage.core.webclient.session import srSession
-from sickrage.core.webserver import srWebServer
-from sickrage.metadata import metadataProvidersDict
-from sickrage.notifiers import notifiersDict
-from sickrage.providers import providersDict
+from sickrage.core.version_updater import VersionUpdater
+from sickrage.core.webserver import WebServer
+from sickrage.core.websession import WebSession
+from sickrage.metadata import MetadataProviders
+from sickrage.notifiers import NotifierProviders
+from sickrage.providers import SearchProviders
 
 
 class Core(object):
     def __init__(self):
         self.started = False
+        self.daemon = None
+        self.io_loop = IOLoop().instance()
 
-        # process id
-        self.PID = os.getpid()
+        self.config_file = None
+        self.data_dir = None
+        self.cache_dir = None
+        self.quite = None
+        self.no_launch = None
+        self.web_port = None
+        self.developer = None
+        self.debug = None
+        self.newest_version = None
+        self.newest_version_string = None
 
-        # generate notifiers dict
-        self.notifiersDict = notifiersDict()
+        self.pid = os.getpid()
+        self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
+        self.sys_encoding = get_sys_encoding()
+        self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+        self.showlist = []
 
-        # generate metadata providers dict
-        self.metadataProvidersDict = metadataProvidersDict()
-
-        # generate providers dict
-        self.providersDict = providersDict()
-
-        # init notification queue
-        self.srNotifications = Notifications()
-
-        # init logger
-        self.srLogger = srLogger()
-
-        # init config
-        self.srConfig = srConfig()
-
-        # init databases
-        self.mainDB = MainDB()
-        self.cacheDB = CacheDB()
-        self.failedDB = FailedDB()
-
-        # init scheduler service
-        self.srScheduler = BackgroundScheduler()
-
-        # init web server
-        self.srWebServer = srWebServer()
-
-        # init web client session
-        self.srWebSession = srSession()
-
-        # google api
-        self.googleAuth = googleAuth()
-
-        # name cache
-        self.NAMECACHE = srNameCache()
-
-        # queues
-        self.SHOWQUEUE = srShowQueue()
-        self.SEARCHQUEUE = srSearchQueue()
-        self.POSTPROCESSORQUEUE = srPostProcessorQueue()
-
-        # updaters
-        self.VERSIONUPDATER = srVersionUpdater()
-        self.SHOWUPDATER = srShowUpdater()
-
-        # searchers
-        self.DAILYSEARCHER = srDailySearcher()
-        self.BACKLOGSEARCHER = srBacklogSearcher()
-        self.PROPERSEARCHER = srProperSearcher()
-        self.TRAKTSEARCHER = srTraktSearcher()
-        self.SUBTITLESEARCHER = srSubtitleSearcher()
-
-        # auto postprocessor
-        self.AUTOPOSTPROCESSOR = srPostProcessor()
-
-        # sickrage version
-        self.NEWEST_VERSION = None
-        self.NEWEST_VERSION_STRING = None
-
-        # anidb connection
-        self.ADBA_CONNECTION = None
-
-        # show list
-        self.SHOWLIST = []
-
-        self.USER_AGENT = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
-
-        self.SYS_ENCODING = get_sys_encoding()
-
-        self.LANGUAGES = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+        self.adba_connection = None
+        self.notifier_providers = None
+        self.metadata_providers = None
+        self.search_providers = None
+        self.log = None
+        self.config = None
+        self.alerts = None
+        self.main_db = None
+        self.cache_db = None
+        self.failed_db = None
+        self.scheduler = None
+        self.wserver = None
+        self.wsession = None
+        self.google_auth = None
+        self.name_cache = None
+        self.show_queue = None
+        self.search_queue = None
+        self.postprocessor_queue = None
+        self.version_updater = None
+        self.show_updater = None
+        self.daily_searcher = None
+        self.backlog_searcher = None
+        self.proper_searcher = None
+        self.trakt_searcher = None
+        self.subtitle_searcher = None
+        self.auto_postprocessor = None
 
         # patch modules with encoding kludge
         patch_modules()
@@ -163,64 +134,90 @@ class Core(object):
         # thread name
         threading.currentThread().setName('CORE')
 
+        # init core classes
+        self.notifier_providers = NotifierProviders()
+        self.metadata_providers = MetadataProviders()
+        self.search_providers = SearchProviders()
+        self.log = Logger()
+        self.config = Config()
+        self.alerts = Notifications()
+        self.main_db = MainDB()
+        self.cache_db = CacheDB()
+        self.failed_db = FailedDB()
+        self.scheduler = BackgroundScheduler()
+        self.wserver = WebServer()
+        self.wsession = WebSession()
+        self.google_auth = GoogleAuth()
+        self.name_cache = NameCache()
+        self.show_queue = ShowQueue()
+        self.search_queue = SearchQueue()
+        self.postprocessor_queue = PostProcessorQueue()
+        self.version_updater = VersionUpdater()
+        self.show_updater = ShowUpdater()
+        self.daily_searcher = DailySearcher()
+        self.backlog_searcher = BacklogSearcher()
+        self.proper_searcher = ProperSearcher()
+        self.trakt_searcher = TraktSearcher()
+        self.subtitle_searcher = SubtitleSearcher()
+        self.auto_postprocessor = AutoPostProcessor()
+
         # Check if we need to perform a restore first
-        if os.path.exists(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore'))):
-            success = restoreSR(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), sickrage.DATA_DIR)
+        if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
+            success = restoreSR(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
             print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
-                shutil.rmtree(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'restore')), ignore_errors=True)
+                shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
         # migrate old database file names to new ones
-        if os.path.isfile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db'))):
-            if os.path.isfile(os.path.join(sickrage.DATA_DIR, 'sickrage.db')):
-                helpers.moveFile(os.path.join(sickrage.DATA_DIR, 'sickrage.db'),
-                                 os.path.join(sickrage.DATA_DIR, '{}.bak-{}'
+        if os.path.isfile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db'))):
+            if os.path.isfile(os.path.join(self.data_dir, 'sickrage.db')):
+                helpers.moveFile(os.path.join(self.data_dir, 'sickrage.db'),
+                                 os.path.join(self.data_dir, '{}.bak-{}'
                                               .format('sickrage.db',
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickbeard.db')),
-                             os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sickrage.db')))
+            helpers.moveFile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
+                             os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
         # load config
-        self.srConfig.load()
+        self.config.load()
 
         # set language
-        self.srConfig.change_gui_lang(self.srConfig.GUI_LANG)
+        self.config.change_gui_lang(self.config.gui_lang)
 
         # set socket timeout
-        socket.setdefaulttimeout(self.srConfig.SOCKET_TIMEOUT)
+        socket.setdefaulttimeout(self.config.socket_timeout)
 
         # setup logger settings
-        self.srLogger.logSize = self.srConfig.LOG_SIZE
-        self.srLogger.logNr = self.srConfig.LOG_NR
-        self.srLogger.logFile = os.path.join(sickrage.DATA_DIR, 'logs', 'sickrage.log')
-        self.srLogger.debugLogging = self.srConfig.DEBUG
-        self.srLogger.consoleLogging = not sickrage.QUITE
+        self.log.logSize = self.config.log_size
+        self.log.logNr = self.config.log_nr
+        self.log.logFile = os.path.join(self.data_dir, 'logs', 'sickrage.log')
+        self.log.debugLogging = self.config.debug
+        self.log.consoleLogging = not self.quite
 
         # start logger
-        self.srLogger.start()
+        self.log.start()
 
         # user agent
-        if self.srConfig.RANDOM_USER_AGENT:
-            self.USER_AGENT = UserAgent().random
+        if self.config.random_user_agent:
+            self.user_agent = UserAgent().random
 
         urlparse.uses_netloc.append('scgi')
-        urllib.FancyURLopener.version = self.USER_AGENT
+        urllib.FancyURLopener.version = self.user_agent
 
         # Check available space
         try:
-            total_space, available_space = getFreeSpace(sickrage.DATA_DIR)
+            total_space, available_space = getFreeSpace(self.data_dir)
             if available_space < 100:
-                self.srLogger.error(
-                    'Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data otherwise. Only %sMB left',
-                    available_space)
+                self.log.error('Shutting down as SiCKRAGE needs some space to work. You\'ll get corrupted data '
+                               'otherwise. Only %sMB left', available_space)
                 return
-        except:
-            self.srLogger.error('Failed getting diskspace: %s', traceback.format_exc())
+        except Exception:
+            self.log.error('Failed getting diskspace: %s', traceback.format_exc())
 
         # perform database startup actions
-        for db in [self.mainDB, self.cacheDB, self.failedDB]:
+        for db in [self.main_db, self.cache_db, self.failed_db]:
             # initialize database
             db.initialize()
 
@@ -234,95 +231,89 @@ class Core(object):
             db.cleanup()
 
         # compact main database
-        if not self.srConfig.DEVELOPER and self.srConfig.LAST_DB_COMPACT < time.time() - 604800:  # 7 days
-            self.mainDB.compact()
-            self.srConfig.LAST_DB_COMPACT = int(time.time())
+        if not self.config.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
+            self.main_db.compact()
+            self.config.last_db_compact = int(time.time())
 
         # load name cache
-        self.NAMECACHE.load()
+        self.name_cache.load()
 
         # load data for shows from database
         self.load_shows()
 
-        if self.srConfig.DEFAULT_PAGE not in ('home', 'schedule', 'history', 'news', 'IRC'):
-            self.srConfig.DEFAULT_PAGE = 'home'
+        if self.config.default_page not in ('home', 'schedule', 'history', 'news', 'IRC'):
+            self.config.default_page = 'home'
 
         # cleanup cache folder
         for folder in ['mako', 'sessions', 'indexers']:
             try:
-                shutil.rmtree(os.path.join(sickrage.CACHE_DIR, folder), ignore_errors=True)
+                shutil.rmtree(os.path.join(sickrage.app.cache_dir, folder), ignore_errors=True)
             except Exception:
                 continue
 
         # init anidb connection
-        if self.srConfig.USE_ANIDB:
+        if self.config.use_anidb:
             def anidb_logger(msg):
-                return self.srLogger.debug("AniDB: {} ".format(msg))
+                return self.log.debug("AniDB: {} ".format(msg))
 
             try:
-                self.ADBA_CONNECTION = adba.Connection(keepAlive=True, log=anidb_logger)
-                self.ADBA_CONNECTION.auth(self.srConfig.ANIDB_USERNAME, self.srConfig.ANIDB_PASSWORD)
+                self.adba_connection = adba.Connection(keepAlive=True, log=anidb_logger)
+                self.adba_connection.auth(self.config.anidb_username, self.config.anidb_password)
             except Exception as e:
-                self.srLogger.warning("AniDB exception msg: %r " % repr(e))
+                self.log.warning("AniDB exception msg: %r " % repr(e))
 
-        if self.srConfig.WEB_PORT < 21 or self.srConfig.WEB_PORT > 65535:
-            self.srConfig.WEB_PORT = 8081
+        if self.config.web_port < 21 or self.config.web_port > 65535:
+            self.config.web_port = 8081
 
-        if not self.srConfig.WEB_COOKIE_SECRET:
-            self.srConfig.WEB_COOKIE_SECRET = generateCookieSecret()
+        if not self.config.web_cookie_secret:
+            self.config.web_cookie_secret = generateCookieSecret()
 
         # attempt to help prevent users from breaking links by using a bad url
-        if not self.srConfig.ANON_REDIRECT.endswith('?'):
-            self.srConfig.ANON_REDIRECT = ''
+        if not self.config.anon_redirect.endswith('?'):
+            self.config.anon_redirect = ''
 
-        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', self.srConfig.ROOT_DIRS):
-            self.srConfig.ROOT_DIRS = ''
+        if not re.match(r'\d+\|[^|]+(?:\|[^|]+)*', self.config.root_dirs):
+            self.config.root_dirs = ''
 
-        self.srConfig.NAMING_FORCE_FOLDERS = check_force_season_folders()
-        if self.srConfig.NZB_METHOD not in ('blackhole', 'sabnzbd', 'nzbget'):
-            self.srConfig.NZB_METHOD = 'blackhole'
+        self.config.naming_force_folders = check_force_season_folders()
 
-        if self.srConfig.TORRENT_METHOD not in ('blackhole',
-                                                'utorrent',
-                                                'transmission',
-                                                'deluge',
-                                                'deluged',
-                                                'download_station',
-                                                'rtorrent',
-                                                'qbittorrent',
-                                                'mlnet',
-                                                'putio'): self.srConfig.TORRENT_METHOD = 'blackhole'
+        if self.config.nzb_method not in ('blackhole', 'sabnzbd', 'nzbget'):
+            self.config.nzb_method = 'blackhole'
 
-        if self.srConfig.AUTOPOSTPROCESSOR_FREQ < self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ:
-            self.srConfig.AUTOPOSTPROCESSOR_FREQ = self.srConfig.MIN_AUTOPOSTPROCESSOR_FREQ
-        if self.srConfig.DAILY_SEARCHER_FREQ < self.srConfig.MIN_DAILY_SEARCHER_FREQ:
-            self.srConfig.DAILY_SEARCHER_FREQ = self.srConfig.MIN_DAILY_SEARCHER_FREQ
-        self.srConfig.MIN_BACKLOG_SEARCHER_FREQ = self.BACKLOGSEARCHER.get_backlog_cycle_time()
-        if self.srConfig.BACKLOG_SEARCHER_FREQ < self.srConfig.MIN_BACKLOG_SEARCHER_FREQ:
-            self.srConfig.BACKLOG_SEARCHER_FREQ = self.srConfig.MIN_BACKLOG_SEARCHER_FREQ
-        if self.srConfig.VERSION_UPDATER_FREQ < self.srConfig.MIN_VERSION_UPDATER_FREQ:
-            self.srConfig.VERSION_UPDATER_FREQ = self.srConfig.MIN_VERSION_UPDATER_FREQ
-        if self.srConfig.SUBTITLE_SEARCHER_FREQ < self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ:
-            self.srConfig.SUBTITLE_SEARCHER_FREQ = self.srConfig.MIN_SUBTITLE_SEARCHER_FREQ
-        if self.srConfig.PROPER_SEARCHER_INTERVAL not in ('15m', '45m', '90m', '4h', 'daily'):
-            self.srConfig.PROPER_SEARCHER_INTERVAL = 'daily'
-        if self.srConfig.SHOWUPDATE_HOUR < 0 or self.srConfig.SHOWUPDATE_HOUR > 23:
-            self.srConfig.SHOWUPDATE_HOUR = 0
-        if self.srConfig.SUBTITLES_LANGUAGES[0] == '':
-            self.srConfig.SUBTITLES_LANGUAGES = []
+        if self.config.torrent_method not in ('blackhole', 'utorrent', 'transmission', 'deluge', 'deluged',
+                                              'download_station', 'rtorrent', 'qbittorrent', 'mlnet', 'putio'):
+            self.config.torrent_method = 'blackhole'
+
+        if self.config.autopostprocessor_freq < self.config.min_autopostprocessor_freq:
+            self.config.autopostprocessor_freq = self.config.min_autopostprocessor_freq
+        if self.config.daily_searcher_freq < self.config.min_daily_searcher_freq:
+            self.config.daily_searcher_freq = self.config.min_daily_searcher_freq
+        self.config.min_backlog_searcher_freq = self.backlog_searcher.get_backlog_cycle_time()
+        if self.config.backlog_searcher_freq < self.config.min_backlog_searcher_freq:
+            self.config.backlog_searcher_freq = self.config.min_backlog_searcher_freq
+        if self.config.version_updater_freq < self.config.min_version_updater_freq:
+            self.config.version_updater_freq = self.config.min_version_updater_freq
+        if self.config.subtitle_searcher_freq < self.config.min_subtitle_searcher_freq:
+            self.config.subtitle_searcher_freq = self.config.min_subtitle_searcher_freq
+        if self.config.proper_searcher_interval not in ('15m', '45m', '90m', '4h', 'daily'):
+            self.config.proper_searcher_interval = 'daily'
+        if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
+            self.config.showupdate_hour = 0
+        if self.config.subtitles_languages[0] == '':
+            self.config.subtitles_languages = []
 
         # add version checker job
-        self.srScheduler.add_job(
-            self.VERSIONUPDATER.run,
+        self.scheduler.add_job(
+            self.version_updater.run,
             IntervalTrigger(
-                hours=self.srConfig.VERSION_UPDATER_FREQ
+                hours=self.config.version_updater_freq
             ),
             name="VERSIONUPDATER",
             id="VERSIONUPDATER"
         )
 
         # add network timezones updater job
-        self.srScheduler.add_job(
+        self.scheduler.add_job(
             update_network_dict,
             IntervalTrigger(
                 days=1
@@ -332,11 +323,11 @@ class Core(object):
         )
 
         # add show updater job
-        self.srScheduler.add_job(
-            self.SHOWUPDATER.run,
+        self.scheduler.add_job(
+            self.show_updater.run,
             IntervalTrigger(
                 days=1,
-                start_date=utc.localize(datetime.datetime.now().replace(hour=self.srConfig.SHOWUPDATE_HOUR)).astimezone(
+                start_date=utc.localize(datetime.datetime.now().replace(hour=self.config.showupdate_hour)).astimezone(
                     get_localzone())
             ),
             name="SHOWUPDATER",
@@ -344,10 +335,10 @@ class Core(object):
         )
 
         # add daily search job
-        self.srScheduler.add_job(
-            self.DAILYSEARCHER.run,
+        self.scheduler.add_job(
+            self.daily_searcher.run,
             IntervalTrigger(
-                minutes=self.srConfig.DAILY_SEARCHER_FREQ,
+                minutes=self.config.daily_searcher_freq,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=4)).astimezone(
                     get_localzone())
             ),
@@ -356,10 +347,10 @@ class Core(object):
         )
 
         # add backlog search job
-        self.srScheduler.add_job(
-            self.BACKLOGSEARCHER.run,
+        self.scheduler.add_job(
+            self.backlog_searcher.run,
             IntervalTrigger(
-                minutes=self.srConfig.BACKLOG_SEARCHER_FREQ,
+                minutes=self.config.backlog_searcher_freq,
                 start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=30)).astimezone(
                     get_localzone())
             ),
@@ -368,29 +359,29 @@ class Core(object):
         )
 
         # add auto-postprocessing job
-        self.srScheduler.add_job(
-            self.AUTOPOSTPROCESSOR.run,
+        self.scheduler.add_job(
+            self.auto_postprocessor.run,
             IntervalTrigger(
-                minutes=self.srConfig.AUTOPOSTPROCESSOR_FREQ
+                minutes=self.config.autopostprocessor_freq
             ),
             name="POSTPROCESSOR",
             id="POSTPROCESSOR"
         )
 
         # add find proper job
-        self.srScheduler.add_job(
-            self.PROPERSEARCHER.run,
+        self.scheduler.add_job(
+            self.proper_searcher.run,
             IntervalTrigger(
                 minutes={'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
-                    self.srConfig.PROPER_SEARCHER_INTERVAL]
+                    self.config.proper_searcher_interval]
             ),
             name="PROPERSEARCHER",
             id="PROPERSEARCHER"
         )
 
         # add trakt.tv checker job
-        self.srScheduler.add_job(
-            self.TRAKTSEARCHER.run,
+        self.scheduler.add_job(
+            self.trakt_searcher.run,
             IntervalTrigger(
                 hours=1
             ),
@@ -399,118 +390,117 @@ class Core(object):
         )
 
         # add subtitles finder job
-        self.srScheduler.add_job(
-            self.SUBTITLESEARCHER.run,
+        self.scheduler.add_job(
+            self.subtitle_searcher.run,
             IntervalTrigger(
-                hours=self.srConfig.SUBTITLE_SEARCHER_FREQ
+                hours=self.config.subtitle_searcher_freq
             ),
             name="SUBTITLESEARCHER",
             id="SUBTITLESEARCHER"
         )
 
         # start scheduler service
-        self.srScheduler.start()
+        self.scheduler.start()
 
         # Pause/Resume PROPERSEARCHER job
-        (self.srScheduler.get_job('PROPERSEARCHER').pause,
-         self.srScheduler.get_job('PROPERSEARCHER').resume
-         )[self.srConfig.DOWNLOAD_PROPERS]()
+        (self.scheduler.get_job('PROPERSEARCHER').pause,
+         self.scheduler.get_job('PROPERSEARCHER').resume
+         )[self.config.download_propers]()
 
         # Pause/Resume TRAKTSEARCHER job
-        (self.srScheduler.get_job('TRAKTSEARCHER').pause,
-         self.srScheduler.get_job('TRAKTSEARCHER').resume
-         )[self.srConfig.USE_TRAKT]()
+        (self.scheduler.get_job('TRAKTSEARCHER').pause,
+         self.scheduler.get_job('TRAKTSEARCHER').resume
+         )[self.config.use_trakt]()
 
         # Pause/Resume SUBTITLESEARCHER job
-        (self.srScheduler.get_job('SUBTITLESEARCHER').pause,
-         self.srScheduler.get_job('SUBTITLESEARCHER').resume
-         )[self.srConfig.USE_SUBTITLES]()
+        (self.scheduler.get_job('SUBTITLESEARCHER').pause,
+         self.scheduler.get_job('SUBTITLESEARCHER').resume
+         )[self.config.use_subtitles]()
 
         # Pause/Resume POSTPROCESS job
-        (self.srScheduler.get_job('POSTPROCESSOR').pause,
-         self.srScheduler.get_job('POSTPROCESSOR').resume
-         )[self.srConfig.PROCESS_AUTOMATICALLY]()
+        (self.scheduler.get_job('POSTPROCESSOR').pause,
+         self.scheduler.get_job('POSTPROCESSOR').resume
+         )[self.config.process_automatically]()
 
         # start queue's
-        self.SEARCHQUEUE.start()
-        self.SHOWQUEUE.start()
-        self.POSTPROCESSORQUEUE.start()
+        self.search_queue.start()
+        self.show_queue.start()
+        self.postprocessor_queue.start()
 
         # start webserver
-        self.srWebServer.start()
+        self.wserver.start()
 
     def shutdown(self, restart=False):
         if self.started:
-            self.srLogger.info('SiCKRAGE IS SHUTTING DOWN!!!')
+            self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown webserver
-            self.srWebServer.shutdown()
+            self.wserver.shutdown()
 
             # shutdown show queue
-            if self.SHOWQUEUE:
-                self.srLogger.debug("Shutting down show queue")
-                self.SHOWQUEUE.shutdown()
-                del self.SHOWQUEUE
+            if self.show_queue:
+                self.log.debug("Shutting down show queue")
+                self.show_queue.shutdown()
+                del self.show_queue
 
             # shutdown search queue
-            if self.SEARCHQUEUE:
-                self.srLogger.debug("Shutting down search queue")
-                self.SEARCHQUEUE.shutdown()
-                del self.SEARCHQUEUE
+            if self.search_queue:
+                self.log.debug("Shutting down search queue")
+                self.search_queue.shutdown()
+                del self.search_queue
 
             # shutdown post-processor queue
-            if self.POSTPROCESSORQUEUE:
-                self.srLogger.debug("Shutting down post-processor queue")
-                self.POSTPROCESSORQUEUE.shutdown()
-                del self.POSTPROCESSORQUEUE
+            if self.postprocessor_queue:
+                self.log.debug("Shutting down post-processor queue")
+                self.postprocessor_queue.shutdown()
+                del self.postprocessor_queue
 
             # log out of ADBA
-            if self.ADBA_CONNECTION:
-                self.srLogger.debug("Shutting down ANIDB connection")
-                self.ADBA_CONNECTION.stop()
+            if self.adba_connection:
+                self.log.debug("Shutting down ANIDB connection")
+                self.adba_connection.stop()
 
             # save all show and config settings
             self.save_all()
 
             # close databases
-            for db in [self.mainDB, self.cacheDB, self.failedDB]:
+            for db in [self.main_db, self.cache_db, self.failed_db]:
                 if db.opened:
-                    self.srLogger.debug("Shutting down {} database connection".format(db.name))
+                    self.log.debug("Shutting down {} database connection".format(db.name))
                     db.close()
 
             # shutdown logging
-            self.srLogger.close()
+            self.log.close()
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)
-        elif sickrage.daemon:
-            sickrage.daemon.stop()
+        elif sickrage.app.daemon:
+            sickrage.app.daemon.stop()
 
         self.started = False
 
     def save_all(self):
         # write all shows
-        self.srLogger.info("Saving all shows to the database")
-        for SHOW in self.SHOWLIST:
+        self.log.info("Saving all shows to the database")
+        for show in self.showlist:
             try:
-                SHOW.saveToDB()
-            except:
+                show.saveToDB()
+            except Exception:
                 continue
 
         # save config
-        self.srConfig.save()
+        self.config.save()
 
     def load_shows(self):
         """
         Populates the showlist with shows from the database
         """
 
-        for dbData in [x['doc'] for x in self.mainDB.db.all('tv_shows', with_doc=True)]:
+        for dbData in [x['doc'] for x in self.main_db.db.all('tv_shows', with_doc=True)]:
             try:
-                self.srLogger.debug("Loading data for show: [{}]".format(dbData['show_name']))
+                self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
                 show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
                 show.nextEpisode()
-                self.NAMECACHE.build(show)
-                self.SHOWLIST += [show]
+                self.showlist += [show]
             except Exception as e:
-                self.srLogger.error("Show error in [%s]: %s" % (dbData['location'], e.message))
+                self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))

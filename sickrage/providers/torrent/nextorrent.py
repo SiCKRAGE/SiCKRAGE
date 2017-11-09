@@ -45,7 +45,7 @@ class NextorrentProvider(TorrentProvider):
 
     def get_download_url(self, url):
         try:
-            data = sickrage.srCore.srWebSession.get(urljoin(self.urls['base_url'], url)).text
+            data = sickrage.app.wsession.get(urljoin(self.urls['base_url'], url)).text
             with bs4_parser(data) as html:
                 return html.find('div', class_="btn-magnet").find('a').get('href')
         except Exception:
@@ -56,10 +56,10 @@ class NextorrentProvider(TorrentProvider):
 
         for mode in search_strings:
 
-            sickrage.srCore.srLogger.debug('Search Mode: {}'.format(mode))
+            sickrage.app.log.debug('Search Mode: {}'.format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug('Search string: {}'.format(search_string))
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 if mode == 'RSS':
                     search_url = self.urls['series']
@@ -67,10 +67,10 @@ class NextorrentProvider(TorrentProvider):
                     search_url = urljoin(self.urls['base_url'], search_string)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(search_url).text
+                    data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug('No data returned from provider')
+                    sickrage.app.log.debug('No data returned from provider')
 
         return results
 
@@ -92,7 +92,7 @@ class NextorrentProvider(TorrentProvider):
                         try:
                             fileType = ''.join(link.find_previous('i')["class"])
                             fileType = unicodedata.normalize('NFKD', fileType). \
-                                encode(sickrage.srCore.SYS_ENCODING, 'ignore')
+                                encode(sickrage.app.sys_encoding, 'ignore')
 
                             if fileType == "Series":
                                 title = link.get_text(strip=True)
@@ -109,7 +109,7 @@ class NextorrentProvider(TorrentProvider):
                                 leechers = try_int(link.find_next('img', alt='leechers').parent.text, 0)
 
                                 if mode != 'RSS':
-                                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                                    sickrage.app.log.debug("Found result: {}".format(title))
 
                                 results += [{
                                     'title': title,
@@ -119,6 +119,6 @@ class NextorrentProvider(TorrentProvider):
                                     'leechers': leechers,
                                 }]
                         except Exception:
-                            sickrage.srCore.srLogger.error("Failed parsing provider")
+                            sickrage.app.log.error("Failed parsing provider")
 
         return results

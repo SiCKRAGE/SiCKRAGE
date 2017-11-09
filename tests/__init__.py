@@ -59,13 +59,13 @@ class SiCKRAGETestCase(unittest.TestCase):
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self):
-        sickrage.srCore.SHOWLIST = []
+        sickrage.app.showlist = []
         setUp_test_db()
         setUp_test_episode_file()
         setUp_test_show_dir()
 
     def tearDown(self, web=False):
-        sickrage.srCore.SHOWLIST = []
+        sickrage.app.showlist = []
         tearDown_test_episode_file()
         tearDown_test_show_dir()
         if web:
@@ -169,12 +169,12 @@ def tearDown_test_show_dir():
 
 
 def setUp_test_web_server():
-    threading.Thread(None, sickrage.srCore.srWebServer.start).start()
+    threading.Thread(None, sickrage.app.wserver.start).start()
 
 
 def tearDown_test_web_server():
     if sickrage.srCore:
-        sickrage.srCore.io_loop.stop()
+        sickrage.app.io_loop.stop()
 
 
 def load_tests(loader, tests):

@@ -20,7 +20,7 @@
                         <button class="btn" id="submitMassRename">${_('Mass Rename')}</button>
                         <button class="btn" id="submitMassDelete">${_('Mass Delete')}</button>
                         <button class="btn" id="submitMassRemove">${_('Mass Remove')}</button>
-                        % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                        % if sickrage.app.config.use_subtitles:
                             <input class="btn pull-left" type="button" value="${_('Mass Subtitle')}"
                                    id="submitMassSubtitle"/>
                         % endif
@@ -61,7 +61,7 @@
             </thead>
 
             <tbody>
-                <% myShowList = sickrage.srCore.SHOWLIST %>
+                <% myShowList = sickrage.app.showlist %>
                 <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
 
                 % for curShow in myShowList:
@@ -71,7 +71,7 @@
                         <td align="center">
                             <input type="checkbox" class="showCheck"
                                    id="${curShow.indexerid}"
-                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingUpdated(curShow),sickrage.srCore.SHOWQUEUE.isInUpdateQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRefreshed(curShow), sickrage.srCore.SHOWQUEUE.isInRefreshQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingRenamed(curShow), sickrage.srCore.SHOWQUEUE.isInRenameQueue(curShow), sickrage.srCore.SHOWQUEUE.isBeingSubtitled(curShow), sickrage.srCore.SHOWQUEUE.isInSubtitleQueue(curShow)]))]}/>
+                                   name="${curShow.indexerid}" ${('disabled', '')[bool(not any([sickrage.app.show_queue.isBeingRenamed(curShow), sickrage.app.show_queue.isInRenameQueue(curShow), sickrage.app.show_queue.isInRefreshQueue(curShow), sickrage.app.show_queue.isBeingUpdated(curShow),sickrage.app.show_queue.isInUpdateQueue(curShow), sickrage.app.show_queue.isBeingRefreshed(curShow), sickrage.app.show_queue.isInRefreshQueue(curShow), sickrage.app.show_queue.isBeingRenamed(curShow), sickrage.app.show_queue.isInRenameQueue(curShow), sickrage.app.show_queue.isBeingSubtitled(curShow), sickrage.app.show_queue.isInSubtitleQueue(curShow)]))]}/>
                         </td>
                         <td class="tvShow"><a
                                 href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>

@@ -43,7 +43,7 @@ class ImageCache(object):
         """
         Builds up the full path to the image cache directory
         """
-        return os.path.abspath(os.path.join(sickrage.CACHE_DIR, 'images'))
+        return os.path.abspath(os.path.join(sickrage.app.cache_dir, 'images'))
 
     def _thumbnails_dir(self):
         """
@@ -117,7 +117,7 @@ class ImageCache(object):
         Returns true if a cached poster exists for the given Indexer ID
         """
         poster_path = self.poster_path(indexer_id)
-        sickrage.srCore.srLogger.debug("Checking if file " + str(poster_path) + " exists")
+        sickrage.app.log.debug("Checking if file " + str(poster_path) + " exists")
         return os.path.isfile(poster_path)
 
     def has_banner(self, indexer_id):
@@ -125,7 +125,7 @@ class ImageCache(object):
         Returns true if a cached banner exists for the given Indexer ID
         """
         banner_path = self.banner_path(indexer_id)
-        sickrage.srCore.srLogger.debug("Checking if file " + str(banner_path) + " exists")
+        sickrage.app.log.debug("Checking if file " + str(banner_path) + " exists")
         return os.path.isfile(banner_path)
 
     def has_fanart(self, indexer_id):
@@ -133,7 +133,7 @@ class ImageCache(object):
         Returns true if a cached fanart exists for the given Indexer ID
         """
         fanart_path = self.fanart_path(indexer_id)
-        sickrage.srCore.srLogger.debug("Checking if file " + str(fanart_path) + " exists")
+        sickrage.app.log.debug("Checking if file " + str(fanart_path) + " exists")
         return os.path.isfile(fanart_path)
 
     def has_poster_thumbnail(self, indexer_id):
@@ -141,7 +141,7 @@ class ImageCache(object):
         Returns true if a cached poster thumbnail exists for the given Indexer ID
         """
         poster_thumb_path = self.poster_thumb_path(indexer_id)
-        sickrage.srCore.srLogger.debug("Checking if file " + str(poster_thumb_path) + " exists")
+        sickrage.app.log.debug("Checking if file " + str(poster_thumb_path) + " exists")
         return os.path.isfile(poster_thumb_path)
 
     def has_banner_thumbnail(self, indexer_id):
@@ -149,7 +149,7 @@ class ImageCache(object):
         Returns true if a cached banner exists for the given Indexer ID
         """
         banner_thumb_path = self.banner_thumb_path(indexer_id)
-        sickrage.srCore.srLogger.debug("Checking if file " + str(banner_thumb_path) + " exists")
+        sickrage.app.log.debug("Checking if file " + str(banner_thumb_path) + " exists")
         return os.path.isfile(banner_thumb_path)
 
     BANNER = 1
@@ -168,13 +168,13 @@ class ImageCache(object):
         """
 
         if not os.path.isfile(path):
-            sickrage.srCore.srLogger.warning("Couldn't check the type of " + str(path) + " cause it doesn't exist")
+            sickrage.app.log.warning("Couldn't check the type of " + str(path) + " cause it doesn't exist")
             return None
 
         with io.open(path, 'rb') as fh:
             img_metadata = extractMetadata(guessParser(StringInputStream(fh.read())))
             if not img_metadata:
-                sickrage.srCore.srLogger.debug(
+                sickrage.app.log.debug(
                     "Unable to get metadata from " + str(path) + ", not using your existing image")
                 return None
 
@@ -192,7 +192,7 @@ class ImageCache(object):
             elif 1.7 < img_ratio < 1.8:
                 return self.FANART
             else:
-                sickrage.srCore.srLogger.warning("Image has size ratio of " + str(img_ratio) + ", unknown type")
+                sickrage.app.log.warning("Image has size ratio of " + str(img_ratio) + ", unknown type")
 
     def _cache_image_from_file(self, image_path, img_type, indexer_id):
         """
@@ -212,20 +212,20 @@ class ImageCache(object):
         elif img_type == self.FANART:
             dest_path = self.fanart_path(indexer_id)
         else:
-            sickrage.srCore.srLogger.error("Invalid cache image type: " + str(img_type))
+            sickrage.app.log.error("Invalid cache image type: " + str(img_type))
             return False
 
         # make sure the cache folder exists before we try copying to it
         if not os.path.isdir(self._cache_dir()):
-            sickrage.srCore.srLogger.info("Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
+            sickrage.app.log.info("Image cache dir didn't exist, creating it at " + str(self._cache_dir()))
             os.makedirs(self._cache_dir())
 
         if not os.path.isdir(self._thumbnails_dir()):
-            sickrage.srCore.srLogger.info(
+            sickrage.app.log.info(
                 "Thumbnails cache dir didn't exist, creating it at " + str(self._thumbnails_dir()))
             os.makedirs(self._thumbnails_dir())
 
-        sickrage.srCore.srLogger.info("Copying from " + image_path + " to " + dest_path)
+        sickrage.app.log.info("Copying from " + image_path + " to " + dest_path)
         copyFile(image_path, dest_path)
 
         return True
@@ -259,7 +259,7 @@ class ImageCache(object):
             img_type_name = 'fanart_thumb'
             dest_path = self.fanart_thumb_path(show_obj.indexerid)
         else:
-            sickrage.srCore.srLogger.error("Invalid cache image type: " + str(img_type))
+            sickrage.app.log.error("Invalid cache image type: " + str(img_type))
             return False
 
         # retrieve the image from indexer using the generic metadata class
@@ -277,7 +277,7 @@ class ImageCache(object):
         :param show_obj: TVShow object to cache images for
         """
 
-        sickrage.srCore.srLogger.debug("Checking if we need any cache images for show " + str(show_obj.indexerid))
+        sickrage.app.log.debug("Checking if we need any cache images for show " + str(show_obj.indexerid))
 
         # check if the images are already cached or not
         need_images = {self.POSTER: force or not self.has_poster(show_obj.indexerid),
@@ -291,30 +291,30 @@ class ImageCache(object):
                 not need_images[self.POSTER_THUMB],
                 not need_images[self.BANNER_THUMB],
                 not need_images[self.FANART]]):
-            sickrage.srCore.srLogger.debug("No new cache images needed, not retrieving new ones")
+            sickrage.app.log.debug("No new cache images needed, not retrieving new ones")
             return
 
         # check the show dir for poster or banner images and use them
         if any([need_images[self.POSTER], need_images[self.BANNER], need_images[self.FANART]]):
             if os.path.isdir(show_obj.location):
-                for cur_provider in sickrage.srCore.metadataProvidersDict.values():
-                    sickrage.srCore.srLogger.debug(
+                for cur_provider in sickrage.app.metadata_providers.values():
+                    sickrage.app.log.debug(
                         "Checking if we can use the show image from the " + cur_provider.name + " metadata")
                     if os.path.isfile(cur_provider.get_poster_path(show_obj)):
                         cur_file_name = os.path.abspath(cur_provider.get_poster_path(show_obj))
                         cur_file_type = self.which_type(cur_file_name)
 
                         if cur_file_type is None:
-                            sickrage.srCore.srLogger.warning(
+                            sickrage.app.log.warning(
                                 "Unable to retrieve image type {}, not using the image from {}".format(
                                     unicode(cur_file_type), cur_file_name))
                             continue
 
-                        sickrage.srCore.srLogger.debug("Checking if image " + cur_file_name + " (type " + str(
+                        sickrage.app.log.debug("Checking if image " + cur_file_name + " (type " + str(
                             cur_file_type) + " needs metadata: " + str(need_images[cur_file_type]))
 
                         if cur_file_type in need_images and need_images[cur_file_type]:
-                            sickrage.srCore.srLogger.debug(
+                            sickrage.app.log.debug(
                                 "Found an image in the show dir that doesn't exist in the cache, caching it: " + cur_file_name + ", type " + str(
                                     cur_file_type))
                             self._cache_image_from_file(cur_file_name, cur_file_type, show_obj.indexerid)
@@ -322,10 +322,10 @@ class ImageCache(object):
 
         # download from indexer for missing ones
         for cur_image_type in [self.POSTER, self.BANNER, self.POSTER_THUMB, self.BANNER_THUMB, self.FANART]:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 "Seeing if we still need an image of type " + str(cur_image_type) + ": " + str(
                     need_images[cur_image_type]))
             if cur_image_type in need_images and need_images[cur_image_type]:
                 self._cache_image_from_indexer(show_obj, cur_image_type, force)
 
-        sickrage.srCore.srLogger.info("Done cache check")
+        sickrage.app.log.info("Done cache check")

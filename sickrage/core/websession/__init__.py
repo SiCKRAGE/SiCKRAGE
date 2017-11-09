@@ -62,9 +62,9 @@ class DBCache(object):
                 cache.clear()
 
 
-class srSession(cfscrape.CloudflareScraper):
+class WebSession(cfscrape.CloudflareScraper):
     def __init__(self):
-        super(srSession, self).__init__()
+        super(WebSession, self).__init__()
 
     def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
         if headers is None: headers = {}
@@ -72,32 +72,32 @@ class srSession(cfscrape.CloudflareScraper):
         if proxies is None: proxies = {}
 
         headers['Accept-Encoding'] = 'gzip, deflate'
-        headers["User-Agent"] = sickrage.srCore.USER_AGENT
+        headers["User-Agent"] = sickrage.app.user_agent
 
         # request session ssl verify
-        if sickrage.srCore.srConfig.SSL_VERIFY:
+        if sickrage.app.config.ssl_verify:
             try:
                 verify = certifi.where()
             except:
                 pass
 
         # request session proxies
-        if 'Referer' not in headers and sickrage.srCore.srConfig.PROXY_SETTING:
-            sickrage.srCore.srLogger.debug("Using global proxy: " + sickrage.srCore.srConfig.PROXY_SETTING)
-            scheme, address = urllib2.splittype(sickrage.srCore.srConfig.PROXY_SETTING)
-            address = ('http://{}'.format(sickrage.srCore.srConfig.PROXY_SETTING),
-                       sickrage.srCore.srConfig.PROXY_SETTING)[scheme]
+        if 'Referer' not in headers and sickrage.app.config.proxy_setting:
+            sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.proxy_setting)
+            scheme, address = urllib2.splittype(sickrage.app.config.proxy_setting)
+            address = ('http://{}'.format(sickrage.app.config.proxy_setting),
+                       sickrage.app.config.proxy_setting)[scheme]
             proxies.update({"http": address, "https": address})
             headers.update({'Referer': address})
 
         # setup caching adapter
         if cache:
-            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.DATA_DIR, 'sessions.db'))))
+            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.app.data_dir, 'sessions.db'))))
             self.mount('http://', adapter)
             self.mount('https://', adapter)
 
         # get web response
-        response = super(srSession, self).request(
+        response = super(WebSession, self).request(
             method,
             url,
             headers=headers,
@@ -112,12 +112,12 @@ class srSession(cfscrape.CloudflareScraper):
             response.raise_for_status()
         except requests.exceptions.SSLError as e:
             if ssl.OPENSSL_VERSION_INFO < (1, 0, 1, 5):
-                sickrage.srCore.srLogger.info(
+                sickrage.app.log.info(
                     "SSL Error requesting url: '{}' You have {}, try upgrading OpenSSL to 1.0.1e+".format(
                         e.request.url, ssl.OPENSSL_VERSION))
 
-            if sickrage.srCore.srConfig.SSL_VERIFY:
-                sickrage.srCore.srLogger.info(
+            if sickrage.app.config.ssl_verify:
+                sickrage.app.log.info(
                     "SSL Error requesting url: '{}', try disabling cert verification in advanced settings".format(
                         e.request.url))
         except Exception:
@@ -138,7 +138,7 @@ class srSession(cfscrape.CloudflareScraper):
 
             chmodAsParent(filename)
         except Exception as e:
-            sickrage.srCore.srLogger.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
+            sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
             remove_file_failed(filename)
             return False
 

@@ -1,6 +1,30 @@
 # Changelog
 
-- * d777ab9 - 2017-11-06: Release v9.1.66 
+- * 7a65325 - 2017-11-08: Release v9.1.67 
+- * 5d18ffb - 2017-11-08: Fixed issues with verifying torrent metadata 
+- * 53aa1b8 - 2017-11-08: Updated bt cache urls and method for verifying data from them 
+- * a6240ce - 2017-11-08: Misc typo corrections brought over from previous code refactoring 
+- * d21a0b7 - 2017-11-08: Fixed search issues for HDTorrents provider 
+- * 253e942 - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
+- * 66c64ae - 2017-11-08: Fixed search issues with ThePirateBay torrent provider 
+- * 5127668 - 2017-11-08: Fixed issues with posters overlapping on show list 
+- * 325ab75 - 2017-11-08: Decreased app startup time 
+- * 5cca270 - 2017-11-08: Fixed issue with daemonizing and pidfile&#x27;s 
+- * 90b402d - 2017-11-08: Fixed bad reference 
+- * 73ee12e - 2017-11-08: refactored core config instance variables fixed issues with mediaToSiCKRAGE code 
+- * 79026f8 - 2017-11-08: Spelling corrections 
+- * dd5db5c - 2017-11-08: Updated ThePirateBay url 
+- * b407d9c - 2017-11-08: refactored core code relating to instance variables 
+- * 30c56e0 - 2017-11-08: refactored core code relating to providers 
+- * 32a1762 - 2017-11-07: refactored core variable name srIndexerApi to IndexerApi 
+- * e18ac02 - 2017-11-07: refactored core variable name srConfig to config 
+- * cf804d2 - 2017-11-07: refactored core variable name srLogger to log 
+- * ef549b6 - 2017-11-07: Removed subtitles category for newpct as subtitles can be downloaded via SR instead 
+- * 83efbc5 - 2017-11-07: refactored core variables from main module to core class 
+- * bbe7773 - 2017-11-07: refactored variable name srCore to app 
+- * 4eec63e - 2017-11-06: Added search url for Newpct subtitles 
+- * 9221129 - 2017-11-06: Fixed issue with Newpct torrent provider skipping first result from search results 
+- * 735906d - 2017-11-06: Release v9.1.66 
 - * 9b68632 - 2017-11-06: Fix issue with checking for latest version via git 
 - * 4c2676f - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 
 - * 8a5d431 - 2017-11-06: Fixed issue with post-processing folders and files with unicode characters in their names 

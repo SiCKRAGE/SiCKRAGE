@@ -27,7 +27,7 @@ import sickrage
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
 from sickrage.core.helpers import replaceExtension, indentXML
-from sickrage.indexers import srIndexerApi
+from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
 from sickrage.metadata import GenericMetadata
@@ -163,10 +163,10 @@ class WDTVMetadata(GenericMetadata):
                 break
 
         if not season_dir:
-            sickrage.srCore.srLogger.debug("Unable to find a season dir for season " + str(season))
+            sickrage.app.log.debug("Unable to find a season dir for season " + str(season))
             return None
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.log.debug(
             "Using " + str(season_dir) + "/folder.jpg as season dir for season " + str(season))
 
         return os.path.join(show_obj.location, season_dir, 'folder.jpg')
@@ -181,22 +181,22 @@ class WDTVMetadata(GenericMetadata):
 
         eps_to_write = [ep_obj] + ep_obj.relatedEps
 
-        indexer_lang = ep_obj.show.lang or sickrage.srCore.srConfig.INDEXER_DEFAULT_LANGUAGE
+        indexer_lang = ep_obj.show.lang or sickrage.app.config.indexer_default_language
 
         try:
-            lINDEXER_API_PARMS = srIndexerApi(ep_obj.show.indexer).api_params.copy()
+            lINDEXER_API_PARMS = IndexerApi(ep_obj.show.indexer).api_params.copy()
 
             lINDEXER_API_PARMS['language'] = indexer_lang
 
             if ep_obj.show.dvdorder != 0:
                 lINDEXER_API_PARMS['dvdorder'] = True
 
-            t = srIndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
+            t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
             raise ShowNotFoundException(e.message)
         except indexer_error as e:
-            sickrage.srCore.srLogger.error("Unable to connect to " + srIndexerApi(
+            sickrage.app.log.error("Unable to connect to " + IndexerApi(
                 ep_obj.show.indexer).name + " while creating meta files - skipping - {}".format(e.message))
             return False
 
@@ -208,9 +208,9 @@ class WDTVMetadata(GenericMetadata):
             try:
                 myEp = myShow[curEpToWrite.season][curEpToWrite.episode]
             except (indexer_episodenotfound, indexer_seasonnotfound):
-                sickrage.srCore.srLogger.info(
+                sickrage.app.log.info(
                     "Unable to find episode %dx%d on %s... has it been removed? Should I delete from db?" %
-                    (curEpToWrite.season, curEpToWrite.episode, srIndexerApi(ep_obj.show.indexer).name))
+                    (curEpToWrite.season, curEpToWrite.episode, IndexerApi(ep_obj.show.indexer).name))
                 return None
 
             if ep_obj.season == 0 and not getattr(myEp, 'firstaired', None):

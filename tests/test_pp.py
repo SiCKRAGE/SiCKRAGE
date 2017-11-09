@@ -57,12 +57,12 @@ class PPBasicTests(SiCKRAGETestDBCase):
         show.location = SHOWDIR
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
-        sickrage.srCore.SHOWLIST = [show]
+        sickrage.app.showlist = [show]
         ep = TVEpisode(show, SEASON, EPISODE)
         ep.name = "some ep name"
         ep.saveToDB()
 
-        sickrage.srCore.NAMECACHE.put('show name', 3)
+        sickrage.app.name_cache.put('show name', 3)
         self.pp = PostProcessor(FILEPATH, process_method='move')
         self.assertTrue(self.pp.process)
 

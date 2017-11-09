@@ -32,10 +32,10 @@
             <label for="HistoryLayout" class="badge">${_('Layout:')}
                 <select name="HistoryLayout" class="form-control form-control-inline input-sm"
                         onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'compact']}>
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.app.config.history_layout == 'compact']}>
                         ${_('Compact')}
                     </option>
-                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.srCore.srConfig.HISTORY_LAYOUT == 'detailed']}>
+                    <option value="${srWebRoot}/setHistoryLayout/?layout=detailed" ${('', 'selected')[sickrage.app.config.history_layout == 'detailed']}>
                         ${_('Detailed')}
                     </option>
                 </select>
@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="horizontal-scroll">
-                % if sickrage.srCore.srConfig.HISTORY_LAYOUT == "detailed":
+                % if sickrage.app.config.history_layout == "detailed":
                     <table id="historyTable" class="sickrageTable tablesorter" cellspacing="1" border="0"
                            cellpadding="0">
                         <thead>
@@ -96,8 +96,8 @@
                                         % else:
                                             % if hItem["provider"] > 0:
                                                 % if curStatus in [SNATCHED, FAILED]:
-                                                    % if hItem["provider"].lower() in sickrage.srCore.providersDict.all():
-                                                    <% provider = sickrage.srCore.providersDict.all()[hItem["provider"].lower()] %>
+                                                    % if hItem["provider"].lower() in sickrage.app.search_providers.all():
+                                                    <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
                                                         <img src="${srWebRoot}/images/providers/${provider.imageName}"
                                                              width="16"
                                                              height="16"
@@ -131,7 +131,7 @@
                             <th>${_('Episode')}</th>
                             <th>${_('Snatched')}</th>
                             <th>${_('Downloaded')}</th>
-                            % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                            % if sickrage.app.config.use_subtitles:
                                 <th>${_('Subtitled')}</th>
                             % endif
                             <th>${_('Quality')}</th>
@@ -164,8 +164,8 @@
                                         % for action in sorted(hItem["actions"]):
                                             <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                                             % if curStatus in [SNATCHED, FAILED]:
-                                                % if action["provider"].lower() in sickrage.srCore.providersDict.all():
-                                                <% provider = sickrage.srCore.providersDict.all()[action["provider"].lower()] %>
+                                                % if action["provider"].lower() in sickrage.app.search_providers.all():
+                                                <% provider = sickrage.app.search_providers.all()[action["provider"].lower()] %>
                                                     <img src="${srWebRoot}/images/providers/${provider.imageName}"
                                                          width="16"
                                                          height="16"
@@ -195,7 +195,7 @@
                                             % endif
                                         % endfor
                                     </td>
-                                    % if sickrage.srCore.srConfig.USE_SUBTITLES:
+                                    % if sickrage.app.config.use_subtitles:
                                         <td align="center">
                                             % for action in sorted(hItem["actions"]):
                                                 <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>

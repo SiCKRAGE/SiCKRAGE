@@ -30,10 +30,10 @@ from email.mime.text import MIMEText
 from email.utils import formatdate
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class EmailNotifier(srNotifiers):
+class EmailNotifier(Notifiers):
     def __init__(self):
         super(EmailNotifier, self).__init__()
         self.name = 'email'
@@ -56,11 +56,11 @@ class EmailNotifier(srNotifiers):
         """
         ep_name = ep_name
 
-        if sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSNATCH:
+        if sickrage.app.config.email_notify_onsnatch:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                sickrage.srCore.srLogger.warning('Skipping email notify because there are no configured recipients')
+                sickrage.app.log.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -77,17 +77,17 @@ class EmailNotifier(srNotifiers):
                         msg = MIMEText("Episode Snatched")
 
                 msg['Subject'] = 'Snatched: ' + ep_name
-                msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
-                                  sickrage.srCore.srConfig.EMAIL_FROM,
-                                  sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
-                    sickrage.srCore.srLogger.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.app.log.debug("Snatch notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    sickrage.srCore.srLogger.error("Snatch notification ERROR: %s" % self.last_err)
+                    sickrage.app.log.error("Snatch notification ERROR: %s" % self.last_err)
 
     def _notify_download(self, ep_name, title="Completed:"):
         """
@@ -98,11 +98,11 @@ class EmailNotifier(srNotifiers):
         """
         ep_name = ep_name
 
-        if sickrage.srCore.srConfig.EMAIL_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.email_notify_ondownload:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                sickrage.srCore.srLogger.warning('Skipping email notify because there are no configured recipients')
+                sickrage.app.log.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -119,17 +119,17 @@ class EmailNotifier(srNotifiers):
                         msg = MIMEText('Episode Downloaded')
 
                 msg['Subject'] = 'Downloaded: ' + ep_name
-                msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
                 msg['Date'] = formatdate(localtime=True)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
-                                  sickrage.srCore.srConfig.EMAIL_FROM,
-                                  sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
-                    sickrage.srCore.srLogger.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.app.log.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    sickrage.srCore.srLogger.error("Download notification ERROR: %s" % self.last_err)
+                    sickrage.app.log.error("Download notification ERROR: %s" % self.last_err)
 
     def _notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
@@ -140,11 +140,11 @@ class EmailNotifier(srNotifiers):
         """
         ep_name = ep_name
 
-        if sickrage.srCore.srConfig.EMAIL_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.email_notify_onsubtitledownload:
             show = self._parseEp(ep_name)
             to = self._generate_recipients(show)
             if len(to) == 0:
-                sickrage.srCore.srLogger.warning('Skipping email notify because there are no configured recipients')
+                sickrage.app.log.warning('Skipping email notify because there are no configured recipients')
             else:
                 try:
                     msg = MIMEMultipart('alternative')
@@ -161,16 +161,16 @@ class EmailNotifier(srNotifiers):
                         msg = MIMEText("Episode Subtitle Downloaded")
 
                 msg['Subject'] = lang + ' Subtitle Downloaded: ' + ep_name
-                msg['From'] = sickrage.srCore.srConfig.EMAIL_FROM
+                msg['From'] = sickrage.app.config.email_from
                 msg['To'] = ','.join(to)
-                if self._sendmail(sickrage.srCore.srConfig.EMAIL_HOST, sickrage.srCore.srConfig.EMAIL_PORT,
-                                  sickrage.srCore.srConfig.EMAIL_FROM,
-                                  sickrage.srCore.srConfig.EMAIL_TLS,
-                                  sickrage.srCore.srConfig.EMAIL_USER, sickrage.srCore.srConfig.EMAIL_PASSWORD, to,
+                if self._sendmail(sickrage.app.config.email_host, sickrage.app.config.email_port,
+                                  sickrage.app.config.email_from,
+                                  sickrage.app.config.email_tls,
+                                  sickrage.app.config.email_user, sickrage.app.config.email_password, to,
                                   msg):
-                    sickrage.srCore.srLogger.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
+                    sickrage.app.log.debug("Download notification sent to [%s] for '%s'" % (to, ep_name))
                 else:
-                    sickrage.srCore.srLogger.error("Download notification ERROR: %s" % self.last_err)
+                    sickrage.app.log.error("Download notification ERROR: %s" % self.last_err)
 
     def _notify_version_update(self, new_version="??"):
         pass
@@ -179,13 +179,13 @@ class EmailNotifier(srNotifiers):
         addrs = []
 
         # Grab the global recipients
-        for addr in sickrage.srCore.srConfig.EMAIL_LIST.split(','):
+        for addr in sickrage.app.config.email_list.split(','):
             if (len(addr.strip()) > 0):
                 addrs.append(addr)
 
         # Grab the recipients for the show
         for s in show:
-            for subs in [x['doc'] for x in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True) if
+            for subs in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
                          x['doc']['show_name'] == s]:
                 if subs['notify_list']:
                     for addr in subs['notify_list'].split(','):
@@ -193,17 +193,17 @@ class EmailNotifier(srNotifiers):
                             addrs.append(addr)
 
         addrs = set(addrs)
-        sickrage.srCore.srLogger.debug('Notification recipients: %s' % addrs)
+        sickrage.app.log.debug('Notification recipients: %s' % addrs)
         return addrs
 
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):
-        sickrage.srCore.srLogger.debug('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
+        sickrage.app.log.debug('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
             host, port, smtp_from, use_tls, user, pwd, to))
         try:
             srv = smtplib.SMTP(host, int(port))
         except Exception as e:
-            sickrage.srCore.srLogger.error("Exception generated while sending e-mail: " + str(e))
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.error("Exception generated while sending e-mail: " + str(e))
+            sickrage.app.log.debug(traceback.format_exc())
             return False
 
         if smtpDebug:
@@ -211,13 +211,13 @@ class EmailNotifier(srNotifiers):
         try:
             if (bool(use_tls)) or (len(user) > 0 and len(pwd) > 0):
                 srv.ehlo()
-                sickrage.srCore.srLogger.debug('Sent initial EHLO command!')
+                sickrage.app.log.debug('Sent initial EHLO command!')
             if bool(use_tls):
                 srv.starttls()
-                sickrage.srCore.srLogger.debug('Sent STARTTLS command!')
+                sickrage.app.log.debug('Sent STARTTLS command!')
             if len(user) > 0 and len(pwd) > 0:
                 srv.login(str(user), str(pwd))
-                sickrage.srCore.srLogger.debug('Sent LOGIN command!')
+                sickrage.app.log.debug('Sent LOGIN command!')
 
             srv.sendmail(smtp_from, to, msg.as_string())
             srv.quit()
@@ -232,5 +232,5 @@ class EmailNotifier(srNotifiers):
         sep = " - "
         titles = ep_name.split(sep)
         titles.sort(key=len, reverse=True)
-        sickrage.srCore.srLogger.debug("TITLES: %s" % titles)
+        sickrage.app.log.debug("TITLES: %s" % titles)
         return titles

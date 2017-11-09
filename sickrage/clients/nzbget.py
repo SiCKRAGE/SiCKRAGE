@@ -39,8 +39,8 @@ class NZBGet(object):
         :param proper: True if this is a Proper download, False if not. Defaults to False
         """
 
-        if sickrage.srCore.srConfig.NZBGET_HOST is None:
-            sickrage.srCore.srLogger.error("No NZBget host found in configuration. Please configure it.")
+        if sickrage.app.config.nzbget_host is None:
+            sickrage.app.log.error("No NZBget host found in configuration. Please configure it.")
             return False
 
         dupe_key = ""
@@ -48,35 +48,35 @@ class NZBGet(object):
         addToTop = False
         nzbgetprio = 0
 
-        category = sickrage.srCore.srConfig.NZBGET_CATEGORY
+        category = sickrage.app.config.nzbget_category
         if nzb.show.is_anime:
-            category = sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME
+            category = sickrage.app.config.nzbget_category_anime
 
         url = "%(protocol)s://%(username)s:%(password)s@%(host)s/xmlrpc" % {
-            "protocol": 'https' if sickrage.srCore.srConfig.NZBGET_USE_HTTPS else 'http',
-            "host": sickrage.srCore.srConfig.NZBGET_HOST,
-            "username": sickrage.srCore.srConfig.NZBGET_USERNAME,
-            "password": sickrage.srCore.srConfig.NZBGET_PASSWORD
+            "protocol": 'https' if sickrage.app.config.nzbget_use_https else 'http',
+            "host": sickrage.app.config.nzbget_host,
+            "username": sickrage.app.config.nzbget_username,
+            "password": sickrage.app.config.nzbget_password
         }
 
         nzbGetRPC = xmlrpclib.ServerProxy(url)
 
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
-                sickrage.srCore.srLogger.debug("Successful connected to NZBget")
+                sickrage.app.log.debug("Successful connected to NZBget")
             else:
-                sickrage.srCore.srLogger.error("Successful connected to NZBget, but unable to send a message")
+                sickrage.app.log.error("Successful connected to NZBget, but unable to send a message")
 
         except httplib.socket.error:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.log.error(
                 "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
 
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                sickrage.srCore.srLogger.error("NZBget username or password is incorrect.")
+                sickrage.app.log.error("NZBget username or password is incorrect.")
             else:
-                sickrage.srCore.srLogger.error("Protocol Error: " + e.errmsg)
+                sickrage.app.log.error("Protocol Error: " + e.errmsg)
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score
@@ -89,11 +89,11 @@ class NZBGet(object):
             dupe_key += "-" + str(curEp.season) + "." + str(curEp.episode)
             if date.today() - curEp.airdate <= timedelta(days=7):
                 addToTop = True
-                nzbgetprio = sickrage.srCore.srConfig.NZBGET_PRIORITY
+                nzbgetprio = sickrage.app.config.nzbget_priority
             else:
-                category = sickrage.srCore.srConfig.NZBGET_CATEGORY_BACKLOG
+                category = sickrage.app.config.nzbget_category_backlog
                 if nzb.show.is_anime:
-                    category = sickrage.srCore.srConfig.NZBGET_CATEGORY_ANIME_BACKLOG
+                    category = sickrage.app.config.nzbget_category_anime_backlog
 
         if nzb.quality != Quality.UNKNOWN:
             dupe_score = nzb.quality * 100
@@ -105,8 +105,8 @@ class NZBGet(object):
             data = nzb.extraInfo[0]
             nzbcontent64 = standard_b64encode(data)
 
-        sickrage.srCore.srLogger.info("Sending NZB to NZBget")
-        sickrage.srCore.srLogger.debug("URL: " + url)
+        sickrage.app.log.info("Sending NZB to NZBget")
+        sickrage.app.log.debug("URL: " + url)
 
         try:
             # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
@@ -118,7 +118,7 @@ class NZBGet(object):
                 else:
                     if nzb.resultType == "nzb":
                         try:
-                            nzbcontent64 = standard_b64encode(sickrage.srCore.srWebSession.get(nzb.url).text)
+                            nzbcontent64 = standard_b64encode(sickrage.app.wsession.get(nzb.url).text)
                         except Exception:
                             return False
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
@@ -146,12 +146,12 @@ class NZBGet(object):
                                                         nzb.url)
 
             if nzbget_result:
-                sickrage.srCore.srLogger.debug("NZB sent to NZBget successfully")
+                sickrage.app.log.debug("NZB sent to NZBget successfully")
                 return True
             else:
-                sickrage.srCore.srLogger.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.app.log.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.srCore.srLogger.error(
+            sickrage.app.log.error(
                 "Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

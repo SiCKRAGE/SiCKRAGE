@@ -27,7 +27,7 @@ from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.ui import ProgressIndicator
 
 
-class srBacklogSearcher(object):
+class BacklogSearcher(object):
     def __init__(self, *args, **kwargs):
         self.name = "BACKLOG"
         self.lock = threading.Lock()
@@ -39,14 +39,14 @@ class srBacklogSearcher(object):
         self._resetPI()
 
     def run(self, force=False):
-        if self.amActive or sickrage.srCore.srConfig.DEVELOPER and not force:
+        if self.amActive or sickrage.app.config.developer and not force:
             return
 
         # set thread name
         threading.currentThread().setName(self.name)
 
         # set cycle time
-        self.cycleTime = sickrage.srCore.srConfig.BACKLOG_SEARCHER_FREQ / 60 / 24
+        self.cycleTime = sickrage.app.config.backlog_searcher_freq / 60 / 24
 
         try:
             self.searchBacklog()
@@ -74,13 +74,13 @@ class srBacklogSearcher(object):
             return None
 
     def am_running(self):
-        sickrage.srCore.srLogger.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
+        sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
         return (not self.amWaiting) and self.amActive
 
     def searchBacklog(self, which_shows=None):
 
         if self.amActive:
-            sickrage.srCore.srLogger.debug("Backlog is still running, not starting it again")
+            sickrage.app.log.debug("Backlog is still running, not starting it again")
             return
 
         self.amActive = True
@@ -89,7 +89,7 @@ class srBacklogSearcher(object):
         if which_shows:
             show_list = which_shows
         else:
-            show_list = sickrage.srCore.SHOWLIST
+            show_list = sickrage.app.showlist
 
         self._lastBacklog = self._get_lastBacklog()
 
@@ -97,10 +97,10 @@ class srBacklogSearcher(object):
         fromDate = datetime.date.fromordinal(1)
 
         if not which_shows and not ((curDate - self._lastBacklog) >= self.cycleTime):
-            sickrage.srCore.srLogger.info(
+            sickrage.app.log.info(
                 "Running limited backlog on missed episodes " + str(
-                    sickrage.srCore.srConfig.BACKLOG_DAYS) + " day(s) and older only")
-            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.srCore.srConfig.BACKLOG_DAYS)
+                    sickrage.app.config.backlog_days) + " day(s) and older only")
+            fromDate = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
@@ -112,9 +112,9 @@ class srBacklogSearcher(object):
 
             for season, segment in segments.items():
                 self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
-                sickrage.srCore.SEARCHQUEUE.put(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
+                sickrage.app.search_queue.put(BacklogQueueItem(curShow, segment))  # @UndefinedVariable
             else:
-                sickrage.srCore.srLogger.debug(
+                sickrage.app.log.debug(
                     "Nothing needs to be downloaded for {show_name}, skipping".format(show_name=curShow.name))
 
         # don't consider this an actual backlog search if we only did recent eps
@@ -127,9 +127,9 @@ class srBacklogSearcher(object):
 
     def _get_lastBacklog(self):
 
-        sickrage.srCore.srLogger.debug("Retrieving the last check time from the DB")
+        sickrage.app.log.debug("Retrieving the last check time from the DB")
 
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('info', with_doc=True)]
+        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
 
         if len(dbData) == 0:
             lastBacklog = 1
@@ -144,18 +144,18 @@ class srBacklogSearcher(object):
 
     def _get_segments(self, show, fromDate):
         if show.paused:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 "Skipping backlog for {show_name} because the show is paused".format(show_name=show.name))
             return {}
 
         anyQualities, bestQualities = Quality.splitQuality(show.quality)
 
-        sickrage.srCore.srLogger.debug("Seeing if we need anything from {}".format(show.name))
+        sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
         wanted = {}
         for result in [x['doc'] for x in
-                       sickrage.srCore.mainDB.db.get_many('tv_episodes', show.indexerid, with_doc=True)
+                       sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
                        if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
             curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
@@ -183,18 +183,18 @@ class srBacklogSearcher(object):
 
     def _set_lastBacklog(self, when):
 
-        sickrage.srCore.srLogger.debug("Setting the last backlog in the DB to " + str(when))
+        sickrage.app.log.debug("Setting the last backlog in the DB to " + str(when))
 
-        dbData = [x['doc'] for x in sickrage.srCore.mainDB.db.all('info', with_doc=True)]
+        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
         if len(dbData) == 0:
-            sickrage.srCore.mainDB.db.insert({
+            sickrage.app.main_db.db.insert({
                 '_t': 'info',
                 'last_backlog': str(when),
                 'last_indexer': 0
             })
         else:
             dbData[0]['last_backlog'] = str(when)
-            sickrage.srCore.mainDB.db.update(dbData[0])
+            sickrage.app.main_db.db.update(dbData[0])
 
     def get_backlog_cycle_time(self):
-        return max([sickrage.srCore.srConfig.DAILY_SEARCHER_FREQ * 4, 30])
+        return max([sickrage.app.config.daily_searcher_freq * 4, 30])

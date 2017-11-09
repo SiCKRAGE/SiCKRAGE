@@ -47,7 +47,7 @@ def test_generator(curData, name, provider, forceSearch):
         show.saveToDB()
         show.loadFromDB(skipNFO=True)
 
-        sickrage.srCore.SHOWLIST.append(show)
+        sickrage.app.showlist.append(show)
 
         for epNumber in curData["e"]:
             episode = TVEpisode(show, curData["s"], epNumber)
@@ -116,7 +116,7 @@ for forceSearch in (True, False):
     for name, curData in tests.items():
         fname = name.replace(' ', '_')
 
-        for providerID, providerObj in sickrage.srCore.providersDict.all().items():
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
             if providerObj.type == TorrentProvider.type:
                 if forceSearch:
                     test_name = 'test_manual_%s_%s_%s' % (fname, curData["tvdbid"], providerObj.name)

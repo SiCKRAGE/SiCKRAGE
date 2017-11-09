@@ -85,7 +85,7 @@ class TVChaosUKProvider(TorrentProvider):
                 elif ep_obj.show.anime:
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
-                    ep_string += sickrage.srCore.srConfig.NAMING_EP_TYPE[2] % {'seasonnumber': ep_obj.scene_season,
+                    ep_string += sickrage.app.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                                'episodenumber': ep_obj.scene_episode}
 
                 if add_string:
@@ -96,19 +96,19 @@ class TVChaosUKProvider(TorrentProvider):
         return [search_string]
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username, 'password': self.password}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
         if re.search('Error: Username or password incorrect!', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -129,18 +129,18 @@ class TVChaosUKProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 search_params['keywords'] = search_string.strip()
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(self.urls['search'], params=search_params).text
+                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
                     continue
 
                 with bs4_parser(data) as html:
@@ -174,10 +174,10 @@ class TVChaosUKProvider(TorrentProvider):
                                     'leechers': leechers, 'hash': ''}
 
                             if mode != 'RSS':
-                                sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                                sickrage.app.log.debug("Found result: {}".format(title))
 
                             results.append(item)
                         except Exception:
-                            sickrage.srCore.srLogger.error("Failed parsing provider.")
+                            sickrage.app.log.error("Failed parsing provider.")
 
         return results

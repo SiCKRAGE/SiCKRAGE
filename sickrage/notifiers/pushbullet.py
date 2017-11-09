@@ -23,10 +23,10 @@ import traceback
 from urlparse import urljoin
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class PushbulletNotifier(srNotifiers):
+class PushbulletNotifier(Notifiers):
     def __init__(self):
         super(PushbulletNotifier, self).__init__()
         self.name = 'pushbullet'
@@ -34,7 +34,7 @@ class PushbulletNotifier(srNotifiers):
         self.TEST_EVENT = 'Test'
 
     def test_notify(self, pushbullet_api):
-        sickrage.srCore.srLogger.debug("Sending a test Pushbullet notification.")
+        sickrage.app.log.debug("Sending a test Pushbullet notification.")
         return self._sendPushbullet(
             pushbullet_api,
             event=self.TEST_EVENT,
@@ -43,48 +43,48 @@ class PushbulletNotifier(srNotifiers):
         )
 
     def get_devices(self, pushbullet_api):
-        sickrage.srCore.srLogger.debug("Retrieving Pushbullet device list.")
+        sickrage.app.log.debug("Retrieving Pushbullet device list.")
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
-            return sickrage.srCore.srWebSession.get(urljoin(self.url, 'devices'), headers=headers).text
+            return sickrage.app.wsession.get(urljoin(self.url, 'devices'), headers=headers).text
         except Exception:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSNATCH:
+        if sickrage.app.config.pushbullet_notify_onsnatch:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_SNATCH] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONDOWNLOAD:
+        if sickrage.app.config.pushbullet_notify_ondownload:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.PUSHBULLET_NOTIFY_ONSUBTITLEDOWNLOAD:
+        if sickrage.app.config.pushbullet_notify_onsubtitledownload:
             self._sendPushbullet(pushbullet_api=None,
                                  event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.srConfig.USE_PUSHBULLET:
+        if sickrage.app.config.use_pushbullet:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_GIT_UPDATE],
                                  message=self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT] + new_version)
 
     def _sendPushbullet(self, pushbullet_api=None, pushbullet_device=None, event=None, message=None, force=False):
-        if not (sickrage.srCore.srConfig.USE_PUSHBULLET or force):
+        if not (sickrage.app.config.use_pushbullet or force):
             return False
 
-        pushbullet_api = pushbullet_api or sickrage.srCore.srConfig.PUSHBULLET_API
-        pushbullet_device = pushbullet_device or sickrage.srCore.srConfig.PUSHBULLET_DEVICE
+        pushbullet_api = pushbullet_api or sickrage.app.config.pushbullet_api
+        pushbullet_device = pushbullet_device or sickrage.app.config.pushbullet_device
 
-        sickrage.srCore.srLogger.debug("Pushbullet event: %r" % event)
-        sickrage.srCore.srLogger.debug("Pushbullet message: %r" % message)
-        sickrage.srCore.srLogger.debug("Pushbullet api: %r" % pushbullet_api)
-        sickrage.srCore.srLogger.debug("Pushbullet devices: %r" % pushbullet_device)
+        sickrage.app.log.debug("Pushbullet event: %r" % event)
+        sickrage.app.log.debug("Pushbullet message: %r" % message)
+        sickrage.app.log.debug("Pushbullet api: %r" % pushbullet_api)
+        sickrage.app.log.debug("Pushbullet devices: %r" % pushbullet_device)
 
         post_data = {
             'title': event.encode('utf-8'),
@@ -98,29 +98,29 @@ class PushbulletNotifier(srNotifiers):
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
-            response = sickrage.srCore.srWebSession.post(
+            response = sickrage.app.wsession.post(
                 urljoin(self.url, 'pushes'),
                 data=json.dumps(post_data),
                 headers=headers
             )
         except Exception:
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
         if response.status_code == 410:
-            sickrage.srCore.srLogger.debug('Pushbullet authorization failed')
+            sickrage.app.log.debug('Pushbullet authorization failed')
             return False
 
         if not response.ok:
-            sickrage.srCore.srLogger.debug('Pushbullet call failed with error code %r' % response.status_code)
+            sickrage.app.log.debug('Pushbullet call failed with error code %r' % response.status_code)
             return False
 
-        sickrage.srCore.srLogger.debug("Pushbullet response: %r" % response.text)
+        sickrage.app.log.debug("Pushbullet response: %r" % response.text)
 
         if not response.text:
-            sickrage.srCore.srLogger.error("Pushbullet notification failed.")
+            sickrage.app.log.error("Pushbullet notification failed.")
             return False
 
-        sickrage.srCore.srLogger.debug("Pushbullet notifications sent.")
+        sickrage.app.log.debug("Pushbullet notifications sent.")
         return (True, response.text)[event is self.TEST_EVENT or event is None]

@@ -26,17 +26,17 @@ import sickrage
 
 def getFeed(url, params=None, request_headers=None, handlers=None):
     try:
-        resp = sickrage.srCore.srWebSession.get(url, params=params)
+        resp = sickrage.app.wsession.get(url, params=params)
         if resp.ok:
             return feedparser.parse(
                 resp.text,
-                agent=sickrage.srCore.USER_AGENT,
+                agent=sickrage.app.user_agent,
                 etag=False,
                 modified=False,
                 request_headers=request_headers,
                 handlers=handlers
             )
     except Exception as e:
-        sickrage.srCore.srLogger.debug("RSS Error: {}".format(e.message))
+        sickrage.app.log.debug("RSS Error: {}".format(e.message))
 
     return FeedParserDict()

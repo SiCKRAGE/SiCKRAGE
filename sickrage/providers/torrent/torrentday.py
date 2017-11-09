@@ -63,11 +63,11 @@ class TorrentDayProvider(TorrentProvider):
             return results
 
         for mode in search_params.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_params[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 search_string = '+'.join(search_string.split())
 
@@ -78,10 +78,10 @@ class TorrentDayProvider(TorrentProvider):
                     post_data.update({'free': 'on'})
 
                 try:
-                    data = sickrage.srCore.srWebSession.post(self.urls['search'], data=post_data).json()
+                    data = sickrage.app.wsession.post(self.urls['search'], data=post_data).json()
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -116,10 +116,10 @@ class TorrentDayProvider(TorrentProvider):
                         'leechers': leechers, 'hash': ''}
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Found result: {}".format(title))
+                    sickrage.app.log.debug("Found result: {}".format(title))
 
                 results.append(item)
             except Exception:
-                sickrage.srCore.srLogger.error("Failed parsing provider.")
+                sickrage.app.log.error("Failed parsing provider.")
 
         return results

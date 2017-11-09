@@ -1,7 +1,7 @@
 <%!
     import sickrage
     from sickrage.core.helpers import anon_url
-    from sickrage.indexers import srIndexerApi
+    from sickrage.indexers import IndexerApi
 %>
 
 <table id="addRootDirTable" class="sickrageTable tablesorter">
@@ -26,8 +26,8 @@
 
                     if curDir['existing_info'][0]:
                         indexer = curDir['existing_info'][2]
-                    elif sickrage.srCore.srConfig.INDEXER_DEFAULT > 0:
-                        indexer = sickrage.srCore.srConfig.INDEXER_DEFAULT
+                    elif sickrage.app.config.indexer_default > 0:
+                        indexer = sickrage.app.config.indexer_default
                 %>
 
                 <tr>
@@ -36,14 +36,14 @@
                     <td><label for="${show_id}">${curDir['display_dir']}</label></td>
                     % if curDir['existing_info'][1] and indexer > 0:
                         <td>
-                            <a href="${anon_url(srIndexerApi(indexer).config['show_url'], curDir['existing_info'][0])}">${curDir['existing_info'][1]}</a>
+                            <a href="${anon_url(IndexerApi(indexer).config['show_url'], curDir['existing_info'][0])}">${curDir['existing_info'][1]}</a>
                         </td>
                     % else:
                         <td>?</td>
                     % endif
                     <td align="center">
                         <select name="indexer">
-                            % for curIndexer in srIndexerApi().indexers.items():
+                            % for curIndexer in IndexerApi().indexers.items():
                                 <option value="${curIndexer[0]}" ${('', 'selected')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
                             % endfor
                         </select>

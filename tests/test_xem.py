@@ -33,12 +33,12 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+        for s in [s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
             try:
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
-                sickrage.srCore.SHOWLIST.append(curShow)
+                sickrage.app.showlist.append(curShow)
             except Exception:
                 pass
 
@@ -47,12 +47,12 @@ class XEMBasicTests(SiCKRAGETestDBCase):
         Populates the showList with shows from the database
         """
 
-        for s in [s['doc'] for s in sickrage.srCore.mainDB.db.all('tv_shows', with_doc=True)]:
+        for s in [s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
             try:
                 curShow = TVShow(int(s["indexer"]), int(s["indexer_id"]))
                 curShow.saveToDB()
                 curShow.loadFromDB(skipNFO=True)
-                sickrage.srCore.SHOWLIST.append(curShow)
+                sickrage.app.showlist.append(curShow)
             except Exception as e:
                 print "There was an error creating the show"
 

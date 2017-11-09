@@ -25,10 +25,10 @@ from ssl import SSLError
 from urllib import urlencode
 
 import sickrage
-from sickrage.notifiers import srNotifiers
+from sickrage.notifiers import Notifiers
 
 
-class PushalotNotifier(srNotifiers):
+class PushalotNotifier(Notifiers):
     def __init__(self):
         super(PushalotNotifier, self).__init__()
         self.name = 'pushalot'
@@ -38,39 +38,39 @@ class PushalotNotifier(srNotifiers):
                                   message="Testing Pushalot settings from SiCKRAGE", force=True)
 
     def _notify_snatch(self, ep_name):
-        if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSNATCH:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_onsnatch:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SNATCH],
                                message=ep_name)
 
     def _notify_download(self, ep_name):
-        if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONDOWNLOAD:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_ondownload:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                                message=ep_name)
 
     def _notify_subtitle_download(self, ep_name, lang):
-        if sickrage.srCore.srConfig.PUSHALOT_NOTIFY_ONSUBTITLEDOWNLOAD:
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
+        if sickrage.app.config.pushalot_notify_onsubtitledownload:
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
 
     def _notify_version_update(self, new_version="??"):
-        if sickrage.srCore.srConfig.USE_PUSHALOT:
+        if sickrage.app.config.use_pushalot:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
-            self._sendPushalot(pushalot_authorizationtoken=sickrage.srCore.srConfig.PUSHALOT_AUTHORIZATIONTOKEN,
+            self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=title,
                                message=update_text + new_version)
 
     def _sendPushalot(self, pushalot_authorizationtoken=None, event=None, message=None, force=False):
 
-        if not sickrage.srCore.srConfig.USE_PUSHALOT and not force:
+        if not sickrage.app.config.use_pushalot and not force:
             return False
 
-        sickrage.srCore.srLogger.debug("Pushalot event: " + event)
-        sickrage.srCore.srLogger.debug("Pushalot message: " + message)
-        sickrage.srCore.srLogger.debug("Pushalot api: " + pushalot_authorizationtoken)
+        sickrage.app.log.debug("Pushalot event: " + event)
+        sickrage.app.log.debug("Pushalot message: " + message)
+        sickrage.app.log.debug("Pushalot api: " + pushalot_authorizationtoken)
 
         http_handler = HTTPSConnection("pushalot.com")
 
@@ -84,17 +84,17 @@ class PushalotNotifier(srNotifiers):
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
                                  body=urlencode(data))
         except (SSLError, HTTPException, socket.error):
-            sickrage.srCore.srLogger.error("Pushalot notification failed.")
+            sickrage.app.log.error("Pushalot notification failed.")
             return False
         response = http_handler.getresponse()
         request_status = response.status
 
         if request_status == 200:
-            sickrage.srCore.srLogger.debug("Pushalot notifications sent.")
+            sickrage.app.log.debug("Pushalot notifications sent.")
             return True
         elif request_status == 410:
-            sickrage.srCore.srLogger.error("Pushalot auth failed: %s" % response.reason)
+            sickrage.app.log.error("Pushalot auth failed: %s" % response.reason)
             return False
         else:
-            sickrage.srCore.srLogger.error("Pushalot notification failed.")
+            sickrage.app.log.error("Pushalot notification failed.")
             return False

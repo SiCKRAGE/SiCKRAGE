@@ -79,7 +79,7 @@ class DownloadStationAPI(GenericClient):
         try:
             resp = self._response.json()
         except (ValueError, AttributeError):
-            sickrage.srCore.srLogger.info(
+            sickrage.app.log.info(
                 'Could not convert response to json, check the host:port: {!r}'.format(self.response))
             return False
 
@@ -87,7 +87,7 @@ class DownloadStationAPI(GenericClient):
             error_code = resp.get('error', {}).get('code')
             api_method = resp.get('method', 'generic')
             log_string = self.error_map.get(api_method)[error_code]
-            sickrage.srCore.srLogger.info('{}: {}'.format(self.name, log_string))
+            sickrage.app.log.info('{}: {}'.format(self.name, log_string))
         elif resp.get('data', {}).get('sid'):
             self.post_task['_sid'] = resp['data']['sid']
 
@@ -113,9 +113,9 @@ class DownloadStationAPI(GenericClient):
 
         try:
             # login to API
-            self.response = sickrage.srCore.srWebSession.get(self.urls['auth'],
+            self.response = sickrage.app.wsession.get(self.urls['auth'],
                                                              params=params,
-                                                             verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                             verify=bool(sickrage.app.config.torrent_verify_cert))
 
             # get sid
             self.auth = self.response
@@ -138,8 +138,8 @@ class DownloadStationAPI(GenericClient):
 
     def _send_dsm_request(self, method, data, **kwargs):
 
-        if sickrage.srCore.srConfig.TORRENT_PATH:
-            data['destination'] = sickrage.srCore.srConfig.TORRENT_PATH
+        if sickrage.app.config.torrent_path:
+            data['destination'] = sickrage.app.config.torrent_path
 
         self._request(method=method, data=data, **kwargs)
         return self.response

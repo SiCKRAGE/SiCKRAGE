@@ -50,7 +50,7 @@ class AlphaRatioProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.srCore.srWebSession.cookies).values()):
+        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -59,14 +59,14 @@ class AlphaRatioProvider(TorrentProvider):
                         'login': 'submit'}
 
         try:
-            response = sickrage.srCore.srWebSession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.srCore.srLogger.warning('Unable to connect to provider')
+            sickrage.app.log.warning('Unable to connect to provider')
             return False
 
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
-            sickrage.srCore.srLogger.warning(
+            sickrage.app.log.warning(
                 "Invalid username or password. Check your settings".format(self.name))
             return False
 
@@ -79,20 +79,20 @@ class AlphaRatioProvider(TorrentProvider):
             return results
 
         for mode in search_strings.keys():
-            sickrage.srCore.srLogger.debug("Search Mode: %s" % mode)
+            sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
                 if mode != 'RSS':
-                    sickrage.srCore.srLogger.debug("Search string: %s " % search_string)
+                    sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string, self.catagories)
-                sickrage.srCore.srLogger.debug("Search URL: %s" % searchURL)
+                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
-                    data = sickrage.srCore.srWebSession.get(searchURL).text
+                    data = sickrage.app.wsession.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.srCore.srLogger.debug("No data returned from provider")
+                    sickrage.app.log.debug("No data returned from provider")
 
         return results
 
@@ -120,7 +120,7 @@ class AlphaRatioProvider(TorrentProvider):
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
-                sickrage.srCore.srLogger.debug("Data returned from provider does not contain any torrents")
+                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
             # '', '', 'Name /Year', 'Files', 'Time', 'Size', 'Snatches', 'Seeders', 'Leechers'
@@ -145,7 +145,7 @@ class AlphaRatioProvider(TorrentProvider):
                     # Filter unseeded torrent
                     if seeders < min(self.minseed, 1):
                         if mode != 'RSS':
-                            sickrage.srCore.srLogger.debug("Discarding torrent because it doesn't meet the"
+                            sickrage.app.log.debug("Discarding torrent because it doesn't meet the"
                                                            " minimum seeders: {0}. Seeders: {1}".format(title, seeders))
                         continue
 
@@ -161,10 +161,10 @@ class AlphaRatioProvider(TorrentProvider):
                     }
 
                     if mode != 'RSS':
-                        sickrage.srCore.srLogger.debug('Found result: {}'.format(title))
+                        sickrage.app.log.debug('Found result: {}'.format(title))
 
                     results.append(item)
                 except Exception:
-                    sickrage.srCore.srLogger.error('Failed parsing provider')
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results

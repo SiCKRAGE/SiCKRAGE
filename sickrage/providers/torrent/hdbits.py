@@ -49,7 +49,7 @@ class HDBitsProvider(TorrentProvider):
     def _check_auth_from_data(self, parsedJSON):
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
-                sickrage.srCore.srLogger.warning(
+                sickrage.app.log.warning(
                     "Invalid username or password. Check your settings".format(self.name))
 
         return True
@@ -75,12 +75,12 @@ class HDBitsProvider(TorrentProvider):
         # FIXME
         results = []
 
-        sickrage.srCore.srLogger.debug("Search string: %s" % search_params)
+        sickrage.app.log.debug("Search string: %s" % search_params)
 
         self._check_auth()
 
         try:
-            parsedJSON = sickrage.srCore.srWebSession.post(self.urls['search'], data=search_params).json()
+            parsedJSON = sickrage.app.wsession.post(self.urls['search'], data=search_params).json()
         except Exception:
             return []
 
@@ -89,7 +89,7 @@ class HDBitsProvider(TorrentProvider):
                 for item in parsedJSON['data']:
                     results.append(item)
             else:
-                sickrage.srCore.srLogger.error("Resulting JSON from provider isn't correct, not parsing it")
+                sickrage.app.log.error("Resulting JSON from provider isn't correct, not parsing it")
 
         # sort by number of seeders
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)
@@ -156,7 +156,7 @@ class HDBitsCache(TVCache):
         results = []
 
         try:
-            resp = sickrage.srCore.srWebSession.post(self.provider.urls['rss'],
+            resp = sickrage.app.wsession.post(self.provider.urls['rss'],
                                                      data=self.provider._make_post_data_JSON()).json()
 
             if self.provider._check_auth_from_data(resp):

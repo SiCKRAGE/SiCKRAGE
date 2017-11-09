@@ -42,11 +42,11 @@ class TransmissionAPI(GenericClient):
         self.url = self.host + self.rpcurl + '/rpc'
 
     def _get_auth(self):
-        self.response = sickrage.srCore.srWebSession.post(self.url,
+        self.response = sickrage.app.wsession.post(self.url,
                                                           data=json.dumps({'method': 'session-get', }),
                                                           timeout=120,
                                                           auth=(self.username, self.password),
-                                                          verify=bool(sickrage.srCore.srConfig.TORRENT_VERIFY_CERT))
+                                                          verify=bool(sickrage.app.config.torrent_verify_cert))
 
         # get auth session header
         self.auth = self.response.headers['x-transmission-session-id'] if self.response is not None else None
@@ -67,8 +67,8 @@ class TransmissionAPI(GenericClient):
     def _add_torrent_uri(self, result):
 
         arguments = {'filename': result.url,
-                     'paused': 1 if sickrage.srCore.srConfig.TORRENT_PAUSED else 0,
-                     'download-dir': sickrage.srCore.srConfig.TORRENT_PATH}
+                     'paused': 1 if sickrage.app.config.torrent_paused else 0,
+                     'download-dir': sickrage.app.config.torrent_path}
 
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add'})
@@ -79,8 +79,8 @@ class TransmissionAPI(GenericClient):
     def _add_torrent_file(self, result):
 
         arguments = {'metainfo': b64encode(result.content),
-                     'paused': 1 if sickrage.srCore.srConfig.TORRENT_PAUSED else 0,
-                     'download-dir': sickrage.srCore.srConfig.TORRENT_PATH}
+                     'paused': 1 if sickrage.app.config.torrent_paused else 0,
+                     'download-dir': sickrage.app.config.torrent_path}
 
         post_data = json.dumps({'arguments': arguments,
                                 'method': 'torrent-add'})
@@ -115,8 +115,8 @@ class TransmissionAPI(GenericClient):
 
     def _set_torrent_seed_time(self, result):
 
-        if sickrage.srCore.srConfig.TORRENT_SEED_TIME and sickrage.srCore.srConfig.TORRENT_SEED_TIME != -1:
-            time = int(60 * float(sickrage.srCore.srConfig.TORRENT_SEED_TIME))
+        if sickrage.app.config.torrent_seed_time and sickrage.app.config.torrent_seed_time != -1:
+            time = int(60 * float(sickrage.app.config.torrent_seed_time))
             arguments = {'ids': [result.hash],
                          'seedIdleLimit': time,
                          'seedIdleMode': 1}
@@ -140,7 +140,7 @@ class TransmissionAPI(GenericClient):
             arguments['priority-high'] = []
             # move torrent to the top if the queue
             arguments['queuePosition'] = 0
-            if sickrage.srCore.srConfig.TORRENT_HIGH_BANDWIDTH:
+            if sickrage.app.config.torrent_high_bandwidth:
                 arguments['bandwidthPriority'] = 1
         else:
             arguments['priority-normal'] = []

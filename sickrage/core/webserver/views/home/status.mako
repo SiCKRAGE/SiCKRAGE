@@ -43,7 +43,7 @@
                     <tbody>
                         % for schedulerName, scheduler in schedulerList.items():
                             <% service = getattr(sickrage.srCore, scheduler) %>
-                            <% job = sickrage.srCore.srScheduler.get_job(service.name) %>
+                            <% job = sickrage.app.scheduler.get_job(service.name) %>
                             <% enabled = bool(getattr(job, 'next_run_time', False)) %>
                             <tr>
                                 <td>${schedulerName}</td>
@@ -112,39 +112,39 @@
                 </tr>
                 </thead>
                 <tbody>
-                    % if sickrage.srCore.SHOWQUEUE.currentItem is not None:
+                    % if sickrage.app.show_queue.currentItem is not None:
                         <tr>
                         % try:
-                            <% showindexerid = sickrage.srCore.SHOWQUEUE.currentItem.show.indexerid %>
+                            <% showindexerid = sickrage.app.show_queue.currentItem.show.indexerid %>
                             <td>${showindexerid}</td>
                         % except Exception:
                             <td></td>
                         % endtry
                         % try:
-                            <% showname = sickrage.srCore.SHOWQUEUE.currentItem.show.name %>
+                            <% showname = sickrage.app.show_queue.currentItem.show.name %>
                             <td>${showname}</td>
                         % except Exception:
-                            % if sickrage.srCore.SHOWQUEUE.currentItem.action_id == ShowQueueActions.ADD:
-                                <td>${sickrage.srCore.SHOWQUEUE.currentItem.showDir}</td>
+                            % if sickrage.app.show_queue.currentItem.action_id == ShowQueueActions.ADD:
+                                <td>${sickrage.app.show_queue.currentItem.showDir}</td>
                             % else:
                                 <td></td>
                             % endif
                         % endtry
-                            <td>${sickrage.srCore.SHOWQUEUE.currentItem.is_alive()}</td>
-                            % if sickrage.srCore.SHOWQUEUE.currentItem.priority == 10:
+                            <td>${sickrage.app.show_queue.currentItem.is_alive()}</td>
+                            % if sickrage.app.show_queue.currentItem.priority == 10:
                                 <td>${_('LOW')}</td>
-                            % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 20:
+                            % elif sickrage.app.show_queue.currentItem.priority == 20:
                                 <td>${_('NORMAL')}</td>
-                            % elif sickrage.srCore.SHOWQUEUE.currentItem.priority == 30:
+                            % elif sickrage.app.show_queue.currentItem.priority == 30:
                                 <td>${_('HIGH')}</td>
                             % else:
-                                <td>${sickrage.srCore.SHOWQUEUE.currentItem.priority}</td>
+                                <td>${sickrage.app.show_queue.currentItem.priority}</td>
                             % endif
-                            <td>${sickrage.srCore.SHOWQUEUE.currentItem.added.strftime(dateTimeFormat)}</td>
-                            <td>${ShowQueueActions.names[sickrage.srCore.SHOWQUEUE.currentItem.action_id]}</td>
+                            <td>${sickrage.app.show_queue.currentItem.added.strftime(dateTimeFormat)}</td>
+                            <td>${ShowQueueActions.names[sickrage.app.show_queue.currentItem.action_id]}</td>
                         </tr>
                     % endif
-                    % for __, __, item in sickrage.srCore.SHOWQUEUE.queue:
+                    % for __, __, item in sickrage.app.show_queue.queue:
                         <tr>
                         % try:
                             <% showindexerid = item.show.indexerid %>
@@ -193,10 +193,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                    % if sickrage.srCore.srConfig.TV_DOWNLOAD_DIR:
+                    % if sickrage.app.config.tv_download_dir:
                         <tr>
                             <td>${_('TV Download Directory')}</td>
-                            <td>${sickrage.srCore.srConfig.TV_DOWNLOAD_DIR}</td>
+                            <td>${sickrage.app.config.tv_download_dir}</td>
                             % if tvdirFree is not False:
                                 <td align="middle">${tvdirFree}</td>
                             % else:

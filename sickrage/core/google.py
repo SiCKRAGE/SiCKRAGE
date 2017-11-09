@@ -23,7 +23,7 @@ from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 import sickrage
 
 
-class googleAuth(object):
+class GoogleAuth(object):
     def __init__(self):
         self.client_id = '48901323822-ebum0n1ago1bo2dku4mqm9l6kl2j60uv.apps.googleusercontent.com'
         self.client_secret = 'vFQy_bojwJ1f2X0hYD3wPu7U'
@@ -45,7 +45,7 @@ class googleAuth(object):
 
     def refresh_credentials(self):
         if isinstance(self.credentials, OAuth2Credentials):
-            self.credentials.refresh(sickrage.srCore.srWebSession)
+            self.credentials.refresh(sickrage.app.srWebSession)
 
     def logout(self):
         self.credentials = None

@@ -30,19 +30,7 @@ import time
 import traceback
 from signal import SIGTERM
 
-__all__ = [
-    'srCore',
-    'PROG_DIR',
-    'DATA_DIR',
-    'CONFIG_FILE'
-    'DEVELOPER',
-    'SYS_ENCODING',
-    'PID_FILE'
-]
-
-srCore = None
-daemon = None
-io_loop = None
+app = None
 
 MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(os.path.dirname(__file__)))))
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
@@ -50,32 +38,6 @@ LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
-DEBUG = None
-WEB_PORT = None
-DEVELOPER = None
-DAEMONIZE = None
-NOLAUNCH = None
-QUITE = None
-MODULE_DIR = None
-DATA_DIR = None
-CACHE_DIR = None
-CONFIG_FILE = None
-PID_FILE = None
-
-# fix threading time bug
-time.strptime("2012", "%Y")
-
-# set thread name
-threading.currentThread().setName('MAIN')
-
-# add sickrage libs path to python system path
-if not (LIBS_DIR in sys.path):
-    sys.path, remainder = sys.path[:1], sys.path[1:]
-    site.addsitedir(LIBS_DIR)
-    sys.path.extend(remainder)
-
-# set system default language
-gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
 class Daemon(object):
     """
@@ -215,8 +177,8 @@ def check_requirements():
         v_needed = '0.15'
 
         if not v >= v_needed:
-            print('OpenSSL installed but {} is needed while {} is installed. Run `pip install -U pyopenssl`'.format(
-                v_needed, v))
+            print('OpenSSL installed but {} is needed while {} is installed. '
+                  'Run `pip install -U pyopenssl`'.format(v_needed, v))
     except:
         print('OpenSSL not available, please install for better requests validation: '
               '`https://pyopenssl.readthedocs.org/en/latest/install.html`')
@@ -229,11 +191,28 @@ def version():
 
 
 def main():
-    global srCore, daemon, io_loop, MAIN_DIR, PROG_DIR, DATA_DIR, CACHE_DIR, CONFIG_FILE, PID_FILE, DEVELOPER, DEBUG, DAEMONIZE, WEB_PORT, NOLAUNCH, QUITE
+    global app
+
+    # set thread name
+    threading.currentThread().setName('MAIN')
+
+    # fix threading time bug
+    time.strptime("2012", "%Y")
+
+    # add sickrage libs path to python system path
+    if not (LIBS_DIR in sys.path):
+        sys.path, remainder = sys.path[:1], sys.path[1:]
+        site.addsitedir(LIBS_DIR)
+        sys.path.extend(remainder)
+
+    # set system default language
+    gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
 
     try:
-        from tornado.ioloop import IOLoop
-        from sickrage import core
+        from sickrage.core import Core
+
+        # main app instance
+        app = Core()
 
         # sickrage startup options
         parser = argparse.ArgumentParser(prog='sickrage')
@@ -271,22 +250,22 @@ def main():
 
         # Parse startup args
         args = parser.parse_args()
-        QUITE = args.quite
-        WEB_PORT = int(args.port)
-        NOLAUNCH = args.nolaunch
-        DEVELOPER = args.dev
-        DEBUG = args.debug
-        DAEMONIZE = (False, args.daemon)[not sys.platform == 'win32']
-        DATA_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
-        CACHE_DIR = os.path.abspath(os.path.realpath(os.path.join(DATA_DIR, 'cache')))
-        CONFIG_FILE = args.config
-        PID_FILE = args.pidfile
+        app.quite = args.quite
+        app.web_port = int(args.port)
+        app.no_launch = args.nolaunch
+        app.developer = args.dev
+        app.debug = args.debug
+        app.data_dir = os.path.abspath(os.path.realpath(os.path.expanduser(args.datadir)))
+        app.cache_dir = os.path.abspath(os.path.realpath(os.path.join(app.data_dir, 'cache')))
+        app.config_file = args.config
+        daemonize = (False, args.daemon)[not sys.platform == 'win32']
+        pid_file = args.pidfile
 
-        if not os.path.isabs(CONFIG_FILE):
-            CONFIG_FILE = os.path.join(DATA_DIR, CONFIG_FILE)
+        if not os.path.isabs(app.config_file):
+            app.config_file = os.path.join(app.data_dir, app.config_file)
 
-        if not os.path.abspath(PID_FILE):
-            PID_FILE = os.path.join(DATA_DIR, PID_FILE)
+        if not os.path.isabs(pid_file):
+            pid_file = os.path.join(app.data_dir, pid_file)
 
         # check lib requirements
         check_requirements()
@@ -298,50 +277,46 @@ def main():
             sys.path.extend(remainder)
 
         # Make sure that we can create the data dir
-        if not os.access(DATA_DIR, os.F_OK):
+        if not os.access(app.data_dir, os.F_OK):
             try:
-                os.makedirs(DATA_DIR, 0o744)
+                os.makedirs(app.data_dir, 0o744)
             except os.error:
-                sys.exit("Unable to create data directory '" + DATA_DIR + "'")
+                sys.exit("Unable to create data directory '" + app.data_dir + "'")
 
         # Make sure we can write to the data dir
-        if not os.access(DATA_DIR, os.W_OK):
-            sys.exit("Data directory must be writeable '" + DATA_DIR + "'")
+        if not os.access(app.data_dir, os.W_OK):
+            sys.exit("Data directory must be writeable '" + app.data_dir + "'")
 
         # Make sure that we can create the cache dir
-        if not os.access(CACHE_DIR, os.F_OK):
+        if not os.access(app.cache_dir, os.F_OK):
             try:
-                os.makedirs(CACHE_DIR, 0o744)
+                os.makedirs(app.cache_dir, 0o744)
             except os.error:
-                sys.exit("Unable to create cache directory '" + CACHE_DIR + "'")
+                sys.exit("Unable to create cache directory '" + app.cache_dir + "'")
 
         # Make sure we can write to the cache dir
-        if not os.access(CACHE_DIR, os.W_OK):
-            sys.exit("Cache directory must be writeable '" + CACHE_DIR + "'")
+        if not os.access(app.cache_dir, os.W_OK):
+            sys.exit("Cache directory must be writeable '" + app.cache_dir + "'")
 
         # daemonize if requested
-        if DAEMONIZE:
-            NOLAUNCH = True
-            QUITE = True
-            daemon = Daemon(PID_FILE, DATA_DIR)
-            daemon.daemonize()
+        if daemonize:
+            app.no_launch = True
+            app.quite = True
+            app.daemon = Daemon(pid_file, app.data_dir)
+            app.daemon.daemonize()
 
-        # io loop
-        io_loop = IOLoop().instance()
-
-        # main app
-        srCore = core.Core()
-        srCore.start()
+        # start app
+        app.start()
 
         # main thread loop
-        while srCore.started: time.sleep(1)
+        while app.started: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
-        if srCore: srCore.shutdown()
+        if app: app.shutdown()
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
-            print("Failed to import required libs, please run 'pip install --user -U -r {}' from console".format(
-                REQS_FILE))
+            print("Failed to import required libs, please run "
+                  "'pip install --user -U -r {}' from console".format(REQS_FILE))
     except Exception:
         traceback.print_exc()
 

@@ -135,7 +135,7 @@ def codeDescription(status_code):
     if status_code in http_error_code:
         return http_error_code[status_code]
     else:
-        sickrage.srCore.srLogger.error("Unknown error code: %s. Please submit an issue" % status_code)
+        sickrage.app.log.error("Unknown error code: %s. Please submit an issue" % status_code)
         return 'unknown'
 
 
@@ -155,12 +155,11 @@ def getClientIstance(name):
 
 class GenericClient(object):
     def __init__(self, name, host=None, username=None, password=None):
-
         self.name = name
-        self.username = sickrage.srCore.srConfig.TORRENT_USERNAME if not username else username
-        self.password = sickrage.srCore.srConfig.TORRENT_PASSWORD if not password else password
-        self.host = sickrage.srCore.srConfig.TORRENT_HOST if not host else host
-        self.rpcurl = sickrage.srCore.srConfig.TORRENT_RPCURL
+        self.username = sickrage.app.config.torrent_username if not username else username
+        self.password = sickrage.app.config.torrent_password if not password else password
+        self.host = sickrage.app.config.torrent_host if not host else host
+        self.rpcurl = sickrage.app.config.torrent_rpcurl
 
         self.url = None
         self.auth = None
@@ -181,7 +180,7 @@ class GenericClient(object):
             self.last_time = time.time()
             self._get_auth()
 
-        sickrage.srCore.srLogger.debug(
+        sickrage.app.log.debug(
             '{name}: Requested a {method} connection to {url} with'
             ' params: {params} Data: {data}'.format(
                 name=self.name,
@@ -193,11 +192,11 @@ class GenericClient(object):
         )
 
         if not self.auth:
-            sickrage.srCore.srLogger.warning(self.name + ': Authentication Failed')
+            sickrage.app.log.warning(self.name + ': Authentication Failed')
             return False
 
         try:
-            self.response = sickrage.srCore.srWebSession.request(method.upper(),
+            self.response = sickrage.app.wsession.request(method.upper(),
                                                                  self.url,
                                                                  params=params,
                                                                  data=data,
@@ -209,7 +208,7 @@ class GenericClient(object):
         except Exception:
             return False
 
-        sickrage.srCore.srLogger.debug('{name}: Response to {method} request is {response}'.format(
+        sickrage.app.log.debug('{name}: Response to {method} request is {response}'.format(
             name=self.name,
             method=method.upper(),
             response=self.response.text
@@ -287,20 +286,20 @@ class GenericClient(object):
                 result.hash = b16encode(b32decode(result.hash)).lower()
         else:
             if not result.content:
-                sickrage.srCore.srLogger.error('Torrent without content')
+                sickrage.app.log.error('Torrent without content')
                 raise Exception('Torrent without content')
 
             try:
                 torrent_bdecode = bdecode(result.content)
             except BTFailure:
-                sickrage.srCore.srLogger.error('Unable to bdecode torrent')
-                sickrage.srCore.srLogger.debug('Torrent bencoded data: %r' % result.content)
+                sickrage.app.log.error('Unable to bdecode torrent')
+                sickrage.app.log.debug('Torrent bencoded data: %r' % result.content)
                 raise
 
             try:
                 info = torrent_bdecode["info"]
             except Exception:
-                sickrage.srCore.srLogger.error('Unable to find info field in torrent')
+                sickrage.app.log.error('Unable to find info field in torrent')
                 raise
 
             result.hash = sha1(bencode(info)).hexdigest()
@@ -311,10 +310,10 @@ class GenericClient(object):
 
         r_code = False
 
-        sickrage.srCore.srLogger.debug('Calling ' + self.name + ' Client')
+        sickrage.app.log.debug('Calling ' + self.name + ' Client')
 
         if not self._get_auth():
-            sickrage.srCore.srLogger.error(self.name + ': Authentication Failed')
+            sickrage.app.log.error(self.name + ': Authentication Failed')
             return r_code
 
         try:
@@ -325,7 +324,7 @@ class GenericClient(object):
             result = self._get_torrent_hash(result)
 
             # convert to magnetic url if result has info hash and is not a private provider
-            if sickrage.srCore.srConfig.TORRENT_FILE_TO_MAGNET:
+            if sickrage.app.config.torrent_file_to_magnet:
                 if result.hash and not result.provider.private and not result.url.startswith('magnet'):
                     result.url = "magnet:?xt=urn:btih:{}".format(result.hash)
 
@@ -335,30 +334,30 @@ class GenericClient(object):
                 r_code = self._add_torrent_file(result)
 
             if not r_code:
-                sickrage.srCore.srLogger.warning(self.name + ': Unable to send Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to send Torrent')
                 return False
 
             if not self._set_torrent_pause(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set the pause for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the pause for Torrent')
 
             if not self._set_torrent_label(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set the label for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the label for Torrent')
 
             if not self._set_torrent_ratio(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set the ratio for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the ratio for Torrent')
 
             if not self._set_torrent_seed_time(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set the seed time for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the seed time for Torrent')
 
             if not self._set_torrent_path(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set the path for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set the path for Torrent')
 
             if result.priority != 0 and not self._set_torrent_priority(result):
-                sickrage.srCore.srLogger.error(self.name + ': Unable to set priority for Torrent')
+                sickrage.app.log.error(self.name + ': Unable to set priority for Torrent')
 
         except Exception as e:
-            sickrage.srCore.srLogger.error(self.name + ': Failed Sending Torrent')
-            sickrage.srCore.srLogger.debug(
+            sickrage.app.log.error(self.name + ': Failed Sending Torrent')
+            sickrage.app.log.debug(
                 self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
             return r_code
 
@@ -367,7 +366,7 @@ class GenericClient(object):
     def testAuthentication(self):
         try:
             # verify valid url
-            self.response = sickrage.srCore.srWebSession.get(self.url, timeout=120, verify=False)
+            self.response = sickrage.app.wsession.get(self.url, timeout=120, verify=False)
         except:
             pass
 

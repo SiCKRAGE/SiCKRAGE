@@ -42,7 +42,7 @@ class PostProcessorQueueActions(object):
 postprocessor_queue_lock = threading.Lock()
 
 
-class srPostProcessorQueue(srQueue):
+class PostProcessorQueue(srQueue):
     def __init__(self):
         srQueue.__init__(self, "POSTPROCESSORQUEUE")
 
@@ -121,15 +121,15 @@ class srPostProcessorQueue(srQueue):
         if not dirName:
             return logHelper(
                 "{} post-processing attempted but directory is not set: {}".format(proc_type.title(), dirName),
-                sickrage.srCore.srLogger.WARNING)
+                sickrage.app.log.WARNING)
 
         if not os.path.isabs(dirName):
             return logHelper("{} post-processing attempted but directory is relative (and probably not what you "
                              "really want to process): {}".format(proc_type.title(), dirName),
-                             sickrage.srCore.srLogger.WARNING)
+                             sickrage.app.log.WARNING)
 
         if not delete_on:
-            delete_on = (False, (not sickrage.srCore.srConfig.NO_DELETE, True)[process_method == "move"])[
+            delete_on = (False, (not sickrage.app.config.no_delete, True)[process_method == "move"])[
                 proc_type == "auto"]
 
         item = self.find_in_queue(dirName, proc_type)
@@ -159,7 +159,7 @@ class srPostProcessorQueue(srQueue):
                     message = item.result
                 return message
             else:
-                super(srPostProcessorQueue, self).put(item)
+                super(PostProcessorQueue, self).put(item)
                 message = logHelper(
                     "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
                 return message + "<br\><span class='hidden'>Processing succeeded</span>"
@@ -192,7 +192,7 @@ class PostProcessorItem(srQueueItem):
         """
 
         try:
-            sickrage.srCore.srLogger.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
+            sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             self.result = processDir(
                 dirName=self.dirName,
@@ -205,10 +205,10 @@ class PostProcessorItem(srQueueItem):
                 proc_type=self.proc_type
             )
 
-            sickrage.srCore.srLogger.info(
+            sickrage.app.log.info(
                 "Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             # give the CPU a break
-            sleep(cpu_presets[sickrage.srCore.srConfig.CPU_PRESET])
+            sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except Exception:
-            sickrage.srCore.srLogger.debug(traceback.format_exc())
+            sickrage.app.log.debug(traceback.format_exc())
