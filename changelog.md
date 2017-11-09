@@ -1,6 +1,7 @@
 # Changelog
 
-- * f5077f3 - 2017-11-09: Fixed issue with BitCannon torrent provider 
+- * 1c2b42d - 2017-11-09: Fixed IndexError with SkyTorrents for hash 
+- * 27af54e - 2017-11-09: Fixed issue with BitCannon torrent provider 
 - * 718179c - 2017-11-09: Decreased time it takes to search with Newpct torrent provider 
 - * 9349846 - 2017-11-09: Fixed issues with displaying correct show quality when editing a show 
 - * a95d1f5 - 2017-11-09: Updated EliteTorrent provider url 
