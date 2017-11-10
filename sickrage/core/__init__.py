@@ -35,10 +35,9 @@ import uuid
 import adba
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+from dateutil import tz
 from fake_useragent import UserAgent
-from pytz import utc
 from tornado.ioloop import IOLoop
-from tzlocal import get_localzone
 
 import sickrage
 from sickrage.core.caches.name_cache import NameCache
@@ -81,6 +80,8 @@ class Core(object):
         self.daemon = None
         self.io_loop = IOLoop().instance()
         self.pid = os.getpid()
+
+        self.tz = tz.tzlocal()
 
         self.config_file = None
         self.data_dir = None
@@ -160,6 +161,7 @@ class Core(object):
         self.trakt_searcher = TraktSearcher()
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
+
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
@@ -327,8 +329,7 @@ class Core(object):
             self.show_updater.run,
             IntervalTrigger(
                 days=1,
-                start_date=utc.localize(datetime.datetime.now().replace(hour=self.config.showupdate_hour)).astimezone(
-                    get_localzone())
+                start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour)
             ),
             name="SHOWUPDATER",
             id="SHOWUPDATER"
@@ -339,8 +340,7 @@ class Core(object):
             self.daily_searcher.run,
             IntervalTrigger(
                 minutes=self.config.daily_searcher_freq,
-                start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=4)).astimezone(
-                    get_localzone())
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
             ),
             name="DAILYSEARCHER",
             id="DAILYSEARCHER"
@@ -351,8 +351,7 @@ class Core(object):
             self.backlog_searcher.run,
             IntervalTrigger(
                 minutes=self.config.backlog_searcher_freq,
-                start_date=utc.localize(datetime.datetime.now() + datetime.timedelta(minutes=30)).astimezone(
-                    get_localzone())
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=30)
             ),
             name="BACKLOG",
             id="BACKLOG"

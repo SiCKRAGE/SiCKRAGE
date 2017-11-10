@@ -487,11 +487,11 @@ class WebRoot(WebHandler):
     def schedule(self, layout=None):
         next_week = datetime.date.today() + datetime.timedelta(days=7)
         next_week1 = datetime.datetime.combine(next_week,
-                                               datetime.datetime.now().time().replace(tzinfo=tz_updater.sr_timezone))
+                                               datetime.datetime.now().time().replace(tzinfo=sickrage.app.tz))
         results = ComingEpisodes.get_coming_episodes(ComingEpisodes.categories,
                                                      sickrage.app.config.coming_eps_sort,
                                                      False)
-        today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
+        today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
 
         # Allow local overriding of layout parameter
         if layout and layout in ('poster', 'banner', 'list', 'calendar'):
@@ -1265,7 +1265,7 @@ class Home(WebHandler):
             curEpCat = showObj.getOverview(int(curEp['status'] or -1))
 
             if curEp['airdate'] != 1:
-                today = datetime.datetime.now().replace(tzinfo=tz_updater.sr_timezone)
+                today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
                     airDate = srDateTime.convert_to_setting(

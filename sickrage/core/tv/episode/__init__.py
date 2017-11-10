@@ -310,7 +310,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                            (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
-            Notifiers.notify_subtitle_download(self.prettyName(), subtitleList)
+            Notifiers.notify_subtitle_download(self.pretty_name(), subtitleList)
         else:
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                            (self.show.indexerid, self.season or 0, self.episode or 0))
@@ -814,7 +814,7 @@ class TVEpisode(object):
             return strings
         return self._format_pattern(pattern)
 
-    def prettyName(self):
+    def pretty_name(self):
         """
         Returns the name of this episode in a "pretty" human-readable format. Used for logging
         and notifications and such.
@@ -954,10 +954,10 @@ class TVEpisode(object):
             airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
 
             if sickrage.app.config.file_timestamp_timezone == 'local':
-                airdatetime = airdatetime.astimezone(tz_updater.sr_timezone)
+                airdatetime = airdatetime.astimezone(sickrage.app.tz)
 
             filemtime = datetime.datetime.fromtimestamp(os.path.getmtime(self.location)).replace(
-                tzinfo=tz_updater.sr_timezone)
+                tzinfo=sickrage.app.tz)
 
             if filemtime != airdatetime:
                 import time

@@ -216,7 +216,7 @@ def refresh_subtitles(episode):
         return episode.subtitles, None
     current_subtitles = get_subtitles(video)
     if episode.subtitles == current_subtitles:
-        sickrage.app.log.debug('No changed subtitles for {}'.format(episode.prettyName()))
+        sickrage.app.log.debug('No changed subtitles for {}'.format(episode.pretty_name()))
         return episode.subtitles, None
     else:
         return current_subtitles, True

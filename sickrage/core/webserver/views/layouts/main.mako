@@ -475,7 +475,7 @@
                     </span> |
                     ${_('Now:')}
                     <span class="footer-highlight">
-                        ${str(datetime.datetime.now(tz_updater.sr_timezone)).split('.')[0]}
+                        ${str(datetime.datetime.now(sickrage.app.tz)).split('.')[0]}
                     </span>
                 </div>
             </div>

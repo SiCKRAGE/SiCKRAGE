@@ -110,7 +110,7 @@ class SearchResult(object):
         return myString
 
     def fileName(self):
-        return self.episodes[0].prettyName() + "." + self.resultType
+        return self.episodes[0].pretty_name() + "." + self.resultType
 
 
 class NZBSearchResult(SearchResult):
