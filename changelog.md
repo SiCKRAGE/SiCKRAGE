@@ -1,6 +1,7 @@
 # Changelog
 
-- * d9f5135 - 2017-11-10: Fixed unicode decode issues for EliteTorrent provider 
+- * 8698046 - 2017-11-10: Fixed search issue with Newpct torrent provider Added subtitles category to Newpct torrent provider Quality of Newpct releases determined from title and url now 
+- * 022e4f9 - 2017-11-10: Fixed unicode decode issues for EliteTorrent provider 
 - * 24e1037 - 2017-11-10: Release v9.1.70 
 - * 9498449 - 2017-11-10: Fixed typo in code for daily searcher 
 - * b26010a - 2017-11-09: Release v9.1.69 

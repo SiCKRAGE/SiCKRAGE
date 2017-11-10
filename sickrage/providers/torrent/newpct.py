@@ -36,7 +36,8 @@ class NewpctProvider(TorrentProvider):
 
         self.urls.update({
             'search': ['{base_url}/descargar-serie/%s'.format(**self.urls),
-                       '{base_url}/descargar-seriehd/%s'.format(**self.urls)],
+                       '{base_url}/descargar-seriehd/%s'.format(**self.urls),
+                       '{base_url}/descargar-serievo/%s'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
             'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
@@ -49,16 +50,22 @@ class NewpctProvider(TorrentProvider):
         """
         Get season search strings.
         """
-        search_string = {
+        search_strings = {
             'Season': []
         }
 
-        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
-            for string in ['%s/capitulo-%s%s/', '%s/capitulo-%s%s/hdtv/', '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/']:
-                season_string = string % (show_name.replace(' ', '-'), episode.season, episode.episode)
-                search_string['Season'].append(season_string.strip())
+        season_strings = ['%s/capitulo-%s%s/',
+                          '%s/capitulo-%s%s/hdtv/',
+                          '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/',
+                          '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
+                          '%s/capitulo-%s%s/bluray-1080p/']
 
-        return [search_string]
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            for season_string in season_strings:
+                season_string = season_string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                search_strings['Season'].append(season_string.strip())
+
+        return [search_strings]
 
     def _get_episode_search_strings(self, episode, add_string=''):
         """
@@ -67,16 +74,22 @@ class NewpctProvider(TorrentProvider):
         if not episode:
             return []
 
-        search_string = {
+        search_strings = {
             'Episode': []
         }
 
-        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
-            for string in ['%s/capitulo-%s%s/', '%s/capitulo-%s%s/hdtv/', '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/']:
-                episode_string = string % (show_name.replace(' ', '-'), episode.season, episode.episode)
-                search_string['Episode'].append(episode_string.strip())
+        episode_strings = ['%s/capitulo-%s%s/',
+                           '%s/capitulo-%s%s/hdtv/',
+                           '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/',
+                           '%s/capitulo-%s%s/hdtv-1080p-ac3-5-1/',
+                           '%s/capitulo-%s%s/bluray-1080p/']
 
-        return [search_string]
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            for episode_string in episode_strings:
+                episode_string = episode_string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                search_strings['Episode'].append(episode_string.strip())
+
+        return [search_strings]
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
@@ -100,7 +113,8 @@ class NewpctProvider(TorrentProvider):
                     try:
                         data = sickrage.app.wsession.get(search_url % search_string).text
                         items = self.parse(data, mode)
-                        if not len(items): break
+                        if not len(items):
+                            continue
                         results += items
                     except Exception:
                         sickrage.app.log.debug('No data returned from provider')
@@ -124,7 +138,9 @@ class NewpctProvider(TorrentProvider):
                 return results
 
             try:
-                title = self._process_title(html.find('h1').get_text().split('/')[1])
+                link = html.find(rel='canonical')['href']
+                title = html.find('h1').get_text().split('/')[1]
+                title = self._process_title(title, link)
                 download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(),
                                         re.DOTALL).group(1)
                 download_url = self.urls['download'] % download_id
@@ -154,22 +170,58 @@ class NewpctProvider(TorrentProvider):
 
         return results
 
-    def _process_title(self, title):
+    def _process_title(self, title, url):
         # Strip unwanted characters
         title = title.strip()
 
         # Quality - Use re module to avoid case sensitive problems with replace
-        title = re.sub(r'\[HDTV.1080[p][^\[]*]', '[1080p HDTV x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(HDTV.720[p]|ALTA.DEFINICION)[^\[]*]', '[720p HDTV x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(BluRay.MicroHD|MicroHD.1080p)[^\[]*]', '[1080p BluRay x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[(B[RD]rip|BLuRay)[^\[]*]', '[720p BluRay x264]', title, flags=re.IGNORECASE)
-        title = re.sub(r'\[HDTV[^\[]*]', '[HDTV x264]', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV.1080[p][^\[]*]', '1080p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(HDTV.720[p]|ALTA.DEFINICION)[^\[]*]', '720p HDTV x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(BluRay.MicroHD|MicroHD.1080p)[^\[]*]', '1080p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[(B[RD]rip|B[Ll]uRay)[^\[]*]', '720p BluRay x264', title, flags=re.IGNORECASE)
+        title = re.sub(r'\[HDTV[^\[]*]', 'HDTV x264', title, flags=re.IGNORECASE)
+
+        # detect hdtv/bluray by url
+        # hdtv 1080p example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-610/hdtv-1080p-ac3-5-1/
+        # hdtv 720p example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-26/hdtv-720p-ac3-5-1/
+        # hdtv example url: http://www.newpct.com/descargar-serie/foo/capitulo-214/hdtv/
+        # bluray compilation example url: http://www.newpct.com/descargar-seriehd/foo/capitulo-11/bluray-1080p/
+        title_hdtv = re.search(r'HDTV', title, flags=re.I)
+        title_720p = re.search(r'720p', title, flags=re.I)
+        title_1080p = re.search(r'1080p', title, flags=re.I)
+        title_x264 = re.search(r'x264', title, flags=re.I)
+        title_bluray = re.search(r'bluray', title, flags=re.I)
+        title_serie_hd = re.search(r'descargar\-seriehd', title, flags=re.I)
+        url_hdtv = re.search(r'HDTV', url, flags=re.I)
+        url_720p = re.search(r'720p', url, flags=re.I)
+        url_1080p = re.search(r'1080p', url, flags=re.I)
+        url_bluray = re.search(r'bluray', url, flags=re.I)
+
+        if not title_hdtv and url_hdtv:
+            title += ' HDTV'
+            if not title_x264:
+                title += ' x264'
+        if not title_bluray and url_bluray:
+            title += ' BluRay'
+            if not title_x264:
+                title += ' x264'
+        if not title_1080p and url_1080p:
+            title += ' 1080p'
+            title_1080p = True
+        if not title_720p and url_720p:
+            title += ' 720p'
+            title_720p = True
+        if not (title_720p or title_1080p) and title_serie_hd:
+            title += ' 720p'
 
         # Language
-        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1[SPANISH AUDIO]', title, flags=re.IGNORECASE)
+        title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1 SPANISH AUDIO', title, flags=re.IGNORECASE)
 
-        # Add encoder and group to title
-        title += '[NEWPCT]'
+        # Group
+        if re.search(r'\[V.O.[^\[]*]', title, flags=re.I):
+            title += '-NEWPCTVO'
+        else:
+            title += '-NEWPCT'
 
         return title
 
@@ -190,7 +242,7 @@ class NewpctCache(TVCache):
 
         for result in self.getRSSFeed(self.provider.urls['rss']).entries:
             if 'Series' in result.category:
-                title = self.provider._process_title(result.title)
+                title = self.provider._process_title(result.title, result.link)
                 link = self.provider._process_link(result.link)
                 results['entries'].append({'title': title, 'link': link})
 
