@@ -69,14 +69,7 @@ class GenericProvider(object):
         self.required_cookies = []
         self.cookies = ''
 
-        self.bt_cache_urls = [
-            'https://torrentproject.se/torrent/{info_hash}.torrent',
-            'https://torrent.cd/torrents/download/{info_hash}.torrent',
-            'https://asnet.pw/download/{info_hash}.torrent',
-            'https://btdig.com/torrent/{info_hash}.torrent',
-            'https://torrage.info/torrent/{info_hash}.torrent',
-            'http://itorrents.org/torrent/{info_hash}.torrent',
-        ]
+        self.bt_cache_url = 'http://itorrents.org/torrent/{info_hash}.torrent'
 
     @property
     def id(self):
@@ -136,7 +129,7 @@ class GenericProvider(object):
                 sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
-            urls = [x.format(info_hash=info_hash, torrent_name=torrent_name) for x in self.bt_cache_urls]
+            urls.append(self.bt_cache_url.format(info_hash=info_hash, torrent_name=torrent_name))
 
         random.shuffle(urls)
 

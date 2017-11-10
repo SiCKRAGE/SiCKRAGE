@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8b789bc - 2017-11-09: Fixed size conversion for HD-Torrents 
+- * 1accc3c - 2017-11-09: Removed all but itorrents bt cache provider 
+- * a1a2330 - 2017-11-09: Fixed size conversion for HD-Torrents 
 - * 46096bf - 2017-11-09: Added exception handling for verifying result url&#x27;s 
 - * 73120c8 - 2017-11-09: Added exception handling for verifying result url&#x27;s 
 - * 58564e1 - 2017-11-09: Fixed issue with a bt cache url 
