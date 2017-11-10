@@ -9,14 +9,14 @@
 <%block name="content">
     <%
         schedulerList = {
-        _('Daily Search'): 'DAILYSEARCHER',
-        _('Backlog'): 'BACKLOGSEARCHER',
-        _('Show Update'): 'SHOWUPDATER',
-        _('Version Check'): 'VERSIONUPDATER',
-        _('Proper Finder'): 'PROPERSEARCHER',
-        _('Post Process'): 'AUTOPOSTPROCESSOR',
-        _('Subtitles Finder'): 'SUBTITLESEARCHER',
-        _('Trakt Checker'): 'TRAKTSEARCHER',
+        _('Daily Search'): 'daily_searcher',
+        _('Backlog'): 'backlog_searcher',
+        _('Show Update'): 'show_updater',
+        _('Version Check'): 'version_updater',
+        _('Proper Finder'): 'proper_searcher',
+        _('Post Process'): 'auto_postprocessor',
+        _('Subtitles Finder'): 'subtitle_searcher',
+        _('Trakt Checker'): 'trakt_searcher',
     }
     %>
 
@@ -53,7 +53,7 @@
                                     <td align="center" style="background-color:red">${_('NO')}</td>
                                 % endif
                                 % if scheduler == 'BACKLOGSEARCHER':
-                                    <% searchQueue = getattr(sickrage.app, 'SEARCHQUEUE') %>
+                                    <% searchQueue = getattr(sickrage.app, 'search_queue') %>
                                     <% BLSinProgress = searchQueue.is_backlog_in_progress() %>
                                     <% del searchQueue %>
                                     % if BLSinProgress:
