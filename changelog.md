@@ -1,6 +1,7 @@
 # Changelog
 
-- * e558aeb - 2017-11-09: Updated ThePirateBay url 
+- * f7a19a1 - 2017-11-09: Updated ThePirateBay to work with most of the proxies out there 
+- * 145e18c - 2017-11-09: Updated ThePirateBay url 
 - * 725ea95 - 2017-11-09: Removed all but itorrents bt cache provider 
 - * a1a2330 - 2017-11-09: Fixed size conversion for HD-Torrents 
 - * 46096bf - 2017-11-09: Added exception handling for verifying result url&#x27;s 
