@@ -182,7 +182,7 @@ class ManualSearchQueueItem(srQueueItem):
         self.started = True
 
         try:
-            sickrage.app.log.info("Starting manual search for: [" + self.segment.prettyName() + "]")
+            sickrage.app.log.info("Starting manual search for: [" + self.segment.pretty_name() + "]")
 
             searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
             if searchResult:
@@ -197,15 +197,15 @@ class ManualSearchQueueItem(srQueueItem):
             else:
                 sickrage.app.alerts.message(
                     _('No downloads were found'),
-                    _("Couldn't find a download for <i>%s</i>") % self.segment.prettyName()
+                    _("Couldn't find a download for <i>%s</i>") % self.segment.pretty_name()
                 )
 
-                sickrage.app.log.info("Unable to find a download for: [" + self.segment.prettyName() + "]")
+                sickrage.app.log.info("Unable to find a download for: [" + self.segment.pretty_name() + "]")
 
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished manual search for: [" + self.segment.prettyName() + "]")
+            sickrage.app.log.info("Finished manual search for: [" + self.segment.pretty_name() + "]")
 
         # Keep a list with the 100 last executed searches
         fifo(MANUAL_SEARCH_HISTORY, self, MANUAL_SEARCH_HISTORY_SIZE)
@@ -261,7 +261,7 @@ class FailedQueueItem(srQueueItem):
             sickrage.app.log.info("Starting failed download search for: [" + self.show.name + "]")
 
             for epObj in self.segment:
-                sickrage.app.log.info("Marking episode as bad: [" + epObj.prettyName() + "]")
+                sickrage.app.log.info("Marking episode as bad: [" + epObj.pretty_name() + "]")
 
                 FailedHistory.markFailed(epObj)
                 (release, provider) = FailedHistory.findFailedRelease(epObj)

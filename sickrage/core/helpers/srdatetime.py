@@ -24,7 +24,6 @@ import locale
 from datetime import datetime
 
 import sickrage
-from sickrage.core.updaters.tz_updater import sr_timezone
 
 date_presets = (
     '%Y-%m-%d',
@@ -110,7 +109,7 @@ class srDateTime(datetime):
     def convert_to_setting(self, dt=None):
         try:
             if sickrage.app.config.timezone_display == 'local':
-                return dt.astimezone(sr_timezone) if self is None else self.astimezone(sr_timezone)
+                return dt.astimezone(sickrage.app.tz) if self is None else self.astimezone(sickrage.app.tz)
             else:
                 return dt if self is None else self
         except Exception:

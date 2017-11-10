@@ -30,7 +30,6 @@ from sickrage.core.helpers import try_int
 
 network_dict = {}
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
-sr_timezone = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
 
 # update the network timezone table
@@ -109,12 +108,12 @@ def get_network_timezone(network):
     :return:
     """
     if network is None:
-        return sr_timezone
+        return sickrage.app.tz
 
     try:
-        return tz.gettz(network_dict[network]) or sr_timezone
+        return tz.gettz(network_dict[network]) or sickrage.app.tz
     except Exception:
-        return sr_timezone
+        return sickrage.app.tz
 
 
 # parse date and time string into local time
