@@ -29,11 +29,11 @@ from sickrage.providers import TorrentProvider
 
 class ThePirateBayProvider(TorrentProvider):
     def __init__(self):
-        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
+        super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.blue', False)
 
         self.urls.update({
-            "rss": "{base_url}/tv/latest".format(**self.urls),
             "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
+            "rss": "{base_url}/tv/latest".format(**self.urls),
         })
 
         self.confirmed = True
