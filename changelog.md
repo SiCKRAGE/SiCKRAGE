@@ -1,6 +1,7 @@
 # Changelog
 
-- * 00d1884 - 2017-11-09: Fixed typo for server status template 
+- * 453fa04 - 2017-11-09: Release v9.1.69 
+- * e0c1882 - 2017-11-09: Fixed typo for server status template 
 - * fe471c0 - 2017-11-09: Fixed typo for server status template 
 - * 527cc77 - 2017-11-09: Updated ThePirateBay to work with most of the proxies out there 
 - * 145e18c - 2017-11-09: Updated ThePirateBay url 
