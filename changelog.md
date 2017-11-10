@@ -1,6 +1,7 @@
 # Changelog
 
-- * f7a19a1 - 2017-11-09: Updated ThePirateBay to work with most of the proxies out there 
+- * 9fe5ea0 - 2017-11-09: Fixed typo for server status template 
+- * 527cc77 - 2017-11-09: Updated ThePirateBay to work with most of the proxies out there 
 - * 145e18c - 2017-11-09: Updated ThePirateBay url 
 - * 725ea95 - 2017-11-09: Removed all but itorrents bt cache provider 
 - * a1a2330 - 2017-11-09: Fixed size conversion for HD-Torrents 

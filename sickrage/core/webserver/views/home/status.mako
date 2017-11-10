@@ -42,7 +42,7 @@
                     </thead>
                     <tbody>
                         % for schedulerName, scheduler in schedulerList.items():
-                            <% service = getattr(sickrage.srCore, scheduler) %>
+                            <% service = getattr(sickrage.app, scheduler) %>
                             <% job = sickrage.app.scheduler.get_job(service.name) %>
                             <% enabled = bool(getattr(job, 'next_run_time', False)) %>
                             <tr>
@@ -53,7 +53,7 @@
                                     <td align="center" style="background-color:red">${_('NO')}</td>
                                 % endif
                                 % if scheduler == 'BACKLOGSEARCHER':
-                                    <% searchQueue = getattr(sickrage.srCore, 'SEARCHQUEUE') %>
+                                    <% searchQueue = getattr(sickrage.app, 'SEARCHQUEUE') %>
                                     <% BLSinProgress = searchQueue.is_backlog_in_progress() %>
                                     <% del searchQueue %>
                                     % if BLSinProgress:
