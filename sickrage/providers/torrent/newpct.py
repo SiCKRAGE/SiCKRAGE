@@ -25,7 +25,8 @@ import re
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, show_names
+from sickrage.core.helpers import bs4_parser, convert_size
+from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.providers import TorrentProvider
 
 
@@ -34,7 +35,8 @@ class NewpctProvider(TorrentProvider):
         super(NewpctProvider, self).__init__("Newpct", 'http://www.newpct.com', False)
 
         self.urls.update({
-            'search': ['{base_url}/series'.format(**self.urls), '{base_url}/series-hd'.format(**self.urls)],
+            'search': ['{base_url}/descargar-serie/%s'.format(**self.urls),
+                       '{base_url}/descargar-seriehd/%s'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
             'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
@@ -43,19 +45,36 @@ class NewpctProvider(TorrentProvider):
 
         self.cache = NewpctCache(self, min_time=20)
 
-    def _get_season_search_strings(self, ep_obj):
-        search_string = {'Season': []}
+    def _get_season_search_strings(self, episode):
+        """
+        Get season search strings.
+        """
+        search_string = {
+            'Season': []
+        }
 
-        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
-            search_string['Season'].append(show_name.replace(' ', '-'))
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            for string in ['%s/capitulo-%s%s/', '%s/capitulo-%s%s/hdtv/', '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/']:
+                season_string = string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                search_string['Season'].append(season_string.strip())
 
         return [search_string]
 
-    def _get_episode_search_strings(self, ep_obj, add_string=''):
-        search_string = {'Episode': []}
+    def _get_episode_search_strings(self, episode, add_string=''):
+        """
+        Get episode search strings.
+        """
+        if not episode:
+            return []
 
-        for show_name in set(show_names.allPossibleShowNames(ep_obj.show)):
-            search_string['Episode'].append(show_name.replace(' ', '-'))
+        search_string = {
+            'Episode': []
+        }
+
+        for show_name in allPossibleShowNames(episode.show, episode.scene_season):
+            for string in ['%s/capitulo-%s%s/', '%s/capitulo-%s%s/hdtv/', '%s/capitulo-%s%s/hdtv-720p-ac3-5-1/']:
+                episode_string = string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                search_string['Episode'].append(episode_string.strip())
 
         return [search_string]
 
@@ -78,21 +97,13 @@ class NewpctProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 for search_url in self.urls['search']:
-                    pg = 1
-
-                    while True:
-                        searchURL = search_url + '/' + search_string + '//pg/' + str(pg)
-
-                        try:
-                            data = sickrage.app.wsession.get(searchURL).text
-                            items = self.parse(data, mode)
-                            if not len(items): break
-                            results += items
-                        except Exception:
-                            sickrage.app.log.debug('No data returned from provider')
-                            break
-
-                        pg += 1
+                    try:
+                        data = sickrage.app.wsession.get(search_url % search_string).text
+                        items = self.parse(data, mode)
+                        if not len(items): break
+                        results += items
+                    except Exception:
+                        sickrage.app.log.debug('No data returned from provider')
 
         return results
 
@@ -109,46 +120,37 @@ class NewpctProvider(TorrentProvider):
         results = []
 
         with bs4_parser(data) as html:
-            torrent_table = html.find('ul', class_='buscar-list')
-            torrent_rows = torrent_table('li') if torrent_table else []
-
-            # Continue only if at least one release is found
-            if not len(torrent_rows):
-                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+            if 'no encontrada' in html.get_text():
                 return results
 
-            for row in torrent_rows:
-                try:
-                    torrent_anchor = row.find_all('a')[1]
-                    details_url = torrent_anchor.get('href', '')
-                    with bs4_parser(sickrage.app.wsession.get(details_url).text) as details:
-                        title = self._process_title(details.find('h1').get_text().split('/')[1])
-                        download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
-                                                details.get_text(), re.DOTALL).group(1)
-                        download_url = self.urls['download'] % download_id
-                        if not all([title, download_url]):
-                            continue
+            try:
+                title = self._process_title(html.find('h1').get_text().split('/')[1])
+                download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(),
+                                        re.DOTALL).group(1)
+                download_url = self.urls['download'] % download_id
+                if not all([title, download_url]):
+                    return results
 
-                        seeders = 1  # Provider does not provide seeders
-                        leechers = 0  # Provider does not provide leechers
+                seeders = 1  # Provider does not provide seeders
+                leechers = 0  # Provider does not provide leechers
 
-                        torrent_size = details.find_all(class_='imp')[1].get_text()
-                        torrent_size = re.sub(r'Size: ([\d.]+).+([KMGT]B)', r'\1 \2', torrent_size)
-                        size = convert_size(torrent_size, -1)
+                torrent_size = html.find_all(class_='imp')[1].get_text()
+                torrent_size = re.sub(r'Size: ([\d.]+).+([KMGT]B)', r'\1 \2', torrent_size)
+                size = convert_size(torrent_size, -1)
 
-                        item = {
-                            'title': title,
-                            'link': download_url,
-                            'size': size,
-                            'seeders': seeders,
-                            'leechers': leechers,
-                        }
-                        if mode != 'RSS':
-                            sickrage.app.log.debug('Found result: {}'.format(title))
+                item = {
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers,
+                }
+                if mode != 'RSS':
+                    sickrage.app.log.debug('Found result: {}'.format(title))
 
-                            results.append(item)
-                except Exception:
-                    sickrage.app.log.error('Failed parsing provider')
+                    results.append(item)
+            except Exception:
+                sickrage.app.log.error('Failed parsing provider')
 
         return results
 
@@ -186,12 +188,10 @@ class NewpctCache(TVCache):
     def _get_rss_data(self):
         results = {'entries': []}
 
-        sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['rss'])
-
         for result in self.getRSSFeed(self.provider.urls['rss']).entries:
             if 'Series' in result.category:
                 title = self.provider._process_title(result.title)
                 link = self.provider._process_link(result.link)
-                results['entries'].append({'title':title, 'link': link})
+                results['entries'].append({'title': title, 'link': link})
 
         return results

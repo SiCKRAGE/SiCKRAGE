@@ -77,8 +77,8 @@
 
                 <div>
                     <p class="note">
-                        <span class="yellow-text fa fa-exclamation-circle"></span>
-                        ${_('Provider does not support backlog searches at this time.')}
+                        <span class="yellow-text fa fa-chevron-circle-left"></span> ${_('Provider does not support backlog searches at this time.')}
+                        <span class="red-text fa fa-exclamation-circle"></span> ${_('Provider is <b>NOT WORKING</b>.')}
                     </p>
                 </div>
             </div>
@@ -107,7 +107,8 @@
                                       style="vertical-align:middle;"></span>
                                 <span class="fa ${('fa-unlock green-text','fa-lock red-text')[bool(providerObj.private)]} pull-right"
                                       style="vertical-align:middle;"></span>
-                                ${('<span class="yellow-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
+                                ${('<span class="yellow-text fa fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
+                                ${('<span class="red-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
                             </li>
                         % endif
                     % endfor

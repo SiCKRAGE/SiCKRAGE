@@ -173,7 +173,7 @@ def setUp_test_web_server():
 
 
 def tearDown_test_web_server():
-    if sickrage.srCore:
+    if sickrage.app:
         sickrage.app.io_loop.stop()
 
 

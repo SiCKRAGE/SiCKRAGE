@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-08 22:56-0500\n"
-"PO-Revision-Date: 2017-11-08 22:57-0500\n"
+"POT-Creation-Date: 2017-11-09 22:07-0500\n"
+"PO-Revision-Date: 2017-11-09 22:09-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -390,7 +390,7 @@ msgstr "Дитячий майданчик"
 
 #: sickrage/core/webserver/views/api_builder.mako:89
 #: sickrage/core/webserver/views/api_builder.mako:128
-#: sickrage/core/webserver/views/config/providers.mako:156
+#: sickrage/core/webserver/views/config/providers.mako:157
 msgid "URL:"
 msgstr "URL-АДРЕСА:"
 
@@ -518,7 +518,7 @@ msgid "Downloaded"
 msgstr "Завантажити"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:891
+#: sickrage/core/webserver/views/config/providers.mako:892
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "З субтитрами"
@@ -637,8 +637,8 @@ msgstr "Додати PostProcessed епізоди в MyList?"
 #: sickrage/core/webserver/views/config/notifications.mako:3256
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
-#: sickrage/core/webserver/views/config/providers.mako:117
-#: sickrage/core/webserver/views/config/providers.mako:907
+#: sickrage/core/webserver/views/config/providers.mako:118
+#: sickrage/core/webserver/views/config/providers.mako:908
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
 #: sickrage/core/webserver/views/config/search.mako:261
 #: sickrage/core/webserver/views/config/search.mako:678
@@ -3373,7 +3373,7 @@ msgid "Provider Priorities"
 msgstr "Постачальник пріоритети"
 
 #: sickrage/core/webserver/views/config/providers.mako:13
-#: sickrage/core/webserver/views/config/providers.mako:125
+#: sickrage/core/webserver/views/config/providers.mako:126
 msgid "Provider Options"
 msgstr "Постачальник параметри"
 
@@ -3403,289 +3403,293 @@ msgstr "NZB/Torrent провайдери можуть бути переведе�
 msgid "Search Clients"
 msgstr "Пошук клієнтів"
 
-#: sickrage/core/webserver/views/config/providers.mako:81
+#: sickrage/core/webserver/views/config/providers.mako:80
 msgid "Provider does not support backlog searches at this time."
 msgstr "Постачальник не підтримує відставання пошуки в цей час."
 
-#: sickrage/core/webserver/views/config/providers.mako:126
+#: sickrage/core/webserver/views/config/providers.mako:81
+msgid "Provider is <b>NOT WORKING</b>."
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:127
 msgid "Configure individual provider settings here."
 msgstr "Настроювання параметрів окремого постачальника тут."
 
-#: sickrage/core/webserver/views/config/providers.mako:127
+#: sickrage/core/webserver/views/config/providers.mako:128
 msgid "Check with provider's website on how to obtain an API key if needed."
 msgstr "Зверніться до провайдера веб-сайті про те, як отримати ключ API, якщо це необхідно."
 
-#: sickrage/core/webserver/views/config/providers.mako:133
+#: sickrage/core/webserver/views/config/providers.mako:134
 msgid "Configure provider:"
 msgstr "Настройте постачальника:"
 
-#: sickrage/core/webserver/views/config/providers.mako:176
-#: sickrage/core/webserver/views/config/providers.mako:306
-#: sickrage/core/webserver/views/config/providers.mako:974
+#: sickrage/core/webserver/views/config/providers.mako:177
+#: sickrage/core/webserver/views/config/providers.mako:307
+#: sickrage/core/webserver/views/config/providers.mako:975
 msgid "API key:"
 msgstr "Ключ API:"
 
-#: sickrage/core/webserver/views/config/providers.mako:198
-#: sickrage/core/webserver/views/config/providers.mako:326
-#: sickrage/core/webserver/views/config/providers.mako:768
+#: sickrage/core/webserver/views/config/providers.mako:199
+#: sickrage/core/webserver/views/config/providers.mako:327
+#: sickrage/core/webserver/views/config/providers.mako:769
 msgid "Enable daily searches"
 msgstr "Увімкнути щоденні пошуки"
 
-#: sickrage/core/webserver/views/config/providers.mako:204
-#: sickrage/core/webserver/views/config/providers.mako:332
-#: sickrage/core/webserver/views/config/providers.mako:774
+#: sickrage/core/webserver/views/config/providers.mako:205
+#: sickrage/core/webserver/views/config/providers.mako:333
+#: sickrage/core/webserver/views/config/providers.mako:775
 msgid "enable provider to perform daily searches."
 msgstr "Увімкнути постачальник для виконання щоденних пошуків."
 
-#: sickrage/core/webserver/views/config/providers.mako:213
-#: sickrage/core/webserver/views/config/providers.mako:341
-#: sickrage/core/webserver/views/config/providers.mako:798
+#: sickrage/core/webserver/views/config/providers.mako:214
+#: sickrage/core/webserver/views/config/providers.mako:342
+#: sickrage/core/webserver/views/config/providers.mako:799
 msgid "Enable backlog searches"
 msgstr "Увімкнути відставання пошуки"
 
-#: sickrage/core/webserver/views/config/providers.mako:219
-#: sickrage/core/webserver/views/config/providers.mako:347
-#: sickrage/core/webserver/views/config/providers.mako:804
+#: sickrage/core/webserver/views/config/providers.mako:220
+#: sickrage/core/webserver/views/config/providers.mako:348
+#: sickrage/core/webserver/views/config/providers.mako:805
 msgid "enable provider to perform backlog searches."
 msgstr "Увімкнути постачальник для пошуку відставання."
 
-#: sickrage/core/webserver/views/config/providers.mako:228
-#: sickrage/core/webserver/views/config/providers.mako:356
-#: sickrage/core/webserver/views/config/providers.mako:813
+#: sickrage/core/webserver/views/config/providers.mako:229
+#: sickrage/core/webserver/views/config/providers.mako:357
+#: sickrage/core/webserver/views/config/providers.mako:814
 msgid "Search mode fallback"
 msgstr "Пошук режим відступу"
 
-#: sickrage/core/webserver/views/config/providers.mako:235
-#: sickrage/core/webserver/views/config/providers.mako:363
-#: sickrage/core/webserver/views/config/providers.mako:820
+#: sickrage/core/webserver/views/config/providers.mako:236
+#: sickrage/core/webserver/views/config/providers.mako:364
+#: sickrage/core/webserver/views/config/providers.mako:821
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "Коли у пошуках повний сезон залежно від режиму пошуку ви можете результати будуть відсутні, це допомагає перезапуском пошук за допомогою протилежного режим пошуку."
 
-#: sickrage/core/webserver/views/config/providers.mako:247
-#: sickrage/core/webserver/views/config/providers.mako:375
-#: sickrage/core/webserver/views/config/providers.mako:832
+#: sickrage/core/webserver/views/config/providers.mako:248
+#: sickrage/core/webserver/views/config/providers.mako:376
+#: sickrage/core/webserver/views/config/providers.mako:833
 msgid "Season search mode"
 msgstr "Режим пошуку сезон"
 
-#: sickrage/core/webserver/views/config/providers.mako:256
-#: sickrage/core/webserver/views/config/providers.mako:395
-#: sickrage/core/webserver/views/config/providers.mako:841
+#: sickrage/core/webserver/views/config/providers.mako:257
+#: sickrage/core/webserver/views/config/providers.mako:396
+#: sickrage/core/webserver/views/config/providers.mako:842
 msgid "season packs only."
 msgstr "сезон тільки пакети."
 
-#: sickrage/core/webserver/views/config/providers.mako:267
-#: sickrage/core/webserver/views/config/providers.mako:384
-#: sickrage/core/webserver/views/config/providers.mako:852
+#: sickrage/core/webserver/views/config/providers.mako:268
+#: sickrage/core/webserver/views/config/providers.mako:385
+#: sickrage/core/webserver/views/config/providers.mako:853
 msgid "episodes only."
 msgstr "тільки епізодів."
 
-#: sickrage/core/webserver/views/config/providers.mako:272
-#: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:858
+#: sickrage/core/webserver/views/config/providers.mako:273
+#: sickrage/core/webserver/views/config/providers.mako:402
+#: sickrage/core/webserver/views/config/providers.mako:859
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "під час пошуку на повного часи ви можете мати його шукати сезон тільки пакети, або вибрати, щоб він побудувати повний сезон з просто одну епізодів."
 
-#: sickrage/core/webserver/views/config/providers.mako:287
-#: sickrage/core/webserver/views/config/providers.mako:498
+#: sickrage/core/webserver/views/config/providers.mako:288
+#: sickrage/core/webserver/views/config/providers.mako:499
 msgid "Username:"
 msgstr "Ім'я користувача:"
 
-#: sickrage/core/webserver/views/config/providers.mako:416
+#: sickrage/core/webserver/views/config/providers.mako:417
 msgid "Custom URL:"
 msgstr "Користувацька URL-адреса:"
 
-#: sickrage/core/webserver/views/config/providers.mako:437
+#: sickrage/core/webserver/views/config/providers.mako:438
 msgid "Api key:"
 msgstr "Ключ API:"
 
-#: sickrage/core/webserver/views/config/providers.mako:458
+#: sickrage/core/webserver/views/config/providers.mako:459
 msgid "Digest:"
 msgstr "Дайджест:"
 
-#: sickrage/core/webserver/views/config/providers.mako:478
+#: sickrage/core/webserver/views/config/providers.mako:479
 msgid "Hash:"
 msgstr "Хеш:"
 
-#: sickrage/core/webserver/views/config/providers.mako:519
+#: sickrage/core/webserver/views/config/providers.mako:520
 msgid "Password:"
 msgstr "Пароль:"
 
-#: sickrage/core/webserver/views/config/providers.mako:538
+#: sickrage/core/webserver/views/config/providers.mako:539
 msgid "Passkey:"
 msgstr "Ключ доступу:"
 
-#: sickrage/core/webserver/views/config/providers.mako:559
-#: sickrage/core/webserver/views/config/providers.mako:1095
+#: sickrage/core/webserver/views/config/providers.mako:560
+#: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "Cookies:"
 msgstr "Куки:"
 
-#: sickrage/core/webserver/views/config/providers.mako:576
+#: sickrage/core/webserver/views/config/providers.mako:577
 msgid "this provider requires the following cookies: "
 msgstr "Цей постачальник вимагає такі файли cookie: "
 
-#: sickrage/core/webserver/views/config/providers.mako:587
+#: sickrage/core/webserver/views/config/providers.mako:588
 msgid "Pin:"
 msgstr "PIN-код:"
 
-#: sickrage/core/webserver/views/config/providers.mako:608
+#: sickrage/core/webserver/views/config/providers.mako:609
 msgid "Seed ratio:"
 msgstr "Насіння співвідношення:"
 
-#: sickrage/core/webserver/views/config/providers.mako:628
+#: sickrage/core/webserver/views/config/providers.mako:629
 msgid "Minimum seeders:"
 msgstr "Мінімальна Сівалки:"
 
-#: sickrage/core/webserver/views/config/providers.mako:648
+#: sickrage/core/webserver/views/config/providers.mako:649
 msgid "Minimum leechers:"
 msgstr "Мінімальна лічерів:"
 
-#: sickrage/core/webserver/views/config/providers.mako:668
+#: sickrage/core/webserver/views/config/providers.mako:669
 msgid "Confirmed download"
 msgstr "Підтверджено завантаження"
 
-#: sickrage/core/webserver/views/config/providers.mako:674
+#: sickrage/core/webserver/views/config/providers.mako:675
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "лише завантажити торенти з надійних або підтвердженого Завантажувачі?"
 
-#: sickrage/core/webserver/views/config/providers.mako:683
+#: sickrage/core/webserver/views/config/providers.mako:684
 msgid "Ranked torrents"
 msgstr "Рейтинг торренти"
 
-#: sickrage/core/webserver/views/config/providers.mako:689
+#: sickrage/core/webserver/views/config/providers.mako:690
 msgid "only download ranked torrents (internal releases)"
 msgstr "завантажити тільки займає торренти (внутрішні релізи)"
 
-#: sickrage/core/webserver/views/config/providers.mako:698
+#: sickrage/core/webserver/views/config/providers.mako:699
 msgid "English torrents"
 msgstr "Українська торренти"
 
-#: sickrage/core/webserver/views/config/providers.mako:704
+#: sickrage/core/webserver/views/config/providers.mako:705
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "лише завантажити Англійська торенти або торренти, що містить англійськими субтитрами"
 
-#: sickrage/core/webserver/views/config/providers.mako:713
+#: sickrage/core/webserver/views/config/providers.mako:714
 msgid "For Spanish torrents"
 msgstr "Для іспанського торренти"
 
-#: sickrage/core/webserver/views/config/providers.mako:720
+#: sickrage/core/webserver/views/config/providers.mako:721
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "ТІЛЬКИ пошук на цей постачальник, якщо показ. відомості визначається як \"Іспанська\" (щоб уникнути використання оператора для Вос шоу)"
 
-#: sickrage/core/webserver/views/config/providers.mako:731
+#: sickrage/core/webserver/views/config/providers.mako:732
 msgid "Sort results by"
 msgstr "Сортувати результати за"
 
-#: sickrage/core/webserver/views/config/providers.mako:753
+#: sickrage/core/webserver/views/config/providers.mako:754
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:759
+#: sickrage/core/webserver/views/config/providers.mako:760
 msgid "only download"
 msgstr "завантажити тільки"
 
-#: sickrage/core/webserver/views/config/providers.mako:759
+#: sickrage/core/webserver/views/config/providers.mako:760
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:759
+#: sickrage/core/webserver/views/config/providers.mako:760
 msgid "torrents."
 msgstr "торренти."
 
-#: sickrage/core/webserver/views/config/providers.mako:783
+#: sickrage/core/webserver/views/config/providers.mako:784
 msgid "Reject Blu-ray M2TS releases"
 msgstr "Відхилити M2TS в Blu-ray релізи"
 
-#: sickrage/core/webserver/views/config/providers.mako:789
+#: sickrage/core/webserver/views/config/providers.mako:790
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "Увімкнути ігнорувати Blu-ray MPEG-2 транспортний потік контейнер релізи"
 
-#: sickrage/core/webserver/views/config/providers.mako:869
+#: sickrage/core/webserver/views/config/providers.mako:870
 msgid "Category:"
 msgstr "Категорія:"
 
-#: sickrage/core/webserver/views/config/providers.mako:897
+#: sickrage/core/webserver/views/config/providers.mako:898
 msgid "select torrent with Italian subtitle"
 msgstr "Виберіть торрент з італійської субтитрів"
 
-#: sickrage/core/webserver/views/config/providers.mako:919
+#: sickrage/core/webserver/views/config/providers.mako:920
 msgid "Configure Custom"
 msgstr "Настроїти настроюваний"
 
-#: sickrage/core/webserver/views/config/providers.mako:920
+#: sickrage/core/webserver/views/config/providers.mako:921
 msgid "Newznab Providers"
 msgstr "Newznab постачальників"
 
-#: sickrage/core/webserver/views/config/providers.mako:923
+#: sickrage/core/webserver/views/config/providers.mako:924
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "Додати і встановити або видалити настроювані Newznab провайдерів."
 
-#: sickrage/core/webserver/views/config/providers.mako:930
-#: sickrage/core/webserver/views/config/providers.mako:1049
+#: sickrage/core/webserver/views/config/providers.mako:931
+#: sickrage/core/webserver/views/config/providers.mako:1050
 msgid "Select provider:"
 msgstr "Виберіть постачальника:"
 
-#: sickrage/core/webserver/views/config/providers.mako:938
-#: sickrage/core/webserver/views/config/providers.mako:1057
+#: sickrage/core/webserver/views/config/providers.mako:939
+#: sickrage/core/webserver/views/config/providers.mako:1058
 msgid "add new provider"
 msgstr "додавання нового постачальника"
 
-#: sickrage/core/webserver/views/config/providers.mako:947
-#: sickrage/core/webserver/views/config/providers.mako:1066
+#: sickrage/core/webserver/views/config/providers.mako:948
+#: sickrage/core/webserver/views/config/providers.mako:1067
 msgid "Provider name:"
 msgstr "Ім'я постачальника:"
 
-#: sickrage/core/webserver/views/config/providers.mako:960
+#: sickrage/core/webserver/views/config/providers.mako:961
 msgid "Site URL:"
 msgstr "URL-адреса сайту:"
 
-#: sickrage/core/webserver/views/config/providers.mako:989
+#: sickrage/core/webserver/views/config/providers.mako:990
 msgid "Newznab search categories:"
 msgstr "Newznab пошук категорії:"
 
-#: sickrage/core/webserver/views/config/providers.mako:999
+#: sickrage/core/webserver/views/config/providers.mako:1000
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(виберіть ваш Newznab категорій зліва та натисніть кнопку \"Оновити категорій\", щоб використовувати їх для пошуку.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:1001
+#: sickrage/core/webserver/views/config/providers.mako:1002
 msgid "Don't forget to save changes!"
 msgstr "Не забудьте зберегти зміни!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1011
+#: sickrage/core/webserver/views/config/providers.mako:1012
 msgid "Update Categories"
 msgstr "Категорії оновлення"
 
-#: sickrage/core/webserver/views/config/providers.mako:1020
+#: sickrage/core/webserver/views/config/providers.mako:1021
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "Додати"
 
-#: sickrage/core/webserver/views/config/providers.mako:1028
+#: sickrage/core/webserver/views/config/providers.mako:1029
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "Видалити"
 
-#: sickrage/core/webserver/views/config/providers.mako:1042
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Configure Custom Torrent Providers"
 msgstr "Настроювання настроюваних торрент провайдерів"
 
-#: sickrage/core/webserver/views/config/providers.mako:1043
+#: sickrage/core/webserver/views/config/providers.mako:1044
 msgid "Add and setup or remove custom RSS providers."
 msgstr "Додати і налаштувати або видалення настроюваного RSS провайдерів."
 
-#: sickrage/core/webserver/views/config/providers.mako:1081
+#: sickrage/core/webserver/views/config/providers.mako:1082
 msgid "RSS URL:"
 msgstr "URL-АДРЕСА RSS:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1102
+#: sickrage/core/webserver/views/config/providers.mako:1103
 msgid "ex. uid=xx;pass=yy"
 msgstr "EX. uid = xx; пройти = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1109
+#: sickrage/core/webserver/views/config/providers.mako:1110
 msgid "Search element:"
 msgstr "Пошук елемента:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1116
+#: sickrage/core/webserver/views/config/providers.mako:1117
 msgid "ex. title"
 msgstr "Назва EX."
 
@@ -4188,7 +4192,7 @@ msgstr "Каталог, де слід зберігати SickRage ваш"
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/edit_show.mako:128
-#: sickrage/core/webserver/views/includes/add_show_options.mako:9
+#: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
 msgid "Subtitles"
 msgstr "Субтитри"
@@ -4583,30 +4587,30 @@ msgid "Retry Download"
 msgstr "Повторити завантаження"
 
 #: sickrage/core/webserver/views.py:4969
-#: sickrage/core/webserver/views/home/edit_show.mako:26
+#: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
 msgstr "Головна"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:27
+#: sickrage/core/webserver/views/home/edit_show.mako:28
 msgid "Format"
 msgstr "Формат"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:28
+#: sickrage/core/webserver/views/home/edit_show.mako:29
 msgid "Advanced"
 msgstr "Розширений"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:35
+#: sickrage/core/webserver/views/home/edit_show.mako:36
 #: sickrage/core/webserver/views/manage/mass_edit.mako:32
 msgid "Main Settings"
 msgstr "Основні параметри"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:41
+#: sickrage/core/webserver/views/home/edit_show.mako:42
 msgid "Show Location"
 msgstr "Показувати розташування"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:61
-#: sickrage/core/webserver/views/includes/add_show_options.mako:107
+#: sickrage/core/webserver/views/home/edit_show.mako:62
+#: sickrage/core/webserver/views/includes/add_show_options.mako:108
 #: sickrage/core/webserver/views/manage/mass_edit.mako:84
 msgid "Preferred Quality"
 msgstr "Потрібну якість"
@@ -4621,7 +4625,7 @@ msgid "Info Language"
 msgstr "Інформація про мову"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:114
-#: sickrage/core/webserver/views/includes/add_show_options.mako:56
+#: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:124
 msgid "Archive on first match"
 msgstr "Архів першого матчу"
@@ -4699,7 +4703,7 @@ msgstr "\"Сила повного оновлення\" є необхідним, 
 #: sickrage/core/webserver/views.py:3717 sickrage/core/webserver/views.py:4848
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
-#: sickrage/core/webserver/views/includes/add_show_options.mako:33
+#: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:277
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
@@ -4721,7 +4725,7 @@ msgid "group episodes by season folder (uncheck to store in a single folder)"
 msgstr "згрупувати епізодів по сезону папку (зніміть прапорець, щоб зберегти в одній папці)"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:255
-#: sickrage/core/webserver/views/includes/add_show_options.mako:45
+#: sickrage/core/webserver/views/includes/add_show_options.mako:46
 #: sickrage/core/webserver/views/manage/mass_edit.mako:181
 msgid "Scene Numbering"
 msgstr "Сцена нумерації"
@@ -5221,23 +5225,23 @@ msgstr "Trakt API не дав жодних результатів, будь ла
 msgid "votes"
 msgstr "голосів"
 
-#: sickrage/core/webserver/views/includes/add_show_options.mako:21
+#: sickrage/core/webserver/views/includes/add_show_options.mako:22
 msgid "Flatten Folders"
 msgstr "Розплющите папки"
 
-#: sickrage/core/webserver/views/includes/add_show_options.mako:67
+#: sickrage/core/webserver/views/includes/add_show_options.mako:68
 msgid "Status for previously aired episodes"
 msgstr "Статус для раніше ефір епізоди"
 
-#: sickrage/core/webserver/views/includes/add_show_options.mako:87
+#: sickrage/core/webserver/views/includes/add_show_options.mako:88
 msgid "Status for all future episodes"
 msgstr "Статус для всіх майбутніх епізодів"
 
-#: sickrage/core/webserver/views/includes/add_show_options.mako:117
+#: sickrage/core/webserver/views/includes/add_show_options.mako:118
 msgid "Save As Defaults"
 msgstr "Зберегти як за замовчуванням"
 
-#: sickrage/core/webserver/views/includes/add_show_options.mako:122
+#: sickrage/core/webserver/views/includes/add_show_options.mako:123
 msgid "Use current values as the defaults"
 msgstr "Використання поточних значень за промовчанням"
 
@@ -5304,21 +5308,21 @@ msgstr "Ви хочете, щоб включити поточний епізод
 msgid "Choosing No will ignore any releases with the same episode quality as the one currently downloaded/snatched."
 msgstr "Вибір пункту ні, щоб ігнорувати будь-релізи з такою ж якістю епізод, як той, який в даний час завантажені/схопив."
 
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:32
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:52
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:34
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:54
 msgid "Preferred"
 msgstr "Перевага"
 
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:32
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:34
 msgid "qualities will replace those in"
 msgstr "якостей замінить тих, в"
 
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:33
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:37
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:35
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:39
 msgid "Allowed"
 msgstr "Допускається"
 
-#: sickrage/core/webserver/views/includes/quality_chooser.mako:33
+#: sickrage/core/webserver/views/includes/quality_chooser.mako:35
 msgid "even if they are lower."
 msgstr "навіть якщо вони нижче."
 
@@ -5892,7 +5896,7 @@ msgstr "Хотів"
 msgid "Ignored"
 msgstr "Ігноруються"
 
-#: sickrage/core/search.py:209
+#: sickrage/core/search.py:211
 msgid "Episode snatched"
 msgstr "Епізод схопив"
 

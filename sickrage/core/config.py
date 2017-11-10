@@ -37,8 +37,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, \
-    extract_zipfile, \
-    try_int, checkbox_to_value
+    extract_zipfile, try_int, checkbox_to_value
 
 
 class Config(object):

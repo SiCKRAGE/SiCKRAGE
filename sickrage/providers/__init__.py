@@ -69,14 +69,7 @@ class GenericProvider(object):
         self.required_cookies = []
         self.cookies = ''
 
-        self.bt_cache_urls = [
-            'https://torrentproject.se/torrent/{info_hash}.torrent',
-            'https://torrent.cd/torrents/download/{info_hash}/.torrent',
-            'https://asnet.pw/download/{info_hash}/',
-            'https://btdig.com/torrent/{info_hash}',
-            'https://torrage.info/torrent/{info_hash}.torrent',
-            'http://itorrents.org/torrent/{info_hash}.torrent',
-        ]
+        self.bt_cache_url = 'http://itorrents.org/torrent/{info_hash}.torrent'
 
     @property
     def id(self):
@@ -93,6 +86,10 @@ class GenericProvider(object):
     @property
     def seed_ratio(self):
         return ''
+
+    @property
+    def isAlive(self):
+        return True
 
     def _check_auth(self):
         return True
@@ -132,7 +129,7 @@ class GenericProvider(object):
                 sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
-            urls = [x.format(info_hash=info_hash, torrent_name=torrent_name) for x in self.bt_cache_urls]
+            urls.append(self.bt_cache_url.format(info_hash=info_hash, torrent_name=torrent_name))
 
         random.shuffle(urls)
 
@@ -561,7 +558,7 @@ class GenericProvider(object):
                 return False
         else:
             sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
-                                             'settings')
+                                     'settings')
 
             sickrage.app.alerts.notifications.error(
                 'Failed to auth with {provider}'.format(provider=self.name),
@@ -572,7 +569,7 @@ class GenericProvider(object):
         if any([not response, not (response.text and response.status_code == 200),
                 check_login_text.lower() in response.text.lower()]):
             sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
-                                             'provider settings')
+                                     'provider settings')
 
             sickrage.app.alerts.notifications.error(
                 'Wrong cookies for {}'.format(self.name),
@@ -1155,7 +1152,7 @@ class NewznabProvider(NZBProvider):
 
                 try:
                     response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'),
-                                                                params=search_params).text
+                                                         params=search_params).text
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
                     continue
@@ -1171,8 +1168,8 @@ class NewznabProvider(NZBProvider):
 
                     if not html('item'):
                         sickrage.app.log.debug('No results returned from provider. Check chosen Newznab '
-                                                       'search categories in provider settings and/or usenet '
-                                                       'retention')
+                                               'search categories in provider settings and/or usenet '
+                                               'retention')
                         continue
 
                     for item in html('item'):

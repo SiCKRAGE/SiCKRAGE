@@ -1,6 +1,22 @@
 # Changelog
 
-- * da90f8a - 2017-11-09: Release v9.1.68 
+- * 453fa04 - 2017-11-09: Release v9.1.69 
+- * e0c1882 - 2017-11-09: Fixed typo for server status template 
+- * fe471c0 - 2017-11-09: Fixed typo for server status template 
+- * 527cc77 - 2017-11-09: Updated ThePirateBay to work with most of the proxies out there 
+- * 145e18c - 2017-11-09: Updated ThePirateBay url 
+- * 725ea95 - 2017-11-09: Removed all but itorrents bt cache provider 
+- * a1a2330 - 2017-11-09: Fixed size conversion for HD-Torrents 
+- * 46096bf - 2017-11-09: Added exception handling for verifying result url&#x27;s 
+- * 73120c8 - 2017-11-09: Added exception handling for verifying result url&#x27;s 
+- * 58564e1 - 2017-11-09: Fixed issue with a bt cache url 
+- * f2ba6fa - 2017-11-09: Fixed issue with a bt cache url 
+- * 3b8284e - 2017-11-09: Fixed IndexError with SkyTorrents for hash 
+- * 27af54e - 2017-11-09: Fixed issue with BitCannon torrent provider 
+- * 718179c - 2017-11-09: Decreased time it takes to search with Newpct torrent provider 
+- * 9349846 - 2017-11-09: Fixed issues with displaying correct show quality when editing a show 
+- * a95d1f5 - 2017-11-09: Updated EliteTorrent provider url 
+- * 1970e1d - 2017-11-09: Release v9.1.68 
 - * eaf2a97 - 2017-11-09: refactored Daemonize class to use os exits when forking instead of sys exits 
 - * 1a61bc4 - 2017-11-08: Release v9.1.67 
 - * 5d18ffb - 2017-11-08: Fixed issues with verifying torrent metadata 

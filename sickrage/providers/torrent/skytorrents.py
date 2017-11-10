@@ -123,7 +123,11 @@ class SkyTorrents(TorrentProvider):
                         'Title={title}'.format(cat=category, title=title))
 
                 size = convert_size(info.group('size'), -1)
-                info_hash = download_url.rsplit('/', 2)[1]
+
+                try:
+                    info_hash = download_url.rsplit('/', 2)[1]
+                except IndexError:
+                    info_hash = ''
 
                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                         'leechers': leechers, 'hash': info_hash}

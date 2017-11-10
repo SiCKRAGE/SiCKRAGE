@@ -32,8 +32,8 @@ class ThePirateBayProvider(TorrentProvider):
         super(ThePirateBayProvider, self).__init__("ThePirateBay", 'https://thepiratebay.org', False)
 
         self.urls.update({
-            "rss": "{base_url}/tv/latest".format(**self.urls),
             "search": "{base_url}/search/%s/0/3/200".format(**self.urls),
+            "rss": "{base_url}/tv/latest".format(**self.urls),
         })
 
         self.confirmed = True
@@ -110,8 +110,19 @@ class ThePirateBayProvider(TorrentProvider):
                     download_url = row.find(title='Download this torrent using magnet')
                     download_url = download_url['href']
                     if download_url and 'magnet:?' not in download_url:
-                        sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
-                        continue
+                        try:
+                            details_url = urljoin(self.custom_url or self.urls['base_url'], download_url)
+                            details_data = sickrage.app.wsession.get(details_url).text
+                        except Exception:
+                            sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
+                            continue
+
+                        with bs4_parser(details_data) as details:
+                            download_url = details.find(title='Get this torrent')
+                            download_url = download_url['href']
+                            if download_url and 'magnet:?' not in download_url:
+                                sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
+                                continue
                     if not all([title, download_url]):
                         continue
 
@@ -130,7 +141,7 @@ class ThePirateBayProvider(TorrentProvider):
                     torrent_size = cells[labels.index('Name')].find(class_='detDesc')
                     torrent_size = torrent_size.get_text(strip=True).split(', ')[1]
                     torrent_size = re.sub(r'Size ([\d.]+).+([KMGT]iB)', r'\1 \2', torrent_size)
-                    size = convert_size(torrent_size, -1, ["B", "KIB", "MIB", "GIB"])
+                    size = convert_size(torrent_size, -1, ['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': ''}
