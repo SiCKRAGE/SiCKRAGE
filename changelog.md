@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2b6a1be - 2017-11-10: Fixed typo in code for daily searcher 
+- * 33de5b6 - 2017-11-10: Release v9.1.70 
+- * 9498449 - 2017-11-10: Fixed typo in code for daily searcher 
 - * b26010a - 2017-11-09: Release v9.1.69 
 - * e0c1882 - 2017-11-09: Fixed typo for server status template 
 - * fe471c0 - 2017-11-09: Fixed typo for server status template 
