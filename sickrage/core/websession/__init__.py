@@ -33,6 +33,7 @@ from cachecontrol import CacheControlAdapter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
+from sickrage.core.helpers.encoding import to_unicode
 
 
 class DBCache(object):
@@ -173,20 +174,7 @@ class WebHooks(object):
         sickrage.app.log.debug('User-Agent: {}'.format(request.headers['User-Agent']))
 
         if request.method.upper() == 'POST':
-            body = request.body
-            # try to log post data using various codecs to decode
-            if isinstance(body, unicode):
-                sickrage.app.log.debug('With post data: {}'.format(body))
-                return
-
-            codecs = ('utf-8', 'latin1', 'cp1252')
-            for codec in codecs:
-                try:
-                    data = body.decode(codec)
-                except UnicodeError as error:
-                    sickrage.app.log.debug('Failed to decode post data as {}: {}'.format(codec, error))
-                else:
-                    sickrage.app.log.debug('With post data: {}'.format(data))
-                    break
+            if isinstance(request.body, unicode):
+                sickrage.app.log.debug('With post data: {}'.format(request.body))
             else:
-                sickrage.app.log.warning('Failed to decode post data with {}'.format(codecs))
+                sickrage.app.log.debug('With post data: {}'.format(to_unicode(request.body)))

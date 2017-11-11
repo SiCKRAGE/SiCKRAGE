@@ -1,6 +1,7 @@
 # Changelog
 
-- * f0c2443 - 2017-11-11: Added web session hook to log urls and post data 
+- * 768106f - 2017-11-11: Added web session hook to log urls and post data 
+- * 810662e - 2017-11-11: Added web session hook to log urls and post data 
 - * 342df0e - 2017-11-11: refactored providers 
 - * aa6d45f - 2017-11-11: Added YGG torrent provider 
 - * 846f1d5 - 2017-11-11: Added YGG torrent provider 
