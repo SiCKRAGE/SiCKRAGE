@@ -1,6 +1,7 @@
 # Changelog
 
-- * 371da52 - 2017-11-10: Fixed issue #119 - Add custom search provider: expected string or buffer 
+- * 44930c0 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
+- * 660e69d - 2017-11-10: Fixed issue #119 - Add custom search provider: expected string or buffer 
 - * 0b32673 - 2017-11-10: Unidecode Newpct titles to avoid unicode issues during name parsing Refactored TNTVillage torrent provider Refactored regular regexes 
 - * 1c854a2 - 2017-11-10: Fixed search issue with Newpct torrent provider Added subtitles category to Newpct torrent provider Quality of Newpct releases determined from title and url now 
 - * 022e4f9 - 2017-11-10: Fixed unicode decode issues for EliteTorrent provider 
