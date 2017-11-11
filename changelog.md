@@ -1,6 +1,7 @@
 # Changelog
 
-- * c1f4fe7 - 2017-11-11: Added Subscene subtitle provider 
+- * b47f4cf - 2017-11-11: Added YGG torrent provider 
+- * f2a792d - 2017-11-11: Added Subscene subtitle provider 
 - * 27d1a59 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
 - * 253be31 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
 - * 660e69d - 2017-11-10: Fixed issue #119 - Add custom search provider: expected string or buffer 
