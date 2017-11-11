@@ -65,8 +65,9 @@ class NcoreProvider(TorrentProvider):
             'submitted': '1',
         }
 
-        response = sickrage.app.wsession.post(self.urls["login"], data=login_params).text
-        if not response:
+        try:
+            response = sickrage.app.wsession.post(self.urls["login"], data=login_params).text
+        except Exception:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
 

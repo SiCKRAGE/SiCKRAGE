@@ -164,7 +164,6 @@ class YggtorrentProvider(TorrentProvider):
             'submit': ''
         }
 
-
         try:
             sickrage.app.wsession.post(self.urls['login'], data=login_params)
             response = sickrage.app.wsession.get(self.urls['base_url']).text

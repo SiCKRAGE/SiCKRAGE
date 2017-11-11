@@ -58,8 +58,7 @@ class NebulanceProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.wsession.post(self.urls['base_url'], params={'page': 'login'},
-                                                         data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
