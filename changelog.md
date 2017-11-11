@@ -1,6 +1,7 @@
 # Changelog
 
-- * b47f4cf - 2017-11-11: Added YGG torrent provider 
+- * a216547 - 2017-11-11: Added YGG torrent provider 
+- * 7c3be4f - 2017-11-11: Added YGG torrent provider 
 - * f2a792d - 2017-11-11: Added Subscene subtitle provider 
 - * 27d1a59 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
 - * 253be31 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 

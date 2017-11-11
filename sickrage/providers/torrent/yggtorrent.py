@@ -165,16 +165,18 @@ class YggtorrentProvider(TorrentProvider):
         }
 
         sickrage.app.wsession.post(self.urls['login'], data=login_params)
-        response = sickrage.app.wsession.get(self.urls['base_url'])
-        if not response:
+
+        try:
+            response = sickrage.app.wsession.get(self.urls['base_url']).text
+        except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
             return False
 
-        if 'Ces identifiants sont invalides' in response.text:
+        if 'Ces identifiants sont invalides' in response:
             sickrage.app.log.warning('Invalid username or password. Check your settings')
             return False
 
-        if 'Mon compte' not in response.text:
+        if 'Mon compte' not in response:
             sickrage.app.log.warning('Unable to login to provider')
             return False
 
