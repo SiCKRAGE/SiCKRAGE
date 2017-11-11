@@ -164,9 +164,9 @@ class YggtorrentProvider(TorrentProvider):
             'submit': ''
         }
 
-        sickrage.app.wsession.post(self.urls['login'], data=login_params)
 
         try:
+            sickrage.app.wsession.post(self.urls['login'], data=login_params)
             response = sickrage.app.wsession.get(self.urls['base_url']).text
         except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
