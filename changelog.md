@@ -1,6 +1,7 @@
 # Changelog
 
-- * 768106f - 2017-11-11: Added web session hook to log urls and post data 
+- * af9b326 - 2017-11-11: Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server 
+- * f380f9b - 2017-11-11: Added web session hook to log urls and post data 
 - * 810662e - 2017-11-11: Added web session hook to log urls and post data 
 - * 342df0e - 2017-11-11: refactored providers 
 - * aa6d45f - 2017-11-11: Added YGG torrent provider 
