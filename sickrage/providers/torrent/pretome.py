@@ -94,7 +94,6 @@ class PretomeProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.wsession.get(searchURL).text

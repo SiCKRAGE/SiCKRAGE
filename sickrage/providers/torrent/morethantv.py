@@ -109,7 +109,6 @@ class MoreThanTVProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string.replace('(', '').replace(')', ''))
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:

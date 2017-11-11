@@ -90,7 +90,6 @@ class GFTrackerProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (self.categories, search_string)
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 # Set cookies from response
                 # Returns top 30 results by default, expandable in user profile

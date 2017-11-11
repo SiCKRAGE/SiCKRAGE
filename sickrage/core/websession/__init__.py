@@ -104,6 +104,7 @@ class WebSession(cfscrape.CloudflareScraper):
             params=params,
             verify=verify,
             proxies=proxies,
+            hooks={'response': WebHooks.log_url},
             *args, **kwargs
         )
 
@@ -161,3 +162,31 @@ class WebSession(cfscrape.CloudflareScraper):
         correct_segments[0] += '/'
 
         return '/'.join(correct_segments) + '/'
+
+
+class WebHooks(object):
+    @staticmethod
+    def log_url(response, **kwargs):
+        """Response hook to log request URL."""
+        request = response.request
+        sickrage.app.log.debug('{} URL: {} [Status: {}]'.format(request.method, request.url, response.status_code))
+        sickrage.app.log.debug('User-Agent: {}'.format(request.headers['User-Agent']))
+
+        if request.method.upper() == 'POST':
+            body = request.body
+            # try to log post data using various codecs to decode
+            if isinstance(body, unicode):
+                sickrage.app.log.debug('With post data: {}'.format(body))
+                return
+
+            codecs = ('utf-8', 'latin1', 'cp1252')
+            for codec in codecs:
+                try:
+                    data = body.decode(codec)
+                except UnicodeError as error:
+                    sickrage.app.log.debug('Failed to decode post data as {}: {}'.format(codec, error))
+                else:
+                    sickrage.app.log.debug('With post data: {}'.format(data))
+                    break
+            else:
+                sickrage.app.log.warning('Failed to decode post data with {}'.format(codecs))

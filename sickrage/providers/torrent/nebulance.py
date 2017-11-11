@@ -88,7 +88,6 @@ class NebulanceProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.wsession.get(searchURL).text

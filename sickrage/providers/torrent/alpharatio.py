@@ -81,12 +81,10 @@ class AlphaRatioProvider(TorrentProvider):
         for mode in search_strings.keys():
             sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (search_string, self.catagories)
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.wsession.get(searchURL).text

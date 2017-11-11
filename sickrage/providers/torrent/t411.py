@@ -97,8 +97,6 @@ class T411Provider(TorrentProvider):
                     ([self.urls['search'] % (search_string, u) for u in self.subcategories], [self.urls['rss']])[
                         mode == 'RSS']
                 for searchURL in searchURLS:
-                    sickrage.app.log.debug("Search URL: %s" % searchURL)
-
                     try:
                         data = sickrage.app.wsession.get(searchURL, auth=T411Auth(self.token)).json()
                         results += self.parse(data, mode)
