@@ -487,6 +487,11 @@ class GenericProvider(object):
         :return: dict
         """
 
+        if isinstance(self, TorrentRssProvider) and not self.cookies:
+            return {'result': True,
+                    'message': 'This is a TorrentRss provider without any cookies provided. '
+                               'Cookies for this provider are considered optional.'}
+
         # This is the generic attribute used to manually add cookies for provider authentication
         if not self.enable_cookies:
             return {'result': False,

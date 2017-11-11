@@ -4290,7 +4290,7 @@ class ConfigProviders(Config):
     def canAddNewznabProvider(name):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
-        providerObj = NewznabProvider(name, '', True)
+        providerObj = NewznabProvider(name, '')
         if providerObj.id not in sickrage.app.search_providers.newznab():
             return json_encode({'success': providerObj.id})
         return json_encode({'error': 'Provider Name already exists as ' + name})
@@ -4299,7 +4299,7 @@ class ConfigProviders(Config):
     def canAddTorrentRssProvider(name, url, cookies, titleTAG):
         if not name: return json_encode({'error': 'No Provider Name specified'})
 
-        providerObj = TorrentRssProvider(name, url, True, cookies, titleTAG)
+        providerObj = TorrentRssProvider(name, url, cookies, titleTAG)
         if providerObj.id not in sickrage.app.search_providers.torrentrss():
             validate = providerObj.validateRSS()
             if validate['result']:
