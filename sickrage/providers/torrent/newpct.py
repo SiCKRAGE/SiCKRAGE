@@ -23,6 +23,8 @@ from __future__ import unicode_literals
 
 import re
 
+from unidecode import unidecode
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size
@@ -112,10 +114,7 @@ class NewpctProvider(TorrentProvider):
                 for search_url in self.urls['search']:
                     try:
                         data = sickrage.app.wsession.get(search_url % search_string).text
-                        items = self.parse(data, mode)
-                        if not len(items):
-                            continue
-                        results += items
+                        results += self.parse(data, mode)
                     except Exception:
                         sickrage.app.log.debug('No data returned from provider')
 
@@ -139,7 +138,7 @@ class NewpctProvider(TorrentProvider):
 
             try:
                 link = html.find(rel='canonical')['href']
-                title = html.find('h1').get_text().split('/')[1]
+                title = unidecode(html.find('h1').get_text().split('/')[1])
                 title = self._process_title(title, link)
                 download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(),
                                         re.DOTALL).group(1)
