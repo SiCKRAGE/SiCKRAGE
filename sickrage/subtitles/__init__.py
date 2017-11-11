@@ -32,15 +32,14 @@ import sickrage
 from sickrage.core import makeDir
 from sickrage.core.helpers import chmodAsParent, fixSetGroupID
 
-subtitle_providers = {'itasa': 'sickrage.subtitles.providers.itasa:ItaSAProvider',
-                      'legendastv': 'subliminal.providers.legendastv:LegendasTVProvider',
-                      'wizdom': 'sickrage.subtitles.providers.wizdom:WizdomProvider',
-                      'napiprojekt': 'subliminal.providers.napiprojekt:NapiProjektProvider'}
-
-# register
-for name, klass in subtitle_providers.items():
-    if name not in subliminal.provider_manager.names():
-        subliminal.provider_manager.register('{name} = {klass}'.format(name=name, klass=klass))
+# register provider
+for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
+                 'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
+                 'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
+                 'subscene = sickrage.subtitles.providers.subscene:SubsceneProvider',
+                 'napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider']:
+    if provider not in [str(x) for x in subliminal.provider_manager.list_entry_points()]:
+        subliminal.provider_manager.register(str(provider))
 
 subliminal.region.configure('dogpile.cache.memory')
 
@@ -54,7 +53,8 @@ PROVIDER_URLS = {
     'subscenter': 'http://www.subscenter.org',
     'thesubdb': 'http://www.thesubdb.com',
     'tvsubtitles': 'http://www.tvsubtitles.net',
-    'wizdom': 'http://wizdom.xyz'
+    'wizdom': 'http://wizdom.xyz',
+    'subscene': 'https://subscene.com'
 }
 
 subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']

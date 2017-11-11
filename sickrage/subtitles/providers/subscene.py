@@ -1,44 +1,64 @@
 # -*- coding: utf-8 -*-
+# Author: echel0n <echel0n@sickrage.ca>
+#
+# URL: https://sickrage.ca
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import unicode_literals
 
 import bisect
 import io
 import logging
 import os
+import re
 import zipfile
 
-from babelfish import Language
+from babelfish import Language, language_converters
 from guessit import guessit
 from requests import Session
 from subliminal import Provider
-from subliminal.cache import SHOW_EXPIRATION_TIME, region
 from subliminal.exceptions import ProviderError
+from subliminal.providers import ParserBeautifulSoup
 from subliminal.subtitle import Subtitle, fix_line_ending, guess_matches
 from subliminal.utils import sanitize
 from subliminal.video import Episode, Movie
 
 logger = logging.getLogger(__name__)
 
+language_converters.register(b'subscene = sickrage.subtitles.converters.subscene:SubsceneConverter')
 
-class WizdomSubtitle(Subtitle):
-    """Wizdom Subtitle."""
-    provider_name = 'wizdom'
 
-    def __init__(self, language, hearing_impaired, page_link, series, season, episode, title, imdb_id, subtitle_id,
-                 releases):
-        super(WizdomSubtitle, self).__init__(language, hearing_impaired, page_link)
+class SubsceneSubtitle(Subtitle):
+    """Subscene Subtitle."""
+    provider_name = 'subscene'
+
+    def __init__(self, language, hearing_impaired, series, season, episode, title, sub_id, releases):
+        super(SubsceneSubtitle, self).__init__(language, hearing_impaired)
         self.series = series
         self.season = season
         self.episode = episode
         self.title = title
-        self.imdb_id = imdb_id
-        self.subtitle_id = subtitle_id
+        self.sub_id = sub_id
         self.downloaded = 0
         self.releases = releases
 
     @property
     def id(self):
-        return str(self.subtitle_id)
+        return str(self.sub_id)
 
     def get_matches(self, video):
         matches = set()
@@ -54,9 +74,6 @@ class WizdomSubtitle(Subtitle):
             # episode
             if video.episode and self.episode == video.episode:
                 matches.add('episode')
-            # imdb_id
-            if video.series_imdb_id and self.imdb_id == video.series_imdb_id:
-                matches.add('series_imdb_id')
             # guess
             for release in self.releases:
                 matches |= guess_matches(video, guessit(release, {'type': 'episode'}))
@@ -73,12 +90,10 @@ class WizdomSubtitle(Subtitle):
         return matches
 
 
-class WizdomProvider(Provider):
-    """Wizdom Provider."""
-    languages = {Language.fromalpha2(l) for l in ['he']}
-    server_url = 'wizdom.xyz'
-
-    _tmdb_api_key = 'f7f51775877e0bb6703520952b3c7840'
+class SubsceneProvider(Provider):
+    """Subscene Provider."""
+    languages = {Language.fromsubscene(l) for l in language_converters['subscene'].codes}
+    server_url = 'https://subscene.com'
 
     def __init__(self):
         self.session = None
@@ -89,105 +104,77 @@ class WizdomProvider(Provider):
     def terminate(self):
         self.session.close()
 
-    @region.cache_on_arguments(expiration_time=SHOW_EXPIRATION_TIME)
-    def _search_imdb_id(self, title, year, is_movie):
-        """Search the IMDB ID for the given `title` and `year`.
-
-        :param str title: title to search for.
-        :param int year: year to search for (or 0 if not relevant).
-        :param bool is_movie: If True, IMDB ID will be searched for in TMDB instead of Wizdom.
-        :return: the IMDB ID for the given title and year (or None if not found).
-        :rtype: str
-
-        """
-        # make the search
-        logger.info('Searching IMDB ID for %r%r', title, '' if not year else ' ({})'.format(year))
-        category = 'movie' if is_movie else 'tv'
-        title = title.replace('\'', '')
-        # get TMDB ID first
-        r = self.session.get('http://api.tmdb.org/3/search/{}?api_key={}&query={}{}&language=en'.format(
-            category, self._tmdb_api_key, title, '' if not year else '&year={}'.format(year)))
-        r.raise_for_status()
-        tmdb_results = r.json().get('results')
-        if tmdb_results:
-            tmdb_id = tmdb_results[0].get('id')
-            if tmdb_id:
-                # get actual IMDB ID from TMDB
-                r = self.session.get('http://api.tmdb.org/3/{}/{}{}?api_key={}&language=en'.format(
-                    category, tmdb_id, '' if is_movie else '/external_ids', self._tmdb_api_key))
-                r.raise_for_status()
-                return str(r.json().get('imdb_id', '')) or None
-        return None
-
-    def query(self, title, season=None, episode=None, year=None, filename=None, imdb_id=None):
-        # search for the IMDB ID if needed.
-        is_movie = not (season and episode)
-        imdb_id = imdb_id or self._search_imdb_id(title, year, is_movie)
-        if not imdb_id:
-            return {}
-
-        # search
-        logger.debug('Using IMDB ID %r', imdb_id)
-        url = 'http://json.{}/{}.json'.format(self.server_url, imdb_id)
-        page_link = 'http://{}/#/{}/{}'.format(self.server_url, 'movies' if is_movie else 'series', imdb_id)
+    def query(self, title, season=None, episode=None):
+        url = '{}/subtitles/release'.format(self.server_url)
+        params = {
+            'q': '{0} S{1:02}E{2:02}'.format(title, season, episode),
+            'r': 'true'
+        }
 
         # get the list of subtitles
         logger.debug('Getting the list of subtitles')
-        r = self.session.get(url)
-        r.raise_for_status()
-        try:
-            results = r.json()
-        except ValueError:
-            return {}
 
-        # filter irrelevant results
-        if not is_movie:
-            results = results.get('subs', {}).get(str(season), {}).get(str(episode), [])
-        else:
-            results = results.get('subs', [])
+        r = self.session.get(url, params=params, timeout=30)
+        r.raise_for_status()
+
+        soup = ParserBeautifulSoup(r.content, ['html5lib', 'html.parser'])
 
         # loop over results
         subtitles = {}
-        for result in results:
-            language = Language.fromalpha2('he')
-            hearing_impaired = False
-            subtitle_id = result['id']
-            release = result['version']
+
+        subtitle_table = soup.find('table')
+        subtitle_rows = subtitle_table('tr') if subtitle_table else []
+
+        # Continue only if one subtitle is found
+        if len(subtitle_rows) < 2:
+            return subtitles.values()
+
+        for row in subtitle_rows[1:]:
+            cells = row('td')
+
+            language = Language.fromsubscene(cells[0].find_all('span')[0].get_text(strip=True))
+            hearing_impaired = (False, True)[cells[2].attrs.values()[0] == 41]
+            page_link = cells[0].find('a')['href']
+            release = cells[0].find_all('span')[1].get_text(strip=True)
+
+            # guess from name
+            guess = guessit(release, {'type': 'episode'})
+            if guess.get('season') != season and guess.get('episode') != episode:
+                continue
+
+            r = self.session.get(self.server_url + page_link, timeout=30)
+            r.raise_for_status()
+            soup2 = ParserBeautifulSoup(r.content, ['html5lib', 'html.parser'])
+            sub_id = re.search(r'\?mac=(.*)', soup2.find('a', id='downloadButton')['href']).group(1)
 
             # add the release and increment downloaded count if we already have the subtitle
-            if subtitle_id in subtitles:
-                logger.debug('Found additional release %r for subtitle %d', release, subtitle_id)
-                bisect.insort_left(subtitles[subtitle_id].releases, release)  # deterministic order
-                subtitles[subtitle_id].downloaded += 1
+            if sub_id in subtitles:
+                logger.debug('Found additional release %r for subtitle %d', release, sub_id)
+                bisect.insort_left(subtitles[sub_id].releases, release)  # deterministic order
+                subtitles[sub_id].downloaded += 1
                 continue
 
             # otherwise create it
-            subtitle = WizdomSubtitle(language, hearing_impaired, page_link, title, season, episode, title, imdb_id,
-                                      subtitle_id, [release])
+            subtitle = SubsceneSubtitle(language, hearing_impaired, title, season, episode, title, sub_id, [release])
+
             logger.debug('Found subtitle %r', subtitle)
-            subtitles[subtitle_id] = subtitle
+            subtitles[sub_id] = subtitle
 
         return subtitles.values()
 
     def list_subtitles(self, video, languages):
-        season = episode = None
-        title = video.title
-        year = video.year
-        filename = video.name
-        imdb_id = video.imdb_id
-
-        if isinstance(video, Episode):
-            title = video.series
-            season = video.season
-            episode = video.episode
-            imdb_id = video.series_imdb_id
-
-        return [s for s in self.query(title, season, episode, year, filename, imdb_id) if s.language in languages]
+        return [s for s in self.query(video.series, video.season, video.episode)
+                if s is not None and s.language in languages]
 
     def download_subtitle(self, subtitle):
-        # download
-        url = 'http://zip.{}/{}.zip'.format(self.server_url, subtitle.subtitle_id)
-        r = self.session.get(url, headers={'Referer': subtitle.page_link}, timeout=10)
+        # download the subtitle
+        logger.info('Downloading subtitle %r', subtitle.sub_id)
+
+        params = {
+            'mac': subtitle.sub_id
+        }
+
+        r = self.session.get(self.server_url + '/subtitle/download', params=params, timeout=30)
         r.raise_for_status()
 
         # open the zip

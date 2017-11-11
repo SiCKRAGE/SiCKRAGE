@@ -1,6 +1,7 @@
 # Changelog
 
-- * 56e1f6d - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
+- * c1f4fe7 - 2017-11-11: Added Subscene subtitle provider 
+- * 27d1a59 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
 - * 253be31 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
 - * 660e69d - 2017-11-10: Fixed issue #119 - Add custom search provider: expected string or buffer 
 - * 0b32673 - 2017-11-10: Unidecode Newpct titles to avoid unicode issues during name parsing Refactored TNTVillage torrent provider Refactored regular regexes 
