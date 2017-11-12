@@ -1,6 +1,7 @@
 # Changelog
 
-- * af9b326 - 2017-11-11: Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server 
+- * 56720ed - 2017-11-11: Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot; 
+- * b024c05 - 2017-11-11: Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server 
 - * f380f9b - 2017-11-11: Added web session hook to log urls and post data 
 - * 810662e - 2017-11-11: Added web session hook to log urls and post data 
 - * 342df0e - 2017-11-11: refactored providers 

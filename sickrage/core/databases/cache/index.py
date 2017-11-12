@@ -114,7 +114,7 @@ class CacheSceneExceptionsRefreshIndex(HashIndex):
 
 
 class CacheProvidersIndex(HashIndex):
-    _version = 3
+    _version = 2
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'

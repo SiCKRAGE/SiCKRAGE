@@ -181,16 +181,13 @@ class srDatabase(object):
                     previous_version = self.db.indexes_names[index_name]._version
                     current_version = self._indexes[index_name]._version
 
-                    self.check_versions(index_name, current_version, previous_version)
+                    # Only edit index if versions are different
+                    if previous_version < current_version:
+                        self.db.destroy_index(self.db.indexes_names[index_name])
+                        self.db.add_index(self._indexes[index_name](self.db.path, index_name))
+                        self.db.reindex_index(index_name)
             except:
                 sickrage.app.log.debug('Failed adding index {}'.format(index_name))
-
-    def check_versions(self, index_name, current_version, previous_version):
-        # Only edit index if versions are different
-        if previous_version < current_version:
-            self.db.destroy_index(self.db.indexes_names[index_name])
-            self.db.add_index(self._indexes[index_name](self.db.path, index_name))
-            self.db.reindex_index(index_name)
 
     def close(self):
         self.db.close()
