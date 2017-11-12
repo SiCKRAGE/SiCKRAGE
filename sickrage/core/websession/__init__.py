@@ -33,6 +33,7 @@ from cachecontrol import CacheControlAdapter
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
+from sickrage.core.helpers.encoding import to_unicode
 
 
 class DBCache(object):
@@ -104,6 +105,7 @@ class WebSession(cfscrape.CloudflareScraper):
             params=params,
             verify=verify,
             proxies=proxies,
+            hooks={'response': WebHooks.log_url},
             *args, **kwargs
         )
 
@@ -161,3 +163,18 @@ class WebSession(cfscrape.CloudflareScraper):
         correct_segments[0] += '/'
 
         return '/'.join(correct_segments) + '/'
+
+
+class WebHooks(object):
+    @staticmethod
+    def log_url(response, **kwargs):
+        """Response hook to log request URL."""
+        request = response.request
+        sickrage.app.log.debug('{} URL: {} [Status: {}]'.format(request.method, request.url, response.status_code))
+        sickrage.app.log.debug('User-Agent: {}'.format(request.headers['User-Agent']))
+
+        if request.method.upper() == 'POST':
+            if isinstance(request.body, unicode):
+                sickrage.app.log.debug('With post data: {}'.format(request.body))
+            else:
+                sickrage.app.log.debug('With post data: {}'.format(to_unicode(request.body)))

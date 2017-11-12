@@ -69,12 +69,12 @@ class ArcheTorrentProvider(TorrentProvider):
             'returnto': '/index.php'
         }
 
-        response = sickrage.app.wsession.post(self.urls['login'], data=login_params).text
-        if response:
+        try:
+            sickrage.app.wsession.post(self.urls['login'], data=login_params)
+            search = sickrage.app.wsession.get(self.urls['search']).text
+        except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
             return False
-
-        search = sickrage.app.wsession.get(self.urls['search'])
 
         if not re.search('torrents.php', search):
             sickrage.app.log.warning('Invalid username or password. Check your settings')

@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import json
 import time
 import urllib2
 
@@ -217,8 +218,7 @@ class TVCache(object):
                 # get version
                 version = parse_result.version
 
-                # add to DB
-                sickrage.app.cache_db.db.insert({
+                dbData = {
                     '_t': 'providers',
                     'provider': self.providerID,
                     'name': name,
@@ -233,22 +233,42 @@ class TVCache(object):
                     'seeders': seeders,
                     'leechers': leechers,
                     'size': size,
-                    'files': files
-                })
+                    'files': json.dumps(files)
+                }
+
+                # add to internal database
+                sickrage.app.cache_db.db.insert(dbData)
+
+                # add to external database
+                if not self.provider.private:
+                    headers = {'content-type': 'application/json',
+                               'x-authorization': sickrage.app.config.api_key}
+
+                    sickrage.app.wsession.post(sickrage.app.api_url + '/provider_cache/',
+                                               data=json.dumps(dbData), headers=headers)
 
                 sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
-    def search_cache(self, episode=None, manualSearch=False, downCurQuality=False):
+    def search_cache(self, ep_obj=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
+        dbData = []
 
-        if not episode:
-            dbData = [x['doc'] for x in
-                      sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
-        else:
-            dbData = [x['doc'] for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)
-                      if x['doc']['indexerid'] == episode.show.indexerid
-                      and x['doc']['season'] == episode.season
-                      and "|" + str(episode.episode) + "|" in x['doc']['episodes']]
+        # get data from external database
+        if not self.provider.private:
+            try:
+                headers = {'content-type': 'application/json',
+                           'x-authorization': sickrage.app.config.api_key}
+
+                dbData += sickrage.app.wsession.get(sickrage.app.api_url + '/provider_cache/',
+                                                   params={'provider': self.providerID}, headers=headers).json()
+            except Exception:
+                pass
+
+        # get data from internal database
+        dbData += [x['doc'] for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
+
+        dbData = [x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
+                  and "|" + str(ep_obj.episode) + "|" in x['episodes']] if ep_obj else dbData
 
         # for each cache entry
         for curResult in dbData:
@@ -302,7 +322,7 @@ class TVCache(object):
             result.seeders = curResult.get("seeders", -1)
             result.leechers = curResult.get("leechers", -1)
             result.size = curResult.get("size", -1)
-            result.files = curResult.get("files", {})
+            result.files = json.loads(curResult.get("files", {}))
             result.content = None
 
             # add it to the list

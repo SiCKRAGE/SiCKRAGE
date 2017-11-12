@@ -28,7 +28,7 @@ from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, generateApiKey, launch_browser
+from sickrage.core.helpers import create_https_certificates, launch_browser
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
@@ -79,8 +79,6 @@ class WebServer(threading.Thread):
                 '/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
 
         # api root
-        if not sickrage.app.config.api_key:
-            sickrage.app.config.api_key = generateApiKey()
         self.api_root = r'%s/api/%s' % (sickrage.app.config.web_root, sickrage.app.config.api_key)
 
         # tornado setup

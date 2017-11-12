@@ -99,7 +99,7 @@ class EliteTorrentProvider(TorrentProvider):
 
         results = []
 
-        def _processTitle(title):
+        def _process_title(title):
             # Quality, if no literal is defined it's HDTV
             if 'calidad' not in title:
                 title += ' HDTV x264'
@@ -126,9 +126,8 @@ class EliteTorrentProvider(TorrentProvider):
 
             for row in torrent_rows[1:]:
                 try:
+                    title = _process_title(row.find('a', class_='nombre')['title'])
                     download_url = self.urls['base_url'] + row.find('a')['href']
-                    row_title = row.find('a', class_='nombre')['title']
-                    title = _processTitle(row_title.encode('latin-1').decode('utf8'))
                     if not all([title, download_url]):
                         continue
 

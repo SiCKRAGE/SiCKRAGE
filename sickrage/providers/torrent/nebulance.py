@@ -58,8 +58,7 @@ class NebulanceProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.wsession.post(self.urls['base_url'], params={'page': 'login'},
-                                                         data=login_params, timeout=30).text
+            response = sickrage.app.wsession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -89,7 +88,6 @@ class NebulanceProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.wsession.get(searchURL).text

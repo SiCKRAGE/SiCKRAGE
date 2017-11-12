@@ -98,7 +98,6 @@ class SCCProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories[mode])
-                sickrage.app.log.debug("Search URL: %s" % searchURL)
 
                 try:
                     data = sickrage.app.wsession.get(searchURL).text

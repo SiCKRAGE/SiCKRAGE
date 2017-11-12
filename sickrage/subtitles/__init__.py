@@ -32,10 +32,14 @@ import sickrage
 from sickrage.core import makeDir
 from sickrage.core.helpers import chmodAsParent, fixSetGroupID
 
-if 'legendastv' not in subliminal.provider_manager.names():
-    subliminal.provider_manager.register('legendastv = subliminal.providers.legendastv:LegendasTVProvider')
-if 'itasa' not in subliminal.provider_manager.names():
-    subliminal.provider_manager.register('itasa = sickrage.subtitles.providers.itasa:ItaSAProvider')
+# register provider
+for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
+                 'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
+                 'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
+                 'subscene = sickrage.subtitles.providers.subscene:SubsceneProvider',
+                 'napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider']:
+    if provider not in [str(x) for x in subliminal.provider_manager.list_entry_points()]:
+        subliminal.provider_manager.register(str(provider))
 
 subliminal.region.configure('dogpile.cache.memory')
 
@@ -48,8 +52,11 @@ PROVIDER_URLS = {
     'podnapisi': 'http://www.podnapisi.net',
     'subscenter': 'http://www.subscenter.org',
     'thesubdb': 'http://www.thesubdb.com',
-    'tvsubtitles': 'http://www.tvsubtitles.net'
+    'tvsubtitles': 'http://www.tvsubtitles.net',
+    'wizdom': 'http://wizdom.xyz',
+    'subscene': 'https://subscene.com'
 }
+
 subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
 
 
@@ -99,8 +106,8 @@ def download_subtitles(episode):
     video = get_video(video_path, subtitles_path=subtitles_path, episode=episode)
     if not video:
         sickrage.app.log.debug('%s: Exception caught in subliminal.scan_video for S%02dE%02d' %
-                                       (episode.show.indexerid, episode.season,
-                                        episode.episode))
+                               (episode.show.indexerid, episode.season,
+                                episode.episode))
         return existing_subtitles, None
 
     provider_configs = {

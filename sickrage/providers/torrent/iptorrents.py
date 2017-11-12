@@ -77,8 +77,6 @@ class IPTorrentsProvider(TorrentProvider):
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
-                sickrage.app.log.debug("Search URL: %s" % search_url)
-
                 try:
                     data = sickrage.app.wsession.get(search_url).text
                     results += self.parse(data, mode)

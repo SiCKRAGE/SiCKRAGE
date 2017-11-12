@@ -39,3 +39,10 @@ class FailedDB(srDatabase):
     def __init__(self, name='failed'):
         super(FailedDB, self).__init__(name)
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'failed.db')
+
+    def check_versions(self, index_name, current_version, previous_version):
+        # Wipe table if versions are different
+        if previous_version < current_version:
+            for x in self.db.all(index_name, with_doc=True):
+                self.db.delete(x['doc'])
+        super(FailedDB, self).check_versions(index_name, current_version, previous_version)

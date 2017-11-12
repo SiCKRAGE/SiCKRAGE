@@ -1,3 +1,4 @@
+# coding=utf-8
 # Author: Giovanni Borri
 # Modified by gborri, https://github.com/gborri for TNTVillage
 #
@@ -19,133 +20,153 @@
 from __future__ import unicode_literals
 
 import re
-import traceback
 
-from requests.utils import dict_from_cookiejar
+from unidecode import unidecode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.common import Quality
-from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import bs4_parser
-from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
-    NameParser
+from sickrage.core.helpers import bs4_parser, try_int
 from sickrage.providers import TorrentProvider
-
-category_excluded = {'Sport': 22,
-                     'Teatro': 23,
-                     'Video Musicali': 21,
-                     'Film': 4,
-                     'Musica': 2,
-                     'Students Releases': 13,
-                     'E Books': 3,
-                     'Linux': 6,
-                     'Macintosh': 9,
-                     'Windows Software': 10,
-                     'Pc Game': 11,
-                     'Playstation 2': 12,
-                     'Wrestling': 24,
-                     'Varie': 25,
-                     'Xbox': 26,
-                     'Immagini sfondi': 27,
-                     'Altri Giochi': 28,
-                     'Fumetteria': 30,
-                     'Trash': 31,
-                     'PlayStation 1': 32,
-                     'PSP Portable': 33,
-                     'A Book': 34,
-                     'Podcast': 35,
-                     'Edicola': 36,
-                     'Mobile': 37}
 
 
 class TNTVillageProvider(TorrentProvider):
     def __init__(self):
-        super(TNTVillageProvider, self).__init__("TNTVillage", 'http://forum.tntvillage.scambioetico.org', True)
+        super(TNTVillageProvider, self).__init__("TNTVillage", 'http://www.tntvillage.scambioetico.org', False)
 
         self.urls.update({
-            'login': '{base_url}/index.php?act=Login&CODE=01'.format(**self.urls),
-            'detail': '{base_url}/index.php?showtopic=%s'.format(**self.urls),
-            'search': '{base_url}/?act=allreleases&%s'.format(**self.urls),
-            'search_page': '{base_url}/?act=allreleases&st=%s&%s'.format(**self.urls),
-            'download': '{base_url}/index.php?act=Attach&type=post&id=%s'.format(**self.urls)
+            'search': '{base_url}/src/releaselist.php'.format(**self.urls),
         })
 
-        self._uid = None
-        self._hash = None
-        self.username = None
-        self.password = None
-
-        self.cat = None
-        self.engrelease = None
-        self.page = 10
         self.subtitle = None
         self.minseed = None
         self.minleech = None
-
-        self.hdtext = [' - Versione 720p',
-                       ' Versione 720p',
-                       ' V 720p',
-                       ' V 720',
-                       ' V HEVC',
-                       ' V  HEVC',
-                       ' V 1080',
-                       ' Versione 1080p',
-                       ' 720p HEVC',
-                       ' Ver 720',
-                       ' 720p HEVC',
-                       ' 720p']
-
-        self.category_dict = {'Serie TV': 29,
-                              'Cartoni': 8,
-                              'Anime': 7,
-                              'Programmi e Film TV': 1,
-                              'Documentari': 14,
-                              'All': 0}
-
-        self.cookies = None
-
-        self.sub_string = ['sub', 'softsub']
+        self.engrelease = None
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.categories = "cat=29"
-
         self.cache = TVCache(self, min_time=30)
 
-    def _check_auth(self):
+    def search(self, search_strings, age=0, ep_obj=None):
+        results = []
 
-        if not self.username or not self.password:
-            raise AuthException("Your authentication credentials for " + self.name + " are missing, check your config.")
+        if not self.login():
+            return results
 
-        return True
+        # Search Params
+        search_params = {
+            'srcrel': '',
+            'page': 0,
+            'cat': 29,
+        }
 
-    def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
-            return True
+        for mode in search_strings:
+            sickrage.app.log.debug('Search mode: {}'.format(mode))
+            for search_string in search_strings[mode]:
+                if mode != 'RSS':
+                    sickrage.app.log.debug('Search string: {}'.format(search_string))
+                    search_params['srcrel'] = search_string
 
-        login_params = {'UserName': self.username,
-                        'PassWord': self.password,
-                        'CookieDate': 0,
-                        'submit': 'Connettiti al Forum'}
+                while search_params['page'] <= 10:
+                    search_params['page'] += 1
+                    try:
+                        data = sickrage.app.wsession.post(self.urls['search'], data=search_params).text
+                        results += self.parse(data, mode)
+                    except Exception:
+                        sickrage.app.log.debug('No data returned from provider')
 
-        try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
-        except Exception:
-            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
-            return False
+        return results
 
-        if re.search('Sono stati riscontrati i seguenti errori', response) or re.search('<title>Connettiti</title>',
-                                                                                        response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
-            return False
+    def parse(self, data, mode):
+        """
+        Parse search results for items.
 
-        return True
+        :param data: The raw response from a search
+        :param mode: The current mode used to search, e.g. RSS
+
+        :return: A list of items found
+        """
+        results = []
+
+        hdtext = [' Versione 720p',
+                  ' V 720p',
+                  ' V 720',
+                  ' V HEVC',
+                  ' V  HEVC',
+                  ' V 1080',
+                  ' Versione 1080p',
+                  ' 720p HEVC',
+                  ' Ver 720',
+                  ' 720p HEVC',
+                  ' 720p']
+
+        with bs4_parser(data) as html:
+            torrent_table = html.find(class_='showrelease_tb')
+            torrent_rows = torrent_table('tr') if torrent_table else []
+
+            # Continue only if at least one release is found
+            if len(torrent_rows) < 3:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                return results
+
+            # Skip column headers
+            for row in torrent_table('tr')[1:]:
+                cells = row('td')
+                if not cells:
+                    continue
+
+                try:
+                    title = unidecode(cells[6].text)
+                    title = title.replace('·', '').replace(',', '')
+                    title = title.replace('by', '-').strip()
+                    title = title.strip('-').strip()
+
+                    download_url = cells[1].find('a')['href']
+                    if not all([title, download_url]):
+                        continue
+
+                    leechers = try_int(cells[3].text)
+                    seeders = try_int(cells[4].text, 1)
+
+                    filename_qt = self._reverse_quality(self._episode_quality(title))
+                    for text in hdtext:
+                        title1 = title
+                        title = title.replace(text, filename_qt)
+                        if title != title1:
+                            break
+
+                    if Quality.nameQuality(title) == Quality.UNKNOWN:
+                        title += filename_qt
+
+                    if self._has_only_subs(title) and not self.subtitle:
+                        sickrage.app.log.debug('Torrent is only subtitled, skipping: {}'.format(title))
+                        continue
+
+                    if self.engrelease and not self._is_english(title):
+                        sickrage.app.log.debug("Torrent isn't english audio/subtitled, skipping: {} ".format(title))
+                        continue
+
+                    size = -1
+
+                    item = {
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                    }
+
+                    if mode != 'RSS':
+                        sickrage.app.log.debug('Found result: {}'.format(title))
+
+                    results.append(item)
+                except Exception:
+                    sickrage.app.log.error('Failed parsing provider')
+
+        return results
 
     @staticmethod
-    def _reverseQuality(quality):
-
+    def _reverse_quality(quality):
         quality_string = ''
 
         if quality == Quality.SDTV:
@@ -170,30 +191,9 @@ class TNTVillageProvider(TorrentProvider):
         return quality_string
 
     @staticmethod
-    def _episodeQuality(torrent_rows):
-        """
-            Return The quality from the scene episode HTML row.
-        """
-        file_quality = ''
-
-        img_all = (torrent_rows.find_all('td'))[1].find_all('img')
-
-        if len(img_all) > 0:
-            for img_type in img_all:
-                try:
-                    file_quality = file_quality + " " + img_type['src'].replace("style_images/mkportal-636/",
-                                                                                "").replace(".gif", "").replace(".png",
-                                                                                                                "")
-                except Exception:
-                    sickrage.app.log.error(
-                        "Failed parsing quality. Traceback: {}".format(traceback.format_exc()))
-
-        else:
-            file_quality = (torrent_rows.find_all('td'))[1].get_text()
-            sickrage.app.log.debug("Episode quality: %s" % file_quality)
-
+    def _episode_quality(title):
         def checkName(options, func):
-            return func([re.search(option, file_quality, re.I) for option in options])
+            return func([re.search(option, title, re.I) for option in options])
 
         dvdOptions = checkName(["dvd", "dvdrip", "dvdmux", "DVD9", "DVD5"], any)
         bluRayOptions = checkName(["BD", "BDmux", "BDrip", "BRrip", "Bluray"], any)
@@ -201,12 +201,8 @@ class TNTVillageProvider(TorrentProvider):
         hdOptions = checkName(["720p"], any)
         fullHD = checkName(["1080p", "fullHD"], any)
 
-        if len(img_all) > 0:
-            file_quality = (torrent_rows.find_all('td'))[1].get_text()
-
         webdl = checkName(
-            ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"],
-            any)
+            ["webdl", "webmux", "webrip", "dl-webmux", "web-dlmux", "webdl-mux", "web-dl", "webdlmux", "dlmux"], any)
 
         if sdOptions and not dvdOptions and not fullHD and not hdOptions:
             return Quality.SDTV
@@ -227,179 +223,25 @@ class TNTVillageProvider(TorrentProvider):
         else:
             return Quality.UNKNOWN
 
-    def _is_italian(self, torrent_rows):
-
-        name = str(torrent_rows.find_all('td')[1].find('b').find('span'))
-        if not name or name == 'None':
-            return False
-
-        subFound = italian = False
-        for sub in self.sub_string:
-            if re.search(sub, name, re.I):
-                subFound = True
-            else:
-                continue
-
-            if re.search("ita", name.split(sub)[0], re.I):
-                sickrage.app.log.debug("Found Italian release:  " + name)
-                italian = True
-                break
-
-        if not subFound and re.search("ita", name, re.I):
-            sickrage.app.log.debug("Found Italian release:  " + name)
-            italian = True
-
-        return italian
-
     @staticmethod
-    def _is_english(torrent_rows):
-
-        name = str(torrent_rows.find_all('td')[1].find('b').find('span'))
-        if not name or name == 'None':
-            return False
-
+    def _is_english(title):
         english = False
-        if re.search("eng", name, re.I):
-            sickrage.app.log.debug("Found English release:  " + name)
+        if re.search("eng", title, re.I):
+            sickrage.app.log.debug("Found English release:  " + title)
             english = True
 
         return english
 
     @staticmethod
-    def _is_season_pack(name):
-
-        try:
-            myParser = NameParser(tryIndexers=True)
-            parse_result = myParser.parse(name)
-        except InvalidNameException:
-            sickrage.app.log.debug("Unable to parse the filename %s into a valid episode" % name)
-            return False
-        except InvalidShowException:
-            sickrage.app.log.debug("Unable to parse the filename %s into a valid show" % name)
-            return False
-
-        if len([x for x in sickrage.app.main_db.db.get_many('tv_episodes', parse_result.indexerid, with_doc=True)
-                if x['doc']['season'] == parse_result.season_number]) == len(parse_result.episode_numbers): return True
-
-    def search(self, search_params, age=0, ep_obj=None):
-        results = []
-
-        self.categories = "cat=" + str(self.cat)
-
-        if not self.login():
-            return results
-
-        for mode in search_params.keys():
-            sickrage.app.log.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
-
-                if mode == 'RSS':
-                    self.page = 2
-
-                last_page = 0
-                y = int(self.page)
-
-                if search_string == '':
-                    continue
-
-                search_string = str(search_string).replace('.', ' ')
-
-                for x in range(0, y):
-                    z = x * 20
-                    if last_page:
-                        break
-
-                    if mode != 'RSS':
-                        searchURL = (self.urls['search_page'] + '&filter=%s') % (z, self.categories, search_string)
-                    else:
-                        searchURL = self.urls['search_page'] % (z, self.categories)
-
-                    if mode != 'RSS':
-                        sickrage.app.log.debug("Search string: %s " % search_string)
-
-                    sickrage.app.log.debug("Search URL: %s" % searchURL)
-
-                    try:
-                        data = sickrage.app.wsession.get(searchURL).text
-                    except Exception:
-                        sickrage.app.log.debug("No data returned from provider")
-                        continue
-
-                    try:
-                        with bs4_parser(data) as html:
-                            torrent_table = html.find('table', attrs={'class': 'copyright'})
-                            torrent_rows = torrent_table.find_all('tr') if torrent_table else []
-
-                            # Continue only if one Release is found
-                            if len(torrent_rows) < 3:
-                                sickrage.app.log.debug(
-                                    "Data returned from provider does not contain any torrents")
-                                last_page = 1
-                                continue
-
-                            if len(torrent_rows) < 42:
-                                last_page = 1
-
-                            for result in torrent_table.find_all('tr')[2:]:
-
-                                try:
-                                    link = result.find('td').find('a')
-                                    title = link.string
-                                    download_url = self.urls['download'] % result.find_all('td')[8].find('a')['href'][
-                                                                           -8:]
-                                    leechers = result.find_all('td')[3].find_all('td')[1].text
-                                    leechers = int(leechers.strip('[]'))
-                                    seeders = result.find_all('td')[3].find_all('td')[2].text
-                                    seeders = int(seeders.strip('[]'))
-                                    # FIXME
-                                    size = -1
-                                except (AttributeError, TypeError):
-                                    continue
-
-                                filename_qt = self._reverseQuality(self._episodeQuality(result))
-                                for text in self.hdtext:
-                                    title1 = title
-                                    title = title.replace(text, filename_qt)
-                                    if title != title1:
-                                        break
-
-                                if Quality.nameQuality(title) == Quality.UNKNOWN:
-                                    title += filename_qt
-
-                                if not self._is_italian(result) and not self.subtitle:
-                                    sickrage.app.log.debug("Torrent is subtitled, skipping: %s " % title)
-                                    continue
-
-                                if self.engrelease and not self._is_english(result):
-                                    sickrage.app.log.debug(
-                                        "Torrent isnt english audio/subtitled , skipping: %s " % title)
-                                    continue
-
-                                search_show = re.split(r'([Ss][\d{1,2}]+)', search_string)[0]
-                                show_title = search_show
-                                rindex = re.search(r'([Ss][\d{1,2}]+)', title)
-                                if rindex:
-                                    show_title = title[:rindex.start()]
-                                    ep_params = title[rindex.start():]
-
-                                if show_title.lower() != search_show.lower() \
-                                        and search_show.lower() in show_title.lower() and ep_params:
-                                    title = search_show + ep_params
-
-                                if not all([title, download_url]):
-                                    continue
-
-                                if self._is_season_pack(title):
-                                    title = re.sub(r'([Ee][\d{1,2}\-?]+)', '', title)
-
-                                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                        'leechers': leechers, 'hash': ''}
-
-                                if mode != 'RSS':
-                                    sickrage.app.log.debug("Found result: {}".format(title))
-
-                                results.append(item)
-                    except Exception:
-                        sickrage.app.log.error("Failed parsing provider.")
-
-        return results
+    def _has_only_subs(title):
+        title = title.lower()
+        if 'sub' in title:
+            title = title.split()
+            counter = 0
+            for word in title:
+                if 'ita' in word:
+                    counter += 1
+                if 'eng' in word:
+                    counter += 1
+            if counter < 2:
+                return True

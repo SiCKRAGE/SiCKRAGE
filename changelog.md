@@ -1,6 +1,25 @@
 # Changelog
 
-- * 33de5b6 - 2017-11-10: Release v9.1.70 
+- * fd3f998 - 2017-11-12: Release v9.1.72 
+- * 47880bb - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 
+- * c98575b - 2017-11-11: Disabled external caching of private search provider results 
+- * c5c2b4a - 2017-11-11: Revert &quot;Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot;&quot; 
+- * 9575d5f - 2017-11-11: Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot; 
+- * b024c05 - 2017-11-11: Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server 
+- * f380f9b - 2017-11-11: Added web session hook to log urls and post data 
+- * 810662e - 2017-11-11: Added web session hook to log urls and post data 
+- * 342df0e - 2017-11-11: refactored providers 
+- * aa6d45f - 2017-11-11: Added YGG torrent provider 
+- * 846f1d5 - 2017-11-11: Added YGG torrent provider 
+- * 7c3be4f - 2017-11-11: Added YGG torrent provider 
+- * f2a792d - 2017-11-11: Added Subscene subtitle provider 
+- * 27d1a59 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
+- * 253be31 - 2017-11-11: Added Wizdom subtitle provider Added NapiProjekt subtitle provider 
+- * 660e69d - 2017-11-10: Fixed issue #119 - Add custom search provider: expected string or buffer 
+- * 0b32673 - 2017-11-10: Unidecode Newpct titles to avoid unicode issues during name parsing Refactored TNTVillage torrent provider Refactored regular regexes 
+- * 1c854a2 - 2017-11-10: Fixed search issue with Newpct torrent provider Added subtitles category to Newpct torrent provider Quality of Newpct releases determined from title and url now 
+- * 022e4f9 - 2017-11-10: Fixed unicode decode issues for EliteTorrent provider 
+- * 24e1037 - 2017-11-10: Release v9.1.70 
 - * 9498449 - 2017-11-10: Fixed typo in code for daily searcher 
 - * b26010a - 2017-11-09: Release v9.1.69 
 - * e0c1882 - 2017-11-09: Fixed typo for server status template 
