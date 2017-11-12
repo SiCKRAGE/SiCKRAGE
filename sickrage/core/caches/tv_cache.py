@@ -244,7 +244,7 @@ class TVCache(object):
                     headers = {'content-type': 'application/json',
                                'x-authorization': sickrage.app.config.api_key}
 
-                    sickrage.app.wsession.post('https://api.sickrage.ca/provider_cache/',
+                    sickrage.app.wsession.post(sickrage.app.api_url + '/provider_cache/',
                                                data=json.dumps(dbData), headers=headers)
 
                 sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
@@ -253,12 +253,13 @@ class TVCache(object):
         neededEps = {}
         dbData = []
 
+        # get data from external database
         if not self.provider.private:
             try:
                 headers = {'content-type': 'application/json',
                            'x-authorization': sickrage.app.config.api_key}
 
-                dbData += sickrage.app.wsession.get('https://api.sickrage.ca/provider_cache/',
+                dbData += sickrage.app.wsession.get(sickrage.app.api_url + '/provider_cache/',
                                                    params={'provider': self.providerID}, headers=headers).json()
             except Exception:
                 pass

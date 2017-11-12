@@ -37,7 +37,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value
+    extract_zipfile, try_int, checkbox_to_value, generateApiKey
 
 
 class Config(object):
@@ -702,7 +702,7 @@ class Config(object):
                 'web_use_gzip': True,
                 'dailysearch_frequency': 40,
                 'ignore_words': 'german,french,core2hd,dutch,swedish,reenc,MrLss',
-                'api_key': '',
+                'api_key': generateApiKey(),
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
                 'web_cookie_secret': generateCookieSecret(),
