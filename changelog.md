@@ -1,6 +1,7 @@
 # Changelog
 
-- * c491d18 - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 
+- * fd3f998 - 2017-11-12: Release v9.1.72 
+- * 47880bb - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 
 - * c98575b - 2017-11-11: Disabled external caching of private search provider results 
 - * c5c2b4a - 2017-11-11: Revert &quot;Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot;&quot; 
 - * 9575d5f - 2017-11-11: Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot; 
