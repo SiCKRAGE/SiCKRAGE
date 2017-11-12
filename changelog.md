@@ -1,6 +1,7 @@
 # Changelog
 
-- * f974019 - 2017-11-12: Refactored LimeTorrents search provider 
+- * 31e9ace - 2017-11-12: Refactored LimeTorrents search provider 
+- * 1dd9673 - 2017-11-12: Refactored LimeTorrents search provider 
 - * 0fcb03c - 2017-11-12: Refactored LimeTorrents search provider 
 - * 15e1861 - 2017-11-12: Release v9.1.72 
 - * 47880bb - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 

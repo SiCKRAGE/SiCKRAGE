@@ -119,9 +119,10 @@ class LimeTorrentsProvider(TorrentProvider):
                         continue
 
                     try:
-                        sickrage.app.wsession.get(self.urls['update'], timeout=30, params={'torrent_id': torrent_id, 'infohash': info_hash})
+                        sickrage.app.wsession.get(self.urls['update'], timeout=30,
+                                                  params={'torrent_id': torrent_id, 'infohash': info_hash})
                     except Exception:
-                        continue
+                        pass
 
                     download_url = 'magnet:?xt=urn:btih:{hash}&dn={title}'.format(hash=info_hash, title=title)
 
