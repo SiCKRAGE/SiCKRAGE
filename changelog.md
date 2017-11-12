@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7bbd022 - 2017-11-11: Revert &quot;Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot;&quot; 
+- * 3fa5bc0 - 2017-11-11: Disabled external caching of private search provider results 
+- * c5c2b4a - 2017-11-11: Revert &quot;Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot;&quot; 
 - * 9575d5f - 2017-11-11: Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot; 
 - * b024c05 - 2017-11-11: Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server 
 - * f380f9b - 2017-11-11: Added web session hook to log urls and post data 

@@ -240,26 +240,28 @@ class TVCache(object):
                 sickrage.app.cache_db.db.insert(dbData)
 
                 # add to external database
-                headers = {'content-type': 'application/json',
-                           'x-authorization': sickrage.app.config.api_key}
+                if not self.provider.private:
+                    headers = {'content-type': 'application/json',
+                               'x-authorization': sickrage.app.config.api_key}
 
-                sickrage.app.wsession.post('https://api.sickrage.ca/provider_cache/',
-                                           data=json.dumps(dbData), headers=headers)
+                    sickrage.app.wsession.post('https://api.sickrage.ca/provider_cache/',
+                                               data=json.dumps(dbData), headers=headers)
 
                 sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
     def search_cache(self, ep_obj=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
+        dbData = []
 
-        try:
-            # get data from external database
-            headers = {'content-type': 'application/json',
-                       'x-authorization': sickrage.app.config.api_key}
+        if not self.provider.private:
+            try:
+                headers = {'content-type': 'application/json',
+                           'x-authorization': sickrage.app.config.api_key}
 
-            dbData = sickrage.app.wsession.get('https://api.sickrage.ca/provider_cache/',
-                                               params={'provider': self.providerID}, headers=headers).json()
-        except Exception:
-            dbData = []
+                dbData += sickrage.app.wsession.get('https://api.sickrage.ca/provider_cache/',
+                                                   params={'provider': self.providerID}, headers=headers).json()
+            except Exception:
+                pass
 
         # get data from internal database
         dbData += [x['doc'] for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
