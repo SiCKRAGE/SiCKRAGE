@@ -118,9 +118,10 @@ class LimeTorrentsProvider(TorrentProvider):
                     if not all([title, torrent_id, info_hash]):
                         continue
 
-                    # Suppress the timeout since we are not interested in actually getting the results
-                    sickrage.app.wsession.get(self.urls['update'], timeout=0.1, params={'torrent_id': torrent_id,
-                                                                                        'infohash': info_hash})
+                    try:
+                        sickrage.app.wsession.get(self.urls['update'], timeout=30, params={'torrent_id': torrent_id, 'infohash': info_hash})
+                    except Exception:
+                        continue
 
                     download_url = 'magnet:?xt=urn:btih:{hash}&dn={title}'.format(hash=info_hash, title=title)
 

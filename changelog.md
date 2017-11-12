@@ -1,6 +1,7 @@
 # Changelog
 
-- * cf00f19 - 2017-11-12: Refactored LimeTorrents search provider 
+- * f974019 - 2017-11-12: Refactored LimeTorrents search provider 
+- * 0fcb03c - 2017-11-12: Refactored LimeTorrents search provider 
 - * 15e1861 - 2017-11-12: Release v9.1.72 
 - * 47880bb - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 
 - * c98575b - 2017-11-11: Disabled external caching of private search provider results 
