@@ -40,6 +40,7 @@ from fake_useragent import UserAgent
 from tornado.ioloop import IOLoop
 
 import sickrage
+from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
@@ -94,12 +95,14 @@ class Core(object):
         self.newest_version = None
         self.newest_version_string = None
 
-        self.api_url = 'https://api.sickrage.ca'
+        self.api_url = None
+
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.sys_encoding = get_sys_encoding()
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
         self.showlist = []
 
+        self.api = None
         self.adba_connection = None
         self.notifier_providers = None
         self.metadata_providers = None
@@ -142,6 +145,7 @@ class Core(object):
         self.search_providers = SearchProviders()
         self.log = Logger()
         self.config = Config()
+        self.api = API()
         self.alerts = Notifications()
         self.main_db = MainDB()
         self.cache_db = CacheDB()
@@ -188,6 +192,9 @@ class Core(object):
 
         # set language
         self.config.change_gui_lang(self.config.gui_lang)
+
+        # set api url
+        self.api_url = 'https://api.sickrage.ca/v1/' if not self.config.developer else 'http://localhost/v1/'
 
         # set socket timeout
         socket.setdefaulttimeout(self.config.socket_timeout)

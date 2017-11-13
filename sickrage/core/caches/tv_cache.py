@@ -240,12 +240,11 @@ class TVCache(object):
                 sickrage.app.cache_db.db.insert(dbData)
 
                 # add to external database
-                if not self.provider.private:
-                    headers = {'content-type': 'application/json',
-                               'x-authorization': sickrage.app.config.api_key}
-
-                    sickrage.app.wsession.post(sickrage.app.api_url + '/provider_cache/',
-                                               data=json.dumps(dbData), headers=headers)
+                if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
+                    try:
+                        sickrage.app.api.add_cache_result(dbData)
+                    except Exception:
+                        pass
 
                 sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
 
@@ -254,13 +253,9 @@ class TVCache(object):
         dbData = []
 
         # get data from external database
-        if not self.provider.private:
+        if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                headers = {'content-type': 'application/json',
-                           'x-authorization': sickrage.app.config.api_key}
-
-                dbData += sickrage.app.wsession.get(sickrage.app.api_url + '/provider_cache/',
-                                                   params={'provider': self.providerID}, headers=headers).json()
+                dbData += sickrage.app.api.get_cache_results(self.providerID, ep_obj.show.indexerid)
             except Exception:
                 pass
 

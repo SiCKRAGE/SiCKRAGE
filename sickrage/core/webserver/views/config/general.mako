@@ -26,6 +26,87 @@
     <div id="core-tab-pane1" class="tab-pane fade in active">
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                <h3>${_('SiCKRAGE API')}</h3>
+                <p>${_('Login info and options for api.sickrage.ca')}</p>
+            </div>
+
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Enable')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" class="enabler" name="use_api"
+                               id="use_api" ${('', 'checked')[bool(sickrage.app.config.enable_api)]}/>
+                        <label for="use_api">${_('Enable API access ?')}</label>
+                    </div>
+                </div>
+
+                <div id="content_use_api">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('API provider cache')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" class="enabler" name="enable_api_providers_cache"
+                                   id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
+                            <label for="enable_api_providers_cache">${_('Enable provider cache ?')}</label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('API username')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </div>
+                                <input name="api_username" id="api_username"
+                                       value="${sickrage.app.config.api_username}"
+                                       title="API username"
+                                       class="form-control"
+                                       autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('API password')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                </div>
+                                <input type="password" name="api_password" id="api_password"
+                                       value="${sickrage.app.config.api_password}"
+                                       title="API password"
+                                       class="form-control"
+                                       autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="testNotification" id="testAPI-result">${_('Click below to test.')}</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="${_('Test API')}" id="testAPI"/>
+                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="row tab-pane">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>${_('Misc')}</h3>
                 <p>${_('Startup options. Indexer options. Log and show file locations.')}</p>
                 <p><b>${_('Some options may require a manual restart to take effect.')}</b></p>
@@ -88,7 +169,6 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Daily show updates start time')}</label>
                     </div>
