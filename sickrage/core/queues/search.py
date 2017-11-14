@@ -110,7 +110,7 @@ class SearchQueue(srQueue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for __, __, cur_item in self.queue  + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):
@@ -161,6 +161,8 @@ class DailySearchQueueItem(srQueueItem):
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+            else:
+                sickrage.app.log.info("No needed episodes found")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
@@ -237,6 +239,9 @@ class BacklogQueueItem(srQueueItem):
 
                         # give the CPU a break
                         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+                else:
+                    sickrage.app.log.info(
+                        "No needed episodes found during backlog search for: [" + self.show.name + "]")
             except Exception:
                 sickrage.app.log.debug(traceback.format_exc())
             finally:

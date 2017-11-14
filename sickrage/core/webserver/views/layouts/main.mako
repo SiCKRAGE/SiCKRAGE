@@ -411,6 +411,16 @@
         % endif
     </div>
 
+    % if current_user and sickrage.app.config.developer:
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                <div class="alert alert-danger upgrade-notification text-center">
+                    <span>!!! SiCKRAGE is in <b>developer</b> mode !!!</span>
+                </div>
+            </div>
+        </div>
+    % endif
+
     % if current_user and sickrage.app.newest_version_string:
         <div class="row">
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">

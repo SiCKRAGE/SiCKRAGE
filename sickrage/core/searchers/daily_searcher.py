@@ -52,7 +52,7 @@ class DailySearcher(object):
         if sickrage.app.config.use_failed_downloads:
             FailedHistory.trimHistory()
 
-        sickrage.app.log.info("{}: Searching for new released episodes".format(self.name))
+        sickrage.app.log.info("Searching for new released episodes")
 
         curDate = datetime.date.today()
         curDate += datetime.timedelta(days=2)
@@ -68,6 +68,7 @@ class DailySearcher(object):
                     and x['doc']['season'] > 0
                     and curDate.toordinal() >= x['doc']['airdate'] > 1]
 
+        new_episodes = False
         for episode in episodes:
             if not show or int(episode["showid"]) != show.indexerid:
                 show = findCertainShow(sickrage.app.showlist, int(episode["showid"]))
@@ -97,8 +98,10 @@ class DailySearcher(object):
                 ))
 
                 ep_obj.saveToDB()
-        else:
-            sickrage.app.log.info("{}: No new released episodes found".format(self.name))
+                new_episodes = True
+
+        if not new_episodes:
+            sickrage.app.log.info("No new released episodes found")
 
         # queue episode for daily search
         sickrage.app.search_queue.put(DailySearchQueueItem())
