@@ -424,6 +424,10 @@ def wantedEpisodes(show, fromDate):
     """
 
     wanted = []
+    if show.paused:
+        sickrage.app.log.debug("Not checking for episodes of {} because the show is paused".format(show.name))
+        return wanted
+
     anyQualities, bestQualities = Quality.splitQuality(show.quality)
     allQualities = list(set(anyQualities + bestQualities))
 

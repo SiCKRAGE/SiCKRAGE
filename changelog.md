@@ -1,6 +1,7 @@
 # Changelog
 
-- * d64f4e2 - 2017-11-14: Release v9.1.76 
+- * 0f56be1 - 2017-11-14: Fixed subtitle tagging for Newpct provider Fixed unicode title issues for Newpct provider Fixed unicode title issues for EliteTorrent provider Set EliteTorrent provider to public Added alert box to top of page notifying when developer mode is enabled 
+- * 2425b4c - 2017-11-14: Release v9.1.76 
 - * f1a6e69 - 2017-11-13: Release v9.1.74 
 - * 6a14546 - 2017-11-12: Added code to connect app to SiCKRAGE API securely 
 - * 6c16a6e - 2017-11-12: Refactored LimeTorrents search provider 

@@ -170,8 +170,11 @@ class NewpctProvider(TorrentProvider):
         return results
 
     def _process_title(self, title, url):
-        # Strip unwanted characters
-        title = title.strip()
+        # Convert to unicode and strip unwanted characters
+        title = title.encode('latin-1').decode('utf8').strip()
+
+        # Check if subtitled
+        subtitles = re.search(r'\[V.O.[^\[]*]', title, flags=re.I)
 
         # Quality - Use re module to avoid case sensitive problems with replace
         title = re.sub(r'\[HDTV.1080[p][^\[]*]', '1080p HDTV x264', title, flags=re.IGNORECASE)
@@ -217,7 +220,7 @@ class NewpctProvider(TorrentProvider):
         title = re.sub(r'(\[Cap.(\d{1,2})(\d{2})[^\[]*]).*', r'\1 SPANISH AUDIO', title, flags=re.IGNORECASE)
 
         # Group
-        if re.search(r'\[V.O.[^\[]*]', title, flags=re.I):
+        if subtitles:
             title += '-NEWPCTVO'
         else:
             title += '-NEWPCT'
