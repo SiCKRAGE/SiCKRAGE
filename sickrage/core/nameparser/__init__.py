@@ -97,7 +97,7 @@ class NameParser(object):
             sickrage.app.log.debug(
                 "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
 
-        return show, show_id
+        return show, show_id or 0
 
     @staticmethod
     def clean_series_name(series_name):
