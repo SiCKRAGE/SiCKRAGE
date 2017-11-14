@@ -165,6 +165,11 @@ class VersionUpdater(object):
         if self.updater:
             return self.updater.version
 
+    @property
+    def branch(self):
+        if self.updater:
+            return self.updater.current_branch
+        return "master"
 
 class UpdateManager(object):
     @property
