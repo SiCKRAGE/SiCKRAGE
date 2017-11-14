@@ -33,27 +33,28 @@ class LimeTorrentsProvider(TorrentProvider):
         super(LimeTorrentsProvider, self).__init__('LimeTorrents', 'https://www.limetorrents.cc', False)
 
         self.urls.update({
-            'search': '{base_url}/searchrss/tv/'.format(**self.urls),
-            'rss': '{base_url}/rss/tv/'.format(**self.urls),
+            'update': '{base_url}/post/updatestats.php'.format(**self.urls),
+            'search': '{base_url}/search/tv/%s/'.format(**self.urls),
+            'rss': '{base_url}/browse-torrents/TV-shows/'.format(**self.urls),
         })
 
         self.minseed = None
         self.minleech = None
+        self.confirmed = False
 
         self.proper_strings = ['PROPER', 'REPACK', 'REAL']
 
-        self.cache = TVCache(self, search_params={'RSS': ['rss']})
+        self.cache = TVCache(self)
 
     def search(self, search_strings, age=0, ep_obj=None):
         results = []
         for mode in search_strings:
-            sickrage.app.log.debug("Search Mode: {0}".format(mode))
+            sickrage.app.log.debug("Search Mode: {}".format(mode))
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
-                    sickrage.app.log.debug("Search string: {0}".format
-                                                   (search_string))
+                    sickrage.app.log.debug("Search string: {}".format(search_string))
 
-                search_url = (self.urls['rss'], self.urls['search'] + search_string)[mode != 'RSS']
+                search_url = (self.urls['rss'], self.urls['search'] % search_string)[mode != 'RSS']
 
                 try:
                     data = sickrage.app.wsession.get(search_url).text
@@ -73,51 +74,63 @@ class LimeTorrentsProvider(TorrentProvider):
 
         results = []
 
-        if not data.startswith('<?xml'):
-            sickrage.app.log.debug('Expected xml but got something else, is your mirror failing?')
-            return results
+        id_regex = re.compile(r'(?:\/)(.*)(?:-torrent-([0-9]*)\.html)', re.I)
+        hash_regex = re.compile(r'(.*)([0-9a-f]{40})(.*)', re.I)
+
+        def process_column_header(th):
+            return th.span.get_text() if th.span else th.get_text()
 
         with bs4_parser(data) as html:
-            entries = html('item')
-            if not entries:
-                sickrage.app.log.debug('Returned xml contained no results')
+            torrent_table = html.find('table', class_='table2')
+
+            if not torrent_table:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            for item in entries:
-                try:
-                    title = item.title.text
-                    # Use the itorrents link limetorrents provides,
-                    # unless it is not itorrents or we are not using blackhole
-                    # because we want to use magnets if connecting direct to client
-                    # so that proxies work.
-                    download_url = item.enclosure['url']
-                    if sickrage.app.config.torrent_method != "blackhole" or 'itorrents' not in download_url:
-                        download_url = item.enclosure['url']
-                        # http://itorrents.org/torrent/C7203982B6F000393B1CE3A013504E5F87A46A7F.torrent?title=The-Night-of-the-Generals-(1967)[BRRip-1080p-x264-by-alE13-DTS-AC3][Lektor-i-Napisy-PL-Eng][Eng]
-                        # Keep the hash a separate string for when its needed for failed
-                        torrent_hash = re.match(r"(.*)([A-F0-9]{40})(.*)", download_url, re.I).group(2)
-                        download_url = "magnet:?xt=urn:btih:" + torrent_hash + "&dn=" + title
+            torrent_rows = torrent_table.find_all('tr')
+            labels = [process_column_header(label) for label in torrent_rows[0].find_all('th')]
 
-                    if not (title and download_url):
+            # Skip the first row, since it isn't a valid result
+            for row in torrent_rows[1:]:
+                cells = row.find_all('td')
+
+                try:
+                    title_cell = cells[labels.index('Torrent Name')]
+
+                    verified = title_cell.find('img', title='Verified torrent')
+                    if self.confirmed and not verified:
                         continue
 
-                    # seeders and leechers are presented diferently when doing a search and when looking for newly added
-                    if mode == 'RSS':
-                        # <![CDATA[
-                        # Category: <a href="http://www.limetorrents.cc/browse-torrents/TV-shows/">TV shows</a><br /> Seeds: 1<br />Leechers: 0<br />Size: 7.71 GB<br /><br /><a href="http://www.limetorrents.cc/Owen-Hart-of-Gold-Djon91-torrent-7180661.html">More @ limetorrents.cc</a><br />
-                        # ]]>
-                        description = item.find('description')
-                        seeders = try_int(description('br')[0].next_sibling.strip().lstrip('Seeds: '))
-                        leechers = try_int(description('br')[1].next_sibling.strip().lstrip('Leechers: '))
-                    else:
-                        # <description>Seeds: 6982 , Leechers 734</description>
-                        description = item.find('description').text.partition(',')
-                        seeders = try_int(description[0].lstrip('Seeds: ').strip())
-                        leechers = try_int(description[2].lstrip('Leechers ').strip())
+                    title_anchors = title_cell.find_all('a')
+                    if not title_anchors or len(title_anchors) < 2:
+                        continue
 
-                    torrent_size = item.find('size').text
+                    title_url = title_anchors[0].get('href')
+                    title = title_anchors[1].get_text(strip=True)
+                    regex_result = id_regex.search(title_anchors[1].get('href'))
 
-                    size = convert_size(torrent_size, -1)
+                    alt_title = regex_result.group(1)
+                    if len(title) < len(alt_title):
+                        title = alt_title.replace('-', ' ')
+
+                    torrent_id = regex_result.group(2)
+                    info_hash = hash_regex.search(title_url).group(2)
+                    if not all([title, torrent_id, info_hash]):
+                        continue
+
+                    try:
+                        sickrage.app.wsession.get(self.urls['update'], timeout=30,
+                                                  params={'torrent_id': torrent_id, 'infohash': info_hash})
+                    except Exception:
+                        pass
+
+                    download_url = 'magnet:?xt=urn:btih:{hash}&dn={title}'.format(hash=info_hash, title=title)
+
+                    # Remove comma as thousands separator from larger number like 2,000 seeders = 2000
+                    seeders = try_int(cells[labels.index('Seed')].get_text(strip=True).replace(',', ''), 1)
+                    leechers = try_int(cells[labels.index('Leech')].get_text(strip=True).replace(',', ''))
+
+                    size = convert_size(cells[labels.index('Size')].get_text(strip=True), -1)
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
                             'leechers': leechers, 'hash': ''}

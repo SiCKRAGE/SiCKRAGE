@@ -1,6 +1,11 @@
 # Changelog
 
-- * fd3f998 - 2017-11-12: Release v9.1.72 
+- * b39c4f7 - 2017-11-13: Release v9.1.74 
+- * 6a14546 - 2017-11-12: Added code to connect app to SiCKRAGE API securely 
+- * 6c16a6e - 2017-11-12: Refactored LimeTorrents search provider 
+- * 1dd9673 - 2017-11-12: Refactored LimeTorrents search provider 
+- * 0fcb03c - 2017-11-12: Refactored LimeTorrents search provider 
+- * 15e1861 - 2017-11-12: Release v9.1.72 
 - * 47880bb - 2017-11-12: Hard-coded SiCKRAGE API url into app as a variable 
 - * c98575b - 2017-11-11: Disabled external caching of private search provider results 
 - * c5c2b4a - 2017-11-11: Revert &quot;Revert &quot;Added feature that stores and retrieves provider cache results from sickrage&#x27;s cache server&quot;&quot; 

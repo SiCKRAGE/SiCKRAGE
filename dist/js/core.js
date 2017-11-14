@@ -1739,7 +1739,7 @@ jQuery(document).ready(function ($) {
                     //$('.loading-spinner').hide();
                     $('.show-grid').show().isotope({
                         itemSelector: '.show-container',
-                        sortBy : SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
+                        sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
                         sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
                         layoutMode: 'masonry',
                         masonry: {
@@ -1777,7 +1777,7 @@ jQuery(document).ready(function ($) {
                                 id: 'posterPopup'
                             });
                             var origLeft = poster.offset().left;
-                            var origTop  = poster.offset().top;
+                            var origTop = poster.offset().top;
                             popup.css({
                                 position: 'absolute',
                                 margin: 0,
@@ -1793,8 +1793,8 @@ jQuery(document).ready(function ($) {
                             popup.appendTo('body');
 
                             var height = 438, width = 250;
-                            var newTop = (origTop+poster.height()/2)-(height/2);
-                            var newLeft = (origLeft+poster.width()/2)-(width/2);
+                            var newTop = (origTop + poster.height() / 2) - (height / 2);
+                            var newLeft = (origLeft + poster.width() / 2) - (width / 2);
 
                             // Make sure the popup isn't outside the viewport
                             var margin = 5;
@@ -1802,10 +1802,18 @@ jQuery(document).ready(function ($) {
                             var scrollLeft = $(window).scrollLeft();
                             var scrollBottom = scrollTop + $(window).innerHeight();
                             var scrollRight = scrollLeft + $(window).innerWidth();
-                            if (newTop < scrollTop+margin) { newTop = scrollTop+margin; }
-                            if (newLeft < scrollLeft+margin) { newLeft = scrollLeft+margin; }
-                            if (newTop+height+margin > scrollBottom) { newTop = scrollBottom-height-margin; }
-                            if (newLeft+width+margin > scrollRight) { newLeft = scrollRight-width-margin; }
+                            if (newTop < scrollTop + margin) {
+                                newTop = scrollTop + margin;
+                            }
+                            if (newLeft < scrollLeft + margin) {
+                                newLeft = scrollLeft + margin;
+                            }
+                            if (newTop + height + margin > scrollBottom) {
+                                newTop = scrollBottom - height - margin;
+                            }
+                            if (newLeft + width + margin > scrollRight) {
+                                newLeft = scrollRight - width - margin;
+                            }
 
                             popup.animate({
                                 top: newTop,
@@ -2878,6 +2886,19 @@ jQuery(document).ready(function ($) {
                                 return;
                             }
                             $('#api_key').val(data);
+                        });
+                });
+
+                $('#testAPI').click(function () {
+                    $('#testAPI-result').html(SICKRAGE.loadingHTML);
+                    var api_username = $('#api_username').val();
+                    var api_password = $('#api_password').val();
+                    $.get(SICKRAGE.srWebRoot + '/home/testAPI', {
+                            'username': api_username,
+                            'password': api_password
+                        },
+                        function (data) {
+                            $('#testAPI-result').html(data);
                         });
                 });
 
