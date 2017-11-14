@@ -194,7 +194,7 @@ class Core(object):
         self.config.change_gui_lang(self.config.gui_lang)
 
         # set api url
-        self.api_url = 'https://api.sickrage.ca/v1/' if not self.config.developer else 'http://localhost/v1/'
+        self.api_url = 'https://api.sickrage.ca/v1/'
 
         # set socket timeout
         socket.setdefaulttimeout(self.config.socket_timeout)

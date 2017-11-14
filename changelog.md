@@ -1,6 +1,7 @@
 # Changelog
 
-- * 24ff364 - 2017-11-12: Added code to connect app to SiCKRAGE API securely 
+- * b39c4f7 - 2017-11-13: Release v9.1.74 
+- * 6a14546 - 2017-11-12: Added code to connect app to SiCKRAGE API securely 
 - * 6c16a6e - 2017-11-12: Refactored LimeTorrents search provider 
 - * 1dd9673 - 2017-11-12: Refactored LimeTorrents search provider 
 - * 0fcb03c - 2017-11-12: Refactored LimeTorrents search provider 
