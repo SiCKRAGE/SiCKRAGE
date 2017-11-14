@@ -240,7 +240,7 @@ class LoginHandler(BaseHandler):
         self.finish(self.auth())
 
     def auth(self):
-        if sickrage.app.config.developer:
+        if sickrage.app.developer:
             self.set_secure_cookie('user', json_encode(sickrage.app.config.api_key))
 
         if self.get_current_user(): return self.redirect("/{}/".format(sickrage.app.config.default_page))

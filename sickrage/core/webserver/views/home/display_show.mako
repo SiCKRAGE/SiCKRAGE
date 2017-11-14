@@ -395,7 +395,7 @@
                                 % if not sickrage.app.config.use_failed_downloads:
                                     <% availableStatus.remove(FAILED) %>
                                 % endif
-                                % if sickrage.app.config.developer:
+                                % if sickrage.app.developer:
                                     <% availableStatus.append(UNAIRED) %>
                                 % endif
                                 % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):

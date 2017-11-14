@@ -100,7 +100,7 @@ class VersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        if sickrage.app.config.developer:
+        if sickrage.app.developer:
             return False
 
         if not sickrage.app.started:
@@ -502,7 +502,7 @@ class GitUpdateManager(UpdateManager):
         return ("", url)[exit_status == 0 and url is not None]
 
     def set_remote_url(self):
-        if not sickrage.app.config.developer:
+        if not sickrage.app.developer:
             self._git_cmd(self._git_path, 'remote set-url {} {}'.format(sickrage.app.config.git_remote,
                                                                         sickrage.app.config.git_remote_url))
 

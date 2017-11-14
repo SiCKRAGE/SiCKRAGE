@@ -1,6 +1,7 @@
 # Changelog
 
-- * 975fdb2 - 2017-11-14: Release v9.1.77 
+- * 734a40c - 2017-11-14: Release v9.1.78 
+- * 89810e3 - 2017-11-14: Release v9.1.77 
 - * 2163b57 - 2017-11-14: Fixed subtitle tagging for Newpct provider Fixed unicode title issues for Newpct provider Fixed unicode title issues for EliteTorrent provider Set EliteTorrent provider to public Added alert box to top of page notifying when developer mode is enabled 
 - * 2425b4c - 2017-11-14: Release v9.1.76 
 - * f1a6e69 - 2017-11-13: Release v9.1.74 
