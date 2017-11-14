@@ -241,7 +241,7 @@ class Core(object):
             db.cleanup()
 
         # compact main database
-        if not self.config.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
+        if not sickrage.app.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
             self.main_db.compact()
             self.config.last_db_compact = int(time.time())
 

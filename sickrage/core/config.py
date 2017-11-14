@@ -48,7 +48,6 @@ class Config(object):
         self.config_version = 0
 
         self.debug = False
-        self.developer = False
         self.encryption_version = 0
         self.encryption_secret = generateCookieSecret()
 
@@ -1975,7 +1974,6 @@ class Config(object):
                 'calendar_unprotected': int(self.calendar_unprotected),
                 'calendar_icons': int(self.calendar_icons),
                 'no_restart': int(self.no_restart),
-                'developer': int(self.developer),
                 'display_all_seasons': int(self.display_all_seasons),
                 'random_user_agent': int(self.random_user_agent),
             },
