@@ -94,7 +94,7 @@ class Logger(logging.getLoggerClass()):
 
         # file log handlers
         if self.logFile and makeDir(os.path.dirname(self.logFile)):
-            if sickrage.app.config.developer:
+            if sickrage.app.developer:
                 rfh = FileHandler(
                     filename=self.logFile,
                 )

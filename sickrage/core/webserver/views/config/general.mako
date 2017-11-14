@@ -1229,7 +1229,7 @@
                                                 title=${_('GIT Branch Version')}>
                                             % if git_branch:
                                                 % for cur_branch in git_branch:
-                                                    % if sickrage.app.config.developer:
+                                                    % if sickrage.app.developer:
                                                         <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>
                                                     % elif cur_branch in ['master', 'develop']:
                                                         <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>

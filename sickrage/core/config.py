@@ -705,7 +705,6 @@ class Config(object):
                 'calendar_unprotected': False,
                 'https_key': os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key')),
                 'allow_high_priority': True,
-                'developer': True,
                 'anon_redirect': 'http://nullrefer.com/?',
                 'indexer_timeout': 120,
                 'web_use_gzip': True,
@@ -1396,7 +1395,6 @@ class Config(object):
         self.api_username = self.check_setting_str('General', 'api_username', censor=True)
         self.api_password = self.check_setting_str('General', 'api_password', censor=True)
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
-        self.developer = sickrage.app.developer or self.check_setting_bool('General', 'developer')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
         self.log_nr = self.check_setting_int('General', 'log_nr')
         self.log_size = self.check_setting_int('General', 'log_size')
