@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4567ced - 2017-11-15: Release v9.2.4 
+- * 223627b - 2017-11-15: Release v9.2.5 
+- * ab16911 - 2017-11-15: Release v9.2.4 
 - * fb16c64 - 2017-11-15: Updated SiCKRAGE API to use OAuth2 
 - * 0ba5a22 - 2017-11-15: Cleaned up provider template for newnab providers 
 - * a1f1730 - 2017-11-14: Release v9.2.2 
