@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-14 10:47-0500\n"
-"PO-Revision-Date: 2017-11-14 10:47-0500\n"
+"POT-Creation-Date: 2017-11-15 03:32-0500\n"
+"PO-Revision-Date: 2017-11-15 03:35-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -518,7 +518,7 @@ msgid "Downloaded"
 msgstr "تحميل"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:892
+#: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "مترجمة"
@@ -639,7 +639,7 @@ msgstr "هل تريد إضافة \"الحلقات بوستبروسيسيد\" إ�
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
 #: sickrage/core/webserver/views/config/providers.mako:118
-#: sickrage/core/webserver/views/config/providers.mako:908
+#: sickrage/core/webserver/views/config/providers.mako:901
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
 #: sickrage/core/webserver/views/config/search.mako:261
 #: sickrage/core/webserver/views/config/search.mako:678
@@ -3459,272 +3459,278 @@ msgid "Configure provider:"
 msgstr "تكوين الموفر:"
 
 #: sickrage/core/webserver/views/config/providers.mako:177
-#: sickrage/core/webserver/views/config/providers.mako:307
-#: sickrage/core/webserver/views/config/providers.mako:975
+#: sickrage/core/webserver/views/config/providers.mako:300
+#: sickrage/core/webserver/views/config/providers.mako:968
 msgid "API key:"
 msgstr "API الرئيسية:"
 
 #: sickrage/core/webserver/views/config/providers.mako:199
-#: sickrage/core/webserver/views/config/providers.mako:327
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:320
+#: sickrage/core/webserver/views/config/providers.mako:762
 msgid "Enable daily searches"
 msgstr "تمكين عمليات التفتيش اليومية"
 
 #: sickrage/core/webserver/views/config/providers.mako:205
-#: sickrage/core/webserver/views/config/providers.mako:333
-#: sickrage/core/webserver/views/config/providers.mako:775
+#: sickrage/core/webserver/views/config/providers.mako:326
+#: sickrage/core/webserver/views/config/providers.mako:768
 msgid "enable provider to perform daily searches."
 msgstr "تمكين موفر لإجراء عمليات التفتيش اليومية."
 
 #: sickrage/core/webserver/views/config/providers.mako:214
-#: sickrage/core/webserver/views/config/providers.mako:342
-#: sickrage/core/webserver/views/config/providers.mako:799
+#: sickrage/core/webserver/views/config/providers.mako:335
+#: sickrage/core/webserver/views/config/providers.mako:792
 msgid "Enable backlog searches"
 msgstr "تمكين عمليات البحث المتراكمة"
 
 #: sickrage/core/webserver/views/config/providers.mako:220
-#: sickrage/core/webserver/views/config/providers.mako:348
-#: sickrage/core/webserver/views/config/providers.mako:805
+#: sickrage/core/webserver/views/config/providers.mako:341
+#: sickrage/core/webserver/views/config/providers.mako:798
 msgid "enable provider to perform backlog searches."
 msgstr "تمكين موفر إجراء البحث المتراكمة."
 
 #: sickrage/core/webserver/views/config/providers.mako:229
-#: sickrage/core/webserver/views/config/providers.mako:357
-#: sickrage/core/webserver/views/config/providers.mako:814
+#: sickrage/core/webserver/views/config/providers.mako:350
+#: sickrage/core/webserver/views/config/providers.mako:807
 msgid "Search mode fallback"
 msgstr "بحث الوضع الاحتياطي"
 
-#: sickrage/core/webserver/views/config/providers.mako:236
-#: sickrage/core/webserver/views/config/providers.mako:364
-#: sickrage/core/webserver/views/config/providers.mako:821
-msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
-msgstr "عندما قد بحثاً عن موسم كاملة تبعاً لوضع البحث بإرجاع أية نتائج، يساعد هذا قبل إعادة تشغيل البحث باستخدام طريقة البحث العكسي."
+#: sickrage/core/webserver/views/config/providers.mako:235
+msgid "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:248
-#: sickrage/core/webserver/views/config/providers.mako:376
-#: sickrage/core/webserver/views/config/providers.mako:833
+#: sickrage/core/webserver/views/config/providers.mako:246
+#: sickrage/core/webserver/views/config/providers.mako:369
+#: sickrage/core/webserver/views/config/providers.mako:826
 msgid "Season search mode"
 msgstr "وضع البحث الموسم"
 
-#: sickrage/core/webserver/views/config/providers.mako:257
-#: sickrage/core/webserver/views/config/providers.mako:396
-#: sickrage/core/webserver/views/config/providers.mako:842
+#: sickrage/core/webserver/views/config/providers.mako:255
+#: sickrage/core/webserver/views/config/providers.mako:389
+#: sickrage/core/webserver/views/config/providers.mako:835
 msgid "season packs only."
 msgstr "موسم حزم فقط."
 
-#: sickrage/core/webserver/views/config/providers.mako:268
-#: sickrage/core/webserver/views/config/providers.mako:385
-#: sickrage/core/webserver/views/config/providers.mako:853
+#: sickrage/core/webserver/views/config/providers.mako:262
+#: sickrage/core/webserver/views/config/providers.mako:378
+#: sickrage/core/webserver/views/config/providers.mako:846
 msgid "episodes only."
 msgstr "الحلقات فقط."
 
-#: sickrage/core/webserver/views/config/providers.mako:273
-#: sickrage/core/webserver/views/config/providers.mako:402
-#: sickrage/core/webserver/views/config/providers.mako:859
-msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
-msgstr "عند البحث عن مواسم كاملة يمكنك اختيار أن يكون البحث عن حزم موسم فقط، أو اختيار أن يكون ذلك بناء موسم كاملة من حلقة واحدة فقط."
+#: sickrage/core/webserver/views/config/providers.mako:265
+msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:288
-#: sickrage/core/webserver/views/config/providers.mako:499
+#: sickrage/core/webserver/views/config/providers.mako:281
+#: sickrage/core/webserver/views/config/providers.mako:492
 msgid "Username:"
 msgstr "اسم المستخدم:"
 
-#: sickrage/core/webserver/views/config/providers.mako:417
+#: sickrage/core/webserver/views/config/providers.mako:357
+#: sickrage/core/webserver/views/config/providers.mako:814
+msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
+msgstr "عندما قد بحثاً عن موسم كاملة تبعاً لوضع البحث بإرجاع أية نتائج، يساعد هذا قبل إعادة تشغيل البحث باستخدام طريقة البحث العكسي."
+
+#: sickrage/core/webserver/views/config/providers.mako:395
+#: sickrage/core/webserver/views/config/providers.mako:852
+msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
+msgstr "عند البحث عن مواسم كاملة يمكنك اختيار أن يكون البحث عن حزم موسم فقط، أو اختيار أن يكون ذلك بناء موسم كاملة من حلقة واحدة فقط."
+
+#: sickrage/core/webserver/views/config/providers.mako:410
 msgid "Custom URL:"
 msgstr "عنوان URL مخصص:"
 
-#: sickrage/core/webserver/views/config/providers.mako:438
+#: sickrage/core/webserver/views/config/providers.mako:431
 msgid "Api key:"
 msgstr "Api الرئيسية:"
 
-#: sickrage/core/webserver/views/config/providers.mako:459
+#: sickrage/core/webserver/views/config/providers.mako:452
 msgid "Digest:"
 msgstr "الخلاصة:"
 
-#: sickrage/core/webserver/views/config/providers.mako:479
+#: sickrage/core/webserver/views/config/providers.mako:472
 msgid "Hash:"
 msgstr "التجزئة:"
 
-#: sickrage/core/webserver/views/config/providers.mako:520
+#: sickrage/core/webserver/views/config/providers.mako:513
 msgid "Password:"
 msgstr "كلمة المرور:"
 
-#: sickrage/core/webserver/views/config/providers.mako:539
+#: sickrage/core/webserver/views/config/providers.mako:532
 msgid "Passkey:"
 msgstr "مفتاح المرور:"
 
-#: sickrage/core/webserver/views/config/providers.mako:560
-#: sickrage/core/webserver/views/config/providers.mako:1096
+#: sickrage/core/webserver/views/config/providers.mako:553
+#: sickrage/core/webserver/views/config/providers.mako:1089
 msgid "Cookies:"
 msgstr "ملفات تعريف الارتباط:"
 
-#: sickrage/core/webserver/views/config/providers.mako:577
+#: sickrage/core/webserver/views/config/providers.mako:570
 msgid "this provider requires the following cookies: "
 msgstr "ويتطلب هذا الموفر ملفات تعريف الارتباط التالي: "
 
-#: sickrage/core/webserver/views/config/providers.mako:588
+#: sickrage/core/webserver/views/config/providers.mako:581
 msgid "Pin:"
 msgstr "رقم التعريف الشخصي:"
 
-#: sickrage/core/webserver/views/config/providers.mako:609
+#: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
 msgstr "نسبة البذور:"
 
-#: sickrage/core/webserver/views/config/providers.mako:629
+#: sickrage/core/webserver/views/config/providers.mako:622
 msgid "Minimum seeders:"
 msgstr "آلات الحد الأدنى:"
 
-#: sickrage/core/webserver/views/config/providers.mako:649
+#: sickrage/core/webserver/views/config/providers.mako:642
 msgid "Minimum leechers:"
 msgstr "Leechers الحد الأدنى:"
 
-#: sickrage/core/webserver/views/config/providers.mako:669
+#: sickrage/core/webserver/views/config/providers.mako:662
 msgid "Confirmed download"
 msgstr "تحميل المؤكدة"
 
-#: sickrage/core/webserver/views/config/providers.mako:675
+#: sickrage/core/webserver/views/config/providers.mako:668
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "فقط تحميل السيول من uploaders موثوق أو تم التحقق منها؟"
 
-#: sickrage/core/webserver/views/config/providers.mako:684
+#: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Ranked torrents"
 msgstr "السيول في المرتبة"
 
-#: sickrage/core/webserver/views/config/providers.mako:690
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "only download ranked torrents (internal releases)"
 msgstr "فقط تحميل السيول المرتبة (النشرات الداخلية)"
 
-#: sickrage/core/webserver/views/config/providers.mako:699
+#: sickrage/core/webserver/views/config/providers.mako:692
 msgid "English torrents"
 msgstr "السيول الإنجليزية"
 
-#: sickrage/core/webserver/views/config/providers.mako:705
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "الإنجليزية فقط تحميل السيول، أو السيول التي تحتوي على ترجمة باللغة الإنجليزية"
 
-#: sickrage/core/webserver/views/config/providers.mako:714
+#: sickrage/core/webserver/views/config/providers.mako:707
 msgid "For Spanish torrents"
 msgstr "للسيول الإسبانية"
 
-#: sickrage/core/webserver/views/config/providers.mako:721
+#: sickrage/core/webserver/views/config/providers.mako:714
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "البحث فقط عن هذا الموفر إذا عرض معلومات يعرف \"الإسبانية\" (تجنب استخدام موفر ليظهر فوس)"
 
-#: sickrage/core/webserver/views/config/providers.mako:732
+#: sickrage/core/webserver/views/config/providers.mako:725
 msgid "Sort results by"
 msgstr "فرز النتائج حسب"
 
-#: sickrage/core/webserver/views/config/providers.mako:754
+#: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
 msgstr "فريليتش"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
 msgstr "تحميل فقط"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
 msgstr "فريليتش"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
 msgstr "السيول."
 
-#: sickrage/core/webserver/views/config/providers.mako:784
+#: sickrage/core/webserver/views/config/providers.mako:777
 msgid "Reject Blu-ray M2TS releases"
 msgstr "رفض النشرات M2TS بلو رأي"
 
-#: sickrage/core/webserver/views/config/providers.mako:790
+#: sickrage/core/webserver/views/config/providers.mako:783
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "تمكين لتجاهل النشرات حاوية أقراص blu-ray MPEG-2 \"النقل الدفق\""
 
-#: sickrage/core/webserver/views/config/providers.mako:870
+#: sickrage/core/webserver/views/config/providers.mako:863
 msgid "Category:"
 msgstr "الفئة:"
 
-#: sickrage/core/webserver/views/config/providers.mako:898
+#: sickrage/core/webserver/views/config/providers.mako:891
 msgid "select torrent with Italian subtitle"
 msgstr "حدد تورنت مع الترجمة الإيطالية"
 
-#: sickrage/core/webserver/views/config/providers.mako:920
+#: sickrage/core/webserver/views/config/providers.mako:913
 msgid "Configure Custom"
 msgstr "تكوين مخصص"
 
-#: sickrage/core/webserver/views/config/providers.mako:921
+#: sickrage/core/webserver/views/config/providers.mako:914
 msgid "Newznab Providers"
 msgstr "نيوزناب مقدمي الخدمات"
 
-#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:917
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "إضافة وإعداد أو إزالة مخصصة نيوزناب مقدمي الخدمات."
 
-#: sickrage/core/webserver/views/config/providers.mako:931
-#: sickrage/core/webserver/views/config/providers.mako:1050
+#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Select provider:"
 msgstr "حدد الموفر:"
 
-#: sickrage/core/webserver/views/config/providers.mako:939
-#: sickrage/core/webserver/views/config/providers.mako:1058
+#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:1051
 msgid "add new provider"
 msgstr "إضافة موفر جديد"
 
-#: sickrage/core/webserver/views/config/providers.mako:948
-#: sickrage/core/webserver/views/config/providers.mako:1067
+#: sickrage/core/webserver/views/config/providers.mako:941
+#: sickrage/core/webserver/views/config/providers.mako:1060
 msgid "Provider name:"
 msgstr "اسم الموفر:"
 
-#: sickrage/core/webserver/views/config/providers.mako:961
+#: sickrage/core/webserver/views/config/providers.mako:954
 msgid "Site URL:"
 msgstr "عنوان الموقع:"
 
-#: sickrage/core/webserver/views/config/providers.mako:990
+#: sickrage/core/webserver/views/config/providers.mako:983
 msgid "Newznab search categories:"
 msgstr "فئات البحث نيوزناب:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1000
+#: sickrage/core/webserver/views/config/providers.mako:993
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(حدد الفئات الخاصة بك نيوزناب على الجانب الأيمن، وانقر فوق الزر \"تحديث فئات\" استخدامها في البحث)."
 
-#: sickrage/core/webserver/views/config/providers.mako:1002
+#: sickrage/core/webserver/views/config/providers.mako:995
 msgid "Don't forget to save changes!"
 msgstr "لا تنسى حفظ التغييرات!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1012
+#: sickrage/core/webserver/views/config/providers.mako:1005
 msgid "Update Categories"
 msgstr "تحديث فئات"
 
-#: sickrage/core/webserver/views/config/providers.mako:1021
+#: sickrage/core/webserver/views/config/providers.mako:1014
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "إضافة"
 
-#: sickrage/core/webserver/views/config/providers.mako:1029
+#: sickrage/core/webserver/views/config/providers.mako:1022
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "حذف"
 
-#: sickrage/core/webserver/views/config/providers.mako:1043
+#: sickrage/core/webserver/views/config/providers.mako:1036
 msgid "Configure Custom Torrent Providers"
 msgstr "تكوين موفري سيل مخصصة"
 
-#: sickrage/core/webserver/views/config/providers.mako:1044
+#: sickrage/core/webserver/views/config/providers.mako:1037
 msgid "Add and setup or remove custom RSS providers."
 msgstr "إضافة وإعداد أو إزالة موفري RSS مخصصة."
 
-#: sickrage/core/webserver/views/config/providers.mako:1082
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "RSS URL:"
 msgstr "رابط RSS:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1103
+#: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "ex. uid=xx;pass=yy"
 msgstr "خروج uid = xx; تمرير = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1110
+#: sickrage/core/webserver/views/config/providers.mako:1103
 msgid "Search element:"
 msgstr "عنصر البحث:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1117
+#: sickrage/core/webserver/views/config/providers.mako:1110
 msgid "ex. title"
 msgstr "العنوان السابقين."
 

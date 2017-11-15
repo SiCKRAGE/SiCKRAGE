@@ -25,13 +25,15 @@ class API(object):
         if self.client and self.token:
             return True
 
+        self.username = self.username or sickrage.app.config.api_username
+        self.password = self.password or sickrage.app.config.api_password
+
         if self.username and self.password:
             oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.client_id))
 
             try:
                 self.token = oauth.fetch_token(token_url=self.token_url, client_id=self.client_id, verify=False,
-                                               timeout=30, username=self.username or sickrage.app.config.api_username,
-                                               password=self.password or sickrage.app.config.api_password)
+                                               timeout=30, username=self.username, password=self.password)
 
                 self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=self.token_url,
                                             auto_refresh_kwargs={"client_id": self.client_id},
