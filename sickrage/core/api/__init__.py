@@ -32,8 +32,8 @@ class API(object):
             oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.client_id))
 
             try:
-                self.token = oauth.fetch_token(token_url=self.token_url, client_id=self.client_id, verify=False,
-                                               timeout=30, username=self.username, password=self.password)
+                self.token = oauth.fetch_token(token_url=self.token_url, client_id=self.client_id, timeout=30,
+                                               username=self.username, password=self.password)
 
                 self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=self.token_url,
                                             auto_refresh_kwargs={"client_id": self.client_id},
@@ -73,7 +73,7 @@ class API(object):
         return self._request('GET', 'users/me')
 
     def add_cache_result(self, data):
-        self._request('POST', 'v1/providers/cache/results', data=json.dumps(data))
+        self._request('POST', 'v1/providers/cache/results', json=data)
 
     def get_cache_results(self, provider, indexerid=None):
         query = ('v1/providers/cache/results/{}'.format(provider),
