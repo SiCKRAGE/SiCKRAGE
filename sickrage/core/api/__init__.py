@@ -1,72 +1,61 @@
 from __future__ import unicode_literals
 
-import functools
 import json
 from urlparse import urljoin
+
+from oauthlib.oauth2 import LegacyApplicationClient
+from requests_oauthlib import OAuth2Session
 
 import sickrage
 from sickrage.core.api.exceptions import unauthorized, error
 
 
-def login_required(f):
-    @functools.wraps(f)
-    def wrapper(obj, *args, **kwargs):
-        if not obj.logged_in:
-            obj.login()
-
-        try:
-            return f(obj, *args, **kwargs)
-        except unauthorized:
-            obj.login(True)
-            return f(obj, *args, **kwargs)
-
-    return wrapper
-
-
 class API(object):
     def __init__(self, username=None, password=None):
+        self.client_id = '5YBSSD10UQN644DC13OHURJCESCOQBVR'
+        self.api_url = 'https://api.sickrage.ca/'
+        self.token_url = urljoin(self.api_url, 'oauth/v2/token')
         self.username = username
         self.password = password
         self.token = None
-        self.refresh_token = None
+        self.client = None
         self.login()
 
+    def login(self):
+        if self.client and self.token:
+            return True
+
+        if self.username and self.password:
+            oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.client_id))
+
+            try:
+                self.token = oauth.fetch_token(token_url=self.token_url, client_id=self.client_id, verify=False,
+                                               timeout=30, username=self.username or sickrage.app.config.api_username,
+                                               password=self.password or sickrage.app.config.api_password)
+
+                self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=self.token_url,
+                                            auto_refresh_kwargs={"client_id": self.client_id},
+                                            token_updater=self.token_saver)
+
+                return True
+            except Exception:
+                pass
+
     def logout(self):
-        self.token = self.refresh_token = None
+        self.token = self.client = None
 
-    @property
-    def logged_in(self):
-        return self.token is not None
-
-    def login(self, refresh=False):
-        try:
-            url = 'login'
-            params = {'username': self.username or sickrage.app.config.api_username,
-                      'password': self.password or sickrage.app.config.api_password}
-
-            if refresh and self.refresh_token:
-                url = 'auth/refresh'
-                params = {'refresh_token': self.refresh_token}
-
-            resp = self._request('POST', url, params=params)
-
-            self.token = resp['access_token']
-            self.refresh_token = resp['refresh_token']
-        except Exception as e:
-            self.logout()
+    def token_saver(self, token):
+        self.token = token
 
     def _request(self, method, url, **kwargs):
         if not sickrage.app.config.enable_api:
             return
 
-        headers = {'Content-type': 'application/json'}
-        if self.token:
-            headers['authorization'] = 'Bearer {}'.format(self.token)
-
-        url = urljoin(sickrage.app.api_url, url)
+        if not self.login():
+            return
 
         try:
-            resp = sickrage.app.wsession.request(method, url, headers=headers, timeout=30, **kwargs)
+            resp = self.client.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
         except Exception as e:
             raise error(e.message)
 
@@ -78,16 +67,14 @@ class API(object):
 
         return resp.json()
 
-    @login_required
     def user_profile(self):
         return self._request('GET', 'users/me')
 
-    @login_required
     def add_cache_result(self, data):
-        self._request('POST', 'providers/cache/results', data=json.dumps(data))
+        self._request('POST', 'v1/providers/cache/results', data=json.dumps(data))
 
-    @login_required
     def get_cache_results(self, provider, indexerid=None):
-        query = ('providers/cache/results/{}'.format(provider),
-                 'providers/cache/results/{}/indexerids/{}'.format(provider, indexerid))[indexerid is not None]
+        query = ('v1/providers/cache/results/{}'.format(provider),
+                 'v1/providers/cache/results/{}/indexerids/{}'.format(provider, indexerid))[indexerid is not None]
+
         return self._request('GET', query)
