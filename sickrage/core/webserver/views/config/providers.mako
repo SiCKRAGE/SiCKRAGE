@@ -209,7 +209,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
+                            <div class="row field-pair${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
@@ -232,11 +232,9 @@
                                     <input type="checkbox" name="${providerID}_search_fallback"
                                            id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                     <label for="${providerID}_search_fallback">
-                                        <p>
-                                            ${_('when searching for a complete season depending on search mode you may '
-                                            'return no results, this helps by restarting the search using the opposite '
-                                            'search mode.')}
-                                        </p>
+                                        ${_('when searching for a complete season depending on search mode you may <br/>'
+                                        'return no results, this helps by restarting the search using the opposite <br/>'
+                                        'search mode.')}
                                     </label>
                                 </div>
                             </div>
@@ -256,24 +254,19 @@
                                             <label for="${providerID}_search_mode_sponly">
                                                 ${_('season packs only.')}
                                             </label>
-                                        </div>
-                                    </div>
-                                    <br/>
-                                    <div class="row">
-                                        <div class="col-md-12">
+                                            <br/>
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
                                                    value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
                                             <label for="${providerID}_search_mode_eponly">
                                                 ${_('episodes only.')}
                                             </label>
+                                            <p></p>
+                                            ${_('when searching for complete seasons you can choose to have it look for <br/>'
+                                            'season packs only, or choose to have it build a complete season from just <br/>'
+                                            'single episodes.')}
                                         </div>
                                     </div>
-                                    <p>
-                                        ${_('when searching for complete seasons you can choose to have it look for '
-                                        'season packs only, or choose to have it build a complete season from just '
-                                        'single episodes.')}
-                                    </p>
                                 </div>
                             </div>
                         % endif

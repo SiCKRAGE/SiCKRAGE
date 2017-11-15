@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-14 10:47-0500\n"
-"PO-Revision-Date: 2017-11-14 10:49-0500\n"
+"POT-Creation-Date: 2017-11-15 03:32-0500\n"
+"PO-Revision-Date: 2017-11-15 03:37-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -518,7 +518,7 @@ msgid "Downloaded"
 msgstr "ダウンロード"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:892
+#: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "字幕付き"
@@ -639,7 +639,7 @@ msgstr "MyList にポストプロセッシング エピソードを追加しま�
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
 #: sickrage/core/webserver/views/config/providers.mako:118
-#: sickrage/core/webserver/views/config/providers.mako:908
+#: sickrage/core/webserver/views/config/providers.mako:901
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
 #: sickrage/core/webserver/views/config/search.mako:261
 #: sickrage/core/webserver/views/config/search.mako:678
@@ -3459,272 +3459,278 @@ msgid "Configure provider:"
 msgstr "プロバイダーを構成します。"
 
 #: sickrage/core/webserver/views/config/providers.mako:177
-#: sickrage/core/webserver/views/config/providers.mako:307
-#: sickrage/core/webserver/views/config/providers.mako:975
+#: sickrage/core/webserver/views/config/providers.mako:300
+#: sickrage/core/webserver/views/config/providers.mako:968
 msgid "API key:"
 msgstr "API キー:"
 
 #: sickrage/core/webserver/views/config/providers.mako:199
-#: sickrage/core/webserver/views/config/providers.mako:327
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:320
+#: sickrage/core/webserver/views/config/providers.mako:762
 msgid "Enable daily searches"
 msgstr "毎日の検索を有効にします。"
 
 #: sickrage/core/webserver/views/config/providers.mako:205
-#: sickrage/core/webserver/views/config/providers.mako:333
-#: sickrage/core/webserver/views/config/providers.mako:775
+#: sickrage/core/webserver/views/config/providers.mako:326
+#: sickrage/core/webserver/views/config/providers.mako:768
 msgid "enable provider to perform daily searches."
 msgstr "毎日の検索を実行するプロバイダーを有効にします。"
 
 #: sickrage/core/webserver/views/config/providers.mako:214
-#: sickrage/core/webserver/views/config/providers.mako:342
-#: sickrage/core/webserver/views/config/providers.mako:799
+#: sickrage/core/webserver/views/config/providers.mako:335
+#: sickrage/core/webserver/views/config/providers.mako:792
 msgid "Enable backlog searches"
 msgstr "バックログの検索を有効にします。"
 
 #: sickrage/core/webserver/views/config/providers.mako:220
-#: sickrage/core/webserver/views/config/providers.mako:348
-#: sickrage/core/webserver/views/config/providers.mako:805
+#: sickrage/core/webserver/views/config/providers.mako:341
+#: sickrage/core/webserver/views/config/providers.mako:798
 msgid "enable provider to perform backlog searches."
 msgstr "バックログを検索するプロバイダーを有効にします。"
 
 #: sickrage/core/webserver/views/config/providers.mako:229
-#: sickrage/core/webserver/views/config/providers.mako:357
-#: sickrage/core/webserver/views/config/providers.mako:814
+#: sickrage/core/webserver/views/config/providers.mako:350
+#: sickrage/core/webserver/views/config/providers.mako:807
 msgid "Search mode fallback"
 msgstr "検索モードのフォールバック"
 
-#: sickrage/core/webserver/views/config/providers.mako:236
-#: sickrage/core/webserver/views/config/providers.mako:364
-#: sickrage/core/webserver/views/config/providers.mako:821
-msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
-msgstr "検索モードに応じて完全なシーズンを探して可能性があります結果が返されない、これは反対の検索モードを使用して検索を再起動することにより。"
+#: sickrage/core/webserver/views/config/providers.mako:235
+msgid "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:248
-#: sickrage/core/webserver/views/config/providers.mako:376
-#: sickrage/core/webserver/views/config/providers.mako:833
+#: sickrage/core/webserver/views/config/providers.mako:246
+#: sickrage/core/webserver/views/config/providers.mako:369
+#: sickrage/core/webserver/views/config/providers.mako:826
 msgid "Season search mode"
 msgstr "シーズン検索モード"
 
-#: sickrage/core/webserver/views/config/providers.mako:257
-#: sickrage/core/webserver/views/config/providers.mako:396
-#: sickrage/core/webserver/views/config/providers.mako:842
+#: sickrage/core/webserver/views/config/providers.mako:255
+#: sickrage/core/webserver/views/config/providers.mako:389
+#: sickrage/core/webserver/views/config/providers.mako:835
 msgid "season packs only."
 msgstr "シーズン パックのみ。"
 
-#: sickrage/core/webserver/views/config/providers.mako:268
-#: sickrage/core/webserver/views/config/providers.mako:385
-#: sickrage/core/webserver/views/config/providers.mako:853
+#: sickrage/core/webserver/views/config/providers.mako:262
+#: sickrage/core/webserver/views/config/providers.mako:378
+#: sickrage/core/webserver/views/config/providers.mako:846
 msgid "episodes only."
 msgstr "エピソードのみ。"
 
-#: sickrage/core/webserver/views/config/providers.mako:273
-#: sickrage/core/webserver/views/config/providers.mako:402
-#: sickrage/core/webserver/views/config/providers.mako:859
-msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
-msgstr "完全な季節を検索するときは、それをシーズン パックのみ、捜すか、またはそれがちょうど単一のエピソードの完全な季節の構築を選択して選択できます。"
+#: sickrage/core/webserver/views/config/providers.mako:265
+msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:288
-#: sickrage/core/webserver/views/config/providers.mako:499
+#: sickrage/core/webserver/views/config/providers.mako:281
+#: sickrage/core/webserver/views/config/providers.mako:492
 msgid "Username:"
 msgstr "ユーザー名:"
 
-#: sickrage/core/webserver/views/config/providers.mako:417
+#: sickrage/core/webserver/views/config/providers.mako:357
+#: sickrage/core/webserver/views/config/providers.mako:814
+msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
+msgstr "検索モードに応じて完全なシーズンを探して可能性があります結果が返されない、これは反対の検索モードを使用して検索を再起動することにより。"
+
+#: sickrage/core/webserver/views/config/providers.mako:395
+#: sickrage/core/webserver/views/config/providers.mako:852
+msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
+msgstr "完全な季節を検索するときは、それをシーズン パックのみ、捜すか、またはそれがちょうど単一のエピソードの完全な季節の構築を選択して選択できます。"
+
+#: sickrage/core/webserver/views/config/providers.mako:410
 msgid "Custom URL:"
 msgstr "カスタム URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:438
+#: sickrage/core/webserver/views/config/providers.mako:431
 msgid "Api key:"
 msgstr "Api キー:"
 
-#: sickrage/core/webserver/views/config/providers.mako:459
+#: sickrage/core/webserver/views/config/providers.mako:452
 msgid "Digest:"
 msgstr "ダイジェスト:"
 
-#: sickrage/core/webserver/views/config/providers.mako:479
+#: sickrage/core/webserver/views/config/providers.mako:472
 msgid "Hash:"
 msgstr "ハッシュ:"
 
-#: sickrage/core/webserver/views/config/providers.mako:520
+#: sickrage/core/webserver/views/config/providers.mako:513
 msgid "Password:"
 msgstr "パスワード:"
 
-#: sickrage/core/webserver/views/config/providers.mako:539
+#: sickrage/core/webserver/views/config/providers.mako:532
 msgid "Passkey:"
 msgstr "パスキー:"
 
-#: sickrage/core/webserver/views/config/providers.mako:560
-#: sickrage/core/webserver/views/config/providers.mako:1096
+#: sickrage/core/webserver/views/config/providers.mako:553
+#: sickrage/core/webserver/views/config/providers.mako:1089
 msgid "Cookies:"
 msgstr "クッキー:"
 
-#: sickrage/core/webserver/views/config/providers.mako:577
+#: sickrage/core/webserver/views/config/providers.mako:570
 msgid "this provider requires the following cookies: "
 msgstr "このプロバイダーには、次の cookie が必要です。"
 
-#: sickrage/core/webserver/views/config/providers.mako:588
+#: sickrage/core/webserver/views/config/providers.mako:581
 msgid "Pin:"
 msgstr "ピン:"
 
-#: sickrage/core/webserver/views/config/providers.mako:609
+#: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
 msgstr "種子の比率:"
 
-#: sickrage/core/webserver/views/config/providers.mako:629
+#: sickrage/core/webserver/views/config/providers.mako:622
 msgid "Minimum seeders:"
 msgstr "最小の種取り機:"
 
-#: sickrage/core/webserver/views/config/providers.mako:649
+#: sickrage/core/webserver/views/config/providers.mako:642
 msgid "Minimum leechers:"
 msgstr "最小の leechers:"
 
-#: sickrage/core/webserver/views/config/providers.mako:669
+#: sickrage/core/webserver/views/config/providers.mako:662
 msgid "Confirmed download"
 msgstr "確認ダウンロード"
 
-#: sickrage/core/webserver/views/config/providers.mako:675
+#: sickrage/core/webserver/views/config/providers.mako:668
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "信頼できるまたは検証のアップローダーから急流をダウンロードのみですか。"
 
-#: sickrage/core/webserver/views/config/providers.mako:684
+#: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Ranked torrents"
 msgstr "ランク付けされた急流"
 
-#: sickrage/core/webserver/views/config/providers.mako:690
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "only download ranked torrents (internal releases)"
 msgstr "のみランク急流 (内部リリース) をダウンロードします。"
 
-#: sickrage/core/webserver/views/config/providers.mako:699
+#: sickrage/core/webserver/views/config/providers.mako:692
 msgid "English torrents"
 msgstr "英語急流"
 
-#: sickrage/core/webserver/views/config/providers.mako:705
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "のみダウンロード英語急流、または急流英語字幕を含む"
 
-#: sickrage/core/webserver/views/config/providers.mako:714
+#: sickrage/core/webserver/views/config/providers.mako:707
 msgid "For Spanish torrents"
 msgstr "スペイン急流"
 
-#: sickrage/core/webserver/views/config/providers.mako:721
+#: sickrage/core/webserver/views/config/providers.mako:714
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "ショー情報は「スペイン語」(VOS ショー プロバイダー使用を避ける) として定義されている場合、このプロバイダーにのみ検索"
 
-#: sickrage/core/webserver/views/config/providers.mako:732
+#: sickrage/core/webserver/views/config/providers.mako:725
 msgid "Sort results by"
 msgstr "結果の並べ替え"
 
-#: sickrage/core/webserver/views/config/providers.mako:754
+#: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
 msgstr "だけをダウンロードします。"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
 msgstr "急流。"
 
-#: sickrage/core/webserver/views/config/providers.mako:784
+#: sickrage/core/webserver/views/config/providers.mako:777
 msgid "Reject Blu-ray M2TS releases"
 msgstr "ブルーレイ M2TS のリリースを拒否します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:790
+#: sickrage/core/webserver/views/config/providers.mako:783
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "ブルーレイ MPEG-2 トランス ポート ストリーム コンテナー リリースを無視するを有効にします。"
 
-#: sickrage/core/webserver/views/config/providers.mako:870
+#: sickrage/core/webserver/views/config/providers.mako:863
 msgid "Category:"
 msgstr "カテゴリ:"
 
-#: sickrage/core/webserver/views/config/providers.mako:898
+#: sickrage/core/webserver/views/config/providers.mako:891
 msgid "select torrent with Italian subtitle"
 msgstr "トレント、イタリア語の字幕付きを選択します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:920
+#: sickrage/core/webserver/views/config/providers.mako:913
 msgid "Configure Custom"
 msgstr "ユーザー設定を構成します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:921
+#: sickrage/core/webserver/views/config/providers.mako:914
 msgid "Newznab Providers"
 msgstr "Newznab プロバイダー"
 
-#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:917
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "追加、セットアップまたはカスタム Newznab プロバイダーを削除します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:931
-#: sickrage/core/webserver/views/config/providers.mako:1050
+#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Select provider:"
 msgstr "プロバイダーを選択します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:939
-#: sickrage/core/webserver/views/config/providers.mako:1058
+#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:1051
 msgid "add new provider"
 msgstr "新しいプロバイダーを追加します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:948
-#: sickrage/core/webserver/views/config/providers.mako:1067
+#: sickrage/core/webserver/views/config/providers.mako:941
+#: sickrage/core/webserver/views/config/providers.mako:1060
 msgid "Provider name:"
 msgstr "プロバイダー名:"
 
-#: sickrage/core/webserver/views/config/providers.mako:961
+#: sickrage/core/webserver/views/config/providers.mako:954
 msgid "Site URL:"
 msgstr "サイトの URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:990
+#: sickrage/core/webserver/views/config/providers.mako:983
 msgid "Newznab search categories:"
 msgstr "Newznab 検索カテゴリ:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1000
+#: sickrage/core/webserver/views/config/providers.mako:993
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(左側で、あなたの Newznab のカテゴリを選択および検索のためにそれらを使用する「カテゴリの更新」ボタンをクリックして)"
 
-#: sickrage/core/webserver/views/config/providers.mako:1002
+#: sickrage/core/webserver/views/config/providers.mako:995
 msgid "Don't forget to save changes!"
 msgstr "変更を保存することを忘れないでください!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1012
+#: sickrage/core/webserver/views/config/providers.mako:1005
 msgid "Update Categories"
 msgstr "更新カテゴリ"
 
-#: sickrage/core/webserver/views/config/providers.mako:1021
+#: sickrage/core/webserver/views/config/providers.mako:1014
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "追加"
 
-#: sickrage/core/webserver/views/config/providers.mako:1029
+#: sickrage/core/webserver/views/config/providers.mako:1022
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "削除"
 
-#: sickrage/core/webserver/views/config/providers.mako:1043
+#: sickrage/core/webserver/views/config/providers.mako:1036
 msgid "Configure Custom Torrent Providers"
 msgstr "カスタム急流プロバイダーを構成します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1044
+#: sickrage/core/webserver/views/config/providers.mako:1037
 msgid "Add and setup or remove custom RSS providers."
 msgstr "追加、セットアップまたはカスタム RSS プロバイダーを削除します。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1082
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "RSS URL:"
 msgstr "RSS の URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1103
+#: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "ex. uid=xx;pass=yy"
 msgstr "例: uid = xx; 渡す = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1110
+#: sickrage/core/webserver/views/config/providers.mako:1103
 msgid "Search element:"
 msgstr "検索の要素:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1117
+#: sickrage/core/webserver/views/config/providers.mako:1110
 msgid "ex. title"
 msgstr "例: タイトル"
 

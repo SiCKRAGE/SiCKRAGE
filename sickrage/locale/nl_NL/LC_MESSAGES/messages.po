@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-14 10:47-0500\n"
-"PO-Revision-Date: 2017-11-14 10:48-0500\n"
+"POT-Creation-Date: 2017-11-15 03:32-0500\n"
+"PO-Revision-Date: 2017-11-15 03:36-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -518,7 +518,7 @@ msgid "Downloaded"
 msgstr "Gedownload"
 
 #: sickrage/core/common.py:604
-#: sickrage/core/webserver/views/config/providers.mako:892
+#: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
 msgstr "Ondertiteld"
@@ -639,7 +639,7 @@ msgstr "Wilt u de afleveringen van PostProcessed aan de MyList toevoegen?"
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 #: sickrage/core/webserver/views/config/postprocessing.mako:1297
 #: sickrage/core/webserver/views/config/providers.mako:118
-#: sickrage/core/webserver/views/config/providers.mako:908
+#: sickrage/core/webserver/views/config/providers.mako:901
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
 #: sickrage/core/webserver/views/config/search.mako:261
 #: sickrage/core/webserver/views/config/search.mako:678
@@ -3459,272 +3459,278 @@ msgid "Configure provider:"
 msgstr "Provider configureren"
 
 #: sickrage/core/webserver/views/config/providers.mako:177
-#: sickrage/core/webserver/views/config/providers.mako:307
-#: sickrage/core/webserver/views/config/providers.mako:975
+#: sickrage/core/webserver/views/config/providers.mako:300
+#: sickrage/core/webserver/views/config/providers.mako:968
 msgid "API key:"
 msgstr "API-sleutel:"
 
 #: sickrage/core/webserver/views/config/providers.mako:199
-#: sickrage/core/webserver/views/config/providers.mako:327
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:320
+#: sickrage/core/webserver/views/config/providers.mako:762
 msgid "Enable daily searches"
 msgstr "Dagelijkse zoekopdrachten inschakelen"
 
 #: sickrage/core/webserver/views/config/providers.mako:205
-#: sickrage/core/webserver/views/config/providers.mako:333
-#: sickrage/core/webserver/views/config/providers.mako:775
+#: sickrage/core/webserver/views/config/providers.mako:326
+#: sickrage/core/webserver/views/config/providers.mako:768
 msgid "enable provider to perform daily searches."
 msgstr "dienstverrichter om dagelijkse zoekopdrachten."
 
 #: sickrage/core/webserver/views/config/providers.mako:214
-#: sickrage/core/webserver/views/config/providers.mako:342
-#: sickrage/core/webserver/views/config/providers.mako:799
+#: sickrage/core/webserver/views/config/providers.mako:335
+#: sickrage/core/webserver/views/config/providers.mako:792
 msgid "Enable backlog searches"
 msgstr "Achterstand zoekopdrachten inschakelen"
 
 #: sickrage/core/webserver/views/config/providers.mako:220
-#: sickrage/core/webserver/views/config/providers.mako:348
-#: sickrage/core/webserver/views/config/providers.mako:805
+#: sickrage/core/webserver/views/config/providers.mako:341
+#: sickrage/core/webserver/views/config/providers.mako:798
 msgid "enable provider to perform backlog searches."
 msgstr "dienstverrichter achterstand zoekacties uitvoeren."
 
 #: sickrage/core/webserver/views/config/providers.mako:229
-#: sickrage/core/webserver/views/config/providers.mako:357
-#: sickrage/core/webserver/views/config/providers.mako:814
+#: sickrage/core/webserver/views/config/providers.mako:350
+#: sickrage/core/webserver/views/config/providers.mako:807
 msgid "Search mode fallback"
 msgstr "Zoekmodus fallback"
 
-#: sickrage/core/webserver/views/config/providers.mako:236
-#: sickrage/core/webserver/views/config/providers.mako:364
-#: sickrage/core/webserver/views/config/providers.mako:821
-msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
-msgstr "Wanneer u zoekt naar een volledig seizoen afhankelijk van de modus die u mogelijk geen resultaten geretourneerd, helpt dit door het opnieuw starten van de zoekactie met behulp van de tegenovergestelde search-modus."
+#: sickrage/core/webserver/views/config/providers.mako:235
+msgid "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:248
-#: sickrage/core/webserver/views/config/providers.mako:376
-#: sickrage/core/webserver/views/config/providers.mako:833
+#: sickrage/core/webserver/views/config/providers.mako:246
+#: sickrage/core/webserver/views/config/providers.mako:369
+#: sickrage/core/webserver/views/config/providers.mako:826
 msgid "Season search mode"
 msgstr "Seizoen search-modus"
 
-#: sickrage/core/webserver/views/config/providers.mako:257
-#: sickrage/core/webserver/views/config/providers.mako:396
-#: sickrage/core/webserver/views/config/providers.mako:842
+#: sickrage/core/webserver/views/config/providers.mako:255
+#: sickrage/core/webserver/views/config/providers.mako:389
+#: sickrage/core/webserver/views/config/providers.mako:835
 msgid "season packs only."
 msgstr "seizoen verpakkingen alleen."
 
-#: sickrage/core/webserver/views/config/providers.mako:268
-#: sickrage/core/webserver/views/config/providers.mako:385
-#: sickrage/core/webserver/views/config/providers.mako:853
+#: sickrage/core/webserver/views/config/providers.mako:262
+#: sickrage/core/webserver/views/config/providers.mako:378
+#: sickrage/core/webserver/views/config/providers.mako:846
 msgid "episodes only."
 msgstr "afleveringen alleen."
 
-#: sickrage/core/webserver/views/config/providers.mako:273
-#: sickrage/core/webserver/views/config/providers.mako:402
-#: sickrage/core/webserver/views/config/providers.mako:859
-msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
-msgstr "bij het zoeken naar volledige seizoenen kunt u om het seizoen verpakkingen alleen zoekt, of ervoor kiezen om het bouwen van een compleet seizoen van slechts enkele afleveringen te hebben."
+#: sickrage/core/webserver/views/config/providers.mako:265
+msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
+msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:288
-#: sickrage/core/webserver/views/config/providers.mako:499
+#: sickrage/core/webserver/views/config/providers.mako:281
+#: sickrage/core/webserver/views/config/providers.mako:492
 msgid "Username:"
 msgstr "Gebruikersnaam:"
 
-#: sickrage/core/webserver/views/config/providers.mako:417
+#: sickrage/core/webserver/views/config/providers.mako:357
+#: sickrage/core/webserver/views/config/providers.mako:814
+msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
+msgstr "Wanneer u zoekt naar een volledig seizoen afhankelijk van de modus die u mogelijk geen resultaten geretourneerd, helpt dit door het opnieuw starten van de zoekactie met behulp van de tegenovergestelde search-modus."
+
+#: sickrage/core/webserver/views/config/providers.mako:395
+#: sickrage/core/webserver/views/config/providers.mako:852
+msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
+msgstr "bij het zoeken naar volledige seizoenen kunt u om het seizoen verpakkingen alleen zoekt, of ervoor kiezen om het bouwen van een compleet seizoen van slechts enkele afleveringen te hebben."
+
+#: sickrage/core/webserver/views/config/providers.mako:410
 msgid "Custom URL:"
 msgstr "Aangepaste URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:438
+#: sickrage/core/webserver/views/config/providers.mako:431
 msgid "Api key:"
 msgstr "API-sleutel:"
 
-#: sickrage/core/webserver/views/config/providers.mako:459
+#: sickrage/core/webserver/views/config/providers.mako:452
 msgid "Digest:"
 msgstr "Digest:"
 
-#: sickrage/core/webserver/views/config/providers.mako:479
+#: sickrage/core/webserver/views/config/providers.mako:472
 msgid "Hash:"
 msgstr "Hash:"
 
-#: sickrage/core/webserver/views/config/providers.mako:520
+#: sickrage/core/webserver/views/config/providers.mako:513
 msgid "Password:"
 msgstr "Wachtwoord:"
 
-#: sickrage/core/webserver/views/config/providers.mako:539
+#: sickrage/core/webserver/views/config/providers.mako:532
 msgid "Passkey:"
 msgstr "Sleutel:"
 
-#: sickrage/core/webserver/views/config/providers.mako:560
-#: sickrage/core/webserver/views/config/providers.mako:1096
+#: sickrage/core/webserver/views/config/providers.mako:553
+#: sickrage/core/webserver/views/config/providers.mako:1089
 msgid "Cookies:"
 msgstr "Cookies:"
 
-#: sickrage/core/webserver/views/config/providers.mako:577
+#: sickrage/core/webserver/views/config/providers.mako:570
 msgid "this provider requires the following cookies: "
 msgstr "deze provider vereist de volgende cookies: "
 
-#: sickrage/core/webserver/views/config/providers.mako:588
+#: sickrage/core/webserver/views/config/providers.mako:581
 msgid "Pin:"
 msgstr "PIN:"
 
-#: sickrage/core/webserver/views/config/providers.mako:609
+#: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
 msgstr "Zaad-verhouding:"
 
-#: sickrage/core/webserver/views/config/providers.mako:629
+#: sickrage/core/webserver/views/config/providers.mako:622
 msgid "Minimum seeders:"
 msgstr "Minimale zaadje:"
 
-#: sickrage/core/webserver/views/config/providers.mako:649
+#: sickrage/core/webserver/views/config/providers.mako:642
 msgid "Minimum leechers:"
 msgstr "Minimale bloedzuiger:"
 
-#: sickrage/core/webserver/views/config/providers.mako:669
+#: sickrage/core/webserver/views/config/providers.mako:662
 msgid "Confirmed download"
 msgstr "Bevestigde downloaden"
 
-#: sickrage/core/webserver/views/config/providers.mako:675
+#: sickrage/core/webserver/views/config/providers.mako:668
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "alleen het downloaden van torrents van vertrouwde of geverifieerde uploaders?"
 
-#: sickrage/core/webserver/views/config/providers.mako:684
+#: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Ranked torrents"
 msgstr "Gerangschikte torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:690
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "only download ranked torrents (internal releases)"
 msgstr "alleen het downloaden van gerangschikte torrents (interne releases)"
 
-#: sickrage/core/webserver/views/config/providers.mako:699
+#: sickrage/core/webserver/views/config/providers.mako:692
 msgid "English torrents"
 msgstr "Engelse torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:705
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "alleen download Engels torrents, of torrents met Dutch subtitles"
 
-#: sickrage/core/webserver/views/config/providers.mako:714
+#: sickrage/core/webserver/views/config/providers.mako:707
 msgid "For Spanish torrents"
 msgstr "Voor Spaanse torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:721
+#: sickrage/core/webserver/views/config/providers.mako:714
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "ALLEEN zoeken op deze provider als Toon info is gedefinieerd als de \"Spaanse\" (vermijden van provider gebruik voor VOS shows)"
 
-#: sickrage/core/webserver/views/config/providers.mako:732
+#: sickrage/core/webserver/views/config/providers.mako:725
 msgid "Sort results by"
 msgstr "De resultaten sorteren door"
 
-#: sickrage/core/webserver/views/config/providers.mako:754
+#: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
 msgstr "alleen downloaden"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:760
+#: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
 msgstr "Torrents."
 
-#: sickrage/core/webserver/views/config/providers.mako:784
+#: sickrage/core/webserver/views/config/providers.mako:777
 msgid "Reject Blu-ray M2TS releases"
 msgstr "Verwerpen van Blu-ray M2TS releases"
 
-#: sickrage/core/webserver/views/config/providers.mako:790
+#: sickrage/core/webserver/views/config/providers.mako:783
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "inschakelen om te negeren van Blu-ray MPEG-2 Transport Stream container releases"
 
-#: sickrage/core/webserver/views/config/providers.mako:870
+#: sickrage/core/webserver/views/config/providers.mako:863
 msgid "Category:"
 msgstr "Categorie:"
 
-#: sickrage/core/webserver/views/config/providers.mako:898
+#: sickrage/core/webserver/views/config/providers.mako:891
 msgid "select torrent with Italian subtitle"
 msgstr "Selecteer torrent met Italiaanse ondertitels"
 
-#: sickrage/core/webserver/views/config/providers.mako:920
+#: sickrage/core/webserver/views/config/providers.mako:913
 msgid "Configure Custom"
 msgstr "Configureren van aangepaste"
 
-#: sickrage/core/webserver/views/config/providers.mako:921
+#: sickrage/core/webserver/views/config/providers.mako:914
 msgid "Newznab Providers"
 msgstr "Newznab aanbieders"
 
-#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:917
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "Toevoegen en installeren of verwijderen van aangepaste Newznab providers."
 
-#: sickrage/core/webserver/views/config/providers.mako:931
-#: sickrage/core/webserver/views/config/providers.mako:1050
+#: sickrage/core/webserver/views/config/providers.mako:924
+#: sickrage/core/webserver/views/config/providers.mako:1043
 msgid "Select provider:"
 msgstr "Selecteer een provider:"
 
-#: sickrage/core/webserver/views/config/providers.mako:939
-#: sickrage/core/webserver/views/config/providers.mako:1058
+#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:1051
 msgid "add new provider"
 msgstr "nieuwe zoekmachine toevoegen"
 
-#: sickrage/core/webserver/views/config/providers.mako:948
-#: sickrage/core/webserver/views/config/providers.mako:1067
+#: sickrage/core/webserver/views/config/providers.mako:941
+#: sickrage/core/webserver/views/config/providers.mako:1060
 msgid "Provider name:"
 msgstr "De naam van de provider:"
 
-#: sickrage/core/webserver/views/config/providers.mako:961
+#: sickrage/core/webserver/views/config/providers.mako:954
 msgid "Site URL:"
 msgstr "De URL van de site:"
 
-#: sickrage/core/webserver/views/config/providers.mako:990
+#: sickrage/core/webserver/views/config/providers.mako:983
 msgid "Newznab search categories:"
 msgstr "Newznab zoekcategorieën:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1000
+#: sickrage/core/webserver/views/config/providers.mako:993
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(Selecteer uw Newznab categorieën aan de linkerkant en klik op de knop \"bijwerken Categorieën\" om ze te gebruiken om te zoeken.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:1002
+#: sickrage/core/webserver/views/config/providers.mako:995
 msgid "Don't forget to save changes!"
 msgstr "Vergeet niet om de wijzigingen op te slaan!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1012
+#: sickrage/core/webserver/views/config/providers.mako:1005
 msgid "Update Categories"
 msgstr "Categorieën bijwerken"
 
-#: sickrage/core/webserver/views/config/providers.mako:1021
+#: sickrage/core/webserver/views/config/providers.mako:1014
 #: sickrage/core/webserver/views/home/index.mako:281
 msgid "Add"
 msgstr "Toevoegen"
 
-#: sickrage/core/webserver/views/config/providers.mako:1029
+#: sickrage/core/webserver/views/config/providers.mako:1022
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:70
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: sickrage/core/webserver/views/config/providers.mako:1043
+#: sickrage/core/webserver/views/config/providers.mako:1036
 msgid "Configure Custom Torrent Providers"
 msgstr "Configureren van aangepaste Torrent-aanbieders"
 
-#: sickrage/core/webserver/views/config/providers.mako:1044
+#: sickrage/core/webserver/views/config/providers.mako:1037
 msgid "Add and setup or remove custom RSS providers."
 msgstr "Toevoegen en installeren of verwijderen van aangepaste RSS-providers."
 
-#: sickrage/core/webserver/views/config/providers.mako:1082
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "RSS URL:"
 msgstr "RSS URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1103
+#: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "ex. uid=xx;pass=yy"
 msgstr "ex. uid = xx; pass = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1110
+#: sickrage/core/webserver/views/config/providers.mako:1103
 msgid "Search element:"
 msgstr "Zoek de element:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1117
+#: sickrage/core/webserver/views/config/providers.mako:1110
 msgid "ex. title"
 msgstr "ex. titel"
 
