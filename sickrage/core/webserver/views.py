@@ -738,8 +738,8 @@ class Home(WebHandler):
             return False
 
     @staticmethod
-    def testAPI(username=None, password=None):
-        result = API(username, password).token
+    def testAPI(client_id=None, client_secret=None):
+        result = API(client_id, client_secret).token
         if result:
             return _('API access successful')
         else:
@@ -3815,16 +3815,16 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
-                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, api_username=None,
-                    api_password=None, use_api=None, enable_api_providers_cache=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, api_client_id=None,
+                    api_client_secret=None, use_api=None, enable_api_providers_cache=None, **kwargs):
 
         results = []
 
         # API
         sickrage.app.config.enable_api = checkbox_to_value(use_api)
         sickrage.app.config.enable_api_providers_cache = checkbox_to_value(enable_api_providers_cache)
-        sickrage.app.config.api_username = api_username
-        sickrage.app.config.api_password = api_password
+        sickrage.app.config.api_client_id = api_client_id
+        sickrage.app.config.api_client_secret = api_client_secret
 
         # Language
         sickrage.app.config.change_gui_lang(gui_language)

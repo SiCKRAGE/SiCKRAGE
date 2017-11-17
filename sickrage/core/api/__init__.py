@@ -1,9 +1,8 @@
 from __future__ import unicode_literals
 
-import json
 from urlparse import urljoin
 
-from oauthlib.oauth2 import LegacyApplicationClient
+from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -11,12 +10,11 @@ from sickrage.core.api.exceptions import unauthorized, error
 
 
 class API(object):
-    def __init__(self, username=None, password=None):
-        self.client_id = '5YBSSD10UQN644DC13OHURJCESCOQBVR'
+    def __init__(self, client_id=None, client_secret=None):
         self.api_url = 'https://api.sickrage.ca/'
         self.token_url = urljoin(self.api_url, 'oauth/v2/token')
-        self.username = username
-        self.password = password
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.token = None
         self.client = None
         self.login()
@@ -25,23 +23,21 @@ class API(object):
         if self.client and self.token:
             return True
 
-        self.username = self.username or sickrage.app.config.api_username
-        self.password = self.password or sickrage.app.config.api_password
+        credentials = {
+            'client_id': self.client_id or sickrage.app.config.api_client_id,
+            'client_secret': self.client_secret or sickrage.app.config.api_client_secret
+        }
 
-        if self.username and self.password:
-            oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.client_id))
+        oauth = OAuth2Session(client=BackendApplicationClient(client_id=credentials['client_id']))
 
-            try:
-                self.token = oauth.fetch_token(token_url=self.token_url, client_id=self.client_id, timeout=30,
-                                               username=self.username, password=self.password)
+        try:
+            self.token = oauth.fetch_token(token_url=self.token_url, timeout=30, **credentials)
+            self.client = OAuth2Session(credentials['client_id'], token=self.token, auto_refresh_url=self.token_url,
+                                        auto_refresh_kwargs=credentials, token_updater=self.token_saver)
 
-                self.client = OAuth2Session(self.client_id, token=self.token, auto_refresh_url=self.token_url,
-                                            auto_refresh_kwargs={"client_id": self.client_id},
-                                            token_updater=self.token_saver)
-
-                return True
-            except Exception:
-                pass
+            return True
+        except Exception as e:
+            pass
 
     def logout(self):
         self.token = self.client = None

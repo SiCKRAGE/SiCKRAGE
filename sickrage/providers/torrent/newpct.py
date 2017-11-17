@@ -41,7 +41,7 @@ class NewpctProvider(TorrentProvider):
                        '{base_url}/descargar-seriehd/%s'.format(**self.urls),
                        '{base_url}/descargar-serievo/%s'.format(**self.urls)],
             'rss': '{base_url}/feed'.format(**self.urls),
-            'download': 'http://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
+            'download': 'https://tumejorserie.com/descargar/index.php?link=torrents/%s.torrent'.format(**self.urls),
         })
 
         self.onlyspasearch = None

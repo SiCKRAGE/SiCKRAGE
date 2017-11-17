@@ -2891,11 +2891,9 @@ jQuery(document).ready(function ($) {
 
                 $('#testAPI').click(function () {
                     $('#testAPI-result').html(SICKRAGE.loadingHTML);
-                    var api_username = $('#api_username').val();
-                    var api_password = $('#api_password').val();
                     $.get(SICKRAGE.srWebRoot + '/home/testAPI', {
-                            'username': api_username,
-                            'password': api_password
+                            'client_id': $('#api_client_id').val(),
+                            'client_secret': $('#api_client_secret').val()
                         },
                         function (data) {
                             $('#testAPI-result').html(data);
