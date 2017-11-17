@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-17 13:46-0500\n"
-"PO-Revision-Date: 2017-11-17 13:48-0500\n"
+"POT-Creation-Date: 2017-11-17 16:37-0500\n"
+"PO-Revision-Date: 2017-11-17 16:38-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -5965,23 +5965,23 @@ msgstr "Config резервного копіювання успішним, он�
 msgid "Config backup failed, aborting update"
 msgstr "Config резервне копіювання не вдалося, переривання оновлення"
 
-#: sickrage/core/version_updater.py:215
+#: sickrage/core/version_updater.py:216
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Не вдалося знайти ваш git виконуваний - набір git шлях, від параметрів-> генерала-> додатково OR видалити папку .git і запустити з джерела, щоб увімкнути оновлення."
 
-#: sickrage/core/version_updater.py:262
+#: sickrage/core/version_updater.py:263
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Не вдалося знайти виконуваний ваш Піп-встановіть Піп шлях від параметрів-> генерала-> додатково"
 
-#: sickrage/core/version_updater.py:420 sickrage/core/version_updater.py:557
+#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Існує новіша версія доступна, версія {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:553
+#: sickrage/core/version_updater.py:554
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Невідомий номер поточної версії: Я ніколи не використовували SiCKRAGE оновлення системи перед, то поточна версія не встановлено. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:707
+#: sickrage/core/version_updater.py:708
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Новий SiCKRAGE оновлення, знайдені на проект має за мету серверів, версія {} &mdash; <a href=\"{}\">Update Now</a>"
 

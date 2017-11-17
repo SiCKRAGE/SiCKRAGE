@@ -1,6 +1,8 @@
 # Changelog
 
-- * 680bbea - 2017-11-17: Release v9.2.8 
+- * 01f80f2 - 2017-11-17: Release v9.2.9 
+- * 2d941ea - 2017-11-17: Fixed index error during config backup on updates 
+- * 23af894 - 2017-11-17: Release v9.2.8 
 - * 9275228 - 2017-11-17: Updated SiCKRAGE API to use client credentials 
 - * af869a2 - 2017-11-16: Updated download link for NewPCT torrent provider 
 - * 019c736 - 2017-11-15: Release v9.2.5 

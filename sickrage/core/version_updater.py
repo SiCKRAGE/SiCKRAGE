@@ -100,9 +100,6 @@ class VersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        if sickrage.app.developer:
-            return False
-
         if not sickrage.app.started:
             return True
         if not sickrage.app.auto_postprocessor.amActive:
@@ -142,6 +139,9 @@ class VersionUpdater(object):
         :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
         """
 
+        if sickrage.app.developer:
+            return False
+
         if self.updater and self.updater.need_update():
             if force: self.updater.set_newest_text()
             return True
@@ -170,6 +170,7 @@ class VersionUpdater(object):
         if self.updater:
             return self.updater.current_branch
         return "master"
+
 
 class UpdateManager(object):
     @property
