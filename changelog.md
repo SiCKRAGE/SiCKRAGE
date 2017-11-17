@@ -1,6 +1,7 @@
 # Changelog
 
-- * 01f80f2 - 2017-11-17: Release v9.2.9 
+- * de1b60b - 2017-11-17: refactored backup function for app 
+- * c8d47ec - 2017-11-17: Release v9.2.9 
 - * 2d941ea - 2017-11-17: Fixed index error during config backup on updates 
 - * 23af894 - 2017-11-17: Release v9.2.8 
 - * 9275228 - 2017-11-17: Updated SiCKRAGE API to use client credentials 
