@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1a05445 - 2017-11-17: Updated SiCKRAGE API to use client credentials 
+- * 680bbea - 2017-11-17: Release v9.2.8 
+- * 9275228 - 2017-11-17: Updated SiCKRAGE API to use client credentials 
 - * af869a2 - 2017-11-16: Updated download link for NewPCT torrent provider 
 - * 019c736 - 2017-11-15: Release v9.2.5 
 - * ab16911 - 2017-11-15: Release v9.2.4 

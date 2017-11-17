@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-15 03:32-0500\n"
-"PO-Revision-Date: 2017-11-15 03:35-0500\n"
+"POT-Creation-Date: 2017-11-17 13:46-0500\n"
+"PO-Revision-Date: 2017-11-17 13:46-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -165,176 +165,176 @@ msgstr "إعادة تعيين التكوين إلى الإعدادات الاف�
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "هل أنت متأكد من أنك تريد إعادة تعيين التكوين إلى الإعدادات الافتراضية؟"
 
-#: dist/js/core.js:3007
+#: dist/js/core.js:3005
 msgid "Select path to pip"
 msgstr "حدد مسار برنامج تطبيق السلام"
 
-#: dist/js/core.js:3013
+#: dist/js/core.js:3011
 msgid "Select path to git"
 msgstr "حدد المسار إلى بوابة"
 
-#: dist/js/core.js:3021 dist/js/core.js:3039 dist/js/core.js:3933
-#: dist/js/core.js:3951 dist/js/core.js:3972 dist/js/core.js:3994
-#: dist/js/core.js:4017 dist/js/core.js:4039 dist/js/core.js:4067
-#: dist/js/core.js:4084 dist/js/core.js:4128 dist/js/core.js:4213
-#: dist/js/core.js:4271 dist/js/core.js:4288 dist/js/core.js:4318
-#: dist/js/core.js:4375 dist/js/core.js:4451 dist/js/core.js:4470
-#: dist/js/core.js:4486
+#: dist/js/core.js:3019 dist/js/core.js:3037 dist/js/core.js:3931
+#: dist/js/core.js:3949 dist/js/core.js:3970 dist/js/core.js:3992
+#: dist/js/core.js:4015 dist/js/core.js:4037 dist/js/core.js:4065
+#: dist/js/core.js:4082 dist/js/core.js:4126 dist/js/core.js:4211
+#: dist/js/core.js:4269 dist/js/core.js:4286 dist/js/core.js:4316
+#: dist/js/core.js:4373 dist/js/core.js:4449 dist/js/core.js:4468
+#: dist/js/core.js:4484
 msgid "Please fill out the necessary fields above."
 msgstr "الرجاء ملء الحقول الضرورية المذكورة أعلاه."
 
-#: dist/js/core.js:3071 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3069 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "الارتباط"
 
-#: dist/js/core.js:3073
+#: dist/js/core.js:3071
 msgid "Unlink"
 msgstr "فك ارتباط"
 
-#: dist/js/core.js:3114
+#: dist/js/core.js:3112
 msgid "Select Subtitles Download Directory"
 msgstr "دليل تحميل ترجمات مختارة"
 
-#: dist/js/core.js:3230
+#: dist/js/core.js:3228
 msgid "Select .nzb blackhole/watch location"
 msgstr "حدد.nzb blackhole/مشاهدة الموقع"
 
-#: dist/js/core.js:3231
+#: dist/js/core.js:3229
 msgid "Select .torrent blackhole/watch location"
 msgstr "قم بتحديد موقع blackhole/مشاهدة تورنت]"
 
-#: dist/js/core.js:3232
+#: dist/js/core.js:3230
 msgid "Select .torrent download location"
 msgstr "حدد موقع تحميل تورنت]"
 
-#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:923
+#: dist/js/core.js:3297 sickrage/core/webserver/views/config/search.mako:923
 msgid "Minimum seeding time is"
 msgstr "الحد الأدنى البذر مرة"
 
-#: dist/js/core.js:3301
+#: dist/js/core.js:3299
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "عنوان URL الخاص بك العميل uTorrent (مثلاً http://localhost:8000)"
 
-#: dist/js/core.js:3304
+#: dist/js/core.js:3302
 msgid "Stop seeding when inactive for"
 msgstr "توقف بذر عندما نشط"
 
-#: dist/js/core.js:3310
+#: dist/js/core.js:3308
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "عنوان URL للعميل الإرسال الخاص بك (مثل http://localhost:9091)"
 
-#: dist/js/core.js:3320
+#: dist/js/core.js:3318
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "عنوان URL الخاص بك العميل طوفان (مثلاً http://localhost:8112)"
 
-#: dist/js/core.js:3329
+#: dist/js/core.js:3327
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP أو اسم المضيف من الخاصة بك \"شيطان طوفان\" (مثلاً scgi://localhost:58846)"
 
-#: dist/js/core.js:3336
+#: dist/js/core.js:3334
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "عنوان URL الخاص بك عميل Synology DS (مثلاً http://localhost:5000)"
 
-#: dist/js/core.js:3341
+#: dist/js/core.js:3339
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "عنوان URL للعميل رتورينت الخاص بك (على سبيل المثال، scgi://localhost:5000 <br> أو https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3351
+#: dist/js/core.js:3349
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "عنوان URL للعميل الخاص بك قبيتورينت (مثل http://localhost:8080)"
 
-#: dist/js/core.js:3361
+#: dist/js/core.js:3359
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "عنوان URL الخاص بك ملدونكيي (مثل http://localhost:4080)"
 
-#: dist/js/core.js:3372
+#: dist/js/core.js:3370
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "عنوان URL الخاص بك العميل بوتيو (مثلاً http://localhost:8080)"
 
-#: dist/js/core.js:3572
+#: dist/js/core.js:3570
 msgid "Select TV Download Directory"
 msgstr "حدد دليل التحميل التلفزيون"
 
-#: dist/js/core.js:3587
+#: dist/js/core.js:3585
 msgid "Unrar Executable not found."
 msgstr "لم يتم العثور على الملف القابل للتنفيذ فك الضغط."
 
-#: dist/js/core.js:3633 dist/js/core.js:3677 dist/js/core.js:3721
-#: dist/js/core.js:3781
+#: dist/js/core.js:3631 dist/js/core.js:3675 dist/js/core.js:3719
+#: dist/js/core.js:3779
 msgid "This pattern is invalid."
 msgstr "وهذا النمط غير صحيح."
 
-#: dist/js/core.js:3640 dist/js/core.js:3684 dist/js/core.js:3728
-#: dist/js/core.js:3788
+#: dist/js/core.js:3638 dist/js/core.js:3682 dist/js/core.js:3726
+#: dist/js/core.js:3786
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "سوف يكون هذا النمط غير صالحة دون المجلدات، استخدام أنه سيفرض \"سطح\" قبالة لكافة العروض."
 
-#: dist/js/core.js:3647 dist/js/core.js:3691 dist/js/core.js:3735
-#: dist/js/core.js:3795
+#: dist/js/core.js:3645 dist/js/core.js:3689 dist/js/core.js:3733
+#: dist/js/core.js:3793
 msgid "This pattern is valid."
 msgstr "هذا النمط صحيح."
 
-#: dist/js/core.js:4121
+#: dist/js/core.js:4119
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> تأكيد الإذن"
 
-#: dist/js/core.js:4178 dist/js/core.js:4232
+#: dist/js/core.js:4176 dist/js/core.js:4230
 msgid "Please fill in the Popcorn IP address"
 msgstr "الرجاء إدخال عنوان IP الفشار"
 
-#: dist/js/core.js:4385
+#: dist/js/core.js:4383
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "تحقق من اسم القائمة السوداء؛ القيمة بحاجة إلى أن تكون سبيكة trakt"
 
-#: dist/js/core.js:4417
+#: dist/js/core.js:4415
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "يجب تحديد <li style=\"color: red;\">You اسم مضيف SMTP!</li>"
 
-#: dist/js/core.js:4420
+#: dist/js/core.js:4418
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You يجب تحديد منفذ SMTP!</li>"
 
-#: dist/js/core.js:4422
+#: dist/js/core.js:4420
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "يجب أن يكون المنفذ <li style=\"color: red;\">SMTP بين 0 و 65535!</li>"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4426
 msgid "Enter an email address to send the test to:"
 msgstr "أدخل عنوان البريد إلكتروني لإرسال الاختبار إلى:"
 
-#: dist/js/core.js:4430
+#: dist/js/core.js:4428
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You يجب توفير عنوان البريد إلكتروني لمستلم!</p>"
 
-#: dist/js/core.js:4500
+#: dist/js/core.js:4498
 msgid "Device list updated. Please choose a device to push to."
 msgstr "تحديث قائمة الأجهزة. الرجاء اختيار جهاز للدفع إلى."
 
-#: dist/js/core.js:4561
+#: dist/js/core.js:4559
 msgid "You didn't supply a Pushbullet api key"
 msgstr "لا تقوم أنت بتوفير مفتاح المعهد بوشبوليت"
 
-#: dist/js/core.js:4591
+#: dist/js/core.js:4589
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "لا ننسى لحفظ الإعدادات الجديدة بوشبوليت."
 
-#: dist/js/core.js:4663
+#: dist/js/core.js:4661
 msgid "Select backup folder to save to"
 msgstr "حدد مجلد النسخ الاحتياطية لحفظ"
 
-#: dist/js/core.js:4668
+#: dist/js/core.js:4666
 msgid "Select backup files to restore"
 msgstr "حدد ملفات النسخ الاحتياطي لاستعادة"
 
-#: dist/js/core.js:5214
+#: dist/js/core.js:5212
 msgid "No providers available to configure."
 msgstr "لا مقدمي الخدمات المتاحة لتكوين."
 
-#: dist/js/core.js:5425
+#: dist/js/core.js:5423
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "لقد اخترت حذف show(s).  هل تريد المتابعة بالتأكيد؟ سيتم إزالة كافة الملفات من النظام الخاص بك."
 
-#: dist/js/core.js:5495
+#: dist/js/core.js:5493
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -724,8 +724,8 @@ msgid "SiCKRAGE API"
 msgstr "سيكراجي API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
-msgid "Login info and options for api.sickrage.ca"
-msgstr "معلومات تسجيل الدخول وخيارات api.sickrage.ca"
+msgid "Credentials and options for api.sickrage.ca"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:36
 #: sickrage/core/webserver/views/config/notifications.mako:31
@@ -761,20 +761,20 @@ msgid "Enable API access ?"
 msgstr "تمكين الوصول إلى API؟"
 
 #: sickrage/core/webserver/views/config/general.mako:48
-msgid "API provider cache"
-msgstr "API موفر ذاكرة التخزين المؤقت"
+msgid "API Provider Cache"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:53
 msgid "Enable provider cache ?"
 msgstr "تمكين ذاكرة التخزين المؤقت الموفر؟"
 
 #: sickrage/core/webserver/views/config/general.mako:59
-msgid "API username"
-msgstr "اسم API"
+msgid "API Client ID"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:77
-msgid "API password"
-msgstr "API كلمة المرور"
+msgid "API Client Secret"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178

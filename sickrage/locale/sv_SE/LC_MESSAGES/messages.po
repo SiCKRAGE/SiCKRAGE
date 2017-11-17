@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-15 03:32-0500\n"
-"PO-Revision-Date: 2017-11-15 03:37-0500\n"
+"POT-Creation-Date: 2017-11-17 13:46-0500\n"
+"PO-Revision-Date: 2017-11-17 13:48-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -165,176 +165,176 @@ msgstr "Återställa Config till standardvärden"
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Är du säker på att du vill återställa config till standardvärden?"
 
-#: dist/js/core.js:3007
+#: dist/js/core.js:3005
 msgid "Select path to pip"
 msgstr "Välj sökvägen till pip"
 
-#: dist/js/core.js:3013
+#: dist/js/core.js:3011
 msgid "Select path to git"
 msgstr "Välj sökvägen till git"
 
-#: dist/js/core.js:3021 dist/js/core.js:3039 dist/js/core.js:3933
-#: dist/js/core.js:3951 dist/js/core.js:3972 dist/js/core.js:3994
-#: dist/js/core.js:4017 dist/js/core.js:4039 dist/js/core.js:4067
-#: dist/js/core.js:4084 dist/js/core.js:4128 dist/js/core.js:4213
-#: dist/js/core.js:4271 dist/js/core.js:4288 dist/js/core.js:4318
-#: dist/js/core.js:4375 dist/js/core.js:4451 dist/js/core.js:4470
-#: dist/js/core.js:4486
+#: dist/js/core.js:3019 dist/js/core.js:3037 dist/js/core.js:3931
+#: dist/js/core.js:3949 dist/js/core.js:3970 dist/js/core.js:3992
+#: dist/js/core.js:4015 dist/js/core.js:4037 dist/js/core.js:4065
+#: dist/js/core.js:4082 dist/js/core.js:4126 dist/js/core.js:4211
+#: dist/js/core.js:4269 dist/js/core.js:4286 dist/js/core.js:4316
+#: dist/js/core.js:4373 dist/js/core.js:4449 dist/js/core.js:4468
+#: dist/js/core.js:4484
 msgid "Please fill out the necessary fields above."
 msgstr "Fyll i de nödvändiga fälten ovan."
 
-#: dist/js/core.js:3071 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3069 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Länk"
 
-#: dist/js/core.js:3073
+#: dist/js/core.js:3071
 msgid "Unlink"
 msgstr "Avlänka"
 
-#: dist/js/core.js:3114
+#: dist/js/core.js:3112
 msgid "Select Subtitles Download Directory"
 msgstr "Välj undertexter Ladda ner katalogen"
 
-#: dist/js/core.js:3230
+#: dist/js/core.js:3228
 msgid "Select .nzb blackhole/watch location"
 msgstr "Välj .nzb blackhole/klocka läge"
 
-#: dist/js/core.js:3231
+#: dist/js/core.js:3229
 msgid "Select .torrent blackhole/watch location"
 msgstr "Välj .torrent blackhole/klocka läge"
 
-#: dist/js/core.js:3232
+#: dist/js/core.js:3230
 msgid "Select .torrent download location"
 msgstr "Välj .torrent hämtningsplats"
 
-#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:923
+#: dist/js/core.js:3297 sickrage/core/webserver/views/config/search.mako:923
 msgid "Minimum seeding time is"
 msgstr "Minsta sådd tid är"
 
-#: dist/js/core.js:3301
+#: dist/js/core.js:3299
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL till din uTorrent klient (t.ex. http://localhost:8000)"
 
-#: dist/js/core.js:3304
+#: dist/js/core.js:3302
 msgid "Stop seeding when inactive for"
 msgstr "Stoppa seedning vid inaktivitet för"
 
-#: dist/js/core.js:3310
+#: dist/js/core.js:3308
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL till din överföring klient (t.ex. http://localhost:9091)"
 
-#: dist/js/core.js:3320
+#: dist/js/core.js:3318
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL till din Deluge-klient (t.ex. http://localhost:8112)"
 
-#: dist/js/core.js:3329
+#: dist/js/core.js:3327
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP-adress eller värdnamn för din Deluge Daemon (t.ex. scgi://localhost:58846)"
 
-#: dist/js/core.js:3336
+#: dist/js/core.js:3334
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL till din Synology DS-klient (t.ex. http://localhost:5000)"
 
-#: dist/js/core.js:3341
+#: dist/js/core.js:3339
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL till din rTorrent klient (t.ex. scgi://localhost:5000 <br> eller https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3351
+#: dist/js/core.js:3349
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL till din qbittorrent klient (t.ex. http://localhost: 8080)"
 
-#: dist/js/core.js:3361
+#: dist/js/core.js:3359
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL till din MLDonkey (t.ex. http://localhost:4080)"
 
-#: dist/js/core.js:3372
+#: dist/js/core.js:3370
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL till din putio-klient (t.ex. http://localhost: 8080)"
 
-#: dist/js/core.js:3572
+#: dist/js/core.js:3570
 msgid "Select TV Download Directory"
 msgstr "Välj TV Ladda ner katalogen"
 
-#: dist/js/core.js:3587
+#: dist/js/core.js:3585
 msgid "Unrar Executable not found."
 msgstr "Unrar körbara hittades inte."
 
-#: dist/js/core.js:3633 dist/js/core.js:3677 dist/js/core.js:3721
-#: dist/js/core.js:3781
+#: dist/js/core.js:3631 dist/js/core.js:3675 dist/js/core.js:3719
+#: dist/js/core.js:3779
 msgid "This pattern is invalid."
 msgstr "Detta mönster är ogiltig."
 
-#: dist/js/core.js:3640 dist/js/core.js:3684 dist/js/core.js:3728
-#: dist/js/core.js:3788
+#: dist/js/core.js:3638 dist/js/core.js:3682 dist/js/core.js:3726
+#: dist/js/core.js:3786
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Detta mönster skulle vara ogiltigt utan mappar, använder den kommer att tvinga ”plattar” för alla serier."
 
-#: dist/js/core.js:3647 dist/js/core.js:3691 dist/js/core.js:3735
-#: dist/js/core.js:3795
+#: dist/js/core.js:3645 dist/js/core.js:3689 dist/js/core.js:3733
+#: dist/js/core.js:3793
 msgid "This pattern is valid."
 msgstr "Detta mönster är giltig."
 
-#: dist/js/core.js:4121
+#: dist/js/core.js:4119
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> bekräfta tillstånd"
 
-#: dist/js/core.js:4178 dist/js/core.js:4232
+#: dist/js/core.js:4176 dist/js/core.js:4230
 msgid "Please fill in the Popcorn IP address"
 msgstr "Fyll i Popcorn IP-adressen"
 
-#: dist/js/core.js:4385
+#: dist/js/core.js:4383
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kolla svarta listan namn; värdet måste vara en trakt snigel"
 
-#: dist/js/core.js:4417
+#: dist/js/core.js:4415
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You måste ange en SMTP-värdnamn!</li>"
 
-#: dist/js/core.js:4420
+#: dist/js/core.js:4418
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You måste ange en SMTP-porten!</li>"
 
-#: dist/js/core.js:4422
+#: dist/js/core.js:4420
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP port måste vara mellan 0 och 65535!</li>"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4426
 msgid "Enter an email address to send the test to:"
 msgstr "Ange en e-postadress för att skicka testet till:"
 
-#: dist/js/core.js:4430
+#: dist/js/core.js:4428
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You måste ge en mottagares e-postadress!</p>"
 
-#: dist/js/core.js:4500
+#: dist/js/core.js:4498
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Enhetslistan uppdaterad. Välj en enhet att skjuta till."
 
-#: dist/js/core.js:4561
+#: dist/js/core.js:4559
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Du leverera inte en Pushbullet API-nyckel"
 
-#: dist/js/core.js:4591
+#: dist/js/core.js:4589
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Glöm inte att spara inställningarna för din nya pushbullet."
 
-#: dist/js/core.js:4663
+#: dist/js/core.js:4661
 msgid "Select backup folder to save to"
 msgstr "Välj säkerhetskopian mapp att spara på"
 
-#: dist/js/core.js:4668
+#: dist/js/core.js:4666
 msgid "Select backup files to restore"
 msgstr "Välj Säkerhetskopiera filer att återställa"
 
-#: dist/js/core.js:5214
+#: dist/js/core.js:5212
 msgid "No providers available to configure."
 msgstr "Inga leverantörer tillgängliga för att konfigurera."
 
-#: dist/js/core.js:5425
+#: dist/js/core.js:5423
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Du har valt att ta bort mässa(or).  Är du säker på att du vill fortsätta? Alla filer tas bort från ditt system."
 
-#: dist/js/core.js:5495
+#: dist/js/core.js:5493
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -724,8 +724,8 @@ msgid "SiCKRAGE API"
 msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
-msgid "Login info and options for api.sickrage.ca"
-msgstr "Inloggningsuppgifter och alternativ för api.sickrage.ca"
+msgid "Credentials and options for api.sickrage.ca"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:36
 #: sickrage/core/webserver/views/config/notifications.mako:31
@@ -761,20 +761,20 @@ msgid "Enable API access ?"
 msgstr "Aktivera API-åtkomst?"
 
 #: sickrage/core/webserver/views/config/general.mako:48
-msgid "API provider cache"
-msgstr "API providercachen"
+msgid "API Provider Cache"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:53
 msgid "Enable provider cache ?"
 msgstr "Aktivera providercachen?"
 
 #: sickrage/core/webserver/views/config/general.mako:59
-msgid "API username"
-msgstr "API användarnamn"
+msgid "API Client ID"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:77
-msgid "API password"
-msgstr "API lösenord"
+msgid "API Client Secret"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178
