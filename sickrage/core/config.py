@@ -74,8 +74,8 @@ class Config(object):
 
         self.enable_api = False
         self.enable_api_providers_cache = False
-        self.api_username = ""
-        self.api_password = ""
+        self.api_client_id = ""
+        self.api_client_secret = ""
 
         self.version_notify = True
         self.auto_update = True
@@ -698,8 +698,8 @@ class Config(object):
             'General': {
                 'enable_api': True,
                 'enable_api_providers_cache': True,
-                'api_username': '',
-                'api_password': '',
+                'api_client_id': '',
+                'api_client_secret': '',
                 'log_size': 1048576,
                 'calendar_unprotected': False,
                 'https_key': os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key')),
@@ -1391,8 +1391,8 @@ class Config(object):
         self.config_version = self.check_setting_int('General', 'config_version')
         self.enable_api = self.check_setting_bool('General', 'enable_api')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
-        self.api_username = self.check_setting_str('General', 'api_username', censor=True)
-        self.api_password = self.check_setting_str('General', 'api_password', censor=True)
+        self.api_client_id = self.check_setting_str('General', 'api_client_id', censor=True)
+        self.api_client_secret = self.check_setting_str('General', 'api_client_secret', censor=True)
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
         self.log_nr = self.check_setting_int('General', 'log_nr')
@@ -1865,8 +1865,8 @@ class Config(object):
                 'last_db_compact': self.last_db_compact,
                 'enable_api': int(self.enable_api),
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
-                'api_username': self.api_username,
-                'api_password': self.api_password,
+                'api_client_id': self.api_client_id,
+                'api_client_secret': self.api_client_secret,
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
                 'git_password': self.git_password,
