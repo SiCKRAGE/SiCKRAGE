@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-17 16:37-0500\n"
-"PO-Revision-Date: 2017-11-17 16:38-0500\n"
+"POT-Creation-Date: 2017-11-20 14:58-0500\n"
+"PO-Revision-Date: 2017-11-20 14:59-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgstr "Пошук"
 msgid "Queued"
 msgstr "Поставлено в чергу"
 
-#: dist/js/core.js:498 sickrage/core/webserver/views/home/display_show.mako:728
+#: dist/js/core.js:498 sickrage/core/webserver/views/home/display_show.mako:727
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
@@ -165,176 +165,176 @@ msgstr "Скидання налаштувань за замовчуванням"
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Ви дійсно бажаєте відновити параметри конфігурації за замовчуванням?"
 
-#: dist/js/core.js:3005
+#: dist/js/core.js:3007
 msgid "Select path to pip"
 msgstr "Виділіть контур Піп"
 
-#: dist/js/core.js:3011
+#: dist/js/core.js:3013
 msgid "Select path to git"
 msgstr "Виділіть контур, щоб git"
 
-#: dist/js/core.js:3019 dist/js/core.js:3037 dist/js/core.js:3931
-#: dist/js/core.js:3949 dist/js/core.js:3970 dist/js/core.js:3992
-#: dist/js/core.js:4015 dist/js/core.js:4037 dist/js/core.js:4065
-#: dist/js/core.js:4082 dist/js/core.js:4126 dist/js/core.js:4211
-#: dist/js/core.js:4269 dist/js/core.js:4286 dist/js/core.js:4316
-#: dist/js/core.js:4373 dist/js/core.js:4449 dist/js/core.js:4468
-#: dist/js/core.js:4484
+#: dist/js/core.js:3021 dist/js/core.js:3039 dist/js/core.js:3933
+#: dist/js/core.js:3951 dist/js/core.js:3972 dist/js/core.js:3994
+#: dist/js/core.js:4017 dist/js/core.js:4039 dist/js/core.js:4067
+#: dist/js/core.js:4084 dist/js/core.js:4128 dist/js/core.js:4213
+#: dist/js/core.js:4271 dist/js/core.js:4288 dist/js/core.js:4318
+#: dist/js/core.js:4375 dist/js/core.js:4451 dist/js/core.js:4470
+#: dist/js/core.js:4486
 msgid "Please fill out the necessary fields above."
 msgstr "Будь ласка, заповніть необхідні поля вище."
 
-#: dist/js/core.js:3069 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3071 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Посилання"
 
-#: dist/js/core.js:3071
+#: dist/js/core.js:3073
 msgid "Unlink"
 msgstr "Розірвання зв'язку"
 
-#: dist/js/core.js:3112
+#: dist/js/core.js:3114
 msgid "Select Subtitles Download Directory"
 msgstr "Виберіть субтитри завантаження каталогу"
 
-#: dist/js/core.js:3228
+#: dist/js/core.js:3230
 msgid "Select .nzb blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .nzb"
 
-#: dist/js/core.js:3229
+#: dist/js/core.js:3231
 msgid "Select .torrent blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .torrent"
 
-#: dist/js/core.js:3230
+#: dist/js/core.js:3232
 msgid "Select .torrent download location"
 msgstr "Виберіть розташування для завантаження .torrent"
 
-#: dist/js/core.js:3297 sickrage/core/webserver/views/config/search.mako:923
+#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:923
 msgid "Minimum seeding time is"
 msgstr "Мінімум посіву час"
 
-#: dist/js/core.js:3299
+#: dist/js/core.js:3301
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL до uTorrent клієнта (наприклад, http://localhost:8000)"
 
-#: dist/js/core.js:3302
+#: dist/js/core.js:3304
 msgid "Stop seeding when inactive for"
 msgstr "Зупинити посіву, коли вона неактивна для"
 
-#: dist/js/core.js:3308
+#: dist/js/core.js:3310
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL на ваш клієнт передачі (наприклад, http://localhost:9091)"
 
-#: dist/js/core.js:3318
+#: dist/js/core.js:3320
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL на ваш клієнт потоп (наприклад, http://localhost:8112)"
 
-#: dist/js/core.js:3327
+#: dist/js/core.js:3329
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP або ім'я хоста потоп Daemon (наприклад, scgi://localhost:58846)"
 
-#: dist/js/core.js:3334
+#: dist/js/core.js:3336
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL на ваш клієнт Synology DS (наприклад, http://localhost:5000)"
 
-#: dist/js/core.js:3339
+#: dist/js/core.js:3341
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL на ваш клієнт rTorrent (наприклад, scgi://localhost:5000 <br> або https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3349
+#: dist/js/core.js:3351
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт контроль комп'ютера віддалено (наприклад, http://localhost:8080)"
 
-#: dist/js/core.js:3359
+#: dist/js/core.js:3361
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL для вашого MLDonkey (наприклад, http://localhost:4080)"
 
-#: dist/js/core.js:3370
+#: dist/js/core.js:3372
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт putio (наприклад, http://localhost:8080)"
 
-#: dist/js/core.js:3570
+#: dist/js/core.js:3572
 msgid "Select TV Download Directory"
 msgstr "Виберіть теки звантаження телевізор"
 
-#: dist/js/core.js:3585
+#: dist/js/core.js:3587
 msgid "Unrar Executable not found."
 msgstr "UnRAR виконуваний файл не знайдено."
 
-#: dist/js/core.js:3631 dist/js/core.js:3675 dist/js/core.js:3719
-#: dist/js/core.js:3779
+#: dist/js/core.js:3633 dist/js/core.js:3677 dist/js/core.js:3721
+#: dist/js/core.js:3781
 msgid "This pattern is invalid."
 msgstr "Ця модель є неприпустимим."
 
-#: dist/js/core.js:3638 dist/js/core.js:3682 dist/js/core.js:3726
-#: dist/js/core.js:3786
+#: dist/js/core.js:3640 dist/js/core.js:3684 dist/js/core.js:3728
+#: dist/js/core.js:3788
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Цей шаблон буде неправильний без папок, використовуючи це змусить \"Згладжуються\" off для всіх шоу."
 
-#: dist/js/core.js:3645 dist/js/core.js:3689 dist/js/core.js:3733
-#: dist/js/core.js:3793
+#: dist/js/core.js:3647 dist/js/core.js:3691 dist/js/core.js:3735
+#: dist/js/core.js:3795
 msgid "This pattern is valid."
 msgstr "Ця модель є дійсним."
 
-#: dist/js/core.js:4119
+#: dist/js/core.js:4121
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> підтвердити авторизацію"
 
-#: dist/js/core.js:4176 dist/js/core.js:4230
+#: dist/js/core.js:4178 dist/js/core.js:4232
 msgid "Please fill in the Popcorn IP address"
 msgstr "Будь ласка, заповніть попкорн IP-адреса"
 
-#: dist/js/core.js:4383
+#: dist/js/core.js:4385
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Перевірте чорний список ім'я; значення повинні бути кулі trakt"
 
-#: dist/js/core.js:4415
+#: dist/js/core.js:4417
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You необхідно вказати SMTP-хоста!</li>"
 
-#: dist/js/core.js:4418
+#: dist/js/core.js:4420
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You необхідно вказати SMTP порт!</li>"
 
-#: dist/js/core.js:4420
+#: dist/js/core.js:4422
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP порт має бути від 0 до 65535!</li>"
 
-#: dist/js/core.js:4426
+#: dist/js/core.js:4428
 msgid "Enter an email address to send the test to:"
 msgstr "Введіть адресу електронної пошти відправити тест, щоб:"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4430
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You необхідно надати адресу електронної пошти одержувача!</p>"
 
-#: dist/js/core.js:4498
+#: dist/js/core.js:4500
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Оновлений список пристроїв. Будь ласка виберіть пристрій просунутися до."
 
-#: dist/js/core.js:4559
+#: dist/js/core.js:4561
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Ви не надаєте ключ Pushbullet api"
 
-#: dist/js/core.js:4589
+#: dist/js/core.js:4591
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Не забудьте зберегти настройки pushbullet."
 
-#: dist/js/core.js:4661
+#: dist/js/core.js:4663
 msgid "Select backup folder to save to"
 msgstr "Виберіть папку з резервною копією зберегти"
 
-#: dist/js/core.js:4666
+#: dist/js/core.js:4668
 msgid "Select backup files to restore"
 msgstr "Виберіть відновлення резервної копії файлів"
 
-#: dist/js/core.js:5212
+#: dist/js/core.js:5214
 msgid "No providers available to configure."
 msgstr "Немає доступних для налаштування провайдерів."
 
-#: dist/js/core.js:5423
+#: dist/js/core.js:5425
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Вибрано видалити show(s).  Ви впевнені, що бажаєте продовжити? Буде видалено всі файли з вашої системи."
 
-#: dist/js/core.js:5493
+#: dist/js/core.js:5495
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -4173,7 +4173,7 @@ msgid "Settings that dictate how SickRage handles subtitles search results."
 msgstr "Параметри, які визначають, як SickRage ручками субтитри результати пошуку."
 
 #: sickrage/core/webserver/views/config/subtitles.mako:36
-#: sickrage/core/webserver/views/home/display_show.mako:736
+#: sickrage/core/webserver/views/home/display_show.mako:735
 msgid "Search Subtitles"
 msgstr "Пошук субтитри"
 
@@ -4602,7 +4602,7 @@ msgid "Airdate"
 msgstr "ВО ефір"
 
 #: sickrage/core/webserver/views/home/display_show.mako:561
-#: sickrage/core/webserver/views/home/display_show.mako:684
+#: sickrage/core/webserver/views/home/display_show.mako:683
 msgid "Download"
 msgstr "Завантажити"
 
@@ -4619,11 +4619,11 @@ msgstr "Статус"
 msgid "Search"
 msgstr "Пошук"
 
-#: sickrage/core/webserver/views/home/display_show.mako:671
+#: sickrage/core/webserver/views/home/display_show.mako:670
 msgid "Never"
 msgstr "Ніколи не"
 
-#: sickrage/core/webserver/views/home/display_show.mako:720
+#: sickrage/core/webserver/views/home/display_show.mako:719
 msgid "Retry Download"
 msgstr "Повторити завантаження"
 

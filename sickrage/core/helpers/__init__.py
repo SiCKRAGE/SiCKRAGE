@@ -985,18 +985,8 @@ def backupSR(backupDir, keep_latest=False):
     def _keep_latest_backup():
         import glob
 
-        _files = glob.glob(os.path.join(backupDir, '*.zip'))
-        if _files:
-            now = time.time()
-            newest = _files[0], now - os.path.getctime(_files[0])
-            for f in _files[1:]:
-                age = now - os.path.getctime(f)
-                if age < newest[1]:
-                    newest = f, age
-            _files.remove(newest[0])
-
-            for f in _files:
-                os.remove(f)
+        for f in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
+            os.remove(f)
 
     if keep_latest:
         _keep_latest_backup()

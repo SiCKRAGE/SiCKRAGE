@@ -79,9 +79,8 @@ class DailySearcher(object):
 
             if show.airs and show.network:
                 # This is how you assure it is always converted to local time
-                air_time = tz_updater.parse_date_time(
-                    episode['airdate'], show.airs, show.network, dateOnly=True
-                ).astimezone(sickrage.app.tz)
+                air_time = tz_updater.parse_date_time(episode['airdate'],
+                                                      show.airs, show.network).astimezone(sickrage.app.tz)
 
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
