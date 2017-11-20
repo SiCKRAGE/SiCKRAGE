@@ -1,6 +1,7 @@
 # Changelog
 
-- * 166ca8d - 2017-11-20: Release v9.2.10 
+- * c2bf2b8 - 2017-11-20: Fixed issue #128 - Error while sending torrent to DownloadStation 
+- * 74297b9 - 2017-11-20: Release v9.2.10 
 - * b8da064 - 2017-11-20: Fixed issue#127 - timezone issues on Windows platforms 
 - * 34ceaee - 2017-11-17: refactored backup function for app 
 - * c8d47ec - 2017-11-17: Release v9.2.9 
