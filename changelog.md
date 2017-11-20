@@ -1,6 +1,7 @@
 # Changelog
 
-- * de1b60b - 2017-11-17: refactored backup function for app 
+- * 745030b - 2017-11-20: Fixed issue#127 - timezone issues on Windows platforms 
+- * 34ceaee - 2017-11-17: refactored backup function for app 
 - * c8d47ec - 2017-11-17: Release v9.2.9 
 - * 2d941ea - 2017-11-17: Fixed index error during config backup on updates 
 - * 23af894 - 2017-11-17: Release v9.2.8 

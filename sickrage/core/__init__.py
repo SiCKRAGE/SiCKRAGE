@@ -82,7 +82,7 @@ class Core(object):
         self.io_loop = IOLoop().instance()
         self.pid = os.getpid()
 
-        self.tz = tz.tzlocal()
+        self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
         self.config_file = None
         self.data_dir = None

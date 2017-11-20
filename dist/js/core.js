@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
                 hide: true,
                 history: false,
                 shadow: false,
-                styling: 'jqueryui',
+                styling: 'brighttheme',
                 width: '340px',
                 type: type,
                 title: title,
@@ -2891,9 +2891,11 @@ jQuery(document).ready(function ($) {
 
                 $('#testAPI').click(function () {
                     $('#testAPI-result').html(SICKRAGE.loadingHTML);
+                    var api_client_id = $.trim($('#api_client_id').val());
+                    var api_client_secret = $.trim($('#api_client_secret').val());
                     $.get(SICKRAGE.srWebRoot + '/home/testAPI', {
-                            'client_id': $('#api_client_id').val(),
-                            'client_secret': $('#api_client_secret').val()
+                            'client_id': api_client_id,
+                            'client_secret': api_client_secret
                         },
                         function (data) {
                             $('#testAPI-result').html(data);

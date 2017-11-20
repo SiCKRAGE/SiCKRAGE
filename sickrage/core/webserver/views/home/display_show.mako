@@ -664,7 +664,6 @@
                         % if airDate.year >= 1970 or show.network:
                             <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
                         % endif
-
                             <time datetime="${airDate.isoformat()}"
                                   class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
                         % else:
