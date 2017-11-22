@@ -1,6 +1,7 @@
 # Changelog
 
-- * b40f1c8 - 2017-11-21: Disabled validation of show names when loading episodes from directory 
+- * c57907d - 2017-11-22: Fixed issues with custom newznab and custom torrent provider settings 
+- * 3482813 - 2017-11-21: Disabled validation of show names when loading episodes from directory 
 - * 2c06e9a - 2017-11-21: Disabled validation of show names for refresh of show directories Misc cleanup performed 
 - * de92ef4 - 2017-11-20: Fixed issue #128 - Error while sending torrent to DownloadStation 
 - * 74297b9 - 2017-11-20: Release v9.2.10 
