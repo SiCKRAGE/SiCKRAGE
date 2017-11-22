@@ -11,7 +11,7 @@
 #
 # SICKRAGE_USER=<user you want sickrage to run under>
 # SICKRAGE_GROUP=<group you want sickrage to run under>
-# SICKRAGE_DIR=<path to Sickbeard.py>
+# SICKRAGE_DIR=<path to SiCKRAGE.py>
 # PATH_TO_PYTHON_2=/usr/bin/python2.7
 # SICKRAGE_DATADIR=<directory that contains sickrage.db file>
 # SICKRAGE_CONFDIR=<directory that contains Sickrage's config.ini file>
