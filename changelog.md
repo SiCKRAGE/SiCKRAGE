@@ -1,6 +1,7 @@
 # Changelog
 
-- * 03c7bd7 - 2017-11-21: Disabled validation of show names for refresh of show directories Misc cleanup performed 
+- * b40f1c8 - 2017-11-21: Disabled validation of show names when loading episodes from directory 
+- * 2c06e9a - 2017-11-21: Disabled validation of show names for refresh of show directories Misc cleanup performed 
 - * de92ef4 - 2017-11-20: Fixed issue #128 - Error while sending torrent to DownloadStation 
 - * 74297b9 - 2017-11-20: Release v9.2.10 
 - * b8da064 - 2017-11-20: Fixed issue#127 - timezone issues on Windows platforms 

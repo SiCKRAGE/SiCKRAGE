@@ -617,7 +617,7 @@ class TVShow(object):
         return result
 
     # find all media files in the show folder and create episodes for as many as possible
-    def loadEpisodesFromDir(self, dir_refresh=False):
+    def loadEpisodesFromDir(self):
         if not os.path.isdir(self.location):
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Show dir doesn't exist, not loading episodes from disk")
@@ -635,7 +635,7 @@ class TVShow(object):
 
             sickrage.app.log.debug(str(self.indexerid) + ": Creating episode from " + mediaFile)
             try:
-                curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile), dir_refresh)
+                curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile))
             except (ShowNotFoundException, EpisodeNotFoundException) as e:
                 sickrage.app.log.error("Episode " + mediaFile + " returned an exception: {}".format(e.message))
             except EpisodeDeletedException:
@@ -789,7 +789,7 @@ class TVShow(object):
         return fanart_result or poster_result or banner_result or season_posters_result or season_banners_result or season_all_poster_result or season_all_banner_result
 
     # make a TVEpisode object from a media file
-    def makeEpFromFile(self, file, dir_refresh=False):
+    def makeEpFromFile(self, file):
         if not os.path.isfile(file):
             sickrage.app.log.info(str(self.indexerid) + ": That isn't even a real file dude... " + file)
             return None
@@ -798,7 +798,7 @@ class TVShow(object):
 
         try:
             parse_result = NameParser(showObj=self, tryIndexers=True,
-                                      validate_show=not dir_refresh).parse(file, skip_scene_detection=True)
+                                      validate_show=False).parse(file, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid episode")
             return None
@@ -1208,7 +1208,7 @@ class TVShow(object):
 
         # load from dir
         try:
-            self.loadEpisodesFromDir(True)
+            self.loadEpisodesFromDir()
         except Exception as e:
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e.message))
             sickrage.app.log.debug(traceback.format_exc())
