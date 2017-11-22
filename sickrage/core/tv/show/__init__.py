@@ -457,7 +457,7 @@ class TVShow(object):
 
                     related_eps_result = sorted([x['doc'] for x in
                                                  sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid,
-                                                                                    with_doc=True)
+                                                                                  with_doc=True)
                                                  if x['doc']['season'] == cur_ep.season
                                                  and x['doc']['location'] == cur_ep.location
                                                  and x['doc']['episode'] == cur_ep.episode], key=lambda d: d['episode'])
@@ -797,7 +797,8 @@ class TVShow(object):
         sickrage.app.log.debug(str(self.indexerid) + ": Creating episode object from " + file)
 
         try:
-            parse_result = NameParser(showObj=self, tryIndexers=True).parse(file, skip_scene_detection=True)
+            parse_result = NameParser(showObj=self, tryIndexers=True,
+                                      validate_show=False).parse(file, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid episode")
             return None
@@ -1186,8 +1187,8 @@ class TVShow(object):
                         shutil.rmtree(self.location)
 
                     sickrage.app.log.info('%s show folder %s' %
-                                                  (('Deleted', 'Trashed')[sickrage.app.config.trash_remove_show],
-                                                   self.location))
+                                          (('Deleted', 'Trashed')[sickrage.app.config.trash_remove_show],
+                                           self.location))
             except OSError as e:
                 sickrage.app.log.warning('Unable to %s %s: %s / %s' % (action, self.location, repr(e), str(e)))
 

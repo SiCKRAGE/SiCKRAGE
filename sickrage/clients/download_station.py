@@ -74,16 +74,15 @@ class DownloadStationAPI(GenericClient):
             }
         }
 
-    @property
-    def response(self):
+    def _check_response(self):
         try:
             resp = self._response.json()
         except (ValueError, AttributeError):
-            sickrage.app.log.info(
-                'Could not convert response to json, check the host:port: {!r}'.format(self.response))
-            return False
+            self.auth = False
+            return self.auth
 
-        if not resp.get('success'):
+        self.auth = resp.get('success')
+        if not self.auth:
             error_code = resp.get('error', {}).get('code')
             api_method = resp.get('method', 'generic')
             log_string = self.error_map.get(api_method)[error_code]
@@ -91,11 +90,7 @@ class DownloadStationAPI(GenericClient):
         elif resp.get('data', {}).get('sid'):
             self.post_task['_sid'] = resp['data']['sid']
 
-        return resp.get('success')
-
-    @response.setter
-    def response(self, value):
-        self._response = value
+        return self.auth
 
     def _get_auth(self):
         if self.auth:
@@ -113,16 +108,16 @@ class DownloadStationAPI(GenericClient):
 
         try:
             # login to API
-            self.response = sickrage.app.wsession.get(self.urls['auth'],
-                                                             params=params,
-                                                             verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = sickrage.app.wsession.get(self.urls['auth'], params=params,
+                                                      verify=bool(sickrage.app.config.torrent_verify_cert))
 
             # get sid
             self.auth = self.response
         except Exception:
-            self.auth = None
+            self.auth = False
+            return self.auth
 
-        return self.auth
+        return self._check_response()
 
     def _add_torrent_uri(self, result):
         data = self.post_task
@@ -142,7 +137,7 @@ class DownloadStationAPI(GenericClient):
             data['destination'] = sickrage.app.config.torrent_path
 
         self._request(method=method, data=data, **kwargs)
-        return self.response
+        return self._check_response()
 
 
 api = DownloadStationAPI()

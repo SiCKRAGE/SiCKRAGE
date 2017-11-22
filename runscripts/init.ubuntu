@@ -47,7 +47,7 @@ DESC=SickRage
 # Run as username
 RUN_AS=${SR_USER-sickrage}
 
-# Path to app SR_HOME=path_to_app_SickBeard.py
+# Path to app SR_HOME=path_to_app_SiCKRAGE.py
 APP_PATH=${SR_HOME-/opt/sickrage}
 
 # Data directory where sickrage.db, cache and logs are stored
