@@ -37,6 +37,8 @@ class FailedSearcher(object):
         self.amActive = False
 
     def run(self, force=False):
+        return
+
         """
         Runs the daily searcher, queuing selected episodes for search
         :param force: Force search
