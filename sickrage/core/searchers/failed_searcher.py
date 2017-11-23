@@ -59,18 +59,18 @@ class FailedSearcher(object):
         curDate += datetime.timedelta(hours=1)
 
         show = None
+        failed_snatches = False
 
         snatched_episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
                              if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                             and curDate.strftime(History.date_format) >= x['doc']['date'] > 1
-                             and x['doc'].get('episodeid')]
+                             and curDate.strftime(History.date_format) >= x['doc']['date'] > 1]
 
-        downloaded_releases = [x['doc']['episodeid'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
-                               if x['doc']['action'] in Quality.DOWNLOADED and x['doc'].get('episodeid')]
+        downloaded_releases = [(x['doc']['showid'], x['doc']['season'], x['doc']['episode']) for x in
+                               sickrage.app.main_db.db.all('history', with_doc=True)
+                               if x['doc']['action'] in Quality.DOWNLOADED]
 
-        episodes = [x for x in snatched_episodes if x.get('episodeid') not in downloaded_releases]
+        episodes = [x for x in snatched_episodes if (x['showid'], x['season'], x['episode']) not in downloaded_releases]
 
-        failed_snatches = False
         for episode in episodes:
             failed_snatches = True
             if not show or int(episode["showid"]) != show.indexerid:
