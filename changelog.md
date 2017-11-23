@@ -1,6 +1,7 @@
 # Changelog
 
-- * 938e753 - 2017-11-23: Fixed issues with tornzb results containing magnetic links and searching 
+- * b914242 - 2017-11-23: Fixed issues with Jackett search result downloading 
+- * 2f1d94b - 2017-11-23: Fixed issues with tornzb results containing magnetic links and searching 
 - * e2a44f5 - 2017-11-22: Fixed issue with IRC template 
 - * b9a002e - 2017-11-22: Release v9.2.11 
 - * 2fcac47 - 2017-11-22: Fixed issues with custom newznab and custom torrent provider settings 
