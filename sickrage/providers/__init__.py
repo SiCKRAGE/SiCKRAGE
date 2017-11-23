@@ -1156,74 +1156,11 @@ class NewznabProvider(NZBProvider):
                 sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
                 try:
-                    response = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'),
-                                                         params=search_params).text
+                    data = sickrage.app.wsession.get(urljoin(self.urls['base_url'], 'api'), params=search_params).text
+                    results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
                     continue
-
-                with bs4_parser(response) as html:
-                    if not self._check_auth_from_data(html):
-                        return results
-
-                    try:
-                        self.torznab = 'xmlns:torznab' in html.rss.attrs
-                    except AttributeError:
-                        self.torznab = False
-
-                    if not html('item'):
-                        sickrage.app.log.debug('No results returned from provider. Check chosen Newznab '
-                                               'search categories in provider settings and/or usenet '
-                                               'retention')
-                        continue
-
-                    for item in html('item'):
-                        try:
-                            title = item.title.get_text(strip=True)
-                            download_url = None
-                            if item.link:
-                                if validate_url(item.link.get_text(strip=True)):
-                                    download_url = item.link.get_text(strip=True)
-                                elif validate_url(item.link.next.strip()):
-                                    download_url = item.link.next.strip()
-
-                            if not download_url and item.enclosure:
-                                if validate_url(item.enclosure.get('url', '').strip()):
-                                    download_url = item.enclosure.get('url', '').strip()
-
-                            if not (title and download_url):
-                                continue
-
-                            seeders = leechers = -1
-                            if 'gingadaddy' in self.urls['base_url']:
-                                size_regex = re.search(r'\d*.?\d* [KMGT]B', str(item.description))
-                                item_size = size_regex.group() if size_regex else -1
-                            else:
-                                item_size = item.size.get_text(strip=True) if item.size else -1
-                                for attr in item('newznab:attr') + item('torznab:attr'):
-                                    item_size = attr['value'] if attr['name'] == 'size' else item_size
-                                    seeders = try_int(attr['value']) if attr['name'] == 'seeders' else seeders
-                                    peers = try_int(attr['value']) if attr['name'] == 'peers' else None
-                                    leechers = peers - seeders if peers else leechers
-
-                            if not item_size or (self.torznab and (seeders is -1 or leechers is -1)):
-                                continue
-
-                            size = convert_size(item_size, -1)
-
-                            item = {
-                                'title': title,
-                                'link': download_url,
-                                'size': size,
-                                'seeders': seeders,
-                                'leechers': leechers,
-                            }
-                            if mode != 'RSS':
-                                sickrage.app.log.debug('Found result: {0}'.format(title))
-
-                            results.append(item)
-                        except (AttributeError, TypeError, KeyError, ValueError, IndexError):
-                            sickrage.app.log.error('Failed parsing provider')
 
                 # Since we arent using the search string,
                 # break out of the search string loop
@@ -1234,6 +1171,80 @@ class NewznabProvider(NZBProvider):
         if not results and not self.force_query:
             self.force_query = True
             return self.search(search_strings, ep_obj=ep_obj)
+
+        return results
+
+    def parse(self, data, mode):
+        results = []
+
+        with bs4_parser(data) as html:
+            if not self._check_auth_from_data(html):
+                return results
+
+            try:
+                self.torznab = 'xmlns:torznab' in html.rss.attrs
+            except AttributeError:
+                self.torznab = False
+
+            if not html('item'):
+                sickrage.app.log.debug('No results returned from provider. Check chosen Newznab '
+                                       'search categories in provider settings and/or usenet '
+                                       'retention')
+                return results
+
+            for item in html('item'):
+                try:
+                    title = item.title.get_text(strip=True)
+                    download_url = None
+                    if item.link:
+                        url = item.link.get_text(strip=True)
+                        if validate_url(url) or url.startswith('magnet'):
+                            download_url = url
+
+                        if not download_url:
+                            url = item.link.next.strip()
+                            if validate_url(url) or url.startswith('magnet'):
+                                download_url = url
+
+                    if not download_url and item.enclosure:
+                        url = item.enclosure.get('url', '').strip()
+                        if validate_url(url) or url.startswith('magnet'):
+                            download_url = url
+
+                    if not (title and download_url):
+                        continue
+
+                    seeders = leechers = -1
+                    if 'gingadaddy' in self.urls['base_url']:
+                        size_regex = re.search(r'\d*.?\d* [KMGT]B', str(item.description))
+                        item_size = size_regex.group() if size_regex else -1
+                    else:
+                        item_size = item.size.get_text(strip=True) if item.size else -1
+                        for attr in item('newznab:attr') + item('torznab:attr'):
+                            item_size = attr['value'] if attr['name'] == 'size' else item_size
+                            seeders = try_int(attr['value']) if attr['name'] == 'seeders' else seeders
+                            peers = try_int(attr['value']) if attr['name'] == 'peers' else None
+                            leechers = peers - seeders if peers else leechers
+
+                    if not item_size or (self.torznab and (seeders is -1 or leechers is -1)):
+                        continue
+
+                    size = convert_size(item_size, -1)
+
+                    item = {
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                    }
+
+                    if mode != 'RSS':
+                        sickrage.app.log.debug('Found result: {}'.format(title))
+
+                    results.append(item)
+                except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                    sickrage.app.log.error('Failed parsing provider')
 
         return results
 

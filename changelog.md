@@ -1,6 +1,11 @@
 # Changelog
 
-- * d55e22e - 2017-11-22: Release v9.2.11 
+- * b2b29d6 - 2017-11-23: Release v9.2.13 
+- * 8d73c27 - 2017-11-23: Fixed issues with Jackett search result downloading 
+- * 2e4eefd - 2017-11-23: Fixed issues with Jackett search result downloading 
+- * 2f1d94b - 2017-11-23: Fixed issues with tornzb results containing magnetic links and searching 
+- * e2a44f5 - 2017-11-22: Fixed issue with IRC template 
+- * b9a002e - 2017-11-22: Release v9.2.11 
 - * 2fcac47 - 2017-11-22: Fixed issues with custom newznab and custom torrent provider settings 
 - * 3482813 - 2017-11-21: Disabled validation of show names when loading episodes from directory 
 - * 2c06e9a - 2017-11-21: Disabled validation of show names for refresh of show directories Misc cleanup performed 

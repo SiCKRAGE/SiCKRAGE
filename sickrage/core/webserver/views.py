@@ -2437,7 +2437,7 @@ class HomeAddShows(Home):
                 except Exception as e:
                     pass
 
-                # see if the folder is in KODI already
+                # see if the folder is in database already
                 if [x for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
                     x['doc']['location'] == cur_path]:
                     cur_dir['added_already'] = True

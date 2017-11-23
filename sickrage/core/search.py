@@ -104,7 +104,7 @@ def _download_result(result):
     filename = resProvider.make_filename(result.name)
 
     # Support for Jackett/TorzNab
-    if result.url.endswith('torrent') and filename.endswith('nzb'):
+    if (result.url.endswith('torrent') or result.url.startswith('magnet')) and resProvider.type in ['nzb', 'newznab']:
         filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
 
     # nzbs with an URL can just be downloaded from the provider
