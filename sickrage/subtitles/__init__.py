@@ -160,7 +160,6 @@ def download_subtitles(episode):
             sickrage.app.log.debug(
                 'history.logSubtitle %s, %s' % (subtitle.provider_name, subtitle.language.opensubtitles))
             History.logSubtitle(episode.show.indexerid,
-                                episode.indexerid,
                                 episode.season,
                                 episode.episode,
                                 episode.status,

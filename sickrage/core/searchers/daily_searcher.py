@@ -25,7 +25,6 @@ import threading
 import sickrage
 from sickrage.core import findCertainShow, common
 from sickrage.core.queues.search import DailySearchQueueItem
-from sickrage.core.tv.show.history import FailedHistory
 from sickrage.core.updaters import tz_updater
 
 
@@ -47,10 +46,6 @@ class DailySearcher(object):
 
         # set thread name
         threading.currentThread().setName(self.name)
-
-        # trim failed download history
-        if sickrage.app.config.use_failed_downloads:
-            FailedHistory.trimHistory()
 
         sickrage.app.log.info("Searching for new released episodes")
 

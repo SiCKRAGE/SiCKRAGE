@@ -1,6 +1,7 @@
 # Changelog
 
-- * bbb1ddf - 2017-11-23: Refactored failed snatch handler code to use a tuple of showid, season, and episode for comparisons 
+- * 06658b7 - 2017-11-23: reverted logging episode id&#x27;s for history, no longer needed moved trimming of failed history to failed snatch handler class 
+- * 98a1036 - 2017-11-23: Refactored failed snatch handler code to use a tuple of showid, season, and episode for comparisons 
 - * 70755c1 - 2017-11-23: added code to log episode id&#x27;s to history for failed snatch handler re-enabled failed snatch handler code 
 - * 83ccdf9 - 2017-11-23: disabled failed search feature temporarily 
 - * bbc6f69 - 2017-11-23: Added failed search feature to automatically re-snatch failed snatches 
