@@ -76,6 +76,10 @@ class FailedSearcher(object):
             if not show or int(episode["showid"]) != show.indexerid:
                 show = findCertainShow(sickrage.app.showlist, int(episode["showid"]))
 
+            # for when there is orphaned series in the database but not loaded into our showlist
+            if not show or show.paused:
+                continue
+
             ep_obj = show.getEpisode(int(episode['season']), int(episode['episode']))
             if isinstance(ep_obj, TVEpisode):
                 # put it on the queue
