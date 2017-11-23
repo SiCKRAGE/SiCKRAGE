@@ -349,13 +349,23 @@ class Quality(object):
     def splitCompositeStatus(status):
         """Returns a tuple containing (status, quality)"""
         if status == UNKNOWN:
-            return (UNKNOWN, Quality.UNKNOWN)
+            return UNKNOWN, Quality.UNKNOWN
 
         for q in sorted(Quality.qualityStrings.keys(), reverse=True):
             if status > q * 100:
-                return (status - q * 100, q)
+                return status - q * 100, q
 
-        return (status, Quality.NONE)
+        return status, Quality.NONE
+
+    @staticmethod
+    def statusFromCompositeStatus(status):
+       status, quality = Quality.splitCompositeStatus(status)
+       return status
+
+    @staticmethod
+    def qualityFromCompositeStatus(status):
+       status, quality = Quality.splitCompositeStatus(status)
+       return quality
 
     @staticmethod
     def qualityFromFileMeta(filename):

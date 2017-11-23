@@ -60,6 +60,7 @@ from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
 from sickrage.core.searchers.backlog_searcher import BacklogSearcher
 from sickrage.core.searchers.daily_searcher import DailySearcher
+from sickrage.core.searchers.failed_searcher import FailedSearcher
 from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
@@ -159,6 +160,7 @@ class Core(object):
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
         self.daily_searcher = DailySearcher()
+        self.failed_searcher = FailedSearcher()
         self.backlog_searcher = BacklogSearcher()
         self.proper_searcher = ProperSearcher()
         self.trakt_searcher = TraktSearcher()
@@ -313,8 +315,8 @@ class Core(object):
             IntervalTrigger(
                 hours=self.config.version_updater_freq
             ),
-            name="VERSIONUPDATER",
-            id="VERSIONUPDATER"
+            name=self.version_updater.name,
+            id=self.version_updater.name
         )
 
         # add network timezones updater job
@@ -334,8 +336,8 @@ class Core(object):
                 days=1,
                 start_date=datetime.datetime.now().replace(hour=self.config.showupdate_hour)
             ),
-            name="SHOWUPDATER",
-            id="SHOWUPDATER"
+            name=self.show_updater.name,
+            id=self.show_updater.name
         )
 
         # add daily search job
@@ -345,8 +347,19 @@ class Core(object):
                 minutes=self.config.daily_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
             ),
-            name="DAILYSEARCHER",
-            id="DAILYSEARCHER"
+            name=self.daily_searcher.name,
+            id=self.daily_searcher.name
+        )
+
+        # add failed search job
+        self.scheduler.add_job(
+            self.failed_searcher.run,
+            IntervalTrigger(
+                hours=1,
+                start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
+            ),
+            name=self.failed_searcher.name,
+            id=self.failed_searcher.name
         )
 
         # add backlog search job
@@ -356,8 +369,8 @@ class Core(object):
                 minutes=self.config.backlog_searcher_freq,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=30)
             ),
-            name="BACKLOG",
-            id="BACKLOG"
+            name=self.backlog_searcher.name,
+            id=self.backlog_searcher.name
         )
 
         # add auto-postprocessing job
@@ -366,8 +379,8 @@ class Core(object):
             IntervalTrigger(
                 minutes=self.config.autopostprocessor_freq
             ),
-            name="POSTPROCESSOR",
-            id="POSTPROCESSOR"
+            name=self.auto_postprocessor.name,
+            id=self.auto_postprocessor.name
         )
 
         # add find proper job
@@ -377,8 +390,8 @@ class Core(object):
                 minutes={'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
                     self.config.proper_searcher_interval]
             ),
-            name="PROPERSEARCHER",
-            id="PROPERSEARCHER"
+            name=self.proper_searcher.name,
+            id=self.proper_searcher.name
         )
 
         # add trakt.tv checker job
@@ -387,8 +400,8 @@ class Core(object):
             IntervalTrigger(
                 hours=1
             ),
-            name="TRAKTSEARCHER",
-            id="TRAKTSEARCHER"
+            name=self.trakt_searcher.name,
+            id=self.trakt_searcher.name
         )
 
         # add subtitles finder job
@@ -397,31 +410,31 @@ class Core(object):
             IntervalTrigger(
                 hours=self.config.subtitle_searcher_freq
             ),
-            name="SUBTITLESEARCHER",
-            id="SUBTITLESEARCHER"
+            name=self.subtitle_searcher.name,
+            id=self.subtitle_searcher.name
         )
 
         # start scheduler service
         self.scheduler.start()
 
         # Pause/Resume PROPERSEARCHER job
-        (self.scheduler.get_job('PROPERSEARCHER').pause,
-         self.scheduler.get_job('PROPERSEARCHER').resume
+        (self.scheduler.get_job(self.proper_searcher.name).pause,
+         self.scheduler.get_job(self.proper_searcher.name).resume
          )[self.config.download_propers]()
 
         # Pause/Resume TRAKTSEARCHER job
-        (self.scheduler.get_job('TRAKTSEARCHER').pause,
-         self.scheduler.get_job('TRAKTSEARCHER').resume
+        (self.scheduler.get_job(self.trakt_searcher.name).pause,
+         self.scheduler.get_job(self.trakt_searcher.name).resume
          )[self.config.use_trakt]()
 
         # Pause/Resume SUBTITLESEARCHER job
-        (self.scheduler.get_job('SUBTITLESEARCHER').pause,
-         self.scheduler.get_job('SUBTITLESEARCHER').resume
+        (self.scheduler.get_job(self.subtitle_searcher.name).pause,
+         self.scheduler.get_job(self.subtitle_searcher.name).resume
          )[self.config.use_subtitles]()
 
         # Pause/Resume POSTPROCESS job
-        (self.scheduler.get_job('POSTPROCESSOR').pause,
-         self.scheduler.get_job('POSTPROCESSOR').resume
+        (self.scheduler.get_job(self.auto_postprocessor.name).pause,
+         self.scheduler.get_job(self.auto_postprocessor.name).resume
          )[self.config.process_automatically]()
 
         # start queue's

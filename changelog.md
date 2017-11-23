@@ -1,6 +1,7 @@
 # Changelog
 
-- * ed38160 - 2017-11-23: Updated url for torrent9 provider 
+- * 41b86c3 - 2017-11-23: Added failed search feature to automatically re-snatch failed snatches 
+- * cf00782 - 2017-11-23: Updated url for torrent9 provider 
 - * 7132bf0 - 2017-11-23: Release v9.2.13 
 - * 8d73c27 - 2017-11-23: Fixed issues with Jackett search result downloading 
 - * 2e4eefd - 2017-11-23: Fixed issues with Jackett search result downloading 
