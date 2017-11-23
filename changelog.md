@@ -1,6 +1,7 @@
 # Changelog
 
-- * aec6fb1 - 2017-11-23: Fixed issues with Jackett search result downloading 
+- * b2b29d6 - 2017-11-23: Release v9.2.13 
+- * 8d73c27 - 2017-11-23: Fixed issues with Jackett search result downloading 
 - * 2e4eefd - 2017-11-23: Fixed issues with Jackett search result downloading 
 - * 2f1d94b - 2017-11-23: Fixed issues with tornzb results containing magnetic links and searching 
 - * e2a44f5 - 2017-11-22: Fixed issue with IRC template 
