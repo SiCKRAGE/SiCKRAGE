@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f420cb - 2017-11-23: disabled failed search feature temporarily 
+- * c42d9e5 - 2017-11-23: added code to log episode id&#x27;s to history for failed snatch handler re-enabled failed snatch handler code 
+- * 83ccdf9 - 2017-11-23: disabled failed search feature temporarily 
 - * bbc6f69 - 2017-11-23: Added failed search feature to automatically re-snatch failed snatches 
 - * cf00782 - 2017-11-23: Updated url for torrent9 provider 
 - * 7132bf0 - 2017-11-23: Release v9.2.13 

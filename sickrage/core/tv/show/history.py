@@ -101,12 +101,13 @@ class History:
                        if x['doc']['date'] < date]: sickrage.app.main_db.db.delete(dbData)
 
     @staticmethod
-    def _logHistoryItem(action, showid, season, episode, quality, resource, provider, version=-1):
+    def _logHistoryItem(action, showid, episodeid, season, episode, quality, resource, provider, version=-1):
         """
         Insert a history item in DB
 
         :param action: action taken (snatch, download, etc)
         :param showid: showid this entry is about
+        :param episodeid: episodeid this entry is about
         :param season: show season
         :param episode: show episode
         :param quality: media quality
@@ -122,6 +123,7 @@ class History:
             'action': action,
             'date': logDate,
             'showid': showid,
+            'episodeid': episodeid,
             'season': season,
             'episode': episode,
             'quality': quality,
@@ -140,6 +142,7 @@ class History:
         for curEpObj in searchResult.episodes:
 
             showid = int(curEpObj.show.indexerid)
+            episodeid = int(curEpObj.indexerid)
             season = int(curEpObj.season)
             episode = int(curEpObj.episode)
             quality = searchResult.quality
@@ -155,7 +158,7 @@ class History:
 
             resource = searchResult.name
 
-            History._logHistoryItem(action, showid, season, episode, quality, resource, provider, version)
+            History._logHistoryItem(action, showid, episodeid, season, episode, quality, resource, provider, version)
 
     @staticmethod
     def logDownload(episode, filename, new_ep_quality, release_group=None, version=-1):
@@ -169,6 +172,7 @@ class History:
         :param version: Version of file (defaults to -1)
         """
         showid = int(episode.show.indexerid)
+        episodeid = int(episode.indexerid)
         season = int(episode.season)
         epNum = int(episode.episode)
 
@@ -182,10 +186,10 @@ class History:
 
         action = episode.status
 
-        History._logHistoryItem(action, showid, season, epNum, quality, filename, provider, version)
+        History._logHistoryItem(action, showid, episodeid, season, epNum, quality, filename, provider, version)
 
     @staticmethod
-    def logSubtitle(showid, season, episode, status, subtitleResult):
+    def logSubtitle(showid, episodeid, season, episode, status, subtitleResult):
         """
         Log download of subtitle
 
@@ -201,7 +205,7 @@ class History:
         status, quality = Quality.splitCompositeStatus(status)
         action = Quality.compositeStatus(SUBTITLED, quality)
 
-        History._logHistoryItem(action, showid, season, episode, quality, resource, provider)
+        History._logHistoryItem(action, showid, episodeid, season, episode, quality, resource, provider)
 
     @staticmethod
     def logFailed(epObj, release, provider=None):
@@ -213,12 +217,13 @@ class History:
         :param provider: Provider used for snatch
         """
         showid = int(epObj.show.indexerid)
+        episodeid = int(epObj.indexerid)
         season = int(epObj.season)
         epNum = int(epObj.episode)
         status, quality = Quality.splitCompositeStatus(epObj.status)
         action = Quality.compositeStatus(FAILED, quality)
 
-        History._logHistoryItem(action, showid, season, epNum, quality, release, provider)
+        History._logHistoryItem(action, showid, episodeid, season, epNum, quality, release, provider)
 
 
 class FailedHistory(object):

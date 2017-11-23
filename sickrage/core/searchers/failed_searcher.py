@@ -37,10 +37,8 @@ class FailedSearcher(object):
         self.amActive = False
 
     def run(self, force=False):
-        return
-
         """
-        Runs the daily searcher, queuing selected episodes for search
+        Runs the failed searcher, queuing selected episodes for search that have failed to snatch
         :param force: Force search
         """
         if self.amActive or sickrage.app.developer and not force:
@@ -62,9 +60,15 @@ class FailedSearcher(object):
 
         show = None
 
-        episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
-                    if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                    and curDate.strftime(History.date_format) >= x['doc']['date'] > 1]
+        snatched_episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
+                             if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
+                             and curDate.strftime(History.date_format) >= x['doc']['date'] > 1
+                             and x['doc'].get('episodeid')]
+
+        downloaded_releases = [x['doc']['episodeid'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
+                               if x['doc']['action'] in Quality.DOWNLOADED and x['doc'].get('episodeid')]
+
+        episodes = [x for x in snatched_episodes if x.get('episodeid') not in downloaded_releases]
 
         failed_snatches = False
         for episode in episodes:
