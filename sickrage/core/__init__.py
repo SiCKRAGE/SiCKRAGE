@@ -83,6 +83,8 @@ class Core(object):
         self.io_loop = IOLoop().instance()
         self.pid = os.getpid()
 
+        self.changelog_url = 'https://cdn.sickrage.ca/changelog/?q={branch}'
+
         self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
         self.config_file = None

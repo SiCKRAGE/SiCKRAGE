@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7d837a8 - 2017-11-23: added code to failed snatch handler to skip paused shows 
+- * dc61bda - 2017-11-24: refactored config class updated config to v12 
+- * 093c597 - 2017-11-23: added code to failed snatch handler to skip paused shows 
 - * 11a9003 - 2017-11-23: reverted logging episode id&#x27;s for history, no longer needed moved trimming of failed history to failed snatch handler class 
 - * 98a1036 - 2017-11-23: Refactored failed snatch handler code to use a tuple of showid, season, and episode for comparisons 
 - * 70755c1 - 2017-11-23: added code to log episode id&#x27;s to history for failed snatch handler re-enabled failed snatch handler code 
