@@ -45,7 +45,7 @@ class Config(object):
         self.loaded = False
 
         self.config_obj = None
-        self.config_version = 12
+        self.config_version = 11
 
         self.encryption_secret = None
         self.encryption_version = 2
@@ -2365,9 +2365,9 @@ class ConfigMigrator(Config):
         self.config_obj = config_obj
 
         self.migration_names = {
-            10: 'Update config encryption level to 2',
-            11: 'Update all metadata settings to new config format',
-            12: 'Update all provider settings to new config format',
+            9: 'Update config encryption level to 2',
+            10: 'Update all metadata settings to new config format',
+            11: 'Update all provider settings to new config format',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2410,11 +2410,11 @@ class ConfigMigrator(Config):
 
         return self.config_obj
 
-    def _migrate_v10(self):
+    def _migrate_v9(self):
         self.config_obj['General']['encryption_version'] = 2
         return self.config_obj
 
-    def _migrate_v11(self):
+    def _migrate_v10(self):
         def _migrate_metadata(metadata):
             cur_metadata = metadata.split('|')
 
@@ -2449,7 +2449,7 @@ class ConfigMigrator(Config):
 
         return self.config_obj
 
-    def _migrate_v12(self):
+    def _migrate_v11(self):
         def _migrate_custom_providers(newznab, torrentrss):
             custom_providers = ""
 
