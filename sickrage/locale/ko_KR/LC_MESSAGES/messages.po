@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-20 14:58-0500\n"
-"PO-Revision-Date: 2017-11-20 14:59-0500\n"
+"POT-Creation-Date: 2017-11-24 13:01-0500\n"
+"PO-Revision-Date: 2017-11-24 13:02-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -506,18 +506,18 @@ msgstr "공급자"
 msgid "Quality"
 msgstr "품질"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:597
+#: sickrage/core/common.py:185 sickrage/core/common.py:607
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:460
 msgid "Snatched"
 msgstr "납치"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:598
+#: sickrage/core/common.py:184 sickrage/core/common.py:608
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "다운로드"
 
-#: sickrage/core/common.py:604
+#: sickrage/core/common.py:614
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -3432,7 +3432,7 @@ msgstr "최소한 하나의 공급자가 필요 하지만 두는 것이 좋습�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/토런트 공급자에 토글 수 있습니다."
 
-#: sickrage/core/webserver/views.py:3723 sickrage/core/webserver/views.py:3999
+#: sickrage/core/webserver/views.py:3723 sickrage/core/webserver/views.py:3996
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Search Clients"
@@ -4229,7 +4229,7 @@ msgstr "자막 디렉토리"
 msgid "The directory where SickRage should store your"
 msgstr "SickRage 저장 해야 하는 디렉터리를"
 
-#: sickrage/core/webserver/views.py:4786
+#: sickrage/core/webserver/views.py:4783
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/edit_show.mako:128
@@ -4627,7 +4627,7 @@ msgstr "결코"
 msgid "Retry Download"
 msgstr "다운로드 다시 시도"
 
-#: sickrage/core/webserver/views.py:4988
+#: sickrage/core/webserver/views.py:4985
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4741,7 +4741,7 @@ msgstr "공기 순서 대신 DVD 순서를 사용 하 여"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필요가 경우 기존 에피소드."
 
-#: sickrage/core/webserver/views.py:3729 sickrage/core/webserver/views.py:4867
+#: sickrage/core/webserver/views.py:3729 sickrage/core/webserver/views.py:4864
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5073,7 +5073,7 @@ msgstr "오류: 다시 시작 시간이 초과 되었습니다, 그리고 아마
 msgid "Daily Search"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4972
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "백로그"
@@ -5098,7 +5098,7 @@ msgstr "포스트 프로세스"
 msgid "Subtitles Finder"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4983
+#: sickrage/core/webserver/views.py:4980
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt 검사기"
@@ -5131,7 +5131,7 @@ msgstr "아니요"
 msgid "True"
 msgstr "사실"
 
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4975
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "큐 보기"
@@ -5490,7 +5490,7 @@ msgstr "일반"
 msgid "Backup and Restore"
 msgstr "백업 및 복원"
 
-#: sickrage/core/webserver/views.py:3724 sickrage/core/webserver/views.py:4302
+#: sickrage/core/webserver/views.py:3724 sickrage/core/webserver/views.py:4299
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "검색 공급자"
@@ -5500,18 +5500,18 @@ msgstr "검색 공급자"
 msgid "Subtitles Settings"
 msgstr "자막 설정"
 
-#: sickrage/core/webserver/views.py:3726 sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:3726 sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Quality Settings"
 msgstr "품질 설정"
 
 #: sickrage/core/webserver/views.py:2310 sickrage/core/webserver/views.py:2311
-#: sickrage/core/webserver/views.py:3727 sickrage/core/webserver/views.py:4114
+#: sickrage/core/webserver/views.py:3727 sickrage/core/webserver/views.py:4111
 #: sickrage/core/webserver/views/layouts/main.mako:267
 msgid "Post Processing"
 msgstr "후 처리"
 
-#: sickrage/core/webserver/views.py:3728 sickrage/core/webserver/views.py:4459
+#: sickrage/core/webserver/views.py:3728 sickrage/core/webserver/views.py:4456
 #: sickrage/core/webserver/views/layouts/main.mako:272
 msgid "Notifications"
 msgstr "알림"
@@ -5901,39 +5901,39 @@ msgstr "확장 (제한)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "확장 (제한, 전자 앞)"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:600
+#: sickrage/core/common.py:186 sickrage/core/common.py:610
 msgid "Snatched (Proper)"
 msgstr "(적절 한) 납치"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:605
+#: sickrage/core/common.py:187 sickrage/core/common.py:615
 msgid "Failed"
 msgstr "실패"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:606
+#: sickrage/core/common.py:188 sickrage/core/common.py:616
 msgid "Snatched (Best)"
 msgstr "(최고의) 납치"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:602
+#: sickrage/core/common.py:189 sickrage/core/common.py:612
 msgid "Archived"
 msgstr "보관"
 
-#: sickrage/core/common.py:595
+#: sickrage/core/common.py:605
 msgid "Unknown"
 msgstr "알 수 없는"
 
-#: sickrage/core/common.py:596
+#: sickrage/core/common.py:606
 msgid "Unaired"
 msgstr "마지막 방송"
 
-#: sickrage/core/common.py:599
+#: sickrage/core/common.py:609
 msgid "Skipped"
 msgstr "생략"
 
-#: sickrage/core/common.py:601
+#: sickrage/core/common.py:611
 msgid "Wanted"
 msgstr "싶 었 어 요"
 
-#: sickrage/core/common.py:603
+#: sickrage/core/common.py:613
 msgid "Ignored"
 msgstr "무시"
 
@@ -6399,7 +6399,7 @@ msgstr "지점에 이미: "
 #: sickrage/core/webserver/views.py:1943 sickrage/core/webserver/views.py:1948
 #: sickrage/core/webserver/views.py:1951 sickrage/core/webserver/views.py:1994
 #: sickrage/core/webserver/views.py:2000 sickrage/core/webserver/views.py:2003
-#: sickrage/core/webserver/views.py:4985
+#: sickrage/core/webserver/views.py:4982
 msgid "Error"
 msgstr "오류"
 
@@ -6759,7 +6759,7 @@ msgstr "역사 삭제"
 msgid "Removed history entries older than 30 days"
 msgstr "30 일 된 제거 된 역사 항목"
 
-#: sickrage/core/webserver/views.py:3722 sickrage/core/webserver/views.py:3942
+#: sickrage/core/webserver/views.py:3722 sickrage/core/webserver/views.py:3939
 msgid "Backup/Restore"
 msgstr "백업/복원"
 
@@ -6779,198 +6779,198 @@ msgstr "설정-일반"
 msgid "General Configuration"
 msgstr "일반 구성"
 
-#: sickrage/core/webserver/views.py:3924 sickrage/core/webserver/views.py:4096
-#: sickrage/core/webserver/views.py:4220 sickrage/core/webserver/views.py:4441
-#: sickrage/core/webserver/views.py:4768 sickrage/core/webserver/views.py:4849
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:3921 sickrage/core/webserver/views.py:4093
+#: sickrage/core/webserver/views.py:4217 sickrage/core/webserver/views.py:4438
+#: sickrage/core/webserver/views.py:4765 sickrage/core/webserver/views.py:4846
+#: sickrage/core/webserver/views.py:4885
 msgid "Error(s) Saving Configuration"
 msgstr "구성 저장 오류"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3923
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] 구성 저장"
 
-#: sickrage/core/webserver/views.py:3941
+#: sickrage/core/webserver/views.py:3938
 msgid "Config - Backup/Restore"
 msgstr "설정-백업/복원"
 
-#: sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:3951
 msgid "Backup SUCCESSFUL"
 msgstr "백업 성공"
 
-#: sickrage/core/webserver/views.py:3956
+#: sickrage/core/webserver/views.py:3953
 msgid "Backup FAILED!"
 msgstr "백업 실패!"
 
-#: sickrage/core/webserver/views.py:3958
+#: sickrage/core/webserver/views.py:3955
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "첫 번째 백업을 저장 하는 폴더를 선택 해야 합니다!"
 
-#: sickrage/core/webserver/views.py:3977
+#: sickrage/core/webserver/views.py:3974
 msgid "Successfully extracted restore files to "
 msgstr "성공적으로 추출 된 복원 파일을 "
 
-#: sickrage/core/webserver/views.py:3978
+#: sickrage/core/webserver/views.py:3975
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "복원을 완료 하려면 <br>Restart sickrage입니다."
 
-#: sickrage/core/webserver/views.py:3980
+#: sickrage/core/webserver/views.py:3977
 msgid "Restore FAILED"
 msgstr "복원 실패"
 
-#: sickrage/core/webserver/views.py:3982
+#: sickrage/core/webserver/views.py:3979
 msgid "You need to select a backup file to restore!"
 msgstr "백업 파일 복원을 선택 해야 합니다!"
 
-#: sickrage/core/webserver/views.py:3998
+#: sickrage/core/webserver/views.py:3995
 msgid "Config - Episode Search"
 msgstr "구성-에피소드 검색"
 
-#: sickrage/core/webserver/views.py:4024 sickrage/core/webserver/views.py:4027
-#: sickrage/core/webserver/views.py:4140
+#: sickrage/core/webserver/views.py:4021 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:4137
 msgid "Unable to create directory "
 msgstr "디렉터리를 만들 수 없습니다 "
 
-#: sickrage/core/webserver/views.py:4024 sickrage/core/webserver/views.py:4027
-#: sickrage/core/webserver/views.py:4140
+#: sickrage/core/webserver/views.py:4021 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:4137
 msgid ", dir not changed."
 msgstr "dir 변경 되지 않습니다."
 
-#: sickrage/core/webserver/views.py:4098
+#: sickrage/core/webserver/views.py:4095
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4113
+#: sickrage/core/webserver/views.py:4110
 msgid "Config - Post Processing"
 msgstr "구성-게시물 처리"
 
-#: sickrage/core/webserver/views.py:4150
+#: sickrage/core/webserver/views.py:4147
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "지원 되지 않는 압축 풀기, 설정 압축 해제"
 
-#: sickrage/core/webserver/views.py:4181 sickrage/core/webserver/views.py:4192
+#: sickrage/core/webserver/views.py:4178 sickrage/core/webserver/views.py:4189
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "잘못 된 애니메이션 구성 명명, 이름 설정을 저장 하지 저장 시도"
 
-#: sickrage/core/webserver/views.py:4183 sickrage/core/webserver/views.py:4194
+#: sickrage/core/webserver/views.py:4180 sickrage/core/webserver/views.py:4191
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "당신이 시도 잘못 된 명명 구성 저장 명명 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4200
+#: sickrage/core/webserver/views.py:4197
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "당신이 시도 잘못 된 공기-의해-날짜 명명 구성 저장 공기-의해-날짜 설정을 저장"
 
-#: sickrage/core/webserver/views.py:4206
+#: sickrage/core/webserver/views.py:4203
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "저장 구성 명명, 스포츠 설정을 저장 하지 않은 경우 잘못 된 스포츠 시도"
 
-#: sickrage/core/webserver/views.py:4222
+#: sickrage/core/webserver/views.py:4219
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4301
+#: sickrage/core/webserver/views.py:4298
 msgid "Config - Providers"
 msgstr "구성-공급자"
 
-#: sickrage/core/webserver/views.py:4342
+#: sickrage/core/webserver/views.py:4339
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "지정 된 공급자 이름 없음"
 
-#: sickrage/core/webserver/views.py:4344
+#: sickrage/core/webserver/views.py:4341
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "지정 된 공급자 Url 없음"
 
-#: sickrage/core/webserver/views.py:4346
+#: sickrage/core/webserver/views.py:4343
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "지정 된 공급자 Api 키"
 
-#: sickrage/core/webserver/views.py:4443
+#: sickrage/core/webserver/views.py:4440
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4458
+#: sickrage/core/webserver/views.py:4455
 msgid "Config - Notifications"
 msgstr "구성-알림"
 
-#: sickrage/core/webserver/views.py:4770
+#: sickrage/core/webserver/views.py:4767
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4785
+#: sickrage/core/webserver/views.py:4782
 msgid "Config - Subtitles"
 msgstr "설정-자막"
 
-#: sickrage/core/webserver/views.py:4851
+#: sickrage/core/webserver/views.py:4848
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4866
+#: sickrage/core/webserver/views.py:4863
 msgid "Config - Anime"
 msgstr "구성-애니메이션"
 
-#: sickrage/core/webserver/views.py:4890
+#: sickrage/core/webserver/views.py:4887
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4902
 msgid "Config - Quality Settings"
 msgstr "구성-품질 설정"
 
-#: sickrage/core/webserver/views.py:4917
+#: sickrage/core/webserver/views.py:4914
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[품질 설정] 구성 저장"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4927
 msgid "Clear Errors"
 msgstr "명확한 오류"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4930
 msgid "Clear Warnings"
 msgstr "지우기 경고"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4971
 msgid "Daily Searcher"
 msgstr "매일 검색"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4973
 msgid "Show Updater"
 msgstr "표시 업데이트"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4974
 msgid "Check Version"
 msgstr "버전 확인"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4976
 msgid "Search Queue"
 msgstr "검색 큐"
 
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:4977
 msgid "Find Propers"
 msgstr "Propers 찾기"
 
-#: sickrage/core/webserver/views.py:4981
+#: sickrage/core/webserver/views.py:4978
 msgid "Postprocessor"
 msgstr "재설정할"
 
-#: sickrage/core/webserver/views.py:4982
+#: sickrage/core/webserver/views.py:4979
 msgid "Find Subtitles"
 msgstr "자막 찾기"
 
-#: sickrage/core/webserver/views.py:4984
+#: sickrage/core/webserver/views.py:4981
 msgid "Event"
 msgstr "이벤트"
 
-#: sickrage/core/webserver/views.py:4986
+#: sickrage/core/webserver/views.py:4983
 msgid "Tornado"
 msgstr "토네이도"
 
-#: sickrage/core/webserver/views.py:4987
+#: sickrage/core/webserver/views.py:4984
 msgid "Thread"
 msgstr "스레드"
 
