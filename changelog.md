@@ -1,6 +1,7 @@
 # Changelog
 
-- * e46c375 - 2017-11-24: Revert &quot;refactored config class updated config to v12&quot; 
+- * 630387d - 2017-11-24: refactored config class 
+- * 3da7164 - 2017-11-24: Revert &quot;refactored config class updated config to v12&quot; 
 - * 2722ee5 - 2017-11-24: refactored config class updated config to v12 
 - * 093c597 - 2017-11-23: added code to failed snatch handler to skip paused shows 
 - * 11a9003 - 2017-11-23: reverted logging episode id&#x27;s for history, no longer needed moved trimming of failed history to failed snatch handler class 

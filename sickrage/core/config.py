@@ -24,10 +24,10 @@ import datetime
 import gettext
 import os
 import os.path
-import pickle
 import re
 import sys
 import uuid
+from ast import literal_eval
 from itertools import izip, cycle
 
 import rarfile
@@ -36,8 +36,8 @@ from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import backupVersionedFile, makeDir, generateCookieSecret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generateApiKey
+from sickrage.core.helpers import makeDir, generateCookieSecret, auto_type, get_lan_ip, \
+    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backupVersionedFile
 
 
 class Config(object):
@@ -45,11 +45,12 @@ class Config(object):
         self.loaded = False
 
         self.config_obj = None
-        self.config_version = 0
+        self.config_version = 11
+
+        self.encryption_secret = None
+        self.encryption_version = 2
 
         self.debug = False
-        self.encryption_version = 0
-        self.encryption_secret = generateCookieSecret()
 
         self.last_db_compact = 0
 
@@ -88,7 +89,6 @@ class Config(object):
         self.git_path = ""
         self.git_autoissues = False
         self.git_newver = False
-        self.changelog_url = 'https://cdn.sickrage.ca/changelog/?q={branch}'
         self.socket_timeout = 30
         self.web_host = ""
         self.web_port = 8081
@@ -755,7 +755,7 @@ class Config(object):
                 'default_page': 'home',
                 'update_frequency': 1,
                 'download_url': '',
-                'encryption_version': 0,
+                'encryption_version': self.encryption_version,
                 'showupdate_hour': 3,
                 'enable_rss_cache': True,
                 'enable_rss_cache_valid_shows': False,
@@ -767,7 +767,7 @@ class Config(object):
                 'naming_custom_anime': False,
                 'randomize_providers': False,
                 'web_host': get_lan_ip(),
-                'config_version': 11,
+                'config_version': self.config_version,
                 'process_automatically': False,
                 'git_path': 'git',
                 'sync_files': '!sync,lftp-pget-status,part,bts,!qb',
@@ -1277,17 +1277,15 @@ class Config(object):
     def check_setting_int(self, section, key, def_val=None, silent=True):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
-        my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
+        try:
+            my_val = self.config_obj.get(section, {section: key}).as_int(key)
+        except StandardError:
+            my_val = def_val
 
         if str(my_val).lower() == "true":
             my_val = 1
         elif str(my_val).lower() == "false":
             my_val = 0
-
-        try:
-            my_val = int(my_val)
-        except Exception:
-            my_val = def_val
 
         if not silent:
             sickrage.app.log.debug(key + " -> " + str(my_val))
@@ -1301,8 +1299,8 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = float(self.config_obj.get(section, {section: key}).get(key, def_val))
-        except Exception:
+            my_val = self.config_obj.get(section, {section: key}).as_float(key)
+        except StandardError:
             my_val = def_val
 
         if not silent:
@@ -1316,7 +1314,10 @@ class Config(object):
     def check_setting_str(self, section, key, def_val=None, silent=True, censor=False):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
-        my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
+        try:
+            my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
+        except StandardError:
+            my_val = def_val
 
         if censor or (section, key) in sickrage.app.log.CENSORED_ITEMS:
             sickrage.app.log.CENSORED_ITEMS[section, key] = my_val
@@ -1327,18 +1328,18 @@ class Config(object):
         return my_val
 
     ################################################################################
-    # check_setting_pickle                                                           #
+    # check_setting_dict                                                            #
     ################################################################################
-    def check_setting_pickle(self, section, key, def_val=None, silent=True):
+    def check_setting_dict(self, section, key, def_val=None, silent=True):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = pickle.loads(self.config_obj.get(section, {section: key}).get(key, def_val))
-        except Exception:
+            my_val = dict(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
+        except StandardError:
             my_val = def_val
 
         if not silent:
-            print(key + " -> " + my_val)
+            print(key + " -> " + repr(my_val))
 
         return my_val
 
@@ -1349,9 +1350,9 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = checkbox_to_value(self.config_obj.get(section, {section: key}).get(key, def_val))
-        except Exception:
-            my_val = bool(def_val)
+            my_val = self.config_obj.get(section, {section: key}).as_bool(key)
+        except StandardError:
+            my_val = def_val
 
         if not silent:
             print(key + " -> " + my_val)
@@ -1384,7 +1385,7 @@ class Config(object):
         # migrate config
         self.config_obj = ConfigMigrator(self.config_obj).migrate_config(
             current_version=self.check_setting_int('General', 'config_version'),
-            expected_version=self.defaults['General']['config_version']
+            expected_version=self.config_version
         )
 
         # GENERAL SETTINGS
@@ -1726,7 +1727,7 @@ class Config(object):
 
         self.use_trakt = self.check_setting_bool('Trakt', 'use_trakt')
         self.trakt_username = self.check_setting_str('Trakt', 'trakt_username', censor=True)
-        self.trakt_oauth_token = self.check_setting_pickle('Trakt', 'trakt_oauth_token')
+        self.trakt_oauth_token = self.check_setting_dict('Trakt', 'trakt_oauth_token')
         self.trakt_remove_watchlist = self.check_setting_bool('Trakt', 'trakt_remove_watchlist')
         self.trakt_remove_serieslist = self.check_setting_bool('Trakt', 'trakt_remove_serieslist')
         self.trakt_remove_show_from_sickrage = self.check_setting_bool('Trakt', 'trakt_remove_show_from_sickrage')
@@ -1821,7 +1822,7 @@ class Config(object):
         self.anidb_use_mylist = self.check_setting_bool('ANIDB', 'anidb_use_mylist')
         self.anime_split_home = self.check_setting_bool('ANIME', 'anime_split_home')
 
-        self.quality_sizes = self.check_setting_pickle('Quality', 'sizes')
+        self.quality_sizes = self.check_setting_dict('Quality', 'sizes')
 
         self.custom_providers = self.check_setting_str('Providers', 'custom_providers')
 
@@ -1855,6 +1856,11 @@ class Config(object):
         # dont bother saving settings if there not loaded
         if not self.loaded:
             return
+
+        provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
+                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
+                         'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
+                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
 
         new_config = ConfigObj(sickrage.app.config_file, indent_type='  ', encoding='utf8')
         new_config.clear()
@@ -2203,7 +2209,7 @@ class Config(object):
             'Trakt': {
                 'use_trakt': int(self.use_trakt),
                 'trakt_username': self.trakt_username,
-                'trakt_oauth_token': pickle.dumps(self.trakt_oauth_token),
+                'trakt_oauth_token': repr(self.trakt_oauth_token),
                 'trakt_remove_watchlist': int(self.trakt_remove_watchlist),
                 'trakt_remove_serieslist': int(self.trakt_remove_serieslist),
                 'trakt_remove_show_from_sickrage': int(self.trakt_remove_show_from_sickrage),
@@ -2299,26 +2305,16 @@ class Config(object):
                 'anime_split_home': int(self.anime_split_home),
             },
             'Quality': {
-                'sizes': pickle.dumps(self.quality_sizes),
+                'sizes': repr(self.quality_sizes),
             },
-            'Providers': {
+            'Providers': dict({
                 'providers_order': sickrage.app.search_providers.provider_order,
                 'custom_providers': self.custom_providers,
-            },
-            'MetadataProviders': {}
+            }, **{providerID: dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)]) for
+                  providerID, providerObj in sickrage.app.search_providers.all().items()}),
+            'MetadataProviders': {metadataProviderID: metadataProviderObj.get_config() for
+                                  metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items()}
         })
-
-        provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
-                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
-                         'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
-
-        for providerID, providerObj in sickrage.app.search_providers.all().items():
-            provider_settings = dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)])
-            new_config['Providers'][providerID] = provider_settings
-
-        for metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items():
-            new_config['MetadataProviders'][metadataProviderID] = metadataProviderObj.get_config()
 
         # encrypt settings
         new_config.walk(self.encrypt)
@@ -2369,17 +2365,9 @@ class ConfigMigrator(Config):
         self.config_obj = config_obj
 
         self.migration_names = {
-            1: 'Sync backup number with version number',
-            2: 'Sync backup number with version number',
-            3: 'Sync backup number with version number',
-            4: 'Sync backup number with version number',
-            5: 'Sync backup number with version number',
-            6: 'Sync backup number with version number',
-            7: 'Sync backup number with version number',
-            8: 'Use version 2 for password encryption',
-            9: 'Rename slick gui template name to default',
-            10: 'Add enabled attribute to metadata settings',
-            11: 'Rename all metadata settings'
+            9: 'Update config encryption level to 2',
+            10: 'Update all metadata settings to new config format',
+            11: 'Update all provider settings to new config format',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2411,8 +2399,10 @@ class ConfigMigrator(Config):
                 sickrage.app.log.info("Proceeding with upgrade")
 
             # do the migration, expect a method named _migrate_v<num>
-            sickrage.app.log.info("Migrating config up to version " + str(next_version) + migration_name)
-            self.config_obj = getattr(self, '_migrate_v' + str(next_version))()
+            migration_func = getattr(self, '_migrate_v' + str(next_version), None)
+            if migration_func:
+                sickrage.app.log.info("Migrating config up to version " + str(next_version) + migration_name)
+                self.config_obj = migration_func()
             current_version = next_version
 
             # update config version to newest
@@ -2420,76 +2410,11 @@ class ConfigMigrator(Config):
 
         return self.config_obj
 
-    # Migration v1: Dummy migration to sync backup number with config version number
-    def _migrate_v1(self):
-        return self.config_obj
-
-    # Migration v2: Dummy migration to sync backup number with config version number
-    def _migrate_v2(self):
-        return self.config_obj
-
-    # Migration v3: Dummy migration to sync backup number with config version number
-    def _migrate_v3(self):
-        return self.config_obj
-
-    # Migration v4: Dummy migration to sync backup number with config version number
-    def _migrate_v4(self):
-        return self.config_obj
-
-    # Migration v5: Dummy migration to sync backup number with config version number
-    def _migrate_v5(self):
-        return self.config_obj
-
-    # Migration v6: Dummy migration to sync backup number with config version number
-    def _migrate_v6(self):
-        return self.config_obj
-
-    # Migration v6: Dummy migration to sync backup number with config version number
-    def _migrate_v7(self):
-        return self.config_obj
-
-    # Migration v8: Use version 2 for password encryption
-    def _migrate_v8(self):
+    def _migrate_v9(self):
         self.config_obj['General']['encryption_version'] = 2
         return self.config_obj
 
-    # Migration v9: Dummy migration to sync backup number with config version number
-    def _migrate_v9(self):
-        return self.config_obj
-
-    # Migration v10: Metadata upgrade to add enabled attribute
     def _migrate_v10(self):
-        """
-        Updates metadata values to the new format
-        Quick overview of what the upgrade does:
-
-        new | old | description (new)
-        ----+-----+--------------------
-          1 |  1  | show metadata
-          2 |  2  | episode metadata
-          3 |  3  | show fanart
-          4 |  4  | show poster
-          5 |  5  | show banner
-          6 |  6  | episode thumb
-          7 |  7  | season poster
-          8 |  8  | season banner
-          9 |  9  | season all poster
-         10 |  10 | season all banner
-         11 |  -  | enabled
-
-        Note that the ini places start at 1 while the list index starts at 0.
-        old format: 0|0|0|0|0|0|0|0|0|0 -- 10 places
-        new format: 0|0|0|0|0|0|0|0|0|0|0 -- 11 places
-        """
-
-        metadata_kodi = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_kodi_12plus = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_mediabrowser = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_ps3 = self.check_setting_str('General', 'metadata_ps3', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_wdtv = self.check_setting_str('General', 'metadata_wdtv', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_tivo = self.check_setting_str('General', 'metadata_tivo', '0|0|0|0|0|0|0|0|0|0|0')
-        metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
-
         def _migrate_metadata(metadata):
             cur_metadata = metadata.split('|')
 
@@ -2505,22 +2430,6 @@ class ConfigMigrator(Config):
 
             return metadata
 
-        self.config_obj['General']['metadata_kodi'] = _migrate_metadata(metadata_kodi)
-        self.config_obj['General']['metadata_kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus)
-        self.config_obj['General']['metadata_mediabrowser'] = _migrate_metadata(metadata_mediabrowser)
-        self.config_obj['General']['metadata_ps3'] = _migrate_metadata(metadata_ps3)
-        self.config_obj['General']['metadata_wdtv'] = _migrate_metadata(metadata_wdtv)
-        self.config_obj['General']['metadata_tivo'] = _migrate_metadata(metadata_tivo)
-        self.config_obj['General']['metadata_mede8er'] = _migrate_metadata(metadata_mede8er)
-
-        return self.config_obj
-
-    # Migration v11: Renames metadata setting keys
-    def _migrate_v11(self):
-        """
-        Renames metadata setting keys
-        """
-
         metadata_kodi = self.check_setting_str('General', 'metadata_kodi', '0|0|0|0|0|0|0|0|0|0|0')
         metadata_kodi_12plus = self.check_setting_str('General', 'metadata_kodi_12plus', '0|0|0|0|0|0|0|0|0|0|0')
         metadata_mediabrowser = self.check_setting_str('General', 'metadata_mediabrowser', '0|0|0|0|0|0|0|0|0|0|0')
@@ -2530,12 +2439,54 @@ class ConfigMigrator(Config):
         metadata_mede8er = self.check_setting_str('General', 'metadata_mede8er', '0|0|0|0|0|0|0|0|0|0|0')
 
         self.config_obj['MetadataProviders'] = {}
-        self.config_obj['MetadataProviders']['kodi'] = metadata_kodi
-        self.config_obj['MetadataProviders']['kodi_12plus'] = metadata_kodi_12plus
-        self.config_obj['MetadataProviders']['mediabrowser'] = metadata_mediabrowser
-        self.config_obj['MetadataProviders']['sony_ps3'] = metadata_ps3
-        self.config_obj['MetadataProviders']['wdtv'] = metadata_wdtv
-        self.config_obj['MetadataProviders']['tivo'] = metadata_tivo
-        self.config_obj['MetadataProviders']['mede8er'] = metadata_mede8er
+        self.config_obj['MetadataProviders']['kodi'] = _migrate_metadata(metadata_kodi)
+        self.config_obj['MetadataProviders']['kodi_12plus'] = _migrate_metadata(metadata_kodi_12plus)
+        self.config_obj['MetadataProviders']['mediabrowser'] = _migrate_metadata(metadata_mediabrowser)
+        self.config_obj['MetadataProviders']['sony_ps3'] = _migrate_metadata(metadata_ps3)
+        self.config_obj['MetadataProviders']['wdtv'] = _migrate_metadata(metadata_wdtv)
+        self.config_obj['MetadataProviders']['tivo'] = _migrate_metadata(metadata_tivo)
+        self.config_obj['MetadataProviders']['mede8er'] = _migrate_metadata(metadata_mede8er)
+
+        return self.config_obj
+
+    def _migrate_v11(self):
+        def _migrate_custom_providers(newznab, torrentrss):
+            custom_providers = ""
+
+            for provider in newznab.split('!!!'):
+                cur_provider = provider.split('|')
+                if len(cur_provider) > 5:
+                    cur_provider.insert(0, 'newznab')
+                    custom_providers += '|'.join(cur_provider[:5]) + '!!!'
+
+            for provider in torrentrss.split('!!!'):
+                cur_provider = provider.split('|')
+                if len(cur_provider) == 9:
+                    cur_provider.insert(0, 'torrentrss')
+                    custom_providers += '|'.join(cur_provider[:5]) + '!!!'
+
+            return custom_providers
+
+        provider_keys = ['confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
+                         'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
+                         'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
+                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
+
+        self.config_obj['Providers'] = {'providers_order': self.check_setting_str('General', 'provider_order', '')}
+
+        self.config_obj['Providers']['custom_providers'] = _migrate_custom_providers(
+            self.check_setting_str('Newznab', 'newznab_data', ''),
+            self.check_setting_str('TorrentRss', 'torrentrss_data', ''))
+
+        sickrage.app.search_providers.load()
+
+        for providerID, providerObj in sickrage.app.search_providers.all().items():
+            provider_settings = {'enabled': self.check_setting_str(providerID.upper(), providerID, 0)}
+
+            for k in provider_keys:
+                if hasattr(providerObj, k):
+                    provider_settings[k] = self.check_setting_str(providerID.upper(), '{}_{}'.format(providerID, k), '')
+
+            self.config_obj['Providers'][providerID] = provider_settings
 
         return self.config_obj

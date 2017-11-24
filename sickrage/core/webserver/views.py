@@ -3873,10 +3873,7 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
-        if checkbox_to_value(encryption_version) == 1:
-            sickrage.app.config.encryption_version = 2
-        else:
-            sickrage.app.config.encryption_version = 0
+        sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
         sickrage.app.config.web_username = web_username
         sickrage.app.config.web_password = web_password
 
