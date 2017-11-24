@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class Torrent9Provider(TorrentProvider):
     def __init__(self):
-        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrent9.biz', False)
+        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrent9.pe', False)
 
         self.urls.update({
             'search': '{base_url}/search_torrent'.format(**self.urls),

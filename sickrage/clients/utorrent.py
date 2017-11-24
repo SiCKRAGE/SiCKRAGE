@@ -26,13 +26,10 @@ from sickrage.clients import GenericClient
 
 class uTorrentAPI(GenericClient):
     def __init__(self, host=None, username=None, password=None):
-
         super(uTorrentAPI, self).__init__('uTorrent', host, username, password)
-
         self.url = self.host + 'gui/'
 
     def _request(self, method='get', data=None, params=None, *args, **kwargs):
-
         # Workaround for uTorrent 2.2.1
         # Need a odict but only supported in 2.7+ and sickrage is 2.6+
         ordered_params = {'token': self.auth}
@@ -43,7 +40,6 @@ class uTorrentAPI(GenericClient):
         return super(uTorrentAPI, self)._request(method=method, params=ordered_params, data=data, *args, **kwargs)
 
     def _get_auth(self):
-
         try:
             self.response = sickrage.app.wsession.get(self.url + 'token.html',
                                                              timeout=120,
@@ -58,18 +54,15 @@ class uTorrentAPI(GenericClient):
         return self.auth if self.response.ok else None
 
     def _add_torrent_uri(self, result):
-
-        params = {'action': 'add-url', 's': result.url}
+        params = {'action': 'add-url', 's': result.url[:1024]}
         return self._request(params=params, cookies=self.cookies)
 
     def _add_torrent_file(self, result):
-
         params = {'action': 'add-file'}
         files = {'torrent_file': (result.name + '.torrent', result.content)}
         return self._request(method='post', params=params, files=files, cookies=self.cookies)
 
     def _set_torrent_label(self, result):
-
         label = sickrage.app.config.torrent_label
         if result.show.is_anime:
             label = sickrage.app.config.torrent_label_anime
@@ -82,7 +75,6 @@ class uTorrentAPI(GenericClient):
         return self._request(params=params, cookies=self.cookies)
 
     def _set_torrent_ratio(self, result):
-
         ratio = None
         if result.ratio:
             ratio = result.ratio
@@ -106,7 +98,6 @@ class uTorrentAPI(GenericClient):
         return True
 
     def _set_torrent_seed_time(self, result):
-
         if sickrage.app.config.torrent_seed_time:
             time = 3600 * float(sickrage.app.config.torrent_seed_time)
             params = {'action': 'setprops',
@@ -127,7 +118,6 @@ class uTorrentAPI(GenericClient):
             return True
 
     def _set_torrent_priority(self, result):
-
         if result.priority == 1:
             params = {'action': 'queuetop', 'hash': result.hash}
             return self._request(params=params, cookies=self.cookies)
@@ -135,7 +125,6 @@ class uTorrentAPI(GenericClient):
             return True
 
     def _set_torrent_pause(self, result):
-
         if sickrage.app.config.torrent_paused:
             params = {'action': 'pause', 'hash': result.hash}
         else:

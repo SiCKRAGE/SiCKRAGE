@@ -1,6 +1,19 @@
 # Changelog
 
-- * b2b29d6 - 2017-11-23: Release v9.2.13 
+- * 96b4ddf - 2017-11-24: Release v9.2.14 
+- * 77825e8 - 2017-11-24: Fixed parsing issues for EliteTorrent provider 
+- * f7d8a47 - 2017-11-24: Fixed issue #130 - uTorrent url length trimmed to 1024 due to uTorrent bug 
+- * 630387d - 2017-11-24: refactored config class 
+- * 3da7164 - 2017-11-24: Revert &quot;refactored config class updated config to v12&quot; 
+- * 2722ee5 - 2017-11-24: refactored config class updated config to v12 
+- * 093c597 - 2017-11-23: added code to failed snatch handler to skip paused shows 
+- * 11a9003 - 2017-11-23: reverted logging episode id&#x27;s for history, no longer needed moved trimming of failed history to failed snatch handler class 
+- * 98a1036 - 2017-11-23: Refactored failed snatch handler code to use a tuple of showid, season, and episode for comparisons 
+- * 70755c1 - 2017-11-23: added code to log episode id&#x27;s to history for failed snatch handler re-enabled failed snatch handler code 
+- * 83ccdf9 - 2017-11-23: disabled failed search feature temporarily 
+- * bbc6f69 - 2017-11-23: Added failed search feature to automatically re-snatch failed snatches 
+- * cf00782 - 2017-11-23: Updated url for torrent9 provider 
+- * 7132bf0 - 2017-11-23: Release v9.2.13 
 - * 8d73c27 - 2017-11-23: Fixed issues with Jackett search result downloading 
 - * 2e4eefd - 2017-11-23: Fixed issues with Jackett search result downloading 
 - * 2f1d94b - 2017-11-23: Fixed issues with tornzb results containing magnetic links and searching 
