@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9c60d1a - 2017-11-24: Fixed issue #130 - uTorrent url length trimmed to 1024 due to uTorrent bug 
+- * 0cbbf59 - 2017-11-24: Fixed parsing issues for EliteTorrent provider 
+- * f7d8a47 - 2017-11-24: Fixed issue #130 - uTorrent url length trimmed to 1024 due to uTorrent bug 
 - * 630387d - 2017-11-24: refactored config class 
 - * 3da7164 - 2017-11-24: Revert &quot;refactored config class updated config to v12&quot; 
 - * 2722ee5 - 2017-11-24: refactored config class updated config to v12 

@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class EliteTorrentProvider(TorrentProvider):
     def __init__(self):
-        super(EliteTorrentProvider, self).__init__('EliteTorrent', 'https://www.elitetorrent.eu', False)
+        super(EliteTorrentProvider, self).__init__('EliteTorrent', 'https://elitetorrent.eu', False)
 
         self.urls.update({
             'search': '{base_url}/torrents.php'.format(**self.urls)
@@ -100,8 +100,6 @@ class EliteTorrentProvider(TorrentProvider):
         results = []
 
         def _process_title(title):
-            title = title.encode('latin-1').decode('utf8')
-
             # Quality, if no literal is defined it's HDTV
             if 'calidad' not in title:
                 title += ' HDTV x264'
