@@ -38,6 +38,7 @@ import urlparse
 import uuid
 import webbrowser
 import zipfile
+from collections import OrderedDict
 from contextlib import contextmanager
 
 import rarfile
@@ -168,77 +169,77 @@ def remove_non_release_groups(name):
     # Check your database for funky release_names and add them here, to improve failed handling, archiving, and history.
     # select release_name from tv_episodes WHERE LENGTH(release_name);
     # [eSc], [SSG], [GWC] are valid release groups for non-anime
-    removeWordsList = {
-        r'\[rartv\]$': 'searchre',
-        r'\[rarbg\]$': 'searchre',
-        r'\.\[eztv\]$': 'searchre',
-        r'\[eztv\]$': 'searchre',
-        r'\[ettv\]$': 'searchre',
-        r'\[cttv\]$': 'searchre',
-        r'\.\[vtv\]$': 'searchre',
-        r'\[vtv\]$': 'searchre',
-        r'\[EtHD\]$': 'searchre',
-        r'\[GloDLS\]$': 'searchre',
-        r'\[silv4\]$': 'searchre',
-        r'\[Seedbox\]$': 'searchre',
-        r'\[PublicHD\]$': 'searchre',
-        r'\.\[PublicHD\]$': 'searchre',
-        r'\.\[NO.RAR\]$': 'searchre',
-        r'\[NO.RAR\]$': 'searchre',
-        r'-\=\{SPARROW\}\=-$': 'searchre',
-        r'\=\{SPARR$': 'searchre',
-        r'\.\[720P\]\[HEVC\]$': 'searchre',
-        r'\[AndroidTwoU\]$': 'searchre',
-        r'\[brassetv\]$': 'searchre',
-        r'\[Talamasca32\]$': 'searchre',
-        r'\(musicbolt\.com\)$': 'searchre',
-        r'\.\(NLsub\)$': 'searchre',
-        r'\(NLsub\)$': 'searchre',
-        r'\.\[BT\]$': 'searchre',
-        r' \[1044\]$': 'searchre',
-        r'\.RiPSaLoT$': 'searchre',
-        r'\.GiuseppeTnT$': 'searchre',
-        r'\.Renc$': 'searchre',
-        r'\.gz$': 'searchre',
-        r'\.English$': 'searchre',
-        r'\.German$': 'searchre',
-        r'\.\.Italian$': 'searchre',
-        r'\.Italian$': 'searchre',
-        r'(?<![57])\.1$': 'searchre',
-        r'-NZBGEEK$': 'searchre',
-        r'-Siklopentan$': 'searchre',
-        r'-Chamele0n$': 'searchre',
-        r'-Obfuscated$': 'searchre',
-        r'-BUYMORE$': 'searchre',
-        r'-\[SpastikusTV\]$': 'searchre',
-        r'-RP$': 'searchre',
-        r'-20-40$': 'searchre',
-        r'\.\[www\.usabit\.com\]$': 'searchre',
-        r'^\[www\.Cpasbien\.pe\] ': 'searchre',
-        r'^\[www\.Cpasbien\.com\] ': 'searchre',
-        r'^\[ www\.Cpasbien\.pw \] ': 'searchre',
-        r'^\.www\.Cpasbien\.pw': 'searchre',
-        r'^\[www\.newpct1\.com\]': 'searchre',
-        r'^\[ www\.Cpasbien\.com \] ': 'searchre',
-        r'- \{ www\.SceneTime\.com \}$': 'searchre',
-        r'^\{ www\.SceneTime\.com \} - ': 'searchre',
-        r'^\]\.\[www\.tensiontorrent.com\] - ': 'searchre',
-        r'^\]\.\[ www\.tensiontorrent.com \] - ': 'searchre',
-        r'- \[ www\.torrentday\.com \]$': 'searchre',
-        r'^\[ www\.TorrentDay\.com \] - ': 'searchre',
-        r'\[NO-RAR\] - \[ www\.torrentday\.com \]$': 'searchre',
-        r'^www\.Torrenting\.com\.-\.': 'searchre',
-        r'-Scrambled$': 'searchre'
-    }
+    removeWordsList = OrderedDict([
+        (r'^\[www\.Cpasbien\.pe\] ', 'searchre'),
+        (r'^\[www\.Cpasbien\.com\] ', 'searchre'),
+        (r'^\[ www\.Cpasbien\.pw \] ', 'searchre'),
+        (r'^\.www\.Cpasbien\.pw', 'searchre'),
+        (r'^\[www\.newpct1\.com\]', 'searchre'),
+        (r'^\[ www\.Cpasbien\.com \] ', 'searchre'),
+        (r'^\{ www\.SceneTime\.com \} - ', 'searchre'),
+        (r'^\]\.\[www\.tensiontorrent.com\] - ', 'searchre'),
+        (r'^\]\.\[ www\.tensiontorrent.com \] - ', 'searchre'),
+        (r'^\[ www\.TorrentDay\.com \] - ', 'searchre'),
+        (r'^www\.Torrenting\.com\.-\.', 'searchre'),
+        (r'\[rartv\]$', 'searchre'),
+        (r'\[rarbg\]$', 'searchre'),
+        (r'\.\[eztv\]$', 'searchre'),
+        (r'\[eztv\]$', 'searchre'),
+        (r'\[ettv\]$', 'searchre'),
+        (r'\[cttv\]$', 'searchre'),
+        (r'\.\[vtv\]$', 'searchre'),
+        (r'\[vtv\]$', 'searchre'),
+        (r'\[EtHD\]$', 'searchre'),
+        (r'\[GloDLS\]$', 'searchre'),
+        (r'\[silv4\]$', 'searchre'),
+        (r'\[Seedbox\]$', 'searchre'),
+        (r'\[PublicHD\]$', 'searchre'),
+        (r'\.\[PublicHD\]$', 'searchre'),
+        (r'\.\[NO.RAR\]$', 'searchre'),
+        (r'\[NO.RAR\]$', 'searchre'),
+        (r'-\=\{SPARROW\}\=-$', 'searchre'),
+        (r'\=\{SPARR$', 'searchre'),
+        (r'\.\[720P\]\[HEVC\]$', 'searchre'),
+        (r'\[AndroidTwoU\]$', 'searchre'),
+        (r'\[brassetv\]$', 'searchre'),
+        (r'\[Talamasca32\]$', 'searchre'),
+        (r'\(musicbolt\.com\)$', 'searchre'),
+        (r'\.\(NLsub\)$', 'searchre'),
+        (r'\(NLsub\)$', 'searchre'),
+        (r'\.\[BT\]$', 'searchre'),
+        (r' \[1044\]$', 'searchre'),
+        (r'\.RiPSaLoT$', 'searchre'),
+        (r'\.GiuseppeTnT$', 'searchre'),
+        (r'\.Renc$', 'searchre'),
+        (r'\.gz$', 'searchre'),
+        (r'\.English$', 'searchre'),
+        (r'\.German$', 'searchre'),
+        (r'\.\.Italian$', 'searchre'),
+        (r'\.Italian$', 'searchre'),
+        (r'(?<![57])\.1$', 'searchre'),
+        (r'-NZBGEEK$', 'searchre'),
+        (r'-Siklopentan$', 'searchre'),
+        (r'-Chamele0n$', 'searchre'),
+        (r'-Obfuscated$', 'searchre'),
+        (r'-BUYMORE$', 'searchre'),
+        (r'-\[SpastikusTV\]$', 'searchre'),
+        (r'-RP$', 'searchre'),
+        (r'-20-40$', 'searchre'),
+        (r'\.\[www\.usabit\.com\]$', 'searchre'),
+        (r'\[NO-RAR\] - \[ www\.torrentday\.com \]$', 'searchre'),
+        (r'- \[ www\.torrentday\.com \]$', 'searchre'),
+        (r'- \{ www\.SceneTime\.com \}$', 'searchre'),
+        (r'-Scrambled$', 'searchre')
+    ])
 
     _name = name
-    for remove_string, remove_type in removeWordsList.items():
+    for remove_string, remove_type in six.iteritems(removeWordsList):
         if remove_type == 'search':
             _name = _name.replace(remove_string, '')
         elif remove_type == 'searchre':
             _name = re.sub(r'(?i)' + remove_string, '', _name)
 
-    return _name.strip('.- []{}')
+    return _name
 
 
 def replaceExtension(filename, newExt):
@@ -504,7 +505,7 @@ def hardlinkFile(srcFile, destFile):
         fixSetGroupID(destFile)
     except Exception as e:
         sickrage.app.log.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                                         % (srcFile, destFile, e))
+                                 % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -539,7 +540,7 @@ def moveAndSymlinkFile(srcFile, destFile):
         symlink(destFile, srcFile)
     except Exception as e:
         sickrage.app.log.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                                         % (srcFile, destFile, e))
+                                 % (srcFile, destFile, e))
         copyFile(srcFile, destFile)
 
 
@@ -1191,7 +1192,7 @@ def verify_freespace(src, dest, oldfile=None):
                 fun = ctypes.windll.kernel32.GetDiskFreeSpaceExW
             else:
                 fun = ctypes.windll.kernel32.GetDiskFreeSpaceExA
-            ret = fun(path, ctypes.byref(_), ctypes.byref(total), ctypes.byref(free))
+            ret = fun(path, ctypes.byref(__), ctypes.byref(total), ctypes.byref(free))
             if ret == 0:
                 sickrage.app.log.warning("Unable to determine free space, something went wrong")
                 raise ctypes.WinError()
@@ -1221,8 +1222,8 @@ def verify_freespace(src, dest, oldfile=None):
         return True
     else:
         sickrage.app.log.warning("Not enough free space: Needed: %s bytes ( %s ), found: %s bytes ( %s )"
-                                         % (neededspace, pretty_filesize(neededspace), diskfree,
-                                            pretty_filesize(diskfree)))
+                                 % (neededspace, pretty_filesize(neededspace), diskfree,
+                                    pretty_filesize(diskfree)))
         return False
 
 
@@ -1356,12 +1357,12 @@ def restoreVersionedFile(backup_file, version):
 
     try:
         sickrage.app.log.debug("Trying to backup %s to %s.r%s before restoring backup"
-                                       % (new_file, new_file, version))
+                               % (new_file, new_file, version))
 
         moveFile(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         sickrage.app.log.warning("Error while trying to backup file %s before proceeding with restore: %r"
-                                         % (restore_file, e))
+                                 % (restore_file, e))
         return False
 
     while not os.path.isfile(new_file):
@@ -1498,6 +1499,8 @@ def clean_url(url):
     Returns an cleaned url starting with a scheme and folder with trailing /
     or an empty string
     """
+
+    urlparse.uses_netloc.append('scgi')
 
     if url and url.strip():
 
