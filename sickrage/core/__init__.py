@@ -146,14 +146,14 @@ class Core(object):
         self.subtitle_searcher = None
         self.auto_postprocessor = None
 
-        # patch modules with encoding kludge
-        patch_modules()
-
     def start(self):
         self.started = True
 
         # thread name
         threading.currentThread().setName('CORE')
+
+        # patch modules with encoding kludge
+        patch_modules()
 
         # init core classes
         self.notifier_providers = NotifierProviders()

@@ -138,7 +138,7 @@ class GenericProvider(object):
     def make_filename(self, name):
         return ""
 
-    def getQuality(self, item, anime=False):
+    def get_quality(self, item, anime=False):
         """
         Figures out the quality of the given RSS item node
 
@@ -321,7 +321,7 @@ class GenericProvider(object):
             # categorize the items into lists by quality
             items = defaultdict(list)
             for item in itemList:
-                items[self.getQuality(item, anime=show.is_anime)].append(item)
+                items[self.get_quality(item, anime=show.is_anime)].append(item)
 
             # temporarily remove the list of items with unknown quality
             unknown_items = items.pop(Quality.UNKNOWN, [])

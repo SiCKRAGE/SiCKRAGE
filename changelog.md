@@ -1,6 +1,7 @@
 # Changelog
 
-- * 51ea65a - 2017-11-26: fixed missing changelog_url attribute 
+- * bff115c - 2017-11-26: made YGGTorrent provider private refactored class method name getquality to get_quality 
+- * ba12e57 - 2017-11-26: fixed missing changelog_url attribute 
 - * a51d682 - 2017-11-26: Fixed changelog url issues 
 - * f4f7da9 - 2017-11-26: Release v9.2.16 
 - * 95299aa - 2017-11-26: fixed issue with associated file extensions view in post-process template 

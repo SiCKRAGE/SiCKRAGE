@@ -97,7 +97,6 @@ class HDBitsProvider(TorrentProvider):
         return results
 
     def _make_post_data_JSON(self, show=None, episode=None, season=None, search_term=None):
-
         post_data = {
             'username': self.username,
             'passkey': self.passkey,
