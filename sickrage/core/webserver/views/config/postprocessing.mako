@@ -333,27 +333,14 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Use Failed Downloads')}</label>
+                        <label class="component-title">${_('Delete Failed')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input id="use_failed_downloads" type="checkbox" class="enabler"
-                               name="use_failed_downloads" ${('', 'checked')[bool(sickrage.app.config.use_failed_downloads)]}/>
-                        <label for="use_failed_downloads">${_('Use Failed Download Handling?')}</label>
-                    </div>
-                </div>
-                <div id="content_use_failed_downloads">
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Delete Failed')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input id="delete_failed" type="checkbox"
-                                   name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
-                            <label for="delete_failed">
-                                ${_('Delete files left over from a failed download?')}<br/>
-                                <b>${_('NOTE:')}</b> ${_('This only works if Use Failed Downloads is enabled.')}
-                            </label>
-                        </div>
+                        <input id="delete_failed" type="checkbox"
+                               name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
+                        <label for="delete_failed">
+                            ${_('Delete files left over from a failed download?')}<br/>
+                        </label>
                     </div>
                 </div>
                 <div class="row field-pair">

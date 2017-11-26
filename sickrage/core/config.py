@@ -402,7 +402,6 @@ class Config(object):
         self.legendastv_pass = ""
         self.itasa_user = ""
         self.itasa_pass = ""
-        self.use_failed_downloads = False
         self.delete_failed = False
         self.extra_scripts = []
         self.require_words = ""
@@ -854,7 +853,6 @@ class Config(object):
                 'boxcar2_notify_onsubtitledownload': False
             },
             'FailedDownloads': {
-                'use_failed_downloads': False,
                 'delete_failed': False
             },
             'NMJ': {
@@ -1804,7 +1802,6 @@ class Config(object):
         self.subtitle_searcher_freq = self.check_setting_int('Subtitles', 'subtitles_finder_frequency')
 
         # FAILED DOWNLOAD SETTINGS
-        self.use_failed_downloads = self.check_setting_bool('FailedDownloads', 'use_failed_downloads')
         self.delete_failed = self.check_setting_bool('FailedDownloads', 'delete_failed')
 
         # ANIDB SETTINGS
@@ -2287,7 +2284,6 @@ class Config(object):
                 'opensubtitles_password': self.opensubtitles_pass,
             },
             'FailedDownloads': {
-                'use_failed_downloads': int(self.use_failed_downloads),
                 'delete_failed': int(self.delete_failed),
             },
             'ANIDB': {

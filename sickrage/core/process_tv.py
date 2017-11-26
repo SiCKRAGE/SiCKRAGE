@@ -604,27 +604,25 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 def process_failed(dirName, nzbName, result):
     """Process a download that did not complete correctly"""
 
-    if sickrage.app.config.use_failed_downloads:
+    try:
+        processor = failed_processor.FailedProcessor(dirName, nzbName)
+        result.result = processor.process()
+        process_fail_message = ""
+    except FailedPostProcessingFailedException as e:
         processor = None
+        result.result = False
+        process_fail_message = e
 
-        try:
-            processor = failed_processor.FailedProcessor(dirName, nzbName)
-            result.result = processor.process()
-            process_fail_message = ""
-        except FailedPostProcessingFailedException as e:
-            result.result = False
-            process_fail_message = e
+    if processor:
+        result.output += processor.log
 
-        if processor:
-            result.output += processor.log
+    if sickrage.app.config.delete_failed and result.result:
+        if delete_folder(dirName, check_empty=False):
+            result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
 
-        if sickrage.app.config.delete_failed and result.result:
-            if delete_folder(dirName, check_empty=False):
-                result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
-
-        if result.result:
-            result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
-        else:
-            result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
-                                       .format(nzbName, dirName, process_fail_message),
-                                       sickrage.app.log.WARNING)
+    if result.result:
+        result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
+    else:
+        result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
+                                   .format(nzbName, dirName, process_fail_message),
+                                   sickrage.app.log.WARNING)

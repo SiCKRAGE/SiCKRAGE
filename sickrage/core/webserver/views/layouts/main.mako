@@ -194,13 +194,11 @@
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.use_failed_downloads:
-                                    <li>
-                                        <a href="${srWebRoot}/manage/failedDownloads/">
-                                            <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
-                                        </a>
-                                    </li>
-                                % endif
+                                <li>
+                                    <a href="${srWebRoot}/manage/failedDownloads/">
+                                        <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
+                                    </a>
+                                </li>
                                 % if sickrage.app.config.use_subtitles:
                                     <li>
                                         <a href="${srWebRoot}/manage/subtitleMissed/">

@@ -205,8 +205,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if not dlResult:
         return False
 
-    if sickrage.app.config.use_failed_downloads:
-        FailedHistory.logSnatch(result)
+    FailedHistory.logSnatch(result)
 
     sickrage.app.alerts.message(_('Episode snatched'), result.name)
 
@@ -281,13 +280,14 @@ def pickBestResult(results, show):
         # check if seeders and leechers meet out minimum requirements, disgard result if it does not
         if hasattr(cur_result.provider, 'minseed') and hasattr(cur_result.provider, 'minleech'):
             if cur_result.seeders not in (-1, None) and cur_result.leechers not in (-1, None):
-                if int(cur_result.seeders) < int(cur_result.provider.minseed) or int(cur_result.leechers) < int(cur_result.provider.minleech):
+                if int(cur_result.seeders) < int(cur_result.provider.minseed) or int(cur_result.leechers) < int(
+                        cur_result.provider.minleech):
                     sickrage.app.log.info('Discarding torrent because it does not meet the minimum provider '
-                                                  'setting S:{} L:{}. Result has S:{} L:{}',
-                                                  cur_result.provider.minseed,
-                                                  cur_result.provider.minleech,
-                                                  cur_result.seeders,
-                                                  cur_result.leechers)
+                                          'setting S:{} L:{}. Result has S:{} L:{}',
+                                          cur_result.provider.minseed,
+                                          cur_result.provider.minleech,
+                                          cur_result.seeders,
+                                          cur_result.leechers)
                     continue
 
         if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name,
@@ -308,9 +308,7 @@ def pickBestResult(results, show):
             continue
 
         if hasattr(cur_result, 'size'):
-            if sickrage.app.config.use_failed_downloads and FailedHistory.hasFailed(cur_result.name,
-                                                                                         cur_result.size,
-                                                                                         cur_result.provider.name):
+            if FailedHistory.hasFailed(cur_result.name, cur_result.size, cur_result.provider.name):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
@@ -508,7 +506,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
             if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
                 continue
             elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
-                                                                                    TorrentRssProvider.type]:
+                                                                               TorrentRssProvider.type]:
                 continue
             elif not providerObj.isEnabled:
                 continue
