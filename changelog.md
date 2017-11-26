@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd9798c - 2017-11-26: Release v9.2.15 
+- * 9ed9655 - 2017-11-26: fixed up docstrings 
+- * a75d9c5 - 2017-11-26: Release v9.2.15 
 - * 9b8a71a - 2017-11-26: misc cosmetic web-ui fixes/improvements 
 - * b2d5c3c - 2017-11-26: removed redundant &quot;delete failed&quot; option from search client settings page 
 - * e6a9b5b - 2017-11-26: refactored failed download handling to no longer be a optional feature as its a requirement for failed snatch handling to work correctly, delete on failed is defaulted to false 

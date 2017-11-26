@@ -142,6 +142,8 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
     :param dirName: The folder name to look in
     :param nzbName: The NZB name which resulted in this folder being downloaded
     :param force: True to postprocess already postprocessed files
+    :param is_priority: whether to replace the file even if it exists at higher quality
+    :param delete_on: delete files and folders after they are processed (always happens with move and auto combination)
     :param failed: Boolean for whether or not the download failed
     :param proc_type: Type of postprocessing auto or manual
     """
