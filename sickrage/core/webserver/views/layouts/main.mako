@@ -383,7 +383,7 @@
         % if submenu:
             <div id="sub-menu" class="hidden-print">
                 <% first = True %>
-                % for menuItem in reversed(submenu):
+                % for menuItem in submenu:
                     % if menuItem.get('requires', 1):
                         % if isinstance(menuItem['path'], dict):
                         ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>

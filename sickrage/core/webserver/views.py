@@ -3718,15 +3718,16 @@ class Config(WebHandler):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': _('General'), 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
-            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'ui-icon ui-icon-note'},
-            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'submenu-icon-anime'},
+            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fa fa-info'},
+            {'title': _('General'), 'path': '/config/general/', 'icon': 'fa fa-cogs'},
+            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fa fa-upload'},
+            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fa fa-binoculars'},
+            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fa fa-share-alt'},
+            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fa fa-cc'},
+            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fa fa-wrench'},
+            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fa fa-refresh'},
+            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fa fa-bell'},
+            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fa fa-eye'},
         ]
 
         return menu
@@ -3992,7 +3993,7 @@ class ConfigSearch(Config):
         return self.render(
             "/config/search.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Episode Search'),
+            title=_('Config - Search Clients'),
             header=_('Search Clients'),
             topmenu='config',
             controller='config',
@@ -4285,7 +4286,7 @@ class ConfigProviders(Config):
         return self.render(
             "/config/providers.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Providers'),
+            title=_('Config - Search Providers'),
             header=_('Search Providers'),
             topmenu='config',
             controller='config',
@@ -4769,8 +4770,8 @@ class ConfigSubtitles(Config):
         return self.render(
             "/config/subtitles.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Subtitles'),
-            header=_('Subtitles'),
+            title=_('Config - Subtitles Settings'),
+            header=_('Subtitles Settings'),
             topmenu='config',
             controller='config',
             action='subtitles'
