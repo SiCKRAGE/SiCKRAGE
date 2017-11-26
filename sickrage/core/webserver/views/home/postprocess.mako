@@ -82,16 +82,14 @@
                         </span>
                     </div>
                 </div>
-                % if sickrage.app.config.use_failed_downloads:
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <b>${_('Mark download as failed:')}</b>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                            <input id="failed" name="failed" type="checkbox" title="">
-                        </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <b>${_('Mark download as failed:')}</b>
                     </div>
-                % endif
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        <input id="failed" name="failed" type="checkbox" title="">
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <input id="submit" class="btn" type="submit" value="${_('Process')}"/>

@@ -31,7 +31,6 @@ import dateutil.tz
 import markdown2
 import tornado.locale
 from CodernityDB.database import RecordNotFound
-from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
@@ -43,6 +42,7 @@ from tornado.web import RequestHandler, authenticated
 
 import sickrage
 import sickrage.subtitles
+from adba import aniDBAbstracter
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core import API
@@ -3718,15 +3718,16 @@ class Config(WebHandler):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': _('General'), 'path': '/config/general/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'ui-icon ui-icon-gear'},
-            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'ui-icon ui-icon-search'},
-            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'ui-icon ui-icon-comment'},
-            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'ui-icon ui-icon-folder-open'},
-            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'ui-icon ui-icon-note'},
-            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'submenu-icon-anime'},
+            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fa fa-info'},
+            {'title': _('General'), 'path': '/config/general/', 'icon': 'fa fa-cogs'},
+            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fa fa-upload'},
+            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fa fa-binoculars'},
+            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fa fa-share-alt'},
+            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fa fa-cc'},
+            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fa fa-wrench'},
+            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fa fa-refresh'},
+            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fa fa-bell'},
+            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fa fa-eye'},
         ]
 
         return menu
@@ -3992,7 +3993,7 @@ class ConfigSearch(Config):
         return self.render(
             "/config/search.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Episode Search'),
+            title=_('Config - Search Clients'),
             header=_('Search Clients'),
             topmenu='config',
             controller='config',
@@ -4007,7 +4008,7 @@ class ConfigSearch(Config):
                    nzbget_host=None, nzbget_use_https=None, backlog_frequency=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
-                   randomize_providers=None, use_failed_downloads=None, delete_failed=None,
+                   randomize_providers=None,
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
@@ -4024,35 +4025,22 @@ class ConfigSearch(Config):
             results += [_("Unable to create directory ") + os.path.normpath(torrent_dir) + _(", dir not changed.")]
 
         sickrage.app.config.change_daily_searcher_freq(dailysearch_frequency)
-
         sickrage.app.config.change_backlog_searcher_freq(backlog_frequency)
-
         sickrage.app.config.use_nzbs = checkbox_to_value(use_nzbs)
         sickrage.app.config.use_torrents = checkbox_to_value(use_torrents)
-
         sickrage.app.config.nzb_method = nzb_method
         sickrage.app.config.torrent_method = torrent_method
         sickrage.app.config.usenet_retention = try_int(usenet_retention, 500)
-
         sickrage.app.config.ignore_words = ignore_words if ignore_words else ""
         sickrage.app.config.require_words = require_words if require_words else ""
         sickrage.app.config.ignored_subs_list = ignored_subs_list if ignored_subs_list else ""
-
         sickrage.app.config.randomize_providers = checkbox_to_value(randomize_providers)
-
         sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
         sickrage.app.config.enable_rss_cache_valid_shows = checkbox_to_value(enable_rss_cache_valid_shows)
         sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
-
         sickrage.app.config.change_download_propers(download_propers)
-
         sickrage.app.config.proper_searcher_interval = check_propers_interval
-
         sickrage.app.config.allow_high_priority = checkbox_to_value(allow_high_priority)
-
-        sickrage.app.config.use_failed_downloads = checkbox_to_value(use_failed_downloads)
-        sickrage.app.config.delete_failed = checkbox_to_value(delete_failed)
-
         sickrage.app.config.sab_username = sab_username
         sickrage.app.config.sab_password = sab_password
         sickrage.app.config.sab_apikey = sab_apikey.strip()
@@ -4062,7 +4050,6 @@ class ConfigSearch(Config):
         sickrage.app.config.sab_category_anime_backlog = sab_category_anime_backlog
         sickrage.app.config.sab_host = clean_url(sab_host)
         sickrage.app.config.sab_forced = checkbox_to_value(sab_forced)
-
         sickrage.app.config.nzbget_username = nzbget_username
         sickrage.app.config.nzbget_password = nzbget_password
         sickrage.app.config.nzbget_category = nzbget_category
@@ -4072,7 +4059,6 @@ class ConfigSearch(Config):
         sickrage.app.config.nzbget_host = clean_host(nzbget_host)
         sickrage.app.config.nzbget_use_https = checkbox_to_value(nzbget_use_https)
         sickrage.app.config.nzbget_priority = try_int(nzbget_priority, 100)
-
         sickrage.app.config.torrent_username = torrent_username
         sickrage.app.config.torrent_password = torrent_password
         sickrage.app.config.torrent_label = torrent_label
@@ -4126,10 +4112,12 @@ class ConfigPostProcessing(Config):
                            tv_download_dir=None, naming_custom_abd=None, naming_anime=None,
                            create_missing_show_dirs=None, add_shows_wo_dir=None,
                            naming_abd_pattern=None, naming_strip_year=None,
-                           use_failed_downloads=None, delete_failed=None, extra_scripts=None,
+                           delete_failed=None, extra_scripts=None,
                            naming_custom_sports=None, naming_sports_pattern=None,
                            naming_custom_anime=None, naming_anime_pattern=None,
-                           naming_anime_multi_ep=None, autopostprocessor_frequency=None):
+                           naming_anime_multi_ep=None, autopostprocessor_frequency=None,
+                           delete_non_associated_files=None, allowed_extensions=None,
+                           processor_follow_symlinks=None):
 
         results = []
 
@@ -4147,6 +4135,7 @@ class ConfigPostProcessing(Config):
                 results.append(_("Unpacking Not Supported, disabling unpack setting"))
         else:
             sickrage.app.config.unpack = checkbox_to_value(unpack)
+
         sickrage.app.config.no_delete = checkbox_to_value(no_delete)
         sickrage.app.config.keep_processed_dir = checkbox_to_value(keep_processed_dir)
         sickrage.app.config.create_missing_show_dirs = checkbox_to_value(create_missing_show_dirs)
@@ -4160,13 +4149,15 @@ class ConfigPostProcessing(Config):
         sickrage.app.config.move_associated_files = checkbox_to_value(move_associated_files)
         sickrage.app.config.sync_files = sync_files
         sickrage.app.config.postpone_if_sync_files = checkbox_to_value(postpone_if_sync_files)
+        sickrage.app.config.allowed_extensions = ','.join({x.strip() for x in allowed_extensions.split(',') if x.strip()})
         sickrage.app.config.naming_custom_abd = checkbox_to_value(naming_custom_abd)
         sickrage.app.config.naming_custom_sports = checkbox_to_value(naming_custom_sports)
         sickrage.app.config.naming_custom_anime = checkbox_to_value(naming_custom_anime)
         sickrage.app.config.naming_strip_year = checkbox_to_value(naming_strip_year)
-        sickrage.app.config.use_failed_downloads = checkbox_to_value(use_failed_downloads)
         sickrage.app.config.delete_failed = checkbox_to_value(delete_failed)
         sickrage.app.config.nfo_rename = checkbox_to_value(nfo_rename)
+        sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
+        sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
         if self.isNamingValid(naming_pattern, naming_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern
@@ -4295,7 +4286,7 @@ class ConfigProviders(Config):
         return self.render(
             "/config/providers.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Providers'),
+            title=_('Config - Search Providers'),
             header=_('Search Providers'),
             topmenu='config',
             controller='config',
@@ -4779,8 +4770,8 @@ class ConfigSubtitles(Config):
         return self.render(
             "/config/subtitles.mako",
             submenu=self.ConfigMenu(),
-            title=_('Config - Subtitles'),
-            header=_('Subtitles'),
+            title=_('Config - Subtitles Settings'),
+            header=_('Subtitles Settings'),
             topmenu='config',
             controller='config',
             action='subtitles'

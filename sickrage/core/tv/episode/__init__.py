@@ -292,7 +292,7 @@ class TVEpisode(object):
     def downloadSubtitles(self):
         if not os.path.isfile(self.location):
             sickrage.app.log.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
-                                           (self.show.indexerid, self.season or 0, self.episode or 0))
+                                   (self.show.indexerid, self.season or 0, self.episode or 0))
             return
 
         sickrage.app.log.debug(
@@ -308,12 +308,12 @@ class TVEpisode(object):
         if newSubtitles:
             subtitleList = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
-                                           (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
+                                   (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
             Notifiers.notify_subtitle_download(self.pretty_name(), subtitleList)
         else:
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
-                                           (self.show.indexerid, self.season or 0, self.episode or 0))
+                                   (self.show.indexerid, self.season or 0, self.episode or 0))
 
         return newSubtitles
 
@@ -544,8 +544,8 @@ class TVEpisode(object):
 
         if self.location:
             sickrage.app.log.debug("%s: Setting status for S%02dE%02d based on status %s and location %s" %
-                                           (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
-                                            self.location))
+                                   (self.show.indexerid, season or 0, episode or 0, statusStrings[self.status],
+                                    self.location))
 
         if not os.path.isfile(self.location):
             if self.airdate >= datetime.date.today() or self.airdate == datetime.date.fromordinal(1):
@@ -882,16 +882,13 @@ class TVEpisode(object):
                 str(self.indexerid) + ": File " + self.location + " is already named correctly, skipping")
             return
 
-        related_files = PostProcessor(self.location).list_associated_files(
-            self.location, base_name_only=True, subfolders=True)
+        related_files = PostProcessor(self.location).list_associated_files(self.location, subfolders=True)
 
         # This is wrong. Cause of pp not moving subs.
-        if self.show.subtitles and sickrage.app.config.subtitles_dir != '':
-            related_subs = PostProcessor(self.location).list_associated_files(
-                sickrage.app.config.subtitles_dir,
-                subtitles_only=True,
-                subfolders=True)
-            absolute_proper_subs_path = os.path.join(sickrage.app.config.subtitles_dir, self.formatted_filename())
+        if self.show.subtitles and sickrage.app.config.subtitles_dir:
+            subs_path = os.path.join(sickrage.app.config.subtitles_dir, os.path.basename(self.location))
+            related_subs = PostProcessor(self.location).list_associated_files(subs_path, subtitles_only=True,
+                                                                              subfolders=True, rename=True)
 
         sickrage.app.log.debug("Files associated to " + self.location + ": " + str(related_files))
 

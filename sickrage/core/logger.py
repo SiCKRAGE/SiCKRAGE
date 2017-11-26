@@ -35,17 +35,18 @@ class Logger(logging.getLoggerClass()):
     logging.captureWarnings(True)
     logging.getLogger().addHandler(logging.NullHandler())
 
-    def __init__(self, name="sickrage"):
+    def __init__(self, name="sickrage", consoleLogging=True, fileLogging=False, debugLogging=False, logFile=None,
+                 logSize=1048576, logNr=5):
         super(Logger, self).__init__(name)
         self.propagate = False
 
-        self.consoleLogging = True
-        self.fileLogging = False
-        self.debugLogging = False
+        self.consoleLogging = consoleLogging
+        self.fileLogging = fileLogging
+        self.debugLogging = debugLogging
 
-        self.logFile = None
-        self.logSize = 1048576
-        self.logNr = 5
+        self.logFile = logFile
+        self.logSize = logSize
+        self.logNr = logNr
 
         self.CRITICAL = CRITICAL
         self.DEBUG = DEBUG
@@ -93,7 +94,12 @@ class Logger(logging.getLoggerClass()):
             self.addHandler(console)
 
         # file log handlers
-        if self.logFile and makeDir(os.path.dirname(self.logFile)):
+        if self.logFile:
+            # make logs folder if it doesn't exist
+            if not os.path.exists(os.path.dirname(self.logFile)):
+                if not makeDir(os.path.dirname(self.logFile)):
+                    return
+
             if sickrage.app.developer:
                 rfh = FileHandler(
                     filename=self.logFile,

@@ -41,7 +41,7 @@ except ImportError:
 import sickrage
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import AllShowsUI
-from sickrage.core.common import ARCHIVED, DOWNLOADED, FAILED, IGNORED, \
+from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     Overview, Quality, SKIPPED, SNATCHED, SNATCHED_PROPER, UNAIRED, UNKNOWN, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
@@ -880,12 +880,6 @@ class CMD_EpisodeSetStatus(ApiCall):
                         ep_results.append(
                             _epResult(RESULT_FAILURE, epObj, "Refusing to change status because it is UNAIRED"))
                         failure = True
-                    continue
-
-                if self.status == FAILED and not sickrage.app.config.use_failed_downloads:
-                    ep_results.append(_epResult(RESULT_FAILURE, epObj,
-                                                "Refusing to change status to FAILED because failed download handling is disabled"))
-                    failure = True
                     continue
 
                 # allow the user to force setting the status for an already downloaded episode

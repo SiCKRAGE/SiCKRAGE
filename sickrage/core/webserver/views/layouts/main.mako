@@ -194,13 +194,11 @@
                                         </a>
                                     </li>
                                 % endif
-                                % if sickrage.app.config.use_failed_downloads:
-                                    <li>
-                                        <a href="${srWebRoot}/manage/failedDownloads/">
-                                            <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
-                                        </a>
-                                    </li>
-                                % endif
+                                <li>
+                                    <a href="${srWebRoot}/manage/failedDownloads/">
+                                        <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
+                                    </a>
+                                </li>
                                 % if sickrage.app.config.use_subtitles:
                                     <li>
                                         <a href="${srWebRoot}/manage/subtitleMissed/">
@@ -385,7 +383,7 @@
         % if submenu:
             <div id="sub-menu" class="hidden-print">
                 <% first = True %>
-                % for menuItem in reversed(submenu):
+                % for menuItem in submenu:
                     % if menuItem.get('requires', 1):
                         % if isinstance(menuItem['path'], dict):
                         ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>

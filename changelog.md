@@ -1,6 +1,15 @@
 # Changelog
 
-- * 96b4ddf - 2017-11-24: Release v9.2.14 
+- * bd9798c - 2017-11-26: Release v9.2.15 
+- * 9b8a71a - 2017-11-26: misc cosmetic web-ui fixes/improvements 
+- * b2d5c3c - 2017-11-26: removed redundant &quot;delete failed&quot; option from search client settings page 
+- * e6a9b5b - 2017-11-26: refactored failed download handling to no longer be a optional feature as its a requirement for failed snatch handling to work correctly, delete on failed is defaulted to false 
+- * 7666f8a - 2017-11-26: refactored misc post-processing code 
+- * 8929263 - 2017-11-26: refactored misc post-processing code 
+- * ec6f4c1 - 2017-11-25: refactored misc code 
+- * 2480e26 - 2017-11-25: Fixed issues for air-by-date parsing 
+- * 5b66f09 - 2017-11-25: Fixed issues with removing non release group words Fixed issues with reporting disk space usage 
+- * 735e12a - 2017-11-24: Release v9.2.14 
 - * 77825e8 - 2017-11-24: Fixed parsing issues for EliteTorrent provider 
 - * f7d8a47 - 2017-11-24: Fixed issue #130 - uTorrent url length trimmed to 1024 due to uTorrent bug 
 - * 630387d - 2017-11-24: refactored config class 

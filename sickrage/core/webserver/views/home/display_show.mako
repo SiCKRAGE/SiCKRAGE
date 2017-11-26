@@ -392,9 +392,6 @@
                         <div class="input-group input350 input-group-sm">
                             <select id="statusSelect" title="Change selected episode statuses" class="form-control">
                                 <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                                % if not sickrage.app.config.use_failed_downloads:
-                                    <% availableStatus.remove(FAILED) %>
-                                % endif
                                 % if sickrage.app.developer:
                                     <% availableStatus.append(UNAIRED) %>
                                 % endif
@@ -710,7 +707,7 @@
 
                     <td class="col-search">
                         % if int(epResult["season"]) != 0:
-                            % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ) and sickrage.app.config.use_failed_downloads:
+                            % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ):
                                 <a class="epRetry"
                                    id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                                    name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"

@@ -30,7 +30,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
-from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
+from sickrage.core.helpers import isMediaFile, is_rar_file, isSyncFile, \
     is_hidden_folder, notTorNZBFile, real_path
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -184,7 +184,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("PostProcessing Path: %s" % path, sickrage.app.log.INFO)
         result.output += logHelper("PostProcessing Dirs: [%s]" % ", ".join(dirs), sickrage.app.log.DEBUG)
 
-        rarFiles = [x for x in files if isRarFile(x)]
+        rarFiles = [x for x in files if is_rar_file(x)]
         rarContent = unRAR(path, rarFiles, force, result)
         files += rarContent
         videoFiles = [x for x in files if isMediaFile(x)]
@@ -246,7 +246,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 postpone = True
 
             if not postpone:
-                rarFiles = [x for x in fileList if isRarFile(x)]
+                rarFiles = [x for x in fileList if is_rar_file(x)]
                 rarContent = unRAR(processPath, rarFiles, force, result)
                 fileList = set(fileList + rarContent)
                 videoFiles = [x for x in fileList if isMediaFile(x)]
@@ -376,7 +376,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     if sickrage.app.config.unpack:
         # Search for packed release
-        packedFiles = [x for x in allFiles if isRarFile(x)]
+        packedFiles = [x for x in allFiles if is_rar_file(x)]
 
         for packed in packedFiles:
             try:
@@ -604,27 +604,25 @@ def get_path_dir_files(dirName, nzbName, proc_type):
 def process_failed(dirName, nzbName, result):
     """Process a download that did not complete correctly"""
 
-    if sickrage.app.config.use_failed_downloads:
+    try:
+        processor = failed_processor.FailedProcessor(dirName, nzbName)
+        result.result = processor.process()
+        process_fail_message = ""
+    except FailedPostProcessingFailedException as e:
         processor = None
+        result.result = False
+        process_fail_message = e
 
-        try:
-            processor = failed_processor.FailedProcessor(dirName, nzbName)
-            result.result = processor.process()
-            process_fail_message = ""
-        except FailedPostProcessingFailedException as e:
-            result.result = False
-            process_fail_message = e
+    if processor:
+        result.output += processor.log
 
-        if processor:
-            result.output += processor.log
+    if sickrage.app.config.delete_failed and result.result:
+        if delete_folder(dirName, check_empty=False):
+            result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
 
-        if sickrage.app.config.delete_failed and result.result:
-            if delete_folder(dirName, check_empty=False):
-                result.output += logHelper("Deleted folder: " + dirName, sickrage.app.log.DEBUG)
-
-        if result.result:
-            result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
-        else:
-            result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
-                                       .format(nzbName, dirName, process_fail_message),
-                                       sickrage.app.log.WARNING)
+    if result.result:
+        result.output += logHelper("Failed Download Processing succeeded: (" + str(nzbName) + ", " + dirName + ")")
+    else:
+        result.output += logHelper("Failed Download Processing failed: ({}, {}): {}"
+                                   .format(nzbName, dirName, process_fail_message),
+                                   sickrage.app.log.WARNING)

@@ -32,13 +32,13 @@ import urllib
 import urlparse
 import uuid
 
-import adba
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
 from tornado.ioloop import IOLoop
 
+import adba
 import sickrage
 from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
@@ -96,6 +96,22 @@ class Core(object):
         self.newest_version = None
         self.newest_version_string = None
 
+        self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
+                               "s%(seasonnumber)02de%(episodenumber)02d",
+                               "S%(seasonnumber)02dE%(episodenumber)02d",
+                               "%(seasonnumber)02dx%(episodenumber)02d")
+        self.sports_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
+                               "s%(seasonnumber)02de%(episodenumber)02d",
+                               "S%(seasonnumber)02dE%(episodenumber)02d",
+                               "%(seasonnumber)02dx%(episodenumber)02d")
+        self.naming_ep_type_text = ("1x02", "s01e02", "S01E02", "01x02")
+        self.naming_multi_ep_type = {0: ["-%(episodenumber)02d"] * len(self.naming_ep_type),
+                                     1: [" - " + x for x in self.naming_ep_type],
+                                     2: [x + "%(episodenumber)02d" for x in ("x", "e", "E", "x")]}
+        self.naming_multi_ep_type_text = ("extend", "duplicate", "repeat")
+        self.naming_sep_type = (" - ", " ")
+        self.naming_sep_type_text = (" - ", "space")
+
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.sys_encoding = get_sys_encoding()
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
@@ -104,7 +120,7 @@ class Core(object):
         self.api = None
         self.adba_connection = None
         self.notifier_providers = None
-        self.metadata_providers = None
+        self.metadata_providers = {}
         self.search_providers = None
         self.log = None
         self.config = None

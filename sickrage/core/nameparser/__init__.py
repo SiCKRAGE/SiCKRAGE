@@ -154,7 +154,7 @@ class NameParser(object):
                 continue
 
             result = ParseResult(name)
-            result.which_regex = [cur_regex_name]
+            result.which_regex = {cur_regex_name}
             result.score = 0 - cur_regex_num
 
             named_groups = match.groupdict().keys()
@@ -278,7 +278,7 @@ class NameParser(object):
                     season_number = int(dbData[0]['season'])
                     episode_numbers = [int(dbData[0]['episode'])]
 
-                if not season_number or not len(episode_numbers):
+                if not season_number or not episode_numbers:
                     try:
                         lINDEXER_API_PARMS = IndexerApi(bestResult.show.indexer).api_params.copy()
 
@@ -469,13 +469,14 @@ class NameParser(object):
         # build the ParseResult object
         final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
 
-        # anime absolute numbers
-        final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
-                                                                'ab_episode_numbers')
+        if not final_result.is_air_by_date:
+            # anime absolute numbers
+            final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
+                                                                    'ab_episode_numbers')
 
-        # season and episode numbers
-        final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
-        final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
+            # season and episode numbers
+            final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
+            final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
 
         # if the dirname has a release group/show name I believe it over the filename
         final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')
@@ -484,16 +485,15 @@ class NameParser(object):
         final_result.release_group = self._combine_results(dir_name_result, file_name_result, 'release_group')
         final_result.version = self._combine_results(dir_name_result, file_name_result, 'version')
 
-        final_result.which_regex = []
         if final_result == file_name_result:
             final_result.which_regex = file_name_result.which_regex
         elif final_result == dir_name_result:
             final_result.which_regex = dir_name_result.which_regex
         else:
             if file_name_result:
-                final_result.which_regex += file_name_result.which_regex
+                final_result.which_regex |= file_name_result.which_regex
             if dir_name_result:
-                final_result.which_regex += dir_name_result.which_regex
+                final_result.which_regex |= dir_name_result.which_regex
 
         final_result.show = self._combine_results(file_name_result, dir_name_result, 'show')
         final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
@@ -555,7 +555,7 @@ class ParseResult(object):
 
         self.air_date = air_date
 
-        self.which_regex = []
+        self.which_regex = set()
         self.show = show
         self.indexerid = indexerid
         self.score = score
@@ -563,35 +563,19 @@ class ParseResult(object):
         self.version = version
 
     def __eq__(self, other):
-        if not other:
-            return False
-
-        if self.series_name != other.series_name:
-            return False
-        if self.season_number != other.season_number:
-            return False
-        if self.episode_numbers != other.episode_numbers:
-            return False
-        if self.extra_info != other.extra_info:
-            return False
-        if self.release_group != other.release_group:
-            return False
-        if self.air_date != other.air_date:
-            return False
-        if self.ab_episode_numbers != other.ab_episode_numbers:
-            return False
-        if self.show != other.show:
-            return False
-        if self.indexerid != other.indexerid:
-            return False
-        if self.score != other.score:
-            return False
-        if self.quality != other.quality:
-            return False
-        if self.version != other.version:
-            return False
-
-        return True
+        return other and all([
+            self.series_name == other.series_name,
+            self.season_number == other.season_number,
+            self.episode_numbers == other.episode_numbers,
+            self.extra_info == other.extra_info,
+            self.release_group == other.release_group,
+            self.air_date == other.air_date,
+            self.ab_episode_numbers == other.ab_episode_numbers,
+            self.show == other.show,
+            self.score == other.score,
+            self.quality == other.quality,
+            self.version == other.version
+        ])
 
     def __unicode__(self):
         to_return = ""

@@ -210,6 +210,45 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Associated file extensions')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-file"></span>
+                                    </div>
+                                    <input name="allowed_extensions" id="allowed_extensions"
+                                           value="${'|'.join(sickrage.app.config.allowed_extensions)}"
+                                           class="form-control" autocapitalize="off"/>
+                                </div>
+                                <label for="allowed_extensions">
+                                    ${_('comma separated list of associated file extensions SickRage should keep while post processing.')}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="allowed_extensions">${_('leaving it empty means no associated files will be post processed')}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Delete non associated files')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="delete_non_associated_files"
+                               id="delete_non_associated_files" ${('', 'checked')[bool(sickrage.app.config.delete_non_associated_files)]}/>
+                        <label for="delete_non_associated_files">
+                            ${_('delete non associated files while post processing?')}
+                        </label>
+                    </div>
+                </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Change File Date')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -280,27 +319,28 @@
                 </div>
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Use Failed Downloads')}</label>
+                        <label class="component-title">${_('Follow symbolic-links')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input id="use_failed_downloads" type="checkbox" class="enabler"
-                               name="use_failed_downloads" ${('', 'checked')[bool(sickrage.app.config.use_failed_downloads)]}/>
-                        <label for="use_failed_downloads">${_('Use Failed Download Handling?')}</label>
+                        <input type="checkbox" name="processor_follow_symlinks"
+                               id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
+                        <label for="processor_follow_symlinks">
+                            <b>${_('warning')}:</b>&nbsp;<b>${_('EXPERTS ONLY.')}</b><br/>
+                            ${_('Enable only if you know what <b>circular symbolic links</b> are,<br/>'
+                            'and can <b>verify that you have none</b>.')}
+                        </label>
                     </div>
                 </div>
-                <div id="content_use_failed_downloads">
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Delete Failed')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input id="delete_failed" type="checkbox"
-                                   name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
-                            <label for="delete_failed">
-                                ${_('Delete files left over from a failed download?')}<br/>
-                                <b>${_('NOTE:')}</b> ${_('This only works if Use Failed Downloads is enabled.')}
-                            </label>
-                        </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Delete Failed')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input id="delete_failed" type="checkbox"
+                               name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
+                        <label for="delete_failed">
+                            ${_('Delete files left over from a failed download?')}<br/>
+                        </label>
                     </div>
                 </div>
                 <div class="row field-pair">

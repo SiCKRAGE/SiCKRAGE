@@ -72,7 +72,7 @@
                                 if int(whichStatus) in statusList:
                                     statusList.remove(int(whichStatus))
 
-                                if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED and sickrage.app.config.use_failed_downloads:
+                                if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED:
                                     statusList.append(FAILED)
                             %>
 
