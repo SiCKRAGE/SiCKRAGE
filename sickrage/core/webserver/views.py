@@ -2276,7 +2276,7 @@ class changelog(WebHandler):
         super(changelog, self).__init__(*args, **kwargs)
 
     def index(self):
-        url = sickrage.app.config.changelog_url.format(branch=sickrage.app.version_updater.branch)
+        url = sickrage.app.changelog_url.format(branch=sickrage.app.version_updater.branch)
 
         try:
             changes = sickrage.app.wsession.get(url).text
