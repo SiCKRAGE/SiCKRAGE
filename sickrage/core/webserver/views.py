@@ -31,7 +31,6 @@ import dateutil.tz
 import markdown2
 import tornado.locale
 from CodernityDB.database import RecordNotFound
-from adba import aniDBAbstracter
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
@@ -43,6 +42,7 @@ from tornado.web import RequestHandler, authenticated
 
 import sickrage
 import sickrage.subtitles
+from adba import aniDBAbstracter
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core import API
@@ -4129,7 +4129,9 @@ class ConfigPostProcessing(Config):
                            use_failed_downloads=None, delete_failed=None, extra_scripts=None,
                            naming_custom_sports=None, naming_sports_pattern=None,
                            naming_custom_anime=None, naming_anime_pattern=None,
-                           naming_anime_multi_ep=None, autopostprocessor_frequency=None):
+                           naming_anime_multi_ep=None, autopostprocessor_frequency=None,
+                           delete_non_associated_files=None, allowed_extensions=None,
+                           processor_follow_symlinks=None):
 
         results = []
 
@@ -4160,6 +4162,7 @@ class ConfigPostProcessing(Config):
         sickrage.app.config.move_associated_files = checkbox_to_value(move_associated_files)
         sickrage.app.config.sync_files = sync_files
         sickrage.app.config.postpone_if_sync_files = checkbox_to_value(postpone_if_sync_files)
+        sickrage.app.config.allowed_extensions = ','.join({x.strip() for x in allowed_extensions.split(',') if x.strip()})
         sickrage.app.config.naming_custom_abd = checkbox_to_value(naming_custom_abd)
         sickrage.app.config.naming_custom_sports = checkbox_to_value(naming_custom_sports)
         sickrage.app.config.naming_custom_anime = checkbox_to_value(naming_custom_anime)
@@ -4167,6 +4170,8 @@ class ConfigPostProcessing(Config):
         sickrage.app.config.use_failed_downloads = checkbox_to_value(use_failed_downloads)
         sickrage.app.config.delete_failed = checkbox_to_value(delete_failed)
         sickrage.app.config.nfo_rename = checkbox_to_value(nfo_rename)
+        sickrage.app.config.delete_non_associated_files = checkbox_to_value(delete_non_associated_files)
+        sickrage.app.config.processor_follow_symlinks = checkbox_to_value(processor_follow_symlinks)
 
         if self.isNamingValid(naming_pattern, naming_multi_ep, anime_type=naming_anime) != "invalid":
             sickrage.app.config.naming_pattern = naming_pattern

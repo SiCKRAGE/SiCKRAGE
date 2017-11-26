@@ -1,6 +1,7 @@
 # Changelog
 
-- * f2584c1 - 2017-11-26: refactored misc post-processing code 
+- * badf2ad - 2017-11-26: refactored misc post-processing code 
+- * 8929263 - 2017-11-26: refactored misc post-processing code 
 - * ec6f4c1 - 2017-11-25: refactored misc code 
 - * 2480e26 - 2017-11-25: Fixed issues for air-by-date parsing 
 - * 5b66f09 - 2017-11-25: Fixed issues with removing non release group words Fixed issues with reporting disk space usage 
