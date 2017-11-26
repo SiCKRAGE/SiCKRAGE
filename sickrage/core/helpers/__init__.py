@@ -321,7 +321,7 @@ def isMediaFile(filename):
         return False
 
 
-def isRarFile(filename):
+def is_rar_file(filename):
     """
     Check if file is a RAR file, or part of a RAR set
 
@@ -1695,3 +1695,20 @@ def clean_hosts(hosts, default_port=None):
         cleaned_hosts = ''
 
     return cleaned_hosts
+
+
+def glob_escape(pathname):
+    """
+    Escape all special characters.
+    """
+
+    MAGIC_CHECK = re.compile(r'([*?[])')
+    MAGIC_CHECK_BYTES = re.compile(r'([*?[])')
+
+    drive, pathname = os.path.splitdrive(pathname)
+    if isinstance(pathname, bytes):
+        pathname = MAGIC_CHECK_BYTES.sub(r'[\1]', pathname)
+    else:
+        pathname = MAGIC_CHECK.sub(r'[\1]', pathname)
+
+    return drive + pathname

@@ -25,14 +25,13 @@ import re
 import stat
 import subprocess
 
-from adba import aniDBAbstracter
-
 import sickrage
+from adba import aniDBAbstracter
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
-from sickrage.core.helpers import findCertainShow, show_names, fixGlob, replaceExtension, makeDir, \
+from sickrage.core.helpers import findCertainShow, show_names, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
-    isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink
+    isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
@@ -156,83 +155,108 @@ class PostProcessor(object):
                       sickrage.app.log.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
-    def list_associated_files(self, file_path, base_name_only=False, subtitles_only=False, subfolders=False):
+    def list_associated_files(self, file_path, subtitles_only=False, subfolders=False, rename=False):
         """
         For a given file path searches for files with the same name but different extension and returns their absolute paths
 
-        :param subfolders:
-        :param subtitles_only:
         :param file_path: The file to check for associated files
-
-        :param base_name_only: False add extra '.' (conservative search) to file_path minus extension
-
         :return: A list containing all files which are associated to the given file
         """
 
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, __, files in os.walk(treeroot):
+            for base, __, files in os.walk(treeroot.encode(sickrage.app.sys_encoding),
+                                           followlinks=sickrage.app.config.processor_follow_symlinks):
                 goodfiles = fnmatch.filter(files, pattern)
-                results.extend(os.path.join(base, f) for f in goodfiles)
+                for f in goodfiles:
+                    found = os.path.join(base, f)
+                    if found != file_path:
+                        results.append(found)
             return results
 
         if not file_path:
             return []
 
-        # don't confuse glob with chars we didn't mean to use
-        globbable_file_path = fixGlob(file_path)
-
-        file_path_list = []
+        file_path_list_to_allow = []
+        file_path_list_to_delete = []
 
         if subfolders:
-            base_name = os.path.basename(globbable_file_path).rpartition('.')[0]
+            base_name = os.path.basename(file_path).rpartition('.')[0]
         else:
-            base_name = globbable_file_path.rpartition('.')[0]
-
-        if not base_name_only:
-            base_name += '.'
+            base_name = file_path.rpartition('.')[0]
 
         # don't strip it all and use cwd by accident
         if not base_name:
             return []
 
-        if subfolders:  # subfolders are only checked in show folder, so names will always be exactly alike
-            filelist = recursive_glob(os.path.dirname(globbable_file_path),
-                                      base_name + '*')  # just create the list of all files starting with the basename
-        else:  # this is called when PP, so we need to do the filename check case-insensitive
+        dirname = os.path.dirname(file_path) or '.'
+
+        # subfolders are only checked in show folder, so names will always be exactly alike
+        if subfolders:
+            # just create the list of all files starting with the basename
+            filelist = recursive_glob(dirname, glob_escape(base_name) + '*')
+        # this is called when PP, so we need to do the filename check case-insensitive
+        else:
             filelist = []
 
-            checklist = glob.glob(os.path.join(os.path.dirname(globbable_file_path),
-                                               '*'))  # get a list of all the files in the folder
-            for filefound in checklist:  # loop through all the files in the folder, and check if they are the same name even when the cases don't match
-                file_name = filefound.rpartition('.')[0]
-                if not base_name_only:
-                    file_name += '.'
-                if file_name.lower() == base_name.lower().replace('[[]', '[').replace('[]]',
-                                                                                      ']'):  # if there's no difference in the filename add it to the filelist
-                    filelist.append(filefound)
+            # loop through all the files in the folder, and check if they are the same name even when the cases don't match
+            for found_file in glob.glob(os.path.join(glob_escape(dirname), '*')):
+                file_name, separator, file_extension = found_file.rpartition('.')
+
+                # Handles subtitles with language code
+                if file_extension in subtitle_extensions and file_name.rpartition('.')[0].lower() == base_name.lower():
+                    filelist.append(found_file)
+                # Handles all files with same basename, including subtitles without language code
+                elif file_name.lower() == base_name.lower():
+                    filelist.append(found_file)
 
         for associated_file_path in filelist:
-            # only add associated to list
-            if associated_file_path == file_path:
+            # Exclude the video file we are post-processing
+            if os.path.abspath(associated_file_path) == os.path.abspath(file_path):
                 continue
-            # only list it if the only non-shared part is the extension or if it is a subtitle
-            if subtitles_only and not associated_file_path[len(associated_file_path) - 3:] in subtitle_extensions:
+
+            # If this is a rename in the show folder, we don't need to check anything, just add it to the list
+            if rename:
+                file_path_list_to_allow.append(associated_file_path)
+                continue
+
+            # Exclude non-subtitle files with the 'subtitles_only' option
+            if subtitles_only and not associated_file_path.endswith(tuple(subtitle_extensions)):
                 continue
 
             # Exclude .rar files from associated list
-            if re.search(r'(^.+\.(rar|r\d+)$)', associated_file_path):
+            if is_rar_file(associated_file_path):
                 continue
 
+            # Define associated files (all, allowed and non allowed)
             if os.path.isfile(associated_file_path):
-                file_path_list.append(associated_file_path)
+                # check if allowed or not during post processing
+                if sickrage.app.config.move_associated_files and associated_file_path.endswith(
+                        tuple(sickrage.app.config.allowed_extensions.split(","))):
+                    file_path_list_to_allow.append(associated_file_path)
+                elif sickrage.app.config.delete_non_associated_files:
+                    file_path_list_to_delete.append(associated_file_path)
 
-        if file_path_list:
-            self._log("Found the following associated files: " + str(file_path_list), sickrage.app.log.DEBUG)
+        if file_path_list_to_allow or file_path_list_to_delete:
+            self._log("Found the following associated files for {}: {}".format(file_path,
+                                                                               file_path_list_to_allow + file_path_list_to_delete),
+                      sickrage.app.log.DEBUG)
+
+            if file_path_list_to_delete:
+                self._log(
+                    "Deleting non allowed associated files for {}: {}".format(file_path, file_path_list_to_delete),
+                    sickrage.app.log.DEBUG)
+
+                # Delete all extensions the user doesn't allow
+                self._delete(file_path_list_to_delete)
+            if file_path_list_to_allow:
+                self._log("Allowing associated files for {0}: {1}".format(file_path, file_path_list_to_allow),
+                          sickrage.app.log.DEBUG)
         else:
-            self._log("No associated files were during this pass", sickrage.app.log.DEBUG)
+            self._log("No associated files for {0} were found during this pass".format(file_path),
+                      sickrage.app.log.DEBUG)
 
-        return file_path_list
+        return file_path_list_to_allow
 
     def _delete(self, file_path, associated_files=False):
         """
@@ -248,7 +272,7 @@ class PostProcessor(object):
         # figure out which files we want to delete
         file_list = [file_path]
         if associated_files:
-            file_list = file_list + self.list_associated_files(file_path, base_name_only=True, subfolders=True)
+            file_list = file_list + self.list_associated_files(file_path, subfolders=True)
 
         if not file_list:
             self._log("There were no files associated with " + file_path + ", not deleting anything",
@@ -294,10 +318,13 @@ class PostProcessor(object):
             return
 
         file_list = [file_path]
+        subfolders = os.path.normpath(os.path.dirname(file_path)) != os.path.normpath(
+            sickrage.app.config.tv_download_dir)
+
         if associated_files:
-            file_list = file_list + self.list_associated_files(file_path)
+            file_list = file_list + self.list_associated_files(file_path, subfolders=subfolders)
         elif subs:
-            file_list = file_list + self.list_associated_files(file_path, subtitles_only=True)
+            file_list = file_list + self.list_associated_files(file_path, subtitles_only=True, subfolders=subfolders)
 
         if not file_list:
             self._log("There were no files associated with " + file_path + ", not moving anything",

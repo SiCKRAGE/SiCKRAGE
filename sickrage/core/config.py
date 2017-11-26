@@ -106,7 +106,7 @@ class Config(object):
         self.display_all_seasons = True
         self.default_page = "home"
         self.use_listview = False
-
+        self.processor_follow_symlinks = False
         self.quality_default = None
         self.status_default = None
         self.status_default_after = None
@@ -160,12 +160,14 @@ class Config(object):
         self.keep_processed_dir = False
         self.process_method = ""
         self.delrarcontents = False
+        self.delete_non_associated_files = False
         self.move_associated_files = False
         self.postpone_if_sync_files = True
         self.nfo_rename = True
         self.tv_download_dir = ""
         self.unpack = False
         self.skip_removed_files = False
+        self.allowed_extensions = ""
         self.nzbs = False
         self.nzbs_uid = ""
         self.nzbs_hash = ""
@@ -758,6 +760,7 @@ class Config(object):
                 'web_port': 8081,
                 'launch_browser': False,
                 'unpack': False,
+                'delete_non_associated_files': True,
                 'move_associated_files': False,
                 'naming_multi_ep': 1,
                 'random_user_agent': False,
@@ -796,7 +799,9 @@ class Config(object):
                 'last_db_compact': 0,
                 'ignored_subs_list': 'dk,fin,heb,kor,nor,nordic,pl,swe',
                 'calendar_icons': False,
-                'keep_processed_dir': True
+                'keep_processed_dir': True,
+                'processor_follow_symlinks': False,
+                'allowed_extensions': 'srt,nfo,srr,sfv'
             },
             'NZBget': {
                 'nzbget_host': '',
@@ -1471,7 +1476,9 @@ class Config(object):
         self.file_timestamp_timezone = self.check_setting_str('General', 'file_timestamp_timezone')
         self.keep_processed_dir = self.check_setting_bool('General', 'keep_processed_dir')
         self.process_method = self.check_setting_str('General', 'process_method')
+        self.processor_follow_symlinks = self.check_setting_bool('General', 'processor_follow_symlinks')
         self.delrarcontents = self.check_setting_bool('General', 'del_rar_contents')
+        self.delete_non_associated_files = self.check_setting_bool('General', 'delete_non_associated_files')
         self.move_associated_files = self.check_setting_bool('General', 'move_associated_files')
         self.postpone_if_sync_files = self.check_setting_bool('General', 'postpone_if_sync_files')
         self.sync_files = self.check_setting_str('General', 'sync_files')
@@ -1489,6 +1496,7 @@ class Config(object):
         self.use_listview = self.check_setting_bool('General', 'use_listview')
         self.display_all_seasons = self.check_setting_bool('General', 'display_all_seasons')
         self.random_user_agent = self.check_setting_bool('General', 'random_user_agent')
+        self.allowed_extensions = self.check_setting_str('General', 'allowed_extensions')
 
         # GUI SETTINGS
         self.gui_lang = self.check_setting_str('GUI', 'gui_lang')
@@ -1970,6 +1978,9 @@ class Config(object):
                 'no_restart': int(self.no_restart),
                 'display_all_seasons': int(self.display_all_seasons),
                 'random_user_agent': int(self.random_user_agent),
+                'processor_follow_symlinks': int(self.processor_follow_symlinks),
+                'delete_non_associated_files': int(self.delete_non_associated_files),
+                'allowed_extensions': self.allowed_extensions
             },
             'GUI': {
                 'gui_lang': self.gui_lang,

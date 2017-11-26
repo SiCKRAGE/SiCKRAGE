@@ -30,7 +30,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException
-from sickrage.core.helpers import isMediaFile, isRarFile, isSyncFile, \
+from sickrage.core.helpers import isMediaFile, is_rar_file, isSyncFile, \
     is_hidden_folder, notTorNZBFile, real_path
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -184,7 +184,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("PostProcessing Path: %s" % path, sickrage.app.log.INFO)
         result.output += logHelper("PostProcessing Dirs: [%s]" % ", ".join(dirs), sickrage.app.log.DEBUG)
 
-        rarFiles = [x for x in files if isRarFile(x)]
+        rarFiles = [x for x in files if is_rar_file(x)]
         rarContent = unRAR(path, rarFiles, force, result)
         files += rarContent
         videoFiles = [x for x in files if isMediaFile(x)]
@@ -246,7 +246,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                 postpone = True
 
             if not postpone:
-                rarFiles = [x for x in fileList if isRarFile(x)]
+                rarFiles = [x for x in fileList if is_rar_file(x)]
                 rarContent = unRAR(processPath, rarFiles, force, result)
                 fileList = set(fileList + rarContent)
                 videoFiles = [x for x in fileList if isMediaFile(x)]
@@ -376,7 +376,7 @@ def validateDir(path, dirName, nzbNameOriginal, failed, result):
 
     if sickrage.app.config.unpack:
         # Search for packed release
-        packedFiles = [x for x in allFiles if isRarFile(x)]
+        packedFiles = [x for x in allFiles if is_rar_file(x)]
 
         for packed in packedFiles:
             try:
