@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ed9655 - 2017-11-26: fixed up docstrings 
+- * bf6594e - 2017-11-26: fixed issue with associated file extensions view in post-process template 
+- * 044fc10 - 2017-11-26: fixed up docstrings 
 - * a75d9c5 - 2017-11-26: Release v9.2.15 
 - * 9b8a71a - 2017-11-26: misc cosmetic web-ui fixes/improvements 
 - * b2d5c3c - 2017-11-26: removed redundant &quot;delete failed&quot; option from search client settings page 
