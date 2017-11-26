@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7b45800 - 2017-11-25: Fixed issues for air-by-date parsing 
+- * 73b015e - 2017-11-25: refactored misc code 
+- * 2480e26 - 2017-11-25: Fixed issues for air-by-date parsing 
 - * 5b66f09 - 2017-11-25: Fixed issues with removing non release group words Fixed issues with reporting disk space usage 
 - * 735e12a - 2017-11-24: Release v9.2.14 
 - * 77825e8 - 2017-11-24: Fixed parsing issues for EliteTorrent provider 

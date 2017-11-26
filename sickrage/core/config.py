@@ -47,28 +47,12 @@ class Config(object):
         self.config_obj = None
         self.config_version = 11
 
-        self.encryption_secret = None
+        self.encryption_secret = ""
         self.encryption_version = 2
 
         self.debug = False
 
         self.last_db_compact = 0
-
-        self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
-                               "s%(seasonnumber)02de%(episodenumber)02d",
-                               "S%(seasonnumber)02dE%(episodenumber)02d",
-                               "%(seasonnumber)02dx%(episodenumber)02d")
-        self.sports_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
-                               "s%(seasonnumber)02de%(episodenumber)02d",
-                               "S%(seasonnumber)02dE%(episodenumber)02d",
-                               "%(seasonnumber)02dx%(episodenumber)02d")
-        self.naming_ep_type_text = ("1x02", "s01e02", "S01E02", "01x02")
-        self.naming_multi_ep_type = {0: ["-%(episodenumber)02d"] * len(self.naming_ep_type),
-                                     1: [" - " + x for x in self.naming_ep_type],
-                                     2: [x + "%(episodenumber)02d" for x in ("x", "e", "E", "x")]}
-        self.naming_multi_ep_type_text = ("extend", "duplicate", "repeat")
-        self.naming_sep_type = (" - ", " ")
-        self.naming_sep_type_text = (" - ", "space")
 
         self.log_size = 1048576
         self.log_nr = 5
@@ -107,9 +91,9 @@ class Config(object):
         self.https_cert = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
         self.https_key = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
         self.api_key = ""
-        self.api_root = None
+        self.api_root = ""
         self.indexer_default_language = 'en'
-        self.ep_default_deleted_status = 6
+        self.ep_default_deleted_status = None
         self.launch_browser = False
         self.showupdate_stale = True
         self.root_dirs = ""
@@ -123,9 +107,9 @@ class Config(object):
         self.default_page = "home"
         self.use_listview = False
 
-        self.quality_default = SD
-        self.status_default = SKIPPED
-        self.status_default_after = WANTED
+        self.quality_default = None
+        self.status_default = None
+        self.status_default_after = None
         self.flatten_folders_default = False
         self.subtitles_default = False
         self.indexer_default = 0
@@ -135,28 +119,28 @@ class Config(object):
         self.archive_default = False
         self.naming_multi_ep = False
         self.naming_anime_multi_ep = False
-        self.naming_pattern = None
-        self.naming_abd_pattern = None
+        self.naming_pattern = ""
+        self.naming_abd_pattern = ""
         self.naming_custom_abd = False
-        self.naming_sports_pattern = None
+        self.naming_sports_pattern = ""
         self.naming_custom_sports = False
-        self.naming_anime_pattern = None
+        self.naming_anime_pattern = ""
         self.naming_custom_anime = False
         self.naming_force_folders = False
         self.naming_strip_year = False
-        self.naming_anime = None
+        self.naming_anime = ""
         self.use_nzbs = False
         self.use_torrents = False
-        self.nzb_method = None
-        self.nzb_dir = None
+        self.nzb_method = ""
+        self.nzb_dir = ""
         self.usenet_retention = 500
-        self.torrent_method = None
-        self.torrent_dir = None
+        self.torrent_method = ""
+        self.torrent_dir = ""
         self.download_propers = False
         self.enable_rss_cache = True
         self.enable_rss_cache_valid_shows = False
         self.torrent_file_to_magnet = False
-        self.proper_searcher_interval = None
+        self.proper_searcher_interval = ""
         self.allow_high_priority = False
         self.sab_forced = False
         self.randomize_providers = False
@@ -170,54 +154,54 @@ class Config(object):
         self.create_missing_show_dirs = False
         self.rename_episodes = False
         self.airdate_episodes = False
-        self.file_timestamp_timezone = None
+        self.file_timestamp_timezone = ""
         self.process_automatically = False
         self.no_delete = False
         self.keep_processed_dir = False
-        self.process_method = None
+        self.process_method = ""
         self.delrarcontents = False
         self.move_associated_files = False
         self.postpone_if_sync_files = True
         self.nfo_rename = True
-        self.tv_download_dir = None
+        self.tv_download_dir = ""
         self.unpack = False
         self.skip_removed_files = False
         self.nzbs = False
-        self.nzbs_uid = None
-        self.nzbs_hash = None
+        self.nzbs_uid = ""
+        self.nzbs_hash = ""
         self.omgwtfnzbs = False
         self.newzbin = False
-        self.newzbin_username = None
-        self.newzbin_password = None
-        self.sab_username = None
-        self.sab_password = None
-        self.sab_apikey = None
-        self.sab_category = None
-        self.sab_category_backlog = None
-        self.sab_category_anime = None
-        self.sab_category_anime_backlog = None
-        self.sab_host = None
-        self.nzbget_username = None
-        self.nzbget_password = None
-        self.nzbget_category = None
-        self.nzbget_category_backlog = None
-        self.nzbget_category_anime = None
-        self.nzbget_category_anime_backlog = None
-        self.nzbget_host = None
+        self.newzbin_username = ""
+        self.newzbin_password = ""
+        self.sab_username = ""
+        self.sab_password = ""
+        self.sab_apikey = ""
+        self.sab_category = ""
+        self.sab_category_backlog = ""
+        self.sab_category_anime = ""
+        self.sab_category_anime_backlog = ""
+        self.sab_host = ""
+        self.nzbget_username = ""
+        self.nzbget_password = ""
+        self.nzbget_category = ""
+        self.nzbget_category_backlog = ""
+        self.nzbget_category_anime = ""
+        self.nzbget_category_anime_backlog = ""
+        self.nzbget_host = ""
         self.nzbget_use_https = False
         self.nzbget_priority = 100
-        self.torrent_username = None
-        self.torrent_password = None
-        self.torrent_host = None
-        self.torrent_path = None
-        self.torrent_seed_time = None
+        self.torrent_username = ""
+        self.torrent_password = ""
+        self.torrent_host = ""
+        self.torrent_path = ""
+        self.torrent_seed_time = ""
         self.torrent_paused = False
         self.torrent_high_bandwidth = False
-        self.torrent_label = None
-        self.torrent_label_anime = None
+        self.torrent_label = ""
+        self.torrent_label_anime = ""
         self.torrent_verify_cert = False
-        self.torrent_rpcurl = None
-        self.torrent_auth_type = None
+        self.torrent_rpcurl = ""
+        self.torrent_auth_type = ""
         self.use_kodi = False
         self.kodi_always_on = True
         self.kodi_notify_onsnatch = False
@@ -226,31 +210,31 @@ class Config(object):
         self.kodi_update_library = False
         self.kodi_update_full = False
         self.kodi_update_onlyfirst = False
-        self.kodi_host = None
-        self.kodi_username = None
-        self.kodi_password = None
+        self.kodi_host = ""
+        self.kodi_username = ""
+        self.kodi_password = ""
         self.use_plex = False
         self.plex_notify_onsnatch = False
         self.plex_notify_ondownload = False
         self.plex_notify_onsubtitledownload = False
         self.plex_update_library = False
-        self.plex_server_host = None
-        self.plex_server_token = None
-        self.plex_host = None
-        self.plex_username = None
-        self.plex_password = None
+        self.plex_server_host = ""
+        self.plex_server_token = ""
+        self.plex_host = ""
+        self.plex_username = ""
+        self.plex_password = ""
         self.use_plex_client = False
-        self.plex_client_username = None
-        self.plex_client_password = None
+        self.plex_client_username = ""
+        self.plex_client_password = ""
         self.use_emby = False
-        self.emby_host = None
-        self.emby_apikey = None
+        self.emby_host = ""
+        self.emby_apikey = ""
         self.use_growl = False
         self.growl_notify_onsnatch = False
         self.growl_notify_ondownload = False
         self.growl_notify_onsubtitledownload = False
-        self.growl_host = None
-        self.growl_password = None
+        self.growl_host = ""
+        self.growl_password = ""
         self.use_freemobile = False
         self.freemobile_notify_onsnatch = False
         self.freemobile_notify_ondownload = False
@@ -267,64 +251,64 @@ class Config(object):
         self.prowl_notify_onsnatch = False
         self.prowl_notify_ondownload = False
         self.prowl_notify_onsubtitledownload = False
-        self.prowl_api = None
+        self.prowl_api = ""
         self.prowl_priority = 0
         self.use_twitter = False
         self.twitter_notify_onsnatch = False
         self.twitter_notify_ondownload = False
         self.twitter_notify_onsubtitledownload = False
-        self.twitter_username = None
-        self.twitter_password = None
-        self.twitter_prefix = None
-        self.twitter_dmto = None
+        self.twitter_username = ""
+        self.twitter_password = ""
+        self.twitter_prefix = ""
+        self.twitter_dmto = ""
         self.twitter_usedm = False
         self.use_boxcar2 = False
         self.boxcar2_notify_onsnatch = False
         self.boxcar2_notify_ondownload = False
         self.boxcar2_notify_onsubtitledownload = False
-        self.boxcar2_accesstoken = None
+        self.boxcar2_accesstoken = ""
         self.use_pushover = False
         self.pushover_notify_onsnatch = False
         self.pushover_notify_ondownload = False
         self.pushover_notify_onsubtitledownload = False
-        self.pushover_userkey = None
-        self.pushover_apikey = None
-        self.pushover_device = None
-        self.pushover_sound = None
+        self.pushover_userkey = ""
+        self.pushover_apikey = ""
+        self.pushover_device = ""
+        self.pushover_sound = ""
         self.use_libnotify = False
         self.libnotify_notify_onsnatch = False
         self.libnotify_notify_ondownload = False
         self.libnotify_notify_onsubtitledownload = False
         self.use_nmj = False
-        self.nmj_host = None
-        self.nmj_database = None
-        self.nmj_mount = None
+        self.nmj_host = ""
+        self.nmj_database = ""
+        self.nmj_mount = ""
         self.use_anidb = False
-        self.anidb_username = None
-        self.anidb_password = None
+        self.anidb_username = ""
+        self.anidb_password = ""
         self.anidb_use_mylist = False
         self.anime_split_home = False
         self.use_synoindex = False
         self.use_nmjv2 = False
-        self.nmjv2_host = None
-        self.nmjv2_database = None
-        self.nmjv2_dbloc = None
+        self.nmjv2_host = ""
+        self.nmjv2_database = ""
+        self.nmjv2_dbloc = ""
         self.use_synologynotifier = False
         self.synologynotifier_notify_onsnatch = False
         self.synologynotifier_notify_ondownload = False
         self.synologynotifier_notify_onsubtitledownload = False
         self.use_slack = False
-        self.slack_notify_onsnatch = None
-        self.slack_notify_ondownload = None
-        self.slack_notify_onsubtitledownload = None
+        self.slack_notify_onsnatch = False
+        self.slack_notify_ondownload = False
+        self.slack_notify_onsubtitledownload = False
         self.slack_webhook = ""
         self.use_discord = False
         self.discord_notify_onsnatch = False
         self.discord_notify_ondownload = False
         self.discord_notify_onsubtitledownload = False
         self.discord_webhook = ""
-        self.discord_name = None
-        self.discord_avatar_url = None
+        self.discord_name = ""
+        self.discord_avatar_url = ""
         self.discord_tts = False
         self.use_trakt = False
         self.trakt_username = ""
@@ -346,87 +330,87 @@ class Config(object):
         self.pytivo_notify_ondownload = False
         self.pytivo_notify_onsubtitledownload = False
         self.pytivo_update_library = False
-        self.pytivo_host = None
-        self.pytivo_share_name = None
-        self.pytivo_tivo_name = None
+        self.pytivo_host = ""
+        self.pytivo_share_name = ""
+        self.pytivo_tivo_name = ""
         self.use_nma = False
         self.nma_notify_onsnatch = False
         self.nma_notify_ondownload = False
         self.nma_notify_onsubtitledownload = False
-        self.nma_api = None
+        self.nma_api = ""
         self.nma_priority = 0
         self.use_pushalot = False
         self.pushalot_notify_onsnatch = False
         self.pushalot_notify_ondownload = False
         self.pushalot_notify_onsubtitledownload = False
-        self.pushalot_authorizationtoken = None
+        self.pushalot_authorizationtoken = ""
         self.use_pushbullet = False
         self.pushbullet_notify_onsnatch = False
         self.pushbullet_notify_ondownload = False
         self.pushbullet_notify_onsubtitledownload = False
-        self.pushbullet_api = None
-        self.pushbullet_device = None
+        self.pushbullet_api = ""
+        self.pushbullet_device = ""
         self.use_email = False
         self.email_notify_onsnatch = False
         self.email_notify_ondownload = False
         self.email_notify_onsubtitledownload = False
-        self.email_host = None
+        self.email_host = ""
         self.email_port = 25
         self.email_tls = False
-        self.email_user = None
-        self.email_password = None
-        self.email_from = None
-        self.email_list = None
+        self.email_user = ""
+        self.email_password = ""
+        self.email_from = ""
+        self.email_list = ""
         self.gui_lang = ""
         self.gui_static_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'static')
         self.gui_views_dir = os.path.join(sickrage.PROG_DIR, 'core', 'webserver', 'views')
-        self.home_layout = None
-        self.history_layout = None
+        self.home_layout = ""
+        self.history_layout = ""
         self.history_limit = 0
         self.display_show_specials = False
-        self.coming_eps_layout = None
+        self.coming_eps_layout = ""
         self.coming_eps_display_paused = False
-        self.coming_eps_sort = None
-        self.coming_eps_missed_range = None
+        self.coming_eps_sort = ""
+        self.coming_eps_missed_range = ""
         self.fuzzy_dating = False
         self.trim_zero = False
-        self.date_preset = None
-        self.time_preset = None
-        self.time_preset_w_seconds = None
-        self.timezone_display = None
-        self.theme_name = None
-        self.poster_sortby = None
-        self.poster_sortdir = None
+        self.date_preset = ""
+        self.time_preset = ""
+        self.time_preset_w_seconds = ""
+        self.timezone_display = ""
+        self.theme_name = ""
+        self.poster_sortby = ""
+        self.poster_sortdir = ""
         self.filter_row = True
         self.use_subtitles = False
-        self.subtitles_languages = None
-        self.subtitles_dir = None
-        self.subtitles_services_list = None
-        self.subtitles_services_enabled = None
+        self.subtitles_languages = ""
+        self.subtitles_dir = ""
+        self.subtitles_services_list = ""
+        self.subtitles_services_enabled = ""
         self.subtitles_history = False
         self.embedded_subtitles_all = False
         self.subtitles_hearing_impaired = False
         self.subtitles_multi = False
-        self.subtitles_extra_scripts = None
-        self.addic7ed_user = None
-        self.addic7ed_pass = None
-        self.opensubtitles_user = None
-        self.opensubtitles_pass = None
-        self.legendastv_user = None
-        self.legendastv_pass = None
-        self.itasa_user = None
-        self.itasa_pass = None
+        self.subtitles_extra_scripts = []
+        self.addic7ed_user = ""
+        self.addic7ed_pass = ""
+        self.opensubtitles_user = ""
+        self.opensubtitles_pass = ""
+        self.legendastv_user = ""
+        self.legendastv_pass = ""
+        self.itasa_user = ""
+        self.itasa_pass = ""
         self.use_failed_downloads = False
         self.delete_failed = False
-        self.extra_scripts = None
-        self.require_words = None
-        self.ignore_words = None
-        self.ignored_subs_list = None
-        self.sync_files = None
+        self.extra_scripts = []
+        self.require_words = ""
+        self.ignore_words = ""
+        self.ignored_subs_list = ""
+        self.sync_files = ""
         self.calendar_unprotected = False
         self.calendar_icons = False
         self.no_restart = False
-        self.thetvdb_apitoken = None
+        self.thetvdb_apitoken = ""
         self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
         self.trakt_app_id = '4562'
@@ -456,9 +440,9 @@ class Config(object):
         self.default_showupdate_hour = 3
         self.showupdate_hour = None
 
-        self.quality_sizes = None
+        self.quality_sizes = {}
 
-        self.custom_providers = None
+        self.custom_providers = ""
 
         self.git_remote = "origin"
         self.git_remote_url = "https://git.sickrage.ca/SiCKRAGE/sickrage"
@@ -760,7 +744,7 @@ class Config(object):
                 'enable_rss_cache': True,
                 'enable_rss_cache_valid_shows': False,
                 'torrent_file_to_magnet': False,
-                'status_default': 5,
+                'status_default': SKIPPED,
                 'naming_anime': 3,
                 'naming_custom_sports': False,
                 'naming_anime_pattern': 'Season %0S/%SN - S%0SE%0E - %EN',
@@ -788,7 +772,7 @@ class Config(object):
                 'backlog_frequency': 21,
                 'notify_on_login': False,
                 'rename_episodes': True,
-                'quality_default': 3,
+                'quality_default': SD,
                 'git_username': '',
                 'extra_scripts': '',
                 'flatten_folders_default': False,
@@ -808,7 +792,7 @@ class Config(object):
                 'web_password': '',
                 'scene_default': False,
                 'skip_removed_files': False,
-                'status_default_after': 3,
+                'status_default_after': WANTED,
                 'last_db_compact': 0,
                 'ignored_subs_list': 'dk,fin,heb,kor,nor,nordic,pl,swe',
                 'calendar_icons': False,

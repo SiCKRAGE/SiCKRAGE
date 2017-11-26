@@ -917,7 +917,6 @@ class TVShow(object):
         return rootEp
 
     def loadFromDB(self, skipNFO=False):
-
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
         dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_shows', self.indexerid, with_doc=True)]
@@ -925,7 +924,7 @@ class TVShow(object):
         if len(dbData) > 1:
             raise MultipleShowsInDatabaseException()
         elif len(dbData) == 0:
-            sickrage.app.log.info(str(self.indexerid) + ": Unable to find the show in the database")
+            sickrage.app.log.debug(str(self.indexerid) + ": Unable to find the show in the database")
             return False
 
         self._indexer = try_int(dbData[0]["indexer"], self.indexer)

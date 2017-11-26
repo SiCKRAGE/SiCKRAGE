@@ -85,7 +85,7 @@ class TVChaosUKProvider(TorrentProvider):
                 elif ep_obj.show.anime:
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
-                    ep_string += sickrage.app.config.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
+                    ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
                                                                                'episodenumber': ep_obj.scene_episode}
 
                 if add_string:
