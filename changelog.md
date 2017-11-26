@@ -1,6 +1,7 @@
 # Changelog
 
-- * cc5c562 - 2017-11-26: Fixed changelog url issues 
+- * 51ea65a - 2017-11-26: fixed missing changelog_url attribute 
+- * a51d682 - 2017-11-26: Fixed changelog url issues 
 - * f4f7da9 - 2017-11-26: Release v9.2.16 
 - * 95299aa - 2017-11-26: fixed issue with associated file extensions view in post-process template 
 - * 044fc10 - 2017-11-26: fixed up docstrings 
