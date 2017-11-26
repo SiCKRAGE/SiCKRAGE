@@ -1,6 +1,7 @@
 # Changelog
 
-- * a587b22 - 2017-11-25: Fixed issues with removing non release group words Fixed issues with reporting disk space usage 
+- * 7b45800 - 2017-11-25: Fixed issues for air-by-date parsing 
+- * 5b66f09 - 2017-11-25: Fixed issues with removing non release group words Fixed issues with reporting disk space usage 
 - * 735e12a - 2017-11-24: Release v9.2.14 
 - * 77825e8 - 2017-11-24: Fixed parsing issues for EliteTorrent provider 
 - * f7d8a47 - 2017-11-24: Fixed issue #130 - uTorrent url length trimmed to 1024 due to uTorrent bug 
