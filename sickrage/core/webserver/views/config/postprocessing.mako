@@ -220,7 +220,7 @@
                                         <span class="glyphicon glyphicon-file"></span>
                                     </div>
                                     <input name="allowed_extensions" id="allowed_extensions"
-                                           value="${'|'.join(sickrage.app.config.allowed_extensions)}"
+                                           value="${sickrage.app.config.allowed_extensions}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                                 <label for="allowed_extensions">
