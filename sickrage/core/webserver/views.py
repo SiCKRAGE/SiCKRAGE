@@ -4007,7 +4007,7 @@ class ConfigSearch(Config):
                    nzbget_host=None, nzbget_use_https=None, backlog_frequency=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
-                   randomize_providers=None, delete_failed=None,
+                   randomize_providers=None,
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
@@ -4040,7 +4040,6 @@ class ConfigSearch(Config):
         sickrage.app.config.change_download_propers(download_propers)
         sickrage.app.config.proper_searcher_interval = check_propers_interval
         sickrage.app.config.allow_high_priority = checkbox_to_value(allow_high_priority)
-        sickrage.app.config.delete_failed = checkbox_to_value(delete_failed)
         sickrage.app.config.sab_username = sab_username
         sickrage.app.config.sab_password = sab_password
         sickrage.app.config.sab_apikey = sab_apikey.strip()
@@ -4135,6 +4134,7 @@ class ConfigPostProcessing(Config):
                 results.append(_("Unpacking Not Supported, disabling unpack setting"))
         else:
             sickrage.app.config.unpack = checkbox_to_value(unpack)
+
         sickrage.app.config.no_delete = checkbox_to_value(no_delete)
         sickrage.app.config.keep_processed_dir = checkbox_to_value(keep_processed_dir)
         sickrage.app.config.create_missing_show_dirs = checkbox_to_value(create_missing_show_dirs)

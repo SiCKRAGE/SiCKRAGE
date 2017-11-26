@@ -1,6 +1,7 @@
 # Changelog
 
-- * f61f2bb - 2017-11-26: refactored failed download handling to no longer be a optional feature as its a requirement for failed snatch handling to work correctly, delete on failed is defaulted to false 
+- * c6e78e7 - 2017-11-26: removed redundant &quot;delete failed&quot; option from search client settings page 
+- * e6a9b5b - 2017-11-26: refactored failed download handling to no longer be a optional feature as its a requirement for failed snatch handling to work correctly, delete on failed is defaulted to false 
 - * 7666f8a - 2017-11-26: refactored misc post-processing code 
 - * 8929263 - 2017-11-26: refactored misc post-processing code 
 - * ec6f4c1 - 2017-11-25: refactored misc code 

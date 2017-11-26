@@ -226,19 +226,6 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Delete Failed')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input id="delete_failed" type="checkbox"
-                               name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
-                        <label for="delete_failed">
-                            ${_('Delete files left over from a failed download?')}
-                        </label>
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
