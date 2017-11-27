@@ -104,7 +104,6 @@ class BacklogSearcher(object):
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
-
             if curShow.paused:
                 continue
 

@@ -960,7 +960,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
-                if not restore_database and member.split('/')[0] in ['database', 'db_backup']:
+                if not restore_database and member.split('/')[0] == 'database':
                     continue
 
                 if not restore_config and member.split('/')[0] == 'config.ini':
@@ -1002,11 +1002,6 @@ def backupSR(backupDir, keep_latest=False):
 
     # database folder
     for (path, __, files) in os.walk(os.path.join(sickrage.app.data_dir, 'database'), topdown=True):
-        for filename in files:
-            source += [os.path.join(path, filename)]
-
-    # db_backup folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.app.data_dir, 'db_backup'), topdown=True):
         for filename in files:
             source += [os.path.join(path, filename)]
 
@@ -1053,15 +1048,6 @@ def restoreSR(srcDir, dstDir):
                                                                                 datetime.datetime.now().strftime(
                                                                                     '%Y%m%d_%H%M%S'))))
             moveFile(os.path.join(srcDir, 'database'), dstDir)
-
-        # databse backups
-        if os.path.exists(os.path.join(srcDir, 'db_backup')):
-            if os.path.exists(os.path.join(dstDir, 'db_backup')):
-                moveFile(os.path.join(dstDir, 'db_backup'), os.path.join(dstDir, '{}.bak-{}'
-                                                                         .format('db_backup',
-                                                                                 datetime.datetime.now().strftime(
-                                                                                     '%Y%m%d_%H%M%S'))))
-            moveFile(os.path.join(srcDir, 'db_backup'), dstDir)
 
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
