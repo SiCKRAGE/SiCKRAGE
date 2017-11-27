@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-11-26 12:01-0500\n"
-"PO-Revision-Date: 2017-11-27 13:03-0500\n"
+"PO-Revision-Date: 2017-11-27 15:48-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -2314,11 +2314,11 @@ msgstr "Testa SMS"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2050
 msgid "Telegram is a cloud-based instant messaging service"
-msgstr "Telegram är en molnbaserad chattjänsten"
+msgstr "Telegram är en moln-baserad meddelandetjänst"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2061
 msgid "send Telegram notifications?"
-msgstr "Skicka Telegram meddelanden?"
+msgstr "skicka Telegram-meddelanden?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2075
 #: sickrage/core/webserver/views/config/notifications.mako:2219
@@ -2333,7 +2333,7 @@ msgstr "Skicka ett meddelande när en nedladdning är klar?"
 #: sickrage/core/webserver/views/config/notifications.mako:2099
 #: sickrage/core/webserver/views/config/notifications.mako:2243
 msgid "send a message when subtitles are downloaded?"
-msgstr "Skicka ett meddelande när undertexter laddas?"
+msgstr "skicka ett meddelande när undertexter hämtas?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2105
 msgid "User/Group ID"
@@ -2341,7 +2341,7 @@ msgstr "Användare/grupp-ID"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2125
 msgid "contact @myidbot on Telegram to get an ID"
-msgstr "Kontakta @myidbot på Telegram till få en ID"
+msgstr "kontakta @myidbot på Telegram för att få ett ID"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2132
 #: sickrage/core/webserver/views/config/postprocessing.mako:64
@@ -2366,23 +2366,23 @@ msgstr "Testa Telegram"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2193
 msgid "Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device."
-msgstr "Twilio är en webservice API som låter dig kommunicera direkt med ett mobilnummer. Detta anmälaren kommer att skicka ett SMS direkt till din mobila enhet."
+msgstr "Twilio är ett webservice-API som låter dig kommunicera direkt med ett mobilnummer. Notifikationen kommer att skickas i ett SMS direkt till din mobiltelefon."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2205
 msgid "text your mobile device?"
-msgstr "text din mobila enhet?"
+msgstr "texta din mobila enhet?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2250
 msgid "Twilio Account SID"
-msgstr "Twilio kontots SID"
+msgstr "Twilio-kontots SID"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2270
 msgid "account SID of your Twilio account."
-msgstr "kontots SID av kontot Twilio."
+msgstr "konto-SID för ditt Twilio-konto."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2279
 msgid "Twilio Auth Token"
-msgstr "Twilio Auth Token"
+msgstr "Twilio Auth-token"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2289
 msgid "enter your auth token"
@@ -2390,7 +2390,7 @@ msgstr "Ange din auth-token"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2297
 msgid "Twilio Phone SID"
-msgstr "Twilio telefon SID"
+msgstr "Twilio telefon-SID"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2317
 msgid "phone SID that you would like to send the sms from."
@@ -2414,7 +2414,7 @@ msgstr "Testa Twilio"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2379
 msgid "A social networking and microblogging service, enabling its users to send and read other users messages called tweets."
-msgstr "En sociala nätverk och microblogging tjänst, gör det möjligt för sina användare att skicka och läsa andra användare meddelanden som kallas tweets."
+msgstr "Ett socialt nätverk och mikrobloggningstjänst, tillåter dess användare att skicka och läsa andra användares meddelanden som kallas tweets."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2390
 msgid "post tweets on Twitter?"
@@ -2426,11 +2426,11 @@ msgstr "Du kanske vill använda ett sekundärt konto."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2435
 msgid "Send direct message"
-msgstr "Skicka direkta meddelande"
+msgstr "Skicka direktmeddelande"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2441
 msgid "send a notification via Direct Message, not via status update"
-msgstr "Skicka en anmälan via direkt budskap, inte via statusuppdatering"
+msgstr "skicka en notifiering via direkta meddelanden, inte via statusuppdatering"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2447
 msgid "Send DM to"
@@ -2438,7 +2438,7 @@ msgstr "Skicka DM till"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2457
 msgid "Twitter account to send messages to"
-msgstr "Twitterkonto för att skicka meddelanden till"
+msgstr "Twitterkonto att skicka meddelanden till"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2464
 msgid "Step One"
@@ -2446,11 +2446,11 @@ msgstr "Steg ett"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2469
 msgid "Request Authorization"
-msgstr "Begära tillstånd"
+msgstr "Begär auktorisering"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2474
 msgid "Click the \"Request Authorization\" button."
-msgstr "Klicka på knappen ”begär tillstånd”."
+msgstr "Klicka på knappen \"Begär auktorisering\"."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2475
 msgid "This will open a new page containing an auth key."
@@ -2478,7 +2478,7 @@ msgstr "Trakt hjälper till att hålla koll på vilka serier och filmer du titta
 
 #: sickrage/core/webserver/views/config/notifications.mako:2536
 msgid "send Trakt.tv notifications?"
-msgstr "Skicka Trakt.tv meddelanden?"
+msgstr "skicka Trakt.tv-meddelanden?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2544
 msgid "Trakt username"
@@ -2618,11 +2618,11 @@ msgstr "Skicka e-postmeddelanden?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2835
 msgid "SMTP host"
-msgstr "SMTP-värden"
+msgstr "SMTP-värd"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2844
 msgid "SMTP server address"
-msgstr "SMTP-serveradressen"
+msgstr "SMTP-serveradress"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2851
 msgid "SMTP port"
@@ -2642,11 +2642,11 @@ msgstr "avsändarens e-postadress"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2883
 msgid "Use TLS"
-msgstr "Använda TLS"
+msgstr "Använd TLS"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2889
 msgid "check to use TLS encryption."
-msgstr "Kontrollera att använda TLS-kryptering."
+msgstr "markera för att använda TLS-kryptering."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2895
 msgid "SMTP user"
@@ -2655,7 +2655,7 @@ msgstr "SMTP-användare"
 #: sickrage/core/webserver/views/config/notifications.mako:2904
 #: sickrage/core/webserver/views/config/notifications.mako:2920
 msgid "optional"
-msgstr "tillval"
+msgstr "frivillig"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2911
 msgid "SMTP password"
@@ -2663,11 +2663,11 @@ msgstr "SMTP-lösenord"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2928
 msgid "Global email list"
-msgstr "Globala e-lista"
+msgstr "Global e-postlista"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2940
 msgid "all emails here receive notifications for"
-msgstr "alla e-postmeddelanden här få anmälningar för"
+msgstr "alla e-postmeddelanden här får notifieringar för"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2940
 msgid "all"
@@ -2703,11 +2703,11 @@ msgstr "Testa e-post"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3011
 msgid "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams."
-msgstr "Slack samlar all kommunikation på ett ställe. Det är realtid messaging, arkivering och sökning för moderna lag."
+msgstr "Slack samlar all din kommunikation på ett ställe. Slack möjliggör meddelandehantering i realtid, arkivering av meddelanden och sökfunktioner för moderna projektgrupper."
 
 #: sickrage/core/webserver/views/config/notifications.mako:3023
 msgid "send slack notifications?"
-msgstr "Skicka slack meddelanden?"
+msgstr "skicka slack-meddelanden?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3067
 msgid "Slack Incoming Webhook"
@@ -2723,19 +2723,19 @@ msgstr "Testa Slack"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3106
 msgid "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone."
-msgstr "Allt-i-ett röst och text chat för gamers som är kostnadsfri, säker och fungerar på både ditt skrivbord och telefon."
+msgstr "Allt-i-ett röst- och textchat för gamers som är kostnadsfri, säker och fungerar på både ditt skrivbord och telefon."
 
 #: sickrage/core/webserver/views/config/notifications.mako:3118
 msgid "send discord notifications?"
-msgstr "Skicka disharmoni meddelanden?"
+msgstr "skicka Discord-meddelanden?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3165
 msgid "Discord Incoming Webhook"
-msgstr "Disharmoni inkommande Webhook"
+msgstr "Discord inkommande Webhook"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3176
 msgid "Discord webhook"
-msgstr "Disharmoni webhook"
+msgstr "Discord webhook"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3182
 msgid "Create webhook under channel settings."
@@ -2744,32 +2744,32 @@ msgstr "Skapa webhook under kanalinställningar."
 #: sickrage/core/webserver/views/config/notifications.mako:3189
 #: sickrage/core/webserver/views/config/notifications.mako:3200
 msgid "Discord Bot Name"
-msgstr "Disharmoni Bot namn"
+msgstr "Disharmoni Botnamn"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3206
 msgid "Blank will use webhook default name."
-msgstr "Tom kommer att använda webhook standardnamnet."
+msgstr "Tom kommer att använda standardnamnet för webhook."
 
 #: sickrage/core/webserver/views/config/notifications.mako:3213
 #: sickrage/core/webserver/views/config/notifications.mako:3224
 msgid "Discord Avatar URL"
-msgstr "Disharmoni Avatar URL"
+msgstr "Discord Avatar URL"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3230
 msgid "Blank will use webhook default avatar."
-msgstr "Tom kommer att använda webhook standardavatar."
+msgstr "Tom kommer att använda standardavatar för webhook."
 
 #: sickrage/core/webserver/views/config/notifications.mako:3237
 msgid "Discord TTS"
-msgstr "Disharmoni TTS"
+msgstr "Discord TTS"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3242
 msgid "Send notifications using text-to-speech."
-msgstr "Skicka meddelanden med text till tal."
+msgstr "Skicka meddelanden med text-till-tal."
 
 #: sickrage/core/webserver/views/config/notifications.mako:3255
 msgid "Test Discord"
-msgstr "Testa oenighet"
+msgstr "Testa Discord"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:15
 #: sickrage/core/webserver/views/config/postprocessing.mako:24
@@ -2779,7 +2779,7 @@ msgstr "Efterbearbetning"
 #: sickrage/core/webserver/views/config/postprocessing.mako:16
 #: sickrage/core/webserver/views/config/postprocessing.mako:376
 msgid "Episode Naming"
-msgstr "Episod namngivning"
+msgstr "Namngivning för avsnitt"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:17
 #: sickrage/core/webserver/views/config/postprocessing.mako:1347
@@ -2792,33 +2792,33 @@ msgstr "Inställningar gällande hur SiCKRAGE ska bearbeta färdiga nedladdninga
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:36
 msgid "Enable the automatic post processor to scan and process any files in your"
-msgstr "Aktivera den automatiska inlägg-processorn att skanna och bearbeta filer i din"
+msgstr "Aktivera automatisk efterbearbetning för att avsöka och bearbeta filer i din"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:37
 #: sickrage/core/webserver/views/config/postprocessing.mako:44
 msgid "Post Processing Dir"
-msgstr "Bokför bearbetning Dir"
+msgstr "Efterbearbetningskatalog"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:38
 msgid "Do not use if you use an external PostProcessing script"
-msgstr "Använd inte om du använder en extern PostProcessing skriptet"
+msgstr "Använd inte om du använder ett externt efterbearbetningsskript"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:63
 msgid "The folder where your download client puts the completed TV downloads."
-msgstr "Mappen där din Ladda ner klienten sätter den ifyllda TV nedladdningar."
+msgstr "Mappen där din nerladdningsklient lägger färdiga seriehämtningar."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:65
 msgid "Please use seperate downloading and completed folders in your download client if possible."
-msgstr "Använd separat nedladdning och färdiga mappar i din Ladda ner-klient om möjligt."
+msgstr "Vänligen använd separata mappar för hämtning och avslutat i din nerladdningsklient om möjligt."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:73
 msgid "Processing Method:"
-msgstr "Livsmedelshanteringsmetod:"
+msgstr "Bearbetningsmetod:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:84
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Copy"
-msgstr "Kopia"
+msgstr "Kopiera"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:84
 #: sickrage/core/webserver/views/home/postprocess.mako:36
@@ -2838,7 +2838,7 @@ msgstr "Symbolisk länk"
 #: sickrage/core/webserver/views/config/postprocessing.mako:84
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Symbolic Link Reversed"
-msgstr "Symbolisk länk återförda"
+msgstr "Reversibel Symbolisk länk"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:95
 msgid "What method should be used to put files into the library?"
@@ -2846,11 +2846,11 @@ msgstr "Vilken metod bör användas för att placera filer i biblioteket?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:96
 msgid "If you keep seeding torrents after they finish, please avoid the 'move' processing method to prevent errors."
-msgstr "Om du hålla sådd torrents när de är klar, vänligen undvika 'flytta' bearbetningsmetod för att förhindra fel."
+msgstr "Om du fortsätter att seeda torrenter efter de är klara, undvik att använda bearbetningsmetoden \"flytta\" för att förhindra fel."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:104
 msgid "Auto Post-Processing Frequency"
-msgstr "Automatisk efterbearbetning frekvens"
+msgstr "Automatisk efterbearbetningsfrekvens"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:124
 msgid "Postpone post processing"
@@ -3038,7 +3038,7 @@ msgstr "Wiki"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:361
 msgid "for script arguments description and usage."
-msgstr "för manus argument beskrivning och användning."
+msgstr "för beskrivning och användning av skriptargument."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:377
 msgid "How SickRage will name and sort your episodes."
@@ -3050,14 +3050,14 @@ msgstr "Namnmönster:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:422
 msgid "Don't forget to add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality"
-msgstr "Glöm inte att lägga till kvalitet mönster. Annars efter efterbehandlingen episoden har okänd kvalitet"
+msgstr "Glöm inte att lägga till kvalitetsmönster. Annars kommer avsnitten ha OKÄND kvalitet efter efterbehandlingen"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:431
 #: sickrage/core/webserver/views/config/postprocessing.mako:693
 #: sickrage/core/webserver/views/config/postprocessing.mako:903
 #: sickrage/core/webserver/views/config/postprocessing.mako:1118
 msgid "Meaning"
-msgstr "Mening som avses"
+msgstr "Betydelse"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:432
 #: sickrage/core/webserver/views/config/postprocessing.mako:694
@@ -3071,7 +3071,7 @@ msgstr "Mönster"
 #: sickrage/core/webserver/views/config/postprocessing.mako:905
 #: sickrage/core/webserver/views/config/postprocessing.mako:1120
 msgid "Result"
-msgstr "Resultatet"
+msgstr "Resultat"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:439
 #: sickrage/core/webserver/views/config/postprocessing.mako:701
@@ -3079,7 +3079,7 @@ msgstr "Resultatet"
 #: sickrage/core/webserver/views/config/postprocessing.mako:1126
 #, python-format
 msgid "Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)"
-msgstr "Använd gemener om du vill gemener namn (t.ex. %sn, %e.n, %q_n etc)"
+msgstr "Använd gemener om du vill ha namn med små bokstäver (t.ex. %sn, %e.n, %q_n osv)"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:445
 #: sickrage/core/webserver/views/config/postprocessing.mako:707
@@ -3109,7 +3109,7 @@ msgstr "Serie.Namn"
 #: sickrage/core/webserver/views/config/postprocessing.mako:929
 #: sickrage/core/webserver/views/config/postprocessing.mako:1144
 msgid "Show_Name"
-msgstr "Show_Name"
+msgstr "Serie_Namn"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:460
 #: sickrage/core/webserver/views/config/postprocessing.mako:1147
@@ -3124,40 +3124,40 @@ msgstr "XEM säsong nummer:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:480
 #: sickrage/core/webserver/views/config/postprocessing.mako:1167
 msgid "Episode Number:"
-msgstr "Episod nummer:"
+msgstr "Avsnitt nummer:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:490
 #: sickrage/core/webserver/views/config/postprocessing.mako:1177
 msgid "XEM Episode Number:"
-msgstr "XEM episod nummer:"
+msgstr "XEM avsnitt nummer:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:500
 #: sickrage/core/webserver/views/config/postprocessing.mako:742
 #: sickrage/core/webserver/views/config/postprocessing.mako:952
 #: sickrage/core/webserver/views/config/postprocessing.mako:1187
 msgid "Episode Name:"
-msgstr "Episod namn:"
+msgstr "Avsnitt namn:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:502
 #: sickrage/core/webserver/views/config/postprocessing.mako:744
 #: sickrage/core/webserver/views/config/postprocessing.mako:954
 #: sickrage/core/webserver/views/config/postprocessing.mako:1189
 msgid "Episode Name"
-msgstr "Episod namn"
+msgstr "Avsnitt namn"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:507
 #: sickrage/core/webserver/views/config/postprocessing.mako:749
 #: sickrage/core/webserver/views/config/postprocessing.mako:959
 #: sickrage/core/webserver/views/config/postprocessing.mako:1194
 msgid "Episode.Name"
-msgstr "Episode.Name"
+msgstr "Avsnitt.Namn"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:512
 #: sickrage/core/webserver/views/config/postprocessing.mako:754
 #: sickrage/core/webserver/views/config/postprocessing.mako:964
 #: sickrage/core/webserver/views/config/postprocessing.mako:1199
 msgid "Episode_Name"
-msgstr "Episode_Name"
+msgstr "Avsnitt_Namn"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:515
 #: sickrage/core/webserver/views/config/postprocessing.mako:757
@@ -3169,7 +3169,7 @@ msgstr "Kvalitet:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:530
 msgid "Scene Quality:"
-msgstr "Scenen kvalitet:"
+msgstr "Scenkvalitet:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:532
 msgid "720p HDTV x264"
@@ -3188,7 +3188,7 @@ msgstr "720p_HDTV_x264"
 #: sickrage/core/webserver/views/config/postprocessing.mako:1010
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Release Name:"
-msgstr "Release namn:"
+msgstr "Releasenamn:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:550
 #: sickrage/core/webserver/views/config/postprocessing.mako:1223
@@ -3200,55 +3200,55 @@ msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 #: sickrage/core/webserver/views/config/postprocessing.mako:1019
 #: sickrage/core/webserver/views/config/postprocessing.mako:1229
 msgid "Release Group:"
-msgstr "Release Grupp:"
+msgstr "Releasegrupp:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:565
 #: sickrage/core/webserver/views/config/postprocessing.mako:818
 #: sickrage/core/webserver/views/config/postprocessing.mako:1029
 #: sickrage/core/webserver/views/config/postprocessing.mako:1238
 msgid "Release Type:"
-msgstr "Release typ:"
+msgstr "Releasetyp:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:578
 #: sickrage/core/webserver/views/config/postprocessing.mako:1251
 msgid "Multi-Episode Style:"
-msgstr "Flera avsnitt stil:"
+msgstr "Multiavsnittsstil:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:598
 msgid "Single-EP Sample:"
-msgstr "Singel-EP prov:"
+msgstr "Enkelepisod exempel:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:609
 msgid "Multi-EP sample:"
-msgstr "Multi-EP prov:"
+msgstr "Multiavsnitt exempel:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:619
 msgid "Strip Show Year"
-msgstr "Strip Show år"
+msgstr "Ta bort serieår"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:625
 msgid "Remove the TV show's year when renaming the file?"
-msgstr "Ta bort TV-seriens år när byta namn på filen?"
+msgstr "Ta bort seriens år vid omdöpning av fil?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:626
 msgid "Only applies to shows that have year inside parentheses"
-msgstr "Gäller endast visar att har år inom parenteser"
+msgstr "Gäller endast för serier som har året inom parentes"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:633
 msgid "Custom Air-By-Date"
-msgstr "Anpassade Air-av-datum"
+msgstr "Anpassade sändningsdatum"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:639
 msgid "Name Air-By-Date shows differently than regular shows?"
-msgstr "Namnet Air-av-datum visar annorlunda än vanliga visar?"
+msgstr "Namnge sändningsdatum-serier annorlunda än vanliga serier?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:647
 msgid "Air-by-date Name Pattern:"
-msgstr "Air-av-datum namnmönster:"
+msgstr "Sändningsdatum namnmönster:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:722
 msgid "Regular Air Date:"
-msgstr "Regelbundna luft datum:"
+msgstr "Regelbundet sändningsdatum:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:772
 #: sickrage/core/webserver/views/config/postprocessing.mako:982
@@ -3271,15 +3271,15 @@ msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:832
 msgid "Air-by-date Sample:"
-msgstr "Air-av-datum prov:"
+msgstr "Sändningsdatum exempel:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:843
 msgid "Custom Sports"
-msgstr "Anpassade sport"
+msgstr "Anpassad sport"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:849
 msgid "Name Sports shows differently than regular shows?"
-msgstr "Namn sport visar annorlunda än vanliga visar?"
+msgstr "Namnge sportserier annorlunda än vanliga serier?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:857
 msgid "Sports Name Pattern:"
@@ -3292,7 +3292,7 @@ msgstr "Anpassad..."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:932
 msgid "Sports Air Date:"
-msgstr "Sport luft datum:"
+msgstr "Sport sändningsdatum:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:934
 #: sickrage/core/webserver/views/config/postprocessing.mako:939
@@ -3434,11 +3434,11 @@ msgstr "Leverantör alternativ"
 
 #: sickrage/core/webserver/views/config/providers.mako:15
 msgid "Custom Newznab Providers"
-msgstr "Anpassade Newznab leverantörer"
+msgstr "Anpassade Newznab-leverantörer"
 
 #: sickrage/core/webserver/views/config/providers.mako:18
 msgid "Custom Torrent Providers"
-msgstr "Anpassade Torrent leverantörer"
+msgstr "Anpassade Torrent-leverantörer"
 
 #: sickrage/core/webserver/views/config/providers.mako:64
 msgid "Check off and drag the providers into the order you want them to be used."
@@ -3450,21 +3450,21 @@ msgstr "Minst en leverantör krävs men två rekommenderas."
 
 #: sickrage/core/webserver/views/config/providers.mako:69
 msgid "NZB/Torrent providers can be toggled in"
-msgstr "NZB/Torrent leverantörer kan växlas i"
+msgstr "NZB/Torrent-leverantörer kan växlas i"
 
 #: sickrage/core/webserver/views.py:3724 sickrage/core/webserver/views.py:3997
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Clients"
-msgstr "Sök klienter"
+msgstr "Sökklienter"
 
 #: sickrage/core/webserver/views/config/providers.mako:80
 msgid "Provider does not support backlog searches at this time."
-msgstr "Providern stöder inte eftersläpningen sökningar vid denna tid."
+msgstr "Leverantören stödjer för närvarande inte backlogsökningar."
 
 #: sickrage/core/webserver/views/config/providers.mako:81
 msgid "Provider is <b>NOT WORKING</b>."
-msgstr "Provider är <b>NOT WORKING</b>."
+msgstr "Leverantör <b>FUNGERAR INTE</b>."
 
 #: sickrage/core/webserver/views/config/providers.mako:127
 msgid "Configure individual provider settings here."
@@ -3472,7 +3472,7 @@ msgstr "Konfigurera enskilda leverantörsinställningar här."
 
 #: sickrage/core/webserver/views/config/providers.mako:128
 msgid "Check with provider's website on how to obtain an API key if needed."
-msgstr "Kontrollera med leverantörens webbplats att få en API-nyckel om det behövs."
+msgstr "Kontrollera med leverantörens webbplats om hur du kan få en API-nyckel om det behövs."
 
 #: sickrage/core/webserver/views/config/providers.mako:134
 msgid "Configure provider:"
@@ -3500,19 +3500,19 @@ msgstr "aktivera providern att utföra dagliga sökningar."
 #: sickrage/core/webserver/views/config/providers.mako:335
 #: sickrage/core/webserver/views/config/providers.mako:792
 msgid "Enable backlog searches"
-msgstr "Aktivera eftersläpningen sökningar"
+msgstr "Aktivera backlogsökningar"
 
 #: sickrage/core/webserver/views/config/providers.mako:220
 #: sickrage/core/webserver/views/config/providers.mako:341
 #: sickrage/core/webserver/views/config/providers.mako:798
 msgid "enable provider to perform backlog searches."
-msgstr "aktivera providern eftersläpningen sökningar."
+msgstr "aktivera leverantören att göra backlog-sökningar."
 
 #: sickrage/core/webserver/views/config/providers.mako:229
 #: sickrage/core/webserver/views/config/providers.mako:350
 #: sickrage/core/webserver/views/config/providers.mako:807
 msgid "Search mode fallback"
-msgstr "Sökläget för återgång"
+msgstr "Sökläge att falla tillbaka till"
 
 #: sickrage/core/webserver/views/config/providers.mako:235
 msgid "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
@@ -3522,19 +3522,19 @@ msgstr "när du söker efter en hel säsong kan det beroende på sökläge vara 
 #: sickrage/core/webserver/views/config/providers.mako:369
 #: sickrage/core/webserver/views/config/providers.mako:826
 msgid "Season search mode"
-msgstr "Sökläget för säsongen"
+msgstr "Sökläge för säsong"
 
 #: sickrage/core/webserver/views/config/providers.mako:255
 #: sickrage/core/webserver/views/config/providers.mako:389
 #: sickrage/core/webserver/views/config/providers.mako:835
 msgid "season packs only."
-msgstr "säsongen förpackningar endast."
+msgstr "hela säsonger endast."
 
 #: sickrage/core/webserver/views/config/providers.mako:262
 #: sickrage/core/webserver/views/config/providers.mako:378
 #: sickrage/core/webserver/views/config/providers.mako:846
 msgid "episodes only."
-msgstr "avsnitt bara."
+msgstr "endast episoder."
 
 #: sickrage/core/webserver/views/config/providers.mako:265
 msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
@@ -3548,12 +3548,12 @@ msgstr "Användarnamn:"
 #: sickrage/core/webserver/views/config/providers.mako:357
 #: sickrage/core/webserver/views/config/providers.mako:814
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
-msgstr "När du söker efter en komplett säsong beroende på sökläge du kan returnera inga resultat, hjälper detta genom att starta om sökningen använder motsatt sökläget."
+msgstr "när du söker efter en hel säsong kan det beroende på sökläge vara så att inget resultat returneras, detta avhjälps genom att starta om sökningen med motsatt sökläge."
 
 #: sickrage/core/webserver/views/config/providers.mako:395
 #: sickrage/core/webserver/views/config/providers.mako:852
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
-msgstr "När du söker efter kompletta säsonger kan du välja att ha den leta efter säsongen förpackningar endast, eller välja att ha det bygga en komplett säsong från bara enstaka episoder."
+msgstr "när du söker efter kompletta säsonger kan du välja att leta efter enbart hela säsonger eller skapa säsonger från enstaka episoder."
 
 #: sickrage/core/webserver/views/config/providers.mako:410
 msgid "Custom URL:"
@@ -3594,23 +3594,23 @@ msgstr "PIN:"
 
 #: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
-msgstr "Baserat på utsäde:"
+msgstr "Seed ratio:"
 
 #: sickrage/core/webserver/views/config/providers.mako:622
 msgid "Minimum seeders:"
-msgstr "Minsta Såmaskiner:"
+msgstr "Minsta antal seeders:"
 
 #: sickrage/core/webserver/views/config/providers.mako:642
 msgid "Minimum leechers:"
-msgstr "Minsta leechers:"
+msgstr "Minsta antal leechers:"
 
 #: sickrage/core/webserver/views/config/providers.mako:662
 msgid "Confirmed download"
-msgstr "Bekräftade nedladdning"
+msgstr "Bekräftad nedladdning"
 
 #: sickrage/core/webserver/views/config/providers.mako:668
 msgid "only download torrents from trusted or verified uploaders?"
-msgstr "bara ladda ner torrents från betrodda eller verifierade Uppladdare?"
+msgstr "hämta bara torrenter från betrodda eller kontrollerade uppladdare?"
 
 #: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Ranked torrents"
@@ -3646,7 +3646,7 @@ msgstr "FreeLeech"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
-msgstr "bara ladda ner"
+msgstr "ladda endast ner"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
@@ -3662,7 +3662,7 @@ msgstr "Avvisa Blu-ray M2TS releaser"
 
 #: sickrage/core/webserver/views/config/providers.mako:783
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
-msgstr "Aktivera för att ignorera Blu-ray MPEG-2 Transport Stream behållare releaser"
+msgstr "aktivera för att ignorera Blu-ray MPEG-2 Transport Stream container releaser"
 
 #: sickrage/core/webserver/views/config/providers.mako:863
 msgid "Category:"
@@ -3765,7 +3765,7 @@ msgstr "Använd qualitiy standardstorlekar eller ange anpassade sådana per kval
 
 #: sickrage/core/webserver/views/config/quality_settings.mako:20
 msgid "Settings represent maximum size allowed per episode video file."
-msgstr "Inställningarna är högsta tillåtna per episod video arkivera storleken."
+msgstr "Inställningarna är högsta tillåtna filstorlek per avsnitt."
 
 #: sickrage/core/webserver/views/config/search.mako:7
 #: sickrage/core/webserver/views/config/search.mako:15
@@ -3775,7 +3775,7 @@ msgstr "Sökinställningar"
 #: sickrage/core/webserver/views/config/search.mako:8
 #: sickrage/core/webserver/views/config/search.mako:242
 msgid "NZB Clients"
-msgstr "NZB klienter"
+msgstr "NZB-klienter"
 
 #: sickrage/core/webserver/views/config/search.mako:9
 #: sickrage/core/webserver/views/config/search.mako:661
@@ -3784,7 +3784,7 @@ msgstr "Torrent-klienter"
 
 #: sickrage/core/webserver/views/config/search.mako:16
 msgid "How to manage searching with"
-msgstr "Hur du hanterar du söker med"
+msgstr "Hur att hantera sökning med"
 
 #: sickrage/core/webserver/views/config/search.mako:16
 msgid "providers"
@@ -3792,19 +3792,19 @@ msgstr "leverantörer"
 
 #: sickrage/core/webserver/views/config/search.mako:22
 msgid "Randomize Providers"
-msgstr "Randomize leverantörer"
+msgstr "Slumpa leverantörer"
 
 #: sickrage/core/webserver/views/config/search.mako:28
 msgid "randomize the provider search order"
-msgstr "randomize leverantör sökordningen"
+msgstr "slumpa sökordningen för leverantörer"
 
 #: sickrage/core/webserver/views/config/search.mako:34
 msgid "Download propers"
-msgstr "Hämta propers"
+msgstr "Ladda ner propers"
 
 #: sickrage/core/webserver/views/config/search.mako:40
 msgid "replace original download with \"Proper\" or \"Repack\" if nuked"
-msgstr "Ersätt original nedladdning med ”rätt” eller ”packa” om nuked"
+msgstr "ersätt original nedladdning med \"Proper\" eller \"Repack\" om nuked"
 
 #: sickrage/core/webserver/views/config/search.mako:46
 msgid "Enable provider RSS cache"
@@ -3812,7 +3812,7 @@ msgstr "Aktivera RSS providercachen"
 
 #: sickrage/core/webserver/views/config/search.mako:52
 msgid "enables/disables provider RSS feed caching"
-msgstr "aktiverar/inaktiverar leverantör RSS feed cachelagring"
+msgstr "aktiverar/inaktiverar cachelagring av leverantörers RSS-feed"
 
 #: sickrage/core/webserver/views/config/search.mako:58
 msgid "Enable provider RSS cache for valid shows only"
@@ -3824,11 +3824,11 @@ msgstr "aktiverar/inaktiverar cachelagring av serier som redan har lagts till Si
 
 #: sickrage/core/webserver/views/config/search.mako:70
 msgid "Convert provider torrent file links to magnetic links"
-msgstr "Konvertera leverantör torrent fillänkar till magnetiska länkar"
+msgstr "Konvertera leverantörers torrentfillänkar till magnetiska länkar"
 
 #: sickrage/core/webserver/views/config/search.mako:76
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
-msgstr "aktiverar/inaktiverar konvertering av offentliga torrent leverantör fillänkar till magnetiska länkar"
+msgstr "aktiverar/inaktiverar konvertering av leverantörers offentliga torrentfillänkar till magnetiska länkar"
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Check propers every:"
@@ -3856,7 +3856,7 @@ msgstr "15 minuter"
 
 #: sickrage/core/webserver/views/config/search.mako:104
 msgid "Backlog search frequency"
-msgstr "Eftersläpningen Sök frekvens"
+msgstr "Backlog sökfrekvens"
 
 #: sickrage/core/webserver/views/config/search.mako:114
 #: sickrage/core/webserver/views/config/search.mako:132
@@ -3865,7 +3865,7 @@ msgstr "tid i minuter"
 
 #: sickrage/core/webserver/views/config/search.mako:123
 msgid "Daily search frequency"
-msgstr "Sök dagligen"
+msgstr "Daglig sökfrekvens"
 
 #: sickrage/core/webserver/views/config/search.mako:144
 msgid "Usenet retention"
@@ -3884,11 +3884,11 @@ msgstr "ex. word1, sökord2 sökord3"
 
 #: sickrage/core/webserver/views/config/search.mako:182
 msgid "Require words"
-msgstr "Kräver ord"
+msgstr "Kräv ord"
 
 #: sickrage/core/webserver/views/config/search.mako:200
 msgid "Ignore language names in subbed results"
-msgstr "Ignorera Språknamnen i subbed resultat"
+msgstr "Ignorera språknamn i textade resultat"
 
 #: sickrage/core/webserver/views/config/search.mako:209
 msgid "ex. lang1,lang2,lang3"
@@ -3900,7 +3900,7 @@ msgstr "Tillåt hög prioritet"
 
 #: sickrage/core/webserver/views/config/search.mako:224
 msgid "Set downloads of recently aired episodes to high priority"
-msgstr "Ange nedladdningar av nyligen visade avsnitt till hög prioritet"
+msgstr "Sätt nyligen nedladdade visade avsnitt till hög prioritet"
 
 #: sickrage/core/webserver/views/config/search.mako:243
 msgid "How to handle NZB search results for clients."
@@ -3908,21 +3908,21 @@ msgstr "Hur man hanterar NZB sökresultat för klienter."
 
 #: sickrage/core/webserver/views/config/search.mako:255
 msgid "enable NZB searches"
-msgstr "Aktivera NZB sökningar"
+msgstr "aktivera NZB-sökningar"
 
 #: sickrage/core/webserver/views/config/search.mako:262
 msgid "Send .nzb files to:"
-msgstr "Skicka .nzb filer till:"
+msgstr "Skicka .nzb-filer till:"
 
 #: sickrage/core/webserver/views/config/search.mako:282
 #: sickrage/core/webserver/views/config/search.mako:702
 msgid "Black hole folder location"
-msgstr "Svart hål mapp"
+msgstr "\"Black hole\" mapp-plats"
 
 #: sickrage/core/webserver/views/config/search.mako:292
 #: sickrage/core/webserver/views/config/search.mako:713
 msgid "files are stored at this location for external software to find and use"
-msgstr "filerna lagras på den här platsen för extern programvara att hitta och använda"
+msgstr "filer lagras på den här platsen så externa program kan hitta och använda"
 
 #: sickrage/core/webserver/views/config/search.mako:302
 msgid "SABnzbd server URL"

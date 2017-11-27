@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8c0290e - 2017-11-27: Addded fix for none types in show and episode database tables, converts them to an empty string 
+- * cd8816a - 2017-11-27: Release v9.2.18 
+- * 9d951df - 2017-11-27: Addded fix for none types in show and episode database tables, converts them to an empty string 
 - * 3302be2 - 2017-11-27: Release v9.2.17 
 - * 1554594 - 2017-11-27: failed snatch handler now works correctly only for snatches 1hr old and no greater then 24hrs 
 - * 0b308b8 - 2017-11-27: refactored misc function names refactored post-processing code manual post-processing will now recursively walk folders searching for downloads 
