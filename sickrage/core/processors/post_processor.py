@@ -270,7 +270,10 @@ class PostProcessor(object):
             return
 
         # figure out which files we want to delete
-        file_list = [file_path]
+        file_list = file_path
+        if not isinstance(file_path, list):
+            file_list = [file_path]
+
         if associated_files:
             file_list = file_list + self.list_associated_files(file_path, subfolders=True)
 
