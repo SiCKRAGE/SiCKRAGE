@@ -68,9 +68,53 @@ class MainDB(srDatabase):
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
 
     def cleanup(self):
+        self.fix_show_none_types()
+        self.fix_episode_none_types()
         self.fix_dupe_shows()
         self.fix_dupe_episodes()
         self.fix_orphaned_episodes()
+
+    def fix_show_none_types(self):
+        checked = []
+
+        for show in [x['doc'] for x in self.db.all('tv_shows', with_doc=True)]:
+            if show['indexer_id'] in checked:
+                continue
+
+            dirty = False
+            for k, v in show.items():
+                if v is None:
+                    try:
+                        show[k] = ""
+                        dirty = True
+                    except Exception:
+                        pass
+
+            if dirty:
+                self.db.update(show)
+
+            checked += [show['indexer_id']]
+
+    def fix_episode_none_types(self):
+        checked = []
+
+        for ep in [x['doc'] for x in self.db.all('tv_episodes', with_doc=True)]:
+            if ep['showid'] in checked:
+                continue
+
+            dirty = False
+            for k, v in ep.items():
+                if v is None:
+                    try:
+                        ep[k] = ""
+                        dirty = True
+                    except Exception:
+                        pass
+
+            if dirty:
+                self.db.update(ep)
+
+            checked += [ep['showid']]
 
     def fix_dupe_shows(self):
         checked = []
