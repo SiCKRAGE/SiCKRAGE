@@ -262,18 +262,20 @@ def replaceExtension(filename, newExt):
         return sepFile[0] + "." + newExt
 
 
-def notTorNZBFile(filename):
+def is_torrent_or_nzb_file(filename):
     """
-    Returns true if filename is not a NZB nor Torrent file
-
-    :param filename: Filename to check
-    :return: True if filename is not a NZB nor Torrent
+    Check if the provided ``filename`` is a NZB file or a torrent file, based on its extension.
+    :param filename: The filename to check
+    :return: ``True`` if the ``filename`` is a NZB file or a torrent file, ``False`` otherwise
     """
 
-    return not (filename.endswith(".torrent") or filename.endswith(".nzb"))
+    if not isinstance(filename, six.string_types):
+        return False
+
+    return filename.rpartition('.')[2].lower() in ['nzb', 'torrent']
 
 
-def isSyncFile(filename):
+def is_sync_file(filename):
     """
     Returns true if filename is a syncfile, indicating filesystem may be in flux
 
@@ -290,7 +292,7 @@ def isSyncFile(filename):
         return False
 
 
-def isMediaFile(filename):
+def is_media_file(filename):
     """
     Check if named file may contain media
 
@@ -435,7 +437,7 @@ def list_media_files(path):
         if os.path.isdir(fullCurFile) and not curFile.startswith('.') and not curFile == 'Extras':
             files += list_media_files(fullCurFile)
 
-        elif isMediaFile(curFile):
+        elif is_media_file(curFile):
             files.append(fullCurFile)
 
     return files

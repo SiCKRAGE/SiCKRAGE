@@ -30,7 +30,7 @@ from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateT
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
-from sickrage.core.helpers import isMediaFile, try_int, replaceExtension, \
+from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
     touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
     safe_getattr, make_dirs, moveFile, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
@@ -564,7 +564,7 @@ class TVEpisode(object):
                         self.status])
 
         # if we have a media file then it's downloaded
-        elif isMediaFile(self.location):
+        elif is_media_file(self.location):
             # leave propers alone, you have to either post-process them or manually change them back
             if self.status not in Quality.SNATCHED_PROPER + Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED:
                 sickrage.app.log.debug(
@@ -591,7 +591,7 @@ class TVEpisode(object):
         if os.path.isfile(location):
             self.location = location
             if self.status == UNKNOWN:
-                if isMediaFile(self.location):
+                if is_media_file(self.location):
                     sickrage.app.log.debug("7 Status changes from " + str(self.status) + " to " + str(
                         Quality.statusFromName(self.location, anime=self.show.is_anime)))
                     self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)

@@ -1,6 +1,7 @@
 # Changelog
 
-- * aebcd99 - 2017-11-27: check if instance is of list if not then make it 
+- * 75dab3b - 2017-11-27: refactored misc function names refactored post-processing code manual post-processing will now recursively walk folders searching for downloads 
+- * 35a929f - 2017-11-27: check if instance is of list if not then make it 
 - * f1d5eef - 2017-11-26: made YGGTorrent provider private refactored class method name getquality to get_quality 
 - * ba12e57 - 2017-11-26: fixed missing changelog_url attribute 
 - * a51d682 - 2017-11-26: Fixed changelog url issues 
