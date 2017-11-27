@@ -1,6 +1,7 @@
 # Changelog
 
-- * fb09b14 - 2017-11-27: switched to using poster thumbs for poster view on shows page 
+- * 57ce136 - 2017-11-27: Release v9.2.19 
+- * 7015df3 - 2017-11-27: switched to using poster thumbs for poster view on shows page 
 - * 2028c51 - 2017-11-27: Release v9.2.18 
 - * 9d951df - 2017-11-27: Addded fix for none types in show and episode database tables, converts them to an empty string 
 - * 3302be2 - 2017-11-27: Release v9.2.17 
