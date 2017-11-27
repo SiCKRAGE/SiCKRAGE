@@ -112,9 +112,10 @@ class Core(object):
         self.naming_sep_type = (" - ", " ")
         self.naming_sep_type_text = (" - ", "space")
 
+        self.changelog_url = "https://cdn.sickrage.ca/changelog/?q={branch}"
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
-        self.sys_encoding = get_sys_encoding()
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
+        self.sys_encoding = get_sys_encoding()
         self.showlist = []
 
         self.api = None
@@ -145,14 +146,14 @@ class Core(object):
         self.subtitle_searcher = None
         self.auto_postprocessor = None
 
-        # patch modules with encoding kludge
-        patch_modules()
-
     def start(self):
         self.started = True
 
         # thread name
         threading.currentThread().setName('CORE')
+
+        # patch modules with encoding kludge
+        patch_modules()
 
         # init core classes
         self.notifier_providers = NotifierProviders()

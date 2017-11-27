@@ -40,7 +40,7 @@ from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, 
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import list_media_files, isMediaFile, findCertainShow, try_int, safe_getattr
+from sickrage.core.helpers import list_media_files, is_media_file, findCertainShow, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -870,7 +870,7 @@ class TVShow(object):
                     curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
 
             # check for status/quality changes as long as it's a new file
-            elif not same_file and isMediaFile(
+            elif not same_file and is_media_file(
                     file) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
                 oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
                 newQuality = Quality.nameQuality(file, self.is_anime)

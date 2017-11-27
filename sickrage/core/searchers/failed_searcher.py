@@ -54,15 +54,13 @@ class FailedSearcher(object):
 
         sickrage.app.log.info("Searching for failed snatches")
 
-        curDate = datetime.datetime.now()
-        curDate += datetime.timedelta(hours=1)
-
         show = None
         failed_snatches = False
 
         snatched_episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
                              if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                             and curDate.strftime(History.date_format) >= x['doc']['date'] > 1]
+                             and 24 > int((datetime.datetime.now() - datetime.datetime.strptime(x['doc']['date'],
+                                                                                            History.date_format)).total_seconds() / 3600) >= 1]
 
         downloaded_releases = [(x['doc']['showid'], x['doc']['season'], x['doc']['episode']) for x in
                                sickrage.app.main_db.db.all('history', with_doc=True)

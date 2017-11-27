@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-11-26 12:01-0500\n"
-"PO-Revision-Date: 2017-11-26 12:02-0500\n"
+"PO-Revision-Date: 2017-11-27 13:03-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -660,7 +660,7 @@ msgstr "Split mostrar listas"
 
 #: sickrage/core/webserver/views/config/anime.mako:109
 msgid "Separate anime and normal shows in groups"
-msgstr "Anime independiente y normal muestra en grupos"
+msgstr "Separar anime y series normales en grupos"
 
 #: sickrage/core/version_updater.py:82 sickrage/core/version_updater.py:90
 #: sickrage/core/version_updater.py:94 sickrage/core/version_updater.py:98
@@ -835,7 +835,7 @@ msgstr "al iniciar la interfaz de SickRage"
 #: sickrage/core/webserver/views/layouts/main.mako:103
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Shows"
-msgstr "Muestra"
+msgstr "Series"
 
 #: sickrage/core/webserver/views.py:512 sickrage/core/webserver/views.py:513
 #: sickrage/core/webserver/views/config/general.mako:158
@@ -2675,7 +2675,7 @@ msgstr "todos"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2940
 msgid "shows."
-msgstr "muestra."
+msgstr "series."
 
 #: sickrage/core/webserver/views/config/notifications.mako:2946
 msgid "Show notification list"
@@ -2683,7 +2683,7 @@ msgstr "Mostrar lista de notificación"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2956
 msgid "Select a Show"
-msgstr "Seleccionar una muestra"
+msgstr "Elegir serie"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2960
 msgid "configure per show notifications here."
@@ -2891,11 +2891,11 @@ msgstr "Cuando Haz borrados"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:177
 msgid "Add shows without directory"
-msgstr "Añadir muestra sin directorio"
+msgstr "Añadir series sin directorio"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:179
 msgid "Add shows without creating a"
-msgstr "Añadir muestra sin crear un"
+msgstr "Añadir series sin crear un"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:183
 msgid "directory (not recommended)"
@@ -5433,7 +5433,7 @@ msgstr "Mostrar la lista"
 #: sickrage/core/webserver/views.py:2344 sickrage/core/webserver/views.py:2345
 #: sickrage/core/webserver/views/layouts/main.mako:113
 msgid "Add Shows"
-msgstr "Añadir muestra"
+msgstr "Añadir serie"
 
 #: sickrage/core/webserver/views/layouts/main.mako:118
 msgid "Manual Post-Processing"
