@@ -435,6 +435,8 @@ class Config(object):
         self.version_updater_freq = None
         self.subtitle_searcher_freq = None
         self.showupdate_hour = None
+
+        self.use_failed_snatcher = False
         self.failed_snatch_age = None
 
         self.quality_sizes = {}
@@ -852,6 +854,7 @@ class Config(object):
                 'delete_failed': False
             },
             'FailedSnatches': {
+                'use_failed_snatcher': False,
                 'failed_snatch_age': 2
             },
             'NMJ': {
@@ -1266,6 +1269,17 @@ class Config(object):
         self.process_automatically = checkbox_to_value(process_automatically)
         job = sickrage.app.scheduler.get_job(sickrage.app.auto_postprocessor.name)
         (job.pause, job.resume)[self.process_automatically]()
+
+    def change_use_failed_snatcher(self, use_failed_snatcher):
+        """
+        Enable/disable failed snatch searcher job
+        TODO: Make this return true/false on success/failure
+
+        :param failed_snatch_searcher: New desired state
+        """
+        self.use_failed_snatcher = checkbox_to_value(use_failed_snatcher)
+        job = sickrage.app.scheduler.get_job(sickrage.app.failed_snatch_searcher.name)
+        (job.pause, job.resume)[self.use_failed_snatcher]()
 
     ################################################################################
     # check_setting_int                                                            #
@@ -1815,6 +1829,7 @@ class Config(object):
         self.delete_failed = self.check_setting_bool('FailedDownloads', 'delete_failed')
 
         # FAILED SNATCH SETTINGS
+        self.use_failed_snatcher = self.check_setting_bool('FailedSnatches', 'use_failed_snatcher')
         self.failed_snatch_age = self.check_setting_int('FailedSnatches', 'failed_snatch_age')
 
         # ANIDB SETTINGS
@@ -2300,6 +2315,7 @@ class Config(object):
                 'delete_failed': int(self.delete_failed),
             },
             'FailedSnatches': {
+                'use_failed_snatcher': int(self.use_failed_snatcher),
                 'failed_snatch_age': int(self.failed_snatch_age),
             },
             'ANIDB': {
