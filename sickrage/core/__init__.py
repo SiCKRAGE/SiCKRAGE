@@ -319,6 +319,8 @@ class Core(object):
             self.config.version_updater_freq = self.config.min_version_updater_freq
         if self.config.subtitle_searcher_freq < self.config.min_subtitle_searcher_freq:
             self.config.subtitle_searcher_freq = self.config.min_subtitle_searcher_freq
+        if self.config.failed_snatch_age < self.config.min_failed_snatch_age:
+            self.config.failed_snatch_age = self.config.min_failed_snatch_age
         if self.config.proper_searcher_interval not in ('15m', '45m', '90m', '4h', 'daily'):
             self.config.proper_searcher_interval = 'daily'
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:

@@ -59,8 +59,8 @@ class FailedSearcher(object):
 
         snatched_episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
                              if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                             and 24 > int((datetime.datetime.now() - datetime.datetime.strptime(x['doc']['date'],
-                                                                                            History.date_format)).total_seconds() / 3600) >= 1]
+                             and 24 >= int((datetime.datetime.now() - datetime.datetime.strptime(x['doc']['date'],
+                                                                                                History.date_format)).total_seconds() / 3600) >= sickrage.app.config.failed_searcher_freq]
 
         downloaded_releases = [(x['doc']['showid'], x['doc']['season'], x['doc']['episode']) for x in
                                sickrage.app.main_db.db.all('history', with_doc=True)

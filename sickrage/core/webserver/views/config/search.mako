@@ -101,6 +101,28 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Check for failed snatches aged')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="input-group input350">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </div>
+                            <input name="failed_snatch_age"
+                                   id="failed_snatch_age"
+                                   value="${sickrage.app.config.failed_snatch_age}"
+                                   placeholder="${_('time in hours')}"
+                                   title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours"
+                                   class="form-control"/>
+                            <div class="input-group-addon">
+                                hours
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Backlog search frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -128,6 +150,7 @@
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
                             <input name="dailysearch_frequency"
+                                   id="dailysearch_frequency"
                                    value="${sickrage.app.config.daily_searcher_freq}"
                                    placeholder="${_('time in minutes')}"
                                    title="minimum allowed time ${sickrage.app.config.min_daily_searcher_freq} minutes"
@@ -149,6 +172,7 @@
                                 <span class="glyphicon glyphicon-time"></span>
                             </div>
                             <input name="usenet_retention"
+                                   id="usenet_retention"
                                    value="${sickrage.app.config.usenet_retention}"
                                    title="age limit in days (ex. 500)"
                                    class="form-control"/>

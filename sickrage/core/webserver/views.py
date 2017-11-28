@@ -4008,7 +4008,7 @@ class ConfigSearch(Config):
                    nzbget_host=None, nzbget_use_https=None, backlog_frequency=None,
                    dailysearch_frequency=None, nzb_method=None, torrent_method=None, usenet_retention=None,
                    download_propers=None, check_propers_interval=None, allow_high_priority=None, sab_forced=None,
-                   randomize_providers=None,
+                   randomize_providers=None, failed_snatch_age=None,
                    torrent_dir=None, torrent_username=None, torrent_password=None, torrent_host=None,
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
@@ -4026,6 +4026,7 @@ class ConfigSearch(Config):
 
         sickrage.app.config.change_daily_searcher_freq(dailysearch_frequency)
         sickrage.app.config.change_backlog_searcher_freq(backlog_frequency)
+        sickrage.app.config.change_failed_snatch_age(failed_snatch_age)
         sickrage.app.config.use_nzbs = checkbox_to_value(use_nzbs)
         sickrage.app.config.use_torrents = checkbox_to_value(use_torrents)
         sickrage.app.config.nzb_method = nzb_method
@@ -4149,7 +4150,8 @@ class ConfigPostProcessing(Config):
         sickrage.app.config.move_associated_files = checkbox_to_value(move_associated_files)
         sickrage.app.config.sync_files = sync_files
         sickrage.app.config.postpone_if_sync_files = checkbox_to_value(postpone_if_sync_files)
-        sickrage.app.config.allowed_extensions = ','.join({x.strip() for x in allowed_extensions.split(',') if x.strip()})
+        sickrage.app.config.allowed_extensions = ','.join(
+            {x.strip() for x in allowed_extensions.split(',') if x.strip()})
         sickrage.app.config.naming_custom_abd = checkbox_to_value(naming_custom_abd)
         sickrage.app.config.naming_custom_sports = checkbox_to_value(naming_custom_sports)
         sickrage.app.config.naming_custom_anime = checkbox_to_value(naming_custom_anime)
