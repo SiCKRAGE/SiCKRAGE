@@ -149,6 +149,7 @@ class Config(object):
         self.min_backlog_searcher_freq = 10
         self.min_version_updater_freq = 1
         self.min_subtitle_searcher_freq = 1
+        self.min_failed_snatch_age = 1
         self.backlog_days = 7
         self.add_shows_wo_dir = False
         self.create_missing_show_dirs = False
@@ -264,6 +265,14 @@ class Config(object):
         self.twitter_prefix = ""
         self.twitter_dmto = ""
         self.twitter_usedm = False
+        self.use_twilio = False
+        self.twilio_notify_onsnatch = False
+        self.twilio_notify_ondownload = False
+        self.twilio_notify_onsubtitledownload = False
+        self.twilio_phone_sid = ""
+        self.twilio_account_sid = ""
+        self.twilio_auth_token = ""
+        self.twilio_to_number = ""
         self.use_boxcar2 = False
         self.boxcar2_notify_onsnatch = False
         self.boxcar2_notify_ondownload = False
@@ -420,26 +429,13 @@ class Config(object):
         self.fanart_api_key = '9b3afaf26f6241bdb57d6cc6bd798da7'
         self.shows_recent = []
 
-        self.default_autopostprocessor_freq = 10
         self.autopostprocessor_freq = None
-
-        self.default_namecache_freq = 10
-        self.namecache_freq = None
-
-        self.default_daily_searcher_freq = 40
         self.daily_searcher_freq = None
-
-        self.default_backlog_searcher_freq = 21
         self.backlog_searcher_freq = None
-
-        self.default_version_update_freq = 1
         self.version_updater_freq = None
-
-        self.default_subtitle_searcher_freq = 1
         self.subtitle_searcher_freq = None
-
-        self.default_showupdate_hour = 3
         self.showupdate_hour = None
+        self.failed_snatch_age = None
 
         self.quality_sizes = {}
 
@@ -855,6 +851,9 @@ class Config(object):
             'FailedDownloads': {
                 'delete_failed': False
             },
+            'FailedSnatches': {
+                'failed_snatch_age': 2
+            },
             'NMJ': {
                 'nmj_host': '',
                 'nmj_mount': '',
@@ -1118,11 +1117,11 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.autopostprocessor_freq = try_int(freq, self.default_autopostprocessor_freq)
+        self.autopostprocessor_freq = try_int(freq, self.defaults['General']['autopostprocessor_frequency'])
         if self.autopostprocessor_freq < self.min_autopostprocessor_freq:
             self.autopostprocessor_freq = self.min_autopostprocessor_freq
 
-        sickrage.app.scheduler.modify_job('POSTPROCESSOR',
+        sickrage.app.scheduler.modify_job(sickrage.app.auto_postprocessor.name,
                                           trigger=IntervalTrigger(
                                               minutes=self.autopostprocessor_freq
                                           ))
@@ -1133,11 +1132,11 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.daily_searcher_freq = try_int(freq, self.default_daily_searcher_freq)
+        self.daily_searcher_freq = try_int(freq, self.defaults['General']['dailysearch_frequency'])
         if self.daily_searcher_freq < self.min_daily_searcher_freq:
             self.daily_searcher_freq = self.min_daily_searcher_freq
 
-        sickrage.app.scheduler.modify_job('DAILYSEARCHER',
+        sickrage.app.scheduler.modify_job(sickrage.app.daily_searcher.name,
                                           trigger=IntervalTrigger(
                                               minutes=self.daily_searcher_freq
                                           ))
@@ -1148,12 +1147,12 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.backlog_searcher_freq = try_int(freq, self.default_backlog_searcher_freq)
+        self.backlog_searcher_freq = try_int(freq, self.defaults['General']['backlog_frequency'])
         self.min_backlog_searcher_freq = sickrage.app.backlog_searcher.get_backlog_cycle_time()
         if self.backlog_searcher_freq < self.min_backlog_searcher_freq:
             self.backlog_searcher_freq = self.min_backlog_searcher_freq
 
-        sickrage.app.scheduler.modify_job('BACKLOG',
+        sickrage.app.scheduler.modify_job(sickrage.app.backlog_searcher.name,
                                           trigger=IntervalTrigger(
                                               minutes=self.backlog_searcher_freq
                                           ))
@@ -1164,11 +1163,11 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.version_updater_freq = try_int(freq, self.default_version_update_freq)
+        self.version_updater_freq = try_int(freq, self.defaults['General']['update_frequency'])
         if self.version_updater_freq < self.min_version_updater_freq:
             self.version_updater_freq = self.min_version_updater_freq
 
-        sickrage.app.scheduler.modify_job('VERSIONUPDATER',
+        sickrage.app.scheduler.modify_job(sickrage.app.version_updater.name,
                                           trigger=IntervalTrigger(
                                               hours=self.version_updater_freq
                                           ))
@@ -1179,11 +1178,11 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.showupdate_hour = try_int(freq, self.default_showupdate_hour)
+        self.showupdate_hour = try_int(freq, self.defaults['General']['showupdate_hour'])
         if self.showupdate_hour < 0 or self.showupdate_hour > 23:
             self.showupdate_hour = 0
 
-        sickrage.app.scheduler.modify_job('SHOWUPDATER',
+        sickrage.app.scheduler.modify_job(sickrage.app.show_updater.name,
                                           trigger=IntervalTrigger(
                                               hours=1,
                                               start_date=datetime.datetime.now().replace(hour=self.showupdate_hour)
@@ -1195,14 +1194,24 @@ class Config(object):
 
         :param freq: New frequency
         """
-        self.subtitle_searcher_freq = try_int(freq, self.default_subtitle_searcher_freq)
+        self.subtitle_searcher_freq = try_int(freq, self.defaults['Subtitles']['subtitles_finder_frequency'])
         if self.subtitle_searcher_freq < self.min_subtitle_searcher_freq:
             self.subtitle_searcher_freq = self.min_subtitle_searcher_freq
 
-        sickrage.app.scheduler.modify_job('SUBTITLESEARCHER',
+        sickrage.app.scheduler.modify_job(sickrage.app.subtitle_searcher.name,
                                           trigger=IntervalTrigger(
                                               hours=self.subtitle_searcher_freq
                                           ))
+
+    def change_failed_snatch_age(self, age):
+        """
+        Change age of failed snatches
+
+        :param age: New age
+        """
+        self.failed_snatch_age = try_int(age, self.defaults['FailedSnatches']['failed_snatch_age'])
+        if self.failed_snatch_age < self.min_failed_snatch_age:
+            self.failed_snatch_age = self.min_failed_snatch_age
 
     def change_version_notify(self, version_notify):
         """
@@ -1222,7 +1231,7 @@ class Config(object):
         :param download_propers: New desired state
         """
         self.download_propers = checkbox_to_value(download_propers)
-        job = sickrage.app.scheduler.get_job('PROPERSEARCHER')
+        job = sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name)
         (job.pause, job.resume)[self.download_propers]()
 
     def change_use_trakt(self, use_trakt):
@@ -1233,7 +1242,7 @@ class Config(object):
         :param use_trakt: New desired state
         """
         self.use_trakt = checkbox_to_value(use_trakt)
-        job = sickrage.app.scheduler.get_job('TRAKTSEARCHER')
+        job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
         (job.pause, job.resume)[self.use_trakt]()
 
     def change_use_subtitles(self, use_subtitles):
@@ -1244,7 +1253,7 @@ class Config(object):
         :param use_subtitles: New desired state
         """
         self.use_subtitles = checkbox_to_value(use_subtitles)
-        job = sickrage.app.scheduler.get_job('SUBTITLESEARCHER')
+        job = sickrage.app.scheduler.get_job(sickrage.app.subtitle_searcher.name)
         (job.pause, job.resume)[self.use_subtitles]()
 
     def change_process_automatically(self, process_automatically):
@@ -1255,7 +1264,7 @@ class Config(object):
         :param process_automatically: New desired state
         """
         self.process_automatically = checkbox_to_value(process_automatically)
-        job = sickrage.app.scheduler.get_job('POSTPROCESSOR')
+        job = sickrage.app.scheduler.get_job(sickrage.app.auto_postprocessor.name)
         (job.pause, job.resume)[self.process_automatically]()
 
     ################################################################################
@@ -1362,7 +1371,8 @@ class Config(object):
         self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
 
         # use defaults
-        if defaults: self.config_obj.clear()
+        if defaults:
+            self.config_obj.clear()
 
         # decrypt settings
         self.encryption_version = self.check_setting_int('General', 'encryption_version')
@@ -1803,6 +1813,9 @@ class Config(object):
 
         # FAILED DOWNLOAD SETTINGS
         self.delete_failed = self.check_setting_bool('FailedDownloads', 'delete_failed')
+
+        # FAILED SNATCH SETTINGS
+        self.failed_snatch_age = self.check_setting_int('FailedSnatches', 'failed_snatch_age')
 
         # ANIDB SETTINGS
         self.use_anidb = self.check_setting_bool('ANIDB', 'use_anidb')
@@ -2285,6 +2298,9 @@ class Config(object):
             },
             'FailedDownloads': {
                 'delete_failed': int(self.delete_failed),
+            },
+            'FailedSnatches': {
+                'failed_snatch_age': int(self.failed_snatch_age),
             },
             'ANIDB': {
                 'use_anidb': int(self.use_anidb),

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-26 12:01-0500\n"
-"PO-Revision-Date: 2017-11-27 15:48-0500\n"
+"POT-Creation-Date: 2017-11-27 22:18-0500\n"
+"PO-Revision-Date: 2017-11-27 22:19-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -207,7 +207,7 @@ msgstr "Seleccione .torrent negras/ver ubicación"
 msgid "Select .torrent download location"
 msgstr "Seleccione la ubicación de descarga de torrent"
 
-#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:893
+#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:917
 msgid "Minimum seeding time is"
 msgstr "Mínimo tiempo de siembra es"
 
@@ -572,8 +572,8 @@ msgstr "AniDB es sin fines de lucro base de datos de anime que está abiertas li
 
 #: sickrage/core/webserver/views/config/anime.mako:27
 #: sickrage/core/webserver/views/config/postprocessing.mako:30
-#: sickrage/core/webserver/views/config/search.mako:250
-#: sickrage/core/webserver/views/config/search.mako:669
+#: sickrage/core/webserver/views/config/search.mako:274
+#: sickrage/core/webserver/views/config/search.mako:693
 #: sickrage/core/webserver/views/config/subtitles.mako:30
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Enabled"
@@ -641,10 +641,10 @@ msgstr "¿Desea agregar los episodios postprocesada para el MyList?"
 #: sickrage/core/webserver/views/config/providers.mako:118
 #: sickrage/core/webserver/views/config/providers.mako:901
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
-#: sickrage/core/webserver/views/config/search.mako:231
-#: sickrage/core/webserver/views/config/search.mako:648
-#: sickrage/core/webserver/views/config/search.mako:720
-#: sickrage/core/webserver/views/config/search.mako:948
+#: sickrage/core/webserver/views/config/search.mako:255
+#: sickrage/core/webserver/views/config/search.mako:672
+#: sickrage/core/webserver/views/config/search.mako:744
+#: sickrage/core/webserver/views/config/search.mako:972
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
@@ -1091,7 +1091,7 @@ msgstr "Mostrar fechas y horas en su zona horaria o la zona horaria de red muest
 #: sickrage/core/webserver/views/config/postprocessing.mako:1300
 #: sickrage/core/webserver/views/config/postprocessing.mako:1314
 #: sickrage/core/webserver/views/config/postprocessing.mako:1328
-#: sickrage/core/webserver/views/config/search.mako:885
+#: sickrage/core/webserver/views/config/search.mako:909
 #: sickrage/core/webserver/views/config/subtitles.mako:124
 #: sickrage/core/webserver/views/config/subtitles.mako:162
 msgid "NOTE:"
@@ -1158,10 +1158,10 @@ msgstr "Nombre de usuario HTTP"
 #: sickrage/core/webserver/views/config/notifications.mako:426
 #: sickrage/core/webserver/views/config/notifications.mako:442
 #: sickrage/core/webserver/views/config/notifications.mako:1058
-#: sickrage/core/webserver/views/config/search.mako:328
-#: sickrage/core/webserver/views/config/search.mako:346
-#: sickrage/core/webserver/views/config/search.mako:812
-#: sickrage/core/webserver/views/config/search.mako:829
+#: sickrage/core/webserver/views/config/search.mako:352
+#: sickrage/core/webserver/views/config/search.mako:370
+#: sickrage/core/webserver/views/config/search.mako:836
+#: sickrage/core/webserver/views/config/search.mako:853
 msgid "blank = no authentication"
 msgstr "en blanco no = autenticación"
 
@@ -2189,12 +2189,12 @@ msgid "Moderate"
 msgstr "Moderada"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1685
-#: sickrage/core/webserver/views/config/search.mako:622
+#: sickrage/core/webserver/views/config/search.mako:646
 msgid "Normal"
 msgstr "Normal"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1688
-#: sickrage/core/webserver/views/config/search.mako:625
+#: sickrage/core/webserver/views/config/search.mako:649
 msgid "High"
 msgstr "Alta"
 
@@ -3773,12 +3773,12 @@ msgid "Search Settings"
 msgstr "Configuración de búsqueda"
 
 #: sickrage/core/webserver/views/config/search.mako:8
-#: sickrage/core/webserver/views/config/search.mako:242
+#: sickrage/core/webserver/views/config/search.mako:266
 msgid "NZB Clients"
 msgstr "Clientes NZB"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:661
+#: sickrage/core/webserver/views/config/search.mako:685
 msgid "Torrent Clients"
 msgstr "Clientes torrent"
 
@@ -3855,318 +3855,326 @@ msgid "15 mins"
 msgstr "15 minutos"
 
 #: sickrage/core/webserver/views/config/search.mako:104
+msgid "Check for failed snatches aged"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:114
+msgid "time in hours"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/search.mako:126
 msgid "Backlog search frequency"
 msgstr "Frecuencia de búsqueda de la cartera de pedidos"
 
-#: sickrage/core/webserver/views/config/search.mako:114
-#: sickrage/core/webserver/views/config/search.mako:132
+#: sickrage/core/webserver/views/config/search.mako:136
+#: sickrage/core/webserver/views/config/search.mako:155
 msgid "time in minutes"
 msgstr "tiempo en minutos"
 
-#: sickrage/core/webserver/views/config/search.mako:123
+#: sickrage/core/webserver/views/config/search.mako:145
 msgid "Daily search frequency"
 msgstr "Frecuencia de búsqueda diaria"
 
-#: sickrage/core/webserver/views/config/search.mako:144
+#: sickrage/core/webserver/views/config/search.mako:167
 msgid "Usenet retention"
 msgstr "Retención de Usenet"
 
-#: sickrage/core/webserver/views/config/search.mako:164
+#: sickrage/core/webserver/views/config/search.mako:188
 msgid "Ignore words"
 msgstr "Omitir palabras"
 
-#: sickrage/core/webserver/views/config/search.mako:173
-#: sickrage/core/webserver/views/config/search.mako:191
+#: sickrage/core/webserver/views/config/search.mako:197
+#: sickrage/core/webserver/views/config/search.mako:215
 #: sickrage/core/webserver/views/home/edit_show.mako:287
 #: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "ex. word1,word2,word3"
 msgstr "por ejemplo: palabra1, word2, palabra3"
 
-#: sickrage/core/webserver/views/config/search.mako:182
+#: sickrage/core/webserver/views/config/search.mako:206
 msgid "Require words"
 msgstr "Necesitan palabras"
 
-#: sickrage/core/webserver/views/config/search.mako:200
+#: sickrage/core/webserver/views/config/search.mako:224
 msgid "Ignore language names in subbed results"
 msgstr "Omitir nombres de la lengua en subbed resultados"
 
-#: sickrage/core/webserver/views/config/search.mako:209
+#: sickrage/core/webserver/views/config/search.mako:233
 msgid "ex. lang1,lang2,lang3"
 msgstr "ej.: lang1, lang2, lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:218
+#: sickrage/core/webserver/views/config/search.mako:242
 msgid "Allow high priority"
 msgstr "Permite alta prioridad"
 
-#: sickrage/core/webserver/views/config/search.mako:224
+#: sickrage/core/webserver/views/config/search.mako:248
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "Sistema de descargas de episodios emitidos recientemente a alta prioridad"
 
-#: sickrage/core/webserver/views/config/search.mako:243
+#: sickrage/core/webserver/views/config/search.mako:267
 msgid "How to handle NZB search results for clients."
 msgstr "Cómo manejar NZB los resultados de búsqueda para los clientes."
 
-#: sickrage/core/webserver/views/config/search.mako:255
+#: sickrage/core/webserver/views/config/search.mako:279
 msgid "enable NZB searches"
 msgstr "permitir búsquedas NZB"
 
-#: sickrage/core/webserver/views/config/search.mako:262
+#: sickrage/core/webserver/views/config/search.mako:286
 msgid "Send .nzb files to:"
 msgstr "Enviar archivos NZB para:"
 
-#: sickrage/core/webserver/views/config/search.mako:282
-#: sickrage/core/webserver/views/config/search.mako:702
+#: sickrage/core/webserver/views/config/search.mako:306
+#: sickrage/core/webserver/views/config/search.mako:726
 msgid "Black hole folder location"
 msgstr "Ubicación de la carpeta de agujero negro"
 
-#: sickrage/core/webserver/views/config/search.mako:292
-#: sickrage/core/webserver/views/config/search.mako:713
+#: sickrage/core/webserver/views/config/search.mako:316
+#: sickrage/core/webserver/views/config/search.mako:737
 msgid "files are stored at this location for external software to find and use"
 msgstr "los archivos se almacenan en esta ubicación de software externo encontrar y utilizar"
 
-#: sickrage/core/webserver/views/config/search.mako:302
+#: sickrage/core/webserver/views/config/search.mako:326
 msgid "SABnzbd server URL"
 msgstr "SABnzbd URL del servidor"
 
-#: sickrage/core/webserver/views/config/search.mako:311
+#: sickrage/core/webserver/views/config/search.mako:335
 msgid "ex. http://localhost:8080/"
 msgstr "por ejemplo: http://localhost: 8080 /"
 
-#: sickrage/core/webserver/views/config/search.mako:319
+#: sickrage/core/webserver/views/config/search.mako:343
 msgid "SABnzbd username"
 msgstr "SABnzbd username"
 
-#: sickrage/core/webserver/views/config/search.mako:337
+#: sickrage/core/webserver/views/config/search.mako:361
 msgid "SABnzbd password"
 msgstr "SABnzbd contraseña"
 
-#: sickrage/core/webserver/views/config/search.mako:355
+#: sickrage/core/webserver/views/config/search.mako:379
 msgid "SABnzbd API key"
 msgstr "SABnzbd API key"
 
-#: sickrage/core/webserver/views/config/search.mako:373
+#: sickrage/core/webserver/views/config/search.mako:397
 msgid "Use SABnzbd category"
 msgstr "SABnzbd categoría de uso"
 
-#: sickrage/core/webserver/views/config/search.mako:382
-#: sickrage/core/webserver/views/config/search.mako:400
-#: sickrage/core/webserver/views/config/search.mako:541
-#: sickrage/core/webserver/views/config/search.mako:559
+#: sickrage/core/webserver/views/config/search.mako:406
+#: sickrage/core/webserver/views/config/search.mako:424
+#: sickrage/core/webserver/views/config/search.mako:565
+#: sickrage/core/webserver/views/config/search.mako:583
 msgid "ex. TV"
 msgstr "ej.: TV"
 
-#: sickrage/core/webserver/views/config/search.mako:391
+#: sickrage/core/webserver/views/config/search.mako:415
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "Categoría de uso SABnzbd (acumulación de episodios)"
 
-#: sickrage/core/webserver/views/config/search.mako:409
+#: sickrage/core/webserver/views/config/search.mako:433
 msgid "Use SABnzbd category for anime"
 msgstr "Categoría de uso SABnzbd para anime"
 
-#: sickrage/core/webserver/views/config/search.mako:418
-#: sickrage/core/webserver/views/config/search.mako:438
-#: sickrage/core/webserver/views/config/search.mako:577
-#: sickrage/core/webserver/views/config/search.mako:596
+#: sickrage/core/webserver/views/config/search.mako:442
+#: sickrage/core/webserver/views/config/search.mako:462
+#: sickrage/core/webserver/views/config/search.mako:601
+#: sickrage/core/webserver/views/config/search.mako:620
 msgid "ex. anime"
 msgstr "ej.: anime"
 
-#: sickrage/core/webserver/views/config/search.mako:428
+#: sickrage/core/webserver/views/config/search.mako:452
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "Categoría de uso SABnzbd para anime (episodios de la cartera de pedidos)"
 
-#: sickrage/core/webserver/views/config/search.mako:448
+#: sickrage/core/webserver/views/config/search.mako:472
 msgid "Use forced priority"
 msgstr "Prioridad de uso obligado"
 
-#: sickrage/core/webserver/views/config/search.mako:454
+#: sickrage/core/webserver/views/config/search.mako:478
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "permiten para cambiar la prioridad de alto a forzado"
 
-#: sickrage/core/webserver/views/config/search.mako:464
+#: sickrage/core/webserver/views/config/search.mako:488
 msgid "Connect using HTTPS"
 msgstr "Conectar usando HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:470
+#: sickrage/core/webserver/views/config/search.mako:494
 msgid "enable secure control"
 msgstr "permiten asegurar el control"
 
-#: sickrage/core/webserver/views/config/search.mako:477
+#: sickrage/core/webserver/views/config/search.mako:501
 msgid "NZBget host:port"
 msgstr "Puerto de host: NZBget"
 
-#: sickrage/core/webserver/views/config/search.mako:486
+#: sickrage/core/webserver/views/config/search.mako:510
 msgid "ex. localhost:6789"
 msgstr "ej.: localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:496
+#: sickrage/core/webserver/views/config/search.mako:520
 msgid "NZBget username"
 msgstr "Nombre de usuario NZBget"
 
-#: sickrage/core/webserver/views/config/search.mako:505
+#: sickrage/core/webserver/views/config/search.mako:529
 msgid "default = nzbget"
 msgstr "predeterminado = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:514
+#: sickrage/core/webserver/views/config/search.mako:538
 msgid "NZBget password"
 msgstr "Contraseña NZBget"
 
-#: sickrage/core/webserver/views/config/search.mako:523
+#: sickrage/core/webserver/views/config/search.mako:547
 msgid "default = tegbzn6789"
 msgstr "predeterminado = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:532
+#: sickrage/core/webserver/views/config/search.mako:556
 msgid "Use NZBget category"
 msgstr "Categoría de NZBget de uso"
 
-#: sickrage/core/webserver/views/config/search.mako:550
+#: sickrage/core/webserver/views/config/search.mako:574
 msgid "Use NZBget category (backlog episodes)"
 msgstr "Usar la categoría de NZBget (acumulación de episodios)"
 
-#: sickrage/core/webserver/views/config/search.mako:568
+#: sickrage/core/webserver/views/config/search.mako:592
 msgid "Use NZBget category for anime"
 msgstr "Categoría de NZBget uso para anime"
 
-#: sickrage/core/webserver/views/config/search.mako:586
+#: sickrage/core/webserver/views/config/search.mako:610
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "Categoría de NZBget uso para anime (episodios de la cartera de pedidos)"
 
-#: sickrage/core/webserver/views/config/search.mako:605
+#: sickrage/core/webserver/views/config/search.mako:629
 msgid "NZBget priority"
 msgstr "NZBget prioridad"
 
-#: sickrage/core/webserver/views/config/search.mako:616
+#: sickrage/core/webserver/views/config/search.mako:640
 msgid "Very low"
 msgstr "Muy baja"
 
-#: sickrage/core/webserver/views/config/search.mako:619
+#: sickrage/core/webserver/views/config/search.mako:643
 msgid "Low"
 msgstr "Bajo"
 
-#: sickrage/core/webserver/views/config/search.mako:628
+#: sickrage/core/webserver/views/config/search.mako:652
 msgid "Very high"
 msgstr "Muy alta"
 
-#: sickrage/core/webserver/views/config/search.mako:631
+#: sickrage/core/webserver/views/config/search.mako:655
 #: sickrage/core/webserver/views/manage/queues.mako:19
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Force"
 msgstr "Fuerza"
 
-#: sickrage/core/webserver/views/config/search.mako:641
-#: sickrage/core/webserver/views/config/search.mako:940
+#: sickrage/core/webserver/views/config/search.mako:665
+#: sickrage/core/webserver/views/config/search.mako:964
 msgid "Click below to test"
 msgstr "Haga clic a continuación para probar"
 
-#: sickrage/core/webserver/views/config/search.mako:647
+#: sickrage/core/webserver/views/config/search.mako:671
 msgid "Test SABnzbd"
 msgstr "SABnzbd prueba"
 
-#: sickrage/core/webserver/views/config/search.mako:662
+#: sickrage/core/webserver/views/config/search.mako:686
 msgid "How to handle Torrent search results for clients."
 msgstr "Cómo manejar los resultados de búsqueda de Torrent para los clientes."
 
-#: sickrage/core/webserver/views/config/search.mako:674
+#: sickrage/core/webserver/views/config/search.mako:698
 msgid "Enable torrent searches"
 msgstr "Permiten búsquedas torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:681
+#: sickrage/core/webserver/views/config/search.mako:705
 msgid "Send .torrent files to:"
 msgstr "Enviar archivos .torrent para:"
 
-#: sickrage/core/webserver/views/config/search.mako:726
+#: sickrage/core/webserver/views/config/search.mako:750
 msgid "Torrent host:port"
 msgstr "Host: port de torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:735
+#: sickrage/core/webserver/views/config/search.mako:759
 msgid "ex. http://localhost:8000/"
 msgstr "ej.: http://localhost:8000 /"
 
-#: sickrage/core/webserver/views/config/search.mako:745
+#: sickrage/core/webserver/views/config/search.mako:769
 msgid "Torrent RPC URL"
 msgstr "ENLACE de RPC de torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:754
+#: sickrage/core/webserver/views/config/search.mako:778
 msgid "ex. transmission"
 msgstr "transmisión ej."
 
-#: sickrage/core/webserver/views/config/search.mako:764
+#: sickrage/core/webserver/views/config/search.mako:788
 msgid "HTTP Authentication"
 msgstr "Autenticación HTTP"
 
-#: sickrage/core/webserver/views/config/search.mako:773
+#: sickrage/core/webserver/views/config/search.mako:797
 msgid "None"
 msgstr "Ninguno"
 
-#: sickrage/core/webserver/views/config/search.mako:773
+#: sickrage/core/webserver/views/config/search.mako:797
 msgid "Basic"
 msgstr "Básico"
 
-#: sickrage/core/webserver/views/config/search.mako:773
+#: sickrage/core/webserver/views/config/search.mako:797
 msgid "Digest"
 msgstr "Resumen"
 
-#: sickrage/core/webserver/views/config/search.mako:785
+#: sickrage/core/webserver/views/config/search.mako:809
 msgid "Verify certificate"
 msgstr "Verificar certificado"
 
-#: sickrage/core/webserver/views/config/search.mako:792
+#: sickrage/core/webserver/views/config/search.mako:816
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "desactivar si consigues \"Diluvio: Error de autenticación\" en su registro de"
 
-#: sickrage/core/webserver/views/config/search.mako:795
+#: sickrage/core/webserver/views/config/search.mako:819
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "Verificar certificados SSL para las solicitudes HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:803
+#: sickrage/core/webserver/views/config/search.mako:827
 msgid "Client username"
 msgstr "Nombre de usuario de cliente"
 
-#: sickrage/core/webserver/views/config/search.mako:820
+#: sickrage/core/webserver/views/config/search.mako:844
 msgid "Client password"
 msgstr "Contraseña de cliente"
 
-#: sickrage/core/webserver/views/config/search.mako:837
+#: sickrage/core/webserver/views/config/search.mako:861
 msgid "Add label to torrent"
 msgstr "Añadir etiqueta a torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:846
-#: sickrage/core/webserver/views/config/search.mako:864
+#: sickrage/core/webserver/views/config/search.mako:870
+#: sickrage/core/webserver/views/config/search.mako:888
 msgid "blank spaces are not allowed"
 msgstr "no se permiten espacios en blanco"
 
-#: sickrage/core/webserver/views/config/search.mako:855
+#: sickrage/core/webserver/views/config/search.mako:879
 msgid "Add anime label to torrent"
 msgstr "Añadir etiqueta anime a torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:873
+#: sickrage/core/webserver/views/config/search.mako:897
 msgid "Downloaded files location"
 msgstr "Ubicación de los archivos descargados"
 
-#: sickrage/core/webserver/views/config/search.mako:883
+#: sickrage/core/webserver/views/config/search.mako:907
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "donde se guardar el cliente torrent descarga archivos (en blanco por defecto del cliente)"
 
-#: sickrage/core/webserver/views/config/search.mako:885
+#: sickrage/core/webserver/views/config/search.mako:909
 msgid "the destination has to be a shared folder for Synology DS"
 msgstr "el destino tiene que ser una carpeta compartida de Synology DS"
 
-#: sickrage/core/webserver/views/config/search.mako:914
+#: sickrage/core/webserver/views/config/search.mako:938
 msgid "Start torrent paused"
 msgstr "Torrent de inicio pausa"
 
-#: sickrage/core/webserver/views/config/search.mako:920
+#: sickrage/core/webserver/views/config/search.mako:944
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr "Añadir .torrent al cliente pero no <b>not</b> comienzo descarga"
 
-#: sickrage/core/webserver/views/config/search.mako:927
+#: sickrage/core/webserver/views/config/search.mako:951
 msgid "Allow high bandwidth"
 msgstr "Permite gran ancho de banda"
 
-#: sickrage/core/webserver/views/config/search.mako:933
+#: sickrage/core/webserver/views/config/search.mako:957
 msgid "use high bandwidth allocation if priority is high"
 msgstr "Utilice asignación de ancho de banda si la prioridad es alta"
 
-#: sickrage/core/webserver/views/config/search.mako:946
+#: sickrage/core/webserver/views/config/search.mako:970
 msgid "Test Connection"
 msgstr "Conexión de prueba"
 
@@ -4642,7 +4650,7 @@ msgstr "Nunca"
 msgid "Retry Download"
 msgstr "Vuelva a intentar descargar"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4978
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4756,7 +4764,7 @@ msgstr "Utilice la orden DVD en vez de la orden de aire"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Una \"actualización completa de la fuerza\" es necesaria, y si tienes episodios existentes necesita ordenarlos manualmente."
 
-#: sickrage/core/webserver/views.py:3730 sickrage/core/webserver/views.py:4855
+#: sickrage/core/webserver/views.py:3730 sickrage/core/webserver/views.py:4857
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5088,7 +5096,7 @@ msgstr "Error: El reinicio ha agotado el tiempo, tal vez algo impidió que SiCKR
 msgid "Daily Search"
 msgstr "Búsqueda diaria"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4965
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Cartera de"
@@ -5113,7 +5121,7 @@ msgstr "Post proceso"
 msgid "Subtitles Finder"
 msgstr "Buscador de subtítulos"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4973
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Comprobador de Trakt"
@@ -5146,7 +5154,7 @@ msgstr "No"
 msgid "True"
 msgstr "Verdadera"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4968
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Mostrar la cola"
@@ -5506,28 +5514,28 @@ msgstr "General"
 msgid "Backup and Restore"
 msgstr "Backup y Restore"
 
-#: sickrage/core/webserver/views.py:3725 sickrage/core/webserver/views.py:4290
+#: sickrage/core/webserver/views.py:3725 sickrage/core/webserver/views.py:4292
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Search Providers"
 msgstr "Proveedores de búsqueda"
 
-#: sickrage/core/webserver/views.py:3726 sickrage/core/webserver/views.py:4774
+#: sickrage/core/webserver/views.py:3726 sickrage/core/webserver/views.py:4776
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Configuración de subtítulos"
 
-#: sickrage/core/webserver/views.py:3727 sickrage/core/webserver/views.py:4894
+#: sickrage/core/webserver/views.py:3727 sickrage/core/webserver/views.py:4896
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Quality Settings"
 msgstr "Ajustes de calidad"
 
 #: sickrage/core/webserver/views.py:2310 sickrage/core/webserver/views.py:2311
-#: sickrage/core/webserver/views.py:3728 sickrage/core/webserver/views.py:4097
+#: sickrage/core/webserver/views.py:3728 sickrage/core/webserver/views.py:4098
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Post Processing"
 msgstr "Procesamiento posterior"
 
-#: sickrage/core/webserver/views.py:3729 sickrage/core/webserver/views.py:4447
+#: sickrage/core/webserver/views.py:3729 sickrage/core/webserver/views.py:4449
 #: sickrage/core/webserver/views/layouts/main.mako:270
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -6415,7 +6423,7 @@ msgstr "Ya en la rama: "
 #: sickrage/core/webserver/views.py:1943 sickrage/core/webserver/views.py:1948
 #: sickrage/core/webserver/views.py:1951 sickrage/core/webserver/views.py:1994
 #: sickrage/core/webserver/views.py:2000 sickrage/core/webserver/views.py:2003
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4975
 msgid "Error"
 msgstr "Error"
 
@@ -6795,10 +6803,10 @@ msgstr "Config - General"
 msgid "General Configuration"
 msgstr "Configuración general"
 
-#: sickrage/core/webserver/views.py:3922 sickrage/core/webserver/views.py:4079
-#: sickrage/core/webserver/views.py:4208 sickrage/core/webserver/views.py:4429
-#: sickrage/core/webserver/views.py:4756 sickrage/core/webserver/views.py:4837
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:3922 sickrage/core/webserver/views.py:4080
+#: sickrage/core/webserver/views.py:4210 sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:4758 sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:4878
 msgid "Error(s) Saving Configuration"
 msgstr "Errores de configuración de ahorro"
 
@@ -6843,150 +6851,150 @@ msgid "Config - Search Clients"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:4022 sickrage/core/webserver/views.py:4025
-#: sickrage/core/webserver/views.py:4125
+#: sickrage/core/webserver/views.py:4126
 msgid "Unable to create directory "
 msgstr "No se puede crear directorio "
 
 #: sickrage/core/webserver/views.py:4022 sickrage/core/webserver/views.py:4025
-#: sickrage/core/webserver/views.py:4125
+#: sickrage/core/webserver/views.py:4126
 msgid ", dir not changed."
 msgstr ", dir no cambiada."
 
-#: sickrage/core/webserver/views.py:4081
+#: sickrage/core/webserver/views.py:4082
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4096
+#: sickrage/core/webserver/views.py:4097
 msgid "Config - Post Processing"
 msgstr "Config - proceso del poste"
 
-#: sickrage/core/webserver/views.py:4135
+#: sickrage/core/webserver/views.py:4136
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Desempacar no admite, desactivar descomprimir ajuste"
 
-#: sickrage/core/webserver/views.py:4169 sickrage/core/webserver/views.py:4180
+#: sickrage/core/webserver/views.py:4171 sickrage/core/webserver/views.py:4182
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Has probado un anime no válido nombre config, no guardar la configuración de nombres de ahorro"
 
-#: sickrage/core/webserver/views.py:4171 sickrage/core/webserver/views.py:4182
+#: sickrage/core/webserver/views.py:4173 sickrage/core/webserver/views.py:4184
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Has probado ahorrar un config nombres no válido, no guardar la configuración de nombres"
 
-#: sickrage/core/webserver/views.py:4188
+#: sickrage/core/webserver/views.py:4190
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Has probado ahorrar un invalid config nombres fecha de aire, no guardar la configuración de la fecha de aire"
 
-#: sickrage/core/webserver/views.py:4194
+#: sickrage/core/webserver/views.py:4196
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Has probado ahorrar un deportivo no válido nombre config, no guardar su programación de deportes"
 
-#: sickrage/core/webserver/views.py:4210
+#: sickrage/core/webserver/views.py:4212
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4289
+#: sickrage/core/webserver/views.py:4291
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4330
+#: sickrage/core/webserver/views.py:4332
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "No nombre del proveedor especificado"
 
-#: sickrage/core/webserver/views.py:4332
+#: sickrage/core/webserver/views.py:4334
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ningún proveedor de dirección Url especificada"
 
-#: sickrage/core/webserver/views.py:4334
+#: sickrage/core/webserver/views.py:4336
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "No clave de Api de proveedor especificada"
 
-#: sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:4433
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4446
+#: sickrage/core/webserver/views.py:4448
 msgid "Config - Notifications"
 msgstr "Config - notificaciones"
 
-#: sickrage/core/webserver/views.py:4758
+#: sickrage/core/webserver/views.py:4760
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4773
+#: sickrage/core/webserver/views.py:4775
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:4841
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4854
+#: sickrage/core/webserver/views.py:4856
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4878
+#: sickrage/core/webserver/views.py:4880
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] configuración de guardado"
 
-#: sickrage/core/webserver/views.py:4893
+#: sickrage/core/webserver/views.py:4895
 msgid "Config - Quality Settings"
 msgstr "Configuración - ajustes de calidad"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4907
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[AJUSTES DE CALIDAD] Configuración guardado"
 
-#: sickrage/core/webserver/views.py:4918
+#: sickrage/core/webserver/views.py:4920
 msgid "Clear Errors"
 msgstr "Borrar errores"
 
-#: sickrage/core/webserver/views.py:4921
+#: sickrage/core/webserver/views.py:4923
 msgid "Clear Warnings"
 msgstr "Advertencias claras"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4964
 msgid "Daily Searcher"
 msgstr "Buscador diario"
 
-#: sickrage/core/webserver/views.py:4964
+#: sickrage/core/webserver/views.py:4966
 msgid "Show Updater"
 msgstr "Mostrar Updater"
 
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:4967
 msgid "Check Version"
 msgstr "Compruebe la versión del"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4969
 msgid "Search Queue"
 msgstr "Cola de búsqueda"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4970
 msgid "Find Propers"
 msgstr "Buscar propios"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4971
 msgid "Postprocessor"
 msgstr "Postprocesador"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4972
 msgid "Find Subtitles"
 msgstr "Encontrar subtítulos"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4974
 msgid "Event"
 msgstr "Evento"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4976
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4977
 msgid "Thread"
 msgstr "Hilo de rosca"
 
