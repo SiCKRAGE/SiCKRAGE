@@ -60,7 +60,7 @@ from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
 from sickrage.core.searchers.backlog_searcher import BacklogSearcher
 from sickrage.core.searchers.daily_searcher import DailySearcher
-from sickrage.core.searchers.failed_searcher import FailedSearcher
+from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
 from sickrage.core.searchers.proper_searcher import ProperSearcher
 from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
@@ -177,7 +177,7 @@ class Core(object):
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
         self.daily_searcher = DailySearcher()
-        self.failed_searcher = FailedSearcher()
+        self.failed_snatch_searcher = FailedSnatchSearcher()
         self.backlog_searcher = BacklogSearcher()
         self.proper_searcher = ProperSearcher()
         self.trakt_searcher = TraktSearcher()
@@ -370,15 +370,15 @@ class Core(object):
             id=self.daily_searcher.name
         )
 
-        # add failed search job
+        # add failed snatch search job
         self.scheduler.add_job(
-            self.failed_searcher.run,
+            self.failed_snatch_searcher.run,
             IntervalTrigger(
                 hours=1,
                 start_date=datetime.datetime.now() + datetime.timedelta(minutes=4)
             ),
-            name=self.failed_searcher.name,
-            id=self.failed_searcher.name
+            name=self.failed_snatch_searcher.name,
+            id=self.failed_snatch_searcher.name
         )
 
         # add backlog search job
@@ -455,6 +455,11 @@ class Core(object):
         (self.scheduler.get_job(self.auto_postprocessor.name).pause,
          self.scheduler.get_job(self.auto_postprocessor.name).resume
          )[self.config.process_automatically]()
+
+        # Pause/Resume FAILEDSNATCHSEARCHER job
+        (self.scheduler.get_job(self.failed_snatch_searcher.name).pause,
+         self.scheduler.get_job(self.failed_snatch_searcher.name).resume
+         )[self.config.use_failed_snatcher]()
 
         # start queue's
         self.search_queue.start()

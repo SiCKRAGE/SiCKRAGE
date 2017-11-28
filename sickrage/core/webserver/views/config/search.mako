@@ -77,6 +77,44 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Enable failed snatch handling')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="use_failed_snatcher" id="use_failed_snatcher"
+                               class="enabler" ${('', 'checked')[bool(sickrage.app.config.use_failed_snatcher)]}/>
+                        <label for="use_failed_snatcher">
+                            <p>${_('enables/disables failed snatch handling, automatically retries failed snatches')}</p>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="content_use_failed_snatcher">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Check for failed snatches aged')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-time"></span>
+                                </div>
+                                <input name="failed_snatch_age"
+                                       id="failed_snatch_age"
+                                       value="${sickrage.app.config.failed_snatch_age}"
+                                       placeholder="${_('time in hours')}"
+                                       title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours"
+                                       class="form-control"/>
+                                <div class="input-group-addon">
+                                    hours
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="content_download_propers">
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -94,28 +132,6 @@
                                         <option value="${curInterval}" ${('', 'selected')[sickrage.app.config.proper_searcher_interval == curInterval]}>${check_propers_interval_text[curInterval]}</option>
                                     % endfor
                                 </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Check for failed snatches aged')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
-                            </div>
-                            <input name="failed_snatch_age"
-                                   id="failed_snatch_age"
-                                   value="${sickrage.app.config.failed_snatch_age}"
-                                   placeholder="${_('time in hours')}"
-                                   title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours"
-                                   class="form-control"/>
-                            <div class="input-group-addon">
-                                hours
                             </div>
                         </div>
                     </div>
