@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2fead71 - 2017-11-27: Release v9.2.21 
+- * dc828dd - 2017-11-28: Fixed issues with provider searches validating shows during season and episode searches 
+- * 7d0057f - 2017-11-27: Release v9.2.21 
 - * 5ce3b85 - 2017-11-27: Release v9.2.20 
 - * 31c5977 - 2017-11-27: Release v9.2.19 
 - * 7015df3 - 2017-11-27: switched to using poster thumbs for poster view on shows page 
