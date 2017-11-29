@@ -68,7 +68,7 @@ class TorrentProjectProvider(TorrentProvider):
                     search_url = self.custom_url
 
                 try:
-                    data = sickrage.app.wsession.get(search_url, params=search_params).json()
+                    data = self.session.get(search_url, params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

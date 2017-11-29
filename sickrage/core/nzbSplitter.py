@@ -28,6 +28,7 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
+from sickrage.core.websession import WebSession
 
 
 def getSeasonNZBs(name, urlData, season):
@@ -124,7 +125,7 @@ def splitNZBResult(result):
     :param result: search result object
     :return: False upon failure, a list of episode objects otherwise
     """
-    urlData = sickrage.app.wsession.get(result.url, needBytes=True)
+    urlData = WebSession().get(result.url, needBytes=True)
     if urlData is None:
         sickrage.app.log.error("Unable to load url " + result.url + ", can't download season NZB")
         return False

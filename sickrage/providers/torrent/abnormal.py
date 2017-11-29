@@ -54,7 +54,7 @@ class ABNormalProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=30)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {
@@ -63,7 +63,7 @@ class ABNormalProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params).text
+            response = self.session.post(self.urls['login'], data=login_params).text
         except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
             return False
@@ -104,7 +104,7 @@ class ABNormalProvider(TorrentProvider):
                 search_params['search'] = re.sub(r'[()]', '', search_string)
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

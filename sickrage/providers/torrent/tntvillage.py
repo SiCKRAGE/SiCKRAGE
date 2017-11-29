@@ -70,7 +70,7 @@ class TNTVillageProvider(TorrentProvider):
                 while search_params['page'] <= 10:
                     search_params['page'] += 1
                     try:
-                        data = sickrage.app.wsession.post(self.urls['search'], data=search_params).text
+                        data = self.session.post(self.urls['search'], data=search_params).text
                         results += self.parse(data, mode)
                     except Exception:
                         sickrage.app.log.debug('No data returned from provider')

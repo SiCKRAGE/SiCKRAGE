@@ -27,6 +27,7 @@ from dateutil import tz
 
 import sickrage
 from sickrage.core.helpers import try_int
+from sickrage.core.websession import WebSession
 
 network_dict = {}
 time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b', re.I)
@@ -39,7 +40,7 @@ def update_network_dict():
     url = 'https://cdn.sickrage.ca/network_timezones/'
 
     try:
-        url_data = sickrage.app.wsession.get(url).text
+        url_data = WebSession().get(url).text
     except Exception:
         sickrage.app.log.warning(
             'Updating network timezones failed, this can happen from time to time. URL: %s' % url)

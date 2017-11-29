@@ -18,192 +18,128 @@
 
 from __future__ import print_function, unicode_literals
 
+import gettext
 import io
 import os
 import os.path
 import shutil
+import site
 import sys
 import threading
 import unittest
 
+PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
+if not (PROG_DIR in sys.path):
+    sys.path, remainder = sys.path[:1], sys.path[1:]
+    site.addsitedir(PROG_DIR)
+    sys.path.extend(remainder)
+
+LIBS_DIR = os.path.join(PROG_DIR, 'libs')
+if not (LIBS_DIR in sys.path):
+    sys.path, remainder = sys.path[:1], sys.path[1:]
+    site.addsitedir(LIBS_DIR)
+    sys.path.extend(remainder)
+
+LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
+gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+
 import sickrage
-from sickrage.core.caches import tv_cache
-from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv import episode
+from sickrage.core import Core, Config, NameCache, Logger
+from sickrage.providers import SearchProviders
 
 
-def createFolder(dirname):
-    if not os.path.isdir(dirname):
-        os.mkdir(dirname)
-
-
-# =================
-# dummy functions
-# =================
-# the real one tries to contact tvdb just stop it from getting more info on the ep
-def _fake_specifyEP(self, season, episode):
-    pass
-
-
-# =================
-# test classes
-# =================
 class SiCKRAGETestCase(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super(SiCKRAGETestCase, self).__init__(*args, **kwargs)
+
+        threading.currentThread().setName('TESTS')
+
+        self.TESTALL = False
+        self.TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
+        self.TESTDIR = os.path.abspath(os.path.dirname(__file__))
+        self.TESTDB_DIR = os.path.join(self.TESTDIR, 'database')
+        self.TESTDBBACKUP_DIR = os.path.join(self.TESTDIR, 'db_backup')
+
+        self.SHOWNAME = "show name"
+        self.SEASON = 4
+        self.EPISODE = 2
+        self.FILENAME = "show name - s0" + str(self.SEASON) + "e0" + str(self.EPISODE) + ".mkv"
+        self.FILEDIR = os.path.join(self.TESTDIR, self.SHOWNAME)
+        self.FILEPATH = os.path.join(self.FILEDIR, self.FILENAME)
+        self.SHOWDIR = os.path.join(self.TESTDIR, self.SHOWNAME + " final")
+
+        sickrage.app = Core()
+        sickrage.app.log = Logger()
+        sickrage.app.data_dir = self.TESTDIR
+
+        sickrage.app.config = Config()
+        sickrage.app.config.quality_default = 4  # hdtv
+        sickrage.app.config.naming_multi_ep = True
+        sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
+        sickrage.app.config.ignore_words = "German,Core2HD"
+
+        sickrage.app.search_providers = SearchProviders()
+        sickrage.app.name_cache = NameCache()
+
+        sickrage.app.search_providers.load()
+        episode.TVEpisode.populateEpisode = self._fake_specify_ep
+
     def setUp(self, **kwargs):
-        if TESTALL and self.__module__ in TESTSKIPPED:
+        if self.TESTALL and self.__module__ in self.TESTSKIPPED:
             raise unittest.SkipTest()
+
+        sickrage.app.showlist = []
+
+        if not os.path.exists(self.FILEDIR):
+            os.makedirs(self.FILEDIR)
+
+        if not os.path.exists(self.SHOWDIR):
+            os.makedirs(self.SHOWDIR)
+
+        try:
+            with io.open(self.FILEPATH, 'wb') as f:
+                f.write(b"foo bar")
+        except Exception:
+            print("Unable to set up test episode")
+            raise
+
+    def tearDown(self):
+        sickrage.app.log.close()
+
+        if os.path.exists(self.FILEDIR):
+            shutil.rmtree(self.FILEDIR)
+
+        if os.path.exists(self.SHOWDIR):
+            shutil.rmtree(self.SHOWDIR)
+
+    def _fake_specify_ep(self, season, episode):
+        pass
 
 
 class SiCKRAGETestDBCase(SiCKRAGETestCase):
     def setUp(self):
-        sickrage.app.showlist = []
-        setUp_test_db()
-        setUp_test_episode_file()
-        setUp_test_show_dir()
+        super(SiCKRAGETestDBCase, self).setUp()
+        sickrage.app.main_db = MainDB()
+        sickrage.app.cache_db = CacheDB()
+        sickrage.app.failed_db = FailedDB()
+        for db in [sickrage.app.main_db, sickrage.app.cache_db, sickrage.app.failed_db]:
+            db.initialize()
 
-    def tearDown(self, web=False):
-        sickrage.app.showlist = []
-        tearDown_test_episode_file()
-        tearDown_test_show_dir()
-        if web:
-            tearDown_test_web_server()
-
-
-class TestCacheDBConnection(srDatabase, object):
-    def __init__(self, providerName):
-        super(TestCacheDBConnection, self).__init__(providerName)
-
-        # Create the table if it's not already there
-        try:
-            if not self.hasTable(providerName):
-                self.action(
-                    "CREATE TABLE [" + providerName + "] (name TEXT, season NUMERIC, episodes TEXT, indexerid NUMERIC, url TEXT, time NUMERIC, quality TEXT, release_group TEXT)")
-            else:
-                sqlResults = self.select(
-                    "SELECT url, COUNT(url) AS count FROM [" + providerName + "] GROUP BY url HAVING count > 1")
-
-                for cur_dupe in sqlResults:
-                    self.action("DELETE FROM [" + providerName + "] WHERE url = ?", [cur_dupe["url"]])
-
-            # add unique index to prevent further dupes from happening if one does not exist
-            self.action("CREATE UNIQUE INDEX IF NOT EXISTS idx_url ON [" + providerName + "] (url)")
-
-            # add release_group column to table if missing
-            if not self.hasColumn(providerName, 'release_group'):
-                self.addColumn(providerName, 'release_group', "TEXT", "")
-
-            # add version column to table if missing
-            if not self.hasColumn(providerName, 'version'):
-                self.addColumn(providerName, 'version', "NUMERIC", "-1")
-
-        except Exception as e:
-            if str(e) != "table [" + providerName + "] already exists":
-                raise
-
-        # Create the table if it's not already there
-        try:
-            if not self.hasTable('lastUpdate'):
-                self.action("CREATE TABLE lastUpdate (provider TEXT, time NUMERIC)")
-        except Exception as e:
-            if str(e) != "table lastUpdate already exists":
-                raise
-
-
-# =================
-# test functions
-# =================
-def setUp_test_db(force=False):
-    """upgrades the db to the latest version
-    """
-
-    # remove old db files
-    tearDown_test_db()
-
-    # upgrade main
-    MainDB().initialize()
-
-    # upgrade cache
-    CacheDB().initialize()
-
-    # upgrade failed
-    FailedDB().initialize()
-
-    # populate scene exceiptions table
-    # retrieve_exceptions(False, False)
-
-
-def tearDown_test_db():
-    if os.path.exists(TESTDB_DIR):
-        shutil.rmtree(TESTDB_DIR)
-
-
-def setUp_test_episode_file():
-    if not os.path.exists(FILEDIR):
-        os.makedirs(FILEDIR)
-
-    try:
-        with io.open(FILEPATH, 'wb') as f:
-            f.write(b"foo bar")
-            f.flush()
-    except Exception:
-        print("Unable to set up test episode")
-        raise
-
-
-def tearDown_test_episode_file():
-    if os.path.exists(FILEDIR):
-        shutil.rmtree(FILEDIR)
-
-
-def setUp_test_show_dir():
-    if not os.path.exists(SHOWDIR):
-        os.makedirs(SHOWDIR)
-
-
-def tearDown_test_show_dir():
-    if os.path.exists(SHOWDIR):
-        shutil.rmtree(SHOWDIR)
-
-
-def setUp_test_web_server():
-    threading.Thread(None, sickrage.app.wserver.start).start()
-
-
-def tearDown_test_web_server():
-    if sickrage.app:
-        sickrage.app.io_loop.stop()
+    def tearDown(self):
+        super(SiCKRAGETestDBCase, self).tearDown()
+        for db in [sickrage.app.main_db, sickrage.app.cache_db, sickrage.app.failed_db]:
+            db.close()
+        if os.path.exists(self.TESTDB_DIR):
+            shutil.rmtree(self.TESTDB_DIR)
+        if os.path.exists(self.TESTDBBACKUP_DIR):
+            shutil.rmtree(self.TESTDBBACKUP_DIR)
 
 
 def load_tests(loader, tests):
     global TESTALL
     TESTALL = True
     return tests
-
-
-# =================
-# test globals
-# =================
-threading.currentThread().setName('TESTS')
-
-PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
-if PROG_DIR not in sys.path:
-    sys.path.insert(0, PROG_DIR)
-
-TESTALL = False
-TESTSKIPPED = ['test_issue_submitter', 'test_ssl_sni']
-TESTDIR = os.path.abspath(os.path.dirname(__file__))
-TESTDB_DIR = os.path.join(TESTDIR, 'databases')
-
-SHOWNAME = "show name"
-SEASON = 4
-EPISODE = 2
-FILENAME = "show name - s0" + str(SEASON) + "e0" + str(EPISODE) + ".mkv"
-FILEDIR = os.path.join(TESTDIR, SHOWNAME)
-FILEPATH = os.path.join(FILEDIR, FILENAME)
-SHOWDIR = os.path.join(TESTDIR, SHOWNAME + " final")
-
-episode.TVEpisode.populateEpisode = _fake_specifyEP
-tv_cache.CacheDBConnection = TestCacheDBConnection

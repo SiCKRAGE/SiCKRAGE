@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 from oauth2client.client import OAuth2WebServerFlow, OAuth2Credentials
 
-import sickrage
+from sickrage.core.websession import WebSession
 
 
 class GoogleAuth(object):
@@ -45,7 +45,7 @@ class GoogleAuth(object):
 
     def refresh_credentials(self):
         if isinstance(self.credentials, OAuth2Credentials):
-            self.credentials.refresh(sickrage.app.wsession)
+            self.credentials.refresh(WebSession())
 
     def logout(self):
         self.credentials = None

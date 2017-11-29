@@ -57,7 +57,7 @@ class LimeTorrentsProvider(TorrentProvider):
                 search_url = (self.urls['rss'], self.urls['search'] % search_string)[mode != 'RSS']
 
                 try:
-                    data = sickrage.app.wsession.get(search_url).text
+                    data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -119,7 +119,7 @@ class LimeTorrentsProvider(TorrentProvider):
                         continue
 
                     try:
-                        sickrage.app.wsession.get(self.urls['update'], timeout=30,
+                        self.session.get(self.urls['update'], timeout=30,
                                                   params={'torrent_id': torrent_id, 'infohash': info_hash})
                     except Exception:
                         pass

@@ -1,6 +1,7 @@
 # Changelog
 
-- * f996612 - 2017-11-28: Fixed redirect 301 errors for scenetime provider Fixed provider search issues for parse results not containing a show object 
+- * 2e50f99 - 2017-11-29: Updated provider urls WebSessions now called on demand Refactored WebSessions class Added provider test for urls Added cloudflare web hook for requests Fixed yggtorrent provider Refactored tests 
+- * 8164abc - 2017-11-28: Fixed redirect 301 errors for scenetime provider Fixed provider search issues for parse results not containing a show object 
 - * be06534 - 2017-11-28: Fixed issues with provider searches validating shows during season and episode searches 
 - * 7d0057f - 2017-11-27: Release v9.2.21 
 - * 5ce3b85 - 2017-11-27: Release v9.2.20 

@@ -32,7 +32,7 @@ class mlnetAPI(GenericClient):
     def _get_auth(self):
 
         try:
-            self.response = sickrage.app.wsession.get(self.host,
+            self.response = self.session.get(self.host,
                                                       auth=(self.username, self.password),
                                                       verify=bool(sickrage.app.config.torrent_verify_cert))
             self.auth = self.response.text

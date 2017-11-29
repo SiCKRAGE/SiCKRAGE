@@ -23,6 +23,7 @@ import traceback
 from urlparse import urljoin
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -47,7 +48,7 @@ class PushbulletNotifier(Notifiers):
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
-            return sickrage.app.wsession.get(urljoin(self.url, 'devices'), headers=headers).text
+            return WebSession().get(urljoin(self.url, 'devices'), headers=headers).text
         except Exception:
             sickrage.app.log.debug(
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
@@ -98,7 +99,7 @@ class PushbulletNotifier(Notifiers):
         headers = {'Content-Type': 'application/json', 'Access-Token': pushbullet_api}
 
         try:
-            response = sickrage.app.wsession.post(
+            response = WebSession().post(
                 urljoin(self.url, 'pushes'),
                 data=json.dumps(post_data),
                 headers=headers

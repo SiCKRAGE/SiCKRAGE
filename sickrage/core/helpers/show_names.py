@@ -84,30 +84,28 @@ def filterBadReleases(name, parse=True):
     try:
         if parse:
             NameParser().parse(name)
-    except InvalidNameException:
-        sickrage.app.log.debug("Unable to parse the filename " + name + " into a valid episode")
+    except InvalidNameException as e:
+        sickrage.app.log.debug("{}".format(e))
         return False
     except InvalidShowException:
         pass
-    # LOGGER.debug(u"Unable to parse the filename " + name + " into a valid show")
-    #    return False
 
     # if any of the bad strings are in the name then say no
     ignore_words = list(resultFilters)
     if sickrage.app.config.ignore_words:
         ignore_words.extend(sickrage.app.config.ignore_words.split(','))
+
     word = containsAtLeastOneWord(name, ignore_words)
     if word:
-        sickrage.app.log.debug("Invalid scene release: " + name + " contains " + word + ", ignoring it")
+        sickrage.app.log.debug("Release: " + name + " contains " + word + ", ignoring it")
         return False
 
     # if any of the good strings aren't in the name then say no
     if sickrage.app.config.require_words:
         require_words = sickrage.app.config.require_words
         if not containsAtLeastOneWord(name, require_words):
-            sickrage.app.log.debug(
-                "Invalid scene release: " + name + " doesn't contain any of " + sickrage.app.config.require_words +
-                ", ignoring it")
+            sickrage.app.log.debug("Release: " + name + " doesn't contain any of " +
+                                   ', '.join(set(require_words)) + ", ignoring it")
             return False
 
     return True

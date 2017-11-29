@@ -41,7 +41,7 @@ class uTorrentAPI(GenericClient):
 
     def _get_auth(self):
         try:
-            self.response = sickrage.app.wsession.get(self.url + 'token.html',
+            self.response = self.session.get(self.url + 'token.html',
                                                              timeout=120,
                                                              auth=(self.username, self.password),
                                                              verify=bool(sickrage.app.config.torrent_verify_cert))

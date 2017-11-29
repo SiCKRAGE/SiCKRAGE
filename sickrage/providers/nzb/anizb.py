@@ -62,7 +62,7 @@ class Anizb(NZBProvider):
                     search_url = (self.urls['rss'], self.urls['api'] + search_string)[mode != 'RSS']
 
                     try:
-                        response = sickrage.app.wsession.get(search_url).text
+                        response = self.session.get(search_url).text
                     except Exception:
                         sickrage.app.log.debug('No data returned from provider')
                         continue

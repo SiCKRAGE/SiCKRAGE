@@ -62,7 +62,7 @@ class ThePirateBayProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: {}".format(search_string))
 
                 try:
-                    data = sickrage.app.wsession.get(search_url).text
+                    data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -112,7 +112,7 @@ class ThePirateBayProvider(TorrentProvider):
                     if download_url and 'magnet:?' not in download_url:
                         try:
                             details_url = urljoin(self.custom_url or self.urls['base_url'], download_url)
-                            details_data = sickrage.app.wsession.get(details_url).text
+                            details_data = self.session.get(details_url).text
                         except Exception:
                             sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
                             continue

@@ -29,10 +29,10 @@ from sickrage.providers import TorrentProvider
 
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg", 'http://rarbg.com', False)
+        super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.to', False)
 
         self.urls.update({
-            'api': 'http://torrentapi.org/pubapi_v2.php'
+            'api': 'https://torrentapi.org/pubapi_v2.php'
         })
 
         self.minseed = None
@@ -57,7 +57,7 @@ class RarbgProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.wsession.get(self.urls['api'], params=login_params, timeout=30).json()
+            response = self.session.get(self.urls['api'], params=login_params).json()
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -114,7 +114,7 @@ class RarbgProvider(TorrentProvider):
                 sleep(5)
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['api'], params=search_params).json()
+                    data = self.session.get(self.urls['api'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

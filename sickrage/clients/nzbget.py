@@ -118,7 +118,7 @@ class NZBGet(object):
                 else:
                     if nzb.resultType == "nzb":
                         try:
-                            nzbcontent64 = standard_b64encode(sickrage.app.wsession.get(nzb.url).text)
+                            nzbcontent64 = standard_b64encode(self.session.get(nzb.url).text)
                         except Exception:
                             return False
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)

@@ -30,6 +30,7 @@ from collections import OrderedDict
 from operator import itemgetter
 
 import sickrage
+from sickrage.core.websession import WebSession
 
 try:
     import gzip
@@ -378,13 +379,9 @@ class Tvdb:
 
         # get response from theTVDB
         try:
-            resp = sickrage.app.wsession.request(
-                method,
-                urlparse.urljoin(self.config['api']['base'], url),
-                cache=self.config['cache_enabled'],
-                headers=self.config['headers'],
-                timeout=sickrage.app.config.indexer_timeout,
-                **kwargs
+            resp = WebSession(cache=self.config['cache_enabled']).request(
+                method, urlparse.urljoin(self.config['api']['base'], url), headers=self.config['headers'],
+                timeout=sickrage.app.config.indexer_timeout, **kwargs
             )
         except Exception as e:
             raise tvdb_error(e.message)

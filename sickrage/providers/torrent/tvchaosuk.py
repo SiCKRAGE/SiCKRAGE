@@ -28,7 +28,7 @@ from sickrage.providers import TorrentProvider
 
 class TVChaosUKProvider(TorrentProvider):
     def __init__(self):
-        super(TVChaosUKProvider, self).__init__('TvChaosUK', 'http://tvchaosuk.com', True)
+        super(TVChaosUKProvider, self).__init__('TvChaosUK', 'https://www.tvchaosuk.com', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
@@ -96,13 +96,13 @@ class TVChaosUKProvider(TorrentProvider):
         return [search_string]
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username, 'password': self.password}
 
         try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -138,7 +138,7 @@ class TVChaosUKProvider(TorrentProvider):
                 search_params['keywords'] = search_string.strip()
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
                     continue

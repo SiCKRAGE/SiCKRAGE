@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class Torrent9Provider(TorrentProvider):
     def __init__(self):
-        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrent9.pe', False)
+        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrents9.pe', False)
 
         self.urls.update({
             'search': '{base_url}/search_torrent'.format(**self.urls),
@@ -66,7 +66,7 @@ class Torrent9Provider(TorrentProvider):
                     search_url = self.urls['rss']
 
                 try:
-                    data = sickrage.app.wsession.get(search_url).text
+                    data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 class TORRENTZProvider(TorrentProvider):
     def __init__(self):
 
-        super(TORRENTZProvider, self).__init__("Torrentz", 'http://torrentz2.eu', False)
+        super(TORRENTZProvider, self).__init__("Torrentz", 'https://torrentz2.eu', False)
         self.confirmed = True
 
         self.minseed = None
@@ -60,7 +60,7 @@ class TORRENTZProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.app.wsession.get(search_url, params={'f': search_string}).text
+                    data = self.session.get(search_url, params={'f': search_string}).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

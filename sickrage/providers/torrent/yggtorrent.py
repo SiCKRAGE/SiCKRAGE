@@ -31,8 +31,6 @@ from sickrage.providers import TorrentProvider
 
 
 class YggtorrentProvider(TorrentProvider):
-    """Yggtorrent Torrent provider."""
-
     def __init__(self):
         """Initialize the class."""
         super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.com', True)
@@ -42,10 +40,10 @@ class YggtorrentProvider(TorrentProvider):
         self.password = None
 
         # URLs
-        self.urls = {
+        self.urls.update({
             'login': '{base_url}/user/login'.format(**self.urls),
             'search': '{base_url}/engine/search'.format(**self.urls),
-        }
+        })
 
         # Proper Strings
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
@@ -95,7 +93,7 @@ class YggtorrentProvider(TorrentProvider):
                 search_params['q'] = re.sub(r'[()]', '', search_string)
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
@@ -165,8 +163,8 @@ class YggtorrentProvider(TorrentProvider):
         }
 
         try:
-            sickrage.app.wsession.post(self.urls['login'], data=login_params)
-            response = sickrage.app.wsession.get(self.urls['base_url']).text
+            self.session.post(self.urls['login'], data=login_params)
+            response = self.session.get(self.urls['base_url']).text
         except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
             return False

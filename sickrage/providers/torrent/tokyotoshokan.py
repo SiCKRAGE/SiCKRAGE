@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 class TokyoToshokanProvider(TorrentProvider):
     def __init__(self):
 
-        super(TokyoToshokanProvider, self).__init__("TokyoToshokan", 'http://tokyotosho.info', False)
+        super(TokyoToshokanProvider, self).__init__("TokyoToshokan", 'https://www.tokyotosho.info', False)
 
         self.supports_absolute_numbering = True
         self.anime_only = True
@@ -62,7 +62,7 @@ class TokyoToshokanProvider(TorrentProvider):
                 }
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

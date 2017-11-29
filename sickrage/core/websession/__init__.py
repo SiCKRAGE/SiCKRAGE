@@ -19,95 +19,61 @@
 from __future__ import unicode_literals
 
 import io
-import os
-import shelve
 import ssl
-import threading
 import urllib2
-from contextlib import closing
 
 import certifi
 import cfscrape as cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
+from requests import Session
+from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
 from sickrage.core.helpers.encoding import to_unicode
 
 
-class DBCache(object):
-    def __init__(self, filename):
-        self.filename = filename
-        self.lock = threading.Lock()
-
-    def get(self, key):
-        with closing(shelve.open(self.filename)) as cache:
-            if key in cache:
-                return cache.get(key)
-
-    def set(self, key, value):
-        with self.lock:
-            with closing(shelve.open(self.filename)) as cache:
-                cache.setdefault(key, value)
-
-    def delete(self, key):
-        with self.lock:
-            with closing(shelve.open(self.filename)) as cache:
-                if key in cache:
-                    del cache[key]
-
-    def clear(self):
-        with self.lock:
-            with closing(shelve.open(self.filename)) as cache:
-                cache.clear()
+def _add_proxies():
+    if sickrage.app.config.proxy_setting:
+        sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.proxy_setting)
+        scheme, address = urllib2.splittype(sickrage.app.config.proxy_setting)
+        address = ('http://{}'.format(sickrage.app.config.proxy_setting),
+                   sickrage.app.config.proxy_setting)[scheme]
+        return {"http": address, "https": address}
 
 
-class WebSession(cfscrape.CloudflareScraper):
-    def __init__(self):
+class WebSession(Session):
+    def __init__(self, proxies=None, cache=True):
         super(WebSession, self).__init__()
-
-    def request(self, method, url, headers=None, params=None, proxies=None, cache=True, verify=False, *args, **kwargs):
-        if headers is None: headers = {}
-        if params is None: params = {}
-        if proxies is None: proxies = {}
-
-        headers['Accept-Encoding'] = 'gzip, deflate'
-        headers["User-Agent"] = sickrage.app.user_agent
-
-        # request session ssl verify
-        if sickrage.app.config.ssl_verify:
-            try:
-                verify = certifi.where()
-            except:
-                pass
-
-        # request session proxies
-        if 'Referer' not in headers and sickrage.app.config.proxy_setting:
-            sickrage.app.log.debug("Using global proxy: " + sickrage.app.config.proxy_setting)
-            scheme, address = urllib2.splittype(sickrage.app.config.proxy_setting)
-            address = ('http://{}'.format(sickrage.app.config.proxy_setting),
-                       sickrage.app.config.proxy_setting)[scheme]
-            proxies.update({"http": address, "https": address})
-            headers.update({'Referer': address})
 
         # setup caching adapter
         if cache:
-            adapter = CacheControlAdapter(DBCache(os.path.abspath(os.path.join(sickrage.app.data_dir, 'sessions.db'))))
+            adapter = CacheControlAdapter()
             self.mount('http://', adapter)
             self.mount('https://', adapter)
 
-        # get web response
-        response = super(WebSession, self).request(
-            method,
-            url,
-            headers=headers,
-            params=params,
-            verify=verify,
-            proxies=proxies,
-            hooks={'response': WebHooks.log_url},
-            *args, **kwargs
-        )
+        # add proxies
+        self.proxies = proxies or _add_proxies()
+
+        # add hooks
+        self.hooks['response'] += [WebHooks.log_url, WebHooks.cloudflare]
+
+        # add headers
+        self.headers.update({'Accept-Encoding': 'gzip, deflate', 'User-Agent': sickrage.app.user_agent})
+
+    @staticmethod
+    def _get_ssl_cert(verify):
+        """
+        Configure the ssl verification.
+
+        We need to overwrite this in the request method. As it's not available in the session init.
+        :param verify: SSL verification on or off.
+        """
+        return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
+
+    def request(self, method, url, verify=False, *args, **kwargs):
+        response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
         try:
             # check web response for errors
@@ -178,3 +144,48 @@ class WebHooks(object):
                 sickrage.app.log.debug('With post data: {}'.format(request.body))
             else:
                 sickrage.app.log.debug('With post data: {}'.format(to_unicode(request.body)))
+
+    @staticmethod
+    def cloudflare(resp, **kwargs):
+        """
+        Bypass CloudFlare's anti-bot protection.
+        """
+        if all([resp.status_code == 503, resp.headers.get('server') == 'cloudflare-nginx', ]):
+            sickrage.app.log.debug('CloudFlare protection detected, trying to bypass it')
+
+            # Get the session used or create a new one
+            session = getattr(resp, 'session', requests.Session())
+
+            # Get the original request
+            original_request = resp.request
+
+            # Get the CloudFlare tokens and original user-agent
+            tokens, user_agent = cfscrape.get_tokens(original_request.url)
+
+            # Add CloudFlare tokens to the session cookies
+            session.cookies.update(tokens)
+
+            # Add CloudFlare Tokens to the original request
+            original_cookies = dict_from_cookiejar(original_request._cookies)
+            original_cookies.update(tokens)
+            original_request.prepare_cookies(original_cookies)
+
+            # The same User-Agent must be used for the retry
+            # Update the session with the CloudFlare User-Agent
+            session.headers['User-Agent'] = user_agent
+
+            # Update the original request with the CloudFlare User-Agent
+            original_request.headers['User-Agent'] = user_agent
+
+            # Resend the request
+            cf_resp = session.send(
+                original_request,
+                allow_redirects=True,
+                **kwargs
+            )
+
+            if cf_resp.ok:
+                sickrage.app.log.debug('CloudFlare successfully bypassed.')
+            return cf_resp
+        else:
+            return resp

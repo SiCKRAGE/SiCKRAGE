@@ -22,6 +22,7 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
+from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
@@ -39,12 +40,13 @@ class SceneTests(SiCKRAGETestDBCase):
         dot_expected = [x.replace(' ', '.') for x in expected]
         self.assertTrue(len(set(dot_expected).intersection(set(dot_result))) == len(dot_expected))
 
-    def _test_allPossibleShowNames(self, name, indexerid=0, expected=[]):
+    def _test_allPossibleShowNames(self, name, indexerid=0, expected=None):
+        if expected is None:
+            expected = []
+
         s = TVShow(1, indexerid)
         s.name = name
         s.saveToDB()
-        s.loadFromDB(skipNFO=True)
-
 
         result = show_names.allPossibleShowNames(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
@@ -71,9 +73,7 @@ class SceneTests(SiCKRAGETestDBCase):
             s = TVShow(1, 0)
             s.name = show_name
             s.saveToDB()
-            s.loadFromDB(skipNFO=True)
             self._test_isGoodName(scene_name, s)
-            del s
 
     def test_sceneToNormalShowNames(self):
         self._test_sceneToNormalShowNames('Show Name 2010', ['Show Name 2010', 'Show Name (2010)'])
@@ -94,7 +94,7 @@ class SceneTests(SiCKRAGETestDBCase):
     def test_allPossibleShowNames(self):
         sickrage.app.cache_db.db.insert({
             '_t': 'scene_exceptions',
-            'indexer_id': -1,
+            'indexer_id': 1,
             'show_name': 'Exception Test',
             'season': -1
         })
@@ -103,7 +103,7 @@ class SceneTests(SiCKRAGETestDBCase):
         countryList['Full Country Name'] = 'FCN'
 
         self._test_allPossibleShowNames('Show Name', expected=['Show Name'])
-        self._test_allPossibleShowNames('Show Name', -1, expected=['Show Name', 'Exception Test'])
+        self._test_allPossibleShowNames('Show Name', 1, expected=['Show Name', 'Exception Test'])
         self._test_allPossibleShowNames('Show Name FCN', expected=['Show Name FCN', 'Show Name (Full Country Name)'])
         self._test_allPossibleShowNames('Show Name (FCN)',
                                         expected=['Show Name (FCN)', 'Show Name (Full Country Name)'])
@@ -120,11 +120,9 @@ class SceneTests(SiCKRAGETestDBCase):
 
 
 class SceneExceptionTestCase(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
+    def setUp(self):
         super(SceneExceptionTestCase, self).setUp()
-
-    def tearDown(self, **kwargs):
-        super(SceneExceptionTestCase, self).tearDown()
+        scene_exceptions.retrieve_exceptions()
 
     def test_sceneExceptionsEmpty(self):
         self.assertEqual(get_scene_exceptions(0), [])

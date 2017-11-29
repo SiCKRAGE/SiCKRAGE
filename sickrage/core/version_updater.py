@@ -32,6 +32,7 @@ import traceback
 
 import sickrage
 from sickrage.core.helpers import backupSR
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -540,7 +541,7 @@ class SourceUpdateManager(UpdateManager):
         git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/sickrage/version.txt"
 
         try:
-            return sickrage.app.wsession.get(git_version_url).text
+            return WebSession().get(git_version_url).text
         except Exception:
             return self._find_installed_version()
 
@@ -581,7 +582,7 @@ class SourceUpdateManager(UpdateManager):
             # retrieve file
             sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
             tar_download_path = os.path.join(sr_update_dir, 'sr-update.tar')
-            sickrage.app.wsession.download(tar_download_url, tar_download_path)
+            WebSession().download(tar_download_url, tar_download_path)
 
             if not os.path.isfile(tar_download_path):
                 sickrage.app.log.warning(
@@ -687,7 +688,7 @@ class PipUpdateManager(UpdateManager):
     def _check_for_new_version(self):
         from distutils.version import StrictVersion
         url = "https://pypi.python.org/pypi/{}/json".format('sickrage')
-        resp = sickrage.app.wsession.get(url)
+        resp = WebSession().get(url)
         versions = resp.json()["releases"].keys()
         versions.sort(key=StrictVersion, reverse=True)
 

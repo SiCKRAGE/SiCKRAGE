@@ -1126,7 +1126,6 @@ def generateApiKey():
     m.update(r)
 
     # Return a hex digest of the md5, eg 49f68a5c8493ec2c0bf489821c21fc3b
-    sickrage.app.log.debug("New API key generated")
     return m.hexdigest()
 
 

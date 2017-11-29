@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class NextorrentProvider(TorrentProvider):
     def __init__(self):
-        super(NextorrentProvider, self).__init__("Nextorrent", 'http://nextorrent.pw', False)
+        super(NextorrentProvider, self).__init__("Nextorrent", 'http://www.nextorrent.tv', False)
 
         self.urls.update({
             'series': '{base_url}/torrents/series'.format(**self.urls)
@@ -45,7 +45,7 @@ class NextorrentProvider(TorrentProvider):
 
     def get_download_url(self, url):
         try:
-            data = sickrage.app.wsession.get(urljoin(self.urls['base_url'], url)).text
+            data = self.session.get(urljoin(self.urls['base_url'], url)).text
             with bs4_parser(data) as html:
                 return html.find('div', class_="btn-magnet").find('a').get('href')
         except Exception:
@@ -67,7 +67,7 @@ class NextorrentProvider(TorrentProvider):
                     search_url = urljoin(self.urls['base_url'], search_string)
 
                 try:
-                    data = sickrage.app.wsession.get(search_url).text
+                    data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')
@@ -117,6 +117,7 @@ class NextorrentProvider(TorrentProvider):
                                     'size': size,
                                     'seeders': seeders,
                                     'leechers': leechers,
+                                    'hash': ''
                                 }]
                         except Exception:
                             sickrage.app.log.error("Failed parsing provider")
