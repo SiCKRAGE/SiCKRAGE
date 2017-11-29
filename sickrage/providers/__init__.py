@@ -342,12 +342,9 @@ class GenericProvider(object):
             result.name, result.url = self._get_title_and_url(item)
 
             try:
-                parse_result = NameParser(showObj=show).parse(result.name)
+                parse_result = NameParser().parse(result.name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("{}".format(e))
-                continue
-
-            if not parse_result.show:
                 continue
 
             result.show = parse_result.show
@@ -356,44 +353,48 @@ class GenericProvider(object):
             result.version = parse_result.version
             result.size = self._get_size(item)
             result.files = self._get_files(item)
-
             result.seeders, result.leechers = self._get_result_stats(item)
 
-            add_cache_entry = False
+            sickrage.app.log.debug("Adding item from search to cache: " + result.name)
+            self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
+                                     result.files, parse_result)
+
+            if not result.show:
+                continue
+
             if not (result.show.air_by_date or result.show.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
                         sickrage.app.log.debug(
                             "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
-                        add_cache_entry = True
+                        continue
                     if len(parse_result.episode_numbers) and (
                                     parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
-                        add_cache_entry = True
+                        continue
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
-                        add_cache_entry = True
+                        continue
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
                         sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
-                        add_cache_entry = True
+                        continue
 
-                if not add_cache_entry:
-                    # we just use the existing info for normal searches
-                    actual_season = parse_result.season_number
-                    actual_episodes = parse_result.episode_numbers
+                # we just use the existing info for normal searches
+                actual_season = parse_result.season_number
+                actual_episodes = parse_result.episode_numbers
             else:
                 if not parse_result.is_air_by_date:
                     sickrage.app.log.debug(
                         "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
-                    add_cache_entry = True
+                    continue
                 else:
                     airdate = parse_result.air_date.toordinal()
                     dbData = [x['doc'] for x in
@@ -403,18 +404,10 @@ class GenericProvider(object):
                     if len(dbData) != 1:
                         sickrage.app.log.warning(
                             "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
-                        add_cache_entry = True
+                        continue
 
-                if not add_cache_entry:
                     actual_season = int(dbData[0]["season"])
                     actual_episodes = [int(dbData[0]["episode"])]
-
-            # add parsed result to cache for usage later on
-            if add_cache_entry:
-                sickrage.app.log.debug("Adding item from search to cache: " + result.name)
-                self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
-                                         result.files, parse_result)
-                continue
 
             # make sure we want the episode
             wantEp = True
