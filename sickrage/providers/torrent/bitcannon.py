@@ -67,7 +67,7 @@ class BitCannonProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
                 try:
-                    data = sickrage.app.wsession.get(search_url, params=search_params).json()
+                    data = self.session.get(search_url, params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

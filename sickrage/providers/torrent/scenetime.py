@@ -26,7 +26,7 @@ from sickrage.providers import TorrentProvider
 
 class SceneTimeProvider(TorrentProvider):
     def __init__(self):
-        super(SceneTimeProvider, self).__init__("SceneTime", 'http://www.scenetime.com', True)
+        super(SceneTimeProvider, self).__init__("SceneTime", 'https://www.scenetime.com', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
@@ -67,7 +67,7 @@ class SceneTimeProvider(TorrentProvider):
                 query.update({"c%s" % i: 1 for i in self.categories})
 
                 try:
-                    data = sickrage.app.wsession.post(self.urls['search'], data=query).text
+                    data = self.session.post(self.urls['search'], data=query).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

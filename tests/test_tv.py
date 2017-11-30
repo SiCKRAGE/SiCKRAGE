@@ -28,15 +28,9 @@ from tests import SiCKRAGETestDBCase
 
 
 class TVShowTests(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
-        super(TVShowTests, self).setUp()
-        sickrage.app.showlist = []
-
     def test_init_indexerid(self):
         show = TVShow(1, 0001, "en")
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
-
         self.assertEqual(show.indexerid, 0001)
 
     def test_change_indexerid(self):
@@ -51,28 +45,19 @@ class TVShowTests(SiCKRAGETestDBCase):
         show.startyear = 1987
         show.indexerid = 0002
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
-
         self.assertEqual(show.indexerid, 0002)
 
     def test_set_name(self):
         show = TVShow(1, 0001, "en")
         show.name = "newName"
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
         self.assertEqual(show.name, "newName")
 
 
 class TVEpisodeTests(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
-        super(TVEpisodeTests, self).setUp(force_db=True)
-        sickrage.app.showlist = []
-
     def test_init_empty_db(self):
         show = TVShow(1, 0001, "en")
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
-
         ep = TVEpisode(show, 1, 1)
         ep.name = "asdasdasdajkaj"
         ep.saveToDB()
@@ -81,10 +66,6 @@ class TVEpisodeTests(SiCKRAGETestDBCase):
 
 
 class TVTests(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
-        super(TVTests, self).setUp()
-        sickrage.app.showlist = []
-
     def test_getEpisode(self):
         show = TVShow(1, 0001, "en")
         show.name = "show name"
@@ -96,8 +77,8 @@ class TVTests(SiCKRAGETestDBCase):
         show.airs = "monday"
         show.startyear = 1987
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
         sickrage.app.showlist = [show]
+
 
 if __name__ == '__main__':
     print "=================="

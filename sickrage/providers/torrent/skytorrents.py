@@ -79,7 +79,7 @@ class SkyTorrents(TorrentProvider):
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
                 try:
-                    data = sickrage.app.wsession.get(search_url).text
+                    data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("URL did not return results/data, if the results are on the site "

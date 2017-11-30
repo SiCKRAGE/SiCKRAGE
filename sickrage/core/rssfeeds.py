@@ -22,11 +22,12 @@ import feedparser
 from feedparser import FeedParserDict
 
 import sickrage
+from sickrage.core.websession import WebSession
 
 
 def getFeed(url, params=None, request_headers=None, handlers=None):
     try:
-        resp = sickrage.app.wsession.get(url, params=params)
+        resp = WebSession().get(url, params=params)
         if resp.ok:
             return feedparser.parse(
                 resp.text,

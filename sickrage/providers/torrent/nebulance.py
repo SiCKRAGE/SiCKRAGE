@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class NebulanceProvider(TorrentProvider):
     def __init__(self):
-        super(NebulanceProvider, self).__init__("Nebulance", 'http://nebulance.io', True)
+        super(NebulanceProvider, self).__init__("Nebulance", 'https://nebulance.io', True)
 
         self.username = None
         self.password = None
@@ -47,7 +47,7 @@ class NebulanceProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {
@@ -58,7 +58,7 @@ class NebulanceProvider(TorrentProvider):
         }
 
         try:
-            response = sickrage.app.wsession.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
+            response = self.session.post(self.urls['base_url'], params={'page': 'login'}, data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -90,7 +90,7 @@ class NebulanceProvider(TorrentProvider):
                 searchURL = self.urls['base_url'] + "?" + urlencode(search_params)
 
                 try:
-                    data = sickrage.app.wsession.get(searchURL).text
+                    data = self.session.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

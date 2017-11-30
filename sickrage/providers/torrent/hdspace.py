@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 
 class HDSpaceProvider(TorrentProvider):
     def __init__(self):
-        super(HDSpaceProvider, self).__init__("HDSpace", 'http://hd-space.org', True)
+        super(HDSpaceProvider, self).__init__("HDSpace", 'https://hd-space.org', True)
 
         self.urls.update({
             'login': '{base_url}/index.php?page=login'.format(**self.urls),
@@ -64,17 +64,17 @@ class HDSpaceProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
-        if 'pass' in dict_from_cookiejar(sickrage.app.wsession.cookies):
+        if 'pass' in dict_from_cookiejar(self.session.cookies):
             return True
 
         login_params = {'uid': self.username,
                         'pwd': self.password}
 
         try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -103,7 +103,7 @@ class HDSpaceProvider(TorrentProvider):
                     searchURL = self.urls['search'] % ''
 
                 try:
-                    data = sickrage.app.wsession.get(searchURL).text
+                    data = self.session.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

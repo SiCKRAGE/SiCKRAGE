@@ -27,6 +27,7 @@ from CodernityDB.database import RecordNotFound
 
 import sickrage
 from sickrage.core.helpers import findCertainShow, try_int
+from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 
 
@@ -506,7 +507,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             url = "http://thexem.de/map/havemap?origin=%s" % IndexerApi(indexer).config['xem_origin']
 
             try:
-                parsedJSON = sickrage.app.wsession.get(url).json()
+                parsedJSON = WebSession().get(url).json()
                 if indexer_id not in map(int, parsedJSON['data']):
                     raise
             except:
@@ -520,7 +521,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                 indexer_id, IndexerApi(indexer).config['xem_origin'])
 
             try:
-                parsedJSON = sickrage.app.wsession.get(url).json()
+                parsedJSON = WebSession().get(url).json()
                 if 'success' not in parsedJSON['result']:
                     raise
             except:

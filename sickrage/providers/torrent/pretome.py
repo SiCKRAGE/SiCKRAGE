@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 
 class PretomeProvider(TorrentProvider):
     def __init__(self):
-        super(PretomeProvider, self).__init__("Pretome", 'http://pretome.info', True)
+        super(PretomeProvider, self).__init__("Pretome", 'https://pretome.info', True)
 
         self.urls.update({
             'login': '{base_url}/takelogin.php'.format(**self.urls),
@@ -61,7 +61,7 @@ class PretomeProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -69,7 +69,7 @@ class PretomeProvider(TorrentProvider):
                         'login_pin': self.pin}
 
         try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -96,7 +96,7 @@ class PretomeProvider(TorrentProvider):
                 searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
 
                 try:
-                    data = sickrage.app.wsession.get(searchURL).text
+                    data = self.session.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

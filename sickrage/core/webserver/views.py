@@ -80,6 +80,7 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
+from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
@@ -2279,7 +2280,7 @@ class changelog(WebHandler):
         url = sickrage.app.changelog_url.format(branch=sickrage.app.version_updater.branch)
 
         try:
-            changes = sickrage.app.wsession.get(url).text
+            changes = WebSession().get(url).text
         except Exception:
             sickrage.app.log.debug('Could not load changes from repo, giving a link!')
             changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(url)

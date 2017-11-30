@@ -47,10 +47,10 @@ class PutioAPI(GenericClient):
         }
 
         try:
-            response = sickrage.app.wsession.post(self.url, data=post_data,
+            response = self.session.post(self.url, data=post_data,
                                                   verify=bool(sickrage.app.config.torrent_verify_cert))
 
-            response = sickrage.app.wsession.get(response.headers['location'],
+            response = self.session.get(response.headers['location'],
                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
 
             resulting_uri = '{redirect_uri}#access_token=(.*)'.format(
@@ -71,7 +71,7 @@ class PutioAPI(GenericClient):
         }
 
         try:
-            self.response = sickrage.app.wsession.post('https://api.put.io/v2/transfers/add',
+            self.response = self.session.post('https://api.put.io/v2/transfers/add',
                                                        data=post_data).json()
         except Exception:
             return False
@@ -86,7 +86,7 @@ class PutioAPI(GenericClient):
         }
 
         try:
-            sickrage.app.wsession.post('https://api.put.io/v2/files/upload',
+            self.session.post('https://api.put.io/v2/files/upload',
                                        data=post_data, files=('putio_torrent', result.content))
         except Exception:
             return False

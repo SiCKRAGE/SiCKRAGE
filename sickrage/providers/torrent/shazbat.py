@@ -26,7 +26,7 @@ from sickrage.providers import TorrentProvider
 
 class ShazbatProvider(TorrentProvider):
     def __init__(self):
-        super(ShazbatProvider, self).__init__("Shazbat.tv", 'http://www.shazbat.tv', True)
+        super(ShazbatProvider, self).__init__("Shazbat.tv", 'https://www.shazbat.tv', True)
 
         self.urls.update({
             'login': '{base_url}/login'.format(**self.urls)

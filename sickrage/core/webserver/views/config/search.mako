@@ -101,12 +101,12 @@
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-time"></span>
                                 </div>
-                                <input name="failed_snatch_age"
-                                       id="failed_snatch_age"
-                                       value="${sickrage.app.config.failed_snatch_age}"
-                                       placeholder="${_('time in hours')}"
-                                       title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours"
-                                       class="form-control"/>
+                                <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
+                                        title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
+                                    % for hour in range(1,25):
+                                        <option value="${hour}" ${('', 'selected')[sickrage.app.config.failed_snatch_age == hour]}>${hour}</option>
+                                    % endfor
+                                </select>
                                 <div class="input-group-addon">
                                     hours
                                 </div>

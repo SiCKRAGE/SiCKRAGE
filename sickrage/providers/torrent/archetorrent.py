@@ -60,7 +60,7 @@ class ArcheTorrentProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=15)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {
@@ -70,8 +70,8 @@ class ArcheTorrentProvider(TorrentProvider):
         }
 
         try:
-            sickrage.app.wsession.post(self.urls['login'], data=login_params)
-            search = sickrage.app.wsession.get(self.urls['search']).text
+            self.session.post(self.urls['login'], data=login_params)
+            search = self.session.get(self.urls['search']).text
         except Exception:
             sickrage.app.log.warning('Unable to connect to provider')
             return False
@@ -118,7 +118,7 @@ class ArcheTorrentProvider(TorrentProvider):
                 search_params['search'] = re.sub(r'[()]', '', search_string)
 
                 try:
-                    data = sickrage.app.wsession.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug('No data returned from provider')

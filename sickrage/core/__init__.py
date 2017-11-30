@@ -70,7 +70,6 @@ from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
 from sickrage.core.version_updater import VersionUpdater
 from sickrage.core.webserver import WebServer
-from sickrage.core.websession import WebSession
 from sickrage.metadata import MetadataProviders
 from sickrage.notifiers import NotifierProviders
 from sickrage.providers import SearchProviders
@@ -131,7 +130,6 @@ class Core(object):
         self.failed_db = None
         self.scheduler = None
         self.wserver = None
-        self.wsession = None
         self.google_auth = None
         self.name_cache = None
         self.show_queue = None
@@ -168,7 +166,6 @@ class Core(object):
         self.failed_db = FailedDB()
         self.scheduler = BackgroundScheduler()
         self.wserver = WebServer()
-        self.wsession = WebSession()
         self.google_auth = GoogleAuth()
         self.name_cache = NameCache()
         self.show_queue = ShowQueue()

@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class SpeedCDProvider(TorrentProvider):
     def __init__(self):
-        super(SpeedCDProvider, self).__init__("Speedcd", 'http://speed.cd', True)
+        super(SpeedCDProvider, self).__init__("Speedcd", 'https://speed.cd', True)
 
         self.urls.update({
             'login': '{base_url}/take_login.php'.format(**self.urls),
@@ -52,14 +52,14 @@ class SpeedCDProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
                         'password': self.password}
 
         try:
-            response = sickrage.app.wsession.post(self.urls['login'], data=login_params, timeout=30).text
+            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
@@ -90,7 +90,7 @@ class SpeedCDProvider(TorrentProvider):
                                  **self.categories[mode])
 
                 try:
-                    data = sickrage.app.wsession.post(self.urls['search'], data=post_data).json()
+                    data = self.session.post(self.urls['search'], data=post_data).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

@@ -38,6 +38,7 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
 from sickrage.core.tv.show.history import FailedHistory, History
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -64,7 +65,7 @@ def _verify_result(result):
             sickrage.app.log.debug("Verifiying a result from " + resProvider.name + " at " + url)
 
             try:
-                result.content = sickrage.app.wsession.get(url, verify=False, headers=headers).content
+                result.content = WebSession().get(url, verify=False, headers=headers).content
                 if result.resultType == "torrent":
                     try:
                         meta_info = bencode.bdecode(result.content)

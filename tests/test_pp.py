@@ -19,97 +19,114 @@
 
 from __future__ import print_function, unicode_literals
 
+import io
+import os
 import unittest
 
 import sickrage
+from sickrage.core.helpers import make_dirs
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
-from tests import EPISODE, FILENAME, FILEPATH, SEASON, SHOWDIR, \
-    SHOWNAME, SiCKRAGETestCase, SiCKRAGETestDBCase
+from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 
 class PPInitTests(SiCKRAGETestCase):
     def setUp(self, **kwargs):
         super(PPInitTests, self).setUp()
-        self.pp = PostProcessor(FILEPATH)
-
-    def tearDown(self, **kwargs):
-        super(PPInitTests, self).tearDown()
+        self.pp = PostProcessor(self.FILEPATH)
 
     def test_init_file_name(self):
-        self.assertEqual(self.pp.file_name, FILENAME)
+        self.assertEqual(self.pp.file_name, self.FILENAME)
 
     def test_init_folder_name(self):
-        self.assertEqual(self.pp.folder_name, SHOWNAME)
+        self.assertEqual(self.pp.folder_name, self.SHOWNAME)
 
 
 class PPBasicTests(SiCKRAGETestDBCase):
-    def setUp(self, **kwargs):
-        super(PPBasicTests, self).setUp()
-
-    def tearDown(self, **kwargs):
-        super(PPBasicTests, self).tearDown()
-
     def test_process(self):
         show = TVShow(1, 3)
-        show.name = SHOWNAME
-        show.location = SHOWDIR
+        show.name = self.SHOWNAME
+        show.location = self.SHOWDIR
         show.saveToDB()
-        show.loadFromDB(skipNFO=True)
         sickrage.app.showlist = [show]
-        ep = TVEpisode(show, SEASON, EPISODE)
+        ep = TVEpisode(show, self.SEASON, self.EPISODE)
         ep.name = "some ep name"
         ep.saveToDB()
 
         sickrage.app.name_cache.put('show name', 3)
-        self.pp = PostProcessor(FILEPATH, process_method='move')
+        self.pp = PostProcessor(self.FILEPATH, process_method='move')
         self.assertTrue(self.pp.process)
 
 
-# class PPWebServerTests(SiCKRAGETestDBCase):
-#     def setUp(self, **kwargs):
-#         super(PPWebServerTests, self).setUp(True)
-#
-#     def tearDown(self, **kwargs):
-#         super(PPWebServerTests, self).tearDown(True)
-#
-#     def test_process(self):
-#         s = requests.Session()
-#
-#         params = {
-#             "proc_dir": FILEDIR,
-#             "nzbName": FILEPATH,
-#             "failed": 0,
-#             "process_method": "move",
-#             "force": 0,
-#             "quiet": 1
-#         }
-#
-#         login_params = {
-#             'username': sickrage.WEB_USERNAME,
-#             'password': sickrage.WEB_PASSWORD
-#         }
-#
-#         s.post(
-#                 "http://localhost:8081/login",
-#                 data=login_params,
-#                 stream=True,
-#                 verify=False,
-#                 timeout=(30, 60)
-#         )
-#
-#         r = s.get(
-#                 "http://localhost:8081/home/postprocess/processEpisode",
-#                 auth=(sickrage.WEB_USERNAME, sickrage.WEB_PASSWORD),
-#                 params=params,
-#                 stream=True,
-#                 verify=False,
-#                 timeout=(30, 1800)
-#         )
-#
-#         self.assertTrue(
-#                 line for line in r.iter_lines() if line.lower() in ["processing succeeded", "successfully processed"])
+class ListAssociatedFiles(SiCKRAGETestCase):
+    def setUp(self):
+        super(ListAssociatedFiles, self).setUp()
+        self.test_tree = os.path.join(self.FILEDIR, 'associated_files', 'random', 'recursive', 'subdir')
+
+        file_names = [
+            'Show Name [SickRage].avi',
+            'Show Name [SickRage].srt',
+            'Show Name [SickRage].nfo',
+            'Show Name [SickRage].en.srt',
+            'Non-Associated Show [SickRage].srt',
+            'Non-Associated Show [SickRage].en.srt',
+            'Show [SickRage] Non-Associated.en.srt',
+            'Show [SickRage] Non-Associated.srt',
+        ]
+        self.file_list = [os.path.join(self.FILEDIR, f) for f in file_names] + [os.path.join(self.test_tree, f) for f in
+                                                                               file_names]
+        self.post_processor = PostProcessor('Show Name')
+        self.maxDiff = None
+        sickrage.app.config.move_associated_files = True
+        sickrage.app.config.allowed_extensions = ''
+
+        make_dirs(self.test_tree)
+        for test_file in self.file_list:
+            io.open(test_file, 'a').close()
+
+    def test_subfolders(self):
+        # Test edge cases first:
+        self.assertEqual([], self.post_processor.list_associated_files('', subfolders=True))
+        self.assertEqual([], self.post_processor.list_associated_files('\\Show Name\\.nomedia', subfolders=True))
+
+        associated_files = self.post_processor.list_associated_files(self.file_list[0], subfolders=True)
+
+        associated_files = sorted(file_name.lstrip('./') for file_name in associated_files)
+        out_list = sorted(file_name for file_name in self.file_list[1:] if 'Non-Associated' not in file_name)
+
+        self.assertEqual(out_list, associated_files)
+
+        # Test no associated files:
+        associated_files = self.post_processor.list_associated_files('Fools Quest.avi', subfolders=True)
+
+    def test_no_subfolders(self):
+        associated_files = self.post_processor.list_associated_files(self.file_list[0], subfolders=False)
+
+        associated_files = sorted(file_name.lstrip('./') for file_name in associated_files)
+        out_list = sorted(file_name for file_name in self.file_list[1:] if
+                          'associated_files' not in file_name and 'Non-Associated' not in file_name)
+
+        self.assertEqual(out_list, associated_files)
+
+    def test_subtitles_only(self):
+        associated_files = self.post_processor.list_associated_files(self.file_list[0], subtitles_only=True,
+                                                                     subfolders=True)
+
+        associated_files = sorted(file_name.lstrip('./') for file_name in associated_files)
+        out_list = sorted(file_name for file_name in self.file_list if
+                          file_name.endswith('.srt') and 'Non-Associated' not in file_name)
+
+        self.assertEqual(out_list, associated_files)
+
+    def test_subtitles_only_no_subfolders(self):
+        associated_files = self.post_processor.list_associated_files(self.file_list[0], subtitles_only=True,
+                                                                     subfolders=False)
+        associated_files = sorted(file_name.lstrip('./') for file_name in associated_files)
+        out_list = sorted(file_name for file_name in self.file_list if file_name.endswith(
+            '.srt') and 'associated_files' not in file_name and 'Non-Associated' not in file_name)
+
+        self.assertEqual(out_list, associated_files)
 
 
 if __name__ == '__main__':

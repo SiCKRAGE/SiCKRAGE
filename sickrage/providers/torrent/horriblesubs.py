@@ -59,7 +59,7 @@ class HorribleSubsProvider(TorrentProvider):
                 searchURL = self.urls[('search', 'rss')[mode == 'RSS']]
 
                 try:
-                    data = sickrage.app.wsession.get(searchURL, params=search_params).text
+                    data = self.session.get(searchURL, params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

@@ -979,7 +979,7 @@ class Config(object):
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
                     unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
-                    if (sickrage.app.wsession.download(
+                    if (WebSession().download(
                             "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
                     ) and extract_zipfile(archive=unrar_zip, targetDir=unrar_dir)):
                         try:

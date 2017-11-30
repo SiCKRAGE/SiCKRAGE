@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import sickrage
+from sickrage.core.websession import WebSession
 
 
 def getShowImage(url):
@@ -28,6 +29,6 @@ def getShowImage(url):
     sickrage.app.log.debug("Fetching image from " + url)
 
     try:
-        return sickrage.app.wsession.get(url).content
+        return WebSession().get(url).content
     except Exception:
         sickrage.app.log.warning("There was an error trying to retrieve the image, aborting")

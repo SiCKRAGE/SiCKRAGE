@@ -25,10 +25,11 @@ import threading
 import time
 
 from CodernityDB.database import RecordNotFound
-from adba.aniDBAbstracter import Anime
 
 import sickrage
+from adba.aniDBAbstracter import Anime
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
+from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 
 exception_dict = {}
@@ -94,7 +95,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             try:
                 # each exception is on one line with the format indexer_id: 'show name 1', 'show name 2', etc
                 cur_line = None
-                for cur_line in sickrage.app.wsession.get(loc).text.splitlines():
+                for cur_line in WebSession().get(loc).text.splitlines():
                     indexer_id, __, aliases = cur_line.partition(':')
                     if not aliases:
                         continue
@@ -314,7 +315,7 @@ def _xem_exceptions_fetcher():
                 'xem_origin']
 
             try:
-                parsedJSON = sickrage.app.wsession.get(url, timeout=90).json()
+                parsedJSON = WebSession().get(url, timeout=90).json()
             except Exception:
                 sickrage.app.log.debug("Check scene exceptions update failed for " + IndexerApi(
                     indexer).name + ", Unable to get URL: " + url)

@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class MoreThanTVProvider(TorrentProvider):
     def __init__(self):
-        super(MoreThanTVProvider, self).__init__("MoreThanTV", 'http://www.morethan.tv', True)
+        super(MoreThanTVProvider, self).__init__("MoreThanTV", 'https://www.morethan.tv', True)
 
         self.urls.update({
             'login': '{base_url}/login.php'.format(**self.urls),
@@ -72,11 +72,11 @@ class MoreThanTVProvider(TorrentProvider):
         return True
 
     def login(self):
-        if any(requests.utils.dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(requests.utils.dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         if self._uid and self._hash:
-            requests.utils.add_dict_to_cookiejar(sickrage.app.wsession.cookies, self.cookies)
+            requests.utils.add_dict_to_cookiejar(self.session.cookies, self.cookies)
         else:
             login_params = {'username': self.username,
                             'password': self.password,
@@ -84,8 +84,8 @@ class MoreThanTVProvider(TorrentProvider):
                             'keeplogged': '1'}
 
             try:
-                sickrage.app.wsession.get(self.urls['login'])
-                response = sickrage.app.wsession.post(self.urls['login'], data=login_params).text
+                self.session.get(self.urls['login'])
+                response = self.session.post(self.urls['login'], data=login_params).text
             except Exception:
                 sickrage.app.log.warning("Unable to connect to provider".format(self.name))
                 return False
@@ -112,7 +112,7 @@ class MoreThanTVProvider(TorrentProvider):
 
                 # returns top 15 results by default, expandable in user profile to 100
                 try:
-                    data = sickrage.app.wsession.get(searchURL).text
+                    data = self.session.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")

@@ -113,7 +113,7 @@ class NewpctProvider(TorrentProvider):
 
                 for search_url in self.urls['search']:
                     try:
-                        data = sickrage.app.wsession.get(search_url % search_string).text
+                        data = self.session.get(search_url % search_string).text
                         results += self.parse(data, mode)
                     except Exception:
                         sickrage.app.log.debug('No data returned from provider')
@@ -229,7 +229,7 @@ class NewpctProvider(TorrentProvider):
 
     def _process_link(self, url):
         try:
-            url = sickrage.app.wsession.get(url).text
+            url = self.session.get(url).text
             download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
             url = self.urls['download'] % download_id
         except Exception as e:

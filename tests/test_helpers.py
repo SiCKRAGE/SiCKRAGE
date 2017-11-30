@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 
 import unittest
 
-from sickrage.core.helpers import remove_non_release_groups
 from tests import SiCKRAGETestCase
 
 test_result = 'Show.Name.S01E01.HDTV.x264-RLSGROUP'
@@ -68,26 +67,25 @@ test_cases = {
 
 
 class HelpersTests(SiCKRAGETestCase):
-    def __init__(self, *args, **kwargs):
-        super(HelpersTests, self).__init__(*args, **kwargs)
+    pass
 
 
 def test_generator(test_strings):
     def _test(self):
         for test_string in test_strings:
+            from sickrage.core.helpers import remove_non_release_groups
             self.assertEqual(remove_non_release_groups(test_string), test_result)
 
     return _test
 
+
+for name, test_data in test_cases.items():
+    setattr(HelpersTests, 'test_%s' % name, test_generator(test_data))
 
 if __name__ == '__main__':
     print "=================="
     print "STARTING - Helpers TESTS"
     print "=================="
     print "######################################################################"
-    for name, test_data in test_cases.items():
-        test_name = 'test_%s' % name
-        test = test_generator(test_data)
-        setattr(HelpersTests, test_name, test)
 
     unittest.main()

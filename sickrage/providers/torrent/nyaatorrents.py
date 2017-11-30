@@ -26,7 +26,7 @@ from sickrage.providers import TorrentProvider
 
 class NyaaProvider(TorrentProvider):
     def __init__(self):
-        super(NyaaProvider, self).__init__("NyaaTorrents", 'http://nyaa.si', False)
+        super(NyaaProvider, self).__init__("NyaaTorrents", 'https://nyaa.si', False)
 
         self.supports_absolute_numbering = True
         self.anime_only = True

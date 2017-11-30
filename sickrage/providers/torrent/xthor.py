@@ -33,7 +33,7 @@ from sickrage.providers import TorrentProvider
 
 class XthorProvider(TorrentProvider):
     def __init__(self):
-        super(XthorProvider, self).__init__("Xthor", "http://xthor.bz", True)
+        super(XthorProvider, self).__init__("Xthor", "http://xthor.to", True)
 
         self.urls.update({
             'search': "{base_url}/browse.php?search=%s%s".format(**self.urls)
@@ -49,7 +49,7 @@ class XthorProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=10)
 
     def login(self):
-        if any(dict_from_cookiejar(sickrage.app.wsession.cookies).values()):
+        if any(dict_from_cookiejar(self.session.cookies).values()):
             return True
 
         login_params = {'username': self.username,
@@ -57,7 +57,7 @@ class XthorProvider(TorrentProvider):
                         'submitme': 'X'}
 
         try:
-            response = sickrage.app.wsession.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
+            response = self.session.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
                                                          timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
@@ -86,7 +86,7 @@ class XthorProvider(TorrentProvider):
                 searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
 
                 try:
-                    data = sickrage.app.wsession.get(searchURL).text
+                    data = self.session.get(searchURL).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
