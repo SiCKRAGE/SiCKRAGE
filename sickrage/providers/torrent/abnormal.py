@@ -154,13 +154,12 @@ class ABNormalProvider(TorrentProvider):
                     units = ['O', 'KO', 'MO', 'GO', 'TO', 'PO']
                     size = convert_size(cells[size_index].get_text(), -1, units)
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug('Found result: {}'.format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error('Failed parsing provider')
 

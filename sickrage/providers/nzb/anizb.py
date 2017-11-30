@@ -87,13 +87,9 @@ class Anizb(NZBProvider):
                                 # description = item.find('description')
                                 size = try_int(item.enclosure.get('length', -1))
 
-                                item = {
-                                    'title': title,
-                                    'link': download_url,
-                                    'size': size,
-                                }
-
-                                results.append(item)
+                                results += [
+                                    {'title': title, 'link': download_url, 'size': size}
+                                ]
                             except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                                 sickrage.app.log.error('Failed parsing provider.')
                                 continue

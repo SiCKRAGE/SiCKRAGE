@@ -1225,18 +1225,12 @@ class NewznabProvider(NZBProvider):
 
                     size = convert_size(item_size, -1)
 
-                    item = {
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                    }
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug('Found result: {}'.format(title))
-
-                    results.append(item)
                 except (AttributeError, TypeError, KeyError, ValueError, IndexError):
                     sickrage.app.log.error('Failed parsing provider')
 

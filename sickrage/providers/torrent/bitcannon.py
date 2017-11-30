@@ -106,23 +106,17 @@ class BitCannonProvider(TorrentProvider):
                 if seeders < min(self.minseed, 1):
                     if mode != 'RSS':
                         sickrage.app.log.debug("Discarding torrent because it doesn't meet the minimum  "
-                                                       "seeders: {0}. Seeders: {1}".format(title, seeders))
+                                               "seeders: {0}. Seeders: {1}".format(title, seeders))
                     continue
 
-                size = convert_size(row.pop('size', -1)) or -1
+                size = convert_size(row.pop('size', -1), -1)
 
-                item = {
-                    'title': title,
-                    'link': download_url,
-                    'size': size,
-                    'seeders': seeders,
-                    'leechers': leechers,
-                    'pubdate': None,
-                }
+                results += [
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                ]
+
                 if mode != 'RSS':
                     sickrage.app.log.debug('Found result: {}'.format(title))
-
-                results.append(item)
             except Exception:
                 sickrage.app.log.error('Failed parsing provider')
 
@@ -133,7 +127,6 @@ class BitCannonProvider(TorrentProvider):
         if not all([isinstance(data, dict),
                     data.pop('status', 200) != 401,
                     data.pop('message', '') != 'Invalid API key']):
-
             sickrage.app.log.warning('Invalid api key. Check your settings')
             return False
 
