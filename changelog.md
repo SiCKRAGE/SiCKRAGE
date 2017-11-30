@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1ee8a05 - 2017-11-30: Accurate memory usage now for both windows and *nix systems 
+- * 749490d - 2017-11-30: Added memory usage exception handling 
+- * 871c97c - 2017-11-30: Accurate memory usage now for both windows and *nix systems 
 - * 88bd49e - 2017-11-30: Fixed unicode issues for mass show updates 
 - * 3783124 - 2017-11-29: removed code for getting torrent hash from search results, no longer needed refactored provider test cases 
 - * 9b332e3 - 2017-11-29: Release v9.2.22 

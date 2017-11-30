@@ -1722,5 +1722,8 @@ def glob_escape(pathname):
 
 
 def memory_usage():
-    p = psutil.Process(sickrage.app.pid)
-    return pretty_filesize(int(p.memory_info().rss))
+    try:
+        p = psutil.Process(sickrage.app.pid)
+        return pretty_filesize(int(p.memory_info().rss))
+    except Exception:
+        return 'unknown'
