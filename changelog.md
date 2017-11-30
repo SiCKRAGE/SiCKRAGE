@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9221314 - 2017-11-30: Changed code to set app pid of fork when daemonized 
+- * 55a594e - 2017-11-30: Changed code to set app pid of fork when daemonized 
+- * 33496ce - 2017-11-30: Changed code to set app pid of fork when daemonized 
 - * df5b67b - 2017-11-30: Added memory usage exception handling 
 - * 871c97c - 2017-11-30: Accurate memory usage now for both windows and *nix systems 
 - * 88bd49e - 2017-11-30: Fixed unicode issues for mass show updates 

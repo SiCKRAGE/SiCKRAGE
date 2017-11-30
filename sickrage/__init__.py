@@ -95,7 +95,7 @@ class Daemon(object):
 
         # write pidfile
         atexit.register(self.delpid)
-        self.pid = str(os.getpid())
+        self.pid = os.getpid()
         file(self.pidfile, 'w+').write("%s\n" % self.pid)
 
     def delpid(self):
