@@ -2647,7 +2647,7 @@ class CMD_ShowUpdate(ApiCall):
             sickrage.app.show_queue.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
-            sickrage.app.log.debug("API::Unable to update show: {0}".format(str(e)))
+            sickrage.app.log.debug("API::Unable to update show: {}".format(e.message))
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

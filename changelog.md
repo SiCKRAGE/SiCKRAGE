@@ -1,6 +1,7 @@
 # Changelog
 
-- * 295eb7f - 2017-11-29: removed code for getting torrent hash from search results, no longer needed refactored provider test cases 
+- * 5e2587b - 2017-11-30: Fixed unicode issues for mass show updates 
+- * 3783124 - 2017-11-29: removed code for getting torrent hash from search results, no longer needed refactored provider test cases 
 - * 9b332e3 - 2017-11-29: Release v9.2.22 
 - * 8f29300 - 2017-11-29: converted input box to select box for setting failed snatch age 
 - * 92818b5 - 2017-11-29: Updated provider urls WebSessions now called on demand Refactored WebSessions class Added provider test for urls Added cloudflare web hook for requests Fixed yggtorrent provider Refactored tests 

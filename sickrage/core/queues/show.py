@@ -87,28 +87,28 @@ class ShowQueue(srQueue):
         return [x for __, __, x in self.queue + [(None, None, self.currentItem)] if x and x.isLoading]
 
     def updateShow(self, show, force=False):
-
         if self.isBeingAdded(show):
-            raise CantUpdateShowException(
-                str(show.name) + " is still being added, please wait until it is finished before trying to update.")
+            raise CantUpdateShowException("{} is still being added, please wait until it is finished before trying to "
+                                          "update.".format(show.name))
 
         if self.isBeingUpdated(show):
-            raise CantUpdateShowException(
-                str(show.name) + " is already being updated, can't update again until it's done.")
+            raise CantUpdateShowException("{} is already being updated, can't update again until "
+                                          "it's done.".format(show.name))
 
         if self.isInUpdateQueue(show):
-            raise CantUpdateShowException(
-                str(show.name) + " is in the process of being updated, can't update again until it's done.")
+            raise CantUpdateShowException("{} is in the process of being updated, can't update again until "
+                                          "it's done.".format(show.name))
 
         return self.put(QueueItemForceUpdate(show)) if force else self.put(QueueItemUpdate(show))
 
     def refreshShow(self, show, force=False):
         if (self.isBeingRefreshed(show) or self.isInRefreshQueue(show)) and not force:
-            raise CantRefreshShowException(
-                "This show is already being refreshed or queued to be refreshed, skipping this request.")
+            raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping "
+                                           "this request.")
         elif (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
-            raise CantRefreshShowException(
-                "A refresh was attempted but there is already an update queued or in progress. Since updates do a refresh at the end anyway I'm skipping this request.")
+            raise CantRefreshShowException("A refresh was attempted but there is already an update queued or in "
+                                           "progress. Since updates do a refresh at the end anyway I'm skipping this "
+                                           "request.")
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show.name))
 

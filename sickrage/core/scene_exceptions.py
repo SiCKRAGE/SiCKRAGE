@@ -330,7 +330,7 @@ def _xem_exceptions_fetcher():
                 except Exception as e:
                     sickrage.app.log.warning(
                         "XEM: Rejected entry: indexerid:{0}; names:{1}".format(indexerid, names))
-                    sickrage.app.log.debug("XEM: Rejected entry error message:{0}".format(str(e)))
+                    sickrage.app.log.debug("XEM: Rejected entry error message:{}".format(e.message))
 
         setLastRefresh('xem')
 
