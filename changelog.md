@@ -1,6 +1,7 @@
 # Changelog
 
-- * db8d3b4 - 2017-11-30: fixed issue #138 - sessions not persisted for verifying provider results 
+- * 7239537 - 2017-11-30: refactored provider test suite 
+- * 76c748c - 2017-11-30: fixed issue #138 - sessions not persisted for verifying provider results 
 - * bfa12e5 - 2017-11-30: refactored docstring for api_calls function 
 - * 328e72e - 2017-11-30: refactored api calls for built-in app api 
 - * 2196912 - 2017-11-30: refactored misc provider code 

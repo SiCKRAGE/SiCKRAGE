@@ -36,7 +36,9 @@ import six
 from vcr_unittest import VCRMixin
 
 import sickrage
+from sickrage.core import TVShow
 from sickrage.core.helpers import validate_url
+from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.websession import WebSession
 from tests import SiCKRAGETestDBCase
 
@@ -55,12 +57,13 @@ disabled_provider_tests = {
 }
 
 test_string_overrides = {
-    'Cpasbien': {'Episode': ['The 100 S02E16'], 'Season': ['The 100 S02']},
-    'Torrent9': {'Episode': ['NCIS S14E09'], 'Season': ['NCIS S14']},
-    'NyaaTorrents': {'Episode': ['Fairy Tail S2'], 'Season': ['Fairy Tail S2']},
-    'TokyoToshokan': {'Episode': ['Fairy Tail S2'], 'Season': ['Fairy Tail S2']},
-    'HorribleSubs': {'Episode': ['Fairy Tail S2'], 'Season': ['Fairy Tail S2']},
-    'Newpct': {'Episode': ['the-walking-dead/capitulo-86/hdtv/'], 'Season': ['the-walking-dead/capitulo-86/hdtv/']},
+    'Cpasbien': {'Name': 'The 100', 'Season': 2, 'Episode': 16},
+    'Torrent9': {'Name': 'NCIS', 'Season': 14, 'Episode': 9},
+    'NyaaTorrents': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
+    'TokyoToshokan': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
+    'HorribleSubs': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
+    'Newpct': {'Name': 'The Walking Dead', 'Season': 8, 'Episode': 6},
+    'EliteTorrent': {'Name': 'Fringe', 'Season': 5, 'Episode': 11},
 }
 
 magnet_regex = re.compile(r'magnet:\?xt=urn:btih:\w{32,40}(:?&dn=[\w. %+-]+)*(:?&tr=(:?tcp|https?|udp)[\w%. +-]+)*')
@@ -72,6 +75,13 @@ class ProviderTests(type):
 
         def setUp(self):
             super(ProviderTests.ProviderTest, self).setUp()
+            self.show = TVShow(1, 0001, "en")
+            self.show.name = test_string_overrides.get(self.provider.name, {'Name': 'Fringe'})['Name']
+            self.ep = TVEpisode(self.show,
+                                test_string_overrides.get(self.provider.name, {'Season': 1})['Season'],
+                                test_string_overrides.get(self.provider.name, {'Episode': 1})['Episode'])
+            self.ep.scene_season = self.ep.season
+            self.ep.scene_episode = self.ep.episode
             self.provider.username = self.username
             self.provider.password = self.password
 
@@ -87,22 +97,27 @@ class ProviderTests(type):
 
         def search_strings(self, mode):
             _search_strings = {
-                'RSS': [''],
-                'Episode': ['Game of Thrones S05E08'],
-                'Season': ['Game of Thrones S05']
+                'RSS': self.provider.cache.search_params['RSS'],
+                'Episode': self.provider._get_episode_search_strings(self.ep)[0]['Episode'],
+                'Season': self.provider._get_season_search_strings(self.ep)[0]['Season']
             }
-            _search_strings.update(self.provider.cache.search_params)
-            _search_strings.update(test_string_overrides.get(self.provider.name, {}))
             return {mode: _search_strings[mode]}
 
         def magic_skip(func):
             @wraps(func)
             def magic(self, *args, **kwargs):
-                if func.func_name in disabled_provider_tests.get(self.provider.name, []):
+                if func.__name__ in disabled_provider_tests.get(self.provider.name, []):
                     self.skipTest('Test is programmatically disabled for provider {}'.format(self.provider.name))
                 func(self, *args, **kwargs)
-
             return magic
+
+        def skipIfPrivate(func):
+            @wraps(func)
+            def wrapper(self, *args, **kwargs):
+                if self.provider.private:
+                    self.skipTest('Private providers unsupported')
+                func(self, *args, **kwargs)
+            return wrapper
 
         def _get_vcr_kwargs(self):
             """Don't allow the suite to write to cassettes unless we say so"""
@@ -120,9 +135,10 @@ class ProviderTests(type):
             return None
 
         @magic_skip
+        @skipIfPrivate
         def test_rss_search(self):
             """Check that the provider parses rss search results"""
-            results = self.provider.search(self.search_strings('RSS'))
+            results = self.provider.search(self.search_strings('RSS'), ep_obj=self.ep)
 
             if self.provider.enable_daily:
                 self.assertTrue(self.cassette.requests)
@@ -130,9 +146,10 @@ class ProviderTests(type):
                 self.assertTrue(len(self.cassette))
 
         @magic_skip
+        @skipIfPrivate
         def test_episode_search(self):
             """Check that the provider parses episode search results"""
-            results = self.provider.search(self.search_strings('Episode'))
+            results = self.provider.search(self.search_strings('Episode'), ep_obj=self.ep)
 
             self.assertTrue(self.cassette.requests)
             self.assertTrue(results, results)
@@ -140,9 +157,10 @@ class ProviderTests(type):
             self.assertTrue(len(self.cassette))
 
         @magic_skip
+        @skipIfPrivate
         def test_season_search(self):
             """Check that the provider parses season search results"""
-            results = self.provider.search(self.search_strings('Season'))
+            results = self.provider.search(self.search_strings('Season'), ep_obj=self.ep)
 
             self.assertTrue(self.cassette.requests)
             self.assertTrue(results, self.cassette.requests[-1].url)
@@ -155,14 +173,16 @@ class ProviderTests(type):
             self.assertTrue(resp.status_code in [200, 403],
                             '{} returned a status code of {}'.format(resp.url, resp.status_code))
 
+        @skipIfPrivate
         @unittest.skip('Not yet implemented')
         def test_cache_update(self):
             """Check that the provider's cache parses rss search results"""
             self.provider.cache.update()
 
+        @skipIfPrivate
         def test_result_values(self):
             """Check that the provider returns results in proper format"""
-            results = self.provider.search(self.search_strings('Episode'))
+            results = self.provider.search(self.search_strings('Episode'), ep_obj=self.ep)
             for result in results:
                 self.assertIsInstance(result, dict)
                 self.assertEqual(sorted(result.keys()), ['leechers', 'link', 'seeders', 'size', 'title'])
@@ -201,9 +221,8 @@ class ProviderTests(type):
 
 for providerID, providerObj in sickrage.app.search_providers.torrent().items():
     if not providerID in disabled_providers:
-        if not providerObj.private:
-            klassname = b"{}Tests".format(providerObj.name)
-            globals()[klassname] = type(klassname, (ProviderTests.ProviderTest,), {'provider': providerObj})
+        klassname = b"{}Tests".format(providerObj.name)
+        globals()[klassname] = type(klassname, (ProviderTests.ProviderTest,), {'provider': providerObj})
 
 if __name__ == '__main__':
     print("=========================")
