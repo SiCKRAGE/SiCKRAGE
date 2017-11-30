@@ -1,6 +1,7 @@
 # Changelog
 
-- * f5087c4 - 2017-11-29: converted input box to select box for setting failed snatch age 
+- * 31d0b25 - 2017-11-29: Release v9.2.22 
+- * 8f29300 - 2017-11-29: converted input box to select box for setting failed snatch age 
 - * 92818b5 - 2017-11-29: Updated provider urls WebSessions now called on demand Refactored WebSessions class Added provider test for urls Added cloudflare web hook for requests Fixed yggtorrent provider Refactored tests 
 - * 8164abc - 2017-11-28: Fixed redirect 301 errors for scenetime provider Fixed provider search issues for parse results not containing a show object 
 - * be06534 - 2017-11-28: Fixed issues with provider searches validating shows during season and episode searches 
