@@ -83,7 +83,7 @@ class TORRENTZProvider(TorrentProvider):
         with bs4_parser(data) as parser:
             for item in parser('item'):
                 try:
-                    if item.category and 'tv' not in item.category.get_text(strip=True):
+                    if 'tv' not in item.category.get_text(strip=True).lower():
                         continue
 
                     title = item.title.get_text(strip=True)

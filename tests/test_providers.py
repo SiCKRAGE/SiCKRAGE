@@ -51,19 +51,23 @@ disabled_provider_tests = {
     'Torrent9': ['test_rss_search', 'test_episode_search', 'test_season_search'],
     'TorrentProject': ['test_rss_search', 'test_episode_search', 'test_season_search'],
     'TokyoToshokan': ['test_rss_search', 'test_episode_search', 'test_season_search'],
-    'LimeTorrents': ['test_cache_update', 'test_rss_search', 'test_episode_search', 'test_season_search'],
+    'LimeTorrents': ['test_rss_search', 'test_episode_search', 'test_season_search'],
     'SkyTorrents': ['test_rss_search', 'test_episode_search', 'test_season_search'],
     'ilCorsaroNero': ['test_rss_search', 'test_episode_search', 'test_season_search'],
+    'HorribleSubs': ['test_season_search'],
+    'NyaaTorrents': ['test_season_search'],
+    'Newpct': ['test_season_search'],
 }
 
 test_string_overrides = {
-    'Cpasbien': {'Name': 'The 100', 'Season': 2, 'Episode': 16},
-    'Torrent9': {'Name': 'NCIS', 'Season': 14, 'Episode': 9},
-    'NyaaTorrents': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
-    'TokyoToshokan': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
-    'HorribleSubs': {'Name': 'Fairy Tail', 'Season': 2, 'Episode': 1},
-    'Newpct': {'Name': 'The Walking Dead', 'Season': 8, 'Episode': 6},
-    'EliteTorrent': {'Name': 'Fringe', 'Season': 5, 'Episode': 11},
+    'Cpasbien': {'ID': 268592, 'Name': 'The 100', 'Season': 2, 'Episode': 16, 'ABS': 0, 'Anime': False},
+    'Torrent9': {'ID': 72108, 'Name': 'NCIS', 'Season': 14, 'Episode': 9, 'ABS': 0, 'Anime': False},
+    'NyaaTorrents': {'ID': 295068, 'Name': 'Dragon Ball Super', 'Season': 5, 'Episode': 40, 'ABS': 116, 'Anime': True},
+    'TokyoToshokan': {'ID': 295068, 'Name': 'Dragon Ball Super', 'Season': 5, 'Episode': 40, 'ABS': 116, 'Anime': True},
+    'HorribleSubs': {'ID': 295068, 'Name': 'Dragon Ball Super', 'Season': 5, 'Episode': 40, 'ABS': 116, 'Anime': True},
+    'Newpct': {'ID': 153021, 'Name': 'The Walking Dead', 'Season': 8, 'Episode': 6, 'ABS': 0, 'Anime': False},
+    'EliteTorrent': {'ID': 82066, 'Name': 'Fringe', 'Season': 5, 'Episode': 11, 'ABS': 0, 'Anime': False},
+    'Rarbg': {'ID': 153021, 'Name': 'The Walking Dead', 'Season': 8, 'Episode': 6, 'ABS': 0, 'Anime': False},
 }
 
 magnet_regex = re.compile(r'magnet:\?xt=urn:btih:\w{32,40}(:?&dn=[\w. %+-]+)*(:?&tr=(:?tcp|https?|udp)[\w%. +-]+)*')
@@ -75,13 +79,18 @@ class ProviderTests(type):
 
         def setUp(self):
             super(ProviderTests.ProviderTest, self).setUp()
-            self.show = TVShow(1, 0001, "en")
+            self.show = TVShow(1, test_string_overrides.get(self.provider.name, {'ID': 82066})['ID'], "en")
             self.show.name = test_string_overrides.get(self.provider.name, {'Name': 'Fringe'})['Name']
+            self.show.anime = test_string_overrides.get(self.provider.name, {'Anime': False})['Anime']
+
             self.ep = TVEpisode(self.show,
                                 test_string_overrides.get(self.provider.name, {'Season': 1})['Season'],
                                 test_string_overrides.get(self.provider.name, {'Episode': 1})['Episode'])
+            self.ep.absolute_number = test_string_overrides.get(self.provider.name, {'ABS': 0})['ABS']
             self.ep.scene_season = self.ep.season
             self.ep.scene_episode = self.ep.episode
+            self.ep.scene_absolute_number = self.ep.absolute_number
+
             self.provider.username = self.username
             self.provider.password = self.password
 
@@ -109,6 +118,7 @@ class ProviderTests(type):
                 if func.__name__ in disabled_provider_tests.get(self.provider.name, []):
                     self.skipTest('Test is programmatically disabled for provider {}'.format(self.provider.name))
                 func(self, *args, **kwargs)
+
             return magic
 
         def skipIfPrivate(func):
@@ -117,6 +127,7 @@ class ProviderTests(type):
                 if self.provider.private:
                     self.skipTest('Private providers unsupported')
                 func(self, *args, **kwargs)
+
             return wrapper
 
         def _get_vcr_kwargs(self):

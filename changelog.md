@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7239537 - 2017-11-30: refactored provider test suite 
+- * 07235d8 - 2017-11-30: Fixed issues with Torrentz provider Refactored provider test cases 
+- * 90cc105 - 2017-11-30: refactored provider test suite 
 - * 76c748c - 2017-11-30: fixed issue #138 - sessions not persisted for verifying provider results 
 - * bfa12e5 - 2017-11-30: refactored docstring for api_calls function 
 - * 328e72e - 2017-11-30: refactored api calls for built-in app api 
