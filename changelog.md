@@ -1,6 +1,7 @@
 # Changelog
 
-- * c9c0ceb - 2017-11-30: refactored api calls for built-in app api 
+- * 9fb0869 - 2017-11-30: refactored docstring for api_calls function 
+- * 328e72e - 2017-11-30: refactored api calls for built-in app api 
 - * 2196912 - 2017-11-30: refactored misc provider code 
 - * a7a3fbe - 2017-11-30: Changed code to set app pid of fork when daemonized 
 - * 33496ce - 2017-11-30: Changed code to set app pid of fork when daemonized 

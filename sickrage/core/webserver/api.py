@@ -172,7 +172,7 @@ class ApiHandler(RequestHandler):
     def api_calls(self):
         """
         :return: api calls
-        :rtype: dict
+        :rtype: Union[dict, object]
         """
         return dict((cls._cmd, cls) for cls in ApiCall.__subclasses__() if '_cmd' in cls.__dict__)
 
