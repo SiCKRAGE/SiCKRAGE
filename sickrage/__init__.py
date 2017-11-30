@@ -50,6 +50,7 @@ class Daemon(object):
         self.stderr = getattr(os, 'devnull', '/dev/null')
         self.pidfile = pidfile
         self.working_dir = working_dir
+        self.pid = None
 
     def daemonize(self):
         """
@@ -94,8 +95,8 @@ class Daemon(object):
 
         # write pidfile
         atexit.register(self.delpid)
-        pid = str(os.getpid())
-        file(self.pidfile, 'w+').write("%s\n" % pid)
+        self.pid = str(os.getpid())
+        file(self.pidfile, 'w+').write("%s\n" % self.pid)
 
     def delpid(self):
         if os.path.exists(self.pidfile):
@@ -303,6 +304,7 @@ def main():
             app.quite = True
             app.daemon = Daemon(pid_file, app.data_dir)
             app.daemon.daemonize()
+            app.pid = app.daemon.pid
 
         # start app
         app.start()
