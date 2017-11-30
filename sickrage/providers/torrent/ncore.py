@@ -134,7 +134,7 @@ class NcoreProvider(TorrentProvider):
                     sickrage.app.log.debug("Found result: {}".format(title))
 
                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                        'leechers': leechers, 'hash': ''}
+                        'leechers': leechers}
 
                 results.append(item)
             except Exception:

@@ -30,10 +30,10 @@ class NyaaProvider(TorrentProvider):
 
         self.supports_absolute_numbering = True
         self.anime_only = True
-
-        self.minseed = 0
-        self.minleech = 0
         self.confirmed = False
+
+        self.minseed = None
+        self.minleech = None
 
         self.cache = TVCache(self, min_time=20)
 
@@ -74,7 +74,7 @@ class NyaaProvider(TorrentProvider):
                     continue
                 if not data.get('entries'):
                     sickrage.app.log.debug('Data returned from provider does not contain any {0}torrents',
-                                                   'confirmed ' if self.confirmed else '')
+                                           'confirmed ' if self.confirmed else '')
                     continue
 
                 results += self.parse(data['entries'], mode)
@@ -105,18 +105,13 @@ class NyaaProvider(TorrentProvider):
                 if seeders < min(self.minseed, 1):
                     if mode != 'RSS':
                         sickrage.app.log.debug("Discarding torrent because it doesn't meet the "
-                                                       "minimum seeders: {}. Seeders: {}".format(title, seeders))
+                                               "minimum seeders: {}. Seeders: {}".format(title, seeders))
                     continue
 
                 size = convert_size(item['nyaa_size'], -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
-                item = {
-                    'title': title,
-                    'link': download_url,
-                    'size': size,
-                    'seeders': seeders,
-                    'leechers': leechers
-                }
+                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+
                 if mode != 'RSS':
                     sickrage.app.log.debug('Found result: {}'.format(title))
 

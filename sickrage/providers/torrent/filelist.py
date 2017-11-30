@@ -165,7 +165,8 @@ class FileListProvider(TorrentProvider):
                     size = convert_size(torrent_size, -1)
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': None}
+                            'leechers': leechers}
+
                     if mode != "RSS":
                         sickrage.app.log.debug("Found result: {}".format(title))
 

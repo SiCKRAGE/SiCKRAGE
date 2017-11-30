@@ -56,7 +56,7 @@ class TorrentProjectProvider(TorrentProvider):
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: {0}".format
-                                                   (search_string))
+                                           (search_string))
 
                 search_params['s'] = search_string
 
@@ -94,26 +94,22 @@ class TorrentProjectProvider(TorrentProvider):
         for i in data:
             try:
                 title = data[i]["title"]
-                seeders = try_int(data[i]["seeds"], 1)
-                leechers = try_int(data[i]["leechs"], 0)
-                t_hash = data[i]["torrent_hash"]
-                torrent_size = data[i]["torrent_size"]
-                if not all([t_hash, torrent_size]):
-                    continue
-
                 download_url = data[i]["magnet"]
-                size = convert_size(torrent_size, -1)
-
                 if not all([title, download_url]):
                     continue
 
-                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                        'leechers': leechers, 'hash': t_hash}
+                seeders = try_int(data[i]["seeds"], 1)
+                leechers = try_int(data[i]["leechs"], 0)
+                torrent_size = data[i]["torrent_size"]
+
+                size = convert_size(torrent_size, -1)
+
+                results += [
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                ]
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Found result: {}".format(title))
-
-                results.append(item)
             except Exception:
                 sickrage.app.log.error("Failed parsing provider.")
 

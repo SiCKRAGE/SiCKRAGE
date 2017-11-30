@@ -147,7 +147,7 @@ class GFTrackerProvider(TorrentProvider):
                         continue
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                            'leechers': leechers}
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))

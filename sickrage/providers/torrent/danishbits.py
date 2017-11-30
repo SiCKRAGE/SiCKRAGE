@@ -106,7 +106,7 @@ class DanishbitsProvider(TorrentProvider):
                     size = torrent['size']
                     size = convert_size(size, -1)
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                            'leechers': leechers}
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))

@@ -124,13 +124,8 @@ class SkyTorrents(TorrentProvider):
 
                 size = convert_size(info.group('size'), -1)
 
-                try:
-                    info_hash = download_url.rsplit('/', 2)[1]
-                except IndexError:
-                    info_hash = ''
-
                 item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                        'leechers': leechers, 'hash': info_hash}
+                        'leechers': leechers}
 
                 if mode != "RSS":
                     sickrage.app.log.debug("Found result: {}".format(title))

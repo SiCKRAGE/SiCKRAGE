@@ -155,7 +155,7 @@ class ABNormalProvider(TorrentProvider):
                     size = convert_size(cells[size_index].get_text(), -1, units)
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                            'leechers': leechers}
 
                     if mode != 'RSS':
                         sickrage.app.log.debug('Found result: {}'.format(title))

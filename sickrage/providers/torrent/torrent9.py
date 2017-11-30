@@ -101,7 +101,7 @@ class Torrent9Provider(TorrentProvider):
                     size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                            'leechers': leechers}
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))

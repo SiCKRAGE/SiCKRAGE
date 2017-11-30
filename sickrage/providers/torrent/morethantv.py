@@ -157,7 +157,7 @@ class MoreThanTVProvider(TorrentProvider):
                         size = convert_size(result('td', class_="number_column")[0].text.strip(), -1)
 
                     item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                            'leechers': leechers}
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
