@@ -54,7 +54,8 @@ class GFTrackerProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(self.session.cookies).values()):
+        cookies = dict_from_cookiejar(self.session.cookies)
+        if any(cookies.values()) and cookies.get('pass'):
             return True
 
         login_params = {'username': self.username,

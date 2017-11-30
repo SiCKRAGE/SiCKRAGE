@@ -49,12 +49,15 @@ class TorrentLeechProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(self.session.cookies).values()):
+        cookies = dict_from_cookiejar(self.session.cookies)
+        if any(cookies.values()) and cookies.get('member_id'):
             return True
 
         login_params = {
             'username': self.username,
             'password': self.password,
+            'login': 'submit',
+            'remember_me': 'on',
         }
 
         try:
@@ -63,10 +66,8 @@ class TorrentLeechProvider(TorrentProvider):
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
-        if re.search('Invalid Username/password', response) or re.search('<title>Login :: TorrentLeech.org</title>',
-                                                                         response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
+        if '<title>Login :: TorrentLeech.org</title>' in response:
+            sickrage.app.log.warning("Invalid username or password. Check your settings".format(self.name))
             return False
 
         return True
