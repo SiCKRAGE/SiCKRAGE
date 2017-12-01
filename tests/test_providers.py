@@ -42,9 +42,9 @@ from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.websession import WebSession
 from tests import SiCKRAGETestDBCase
 
-overwrite_cassettes = True
+overwrite_cassettes = False
 
-disabled_providers = ['bitcannon']
+disabled_providers = ['bitcannon', 'torrent9']
 
 disabled_provider_tests = {
     'Cpasbien': ['test_rss_search', 'test_episode_search', 'test_season_search'],
