@@ -1,6 +1,7 @@
 # Changelog
 
-- * b704920 - 2017-12-02: fixed issues with custom newznab provider api key being saved as int when it should be str 
+- * b2c8098 - 2017-12-02: Release v9.2.23 
+- * 7470b66 - 2017-12-02: fixed issues with custom newznab provider api key being saved as int when it should be str 
 - * bbd2f81 - 2017-12-02: disabled verifying private provider result urls to avoid excessive api hits 
 - * a1d2e79 - 2017-11-30: disabled torrent9 provider tests 
 - * 555fbf1 - 2017-11-30: Fixed issues with Torrentz provider Refactored provider test cases 
