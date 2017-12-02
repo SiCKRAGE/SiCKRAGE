@@ -38,6 +38,7 @@ import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import makeDir, generateCookieSecret, auto_type, get_lan_ip, \
     extract_zipfile, try_int, checkbox_to_value, generateApiKey, backupVersionedFile
+from sickrage.core.websession import WebSession
 
 
 class Config(object):
