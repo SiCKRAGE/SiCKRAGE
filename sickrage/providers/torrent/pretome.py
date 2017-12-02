@@ -152,13 +152,12 @@ class PretomeProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider.")
 

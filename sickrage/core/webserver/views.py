@@ -1399,7 +1399,7 @@ class Home(WebHandler):
                         anidb_failed = True
                         sickrage.app.alerts.error(_('Unable to retreive Fansub Groups from AniDB.'))
                         sickrage.app.log.debug(
-                            'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(str(e)))
+                            'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(e.message))
 
             with showObj.lock:
                 scene_exceptions = get_scene_exceptions(showObj.indexerid)
@@ -1556,7 +1556,7 @@ class Home(WebHandler):
                 sickrage.app.show_queue.updateShow(showObj, True)
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
-                errors.append(_("Unable to update show: {0}").format(str(e)))
+                errors.append(_("Unable to update show: {}").format(e.message))
 
         if do_update_exceptions:
             try:
@@ -3466,7 +3466,7 @@ class Manage(Home, WebRoot):
                     sickrage.app.show_queue.updateShow(showObj, True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
-                    errors.append(_("Unable to update show: {0}").format(str(e)))
+                    errors.append(_("Unable to update show: {}").format(e.message))
 
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:

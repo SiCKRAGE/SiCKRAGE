@@ -56,7 +56,7 @@ class Torrent9Provider(TorrentProvider):
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: {0}".format
-                                                   (search_string))
+                                           (search_string))
 
                     search_string = search_string.replace('.', '-').replace(' ', '-')
 
@@ -100,13 +100,12 @@ class Torrent9Provider(TorrentProvider):
 
                     size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider")
 

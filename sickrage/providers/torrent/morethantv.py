@@ -156,13 +156,12 @@ class MoreThanTVProvider(TorrentProvider):
                                 result('td', class_="number_column")[0].text):
                         size = convert_size(result('td', class_="number_column")[0].text.strip(), -1)
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider")
 

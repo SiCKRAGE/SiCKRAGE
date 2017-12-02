@@ -148,18 +148,12 @@ class TNTVillageProvider(TorrentProvider):
 
                     size = -1
 
-                    item = {
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                    }
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
-                        sickrage.app.log.debug('Found result: {}'.format(title))
-
-                    results.append(item)
+                        sickrage.app.log.debug("Found result: {}".format(title))
                 except Exception:
                     sickrage.app.log.error('Failed parsing provider')
 

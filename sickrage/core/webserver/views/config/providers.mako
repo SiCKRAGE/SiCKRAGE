@@ -33,7 +33,7 @@
                         '|'.join([providerID,
                         providerObj.name,
                         providerObj.urls["base_url"],
-                        providerObj.key,
+                        str(providerObj.key),
                         providerObj.catIDs,
                         ("false", "true")[bool(providerObj.default)],
                         ("false", "true")[bool(sickrage.app.config.use_nzbs)]]))

@@ -1,6 +1,22 @@
 # Changelog
 
-- * 31d0b25 - 2017-11-29: Release v9.2.22 
+- * b2c8098 - 2017-12-02: Release v9.2.23 
+- * 7470b66 - 2017-12-02: fixed issues with custom newznab provider api key being saved as int when it should be str 
+- * bbd2f81 - 2017-12-02: disabled verifying private provider result urls to avoid excessive api hits 
+- * a1d2e79 - 2017-11-30: disabled torrent9 provider tests 
+- * 555fbf1 - 2017-11-30: Fixed issues with Torrentz provider Refactored provider test cases 
+- * 90cc105 - 2017-11-30: refactored provider test suite 
+- * 76c748c - 2017-11-30: fixed issue #138 - sessions not persisted for verifying provider results 
+- * bfa12e5 - 2017-11-30: refactored docstring for api_calls function 
+- * 328e72e - 2017-11-30: refactored api calls for built-in app api 
+- * 2196912 - 2017-11-30: refactored misc provider code 
+- * a7a3fbe - 2017-11-30: Changed code to set app pid of fork when daemonized 
+- * 33496ce - 2017-11-30: Changed code to set app pid of fork when daemonized 
+- * df5b67b - 2017-11-30: Added memory usage exception handling 
+- * 871c97c - 2017-11-30: Accurate memory usage now for both windows and *nix systems 
+- * 88bd49e - 2017-11-30: Fixed unicode issues for mass show updates 
+- * 3783124 - 2017-11-29: removed code for getting torrent hash from search results, no longer needed refactored provider test cases 
+- * 9b332e3 - 2017-11-29: Release v9.2.22 
 - * 8f29300 - 2017-11-29: converted input box to select box for setting failed snatch age 
 - * 92818b5 - 2017-11-29: Updated provider urls WebSessions now called on demand Refactored WebSessions class Added provider test for urls Added cloudflare web hook for requests Fixed yggtorrent provider Refactored tests 
 - * 8164abc - 2017-11-28: Fixed redirect 301 errors for scenetime provider Fixed provider search issues for parse results not containing a show object 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-11-29 19:11-0500\n"
-"PO-Revision-Date: 2017-11-29 19:11-0500\n"
+"POT-Creation-Date: 2017-12-02 13:26-0500\n"
+"PO-Revision-Date: 2017-12-02 13:27-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: zh_TW\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:356
+#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:349
 msgid "Shutdown"
 msgstr "關閉"
 
@@ -25,7 +25,7 @@ msgstr "關閉"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "是否確實要關閉 SiCKRAGE？"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:351
+#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:344
 msgid "Restart"
 msgstr "重新開機"
 
@@ -508,7 +508,7 @@ msgstr "品質"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:607
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:458
+#: sickrage/core/webserver/views/layouts/main.mako:451
 msgid "Snatched"
 msgstr "搶走了"
 
@@ -832,25 +832,25 @@ msgid "when launching SickRage interface"
 msgstr "當啟動 SickRage 介面"
 
 #: sickrage/core/webserver/views/config/general.mako:155
-#: sickrage/core/webserver/views/layouts/main.mako:103
-#: sickrage/core/webserver/views/layouts/main.mako:450
+#: sickrage/core/webserver/views/layouts/main.mako:96
+#: sickrage/core/webserver/views/layouts/main.mako:443
 msgid "Shows"
 msgstr "顯示"
 
 #: sickrage/core/webserver/views.py:513 sickrage/core/webserver/views.py:514
 #: sickrage/core/webserver/views/config/general.mako:158
-#: sickrage/core/webserver/views/layouts/main.mako:214
+#: sickrage/core/webserver/views/layouts/main.mako:207
 msgid "Schedule"
 msgstr "附表"
 
 #: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3693
 #: sickrage/core/webserver/views/config/general.mako:161
-#: sickrage/core/webserver/views/layouts/main.mako:218
+#: sickrage/core/webserver/views/layouts/main.mako:211
 msgid "History"
 msgstr "歷史"
 
 #: sickrage/core/webserver/views/config/general.mako:164
-#: sickrage/core/webserver/views/layouts/main.mako:307
+#: sickrage/core/webserver/views/layouts/main.mako:300
 msgid "IRC"
 msgstr "IRC"
 
@@ -3454,7 +3454,7 @@ msgstr "NZB/洪流供應商可以在進行切換"
 
 #: sickrage/core/webserver/views.py:3725 sickrage/core/webserver/views.py:3998
 #: sickrage/core/webserver/views/config/providers.mako:71
-#: sickrage/core/webserver/views/layouts/main.mako:245
+#: sickrage/core/webserver/views/layouts/main.mako:238
 msgid "Search Clients"
 msgstr "搜索用戶端"
 
@@ -4182,7 +4182,7 @@ msgstr "使用高頻寬分配，如果優先順序高"
 msgid "Test Connection"
 msgstr "測試連接"
 
-#: sickrage/core/webserver/api.py:964
+#: sickrage/core/webserver/api.py:968
 #: sickrage/core/webserver/views/config/subtitles.mako:9
 #: sickrage/core/webserver/views/config/subtitles.mako:23
 msgid "Subtitles Search"
@@ -4772,7 +4772,7 @@ msgstr "\"力完全更新\"是必要的並且如果您擁有現有的插曲需�
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:281
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
-#: sickrage/core/webserver/views/layouts/main.mako:275
+#: sickrage/core/webserver/views/layouts/main.mako:268
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
@@ -4988,7 +4988,7 @@ msgstr "下載"
 
 #: sickrage/core/webserver/views/home/index.mako:273
 #: sickrage/core/webserver/views/home/status.mako:38
-#: sickrage/core/webserver/views/layouts/main.mako:451
+#: sickrage/core/webserver/views/layouts/main.mako:444
 msgid "Active"
 msgstr "活動"
 
@@ -5430,183 +5430,183 @@ msgstr "將重置為預設值"
 msgid "All non-absolute folder locations are relative to"
 msgstr "所有非絕對資料夾位置是相對於"
 
-#: sickrage/core/webserver/views/layouts/main.mako:22
+#: sickrage/core/webserver/views/layouts/main.mako:15
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:87
+#: sickrage/core/webserver/views/layouts/main.mako:80
 msgid "Toggle navigation"
 msgstr "切換導航"
 
-#: sickrage/core/webserver/views/layouts/main.mako:108
+#: sickrage/core/webserver/views/layouts/main.mako:101
 msgid "Show List"
 msgstr "顯示清單"
 
 #: sickrage/core/webserver/views.py:2345 sickrage/core/webserver/views.py:2346
-#: sickrage/core/webserver/views/layouts/main.mako:113
+#: sickrage/core/webserver/views/layouts/main.mako:106
 msgid "Add Shows"
 msgstr "添加顯示"
 
-#: sickrage/core/webserver/views/layouts/main.mako:118
+#: sickrage/core/webserver/views/layouts/main.mako:111
 msgid "Manual Post-Processing"
 msgstr "手動後處理"
 
 #: sickrage/core/webserver/views.py:3519 sickrage/core/webserver/views.py:3520
-#: sickrage/core/webserver/views/layouts/main.mako:144
+#: sickrage/core/webserver/views/layouts/main.mako:137
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "成批更新"
 
 #: sickrage/core/webserver/views.py:3127 sickrage/core/webserver/views.py:3128
-#: sickrage/core/webserver/views/layouts/main.mako:149
+#: sickrage/core/webserver/views/layouts/main.mako:142
 msgid "Backlog Overview"
 msgstr "積壓工作概述"
 
 #: sickrage/core/webserver/views.py:3572 sickrage/core/webserver/views.py:3573
-#: sickrage/core/webserver/views/layouts/main.mako:154
+#: sickrage/core/webserver/views/layouts/main.mako:147
 msgid "Manage Queues"
 msgstr "管理佇列"
 
-#: sickrage/core/webserver/views/layouts/main.mako:159
+#: sickrage/core/webserver/views/layouts/main.mako:152
 msgid "Episode Status Management"
 msgstr "事件狀態管理"
 
-#: sickrage/core/webserver/views/layouts/main.mako:165
+#: sickrage/core/webserver/views/layouts/main.mako:158
 msgid "Sync Trakt"
 msgstr "同步 Trakt"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:165
 msgid "Update PLEX"
 msgstr "更新叢"
 
-#: sickrage/core/webserver/views/layouts/main.mako:179
+#: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Update KODI"
 msgstr "更新科迪"
 
-#: sickrage/core/webserver/views/layouts/main.mako:186
+#: sickrage/core/webserver/views/layouts/main.mako:179
 msgid "Update Emby"
 msgstr "更新 Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:193
+#: sickrage/core/webserver/views/layouts/main.mako:186
 msgid "Manage Torrents"
 msgstr "管理山洪"
 
 #: sickrage/core/webserver/views.py:3548 sickrage/core/webserver/views.py:3549
-#: sickrage/core/webserver/views/layouts/main.mako:199
+#: sickrage/core/webserver/views/layouts/main.mako:192
 msgid "Failed Downloads"
 msgstr "失敗的下載"
 
-#: sickrage/core/webserver/views/layouts/main.mako:205
+#: sickrage/core/webserver/views/layouts/main.mako:198
 msgid "Missed Subtitle Management"
 msgstr "錯過了的字幕管理"
 
-#: sickrage/core/webserver/views/layouts/main.mako:224
+#: sickrage/core/webserver/views/layouts/main.mako:217
 msgid "Config"
 msgstr "配置"
 
 #: sickrage/core/webserver/views.py:3722
-#: sickrage/core/webserver/views/layouts/main.mako:230
+#: sickrage/core/webserver/views/layouts/main.mako:223
 msgid "Help and Info"
 msgstr "説明和資訊"
 
 #: sickrage/core/webserver/views.py:3723
-#: sickrage/core/webserver/views/layouts/main.mako:235
+#: sickrage/core/webserver/views/layouts/main.mako:228
 msgid "General"
 msgstr "一般"
 
-#: sickrage/core/webserver/views/layouts/main.mako:240
+#: sickrage/core/webserver/views/layouts/main.mako:233
 msgid "Backup and Restore"
 msgstr "備份和還原"
 
 #: sickrage/core/webserver/views.py:3726 sickrage/core/webserver/views.py:4294
-#: sickrage/core/webserver/views/layouts/main.mako:250
+#: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Providers"
 msgstr "搜索提供程式"
 
 #: sickrage/core/webserver/views.py:3727 sickrage/core/webserver/views.py:4778
-#: sickrage/core/webserver/views/layouts/main.mako:255
+#: sickrage/core/webserver/views/layouts/main.mako:248
 msgid "Subtitles Settings"
 msgstr "字幕設置"
 
 #: sickrage/core/webserver/views.py:3728 sickrage/core/webserver/views.py:4898
-#: sickrage/core/webserver/views/layouts/main.mako:260
+#: sickrage/core/webserver/views/layouts/main.mako:253
 msgid "Quality Settings"
 msgstr "品質設置"
 
 #: sickrage/core/webserver/views.py:2311 sickrage/core/webserver/views.py:2312
 #: sickrage/core/webserver/views.py:3729 sickrage/core/webserver/views.py:4100
-#: sickrage/core/webserver/views/layouts/main.mako:265
+#: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Post Processing"
 msgstr "後置處理"
 
 #: sickrage/core/webserver/views.py:3730 sickrage/core/webserver/views.py:4451
-#: sickrage/core/webserver/views/layouts/main.mako:270
+#: sickrage/core/webserver/views/layouts/main.mako:263
 msgid "Notifications"
 msgstr "通知"
 
-#: sickrage/core/webserver/views/layouts/main.mako:300
+#: sickrage/core/webserver/views/layouts/main.mako:293
 msgid "Tools"
 msgstr "工具"
 
-#: sickrage/core/webserver/views/layouts/main.mako:312
+#: sickrage/core/webserver/views/layouts/main.mako:305
 msgid "Changelog"
 msgstr "更新日誌"
 
-#: sickrage/core/webserver/views/layouts/main.mako:318
+#: sickrage/core/webserver/views/layouts/main.mako:311
 msgid "Donate"
 msgstr "捐贈"
 
-#: sickrage/core/webserver/views/layouts/main.mako:325
+#: sickrage/core/webserver/views/layouts/main.mako:318
 msgid "View Errors"
 msgstr "查看錯誤"
 
-#: sickrage/core/webserver/views/layouts/main.mako:333
+#: sickrage/core/webserver/views/layouts/main.mako:326
 msgid "View Warnings"
 msgstr "查看警告"
 
-#: sickrage/core/webserver/views/layouts/main.mako:340
+#: sickrage/core/webserver/views/layouts/main.mako:333
 msgid "View Log"
 msgstr "查看日誌"
 
-#: sickrage/core/webserver/views/layouts/main.mako:346
+#: sickrage/core/webserver/views/layouts/main.mako:339
 msgid "Check For Updates"
 msgstr "檢查更新"
 
-#: sickrage/core/webserver/views/layouts/main.mako:362
+#: sickrage/core/webserver/views/layouts/main.mako:355
 msgid "Logout"
 msgstr "登出"
 
-#: sickrage/core/webserver/views/layouts/main.mako:369
+#: sickrage/core/webserver/views/layouts/main.mako:362
 msgid "Server Status"
 msgstr "伺服器狀態"
 
-#: sickrage/core/webserver/views/layouts/main.mako:462
+#: sickrage/core/webserver/views/layouts/main.mako:455
 msgid "Episodes Downloaded"
 msgstr "劇集下載"
 
-#: sickrage/core/webserver/views/layouts/main.mako:463
+#: sickrage/core/webserver/views/layouts/main.mako:456
 msgid "Overall Downloaded"
 msgstr "總體下載"
 
-#: sickrage/core/webserver/views/layouts/main.mako:464
+#: sickrage/core/webserver/views/layouts/main.mako:457
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "每日搜索："
 
-#: sickrage/core/webserver/views/layouts/main.mako:466
+#: sickrage/core/webserver/views/layouts/main.mako:459
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "積壓搜索："
 
-#: sickrage/core/webserver/views/layouts/main.mako:472
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr "使用的記憶體："
 
-#: sickrage/core/webserver/views/layouts/main.mako:477
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "載入時間："
 
-#: sickrage/core/webserver/views/layouts/main.mako:484
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "現在的位置："
 
@@ -5965,7 +5965,7 @@ msgstr "想要"
 msgid "Ignored"
 msgstr "忽略"
 
-#: sickrage/core/search.py:211
+#: sickrage/core/search.py:210
 msgid "Episode snatched"
 msgstr "搶走的插曲"
 
@@ -6530,8 +6530,8 @@ msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that f
 msgstr "在 %s 資料夾中不包含 tvshow.nfo-您的檔案複製到這個資料夾，更改在 SiCKRAGE 目錄之前。"
 
 #: sickrage/core/webserver/views.py:1559 sickrage/core/webserver/views.py:3469
-msgid "Unable to update show: {0}"
-msgstr "無法更新顯示： {0}"
+msgid "Unable to update show: {}"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:1566
 msgid "Unable to force an update on scene exceptions of the show."

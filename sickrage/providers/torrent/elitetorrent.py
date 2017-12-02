@@ -78,7 +78,7 @@ class EliteTorrentProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: {0}".format(search_string))
 
-                search_string = re.sub(r'S0*(\d*)E(\d*)', r'\1x\2', search_string)
+                search_string = re.sub(r'S0*(\d*)E?(\d*)', r'\1x\2', search_string)
                 search_params['buscar'] = search_string.strip() if mode != 'RSS' else ''
 
                 try:
@@ -140,13 +140,12 @@ class EliteTorrentProvider(TorrentProvider):
                     # Provider does not provide size
                     size = -1
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider")
 

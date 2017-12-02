@@ -133,10 +133,12 @@ class NcoreProvider(TorrentProvider):
                 if mode != "RSS":
                     sickrage.app.log.debug("Found result: {}".format(title))
 
-                item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                        'leechers': leechers, 'hash': ''}
+                results += [
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                ]
 
-                results.append(item)
+                if mode != 'RSS':
+                    sickrage.app.log.debug("Found result: {}".format(title))
             except Exception:
                 sickrage.app.log.error("Failed parsing provider")
 

@@ -281,7 +281,6 @@ class GenericClient(object):
         return True
 
     def _get_torrent_hash(self, result):
-
         if result.url.startswith('magnet'):
             result.hash = re.findall(r'urn:btih:([\w]{32,40})', result.url)[0]
             if len(result.hash) == 32:

@@ -41,6 +41,7 @@ import zipfile
 from collections import OrderedDict
 from contextlib import contextmanager
 
+import psutil
 import rarfile
 import requests
 import six
@@ -1129,12 +1130,31 @@ def generateApiKey():
     return m.hexdigest()
 
 
-def pretty_filesize(file_bytes):
-    """Return humanly formatted sizes from bytes"""
-    for mod in ['B', 'KB', 'MB', 'GB', 'TB', 'PB']:
-        if file_bytes < 1024.00:
-            return "%3.2f %s" % (file_bytes, mod)
-        file_bytes /= 1024.00
+def pretty_filesize(size, use_decimal=False, **kwargs):
+    """
+    Return a human readable representation of the provided ``size``.
+
+    :param size: The size to convert
+    :param use_decimal: use decimal instead of binary prefixes (e.g. kilo = 1000 instead of 1024)
+
+    :keyword units: A list of unit names in ascending order.
+        Default units: ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+
+    :return: The converted size
+    """
+    try:
+        size = max(float(size), 0.)
+    except (ValueError, TypeError):
+        size = 0.
+
+    remaining_size = size
+    units = kwargs.pop('units', ['B', 'KB', 'MB', 'GB', 'TB', 'PB'])
+    block = 1024. if not use_decimal else 1000.
+    for unit in units:
+        if remaining_size < block:
+            return '{0:3.2f} {1}'.format(remaining_size, unit)
+        remaining_size /= block
+    return size
 
 
 def remove_article(text=''):
@@ -1699,3 +1719,11 @@ def glob_escape(pathname):
         pathname = MAGIC_CHECK.sub(r'[\1]', pathname)
 
     return drive + pathname
+
+
+def memory_usage():
+    try:
+        p = psutil.Process(sickrage.app.pid)
+        return pretty_filesize(int(p.memory_info().rss))
+    except Exception:
+        return 'unknown'

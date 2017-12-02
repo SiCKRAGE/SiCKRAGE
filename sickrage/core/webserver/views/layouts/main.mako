@@ -7,14 +7,7 @@
     import sickrage
     from sickrage.core.updaters import tz_updater
     from sickrage.core.tv.show import TVShow
-    from sickrage.core.helpers import pretty_filesize, overall_stats
-
-    # resource module is unix only
-    has_resource_module = True
-    try:
-        import resource
-    except ImportError:
-        has_resource_module = False
+    from sickrage.core.helpers import pretty_filesize, overall_stats, memory_usage
 %>
 <!DOCTYPE html>
 <html>
@@ -468,12 +461,10 @@
                 </div>
 
                 <div>
-                    % if has_resource_module:
                     ${_('Memory used:')}
-                        <span class="footer-highlight">
-                            ${pretty_filesize(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)}
-                        </span> |
-                    % endif
+                    <span class="footer-highlight">
+                        ${memory_usage()}
+                    </span> |
                     ${_('Load time:')}
                     <span class="footer-highlight">
                         ${"{:10.4f}".format(time() - srStartTime)}s

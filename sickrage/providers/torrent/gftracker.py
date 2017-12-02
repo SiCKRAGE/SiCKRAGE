@@ -54,7 +54,8 @@ class GFTrackerProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(self.session.cookies).values()):
+        cookies = dict_from_cookiejar(self.session.cookies)
+        if any(cookies.values()) and cookies.get('pass'):
             return True
 
         login_params = {'username': self.username,
@@ -146,13 +147,12 @@ class GFTrackerProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': ''}
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
-
-                    results.append(item)
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider.")
 

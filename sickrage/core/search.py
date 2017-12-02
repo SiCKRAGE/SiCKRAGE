@@ -38,7 +38,6 @@ from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
 from sickrage.core.tv.show.history import FailedHistory, History
-from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
 
@@ -65,7 +64,7 @@ def _verify_result(result):
             sickrage.app.log.debug("Verifiying a result from " + resProvider.name + " at " + url)
 
             try:
-                result.content = WebSession().get(url, verify=False, headers=headers).content
+                result.content = resProvider.session.get(url, verify=False, headers=headers).content
                 if result.resultType == "torrent":
                     try:
                         meta_info = bencode.bdecode(result.content)
@@ -331,11 +330,12 @@ def pickBestResult(results, show):
             continue
 
         # verify result content
-        cur_result = _verify_result(cur_result)
-        if not cur_result.content:
-            sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " because it does not have valid download url")
-            continue
+        if not cur_result.provider.private:
+            cur_result = _verify_result(cur_result)
+            if not cur_result.content:
+                sickrage.app.log.info(
+                    "Ignoring " + cur_result.name + " because it does not have valid download url")
+                continue
 
         if not bestResult:
             bestResult = cur_result

@@ -114,15 +114,14 @@ class NorbitsProvider(TorrentProvider):
 
                     seeders = try_int(item.pop('seeders', 0))
                     leechers = try_int(item.pop('leechers', 0))
-                    info_hash = item.pop('info_hash', '')
                     size = convert_size(item.pop('size', -1), -1)
 
-                    item = {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                            'leechers': leechers, 'hash': info_hash}
-                    if mode != 'RSS':
-                        sickrage.app.log.debug('Found result: {0}'.format(title))
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
 
-                    results.append(item)
+                    if mode != 'RSS':
+                        sickrage.app.log.debug("Found result: {}".format(title))
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider")
 

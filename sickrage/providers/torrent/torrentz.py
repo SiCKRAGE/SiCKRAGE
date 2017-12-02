@@ -43,7 +43,6 @@ class TORRENTZProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=15)
 
-
     @staticmethod
     def _split_description(description):
         match = re.findall(r'[0-9]+', description)
@@ -84,12 +83,11 @@ class TORRENTZProvider(TorrentProvider):
         with bs4_parser(data) as parser:
             for item in parser('item'):
                 try:
-                    if item.category and 'tv' not in item.category.get_text(strip=True):
+                    if 'tv' not in item.category.get_text(strip=True).lower():
                         continue
 
                     title = item.title.get_text(strip=True)
                     t_hash = item.guid.get_text(strip=True).rsplit('/', 1)[-1]
-
                     if not all([title, t_hash]):
                         continue
 
@@ -97,14 +95,12 @@ class TORRENTZProvider(TorrentProvider):
                     torrent_size, seeders, leechers = self._split_description(item.find('description').text)
                     size = convert_size(torrent_size, -1)
 
-                    results += [{
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                        'hash': t_hash
-                    }]
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                    ]
+
+                    if mode != 'RSS':
+                        sickrage.app.log.debug("Found result: {}".format(title))
                 except Exception:
                     sickrage.app.log.error("Failed parsing provider.")
 
