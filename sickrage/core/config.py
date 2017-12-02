@@ -980,9 +980,9 @@ class Config(object):
                     unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
                     unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
 
-                    if (WebSession().download(
-                            "https://sickrage.ca/downloads/unrar_win.zip", filename=unrar_zip,
-                    ) and extract_zipfile(archive=unrar_zip, targetDir=unrar_dir)):
+                    if (WebSession().download("https://sickrage.ca/downloads/unrar_win.zip",
+                                              filename=unrar_zip) and extract_zipfile(archive=unrar_zip,
+                                                                                      targetDir=unrar_dir)):
                         try:
                             os.remove(unrar_zip)
                         except OSError as e:
@@ -1276,7 +1276,7 @@ class Config(object):
         Enable/disable failed snatch searcher job
         TODO: Make this return true/false on success/failure
 
-        :param failed_snatch_searcher: New desired state
+        :param use_failed_snatcher: New desired state
         """
         self.use_failed_snatcher = checkbox_to_value(use_failed_snatcher)
         job = sickrage.app.scheduler.get_job(sickrage.app.failed_snatch_searcher.name)
