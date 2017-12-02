@@ -1,6 +1,8 @@
 # Changelog
 
-- * b2c8098 - 2017-12-02: Release v9.2.23 
+- * d7b8ae3 - 2017-12-02: Release v9.2.24 
+- * 586c52a - 2017-12-02: fixed issue with downloading unrar when saving post-processing settings 
+- * 8a5f8c9 - 2017-12-02: Release v9.2.23 
 - * 7470b66 - 2017-12-02: fixed issues with custom newznab provider api key being saved as int when it should be str 
 - * bbd2f81 - 2017-12-02: disabled verifying private provider result urls to avoid excessive api hits 
 - * a1d2e79 - 2017-11-30: disabled torrent9 provider tests 
