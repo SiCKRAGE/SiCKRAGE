@@ -330,11 +330,12 @@ def pickBestResult(results, show):
             continue
 
         # verify result content
-        cur_result = _verify_result(cur_result)
-        if not cur_result.content:
-            sickrage.app.log.info(
-                "Ignoring " + cur_result.name + " because it does not have valid download url")
-            continue
+        if not cur_result.provider.private:
+            cur_result = _verify_result(cur_result)
+            if not cur_result.content:
+                sickrage.app.log.info(
+                    "Ignoring " + cur_result.name + " because it does not have valid download url")
+                continue
 
         if not bestResult:
             bestResult = cur_result
