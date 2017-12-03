@@ -7,7 +7,7 @@
     import sickrage
     from sickrage.core.updaters import tz_updater
     from sickrage.core.tv.show import TVShow
-    from sickrage.core.helpers import pretty_filesize, overall_stats, memory_usage
+    from sickrage.core.helpers import pretty_filesize, overall_stats
 %>
 <!DOCTYPE html>
 <html>
@@ -461,10 +461,6 @@
                 </div>
 
                 <div>
-                    ${_('Memory used:')}
-                    <span class="footer-highlight">
-                        ${memory_usage()}
-                    </span> |
                     ${_('Load time:')}
                     <span class="footer-highlight">
                         ${"{:10.4f}".format(time() - srStartTime)}s

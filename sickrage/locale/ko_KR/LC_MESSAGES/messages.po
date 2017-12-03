@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-03 01:15-0500\n"
-"PO-Revision-Date: 2017-12-03 01:16-0500\n"
+"POT-Creation-Date: 2017-12-03 12:46-0500\n"
+"PO-Revision-Date: 2017-12-03 12:47-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -5599,14 +5599,10 @@ msgid "Backlog Search:"
 msgstr "백로그 검색:"
 
 #: sickrage/core/webserver/views/layouts/main.mako:464
-msgid "Memory used:"
-msgstr "메모리 사용:"
-
-#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "로드 시간:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:475
+#: sickrage/core/webserver/views/layouts/main.mako:471
 msgid "Now:"
 msgstr "지금:"
 
