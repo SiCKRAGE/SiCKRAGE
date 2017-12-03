@@ -2893,11 +2893,10 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = sorted([s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
-                                     for e in sickrage.app.main_db.db.get_many('tv_episodes', s['doc']['indexer_id'],
-                                                                               with_doc=True)
-                                     if e['doc']['status'] in status_list and e['doc']['season'] != 0],
-                                    key=lambda d: d['show_name'])
+            status_results = sorted([s for s in sickrage.app.showlist for e in
+                                     sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
+                                     e['doc']['status'] in status_list and e['doc']['season'] != 0],
+                                    key=lambda k: k.name)
 
             for cur_status_result in status_results:
                 cur_indexer_id = int(cur_status_result["indexer_id"])
@@ -2992,18 +2991,18 @@ class Manage(Home, WebRoot):
         status_results = []
 
         if whichSubs:
-            for s in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
-                if not s['subtitles'] == 1: continue
+            for s in sickrage.app.showlist:
+                if not s.subtitles == 1: continue
                 for e in [x['doc'] for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)]:
+                          sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
                     if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
                         status_results += [{
-                            'show_name': s['show_name'],
-                            'indexer_id': s['indexer_id'],
+                            'show_name': s.name,
+                            'indexer_id': s.indexerid,
                             'subtitles': e['subtitles']
                         }]
 
-            status_results = sorted(status_results, key=lambda d: d['show_name'])
+            status_results = sorted(status_results, key=lambda k: k['show_name'])
 
             for cur_status_result in status_results:
                 if whichSubs == 'all':

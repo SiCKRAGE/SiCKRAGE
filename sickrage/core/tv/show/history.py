@@ -57,24 +57,23 @@ class History:
         else:
             actions = []
 
-        for tv_show in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+        for show in sickrage.app.showlist:
             if limit == 0:
                 if len(actions) > 0:
                     dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('history', tv_show['indexer_id'], with_doc=True)
+                              sickrage.app.main_db.db.get_many('history', show.indexerid, with_doc=True)
                               if x['doc']['action'] in actions]
                 else:
                     dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('history', tv_show['indexer_id'], with_doc=True)]
+                              sickrage.app.main_db.db.get_many('history', show.indexerid, with_doc=True)]
             else:
                 if len(actions) > 0:
                     dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('history', tv_show['indexer_id'], limit, with_doc=True)
+                              sickrage.app.main_db.db.get_many('history', show.indexerid, limit, with_doc=True)
                               if x['doc']['action'] in actions]
                 else:
                     dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('history', tv_show['indexer_id'], limit,
-                                                                 with_doc=True)]
+                              sickrage.app.main_db.db.get_many('history', show.indexerid, limit, with_doc=True)]
 
             for result in dbData:
                 data.append({
@@ -86,7 +85,7 @@ class History:
                     'resource': result['resource'],
                     'season': result['season'],
                     'show_id': result['showid'],
-                    'show_name': tv_show['show_name']
+                    'show_name': show.name
                 })
 
         return sorted(data, key=lambda d: d['date'], reverse=True)

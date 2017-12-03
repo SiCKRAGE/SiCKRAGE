@@ -300,9 +300,9 @@ def validateDir(process_path, release_name, failed, result):
         return False
 
     # make sure the dir isn't inside a show dir
-    for dbData in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
-        if process_path.lower().startswith(os.path.realpath(dbData["location"]).lower() + os.sep) or \
-                        process_path.lower() == os.path.realpath(dbData["location"]).lower():
+    for show in sickrage.app.showlist:
+        if process_path.lower().startswith(os.path.realpath(show.location).lower() + os.sep) or \
+                        process_path.lower() == os.path.realpath(show.location).lower():
             result.output += logHelper(
                 "Cannot process an episode that's already been moved to its show dir, skipping " + process_path,
                 sickrage.app.log.WARNING)

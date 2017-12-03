@@ -65,16 +65,16 @@ class SubtitleSearcher(object):
         today = datetime.date.today().toordinal()
 
         results = []
-        for s in [s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+        for s in sickrage.app.showlist:
             for e in [e['doc'] for e in
-                      sickrage.app.main_db.db.get_many('tv_episodes', s['indexer_id'], with_doc=True)
-                      if s['subtitles'] == 1
+                      sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)
+                      if s.subtitles == 1
                       and e['doc']['location'] != ''
                       and e['doc']['subtitles'] not in sickrage.subtitles.wanted_languages()
                       and (e['doc']['subtitles_searchcount'] <= 2 or (
                                         e['doc']['subtitles_searchcount'] <= 7 and (today - e['doc']['airdate'])))]:
                 results += [{
-                    'show_name': s['show_name'],
+                    'show_name': s.name,
                     'showid': e['showid'],
                     'season': e['season'],
                     'episode': e['episode'],

@@ -39,8 +39,8 @@ from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
 from sickrage.core.exceptions import ShowNotFoundException, \
-    EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
+    EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException, MultipleShowObjectsException
+from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, findCertainShow
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
@@ -87,6 +87,10 @@ class TVShow(object):
         self._next_aired = ""
         self.episodes = {}
         self.release_groups = None
+
+        otherShow = findCertainShow(self.indexerid)
+        if otherShow is not None:
+            raise MultipleShowObjectsException("Can't create a show if it already exists")
 
         self.loadFromDB()
 
