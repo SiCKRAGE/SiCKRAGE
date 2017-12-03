@@ -629,8 +629,7 @@ class Home(WebHandler):
             return self.redirect('/home/addShows/')
 
         if sickrage.app.config.anime_split_home:
-            shows = []
-            anime = []
+            shows = anime = []
             for show in sickrage.app.showlist:
                 if show.is_anime:
                     anime.append(show)
@@ -1025,7 +1024,7 @@ class Home(WebHandler):
     @staticmethod
     def loadShowNotifyLists():
         data = {'_size': 0}
-        for s in sorted(sickrage.app.showlist, key=lambda s: s.name):
+        for s in sorted(sickrage.app.showlist, key=lambda k: k.name):
             data[s.indexerid] = {'id': s.indexerid, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
         return json_encode(data)
@@ -3082,7 +3081,6 @@ class Manage(Home, WebRoot):
         showResults = {}
 
         for curShow in sickrage.app.showlist:
-
             epCounts = {}
             epCats = {}
             epCounts[Overview.SKIPPED] = 0
