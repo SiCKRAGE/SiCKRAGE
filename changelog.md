@@ -1,6 +1,7 @@
 # Changelog
 
-- * 889507d - 2017-12-03: Release v9.2.26 
+- * ebbdbb3 - 2017-12-03: Release v9.2.27 
+- * 1f01aa0 - 2017-12-03: Release v9.2.26 
 - * f7963ce - 2017-12-03: Fixed maximum recursion error caused my new next_aired property code 
 - * 3d55f82 - 2017-12-03: minor change 
 - * 56fe035 - 2017-12-03: refactored xthor torrent provider fixed download link parsing for yggtorrent provider removed unrequired code from misc providers refactored min leech and min seed cehcking when picking best result 

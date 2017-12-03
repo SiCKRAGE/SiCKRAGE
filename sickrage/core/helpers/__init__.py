@@ -41,7 +41,6 @@ import zipfile
 from collections import OrderedDict
 from contextlib import contextmanager
 
-import psutil
 import rarfile
 import requests
 import six
@@ -1719,11 +1718,3 @@ def glob_escape(pathname):
         pathname = MAGIC_CHECK.sub(r'[\1]', pathname)
 
     return drive + pathname
-
-
-def memory_usage():
-    try:
-        p = psutil.Process(sickrage.app.pid)
-        return pretty_filesize(int(p.memory_info().rss))
-    except Exception:
-        return 'unknown'
