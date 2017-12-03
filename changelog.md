@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2a6beac - 2017-12-03: minor change 
+- * 6146614 - 2017-12-03: Fixed maximum recursion error caused my new next_aired property code 
+- * 3d55f82 - 2017-12-03: minor change 
 - * 56fe035 - 2017-12-03: refactored xthor torrent provider fixed download link parsing for yggtorrent provider removed unrequired code from misc providers refactored min leech and min seed cehcking when picking best result 
 - * 5bdf6f0 - 2017-12-03: Release v9.2.25 
 - * 4ea708b - 2017-12-03: changed donation url 

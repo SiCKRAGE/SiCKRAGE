@@ -415,7 +415,7 @@ class TVShow(object):
         if not self.paused:
             curDate = datetime.date.today()
 
-            if not self.next_aired or self.next_aired and curDate.toordinal() > self._next_aired:
+            if not self._next_aired or self._next_aired and curDate.toordinal() > self._next_aired:
                 dbData = sorted(
                     [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
                      x['doc']['airdate'] >= curDate.toordinal() and
