@@ -456,7 +456,7 @@ class GenericProvider(object):
         results = []
 
         for episode in episodes:
-            show = findCertainShow(sickrage.app.showlist, int(episode["showid"]))
+            show = findCertainShow(int(episode["showid"]))
             if not show:
                 continue
 

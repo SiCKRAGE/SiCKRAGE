@@ -378,7 +378,7 @@ def remove_file_failed(failed_file):
         pass
 
 
-def findCertainShow(showList, indexerid):
+def findCertainShow(indexerid):
     """
     Find a show by indexer ID in the show list
 
@@ -387,11 +387,11 @@ def findCertainShow(showList, indexerid):
     :return: result list
     """
 
-    if not indexerid or not showList:
+    if not indexerid:
         return None
 
     indexer_ids = [indexerid] if not isinstance(indexerid, list) else indexerid
-    results = [show for show in showList if show.indexerid in indexer_ids]
+    results = [show for show in sickrage.app.showlist if show.indexerid in indexer_ids]
 
     if not results:
         return None
@@ -1530,7 +1530,6 @@ def clean_url(url):
 
 
 def overall_stats():
-    shows = sickrage.app.showlist
     today = str(datetime.date.today().toordinal())
 
     downloaded_status = Quality.DOWNLOADED + Quality.ARCHIVED
@@ -1544,8 +1543,9 @@ def overall_stats():
             'total': 0,
         },
         'shows': {
-            'active': len([show for show in shows if show.paused == 0 and show.status.lower() == 'continuing']),
-            'total': len(shows),
+            'active': len([show for show in sickrage.app.showlist
+                           if show.paused == 0 and show.status.lower() == 'continuing']),
+            'total': len(sickrage.app.showlist),
         },
         'total_size': 0
     }
@@ -1607,7 +1607,7 @@ def validate_url(value):
 def torrent_webui_url():
     if not sickrage.app.config.use_torrents or \
             not sickrage.app.config.torrent_host.lower().startswith('http') or \
-                    sickrage.app.config.torrent_method == 'blackhole' or sickrage.app.config.enable_https and \
+            sickrage.app.config.torrent_method == 'blackhole' or sickrage.app.config.enable_https and \
             not sickrage.app.config.torrent_host.lower().startswith('https'):
         return ''
 

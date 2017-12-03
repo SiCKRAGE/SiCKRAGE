@@ -86,10 +86,9 @@ class BacklogSearcher(object):
         self.amActive = True
         self.amPaused = False
 
+        show_list = sickrage.app.showlist
         if which_shows:
             show_list = which_shows
-        else:
-            show_list = sickrage.app.showlist
 
         self._lastBacklog = self._get_lastBacklog()
 

@@ -538,7 +538,7 @@ class PostProcessor(object):
             if quality == Quality.UNKNOWN:
                 quality = None
 
-            show = findCertainShow(sickrage.app.showlist, indexer_id)
+            show = findCertainShow(indexer_id)
 
             self.in_history = True
             self.version = version

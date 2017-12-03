@@ -401,21 +401,19 @@ def searchDBForShow(regShowName, log=False):
     yearRegex = r"([^()]+?)\s*(\()?(\d{4})(?(2)\))$"
 
     for showName in showNames:
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
-                  x['doc']['show_name'] == showName]
+        dbData = [x for x in sickrage.app.showlist if x.name == showName]
         if len(dbData) == 1:
-            return int(dbData[0]["indexer_id"])
+            return int(dbData[0].indexerid)
         else:
             # if we didn't get exactly one result then try again with the year stripped off if possible
             match = re.match(yearRegex, showName)
             if match and match.group(1):
                 if log:
-                    sickrage.app.log.debug(
-                        "Unable to match original name but trying to manually strip and specify show year")
+                    sickrage.app.log.debug("Unable to match original name but trying to manually strip and specify "
+                                           "show year")
 
-                dbData = [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
-                          if match.group(1) in x['doc']['show_name']
-                          and x['doc']['startyear'] == match.group(3)]
+                dbData = [x for x in sickrage.app.showlist if
+                          match.group(1) in x.name and x.startyear == match.group(3)]
 
             if len(dbData) == 0:
                 if log:
@@ -423,8 +421,7 @@ def searchDBForShow(regShowName, log=False):
                 continue
             elif len(dbData) > 1:
                 if log:
-                    sickrage.app.log.debug(
-                        "Multiple results for " + showName + " in the DB, unable to match show name")
+                    sickrage.app.log.debug("Multiple results for " + showName + " in the DB, unable to match show name")
                 continue
             else:
-                return int(dbData[0]["indexer_id"])
+                return int(dbData[0].indexerid)

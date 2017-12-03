@@ -306,7 +306,7 @@ class TraktSearcher(object):
 
         sickrage.app.log.debug("SHOW_WATCHLIST::ADD::START - Look for Shows to Add to Trakt Watchlist")
 
-        for show in sickrage.app.showlist or []:
+        for show in sickrage.app.showlist:
             if not self._checkInList(IndexerApi(show.indexer).trakt_id, str(show.indexerid), 0, 0, 'Show'):
                 sickrage.app.log.debug(
                     "Adding Show: Indexer %s %s - %s to Watchlist" % (
@@ -371,7 +371,7 @@ class TraktSearcher(object):
                     self.addDefaultShow(indexer, indexer_id, show.title, WANTED)
 
                 if int(sickrage.app.config.trakt_method_add) == 1:
-                    newShow = findCertainShow(sickrage.app.showlist, indexer_id)
+                    newShow = findCertainShow(indexer_id)
 
                     if newShow is not None:
                         setEpisodeToWanted(newShow, 1, 1)
@@ -402,7 +402,7 @@ class TraktSearcher(object):
             except KeyError:
                 continue
 
-            newShow = findCertainShow(sickrage.app.showlist, indexer_id)
+            newShow = findCertainShow(indexer_id)
 
             try:
                 if newShow is None:
@@ -428,7 +428,7 @@ class TraktSearcher(object):
         """
         Adds a new show with the default settings
         """
-        if not findCertainShow(sickrage.app.showlist, int(indexer_id)):
+        if not findCertainShow(int(indexer_id)):
             sickrage.app.log.info("Adding show " + str(indexer_id))
             root_dirs = sickrage.app.config.root_dirs.split('|')
 

@@ -321,42 +321,37 @@ class CalendarHandler(BaseHandler):
         future_date = (datetime.date.today() + datetime.timedelta(weeks=52)).toordinal()
 
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
-        for show in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)
-                     if x['doc']['status'].lower() in ['continuing', 'returning series']
-                     and x['doc']['paused'] != 1]:
+        for show in [x for x in sickrage.app.showlist if
+                     x.status.lower() in ['continuing', 'returning series'] and x.paused != 1]:
             for episode in [x['doc'] for x in
-                            sickrage.app.main_db.db.get_many('tv_episodes', int(show['indexer_id']), with_doc=True) if
+                            sickrage.app.main_db.db.get_many('tv_episodes', int(show.indexerid), with_doc=True) if
                             past_date <= x['doc']['airdate'] < future_date]:
 
-                air_date_time = tz_updater.parse_date_time(episode['airdate'], show['airs'],
-                                                           show['network']).astimezone(utc)
-
-                air_date_time_end = air_date_time + datetime.timedelta(minutes=try_int(show['runtime'], 60))
+                air_date_time = tz_updater.parse_date_time(episode['airdate'], show.airs, show.network).astimezone(utc)
+                air_date_time_end = air_date_time + datetime.timedelta(minutes=try_int(show.runtime, 60))
 
                 # Create event for episode
                 ical += 'BEGIN:VEVENT\r\n'
-                ical += 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime(
-                    "%H%M%S") + 'Z\r\n'
-                ical += 'DTEND:' + air_date_time_end.strftime(
-                    "%Y%m%d") + 'T' + air_date_time_end.strftime(
+                ical += 'DTSTART:' + air_date_time.strftime("%Y%m%d") + 'T' + air_date_time.strftime("%H%M%S") + 'Z\r\n'
+                ical += 'DTEND:' + air_date_time_end.strftime("%Y%m%d") + 'T' + air_date_time_end.strftime(
                     "%H%M%S") + 'Z\r\n'
                 if sickrage.app.config.calendar_icons:
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
                 ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
-                    show['show_name'], episode['season'], episode['episode'], episode['name']
+                    show.name, episode['season'], episode['episode'], episode['name']
                 )
                 ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
-                        show['show_name'].replace(" ", "-") + '-E' + str(episode['episode']) + \
+                        show.name.replace(" ", "-") + '-E' + str(episode['episode']) + \
                         'S' + str(episode['season']) + '\r\n'
                 if episode['description']:
                     ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
-                        (show['airs'] or '(Unknown airs)'),
-                        (show['network'] or 'Unknown network'),
+                        (show.airs or '(Unknown airs)'),
+                        (show.network or 'Unknown network'),
                         episode['description'].splitlines()[0])
                 else:
-                    ical += 'DESCRIPTION:' + (show['airs'] or '(Unknown airs)') + ' on ' + (
-                        show['network'] or 'Unknown network') + '\r\n'
+                    ical += 'DESCRIPTION:' + (show.airs or '(Unknown airs)') + ' on ' + (
+                            show.network or 'Unknown network') + '\r\n'
 
                 ical += 'END:VEVENT\r\n'
 
@@ -391,7 +386,6 @@ class WebRoot(WebHandler):
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
 
-        shows = sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name)))
         episodes = {}
 
         for result in sorted([x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)],
@@ -414,7 +408,7 @@ class WebRoot(WebHandler):
             'api_builder.mako',
             title=_('API Builder'),
             header=_('API Builder'),
-            shows=shows,
+            shows=sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name))),
             episodes=episodes,
             apikey=apikey,
             commands=ApiHandler(self.application, self.request).api_calls,
@@ -613,7 +607,7 @@ class Home(WebHandler):
         if show is None:
             return _("Invalid show parameters")
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return _("Invalid show paramaters")
@@ -689,7 +683,7 @@ class Home(WebHandler):
                 if status in status_quality: show_stat[showid]['ep_snatched'] += 1
                 if status in status_download: show_stat[showid]['ep_downloaded'] += 1
                 if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
-                    ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
+                ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
 
                 if show_stat[showid]['ep_total'] > max_download_count:
                     max_download_count = show_stat[showid]['ep_total']
@@ -1031,23 +1025,18 @@ class Home(WebHandler):
     @staticmethod
     def loadShowNotifyLists():
         data = {'_size': 0}
-
-        tv_shows = sorted([x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True)],
-                          key=lambda d: d['show_name'])
-
-        for s in tv_shows:
-            data[s['indexer_id']] = {'id': s['indexer_id'], 'name': s['show_name'], 'list': s.get('notify_list', '')}
+        for s in sorted(sickrage.app.showlist, key=lambda s: s.name):
+            data[s.indexerid] = {'id': s.indexerid, 'name': s.name, 'list': s.notify_list}
             data['_size'] += 1
-
         return json_encode(data)
 
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            dbData = sickrage.app.main_db.db.get('tv_shows', int(show), with_doc=True)['doc']
-            dbData['notify_list'] = emails
-            sickrage.app.main_db.db.update(dbData)
-        except RecordNotFound:
+            show = findCertainShow(show)
+            show.notify_list = emails
+            show.saveToDB()
+        except Exception:
             return 'ERROR'
 
     @staticmethod
@@ -1193,7 +1182,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
-            showObj = findCertainShow(sickrage.app.showlist, int(show))
+            showObj = findCertainShow(int(show))
 
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1374,7 +1363,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errString)
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if not showObj:
             errString = _("Unable to find the specified show: ") + str(show)
@@ -1587,7 +1576,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1605,7 +1594,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1632,7 +1621,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1650,7 +1639,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1671,7 +1660,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
@@ -1688,7 +1677,7 @@ class Home(WebHandler):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.app.showlist, int(show))
+            showObj = findCertainShow(int(show))
             if showObj:
                 showName = urllib.quote_plus(showObj.name.encode('utf-8'))
 
@@ -1722,7 +1711,7 @@ class Home(WebHandler):
         showObj = None
 
         if show:
-            showObj = findCertainShow(sickrage.app.showlist, int(show))
+            showObj = findCertainShow(int(show))
 
         if sickrage.app.notifier_providers['emby'].update_library(showObj):
             sickrage.app.alerts.message(
@@ -1752,7 +1741,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
         if not showObj:
             errMsg = _("Error", "Show not in show list")
             if direct:
@@ -1809,7 +1798,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if not showObj:
             errMsg = _("Error", "Show not in show list")
@@ -1943,7 +1932,7 @@ class Home(WebHandler):
         if show is None:
             return self._genericMessage(_("Error"), _("You must specify a show"))
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj is None:
             return self._genericMessage(_("Error"), _("Show not in show list"))
@@ -1994,7 +1983,7 @@ class Home(WebHandler):
             errMsg = _("You must specify a show and at least one episode")
             return self._genericMessage(_("Error"), errMsg)
 
-        show_obj = findCertainShow(sickrage.app.showlist, int(show))
+        show_obj = findCertainShow(int(show))
 
         if show_obj is None:
             errMsg = _("Show not in show list")
@@ -2052,7 +2041,7 @@ class Home(WebHandler):
     def getManualSearchStatus(self, show=None):
         def getEpisodes(searchThread, searchstatus):
             results = []
-            showObj = findCertainShow(sickrage.app.showlist, int(searchThread.show.indexerid))
+            showObj = findCertainShow(int(searchThread.show.indexerid))
 
             if not showObj:
                 sickrage.app.log.error(
@@ -2166,7 +2155,7 @@ class Home(WebHandler):
         if sceneAbsolute in ['null', '']:
             sceneAbsolute = None
 
-        showObj = findCertainShow(sickrage.app.showlist, int(show))
+        showObj = findCertainShow(int(show))
 
         if showObj.is_anime:
             result = {
@@ -2439,8 +2428,7 @@ class HomeAddShows(Home):
                     pass
 
                 # see if the folder is in database already
-                if [x for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
-                    x['doc']['location'] == cur_path]:
+                if [x for x in sickrage.app.showlist if x.location == cur_path]:
                     cur_dir['added_already'] = True
                 else:
                     cur_dir['added_already'] = False
@@ -2467,7 +2455,7 @@ class HomeAddShows(Home):
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
 
-                if showid and findCertainShow(sickrage.app.showlist, showid): cur_dir['added_already'] = True
+                if showid and findCertainShow(showid): cur_dir['added_already'] = True
 
         return self.render(
             "/home/mass_add_table.mako",
@@ -2545,7 +2533,7 @@ class HomeAddShows(Home):
 
         # filter shows
         trakt_shows = [x for x in trakt_shows if
-                       'tvdb' in x.ids and not findCertainShow(sickrage.app.showlist, int(x.ids['tvdb']))]
+                       'tvdb' in x.ids and not findCertainShow(int(x.ids['tvdb']))]
 
         return self.render("/home/trakt_shows.mako",
                            title="Trakt {} Shows".format(list.capitalize()),
@@ -2605,7 +2593,7 @@ class HomeAddShows(Home):
             t = IndexerApi(1).indexer(**lINDEXER_API_PARMS)
             indexer_id = t[indexer_id]['id']
 
-        if findCertainShow(sickrage.app.showlist, int(indexer_id)):
+        if findCertainShow(int(indexer_id)):
             return
 
         if sickrage.app.config.root_dirs:
@@ -3076,13 +3064,13 @@ class Manage(Home, WebRoot):
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
 
-                show = findCertainShow(sickrage.app.showlist, int(cur_indexer_id))
+                show = findCertainShow(int(cur_indexer_id))
                 show.getEpisode(int(season), int(episode)).downloadSubtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 
     def backlogShow(self, indexer_id):
-        show_obj = findCertainShow(sickrage.app.showlist, int(indexer_id))
+        show_obj = findCertainShow(int(indexer_id))
 
         if show_obj:
             sickrage.app.backlog_searcher.searchBacklog([show_obj])
@@ -3140,7 +3128,7 @@ class Manage(Home, WebRoot):
         showNames = []
         for curID in showIDs:
             curID = int(curID)
-            showObj = findCertainShow(sickrage.app.showlist, curID)
+            showObj = findCertainShow(curID)
             if showObj:
                 showList.append(showObj)
                 showNames.append(showObj.name)
@@ -3300,7 +3288,7 @@ class Manage(Home, WebRoot):
         errors = []
         for curShow in showIDs:
             curErrors = []
-            showObj = findCertainShow(sickrage.app.showlist, int(curShow))
+            showObj = findCertainShow(int(curShow))
             if not showObj:
                 continue
 
@@ -3446,7 +3434,7 @@ class Manage(Home, WebRoot):
             if curShowID == '':
                 continue
 
-            showObj = findCertainShow(sickrage.app.showlist, int(curShowID))
+            showObj = findCertainShow(int(curShowID))
 
             if showObj is None:
                 continue
@@ -3649,9 +3637,9 @@ class History(WebHandler):
             }
 
             if not any((history['show_id'] == row['show_id'] and
-                                history['season'] == row['season'] and
-                                history['episode'] == row['episode'] and
-                                history['quality'] == row['quality']) for history in compact):
+                        history['season'] == row['season'] and
+                        history['episode'] == row['episode'] and
+                        history['quality'] == row['quality']) for history in compact):
 
                 history = {
                     'actions': [action],

@@ -38,13 +38,13 @@ from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
     UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
-from sickrage.core.exceptions import MultipleShowObjectsException, ShowNotFoundException, \
+from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException
-from sickrage.core.helpers import list_media_files, is_media_file, findCertainShow, try_int, safe_getattr
+from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.config import INDEXER_TVRAGE
-from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_attributenotfound
+from sickrage.indexers.exceptions import indexer_attributenotfound
 
 
 class TVShow(object):
@@ -84,13 +84,9 @@ class TVShow(object):
         self.dirty = True
 
         self._location = ""
+        self._next_aired = ""
         self.episodes = {}
-        self.next_aired = ""
         self.release_groups = None
-
-        otherShow = findCertainShow(sickrage.app.showlist, self.indexerid)
-        if otherShow is not None:
-            raise MultipleShowObjectsException("Can't create a show if it already exists")
 
         self.loadFromDB()
 
@@ -411,6 +407,20 @@ class TVShow(object):
         return unidecode(self.network).lower()
 
     @property
+    def next_aired(self):
+        if not self.paused:
+            curDate = datetime.date.today()
+
+            if not self.next_aired or self.next_aired and curDate.toordinal() > self._next_aired:
+                dbData = sorted(
+                    [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
+                     x['doc']['airdate'] >= curDate.toordinal() and
+                     x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
+
+                self._next_aired = dbData[0]['airdate'] if dbData else ''
+        return self._next_aired
+
+    @property
     def location(self):
         return self._location
 
@@ -451,9 +461,9 @@ class TVShow(object):
                 # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
                 if len([r for r in results
                         if r['showid'] == cur_result['showid']
-                        and r['season'] == cur_result['season']
-                        and r['location'] != '' and r['location'] == cur_result['location']
-                        and r['episode'] != cur_result['episode']]) > 0:
+                           and r['season'] == cur_result['season']
+                           and r['location'] != '' and r['location'] == cur_result['location']
+                           and r['episode'] != cur_result['episode']]) > 0:
 
                     related_eps_result = sorted([x['doc'] for x in
                                                  sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid,
@@ -545,7 +555,7 @@ class TVShow(object):
 
         # in the first year after ended (last airdate), update every 30 days
         if (update_date - last_airdate) < datetime.timedelta(days=450) and (
-                    update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
+                update_date - datetime.date.fromordinal(self.last_update)) > datetime.timedelta(days=30):
             return True
 
         return False
@@ -674,18 +684,6 @@ class TVShow(object):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
-
-        lINDEXER_API_PARMS['language'] = self.lang or sickrage.app.config.indexer_default_language
-
-        if self.dvdorder != 0:
-            lINDEXER_API_PARMS['dvdorder'] = True
-
-        t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
-
-        cachedShow = t[self.indexerid]
-        cachedSeasons = {}
-
         for dbData in [x['doc'] for x in
                        sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
 
@@ -693,13 +691,6 @@ class TVShow(object):
 
             curSeason = int(dbData["season"])
             curEpisode = int(dbData["episode"])
-
-            if curSeason not in cachedSeasons:
-                try:
-                    cachedSeasons[curSeason] = cachedShow[curSeason]
-                except indexer_seasonnotfound, e:
-                    sickrage.app.log.warning("Error when trying to load the episode from TVDB: " + e.message)
-                    deleteEp = True
 
             if curSeason not in scannedEps:
                 scannedEps[curSeason] = {}
@@ -711,8 +702,6 @@ class TVShow(object):
                 curEp = self.getEpisode(curSeason, curEpisode)
                 if deleteEp: curEp.deleteEpisode()
 
-                # curEp.loadFromDB(curSeason, curEpisode)
-                # curEp.loadFromIndexer(tvapi=t, cachedSeason=cachedSeasons[curSeason])
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
                 continue
@@ -1438,7 +1427,7 @@ class TVShow(object):
 
         # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we have, or we only have one bestQuality and we do not have that quality yet
         if epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER and quality in bestQualities and (
-                        quality > curQuality or curQuality not in bestQualities):
+                quality > curQuality or curQuality not in bestQualities):
             sickrage.app.log.debug(
                 "Episode already exists but the found episode quality is wanted more, getting found episode")
             return True

@@ -88,7 +88,7 @@ class NameParser(object):
                     pass
 
             # create show object
-            show = findCertainShow(sickrage.app.showlist, int(show_id)) if show_id else None
+            show = findCertainShow(int(show_id)) if show_id else None
 
             # add show to cache
             if show and not fromCache:

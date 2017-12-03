@@ -61,10 +61,7 @@
             </thead>
 
             <tbody>
-                <% myShowList = sickrage.app.showlist %>
-                <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
-
-                % for curShow in myShowList:
+                % for curShow in sorted(sickrage.app.showlist, lambda x, y: cmp(x.name, y.name)):
                     <% curEp = curShow.next_aired %>
 
                     <tr class="${curShow.status}" id="${curShow.indexerid}">

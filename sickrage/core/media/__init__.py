@@ -87,7 +87,7 @@ class Media(object):
         """
 
         try:
-            return findCertainShow(sickrage.app.showlist, self.indexer_id)
+            return findCertainShow(self.indexer_id)
         except MultipleShowObjectsException:
             return None
 
