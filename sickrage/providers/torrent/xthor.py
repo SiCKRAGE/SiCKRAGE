@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -115,14 +116,13 @@ class XthorProvider(TorrentProvider):
                 if not all([title, download_url]):
                     continue
 
-                seeders = row.get('seeders')
-                leechers = row.get('leechers')
+                seeders = try_int(row.get('seeders'))
+                leechers = try_int(row.get('leechers'))
 
-                size = row.get('size') or -1
+                size = try_int(row.get('size'), -1)
 
                 results += [
-                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                     'leechers': leechers}
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
                 ]
 
                 if mode != 'RSS':
