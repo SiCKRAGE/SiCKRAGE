@@ -103,18 +103,17 @@ class EliteTorrentProvider(TorrentProvider):
             # Quality, if no literal is defined it's HDTV
             if 'calidad' not in title:
                 title += ' HDTV x264'
-
-            title = title.replace('(calidad baja)', 'HDTV x264')
-            title = title.replace('(Buena calidad)', '720p HDTV x264')
-            title = title.replace('(Alta calidad)', '720p HDTV x264')
-            title = title.replace('(calidad regular)', 'DVDrip x264')
-            title = title.replace('(calidad media)', 'DVDrip x264')
+            else:
+                title = title.replace('(calidad baja)', 'HDTV x264')
+                title = title.replace('(Buena calidad)', '720p HDTV x264')
+                title = title.replace('(Alta calidad)', '720p HDTV x264')
+                title = title.replace('(calidad regular)', 'DVDrip x264')
+                title = title.replace('(calidad media)', 'DVDrip x264')
 
             # Language, all results from this provider have spanish audio, we append it to title (avoid to download undesired torrents)
-            title += ' SPANISH AUDIO'
-            title += '-ELITETORRENT'
+            title += ' SPANISH AUDIO-ELITETORRENT'
 
-            return title.strip()
+            return title
 
         with bs4_parser(data) as html:
             torrent_table = html.find('table', class_='fichas-listado')
