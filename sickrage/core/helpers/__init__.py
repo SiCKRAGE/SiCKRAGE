@@ -1722,14 +1722,17 @@ def glob_escape(pathname):
 
 def memory_usage():
     try:
-        import psutil
-        p = psutil.Process(sickrage.app.pid)
-        return pretty_filesize(int(p.memory_info().rss))
-    except ImportError:
         try:
-            import resource
-            return pretty_filesize(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss))
+            import psutil
+            p = psutil.Process(sickrage.app.pid)
+            return pretty_filesize(int(p.memory_info().rss))
         except ImportError:
-            pass
+            try:
+                import resource
+                return pretty_filesize(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024)
+            except ImportError:
+                pass
+    except Exception:
+        pass
 
     return 'unknown'
