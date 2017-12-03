@@ -19,74 +19,63 @@
 
 from __future__ import unicode_literals
 
-import cookielib
-import re
-import urllib
-
-from requests.utils import dict_from_cookiejar
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import try_int
 from sickrage.providers import TorrentProvider
 
 
 class XthorProvider(TorrentProvider):
     def __init__(self):
-        super(XthorProvider, self).__init__("Xthor", "http://xthor.to", True)
+        super(XthorProvider, self).__init__("Xthor", "https://xthor.to", True)
 
         self.urls.update({
-            'search': "{base_url}/browse.php?search=%s%s".format(**self.urls)
+            'search': "https://api.xthor.to"
         })
 
-        self.cj = cookielib.CookieJar()
+        self.passkey = None
 
-        self.categories = "&searchin=title&incldead=0"
+        self.minseed = None
+        self.minleech = None
+        self.confirmed = False
+        self.freeleech = None
 
-        self.username = None
-        self.password = None
+        self.subcategories = [433, 637, 455, 639]
 
         self.cache = TVCache(self, min_time=10)
 
-    def login(self):
-        if any(dict_from_cookiejar(self.session.cookies).values()):
+    def _check_auth(self):
+        if self.passkey:
             return True
 
-        login_params = {'username': self.username,
-                        'password': self.password,
-                        'submitme': 'X'}
+        sickrage.app.log.warning(
+            'Your authentication credentials for {} are missing, check your config.'.format(self.name))
 
-        try:
-            response = self.session.post(self.urls['base_url'] + '/takelogin.php', data=login_params,
-                                                         timeout=30).text
-        except Exception:
-            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
-            return False
+        return False
 
-        if not re.search('donate.php', response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
-            return False
-
-        return True
-
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None):
         results = []
 
         # check for auth
-        if not self.login():
+        if not self._check_auth:
             return results
 
-        for mode in search_params.keys():
+        for mode in search_strings.keys():
+            search_params = {
+                'passkey': self.passkey
+            }
+
+            if self.freeleech:
+                search_params['freeleech'] = 1
+
             sickrage.app.log.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
+            for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
-
-                searchURL = self.urls['search'] % (urllib.quote(search_string), self.categories)
+                    search_params['search'] = search_string
 
                 try:
-                    data = self.session.get(searchURL).text
+                    data = self.session.get(self.urls['search'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -103,33 +92,42 @@ class XthorProvider(TorrentProvider):
 
         results = []
 
-        with bs4_parser(data) as html:
-            resultsTable = html.find("table", {"class": "table2 table-bordered2"})
-            if resultsTable:
-                rows = resultsTable.findAll("tr")
-                for row in rows:
-                    try:
-                        link = row.find("a", href=re.compile("details.php"))
-                        if link:
-                            title = link.text
-                            download_url = self.urls['base_url'] + '/' + \
-                                           row.find("a", href=re.compile("download.php"))['href']
-                            # FIXME
-                            size = -1
-                            seeders = 1
-                            leechers = 0
+        error_code = data.pop('error', {})
+        if error_code.get('code'):
+            if error_code.get('code') != 2:
+                sickrage.app.log.warning('{0}', error_code.get('descr', 'Error code 2 - no description available'))
+            return results
 
-                            if not all([title, download_url]):
-                                continue
+        account_ok = data.pop('user', {}).get('can_leech')
+        if not account_ok:
+            sickrage.app.log.warning('Sorry, your account is not allowed to download, check your ratio')
+            return results
 
-                            results += [
-                                {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                 'leechers': leechers}
-                            ]
+        torrent_rows = data.pop('torrents', {})
 
-                            if mode != 'RSS':
-                                sickrage.app.log.debug("Found result: {}".format(title))
-                    except Exception:
-                        sickrage.app.log.error("Failed parsing provider.")
+        if not torrent_rows:
+            sickrage.app.log.debug('Provider has no results for this search')
+            return results
+
+        for row in torrent_rows:
+            try:
+                title = row.get('name')
+                download_url = row.get('download_link')
+                if not all([title, download_url]):
+                    continue
+
+                seeders = try_int(row.get('seeders'))
+                leechers = try_int(row.get('leechers'))
+
+                size = try_int(row.get('size'), -1)
+
+                results += [
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                ]
+
+                if mode != 'RSS':
+                    sickrage.app.log.debug("Found result: {}".format(title))
+            except Exception:
+                sickrage.app.log.error("Failed parsing provider.")
 
         return results

@@ -140,13 +140,6 @@ class AlphaRatioProvider(TorrentProvider):
                     seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
                     leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
 
-                    # Filter unseeded torrent
-                    if seeders < min(self.minseed, 1):
-                        if mode != 'RSS':
-                            sickrage.app.log.debug("Discarding torrent because it doesn't meet the"
-                                                   " minimum seeders: {0}. Seeders: {1}".format(title, seeders))
-                        continue
-
                     torrent_size = cells[labels.index('Size')].get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 

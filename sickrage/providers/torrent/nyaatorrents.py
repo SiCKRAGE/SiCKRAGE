@@ -101,13 +101,6 @@ class NyaaProvider(TorrentProvider):
                 seeders = try_int(item['nyaa_seeders'])
                 leechers = try_int(item['nyaa_leechers'])
 
-                # Filter unseeded torrent
-                if seeders < min(self.minseed, 1):
-                    if mode != 'RSS':
-                        sickrage.app.log.debug("Discarding torrent because it doesn't meet the "
-                                               "minimum seeders: {}. Seeders: {}".format(title, seeders))
-                    continue
-
                 size = convert_size(item['nyaa_size'], -1, units=['B', 'KIB', 'MIB', 'GIB', 'TIB', 'PIB'])
 
                 results += [

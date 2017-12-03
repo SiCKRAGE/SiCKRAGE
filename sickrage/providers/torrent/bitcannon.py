@@ -102,13 +102,6 @@ class BitCannonProvider(TorrentProvider):
                 seeders = try_int(swarm.pop('seeders', 0))
                 leechers = try_int(swarm.pop('leechers', 0))
 
-                # Filter unseeded torrent
-                if seeders < min(self.minseed, 1):
-                    if mode != 'RSS':
-                        sickrage.app.log.debug("Discarding torrent because it doesn't meet the minimum  "
-                                               "seeders: {0}. Seeders: {1}".format(title, seeders))
-                    continue
-
                 size = convert_size(row.pop('size', -1), -1)
 
                 results += [
