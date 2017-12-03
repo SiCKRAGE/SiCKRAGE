@@ -1718,3 +1718,21 @@ def glob_escape(pathname):
         pathname = MAGIC_CHECK.sub(r'[\1]', pathname)
 
     return drive + pathname
+
+
+def memory_usage():
+    try:
+        try:
+            import psutil
+            p = psutil.Process(sickrage.app.pid)
+            return pretty_filesize(int(p.memory_info().rss))
+        except ImportError:
+            try:
+                import resource
+                return pretty_filesize(int(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss) * 1024)
+            except ImportError:
+                pass
+    except Exception:
+        pass
+
+    return 'unknown'

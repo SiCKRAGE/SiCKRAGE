@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-03 12:46-0500\n"
-"PO-Revision-Date: 2017-12-03 12:46-0500\n"
+"POT-Creation-Date: 2017-12-03 13:17-0500\n"
+"PO-Revision-Date: 2017-12-03 13:17-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -5599,10 +5599,14 @@ msgid "Backlog Search:"
 msgstr "积压搜索："
 
 #: sickrage/core/webserver/views/layouts/main.mako:464
+msgid "Memory used:"
+msgstr ""
+
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "加载时间："
 
-#: sickrage/core/webserver/views/layouts/main.mako:471
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "现在的位置："
 
