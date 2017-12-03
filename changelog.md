@@ -1,6 +1,7 @@
 # Changelog
 
-- * ebbdbb3 - 2017-12-03: Release v9.2.27 
+- * 67a09f4 - 2017-12-03: Fixed issues with memory usage stats, added fallback code 
+- * 75c2b2d - 2017-12-03: Release v9.2.27 
 - * 1f01aa0 - 2017-12-03: Release v9.2.26 
 - * f7963ce - 2017-12-03: Fixed maximum recursion error caused my new next_aired property code 
 - * 3d55f82 - 2017-12-03: minor change 
