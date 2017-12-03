@@ -1,6 +1,7 @@
 # Changelog
 
-- * 608341f - 2017-12-03: Release v9.2.29 
+- * ab040d6 - 2017-12-03: Added dockerfile for building from source 
+- * c3e3a2e - 2017-12-03: Release v9.2.29 
 - * aa476aa - 2017-12-03: Fixed issues with memory usage stats, added fallback code 
 - * 75c2b2d - 2017-12-03: Release v9.2.27 
 - * 1f01aa0 - 2017-12-03: Release v9.2.26 
