@@ -1,6 +1,7 @@
 # Changelog
 
-- * 474ddc4 - 2017-12-03: Release v9.2.25 
+- * c92b292 - 2017-12-03: refactored xthor torrent provider fixed download link parsing for yggtorrent provider removed unrequired code from misc providers refactored min leech and min seed cehcking when picking best result 
+- * 5bdf6f0 - 2017-12-03: Release v9.2.25 
 - * 4ea708b - 2017-12-03: changed donation url 
 - * c61c9d9 - 2017-12-02: fixed issues with returning help docs for internal api 
 - * 38e9062 - 2017-12-02: replaced database calls to show table to use core showlist reference instead, faster lookups 

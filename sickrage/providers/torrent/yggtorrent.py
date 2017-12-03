@@ -22,8 +22,6 @@ from __future__ import unicode_literals
 
 import re
 
-from requests.compat import urljoin
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, try_int, convert_size
@@ -35,15 +33,15 @@ class YggtorrentProvider(TorrentProvider):
         """Initialize the class."""
         super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.com', True)
 
-        # Credentials
-        self.username = None
-        self.password = None
-
         # URLs
         self.urls.update({
             'login': '{base_url}/user/login'.format(**self.urls),
             'search': '{base_url}/engine/search'.format(**self.urls),
         })
+
+        # Credentials
+        self.username = None
+        self.password = None
 
         # Proper Strings
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
@@ -128,7 +126,7 @@ class YggtorrentProvider(TorrentProvider):
 
                 try:
                     title = cells[0].find('a', class_='torrent-name').get_text(strip=True)
-                    download_url = urljoin(self.urls['base_url'], cells[0].find('a', target='_blank')['href'])
+                    download_url = cells[0].find_all('a')[2]['href']
                     if not (title and download_url):
                         continue
 

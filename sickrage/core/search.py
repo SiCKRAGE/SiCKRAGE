@@ -277,18 +277,19 @@ def pickBestResult(results, show):
             sickrage.app.log.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
             continue
 
-        # check if seeders and leechers meet out minimum requirements, disgard result if it does not
-        if hasattr(cur_result.provider, 'minseed') and hasattr(cur_result.provider, 'minleech'):
-            if cur_result.seeders not in (-1, None) and cur_result.leechers not in (-1, None):
-                if int(cur_result.seeders) < int(cur_result.provider.minseed) or int(cur_result.leechers) < int(
-                        cur_result.provider.minleech):
-                    sickrage.app.log.info('Discarding torrent because it does not meet the minimum provider '
-                                          'setting S:{} L:{}. Result has S:{} L:{}',
-                                          cur_result.provider.minseed,
-                                          cur_result.provider.minleech,
-                                          cur_result.seeders,
-                                          cur_result.leechers)
-                    continue
+        # check if seeders meet out minimum requirements, disgard result if it does not
+        if hasattr(cur_result.provider, 'minseed') and cur_result.seeders not in (-1, None):
+            if int(cur_result.seeders) < int(cur_result.provider.minseed):
+                sickrage.app.log.info("Discarding torrent because it doesn't meet the"
+                                      " minimum seeders: {0}. Seeders: {1}", cur_result.name, cur_result.seeders)
+                continue
+
+        # check if leechers meet out minimum requirements, disgard result if it does not
+        if hasattr(cur_result.provider, 'minleech') and cur_result.leechers not in (-1, None):
+            if int(cur_result.leechers) < int(cur_result.provider.minleech):
+                sickrage.app.log.info("Discarding torrent because it doesn't meet the"
+                                      " minimum leechers: {0}. Leechers: {1}", cur_result.name, cur_result.leechers)
+                continue
 
         if show.rls_ignore_words and show_names.containsAtLeastOneWord(cur_result.name,
                                                                        cur_result.show.rls_ignore_words):
@@ -340,7 +341,7 @@ def pickBestResult(results, show):
         if not bestResult:
             bestResult = cur_result
         elif cur_result.quality in bestQualities and (
-                        bestResult.quality < cur_result.quality or bestResult.quality not in bestQualities):
+                bestResult.quality < cur_result.quality or bestResult.quality not in bestQualities):
             bestResult = cur_result
         elif cur_result.quality in anyQualities and bestResult.quality not in bestQualities and bestResult.quality < cur_result.quality:
             bestResult = cur_result
