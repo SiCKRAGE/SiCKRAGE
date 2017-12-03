@@ -53,6 +53,26 @@ class ComingEpisodes:
         :return: The list of coming episodes
         """
 
+        def result(show, episode):
+            return [{
+                'airdate': episode['airdate'],
+                'airs': show.airs,
+                'description': episode['description'],
+                'episode': episode['episode'],
+                'imdb_id': show.imdbid,
+                'indexer': episode['indexer'],
+                'indexer_id': show.indexerid,
+                'name': episode['name'],
+                'network': show.network,
+                'paused': show.paused,
+                'quality': show.quality,
+                'runtime': show.runtime,
+                'season': episode['season'],
+                'show_name': show.name,
+                'showid': episode['showid'],
+                'status': show.status
+            }]
+
         paused = sickrage.app.config.coming_eps_display_paused or paused
 
         if not isinstance(categories, list):
@@ -77,80 +97,18 @@ class ComingEpisodes:
 
         results = []
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexer, with_doc=True)
-                      if e['doc']['season'] != 0
-                         and today <= e['doc']['airdate'] < next_week
-                         and e['doc']['status'] not in qualities_list]:
-                results += [{
-                    'airdate': e['airdate'],
-                    'airs': s.airs,
-                    'description': e['description'],
-                    'episode': e['episode'],
-                    'imdb_id': s.imdbid,
-                    'indexer': e['indexer'],
-                    'indexer_id': s.indexerid,
-                    'name': e['name'],
-                    'network': s.network,
-                    'paused': s.paused,
-                    'quality': s.quality,
-                    'runtime': s.runtime,
-                    'season': e['season'],
-                    'show_name': s.name,
-                    'showid': e['showid'],
-                    'status': s.status
-                }]
+            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+                if e['season'] != 0 and today <= e['airdate'] < next_week and e['status'] not in qualities_list:
+                    results += result(s, e)
 
-        done_shows_list = [int(result['showid']) for result in results]
+                if e['season'] != 0 and e['showid'] not in [int(r['showid']) for r in results] \
+                        and e['airdate'] >= next_week and e['status'] \
+                        not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER:
+                    results += result(s, e)
 
-        for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)
-                      if e['doc']['season'] != 0
-                         and e['doc']['showid'] not in done_shows_list
-                         and e['doc']['airdate'] >= next_week
-                         and e['doc'][
-                             'status'] not in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER]:
-                results += [{
-                    'airdate': e['airdate'],
-                    'airs': s.airs,
-                    'description': e['description'],
-                    'episode': e['episode'],
-                    'imdb_id': s.imdbid,
-                    'indexer': e['indexer'],
-                    'indexer_id': s.indexerid,
-                    'name': e['name'],
-                    'network': s.network,
-                    'paused': s.paused,
-                    'quality': s.quality,
-                    'runtime': s.runtime,
-                    'season': e['season'],
-                    'show_name': s.name,
-                    'showid': e['showid'],
-                    'status': s.status
-                }]
-
-        for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)
-                      if e['doc']['season'] != 0
-                         and today > e['doc']['airdate'] >= recently
-                         and e['doc']['status'] in [WANTED, UNAIRED] and e['doc']['status'] not in qualities_list]:
-                results += [{
-                    'airdate': e['airdate'],
-                    'airs': s.airs,
-                    'description': e['description'],
-                    'episode': e['episode'],
-                    'imdb_id': s.imdbid,
-                    'indexer': e['indexer'],
-                    'indexer_id': s.indexerid,
-                    'name': e['name'],
-                    'network': s.network,
-                    'paused': s.paused,
-                    'quality': s.quality,
-                    'runtime': s.runtime,
-                    'season': e['season'],
-                    'show_name': s.name,
-                    'showid': e['showid'],
-                    'status': s.status
-                }]
+                if e['season'] != 0 and today > e['airdate'] >= recently \
+                        and e['status'] in [WANTED, UNAIRED] and e['status'] not in qualities_list:
+                    results += result(s, e)
 
         for index, item in enumerate(results):
             results[index]['localtime'] = srDateTime.convert_to_setting(
