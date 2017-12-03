@@ -194,7 +194,7 @@ class TVCache(object):
         if not parse_result:
             try:
                 parse_result = NameParser(
-                    showObj=findCertainShow(sickrage.app.showlist, indexer_id),
+                    showObj=findCertainShow(indexer_id),
                     tryIndexers=not sickrage.app.config.enable_rss_cache_valid_shows,
                     validate_show=sickrage.app.config.enable_rss_cache_valid_shows
                 ).parse(name)
@@ -274,7 +274,7 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            showObj = findCertainShow(sickrage.app.showlist, int(curResult["indexerid"]))
+            showObj = findCertainShow(int(curResult["indexerid"]))
             if not showObj:
                 continue
 

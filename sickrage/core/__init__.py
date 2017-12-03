@@ -81,6 +81,7 @@ class Core(object):
         self.daemon = None
         self.io_loop = IOLoop().instance()
         self.pid = os.getpid()
+        self.showlist = []
 
         self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
 
@@ -115,7 +116,6 @@ class Core(object):
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
         self.sys_encoding = get_sys_encoding()
-        self.showlist = []
 
         self.api = None
         self.adba_connection = None
@@ -180,7 +180,6 @@ class Core(object):
         self.trakt_searcher = TraktSearcher()
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
-
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
@@ -536,8 +535,6 @@ class Core(object):
         for dbData in [x['doc'] for x in self.main_db.db.all('tv_shows', with_doc=True)]:
             try:
                 self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
-                show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
-                show.nextEpisode()
-                self.showlist += [show]
+                self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
             except Exception as e:
                 self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))

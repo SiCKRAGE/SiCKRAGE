@@ -306,7 +306,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://www.gofundme.com/sickrage/donate" rel="noreferrer"
+                                    <a href="https://donorbox.org/sickrage" rel="noreferrer"
                                        onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                         <i class="fa fa-money"></i>&nbsp;${_('Donate')}
                                     </a>

@@ -112,8 +112,7 @@
                         % endif
                     % endfor
 
-                    <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
-                    % for curShow in myShowList:
+                    % for curShow in sorted(myShowList, lambda x, y: cmp(x.name, y.name)):
                     <%
                         cur_airs_next = ''
                         cur_snatched = 0
@@ -318,8 +317,7 @@
                     % endif
 
                     <tbody>
-                        <% myShowList.sort(lambda x, y: cmp(x.name, y.name)) %>
-                        % for curShow in myShowList:
+                        % for curShow in sorted(myShowList, lambda x, y: cmp(x.name, y.name)):
                             <%
                                 cur_airs_next = ''
                                 cur_airs_prev = ''

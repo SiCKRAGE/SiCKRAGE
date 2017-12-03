@@ -77,9 +77,9 @@ class ProperSearcher(object):
         origThreadName = threading.currentThread().getName()
 
         recently_aired = []
-        for show in [s['doc'] for s in sickrage.app.main_db.db.all('tv_shows', with_doc=True)]:
+        for show in sickrage.app.showlist:
             for episode in [e['doc'] for e in
-                            sickrage.app.main_db.db.get_many('tv_episodes', show['indexer_id'], with_doc=True)]:
+                            sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)]:
                 if episode['airdate'] >= str(search_date.toordinal()):
                     if episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
                         recently_aired += [episode]
@@ -93,10 +93,10 @@ class ProperSearcher(object):
                 randomize=sickrage.app.config.randomize_providers).items():
             # check provider type and provider is enabled
             if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type,
-                                                                              NewznabProvider.type]:
+                                                                         NewznabProvider.type]:
                 continue
             elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
-                                                                                    TorrentRssProvider.type]:
+                                                                               TorrentRssProvider.type]:
                 continue
             elif not providerObj.isEnabled:
                 continue

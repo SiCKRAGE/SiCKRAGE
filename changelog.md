@@ -1,6 +1,11 @@
 # Changelog
 
-- * d7b8ae3 - 2017-12-02: Release v9.2.24 
+- * 474ddc4 - 2017-12-03: Release v9.2.25 
+- * 4ea708b - 2017-12-03: changed donation url 
+- * c61c9d9 - 2017-12-02: fixed issues with returning help docs for internal api 
+- * 38e9062 - 2017-12-02: replaced database calls to show table to use core showlist reference instead, faster lookups 
+- * f66447c - 2017-12-02: refactored core variable showlist into property function refactored core tv_show object variable next_aired into property function 
+- * 98f1f5f - 2017-12-02: Release v9.2.24 
 - * 586c52a - 2017-12-02: fixed issue with downloading unrar when saving post-processing settings 
 - * 8a5f8c9 - 2017-12-02: Release v9.2.23 
 - * 7470b66 - 2017-12-02: fixed issues with custom newznab provider api key being saved as int when it should be str 

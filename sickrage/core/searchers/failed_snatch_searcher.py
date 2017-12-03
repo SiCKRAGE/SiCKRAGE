@@ -71,7 +71,7 @@ class FailedSnatchSearcher(object):
         for episode in episodes:
             failed_snatches = True
             if not show or int(episode["showid"]) != show.indexerid:
-                show = findCertainShow(sickrage.app.showlist, int(episode["showid"]))
+                show = findCertainShow(int(episode["showid"]))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:

@@ -185,11 +185,10 @@ class EmailNotifier(Notifiers):
 
         # Grab the recipients for the show
         for s in show:
-            for subs in [x['doc'] for x in sickrage.app.main_db.db.all('tv_shows', with_doc=True) if
-                         x['doc']['show_name'] == s]:
-                if subs['notify_list']:
-                    for addr in subs['notify_list'].split(','):
-                        if (len(addr.strip()) > 0):
+            for subs in [x for x in sickrage.app.showlist if x.name == s]:
+                if subs.notify_list:
+                    for addr in subs.notify_list.split(','):
+                        if len(addr.strip()) > 0:
                             addrs.append(addr)
 
         addrs = set(addrs)

@@ -47,7 +47,7 @@ def get_scene_numbering(indexer_id, indexer, season, episode, fallback_to_xem=Tr
     if indexer_id is None or season is None or episode is None:
         return season, episode
 
-    showObj = findCertainShow(sickrage.app.showlist, int(indexer_id))
+    showObj = findCertainShow(int(indexer_id))
     if showObj and not showObj.is_scene:
         return season, episode
 
@@ -101,7 +101,7 @@ def get_scene_absolute_numbering(indexer_id, indexer, absolute_number, fallback_
     indexer_id = int(indexer_id)
     indexer = int(indexer)
 
-    showObj = findCertainShow(sickrage.app.showlist, indexer_id)
+    showObj = findCertainShow(indexer_id)
     if showObj and not showObj.is_scene:
         return absolute_number
 
@@ -245,7 +245,7 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
             })
 
     # Reload data from DB so that cache and db are in sync
-    show = findCertainShow(sickrage.app.showlist, indexer_id)
+    show = findCertainShow(indexer_id)
     show.flushEpisodes()
 
 
@@ -509,8 +509,8 @@ def xem_refresh(indexer_id, indexer, force=False):
             try:
                 parsedJSON = WebSession().get(url).json()
                 if indexer_id not in map(int, parsedJSON['data']):
-                    raise
-            except:
+                    raise Exception
+            except Exception:
                 for x in sickrage.app.main_db.db.get_many('tv_episodes', indexer_id, with_doc=True):
                     x['doc']['scene_season'], x['doc']['scene_episode'], x['doc']['scene_absolute_number'] = 0, 0, 0
                     sickrage.app.main_db.db.update(x['doc'])
@@ -523,8 +523,8 @@ def xem_refresh(indexer_id, indexer, force=False):
             try:
                 parsedJSON = WebSession().get(url).json()
                 if 'success' not in parsedJSON['result']:
-                    raise
-            except:
+                    raise Exception
+            except Exception:
                 sickrage.app.log.info(
                     'No XEM data for show "%s on %s"' % (indexer_id, IndexerApi(indexer).name,))
                 return

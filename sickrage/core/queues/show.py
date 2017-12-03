@@ -398,7 +398,8 @@ class QueueItemAdd(ShowQueueItem):
             raise self._finishEarly()
 
         # add it to the show list
-        if not findCertainShow(sickrage.app.showlist, self.indexer_id): sickrage.app.showlist.append(self.show)
+        if not findCertainShow(self.indexer_id):
+            sickrage.app.showlist.append(self.show)
 
         try:
             self.show.loadEpisodesFromIndexer()
