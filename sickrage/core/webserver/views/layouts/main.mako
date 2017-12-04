@@ -306,7 +306,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="https://donorbox.org/sickrage" rel="noreferrer"
+                                    <a href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
                                        onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                         <i class="fa fa-money"></i>&nbsp;${_('Donate')}
                                     </a>
