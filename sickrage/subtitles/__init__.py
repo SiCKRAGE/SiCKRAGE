@@ -234,15 +234,6 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
         subtitles_path = get_subtitles_path(video_path)
 
     try:
-        # Encode paths to UTF-8 to ensure subliminal support.
-        video_path = video_path.encode('utf-8')
-        subtitles_path = subtitles_path.encode('utf-8')
-    except UnicodeEncodeError:
-        # Fallback to system encoding. This should never happen.
-        video_path = video_path.encode(sickrage.app.sys_encoding)
-        subtitles_path = subtitles_path.encode(sickrage.app.sys_encoding)
-
-    try:
         video = subliminal.scan_video(video_path)
 
         # external subtitles
@@ -281,13 +272,6 @@ def get_subtitles_path(video_path):
             chmodAsParent(new_subtitles_path)
     else:
         new_subtitles_path = os.path.dirname(video_path)
-
-    try:
-        # Encode path to UTF-8 to ensure subliminal support.
-        new_subtitles_path = new_subtitles_path.encode('utf-8')
-    except UnicodeEncodeError:
-        # Fallback to system encoding. This should never happen.
-        new_subtitles_path = new_subtitles_path.encode(sickrage.app.sys_encoding)
 
     return new_subtitles_path
 

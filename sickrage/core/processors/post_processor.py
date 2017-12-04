@@ -165,8 +165,7 @@ class PostProcessor(object):
 
         def recursive_glob(treeroot, pattern):
             results = []
-            for base, __, files in os.walk(treeroot.encode(sickrage.app.sys_encoding),
-                                           followlinks=sickrage.app.config.processor_follow_symlinks):
+            for base, __, files in os.walk(treeroot, followlinks=sickrage.app.config.processor_follow_symlinks):
                 goodfiles = fnmatch.filter(files, pattern)
                 for f in goodfiles:
                     found = os.path.join(base, f)
