@@ -1,6 +1,8 @@
 # Changelog
 
-- * b42aa94 - 2017-12-03: Release v9.2.30 
+- * 7e30c7c - 2017-12-04: Release v9.2.31 
+- * ace1b62 - 2017-12-03: refactored elitetorrent provider code to resolve quality parsing 
+- * d3bdc71 - 2017-12-03: Release v9.2.30 
 - * 7e76b60 - 2017-12-03: Fixed typo in ComingEpisodes function, caused schedule to not display 
 - * 8b6a864 - 2017-12-03: Added dockerfile for building from source 
 - * c3e3a2e - 2017-12-03: Release v9.2.29 
