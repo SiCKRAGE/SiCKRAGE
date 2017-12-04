@@ -1,6 +1,8 @@
 # Changelog
 
-- * 7e30c7c - 2017-12-04: Release v9.2.31 
+- * 98d354d - 2017-12-04: Release v9.2.32 
+- * b300f9a - 2017-12-04: Fixed encoding issues with list_associated_files function Fixed encoding issues for renaming files Fixed enacoding issues when refreshing shows and subtitles 
+- * c3626f7 - 2017-12-04: Release v9.2.31 
 - * ace1b62 - 2017-12-03: refactored elitetorrent provider code to resolve quality parsing 
 - * d3bdc71 - 2017-12-03: Release v9.2.30 
 - * 7e76b60 - 2017-12-03: Fixed typo in ComingEpisodes function, caused schedule to not display 
