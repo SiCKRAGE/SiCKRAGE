@@ -2892,19 +2892,17 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            status_results = sorted([s for s in sickrage.app.showlist for e in
-                                     sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
-                                     e['doc']['status'] in status_list and e['doc']['season'] != 0],
-                                    key=lambda k: k.name)
-
-            for cur_status_result in status_results:
-                cur_indexer_id = int(cur_status_result["indexer_id"])
+            for cur_status_result in sorted([s for s in sickrage.app.showlist for e in
+                                             sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)
+                                             if e['doc']['status'] in status_list and e['doc']['season'] != 0],
+                                            key=lambda k: k.name):
+                cur_indexer_id = int(cur_status_result.indexerid)
                 if cur_indexer_id not in ep_counts:
                     ep_counts[cur_indexer_id] = 1
                 else:
                     ep_counts[cur_indexer_id] += 1
 
-                show_names[cur_indexer_id] = cur_status_result["show_name"]
+                show_names[cur_indexer_id] = cur_status_result.name
                 if cur_indexer_id not in sorted_show_ids:
                     sorted_show_ids.append(cur_indexer_id)
 
