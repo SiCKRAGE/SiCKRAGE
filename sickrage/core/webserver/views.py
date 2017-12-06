@@ -631,7 +631,6 @@ class Home(WebHandler):
 
         showlists = OrderedDict({'Shows': []})
         if sickrage.app.config.anime_split_home:
-            shows = anime = []
             for show in sickrage.app.showlist:
                 if show.is_anime:
                     if not showlists.has_key('Anime'):
