@@ -89,11 +89,13 @@
         </div>
     </div>
 
-    % for curShowlist in showlists:
-        <% curListType = curShowlist[0] %>
-        <% myShowList = list(curShowlist[1]) %>
+    % for curListType, curShowlist in showlists.items():
         % if curListType == "Anime":
-            <h1 class="header">${_('Anime List')}</h1>
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+                    <div class="h4 well well-sm" style="text-align: center;">${_('Anime List')}</div>
+                </div>
+            </div>
         % endif
         % if sickrage.app.config.home_layout == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
@@ -112,7 +114,7 @@
                         % endif
                     % endfor
 
-                    % for curShow in sorted(myShowList, lambda x, y: cmp(x.name, y.name)):
+                    % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
                     <%
                         cur_airs_next = ''
                         cur_snatched = 0
@@ -317,7 +319,7 @@
                     % endif
 
                     <tbody>
-                        % for curShow in sorted(myShowList, lambda x, y: cmp(x.name, y.name)):
+                        % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
                             <%
                                 cur_airs_next = ''
                                 cur_airs_prev = ''
@@ -435,7 +437,8 @@
                                         % else:
                                             <span title="No Network"><img id="network" width="54" height="27"
                                                                           src="${srWebRoot}/images/network/nonetwork.png"
-                                                                          alt="${_('No Network')}" title="${_('No Network')}"/></span>
+                                                                          alt="${_('No Network')}"
+                                                                          title="${_('No Network')}"/></span>
                                             <span class="visible-print-inline">No Network</span>
                                         % endif
                                     </td>

@@ -26,6 +26,7 @@ import threading
 import time
 import traceback
 import urllib
+from collections import OrderedDict
 
 import dateutil.tz
 import markdown2
@@ -628,16 +629,17 @@ class Home(WebHandler):
         if not len(sickrage.app.showlist):
             return self.redirect('/home/addShows/')
 
+        showlists = OrderedDict({'Shows': []})
         if sickrage.app.config.anime_split_home:
-            shows = anime = []
             for show in sickrage.app.showlist:
                 if show.is_anime:
-                    anime.append(show)
+                    if not showlists.has_key('Anime'):
+                        showlists['Anime'] = []
+                    showlists['Anime'] += [show]
                 else:
-                    shows.append(show)
-            showlists = [["Shows", shows], ["Anime", anime]]
+                    showlists['Shows'] += [show]
         else:
-            showlists = [["Shows", sickrage.app.showlist]]
+            showlists['Shows'] = sickrage.app.showlist
 
         stats = self.show_statistics()
         return self.render(
