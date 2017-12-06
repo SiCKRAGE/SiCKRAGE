@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-06 03:06-0500\n"
-"PO-Revision-Date: 2017-12-06 03:09-0500\n"
+"POT-Creation-Date: 2017-12-06 13:38-0500\n"
+"PO-Revision-Date: 2017-12-06 13:39-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -5966,7 +5966,7 @@ msgstr "Muốn"
 msgid "Ignored"
 msgstr "Bỏ qua"
 
-#: sickrage/core/search.py:210
+#: sickrage/core/search.py:208
 msgid "Episode snatched"
 msgstr "Episode snatched"
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7ba1d1f - 2017-12-06: Fixed issue #146 - Torrent file content is empty 
+- * 8a6f44e - 2017-12-06: Release v9.2.38 
+- * e20399b - 2017-12-06: Fixed issue #146 - Torrent file content is empty 
 - * eb795bd - 2017-12-06: Release v9.2.36 
 - * 418d40b - 2017-12-06: Fixed issues with splitting shows and anime 
 - * 5b78ac9 - 2017-12-05: Release v9.2.34 
