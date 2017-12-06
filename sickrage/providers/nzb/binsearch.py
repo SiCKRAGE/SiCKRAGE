@@ -89,7 +89,7 @@ class BinSearchCache(TVCache):
 
             for group in ['alt.binaries.hdtv', 'alt.binaries.hdtv.x264', 'alt.binaries.tv', 'alt.binaries.tvseries']:
                 search_params = {'max': 50, 'g': group}
-                for item in self.getRSSFeed(self.provider.urls['rss'], search_params)['entries'] or []:
+                for item in self.getRSSFeed(self.provider.urls['rss'], search_params).get('entries', []):
                     self._parseItem(item)
 
         return True

@@ -1271,10 +1271,10 @@ class NewznabProvider(NZBProvider):
     def getDefaultProviders(cls):
         return [
             cls('DOGnzb', 'https://api.dognzb.cr', '', '5030,5040,5060,5070', 'eponly', False, False, False, True),
-            cls('NZB.Cat', 'http://nzb.cat', '', '5030,5040,5010', 'eponly', True, True, True, True),
-            cls('NZBGeek', 'http://api.nzbgeek.info', '', '5030,5040', 'eponly', False, False, False, True),
-            cls('NZBs.org', 'http://nzbs.org', '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'http://usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False, True)
+            cls('NZB.Cat', 'https://nzb.cat', '', '5030,5040,5010', 'eponly', True, True, True, True),
+            cls('NZBGeek', 'https://api.nzbgeek.info', '', '5030,5040', 'eponly', False, False, False, True),
+            cls('NZBs.org', 'https://nzbs.org', '', '5030,5040', 'eponly', False, False, False, True),
+            cls('Usenet-Crawler', 'https://usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False, True)
         ]
 
 
