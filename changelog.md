@@ -1,6 +1,7 @@
 # Changelog
 
-- * f4f8033 - 2017-12-05: Release v9.2.34 
+- * ee41dcf - 2017-12-06: Fixed issues with splitting shows and anime 
+- * 5b78ac9 - 2017-12-05: Release v9.2.34 
 - * 80e8622 - 2017-12-05: Fixed attribute issue when trying to manage episode statuses 
 - * e461330 - 2017-12-04: Release v9.2.32 
 - * b300f9a - 2017-12-04: Fixed encoding issues with list_associated_files function Fixed encoding issues for renaming files Fixed enacoding issues when refreshing shows and subtitles 
