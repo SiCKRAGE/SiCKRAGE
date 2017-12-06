@@ -1,6 +1,8 @@
 # Changelog
 
-- * 9c6486b - 2017-12-06: Release v9.2.36 
+- * 8a6f44e - 2017-12-06: Release v9.2.38 
+- * e20399b - 2017-12-06: Fixed issue #146 - Torrent file content is empty 
+- * eb795bd - 2017-12-06: Release v9.2.36 
 - * 418d40b - 2017-12-06: Fixed issues with splitting shows and anime 
 - * 5b78ac9 - 2017-12-05: Release v9.2.34 
 - * 80e8622 - 2017-12-05: Fixed attribute issue when trying to manage episode statuses 

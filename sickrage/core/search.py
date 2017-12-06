@@ -109,7 +109,6 @@ def _download_result(result):
 
     # nzbs with an URL can just be downloaded from the provider
     if result.resultType == "nzb":
-        result = _verify_result(result)
         if result.content:
             sickrage.app.log.info("Saving NZB to " + filename)
 
@@ -136,7 +135,6 @@ def _download_result(result):
         except EnvironmentError as e:
             sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e.message))
     elif result.resultType == "torrent":
-        result = _verify_result(result)
         if result.content:
             sickrage.app.log.info("Saving TORRENT to " + filename)
 
@@ -330,14 +328,6 @@ def pickBestResult(results, show):
             sickrage.app.log.info(e.message)
             continue
 
-        # verify result content
-        if not cur_result.provider.private:
-            cur_result = _verify_result(cur_result)
-            if not cur_result.content:
-                sickrage.app.log.info(
-                    "Ignoring " + cur_result.name + " because it does not have valid download url")
-                continue
-
         if not bestResult:
             bestResult = cur_result
         elif cur_result.quality in bestQualities and (
@@ -355,6 +345,8 @@ def pickBestResult(results, show):
                 bestResult = cur_result
 
     if bestResult:
+        if not bestResult.content:
+            bestResult = _verify_result(bestResult)
         sickrage.app.log.debug("Picked " + bestResult.name + " as the best")
     else:
         sickrage.app.log.debug("No result picked.")
@@ -375,6 +367,11 @@ def isFinalResult(result):
     show_obj = result.episodes[0].show
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
+
+    # validate download link for result
+    result = _verify_result(result)
+    if not result.content:
+        return False
 
     # if there is a redownload that's higher than this then we definitely need to keep looking
     if best_qualities and result.quality < max(best_qualities):
