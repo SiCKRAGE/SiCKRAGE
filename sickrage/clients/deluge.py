@@ -30,20 +30,17 @@ class DelugeAPI(GenericClient):
 
         super(DelugeAPI, self).__init__('Deluge', host, username, password)
 
-        self.headers = {'Content-type': "application/json"}
         self.url = self.host + 'json'
+        self.session.headers.update({'Content-type': "application/json"})
 
     def _get_auth(self):
-
         post_data = json.dumps({"method": "auth.login",
                                 "params": [self.password],
                                 "id": 1})
 
         try:
-            self.response = self.session.post(self.url,
-                                                       data=post_data.encode('utf-8'),
-                                                       headers=self.headers,
-                                                       verify=bool(sickrage.app.config.torrent_verify_cert))
+            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                              verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
 
@@ -54,27 +51,19 @@ class DelugeAPI(GenericClient):
                                 "id": 10})
 
         try:
-            self.response = self.session.post(self.url,
-                                                       data=post_data.encode('utf-8'),
-                                                       headers=self.headers,
-                                                       verify=bool(sickrage.app.config.torrent_verify_cert))
-
+            self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                              verify=bool(sickrage.app.config.torrent_verify_cert))
         except Exception:
             return None
 
         connected = self.response.json()['result']
-
         if not connected:
             post_data = json.dumps({"method": "web.get_hosts",
                                     "params": [],
                                     "id": 11})
             try:
-                self.response = self.session.post(self.url,
-                                                           data=post_data.encode('utf-8'),
-                                                           headers=self.headers,
-                                                           verify=bool(
-                                                               sickrage.app.config.torrent_verify_cert))
-
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
@@ -88,11 +77,8 @@ class DelugeAPI(GenericClient):
                                     "id": 11})
 
             try:
-                self.response = self.session.post(self.url,
-                                                           data=post_data.encode('utf-8'),
-                                                           headers=self.headers,
-                                                           verify=bool(sickrage.app.config.torrent_verify_cert))
-
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
@@ -101,11 +87,8 @@ class DelugeAPI(GenericClient):
                                     "id": 10})
 
             try:
-                self.response = self.session.post(self.url,
-                                                           data=post_data.encode('utf-8'),
-                                                           headers=self.headers,
-                                                           verify=bool(sickrage.app.config.torrent_verify_cert))
-
+                self.response = self.session.post(self.url, data=post_data.encode('utf-8'),
+                                                  verify=bool(sickrage.app.config.torrent_verify_cert))
             except Exception:
                 return None
 
@@ -117,31 +100,28 @@ class DelugeAPI(GenericClient):
         return self.auth
 
     def _add_torrent_uri(self, result):
-
         post_data = json.dumps({"method": "core.add_torrent_magnet",
                                 "params": [result.url, {}],
                                 "id": 2})
 
-        self._request(method='post', data=post_data, headers=self.headers)
+        self._request(method='post', data=post_data)
 
         result.hash = self.response.json()['result']
 
         return self.response.json()['result']
 
     def _add_torrent_file(self, result):
-
         post_data = json.dumps({"method": "core.add_torrent_file",
                                 "params": [result.name + '.torrent', b64encode(result.content), {}],
                                 "id": 2})
 
-        self._request(method='post', data=post_data, headers=self.headers)
+        self._request(method='post', data=post_data)
 
         result.hash = self.response.json()['result']
 
         return self.response.json()['result']
 
     def _set_torrent_label(self, result):
-
         label = sickrage.app.config.torrent_label
         if result.show.is_anime:
             label = sickrage.app.config.torrent_label_anime
@@ -155,7 +135,7 @@ class DelugeAPI(GenericClient):
                                     "params": [],
                                     "id": 3})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
             labels = self.response.json()['result']
 
             if labels is not None:
@@ -166,7 +146,7 @@ class DelugeAPI(GenericClient):
                                             "params": [label],
                                             "id": 4})
 
-                    self._request(method='post', data=post_data, headers=self.headers)
+                    self._request(method='post', data=post_data)
                     sickrage.app.log.debug(self.name + ': ' + label + " label added to Deluge")
 
                 # add label to torrent
@@ -174,7 +154,7 @@ class DelugeAPI(GenericClient):
                                         "params": [result.hash, label],
                                         "id": 5})
 
-                self._request(method='post', data=post_data, headers=self.headers)
+                self._request(method='post', data=post_data)
                 sickrage.app.log.debug(self.name + ': ' + label + " label added to torrent")
             else:
                 sickrage.app.log.debug(self.name + ': ' + "label plugin not detected")
@@ -183,7 +163,6 @@ class DelugeAPI(GenericClient):
         return not self.response.json()['error']
 
     def _set_torrent_ratio(self, result):
-
         ratio = None
         if result.ratio:
             ratio = result.ratio
@@ -193,45 +172,43 @@ class DelugeAPI(GenericClient):
                                     "params": [result.hash, True],
                                     "id": 5})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
 
             post_data = json.dumps({"method": "core.set_torrent_stop_ratio",
                                     "params": [result.hash, float(ratio)],
                                     "id": 6})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
 
             return not self.response.json()['error']
 
         return True
 
     def _set_torrent_path(self, result):
-
         if sickrage.app.config.torrent_path:
             post_data = json.dumps({"method": "core.set_torrent_move_completed",
                                     "params": [result.hash, True],
                                     "id": 7})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
 
             post_data = json.dumps({"method": "core.set_torrent_move_completed_path",
                                     "params": [result.hash, sickrage.app.config.torrent_path],
                                     "id": 8})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
 
             return not self.response.json()['error']
 
         return True
 
     def _set_torrent_pause(self, result):
-
         if sickrage.app.config.torrent_paused:
             post_data = json.dumps({"method": "core.pause_torrent",
                                     "params": [[result.hash]],
                                     "id": 9})
 
-            self._request(method='post', data=post_data, headers=self.headers)
+            self._request(method='post', data=post_data)
 
             return not self.response.json()['error']
 
