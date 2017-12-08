@@ -1,6 +1,7 @@
 # Changelog
 
-- * fa636b7 - 2017-12-06: Release v9.2.40 
+- * 0f583b0 - 2017-12-08: converted bt cache url scheme to https 
+- * 9ba97d5 - 2017-12-06: Release v9.2.40 
 - * 5fdb6d9 - 2017-12-06: Release v9.2.38 
 - * e20399b - 2017-12-06: Fixed issue #146 - Torrent file content is empty 
 - * eb795bd - 2017-12-06: Release v9.2.36 

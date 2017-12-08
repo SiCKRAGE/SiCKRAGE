@@ -72,7 +72,7 @@ class GenericProvider(object):
 
         self.session = WebSession()
 
-        self.bt_cache_url = 'http://itorrents.org/torrent/{info_hash}.torrent'
+        self.bt_cache_url = 'https://itorrents.org/torrent/{info_hash}.torrent'
 
     @property
     def id(self):
