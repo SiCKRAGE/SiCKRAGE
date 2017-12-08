@@ -341,7 +341,7 @@ class Tvdb:
         self.config['api']['images']['series'] = "/series/{id}/images/query?keyType=series"
         self.config['api']['images']['season'] = "/series/{id}/images/query?keyType=season&subKey={season}"
         self.config['api']['images']['seasonwide'] = "/series/{id}/images/query?keyType=seasonwide&subKey={season}"
-        self.config['api']['images']['prefix'] = "http://thetvdb.com/banners/{id}"
+        self.config['api']['images']['prefix'] = "http://thetvdb.com/banners/{value}"
 
         # api-v2 language
         self.config['api']['lang'] = 'en'
@@ -503,7 +503,7 @@ class Tvdb:
         for k, v in series_info.items():
             if v is not None:
                 if k in ['banner', 'fanart', 'poster']:
-                    v = self.config['api']['images']['prefix'].format(id=v)
+                    v = self.config['api']['images']['prefix'].format(value=v)
                 elif isinstance(v, list):
                     v = '|'.join(v)
                 else:
@@ -566,16 +566,18 @@ class Tvdb:
 
             for k, v in cur_ep.items():
                 k = k.lower()
-
                 if v is not None:
-                    if k == 'filename':
-                        v = self.config['api']['images']['prefix'].format(id=v)
-                    elif isinstance(v, list):
+                    if isinstance(v, list):
                         v = '|'.join(v)
                     else:
                         v = self._cleanData(v)
 
                 self._setItem(sid, seas_no, ep_no, k, v)
+
+            # add episode image url
+            image_url = self.config['api']['images']['prefix'].format(
+                value='episodes/{}/{}.jpg'.format(sid, cur_ep['id']))
+            self._setItem(sid, seas_no, ep_no, 'filename', image_url)
 
         # set last updated
         self._setShowData(sid, 'last_updated', int(time.mktime(datetime.datetime.now().timetuple())))
@@ -601,7 +603,7 @@ class Tvdb:
             image["score"] = image["ratingsinfo"]["average"] * image["ratingsinfo"]["count"]
             for k, v in image.items():
                 if not all([k, v]): continue
-                v = (v, self.config['api']['images']['prefix'].format(id=v))[k in ['filename', 'thumbnail']]
+                v = (v, self.config['api']['images']['prefix'].format(value=v))[k in ['filename', 'thumbnail']]
                 images[i][k] = v
 
         return [item for item in sorted(images, key=itemgetter("score"), reverse=True)]
@@ -617,7 +619,7 @@ class Tvdb:
                 curActor = Actor()
                 for k, v in cur_actor.items():
                     if not all([k, v]): continue
-                    v = (v, self.config['api']['images']['prefix'].format(id=v))[k == 'images']
+                    v = (v, self.config['api']['images']['prefix'].format(value=v))[k == 'images']
                     curActor[k] = v
 
                 cur_actors.append(curActor)
