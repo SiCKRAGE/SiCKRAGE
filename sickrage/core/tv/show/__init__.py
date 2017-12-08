@@ -1114,19 +1114,6 @@ class TVShow(object):
             # save show to database
             self.saveToDB()
 
-    def nextEpisode(self):
-        if self.paused: return
-
-        curDate = datetime.date.today()
-
-        if not self.next_aired or self.next_aired and curDate.toordinal() > self.next_aired:
-            dbData = sorted(
-                [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
-                 x['doc']['airdate'] >= curDate.toordinal() and
-                 x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
-
-            self.next_aired = dbData[0]['airdate'] if dbData else ''
-
     def deleteShow(self, full=False):
         [sickrage.app.main_db.db.delete(x['doc']) for x in
          sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]

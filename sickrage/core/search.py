@@ -465,8 +465,6 @@ def searchForNeededEpisodes():
         if curShow.paused:
             continue
 
-        curShow.nextEpisode()
-
         episodes = wantedEpisodes(curShow, date.fromordinal(1))
         result = searchProviders(curShow, episodes, cacheOnly=sickrage.app.config.enable_rss_cache)
         if result: results += result

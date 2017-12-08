@@ -1,6 +1,10 @@
 # Changelog
 
-- * fa636b7 - 2017-12-06: Release v9.2.40 
+- * 31b0f72 - 2017-12-08: Release v9.2.42 
+- * d1004fc - 2017-12-08: Removed unrequired nextEpisode function as code was migrated into next_aired property function 
+- * 78435a3 - 2017-12-08: Fixed issues with saving episode thumbnails 
+- * 7c1c460 - 2017-12-08: converted bt cache url scheme to https 
+- * 9ba97d5 - 2017-12-06: Release v9.2.40 
 - * 5fdb6d9 - 2017-12-06: Release v9.2.38 
 - * e20399b - 2017-12-06: Fixed issue #146 - Torrent file content is empty 
 - * eb795bd - 2017-12-06: Release v9.2.36 
