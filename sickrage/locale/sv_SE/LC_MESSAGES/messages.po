@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-12-06 13:38-0500\n"
-"PO-Revision-Date: 2017-12-06 13:39-0500\n"
+"PO-Revision-Date: 2017-12-08 19:44-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -5433,7 +5433,7 @@ msgstr "Återställ till standard"
 
 #: sickrage/core/webserver/views/layouts/config.mako:38
 msgid "All non-absolute folder locations are relative to"
-msgstr "Alla icke-absoluta mapplatser är förhållande till"
+msgstr "Alla icke-absoluta sökvägar är relativa till"
 
 #: sickrage/core/webserver/views/layouts/main.mako:15
 msgid "SiCKRAGE"
@@ -6536,7 +6536,7 @@ msgstr "Mappen %s innehåller inte en tvshow.nfo - kopiera dina filer till mappe
 
 #: sickrage/core/webserver/views.py:1549 sickrage/core/webserver/views.py:3454
 msgid "Unable to update show: {}"
-msgstr ""
+msgstr "Kan inte uppdatera serie: {0}"
 
 #: sickrage/core/webserver/views.py:1556
 msgid "Unable to force an update on scene exceptions of the show."

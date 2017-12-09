@@ -194,7 +194,7 @@ class PostProcessorItem(srQueueItem):
         try:
             sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
-            self.result = processDir(
+            self.result = str(processDir(
                 dirName=self.dirName,
                 nzbName=self.nzbName,
                 process_method=self.process_method,
@@ -203,12 +203,13 @@ class PostProcessorItem(srQueueItem):
                 delete_on=self.delete_on,
                 failed=self.failed,
                 proc_type=self.proc_type
-            )
+            ))
 
-            sickrage.app.log.info(
-                "Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
+            sickrage.app.log.info("Finished {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
             # give the CPU a break
             sleep(cpu_presets[sickrage.app.config.cpu_preset])
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
+            self.result = '{}'.format(traceback.format_exc())
+            self.result += 'Processing Failed'

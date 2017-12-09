@@ -44,6 +44,11 @@ class ProcessResult(object):
         self.missedfiles = []
         self.aggresult = True
 
+    def __unicode__(self):
+        return self.output
+
+    def __str__(self):
+        return self.__unicode__().encode('utf-8', errors='replace')
 
 def delete_folder(folder, check_empty=True):
     """
@@ -168,7 +173,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                                    "If your downloader and SiCKRAGE aren't on the same PC "
                                    "make sure you fill out your TV download dir in the config.",
                                    sickrage.app.log.DEBUG)
-        return result.output
+        return result
 
     process_method = process_method or sickrage.app.config.process_method
 
@@ -257,7 +262,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         for missed_file in result.missedfiles:
             result.output += logHelper(missed_file)
 
-    return result.output
+    return result
 
 
 def validateDir(process_path, release_name, failed, result):
