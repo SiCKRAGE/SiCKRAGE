@@ -72,7 +72,13 @@ class GenericProvider(object):
 
         self.session = WebSession()
 
-        self.bt_cache_url = 'https://itorrents.org/torrent/{info_hash}.torrent'
+        self.bt_cache_urls = [
+            'https://itorrents.org/torrent/{info_hash}.torrent',
+            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
+            'https://torrent.cd/torrents/download/{info_hash}/.torrent',
+            'https://asnet.pw/download/{info_hash}/',
+            'http://p2pdl.com/download/{info_hash}',
+        ]
 
     @property
     def id(self):
@@ -132,7 +138,7 @@ class GenericProvider(object):
                 sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
-            urls.append(self.bt_cache_url.format(info_hash=info_hash, torrent_name=torrent_name))
+            urls = [x.format(info_hash=info_hash, torrent_name=torrent_name) for x in self.bt_cache_urls]
 
         random.shuffle(urls)
 
