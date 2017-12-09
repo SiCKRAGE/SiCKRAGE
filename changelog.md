@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7670f03 - 2017-12-08: Removed get_files function from providers to stop hammering provider api&#x27;s 
+- * 3bb50df - 2017-12-08: Release v9.2.44 
+- * 01eb76c - 2017-12-08: Removed get_files function from providers to stop hammering provider api&#x27;s 
 - * 59217e6 - 2017-12-08: Fixed issue with picking best result 
 - * acfef1e - 2017-12-08: Fixed issues with make_url provider function 
 - * e394ae7 - 2017-12-08: Fixed issues with make_url provider function 
