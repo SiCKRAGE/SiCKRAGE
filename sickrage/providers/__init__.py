@@ -71,14 +71,6 @@ class GenericProvider(object):
 
         self.session = WebSession()
 
-        self.bt_cache_urls = [
-            'https://itorrents.org/torrent/{info_hash}.torrent',
-            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
-            'https://torrent.cd/torrents/download/{info_hash}.torrent',
-            'https://asnet.pw/download/{info_hash}/',
-            'http://p2pdl.com/download/{info_hash}',
-        ]
-
     @property
     def id(self):
         return str(re.sub(r"[^\w\d_]", "_", self.name.strip().lower()))
@@ -119,40 +111,16 @@ class GenericProvider(object):
         """
         return SearchResult(episodes)
 
-    def get_content(self, result):
+    def get_content(self, url):
         if self.login():
-            for url in self.make_url(result.url):
-                headers = {}
+            headers = {}
+            if url.startswith('http'):
+                headers = {'Referer': '/'.join(url.split('/')[:3]) + '/'}
 
-                if result.url.startswith('http'):
-                    headers = {'Referer': '/'.join(result.url.split('/')[:3]) + '/'}
-
-                try:
-                    result.content = self.session.get(url, verify=False, headers=headers).content
-                    if result.resultType == 'torrent' and bencode.bdecode(result.content):
-                        return result
-                except Exception:
-                    result.content = None
-
-        return result
-
-    def make_url(self, url):
-        urls = [url]
-
-        if url.startswith('magnet'):
-            info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
-            if len(info_hash) == 32:
-                info_hash = b16encode(b32decode(info_hash)).upper()
-
-            if not info_hash:
-                sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
-                return urls
-
-            urls = [x.format(info_hash=info_hash) for x in self.bt_cache_urls]
-
-        random.shuffle(urls)
-
-        return urls
+            try:
+                return self.session.get(url, verify=False, headers=headers).content
+            except Exception:
+                pass
 
     def make_filename(self, name):
         return ""
@@ -665,6 +633,38 @@ class TorrentProvider(GenericProvider):
         result.provider = self
         return result
 
+    def get_content(self, url):
+        urls = [url]
+
+        bt_cache_urls = [
+            'https://itorrents.org/torrent/{info_hash}.torrent',
+            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
+            'https://torrent.cd/torrents/download/{info_hash}.torrent',
+            'https://asnet.pw/download/{info_hash}/',
+            'http://p2pdl.com/download/{info_hash}',
+        ]
+
+        if url.startswith('magnet'):
+            info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
+            if len(info_hash) == 32:
+                info_hash = b16encode(b32decode(info_hash)).upper()
+
+            if not info_hash:
+                sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
+                return urls
+
+            urls = [x.format(info_hash=info_hash) for x in bt_cache_urls]
+
+        random.shuffle(urls)
+
+        for u in urls:
+            try:
+                content = super(TorrentProvider, self).get_content(u)
+                if bencode.bdecode(content):
+                    return content
+            except Exception:
+                pass
+
     def _get_title_and_url(self, item):
         title, download_url = '', ''
         if isinstance(item, (dict, FeedParserDict)):
@@ -713,12 +713,8 @@ class TorrentProvider(GenericProvider):
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
 
-    def make_url(self, url):
-        return super(TorrentProvider, self).make_url(url)
-
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.torrent_dir,
-                            '{}.torrent'.format(sanitizeFileName(name)))
+        return os.path.join(sickrage.app.config.torrent_dir, '{}.torrent'.format(sanitizeFileName(name)))
 
     def add_trackers(self, result):
         """
@@ -826,12 +822,8 @@ class NZBProvider(GenericProvider):
             except EnvironmentError as e:
                 sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e.message))
 
-    def make_url(self, url):
-        return super(NZBProvider, self).make_url(url)
-
     def make_filename(self, name):
-        return os.path.join(sickrage.app.config.nzb_dir,
-                            '{}.nzb'.format(sanitizeFileName(name)))
+        return os.path.join(sickrage.app.config.nzb_dir, '{}.nzb'.format(sanitizeFileName(name)))
 
     @classmethod
     def getProviders(cls):
