@@ -33,7 +33,7 @@ from sickrage.clients import getClientIstance
 from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
-    SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT, video_exts
+    SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names, chmodAsParent
 from sickrage.core.nzbSplitter import splitNZBResult
@@ -311,22 +311,18 @@ def pickBestResult(results, show):
                 sickrage.app.log.info(cur_result.name + " has previously failed, rejecting it")
                 continue
 
-        # quality definition video file size constraints check
-        try:
-            quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
-            for file, file_size in cur_result.files.items():
-                if not file.decode('utf-8').endswith(tuple(video_exts)):
-                    continue
-
-                file_size = float(file_size / 1000000)
+            # quality definition video file size constraints check
+            try:
+                quality_size = sickrage.app.config.quality_sizes[cur_result.quality]
+                file_size = float(cur_result.size / 1000000)
                 if file_size > quality_size:
                     raise Exception(
                         "Ignoring " + cur_result.name + " with size: {} based on quality size filter: {}".format(
                             file_size, quality_size)
                     )
-        except Exception as e:
-            sickrage.app.log.info(e.message)
-            continue
+            except Exception as e:
+                sickrage.app.log.info(e.message)
+                continue
 
         if not bestResult:
             bestResult = cur_result
@@ -345,8 +341,6 @@ def pickBestResult(results, show):
                 bestResult = cur_result
 
     if bestResult:
-        if not bestResult.content:
-            bestResult = _verify_result(bestResult)
         sickrage.app.log.debug("Picked " + bestResult.name + " as the best")
     else:
         sickrage.app.log.debug("No result picked.")

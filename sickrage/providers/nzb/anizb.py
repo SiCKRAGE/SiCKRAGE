@@ -95,7 +95,3 @@ class Anizb(NZBProvider):
                                 continue
 
             return results
-
-    def _get_size(self, item):
-        """Override the default _get_size to prevent it from extracting using the default tags."""
-        return try_int(item.get('size'))

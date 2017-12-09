@@ -19,7 +19,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import json
 import time
 import urllib2
 
@@ -53,9 +52,6 @@ class TVCache(object):
 
     def _get_size(self, item):
         return self.provider._get_size(item)
-
-    def _get_files(self, item):
-        return self.provider._get_files(item)
 
     def _get_rss_data(self):
         if self.search_params:
@@ -113,12 +109,11 @@ class TVCache(object):
         title, url = self._get_title_and_url(item)
         seeders, leechers = self._get_result_stats(item)
         size = self._get_size(item)
-        files = self._get_files(item)
 
         self.check_item(title, url)
 
         if title and url:
-            self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size, files)
+            self.addCacheEntry(self._translateTitle(title), self._translateLinkURL(url), seeders, leechers, size)
         else:
             sickrage.app.log.debug(
                 "The data returned from the " + self.provider.name + " feed is incomplete, this result is unusable")
@@ -185,7 +180,7 @@ class TVCache(object):
             return False
         return True
 
-    def addCacheEntry(self, name, url, seeders, leechers, size, files, parse_result=None, indexer_id=0):
+    def addCacheEntry(self, name, url, seeders, leechers, size, parse_result=None, indexer_id=0):
         # check for existing entry in cache
         if len([x for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True) if
                 x['doc']['url'] == url]): return
@@ -232,8 +227,7 @@ class TVCache(object):
                     'version': version,
                     'seeders': seeders,
                     'leechers': leechers,
-                    'size': size,
-                    'files': json.dumps(files)
+                    'size': size
                 }
 
                 # add to internal database
@@ -317,7 +311,6 @@ class TVCache(object):
             result.seeders = curResult.get("seeders", -1)
             result.leechers = curResult.get("leechers", -1)
             result.size = curResult.get("size", -1)
-            result.files = json.loads(curResult.get("files", {}))
             result.content = None
 
             # add it to the list

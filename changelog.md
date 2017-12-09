@@ -1,6 +1,11 @@
 # Changelog
 
-- * 1b5e336 - 2017-12-08: Release v9.2.43 
+- * 3bb50df - 2017-12-08: Release v9.2.44 
+- * 01eb76c - 2017-12-08: Removed get_files function from providers to stop hammering provider api&#x27;s 
+- * 59217e6 - 2017-12-08: Fixed issue with picking best result 
+- * acfef1e - 2017-12-08: Fixed issues with make_url provider function 
+- * e394ae7 - 2017-12-08: Fixed issues with make_url provider function 
+- * bb5d189 - 2017-12-08: Release v9.2.43 
 - * 2a9bb7e - 2017-12-08: Fixed exception handling for post-processor 
 - * 8de7690 - 2017-12-08: Updated provider icons Updated YGG Torrent url 
 - * d31018c - 2017-12-08: Release v9.2.42 
