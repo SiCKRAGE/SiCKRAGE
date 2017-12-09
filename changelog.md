@@ -1,6 +1,7 @@
 # Changelog
 
-- * 46b90d2 - 2017-12-08: Updated provider icons Updated YGG Torrent url 
+- * 110dabe - 2017-12-08: Fixed exception handling for post-processor 
+- * 8de7690 - 2017-12-08: Updated provider icons Updated YGG Torrent url 
 - * d31018c - 2017-12-08: Release v9.2.42 
 - * d1004fc - 2017-12-08: Removed unrequired nextEpisode function as code was migrated into next_aired property function 
 - * 78435a3 - 2017-12-08: Fixed issues with saving episode thumbnails 
