@@ -19,14 +19,9 @@
 
 from __future__ import unicode_literals
 
-import io
-import os
 import re
 import threading
 from datetime import date, timedelta
-
-import bencode
-from bencode import BTFailure
 
 import sickrage
 from sickrage.clients import getClientIstance
@@ -35,118 +30,11 @@ from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, DOWNLOADED, WANTED, MULTI_EP_RESULT
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import show_names, chmodAsParent
+from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import splitNZBResult
 from sickrage.core.tv.show.history import FailedHistory, History
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NZBProvider, NewznabProvider, TorrentProvider, TorrentRssProvider
-
-
-def _verify_result(result):
-    """
-    Save the result to disk.
-    """
-
-    resProvider = result.provider
-
-    # check for auth
-    if resProvider.login():
-        for url in resProvider.make_url(result.url):
-            if 'NO_DOWNLOAD_NAME' in url:
-                continue
-
-            headers = {}
-            if url.startswith('http'):
-                headers.update({
-                    'Referer': '/'.join(url.split('/')[:3]) + '/'
-                })
-
-            sickrage.app.log.debug("Verifiying a result from " + resProvider.name + " at " + url)
-
-            try:
-                result.content = resProvider.session.get(url, verify=False, headers=headers).content
-                if result.resultType == "torrent":
-                    try:
-                        meta_info = bencode.bdecode(result.content)
-                        if meta_info.get('info'):
-                            if result.resultType == "torrent" and not resProvider.private:
-                                # add public trackers to torrent result
-                                result = resProvider.add_trackers(result)
-                            return result
-                    except BTFailure:
-                        pass
-                else:
-                    return result
-            except Exception:
-                pass
-
-            sickrage.app.log.debug("Failed to verify result: %s" % url)
-
-    result.content = None
-
-    return result
-
-
-def _download_result(result):
-    """
-    Downloads a result to the appropriate black hole folder.
-
-    :param result: SearchResult instance to download.
-    :return: boolean, True on success
-    """
-    downloaded = False
-
-    resProvider = result.provider
-    if resProvider is None:
-        sickrage.app.log.error("Invalid provider name - this is a coding error, report it please")
-        return False
-
-    filename = resProvider.make_filename(result.name)
-
-    # Support for Jackett/TorzNab
-    if (result.url.endswith('torrent') or result.url.startswith('magnet')) and resProvider.type in ['nzb', 'newznab']:
-        filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
-
-    # nzbs with an URL can just be downloaded from the provider
-    if result.resultType == "nzb":
-        if result.content:
-            sickrage.app.log.info("Saving NZB to " + filename)
-
-            # write content to torrent file
-            with io.open(filename, 'wb') as f:
-                f.write(result.content)
-
-            downloaded = True
-    # if it's an nzb data result
-    elif result.resultType == "nzbdata":
-        # get the final file path to the nzb
-        filename = os.path.join(sickrage.app.config.nzb_dir, result.name + ".nzb")
-
-        sickrage.app.log.info("Saving NZB to " + filename)
-
-        # save the data to disk
-        try:
-            with io.open(filename, 'w') as fileOut:
-                fileOut.write(result.extraInfo[0])
-
-            chmodAsParent(filename)
-
-            downloaded = True
-        except EnvironmentError as e:
-            sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e.message))
-    elif result.resultType == "torrent":
-        if result.content:
-            sickrage.app.log.info("Saving TORRENT to " + filename)
-
-            # write content to torrent file
-            with io.open(filename, 'wb') as f:
-                f.write(result.content)
-
-            downloaded = True
-    else:
-        sickrage.app.log.error("Invalid provider type - this is a coding error, report it please")
-
-    return downloaded
 
 
 def snatchEpisode(result, endStatus=SNATCHED):
@@ -169,16 +57,19 @@ def snatchEpisode(result, endStatus=SNATCHED):
             if date.today() - curEp.airdate <= timedelta(days=7):
                 result.priority = 1
 
-    if re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', result.name, re.I) is not None:
+    if re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', result.name, re.I) is not None:
         endStatus = SNATCHED_PROPER
 
     if result.url.startswith('magnet') or result.url.endswith('torrent'):
         result.resultType = 'torrent'
 
+    # get result content
+    result = result.provider.get_content(result)
+
     dlResult = False
     if result.resultType in ("nzb", "nzbdata"):
         if sickrage.app.config.nzb_method == "blackhole":
-            dlResult = _download_result(result)
+            dlResult = result.provider.download_result(result)
         elif sickrage.app.config.nzb_method == "sabnzbd":
             dlResult = SabNZBd.sendNZB(result)
         elif sickrage.app.config.nzb_method == "nzbget":
@@ -188,8 +79,12 @@ def snatchEpisode(result, endStatus=SNATCHED):
             sickrage.app.log.error(
                 "Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
     elif result.resultType == "torrent":
+        # add public trackers to torrent result
+        if not result.provider.private:
+            result = result.provider.add_trackers(result)
+
         if sickrage.app.config.torrent_method == "blackhole":
-            dlResult = _download_result(result)
+            dlResult = result.provider.download_result(result)
         else:
             if any([result.content, result.url.startswith('magnet:')]):
                 client = getClientIstance(sickrage.app.config.torrent_method)()
@@ -324,6 +219,11 @@ def pickBestResult(results, show):
                 sickrage.app.log.info(e.message)
                 continue
 
+        # verify result content
+        if not cur_result.provider.private and not cur_result.provider.get_content(cur_result).content:
+            sickrage.app.log.info("Ignoring " + cur_result.name + " because it does not have valid download url")
+            continue
+
         if not bestResult:
             bestResult = cur_result
         elif cur_result.quality in bestQualities and (
@@ -361,11 +261,6 @@ def isFinalResult(result):
     show_obj = result.episodes[0].show
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
-
-    # validate download link for result
-    result = _verify_result(result)
-    if not result.content:
-        return False
 
     # if there is a redownload that's higher than this then we definitely need to keep looking
     if best_qualities and result.quality < max(best_qualities):

@@ -119,17 +119,28 @@ class GenericProvider(object):
         """
         return SearchResult(episodes)
 
+    def get_content(self, result):
+        if self.login():
+            for url in self.make_url(result.url):
+                headers = {}
+
+                if result.url.startswith('http'):
+                    headers = {'Referer': '/'.join(result.url.split('/')[:3]) + '/'}
+
+                try:
+                    result.content = self.session.get(url, verify=False, headers=headers).content
+                    if result.resultType == 'torrent' and bencode.bdecode(result.content):
+                        return result
+                except Exception:
+                    result.content = None
+
+        return result
+
     def make_url(self, url):
         urls = [url]
 
         if url.startswith('magnet'):
             info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
-
-            try:
-                torrent_name = re.findall('dn=([^&]+)', url)[0]
-            except Exception:
-                torrent_name = 'NO_DOWNLOAD_NAME'
-
             if len(info_hash) == 32:
                 info_hash = b16encode(b32decode(info_hash)).upper()
 
@@ -137,7 +148,7 @@ class GenericProvider(object):
                 sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
                 return urls
 
-            urls = [x.format(info_hash=info_hash, torrent_name=torrent_name) for x in self.bt_cache_urls]
+            urls = [x.format(info_hash=info_hash) for x in self.bt_cache_urls]
 
         random.shuffle(urls)
 
@@ -677,6 +688,27 @@ class TorrentProvider(GenericProvider):
     def _get_size(self, item):
         return item.get('size', -1)
 
+    def download_result(self, result):
+        """
+        Downloads a result to the appropriate black hole folder.
+
+        :param result: SearchResult instance to download.
+        :return: boolean, True on success
+        """
+
+        if not result.content:
+            return False
+
+        filename = self.make_filename(result.name)
+
+        sickrage.app.log.info("Saving TORRENT to " + filename)
+
+        # write content to torrent file
+        with io.open(filename, 'wb') as f:
+            f.write(result.content)
+
+        return True
+
     @staticmethod
     def _clean_title_from_provider(title):
         return (title or '').replace(' ', '.')
@@ -752,6 +784,47 @@ class NZBProvider(GenericProvider):
 
     def _get_size(self, item):
         return item.get('size', -1)
+
+    def download_result(self, result):
+        """
+        Downloads a result to the appropriate black hole folder.
+
+        :param result: SearchResult instance to download.
+        :return: boolean, True on success
+        """
+
+        if not result.content:
+            return False
+
+        filename = self.make_filename(result.name)
+
+        # Support for Jackett/TorzNab
+        if (result.url.endswith('torrent') or result.url.startswith('magnet')) and self.type in ['nzb', 'newznab']:
+            filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
+
+        if result.resultType == "nzb":
+            sickrage.app.log.info("Saving NZB to " + filename)
+
+            # write content to torrent file
+            with io.open(filename, 'wb') as f:
+                f.write(result.content)
+
+            return True
+        elif result.resultType == "nzbdata":
+            filename = os.path.join(sickrage.app.config.nzb_dir, result.name + ".nzb")
+
+            sickrage.app.log.info("Saving NZB to " + filename)
+
+            # save the data to disk
+            try:
+                with io.open(filename, 'w') as fileOut:
+                    fileOut.write(result.extraInfo[0])
+
+                chmodAsParent(filename)
+
+                return True
+            except EnvironmentError as e:
+                sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e.message))
 
     def make_url(self, url):
         return super(NZBProvider, self).make_url(url)
