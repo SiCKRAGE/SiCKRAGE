@@ -64,7 +64,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         result.resultType = 'torrent'
 
     # get result content
-    result = result.provider.get_content(result)
+    result.content = result.provider.get_content(result.url)
 
     dlResult = False
     if result.resultType in ("nzb", "nzbdata"):
@@ -220,7 +220,7 @@ def pickBestResult(results, show):
                 continue
 
         # verify result content
-        if not cur_result.provider.private and not cur_result.provider.get_content(cur_result).content:
+        if not cur_result.provider.private and not cur_result.provider.get_content(cur_result.url):
             sickrage.app.log.info("Ignoring " + cur_result.name + " because it does not have valid download url")
             continue
 
