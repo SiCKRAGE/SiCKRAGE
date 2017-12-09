@@ -345,8 +345,6 @@ def pickBestResult(results, show):
                 bestResult = cur_result
 
     if bestResult:
-        if not bestResult.content:
-            bestResult = _verify_result(bestResult)
         sickrage.app.log.debug("Picked " + bestResult.name + " as the best")
     else:
         sickrage.app.log.debug("No result picked.")
