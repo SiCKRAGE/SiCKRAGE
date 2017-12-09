@@ -33,7 +33,6 @@ from xml.sax import SAXParseException
 
 import bencode
 from feedparser import FeedParserDict
-from pynzb import nzb_parser
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
@@ -208,7 +207,7 @@ class GenericProvider(object):
             elif episode.show.anime:
                 # If the showname is a season scene exception, we want to use the indexer episode number.
                 if (episode.scene_season > 1 and
-                            show_name in get_scene_exceptions(episode.show.indexerid, episode.scene_season)):
+                        show_name in get_scene_exceptions(episode.show.indexerid, episode.scene_season)):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
                     ep = episode.scene_episode
                 else:
@@ -250,11 +249,6 @@ class GenericProvider(object):
         """Gets the size from the item"""
         sickrage.app.log.debug("Provider type doesn't have ability to provide download size implemented yet")
         return -1
-
-    def _get_files(self, item):
-        """Gets dict of files with sizes from the item"""
-        sickrage.app.log.debug("Provider type doesn't have _get_files() implemented yet")
-        return {}
 
     def _get_result_stats(self, item):
         # Get seeders/leechers stats
@@ -361,12 +355,11 @@ class GenericProvider(object):
             result.release_group = parse_result.release_group
             result.version = parse_result.version
             result.size = self._get_size(item)
-            result.files = self._get_files(item)
             result.seeders, result.leechers = self._get_result_stats(item)
 
             sickrage.app.log.debug("Adding item from search to cache: " + result.name)
             self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
-                                     result.files, parse_result)
+                                     parse_result)
 
             if not result.show:
                 continue
@@ -378,7 +371,7 @@ class GenericProvider(object):
                             "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
                         continue
                     if len(parse_result.episode_numbers) and (
-                                    parse_result.season_number not in set([ep.season for ep in episodes])
+                            parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
                         sickrage.app.log.debug(
                             "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
@@ -474,7 +467,6 @@ class GenericProvider(object):
                     result.name, result.url = self._get_title_and_url(item)
                     result.seeders, result.leechers = self._get_result_stats(item)
                     result.size = self._get_size(item)
-                    result.files = self._get_files(item)
                     result.date = datetime.datetime.today()
                     result.show = show
                     results.append(result)
@@ -683,41 +675,7 @@ class TorrentProvider(GenericProvider):
         return title, download_url
 
     def _get_size(self, item):
-        size = item.get('size', -1)
-        if size == -1 and item.get('url'):
-            for url in self.make_url(item.url):
-                try:
-                    resp = self.session.get(url)
-                    torrent = bencode.bdecode(resp.content)
-
-                    total_length = 0
-                    for file in torrent['info']['files']:
-                        total_length += int(file['length'])
-
-                    if total_length > 0:
-                        size = total_length
-                        break
-                except Exception:
-                    pass
-
-        return size
-
-    def _get_files(self, item):
-        files = {}
-
-        title, url = self._get_title_and_url(item)
-        if url:
-            for url in self.make_url(url):
-                try:
-                    resp = self.session.get(url)
-                    torrent = bencode.bdecode(resp.content)
-
-                    for file in torrent['info']['files']:
-                        files[file['path'][0]] = int(file['length'])
-                except Exception:
-                    pass
-
-        return files
+        return item.get('size', -1)
 
     @staticmethod
     def _clean_title_from_provider(title):
@@ -793,41 +751,7 @@ class NZBProvider(GenericProvider):
         return result
 
     def _get_size(self, item):
-        size = item.get('size', -1)
-        if size == -1 and item.get('url'):
-            try:
-                resp = self.session.get(item.url)
-
-                total_length = 0
-                for file in nzb_parser.parse(resp.content):
-                    for segment in file.segments:
-                        total_length += int(segment.bytes)
-
-                if total_length > 0:
-                    size = total_length
-            except Exception:
-                pass
-
-        return size
-
-    def _get_files(self, item):
-        files = {}
-
-        title, url = self._get_title_and_url(item)
-        if url:
-            try:
-                resp = self.session.get(url)
-
-                for file in nzb_parser.parse(resp.content):
-                    total_length = 0
-                    for segment in file.segments:
-                        total_length += int(segment.bytes)
-
-                    files[file.subject] = total_length
-            except Exception:
-                pass
-
-        return files
+        return item.get('size', -1)
 
     def make_url(self, url):
         return super(NZBProvider, self).make_url(url)

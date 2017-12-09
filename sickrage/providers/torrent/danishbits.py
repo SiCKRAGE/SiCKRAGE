@@ -103,8 +103,7 @@ class DanishbitsProvider(TorrentProvider):
                     if self.freeleech and not freeleech:
                         continue
 
-                    size = torrent['size']
-                    size = convert_size(size, -1)
+                    size = convert_size(torrent['size'], -1)
 
                     results += [
                         {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}

@@ -72,7 +72,6 @@ class HDBitsProvider(TorrentProvider):
         return title, url
 
     def search(self, search_params, age=0, ep_obj=None):
-        # FIXME
         results = []
 
         sickrage.app.log.debug("Search string: %s" % search_params)
@@ -155,7 +154,7 @@ class HDBitsCache(TVCache):
         results = []
 
         try:
-            resp = self.session.post(self.provider.urls['rss'],
+            resp = self.provider.session.post(self.provider.urls['rss'],
                                                      data=self.provider._make_post_data_JSON()).json()
 
             if self.provider._check_auth_from_data(resp):
