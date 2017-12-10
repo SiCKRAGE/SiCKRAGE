@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6b24cff - 2017-12-10: Release v9.2.56 
+- * a3f18f3 - 2017-12-10: Updated git ignore file 
+- * 2cd63ba - 2017-12-10: Release v9.2.56 
 - * f2405ba - 2017-12-10: Fix for name parser anime issues 
 - * 73ff883 - 2017-12-10: Release v9.2.55 
 - * d4b4aab - 2017-12-10: Release v9.2.54 
