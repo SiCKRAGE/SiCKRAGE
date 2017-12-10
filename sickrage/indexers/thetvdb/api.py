@@ -619,7 +619,7 @@ class Tvdb:
                 curActor = Actor()
                 for k, v in cur_actor.items():
                     if not all([k, v]): continue
-                    v = (v, self.config['api']['images']['prefix'].format(value=v))[k == 'images']
+                    v = (v, self.config['api']['images']['prefix'].format(value=v))[k == 'image']
                     curActor[k] = v
 
                 cur_actors.append(curActor)

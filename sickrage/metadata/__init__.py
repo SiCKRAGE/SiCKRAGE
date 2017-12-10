@@ -22,12 +22,11 @@ import importlib
 import io
 import os
 import re
-from xml.etree.ElementTree import ElementTree, SubElement
+from xml.etree.ElementTree import ElementTree
 
 import fanart
-
 import sickrage
-from sickrage.core.helpers import chmodAsParent, indentXML, replaceExtension, try_int
+from sickrage.core.helpers import chmodAsParent, replaceExtension, try_int
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata.helpers import getShowImage
@@ -248,107 +247,76 @@ class GenericMetadata(object):
         """
         return None
 
-    def create_show_metadata(self, show_obj):
-        if self.show_metadata and show_obj and not self._has_show_metadata(show_obj):
+    def create_show_metadata(self, show_obj, force=False):
+        if self.show_metadata and show_obj and (not self._has_show_metadata(show_obj) or force):
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating show metadata for " + show_obj.name)
             return self.write_show_file(show_obj)
         return False
 
-    def create_episode_metadata(self, ep_obj):
-        if self.episode_metadata and ep_obj and not self._has_episode_metadata(ep_obj):
+    def create_episode_metadata(self, ep_obj, force=False):
+        if self.episode_metadata and ep_obj and (not self._has_episode_metadata(ep_obj) or force):
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating episode metadata for " + ep_obj.pretty_name())
             return self.write_ep_file(ep_obj)
         return False
 
-    def update_show_indexer_metadata(self, show_obj):
-        if self.show_metadata and show_obj and self._has_show_metadata(show_obj):
-            sickrage.app.log.debug(
-                "Metadata provider " + self.name + " updating show indexer info metadata file for " + show_obj.name)
-
-            nfo_file_path = self.get_show_file_path(show_obj)
-
-            try:
-                with io.open(nfo_file_path, 'rb') as xmlFileObj:
-                    showXML = ElementTree(file=xmlFileObj)
-
-                indexerid = showXML.find('id')
-
-                root = showXML.getroot()
-                if indexerid is not None:
-                    indexerid.text = str(show_obj.indexerid)
-                else:
-                    SubElement(root, "id").text = str(show_obj.indexerid)
-
-                # Make it purdy
-                indentXML(root)
-
-                showXML.write(nfo_file_path, encoding='UTF-8')
-                chmodAsParent(nfo_file_path)
-
-                return True
-            except IOError as e:
-                sickrage.app.log.error(
-                    "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                        e.message))
-
-    def create_fanart(self, show_obj, which=0):
-        if self.fanart and show_obj and not self._has_fanart(show_obj):
+    def create_fanart(self, show_obj, which=0, force=False):
+        if self.fanart and show_obj and (not self._has_fanart(show_obj) or force):
             sickrage.app.log.debug("Metadata provider " + self.name + " creating fanart for " + show_obj.name)
             return self.save_fanart(show_obj, which)
         return False
 
-    def create_poster(self, show_obj, which=0):
-        if self.poster and show_obj and not self._has_poster(show_obj):
+    def create_poster(self, show_obj, which=0, force=False):
+        if self.poster and show_obj and (not self._has_poster(show_obj) or force):
             sickrage.app.log.debug("Metadata provider " + self.name + " creating poster for " + show_obj.name)
             return self.save_poster(show_obj, which)
         return False
 
-    def create_banner(self, show_obj, which=0):
-        if self.banner and show_obj and not self._has_banner(show_obj):
+    def create_banner(self, show_obj, which=0, force=False):
+        if self.banner and show_obj and (not self._has_banner(show_obj) or force):
             sickrage.app.log.debug("Metadata provider " + self.name + " creating banner for " + show_obj.name)
             return self.save_banner(show_obj, which)
         return False
 
-    def create_episode_thumb(self, ep_obj):
-        if self.episode_thumbnails and ep_obj and not self._has_episode_thumb(ep_obj):
+    def create_episode_thumb(self, ep_obj, force=False):
+        if self.episode_thumbnails and ep_obj and (not self._has_episode_thumb(ep_obj) or force):
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating episode thumbnail for " + ep_obj.pretty_name())
             return self.save_thumbnail(ep_obj)
         return False
 
-    def create_season_posters(self, show_obj):
+    def create_season_posters(self, show_obj, force=False):
         if self.season_posters and show_obj:
             result = []
             for season, _ in show_obj.episodes.items():
-                if not self._has_season_poster(show_obj, season):
+                if not self._has_season_poster(show_obj, season) or force:
                     sickrage.app.log.debug(
                         "Metadata provider " + self.name + " creating season posters for " + show_obj.name)
                     result = result + [self.save_season_poster(show_obj, season)]
             return all(result)
         return False
 
-    def create_season_banners(self, show_obj):
+    def create_season_banners(self, show_obj, force=False):
         if self.season_banners and show_obj:
             result = []
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating season banners for " + show_obj.name)
             for season, _ in show_obj.episodes.items():
-                if not self._has_season_banner(show_obj, season):
+                if not self._has_season_banner(show_obj, season) or force:
                     result = result + [self.save_season_banner(show_obj, season)]
             return all(result)
         return False
 
-    def create_season_all_poster(self, show_obj):
-        if self.season_all_poster and show_obj and not self._has_season_all_poster(show_obj):
+    def create_season_all_poster(self, show_obj, force=False):
+        if self.season_all_poster and show_obj and (not self._has_season_all_poster(show_obj) or force):
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating season all poster for " + show_obj.name)
             return self.save_season_all_poster(show_obj)
         return False
 
-    def create_season_all_banner(self, show_obj):
-        if self.season_all_banner and show_obj and not self._has_season_all_banner(show_obj):
+    def create_season_all_banner(self, show_obj, force=False):
+        if self.season_all_banner and show_obj and (not self._has_season_all_banner(show_obj) or force):
             sickrage.app.log.debug(
                 "Metadata provider " + self.name + " creating season all banner for " + show_obj.name)
             return self.save_season_all_banner(show_obj)
@@ -797,7 +765,7 @@ class GenericMetadata(object):
                 showXML = ElementTree(file=xmlFileObj)
 
             if showXML.findtext('title') is None or (
-                            showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
+                    showXML.findtext('tvdbid') is None and showXML.findtext('id') is None):
                 sickrage.app.log.info(
                     "Invalid info in tvshow.nfo (missing name or id): {} {} {}".format(showXML.findtext('title'),
                                                                                        showXML.findtext('tvdbid'),

@@ -79,34 +79,31 @@ class PS3Metadata(GenericMetadata):
         # no show metadata generated, we abort this lookup function
         return None, None, None
 
-    def create_show_metadata(self, show_obj):
-        pass
-
-    def update_show_indexer_metadata(self, show_obj):
+    def create_show_metadata(self, show_obj, force=False):
         pass
 
     def get_show_file_path(self, show_obj):
         pass
 
-    def create_episode_metadata(self, ep_obj):
+    def create_episode_metadata(self, ep_obj, force=False):
         pass
 
-    def create_fanart(self, show_obj):
+    def create_fanart(self, show_obj, which=0, force=False):
         pass
 
-    def create_banner(self, show_obj):
+    def create_banner(self, show_obj, which=0, force=False):
         pass
 
-    def create_season_posters(self, show_obj):
+    def create_season_posters(self, show_obj, force=False):
         pass
 
     def create_season_banners(self, ep_obj):
         pass
 
-    def create_season_all_poster(self, show_obj):
+    def create_season_all_poster(self, show_obj, force=False):
         pass
 
-    def create_season_all_banner(self, show_obj):
+    def create_season_all_banner(self, show_obj, force=False):
         pass
 
     @staticmethod

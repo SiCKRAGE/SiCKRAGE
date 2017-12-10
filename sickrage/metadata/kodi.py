@@ -86,7 +86,7 @@ class KODIMetadata(KODI_12PlusMetadata):
     def create_season_banners(self, ep_obj):
         pass
 
-    def create_season_all_banner(self, show_obj):
+    def create_season_all_banner(self, show_obj, force=False):
         pass
 
     @staticmethod
