@@ -55,10 +55,8 @@ class NameCache(object):
             self.cache[name] = int(indexer_id)
 
             try:
-                dbData = [x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                          x['doc']['indexer_id'] == indexer_id]
-
-                if not len(dbData):
+                if not len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
+                            x['doc']['indexer_id'] == indexer_id]):
                     # insert name into cache
                     sickrage.app.cache_db.db.insert({
                         '_t': 'scene_names',
@@ -96,17 +94,16 @@ class NameCache(object):
             del item
 
     def load(self):
-        self.cache = dict(
-            [(key, d['doc'][key]) for d in sickrage.app.cache_db.db.all('scene_names', with_doc=True) for key in
-             d['doc']])
+        self.cache = dict([(x['doc']['name'], x['doc']['indexer_id']) for x in
+                           sickrage.app.cache_db.db.all('scene_names', with_doc=True)])
 
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
             try:
-                dbData = [x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                          x['doc']['indexer_id'] == indexer_id]
-                if len(dbData): continue
+                if len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
+                        x['doc']['indexer_id'] == indexer_id]):
+                    continue
             except RecordNotFound:
                 pass
 
