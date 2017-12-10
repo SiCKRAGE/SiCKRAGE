@@ -1,6 +1,10 @@
 # Changelog
 
-- * 6b24cff - 2017-12-10: Release v9.2.56 
+- * 2fc0e9b - 2017-12-10: Release v9.2.57 
+- * 6c4534b - 2017-12-10: Fixed TorrentRSSFeed issues 
+- * f376394 - 2017-12-10: Refactored Full Update function to now update/overwrite existing metadata 
+- * 9596e8c - 2017-12-10: Updated git ignore file 
+- * 2cd63ba - 2017-12-10: Release v9.2.56 
 - * f2405ba - 2017-12-10: Fix for name parser anime issues 
 - * 73ff883 - 2017-12-10: Release v9.2.55 
 - * d4b4aab - 2017-12-10: Release v9.2.54 

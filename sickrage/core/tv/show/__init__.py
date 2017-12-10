@@ -563,7 +563,7 @@ class TVShow(object):
 
         return False
 
-    def writeShowNFO(self):
+    def writeShowNFO(self, force=False):
 
         result = False
 
@@ -573,11 +573,11 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexerid) + ": Writing NFOs for show")
         for cur_provider in sickrage.app.metadata_providers.values():
-            result = cur_provider.create_show_metadata(self) or result
+            result = cur_provider.create_show_metadata(self, force) or result
 
         return result
 
-    def writeMetadata(self, show_only=False):
+    def writeMetadata(self, show_only=False, force=False):
 
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
@@ -585,12 +585,12 @@ class TVShow(object):
 
         self.getImages()
 
-        self.writeShowNFO()
+        self.writeShowNFO(force)
 
         if not show_only:
-            self.writeEpisodeNFOs()
+            self.writeEpisodeNFOs(force)
 
-    def writeEpisodeNFOs(self):
+    def writeEpisodeNFOs(self, force=False):
 
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
@@ -605,29 +605,7 @@ class TVShow(object):
                 dbData["season"] or 0, dbData["episode"] or 0))
 
             curEp = self.getEpisode(dbData["season"], dbData["episode"])
-            curEp.createMetaFiles()
-
-    def updateMetadata(self):
-
-        if not os.path.isdir(self.location):
-            sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
-            return
-
-        self.updateShowNFO()
-
-    def updateShowNFO(self):
-
-        result = False
-
-        if not os.path.isdir(self.location):
-            sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
-            return False
-
-        sickrage.app.log.info(str(self.indexerid) + ": Updating NFOs for show with new indexer info")
-        for cur_provider in sickrage.app.metadata_providers.values():
-            result = cur_provider.update_show_indexer_metadata(self) or result
-
-        return result
+            curEp.createMetaFiles(force)
 
     # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
@@ -771,7 +749,7 @@ class TVShow(object):
         for cur_provider in sickrage.app.metadata_providers.values():
             fanart_result = cur_provider.create_fanart(self) or fanart_result
             poster_result = cur_provider.create_poster(self) or poster_result
-            banner_result = cur_provider.create_banner(self) or banner_result
+            banner_result = cur_provider.create_banner(self, ) or banner_result
 
             season_posters_result = cur_provider.create_season_posters(self) or season_posters_result
             season_banners_result = cur_provider.create_season_banners(self) or season_banners_result

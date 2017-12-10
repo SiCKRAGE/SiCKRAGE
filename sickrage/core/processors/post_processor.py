@@ -1067,7 +1067,7 @@ class PostProcessor(object):
                 raise EpisodePostProcessingFailedException(
                     "Unable to create the show directory: " + ep_obj.show.location)
 
-            # get metadata for the show (but not episode because it hasn't been fully processed)
+            # write metadata for the show (but not episode because it hasn't been fully processed)
             ep_obj.show.writeMetadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly

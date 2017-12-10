@@ -1281,7 +1281,8 @@ class TorrentRssCache(TVCache):
         sickrage.app.log.debug("Cache update URL: %s" % self.provider.urls['base_url'])
 
         if self.provider.cookies:
-            self.provider.headers.update({'Cookie': self.provider.cookies})
+            add_dict_to_cookiejar(self.provider.session.cookies,
+                                  dict(x.rsplit('=', 1) for x in self.provider.cookies.split(';')))
 
         return self.getRSSFeed(self.provider.urls['base_url'])
 

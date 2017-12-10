@@ -97,10 +97,10 @@ class MediaBrowserMetadata(GenericMetadata):
         # while show metadata is generated, it is not supported for our lookup
         return None, None, None
 
-    def create_season_all_poster(self, show_obj):
+    def create_season_all_poster(self, show_obj, force=False):
         pass
 
-    def create_season_all_banner(self, show_obj):
+    def create_season_all_banner(self, show_obj, force=False):
         pass
 
     def get_episode_file_path(self, ep_obj):

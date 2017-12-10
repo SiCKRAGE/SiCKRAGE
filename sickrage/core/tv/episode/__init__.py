@@ -676,34 +676,34 @@ class TVEpisode(object):
         toReturn += "status: %r\n" % self.status
         return toReturn
 
-    def createMetaFiles(self):
+    def createMetaFiles(self, force=False):
 
         if not os.path.isdir(self.show.location):
             sickrage.app.log.info(
                 str(self.show.indexerid) + ": The show dir is missing, not bothering to try to create metadata")
             return
 
-        self.createNFO()
-        self.createThumbnail()
+        self.createNFO(force)
+        self.createThumbnail(force)
 
         if self.checkForMetaFiles():
             self.saveToDB()
 
-    def createNFO(self):
+    def createNFO(self, force=False):
 
         result = False
 
         for cur_provider in sickrage.app.metadata_providers.values():
-            result = cur_provider.create_episode_metadata(self) or result
+            result = cur_provider.create_episode_metadata(self, force) or result
 
         return result
 
-    def createThumbnail(self):
+    def createThumbnail(self, force=False):
 
         result = False
 
         for cur_provider in sickrage.app.metadata_providers.values():
-            result = cur_provider.create_episode_thumb(self) or result
+            result = cur_provider.create_episode_thumb(self, force) or result
 
         return result
 

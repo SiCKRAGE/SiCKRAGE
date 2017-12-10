@@ -420,8 +420,7 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.info("Launching backlog for this show since its episodes are WANTED")
             sickrage.app.backlog_searcher.searchBacklog([self.show])
 
-        self.show.writeMetadata()
-        self.show.updateMetadata()
+        self.show.writeMetadata(force=True)
         self.show.populateCache()
 
         if sickrage.app.config.use_trakt:
@@ -472,12 +471,8 @@ class QueueItemRefresh(ShowQueueItem):
 
         self.show.refreshDir()
 
-        self.show.writeMetadata()
-
-        if self.force:
-            self.show.updateMetadata()
-
-        self.show.populateCache(self.force)
+        self.show.writeMetadata(force=self.force)
+        self.show.populateCache(force=self.force)
 
         # Load XEM data to DB for show
         xem_refresh(self.show.indexerid, self.show.indexer)
