@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6719840 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality Nameparser only caches results that contain show objects 
+- * 49d9be1 - 2017-12-10: Fixed issues with HoundDawgs torrent provider 
+- * 6493584 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality Nameparser only caches results that contain show objects 
 - * 895ef68 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality 
 - * 2626c5e - 2017-12-09: Release v9.2.48 
 - * 654ae73 - 2017-12-09: Release v9.2.47 

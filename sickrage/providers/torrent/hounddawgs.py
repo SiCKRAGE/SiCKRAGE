@@ -1,3 +1,4 @@
+# coding=utf-8
 # Author: Idan Gutman
 # URL: https://sickrage.ca
 #
@@ -19,12 +20,13 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
 
 from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser
+from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -40,26 +42,13 @@ class HoundDawgsProvider(TorrentProvider):
         self.username = None
         self.password = None
 
+        self.freeleech = None
+        self.ranked = None
+
         self.minseed = None
         self.minleech = None
 
-        self.search_params = {
-            "filter_cat[85]": 1,
-            "filter_cat[58]": 1,
-            "filter_cat[57]": 1,
-            "filter_cat[74]": 1,
-            "filter_cat[92]": 1,
-            "filter_cat[93]": 1,
-            "order_by": "s3",
-            "order_way": "desc",
-            "type": '',
-            "userid": '',
-            "searchstr": '',
-            "searchimdb": '',
-            "searchtags": ''
-        }
-
-        self.cache = TVCache(self, min_time=20)
+        self.cache = TVCache(self)
 
     def login(self):
         if any(dict_from_cookiejar(self.session.cookies).values()):
@@ -76,11 +65,10 @@ class HoundDawgsProvider(TorrentProvider):
             sickrage.app.log.warning("Unable to connect to provider".format(self.name))
             return False
 
-        if re.search('Dit brugernavn eller kodeord er forkert.', response) \
-                or re.search('<title>Login :: HoundDawgs</title>', response) \
-                or re.search('Dine cookies er ikke aktiveret.', response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
+        if any([re.search('Dit brugernavn eller kodeord er forkert.', response),
+                re.search('<title>Login :: HoundDawgs</title>', response),
+                re.search('Dine cookies er ikke aktiveret.', response)], ):
+            sickrage.app.log.warning('Invalid username or password. Check your settings')
             return False
 
         return True
@@ -91,16 +79,35 @@ class HoundDawgsProvider(TorrentProvider):
         if not self.login():
             return results
 
+        # Search Params
+        search_params = {
+            'filter_cat[85]': 1,
+            'filter_cat[58]': 1,
+            'filter_cat[57]': 1,
+            'filter_cat[74]': 1,
+            'filter_cat[92]': 1,
+            'filter_cat[93]': 1,
+            'order_by': 's3',
+            'order_way': 'desc',
+            'type': '',
+            'userid': '',
+            'searchstr': '',
+            'searchimdb': '',
+            'searchtags': ''
+        }
+
         for mode in search_strings.keys():
             sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
+                    if self.ranked:
+                        sickrage.app.log.debug('Searching only ranked torrents')
 
-                self.search_params['searchstr'] = search_string
+                search_params['searchstr'] = search_string
 
                 try:
-                    data = self.session.get(self.urls['search'], params=self.search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -117,48 +124,44 @@ class HoundDawgsProvider(TorrentProvider):
 
         results = []
 
-        with bs4_parser(data[data.find("<table class=\"torrent_table")]) as html:
-            result_table = html.find('table', {'id': 'torrent_table'})
+        with bs4_parser(data) as html:
+            torrent_table = html.find('table', {'id': 'torrent_table'})
 
-            if not result_table:
-                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
+            # Continue only if at least one release is found
+            if not torrent_table:
+                sickrage.app.log.debug('Data returned from provider does not contain any {}torrents',
+                                       'ranked ' if self.ranked else '')
                 return results
 
-            result_tbody = result_table.find('tbody')
-            entries = result_tbody.contents
-            del entries[1::2]
+            torrent_body = torrent_table.find('tbody')
+            torrent_rows = torrent_body.contents
+            del torrent_rows[1::2]
 
-            for result in entries[1:]:
-
-                torrent = result.find_all('td')
-                if len(torrent) <= 1:
-                    break
-
-                allAs = (torrent[1]).find_all('a')
-
+            for row in torrent_rows[1:]:
                 try:
-                    # link = self.urls['base_url'] + allAs[2].attrs['href']
-                    # url = result.find('td', attrs={'class': 'quickdownload'}).find('a')
-                    title = allAs[2].string
-                    # Trimming title so accepted by scene check(Feature has been rewuestet i forum)
-                    title = title.replace("custom.", "")
-                    title = title.replace("CUSTOM.", "")
-                    title = title.replace("Custom.", "")
-                    title = title.replace("dk", "")
-                    title = title.replace("DK", "")
-                    title = title.replace("Dk", "")
-                    title = title.replace("subs.", "")
-                    title = title.replace("SUBS.", "")
-                    title = title.replace("Subs.", "")
+                    torrent = row('td')
+                    if len(torrent) <= 1:
+                        break
 
-                    download_url = self.urls['base_url'] + allAs[0].attrs['href']
-                    # FIXME
-                    size = -1
-                    seeders = 1
-                    leechers = 0
-
-                    if not title or not download_url:
+                    all_as = (torrent[1])('a')
+                    notinternal = row.find('img', src='/static//common/user_upload.png')
+                    if self.ranked and notinternal:
+                        sickrage.app.log.debug('Found a user uploaded release, Ignoring it..')
                         continue
+
+                    freeleech = row.find('img', src='/static//common/browse/freeleech.png')
+                    if self.freeleech and not freeleech:
+                        continue
+
+                    title = all_as[2].string
+                    download_url = urljoin(self.urls['base_url'], all_as[0].attrs['href'])
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int((row('td')[6]).text.replace(',', ''))
+                    leechers = try_int((row('td')[7]).text.replace(',', ''))
+
+                    size = convert_size(row.find('td', class_='nobr').find_next_sibling('td').string, -1)
 
                     results += [
                         {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
