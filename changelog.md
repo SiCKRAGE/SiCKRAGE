@@ -1,6 +1,8 @@
 # Changelog
 
-- * 2fc0e9b - 2017-12-10: Release v9.2.57 
+- * a264d26 - 2017-12-10: Release v9.2.61 
+- * 656a038 - 2017-12-10: Overall stats now only displayed for main shows page, helps reduce overhead 
+- * 75fa296 - 2017-12-10: Release v9.2.57 
 - * 6c4534b - 2017-12-10: Fixed TorrentRSSFeed issues 
 - * f376394 - 2017-12-10: Refactored Full Update function to now update/overwrite existing metadata 
 - * 9596e8c - 2017-12-10: Updated git ignore file 

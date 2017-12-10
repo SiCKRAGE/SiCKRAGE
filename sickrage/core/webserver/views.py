@@ -60,7 +60,7 @@ from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertai
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
-    clean_hosts
+    clean_hosts, overall_stats
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -185,6 +185,7 @@ class BaseHandler(RequestHandler):
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
             'makoStartTime': time.time(),
+            'overall_stats': None,
             'torrent_webui_url': torrent_webui_url(),
             'application': self.application,
             'request': self.request,
@@ -641,15 +642,16 @@ class Home(WebHandler):
         else:
             showlists['Shows'] = sickrage.app.showlist
 
-        stats = self.show_statistics()
+        show_stats = self.show_statistics()
         return self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stat=stats[0],
-            max_download_count=stats[1],
+            show_stat=show_stats[0],
+            max_download_count=show_stats[1],
+            overall_stats=overall_stats(),
             controller='home',
             action='index'
         )
