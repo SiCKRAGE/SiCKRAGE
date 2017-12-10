@@ -664,7 +664,7 @@ class TVShow(object):
             ep_file_name = os.path.splitext(ep_file_name)[0]
 
             try:
-                parse_result = NameParser(False, showObj=self, tryIndexers=True).parse(ep_file_name)
+                parse_result = NameParser(False, showObj=self).parse(ep_file_name)
             except (InvalidNameException, InvalidShowException):
                 parse_result = None
 
@@ -790,8 +790,7 @@ class TVShow(object):
         sickrage.app.log.debug(str(self.indexerid) + ": Creating episode object from " + file)
 
         try:
-            parse_result = NameParser(showObj=self, tryIndexers=True,
-                                      validate_show=False).parse(file, skip_scene_detection=True)
+            parse_result = NameParser(showObj=self, validate_show=False).parse(file, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid episode")
             return None
@@ -917,8 +916,7 @@ class TVShow(object):
         if len(dbData) > 1:
             raise MultipleShowsInDatabaseException()
         elif len(dbData) == 0:
-            sickrage.app.log.debug(str(self.indexerid) + ": Unable to find the show in the database")
-            return False
+            return ShowNotFoundException()
 
         self._indexer = try_int(dbData[0]["indexer"], self.indexer)
         self._name = dbData[0].get("show_name", self.name)

@@ -334,7 +334,7 @@ def validateDir(process_path, release_name, failed, result):
 
         for found_file in found_files:
             try:
-                NameParser(tryIndexers=True).parse(found_file, cache_result=False)
+                NameParser().parse(found_file, cache_result=False)
             except (InvalidNameException, InvalidShowException) as e:
                 pass
             else:
@@ -456,7 +456,7 @@ def already_postprocessed(dirName, videofile, force, result):
 
         # Needed if we have downloaded the same episode @ different quality
         # But we need to make sure we check the history of the episode we're going to PP, and not others
-        np = NameParser(dirName, tryIndexers=True)
+        np = NameParser(dirName)
         try:
             parse_result = np.parse(dirName)
         except:

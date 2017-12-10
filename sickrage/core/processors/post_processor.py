@@ -603,7 +603,7 @@ class PostProcessor(object):
         name = remove_non_release_groups(remove_extension(name))
 
         # parse the name to break it into show name, season, and episode
-        np = NameParser(True, tryIndexers=True)
+        np = NameParser(True)
         parse_result = np.parse(name)
 
         # show object

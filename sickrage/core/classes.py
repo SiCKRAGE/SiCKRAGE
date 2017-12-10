@@ -37,6 +37,9 @@ class SearchResult(object):
     def __init__(self, episodes):
         self.provider = None
 
+        # release name
+        self.name = ""
+
         # release show object
         self.show = None
 
@@ -51,9 +54,6 @@ class SearchResult(object):
 
         # quality of the release
         self.quality = Quality.UNKNOWN
-
-        # release name
-        self.name = ""
 
         # size of the release (-1 = n/a)
         self.size = -1

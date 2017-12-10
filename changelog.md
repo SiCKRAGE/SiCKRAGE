@@ -1,6 +1,10 @@
 # Changelog
 
-- * 404fb70 - 2017-12-09: Release v9.2.48 
+- * 38a590c - 2017-12-10: Release v9.2.51 
+- * 5faefa1 - 2017-12-10: Fixed issues with HoundDawgs torrent provider 
+- * 6493584 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality Nameparser only caches results that contain show objects 
+- * 895ef68 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality 
+- * 2626c5e - 2017-12-09: Release v9.2.48 
 - * 654ae73 - 2017-12-09: Release v9.2.47 
 - * d651b54 - 2017-12-08: Release v9.2.44 
 - * 01eb76c - 2017-12-08: Removed get_files function from providers to stop hammering provider api&#x27;s 

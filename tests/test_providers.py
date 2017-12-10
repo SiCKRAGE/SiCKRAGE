@@ -36,9 +36,9 @@ import six
 from vcr_unittest import VCRMixin
 
 import sickrage
-from sickrage.core import TVShow
 from sickrage.core.helpers import validate_url
 from sickrage.core.tv.episode import TVEpisode
+from sickrage.core.tv.show import TVShow
 from sickrage.core.websession import WebSession
 from tests import SiCKRAGETestDBCase
 

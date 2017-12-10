@@ -180,67 +180,61 @@ class TVCache(object):
             return False
         return True
 
-    def addCacheEntry(self, name, url, seeders, leechers, size, parse_result=None, indexer_id=0):
+    def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
         if len([x for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True) if
                 x['doc']['url'] == url]): return
 
-        # check if we passed in a parsed result or should we try and create one
-        if not parse_result:
-            try:
-                parse_result = NameParser(
-                    showObj=findCertainShow(indexer_id),
-                    tryIndexers=not sickrage.app.config.enable_rss_cache_valid_shows,
-                    validate_show=sickrage.app.config.enable_rss_cache_valid_shows
-                ).parse(name)
-            except (InvalidShowException, InvalidNameException):
-                pass
+        try:
+            # parse release name
+            parse_result = NameParser(validate_show=sickrage.app.config.enable_rss_cache_valid_shows).parse(name)
+            if parse_result.series_name:
+                season = parse_result.season_number if parse_result.season_number else 1
+                episodes = parse_result.episode_numbers
 
-        if parse_result and parse_result.series_name:
-            season = parse_result.season_number if parse_result.season_number else 1
-            episodes = parse_result.episode_numbers
+                if season and episodes:
+                    # store episodes as a seperated string
+                    episodeText = "|" + "|".join(map(str, episodes)) + "|"
 
-            if season and episodes:
-                # store episodes as a seperated string
-                episodeText = "|" + "|".join(map(str, episodes)) + "|"
+                    # get quality of release
+                    quality = parse_result.quality
 
-                # get quality of release
-                quality = parse_result.quality
+                    # get release group
+                    release_group = parse_result.release_group
 
-                # get release group
-                release_group = parse_result.release_group
+                    # get version
+                    version = parse_result.version
 
-                # get version
-                version = parse_result.version
+                    dbData = {
+                        '_t': 'providers',
+                        'provider': self.providerID,
+                        'name': name,
+                        'season': season,
+                        'episodes': episodeText,
+                        'indexerid': parse_result.indexerid,
+                        'url': url,
+                        'time': int(time.mktime(datetime.datetime.today().timetuple())),
+                        'quality': quality,
+                        'release_group': release_group,
+                        'version': version,
+                        'seeders': seeders,
+                        'leechers': leechers,
+                        'size': size
+                    }
 
-                dbData = {
-                    '_t': 'providers',
-                    'provider': self.providerID,
-                    'name': name,
-                    'season': season,
-                    'episodes': episodeText,
-                    'indexerid': parse_result.indexerid,
-                    'url': url,
-                    'time': int(time.mktime(datetime.datetime.today().timetuple())),
-                    'quality': quality,
-                    'release_group': release_group,
-                    'version': version,
-                    'seeders': seeders,
-                    'leechers': leechers,
-                    'size': size
-                }
+                    # add to internal database
+                    sickrage.app.cache_db.db.insert(dbData)
 
-                # add to internal database
-                sickrage.app.cache_db.db.insert(dbData)
+                    # add to external database
+                    if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
+                        try:
+                            sickrage.app.api.add_cache_result(dbData)
+                        except Exception:
+                            pass
 
-                # add to external database
-                if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
-                    try:
-                        sickrage.app.api.add_cache_result(dbData)
-                    except Exception:
-                        pass
-
-                sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
+                    sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
+        except (InvalidShowException, InvalidNameException):
+            pass
 
     def search_cache(self, ep_obj=None, manualSearch=False, downCurQuality=False):
         neededEps = {}
