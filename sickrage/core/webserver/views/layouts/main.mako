@@ -431,7 +431,7 @@
         <div class="row">
             <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                 <div>
-                    % if overall_stats is not UNDEFINED:
+                    % if overall_stats:
                     <%
                         total_size = pretty_filesize(overall_stats['total_size'])
                         ep_downloaded = overall_stats['episodes']['downloaded']
@@ -457,9 +457,11 @@
 
                 <div>
                     ${_('Daily Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span> |
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+                    |
                     ${_('Backlog Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span> |
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+                    |
                     ${_('Memory used:')}
                     <span class="footer-highlight">
                         ${memory_usage()}
