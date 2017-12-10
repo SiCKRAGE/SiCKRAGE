@@ -246,16 +246,19 @@ class NameParser(object):
                 bestResult.show, bestResult.indexerid = self.get_show(bestResult.series_name)
 
                 # confirm passed in show object indexer id matches result show object indexer id
-                if (bestResult.show and self.showObj) and bestResult.show.indexerid != self.showObj.indexerid:
-                    bestResult.show = None
-                    bestResult.indexerid = 0
+                if self.showObj and bestResult.show:
+                    if self.showObj.indexerid == bestResult.show.indexerid:
+                        bestResult.show = self.showObj
+                    else:
+                        bestResult.show = None
+                        bestResult.indexerid = 0
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not bestResult.show or self.naming_pattern:
                 return bestResult
 
             # get quality
-            bestResult.quality = Quality.nameQuality(name, bestResult.is_anime)
+            bestResult.quality = Quality.nameQuality(name, bestResult.show.is_anime)
 
             new_episode_numbers = []
             new_season_numbers = []
@@ -311,7 +314,7 @@ class NameParser(object):
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
-            elif bestResult.is_anime and bestResult.ab_episode_numbers:
+            elif bestResult.show.is_anime and bestResult.ab_episode_numbers:
                 scene_season = get_scene_exception_by_name(bestResult.series_name)[1]
                 for epAbsNo in bestResult.ab_episode_numbers:
                     a = epAbsNo
@@ -337,7 +340,7 @@ class NameParser(object):
                                                        bestResult.show.indexer,
                                                        bestResult.season_number,
                                                        epNo)
-                    if bestResult.is_anime:
+                    if bestResult.show.is_anime:
                         a = get_absolute_number_from_season_and_episode(bestResult.show, s, e)
                         if a:
                             new_absolute_numbers.append(a)
