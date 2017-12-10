@@ -1,6 +1,7 @@
 # Changelog
 
-- * 798992e - 2017-12-10: refactored nameparser function get_show to be more efficient 
+- * 78c4a18 - 2017-12-10: Fixed name cache, was incorrectly loading database info 
+- * f0d6a3c - 2017-12-10: refactored nameparser function get_show to be more efficient 
 - * f893d27 - 2017-12-10: Release v9.2.51 
 - * 5faefa1 - 2017-12-10: Fixed issues with HoundDawgs torrent provider 
 - * 6493584 - 2017-12-10: Fixed issues with validating search results from providers Fixed issues with adding search results to cache with proper quality Nameparser only caches results that contain show objects 
