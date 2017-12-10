@@ -59,46 +59,38 @@ class NameParser(object):
     def get_show(self, name):
         show = None
         show_id = 0
-        fromCache = False
 
         if not all([name, sickrage.app.showlist]):
             return show, show_id
 
-        try:
-            # check cache for show
-            cache = sickrage.app.name_cache.get(name)
-            if cache:
-                fromCache = True
-                show_id = cache
+        def cache_lookup(name):
+            return sickrage.app.name_cache.get(name)
 
-            # try indexers
+        def scene_exception_lookup(name):
+            return get_scene_exception_by_name(name)[0]
+
+        def indexer_lookup(name):
+            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
+            return (None, show_id1)[show_id1 == show_id2]
+
+        lookup_list = [
+            lambda: cache_lookup(name),
+            lambda: scene_exception_lookup(name),
+            lambda: indexer_lookup(name),
+        ]
+
+        # lookup show id
+        for lookup in lookup_list:
+            if show:
+                continue
+
             try:
-                show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
-                show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
-                show_id = (show_id, show_id1)[show_id1 == show_id2]
-            except Exception:
-                pass
-
-            # try scene exceptions
-            if not show_id:
-                try:
-                    show_id = get_scene_exception_by_name(name)[0]
-                except Exception:
-                    pass
-
-            # create show object
-            from sickrage.core.tv.show import TVShow
-            try:
-                show = TVShow(1, int(show_id))
-            except Exception:
-                pass
-
-            # add show to cache
-            if show and not fromCache:
+                from sickrage.core.tv.show import TVShow
+                show = TVShow(1, int(lookup()))
                 sickrage.app.name_cache.put(name, show.indexerid)
-        except Exception as e:
-            sickrage.app.log.debug(
-                "Error when attempting to find show: %s in SiCKRAGE. Error: %r " % (name, repr(e)))
+            except Exception:
+                pass
 
         return show, show_id or 0
 
