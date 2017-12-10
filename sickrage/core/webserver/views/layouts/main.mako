@@ -6,7 +6,7 @@
 
     import sickrage
     from sickrage.core.updaters import tz_updater
-    from sickrage.core.helpers import pretty_filesize, overall_stats, memory_usage
+    from sickrage.core.helpers import pretty_filesize, memory_usage
 %>
 <!DOCTYPE html>
 <html>
@@ -430,36 +430,36 @@
     % if current_user:
         <div class="row">
             <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <%
-                    stats = overall_stats()
-                    total_size = pretty_filesize(stats['total_size'])
-                    ep_downloaded = stats['episodes']['downloaded']
-                    ep_snatched = stats['episodes']['snatched']
-                    ep_total = stats['episodes']['total']
-                    ep_percentage = '' if ep_total == 0 else '(<span class="footer-highlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
-                %>
                 <div>
-                    <span class="footer-highlight">${stats['shows']['total']}</span> ${_('Shows')} (<span
-                        class="footer-highlight">${stats['shows']['active']}</span> ${_('Active')})
-                    | <span class="footer-highlight">${ep_downloaded}</span>
+                    % if overall_stats is not UNDEFINED:
+                    <%
+                        total_size = pretty_filesize(overall_stats['total_size'])
+                        ep_downloaded = overall_stats['episodes']['downloaded']
+                        ep_snatched = overall_stats['episodes']['snatched']
+                        ep_total = overall_stats['episodes']['total']
+                        ep_percentage = '' if ep_total == 0 else '(<span class="footer-highlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
+                    %>
+                        <span class="footer-highlight">${overall_stats['shows']['total']}</span> ${_('Shows')} (<span
+                            class="footer-highlight">${overall_stats['shows']['active']}</span> ${_('Active')})
+                        | <span class="footer-highlight">${ep_downloaded}</span>
 
                     % if ep_snatched:
                         <span class="footer-highlight">
-                            <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
-                        </span>
+                                    <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
+                                </span>
                     ${_('Snatched')}
                     % endif
-
-                    &nbsp;/&nbsp;<span
-                        class="footer-highlight">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
-                    &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> ${_('Overall Downloaded')}
-                    | ${_('Daily Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
-                    | ${_('Backlog Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+                        &nbsp;/&nbsp;<span
+                            class="footer-highlight">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
+                        &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> ${_('Overall Downloaded')}
+                    % endif
                 </div>
 
                 <div>
+                    ${_('Daily Search:')} <span
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span> |
+                    ${_('Backlog Search:')} <span
+                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span> |
                     ${_('Memory used:')}
                     <span class="footer-highlight">
                         ${memory_usage()}
