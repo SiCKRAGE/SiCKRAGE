@@ -511,7 +511,7 @@ class NameParser(object):
             raise InvalidNameException("Unable to parse {} to a valid episode of {}. Parser result: {}".format(
                 name, final_result.show.name, final_result))
 
-        if cache_result:
+        if cache_result and final_result.show:
             name_parser_cache.add(name, final_result)
 
         sickrage.app.log.debug("Parsed {} into {}".format(name, final_result))
