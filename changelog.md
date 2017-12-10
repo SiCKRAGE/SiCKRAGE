@@ -1,6 +1,7 @@
 # Changelog
 
-- * 716e68b - 2017-12-10: Release v9.2.53 
+- * 70f25e2 - 2017-12-10: Fixed name parser show validation issue 
+- * e096f6c - 2017-12-10: Release v9.2.53 
 - * 750a56d - 2017-12-10: Fixed issues with name parser and naming patterns 
 - * 4346486 - 2017-12-10: Release v9.2.52 
 - * 96f7a4f - 2017-12-10: Fixed name cache, was incorrectly loading database info 
