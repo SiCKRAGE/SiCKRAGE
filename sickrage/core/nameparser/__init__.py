@@ -494,7 +494,7 @@ class NameParser(object):
         final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if self.validate_show and not findCertainShow(int(final_result.indexerid)):
+        if self.validate_show and not self.naming_pattern and not findCertainShow(int(final_result.indexerid)):
             raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
                 name, final_result))
 
