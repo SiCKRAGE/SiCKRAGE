@@ -20,8 +20,8 @@ from __future__ import unicode_literals
 
 import datetime
 import time
-import urllib2
 
+import feedparser
 from CodernityDB.database import RecordNotFound
 
 import sickrage
@@ -29,7 +29,7 @@ from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import findCertainShow, show_names
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
-from sickrage.core.rssfeeds import getFeed
+from sickrage.core.websession import WebSession
 
 
 class TVCache(object):
@@ -89,15 +89,14 @@ class TVCache(object):
         return True
 
     def getRSSFeed(self, url, params=None):
-        handlers = []
+        try:
+            if self.provider.login():
+                resp = WebSession().get(url, params=params).text
+                return feedparser.parse(resp)
+        except Exception as e:
+            sickrage.app.log.debug("RSS Error: {}".format(e.message))
 
-        if sickrage.app.config.proxy_setting:
-            sickrage.app.log.debug("Using global proxy for url: " + url)
-            scheme, address = urllib2.splittype(sickrage.app.config.proxy_setting)
-            address = sickrage.app.config.proxy_setting if scheme else 'http://' + sickrage.app.config.proxy_setting
-            handlers = [urllib2.ProxyHandler({'http': address, 'https': address})]
-
-        return getFeed(url, params=params, handlers=handlers)
+        return feedparser.FeedParserDict()
 
     def _translateTitle(self, title):
         return '' + title.replace(' ', '.')

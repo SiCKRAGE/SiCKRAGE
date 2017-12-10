@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3fe5965 - 2017-12-10: Refactored Full Update function to now update/overwrite existing metadata 
+- * b8f050e - 2017-12-10: Fixed TorrentRSSFeed issues 
+- * f376394 - 2017-12-10: Refactored Full Update function to now update/overwrite existing metadata 
 - * 9596e8c - 2017-12-10: Updated git ignore file 
 - * 2cd63ba - 2017-12-10: Release v9.2.56 
 - * f2405ba - 2017-12-10: Fix for name parser anime issues 
