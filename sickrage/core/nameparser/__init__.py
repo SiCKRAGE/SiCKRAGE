@@ -87,7 +87,10 @@ class NameParser(object):
 
             try:
                 from sickrage.core.tv.show import TVShow
-                show = TVShow(1, int(lookup()))
+                if self.validate_show:
+                    show = findCertainShow(int(lookup()))
+                else:
+                    show = TVShow(1, int(lookup()))
                 sickrage.app.name_cache.put(name, show.indexerid)
             except Exception:
                 pass
@@ -494,7 +497,7 @@ class NameParser(object):
         final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if self.validate_show and not self.naming_pattern and not findCertainShow(int(final_result.indexerid or 0)):
+        if self.validate_show and not self.naming_pattern and not final_result.show:
             raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
                 name, final_result))
 

@@ -88,8 +88,7 @@ class TVShow(object):
         self.episodes = {}
         self.release_groups = None
 
-        otherShow = findCertainShow(self.indexerid)
-        if otherShow is not None:
+        if findCertainShow(self.indexerid) is not None:
             raise MultipleShowObjectsException("Can't create a show if it already exists")
 
         self.loadFromDB()
