@@ -105,5 +105,5 @@ class NoNFOException(SickRageException):
 
 class ShowNotFoundException(SickRageException):
     """
-    The show wasn't found on the Indexer
+    The show wasn't found
     """

@@ -43,10 +43,9 @@ class NameParser(object):
     NORMAL_REGEX = 1
     ANIME_REGEX = 2
 
-    def __init__(self, file_name=True, showObj=None, tryIndexers=False, naming_pattern=False, validate_show=True):
+    def __init__(self, file_name=True, showObj=None, naming_pattern=False, validate_show=True):
         self.file_name = file_name
         self.showObj = showObj
-        self.tryIndexers = tryIndexers
         self.naming_pattern = naming_pattern
         self.validate_show = validate_show
 
@@ -62,7 +61,8 @@ class NameParser(object):
         show_id = 0
         fromCache = False
 
-        if not all([name, sickrage.app.showlist]): return show, show_id
+        if not all([name, sickrage.app.showlist]):
+            return show, show_id
 
         try:
             # check cache for show
@@ -72,13 +72,12 @@ class NameParser(object):
                 show_id = cache
 
             # try indexers
-            if not show_id and self.tryIndexers:
-                try:
-                    show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
-                    show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
-                    show_id = (show_id, show_id1)[show_id1 == show_id2]
-                except Exception:
-                    pass
+            try:
+                show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
+                show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
+                show_id = (show_id, show_id1)[show_id1 == show_id2]
+            except Exception:
+                pass
 
             # try scene exceptions
             if not show_id:
@@ -88,7 +87,11 @@ class NameParser(object):
                     pass
 
             # create show object
-            show = findCertainShow(int(show_id)) if show_id else None
+            from sickrage.core.tv.show import TVShow
+            try:
+                show = TVShow(1, int(show_id))
+            except Exception:
+                pass
 
             # add show to cache
             if show and not fromCache:
@@ -257,7 +260,7 @@ class NameParser(object):
                 return bestResult
 
             # get quality
-            bestResult.quality = Quality.nameQuality(name, bestResult.show.is_anime)
+            bestResult.quality = Quality.nameQuality(name, bestResult.is_anime)
 
             new_episode_numbers = []
             new_season_numbers = []
@@ -313,7 +316,7 @@ class NameParser(object):
                     new_episode_numbers.append(e)
                     new_season_numbers.append(s)
 
-            elif bestResult.show.is_anime and bestResult.ab_episode_numbers:
+            elif bestResult.is_anime and bestResult.ab_episode_numbers:
                 scene_season = get_scene_exception_by_name(bestResult.series_name)[1]
                 for epAbsNo in bestResult.ab_episode_numbers:
                     a = epAbsNo
@@ -339,7 +342,7 @@ class NameParser(object):
                                                        bestResult.show.indexer,
                                                        bestResult.season_number,
                                                        epNo)
-                    if bestResult.show.is_anime:
+                    if bestResult.is_anime:
                         a = get_absolute_number_from_season_and_episode(bestResult.show, s, e)
                         if a:
                             new_absolute_numbers.append(a)
@@ -499,7 +502,7 @@ class NameParser(object):
         final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if not final_result.show and self.validate_show:
+        if self.validate_show and not findCertainShow(int(final_result.indexerid)):
             raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
                 name, final_result))
 

@@ -67,16 +67,11 @@ class QualityTests(SiCKRAGETestCase):
 
     def test_RAWHDTV(self):
         from sickrage.core.common import Quality
-        self.assertEqual(Quality.RAWHDTV,
-                         Quality.nameQuality("Test.Show.S01E02.720p.HDTV.DD5.1.MPEG2-GROUP"))
-        self.assertEqual(Quality.RAWHDTV,
-                         Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.DD2.0.MPEG2-GROUP"))
-        self.assertEqual(Quality.RAWHDTV,
-                         Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.H.264.DD2.0-GROUP"))
-        self.assertEqual(Quality.RAWHDTV,
-                         Quality.nameQuality("Test Show - S01E02 - 1080i HDTV MPA1.0 H.264 - GROUP"))
-        self.assertEqual(Quality.RAWHDTV,
-                         Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.DD.5.1.h264-GROUP"))
+        self.assertEqual(Quality.RAWHDTV, Quality.nameQuality("Test.Show.S01E02.720p.HDTV.DD5.1.MPEG2-GROUP"))
+        self.assertEqual(Quality.RAWHDTV, Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.DD2.0.MPEG2-GROUP"))
+        self.assertEqual(Quality.RAWHDTV, Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.H.264.DD2.0-GROUP"))
+        self.assertEqual(Quality.RAWHDTV, Quality.nameQuality("Test Show - S01E02 - 1080i HDTV MPA1.0 H.264 - GROUP"))
+        self.assertEqual(Quality.RAWHDTV, Quality.nameQuality("Test.Show.S01E02.1080i.HDTV.DD.5.1.h264-GROUP"))
 
     def test_FULLHDTV(self):
         from sickrage.core.common import Quality
@@ -86,33 +81,23 @@ class QualityTests(SiCKRAGETestCase):
         from sickrage.core.common import Quality
         self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.WEB-DL-GROUP"))
         self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.WEBRip-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.WEBRip.720p.H.264.AAC.2.0-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.720p.WEB-DL.AAC2.0.H.264-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test Show S01E02 720p WEB-DL AAC2 0 H 264-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test_Show.S01E02_720p_WEB-DL_AAC2.0_H264-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.720p.WEB-DL.AAC2.0.H264-GROUP"))
-        self.assertEqual(Quality.HDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.720p.iTunes.Rip.H264.AAC-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.WEBRip.720p.H.264.AAC.2.0-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.WEB-DL.AAC2.0.H.264-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test Show S01E02 720p WEB-DL AAC2 0 H 264-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test_Show.S01E02_720p_WEB-DL_AAC2.0_H264-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.WEB-DL.AAC2.0.H264-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.iTunes.Rip.H264.AAC-GROUP"))
+        self.assertEqual(Quality.HDWEBDL, Quality.nameQuality("Test.Show.S01E02.720p.AMZN.WEBRip.DDP5.1.x264-GROUP"))
 
     def test_FULLHDWEBDL(self):
         from sickrage.core.common import Quality
         self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test.Show.S01E02.1080p.WEB-DL-GROUP"))
         self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test.Show.S01E02.1080p.WEBRip-GROUP"))
-        self.assertEqual(Quality.FULLHDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.WEBRip.1080p.H.264.AAC.2.0-GROUP"))
-        self.assertEqual(Quality.FULLHDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.WEBRip.1080p.H264.AAC.2.0-GROUP"))
-        self.assertEqual(Quality.FULLHDWEBDL,
-                         Quality.nameQuality("Test.Show.S01E02.1080p.iTunes.H.264.AAC-GROUP"))
-        self.assertEqual(Quality.FULLHDWEBDL,
-                         Quality.nameQuality("Test Show S01E02 1080p iTunes H 264 AAC-GROUP"))
-        self.assertEqual(Quality.FULLHDWEBDL,
-                         Quality.nameQuality("Test_Show_S01E02_1080p_iTunes_H_264_AAC-GROUP"))
+        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test.Show.S01E02.WEBRip.1080p.H.264.AAC.2.0-GROUP"))
+        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test.Show.S01E02.WEBRip.1080p.H264.AAC.2.0-GROUP"))
+        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test.Show.S01E02.1080p.iTunes.H.264.AAC-GROUP"))
+        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test Show S01E02 1080p iTunes H 264 AAC-GROUP"))
+        self.assertEqual(Quality.FULLHDWEBDL, Quality.nameQuality("Test_Show_S01E02_1080p_iTunes_H_264_AAC-GROUP"))
 
     def test_HDBLURAY(self):
         from sickrage.core.common import Quality
@@ -121,10 +106,8 @@ class QualityTests(SiCKRAGETestCase):
 
     def test_FULLHDBLURAY(self):
         from sickrage.core.common import Quality
-        self.assertEqual(Quality.FULLHDBLURAY,
-                         Quality.nameQuality("Test.Show.S01E02.1080p.BluRay.x264-GROUP"))
-        self.assertEqual(Quality.FULLHDBLURAY,
-                         Quality.nameQuality("Test.Show.S01E02.1080p.HDDVD.x264-GROUP"))
+        self.assertEqual(Quality.FULLHDBLURAY, Quality.nameQuality("Test.Show.S01E02.1080p.BluRay.x264-GROUP"))
+        self.assertEqual(Quality.FULLHDBLURAY, Quality.nameQuality("Test.Show.S01E02.1080p.HDDVD.x264-GROUP"))
 
     def test_UNKNOWN(self):
         from sickrage.core.common import Quality

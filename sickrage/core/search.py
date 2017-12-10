@@ -220,9 +220,10 @@ def pickBestResult(results, show):
                 continue
 
         # verify result content
-        if not cur_result.provider.private and not cur_result.provider.get_content(cur_result.url):
-            sickrage.app.log.info("Ignoring " + cur_result.name + " because it does not have valid download url")
-            continue
+        if not cur_result.provider.private:
+            if cur_result.resultType in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
+                sickrage.app.log.info("Ignoring " + cur_result.name + " because it does not have valid download url")
+                continue
 
         if not bestResult:
             bestResult = cur_result

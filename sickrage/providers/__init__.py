@@ -337,8 +337,7 @@ class GenericProvider(object):
             result.seeders, result.leechers = self._get_result_stats(item)
 
             sickrage.app.log.debug("Adding item from search to cache: " + result.name)
-            self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size,
-                                     parse_result)
+            self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size)
 
             if not result.show:
                 continue
@@ -660,7 +659,7 @@ class TorrentProvider(GenericProvider):
         for u in urls:
             try:
                 content = super(TorrentProvider, self).get_content(u)
-                if bencode.bdecode(content):
+                if bencode.bdecode(content).get('info'):
                     return content
             except Exception:
                 pass

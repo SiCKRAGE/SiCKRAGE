@@ -6,7 +6,6 @@
 
     import sickrage
     from sickrage.core.updaters import tz_updater
-    from sickrage.core.tv.show import TVShow
     from sickrage.core.helpers import pretty_filesize, overall_stats, memory_usage
 %>
 <!DOCTYPE html>
