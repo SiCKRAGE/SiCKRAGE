@@ -494,7 +494,7 @@ class NameParser(object):
         final_result.indexerid = self._combine_results(file_name_result, dir_name_result, 'indexerid')
         final_result.quality = self._combine_results(file_name_result, dir_name_result, 'quality')
 
-        if self.validate_show and not self.naming_pattern and not findCertainShow(int(final_result.indexerid)):
+        if self.validate_show and not self.naming_pattern and not findCertainShow(int(final_result.indexerid or 0)):
             raise InvalidShowException("Unable to match {} to a show in your database. Parser result: {}".format(
                 name, final_result))
 
@@ -528,35 +528,19 @@ class ParseResult(object):
                  ):
 
         self.original_name = original_name
-
         self.series_name = series_name
         self.season_number = season_number
-        if not episode_numbers:
-            self.episode_numbers = []
-        else:
-            self.episode_numbers = episode_numbers
-
-        if not ab_episode_numbers:
-            self.ab_episode_numbers = []
-        else:
-            self.ab_episode_numbers = ab_episode_numbers
-
-        if not quality:
-            self.quality = Quality.UNKNOWN
-        else:
-            self.quality = quality
-
+        self.episode_numbers = episode_numbers or []
+        self.ab_episode_numbers = ab_episode_numbers or []
+        self.quality = quality or Quality.UNKNOWN
         self.extra_info = extra_info
         self.release_group = release_group
-
         self.air_date = air_date
-
-        self.which_regex = set()
         self.show = show
-        self.indexerid = indexerid
+        self.indexerid = indexerid or 0
         self.score = score
-
         self.version = version
+        self.which_regex = set()
 
     def __eq__(self, other):
         return other and all([
