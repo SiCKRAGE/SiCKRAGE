@@ -1,6 +1,7 @@
 # Changelog
 
-- * aed3625 - 2017-12-10: Fix for name parser anime issues 
+- * 6b24cff - 2017-12-10: Release v9.2.56 
+- * f2405ba - 2017-12-10: Fix for name parser anime issues 
 - * 73ff883 - 2017-12-10: Release v9.2.55 
 - * d4b4aab - 2017-12-10: Release v9.2.54 
 - * 0728a1e - 2017-12-10: Fixed name parser show validation issue 
