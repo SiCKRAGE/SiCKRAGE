@@ -18,13 +18,13 @@
 
 from __future__ import unicode_literals
 
-import hashlib
+from hashlib import md5
 
 from CodernityDB.hash_index import HashIndex
 
 
 class CacheLastUpdateIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -32,14 +32,14 @@ class CacheLastUpdateIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'lastUpdate' and data.get('provider'):
-            return hashlib.md5(data.get('provider')).hexdigest(), None
+            return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheLastSearchIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -47,10 +47,10 @@ class CacheLastSearchIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'lastSearch' and data.get('provider'):
-            return hashlib.md5(data.get('provider')).hexdigest(), None
+            return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheSceneExceptionsIndex(HashIndex):
@@ -69,7 +69,7 @@ class CacheSceneExceptionsIndex(HashIndex):
 
 
 class CacheSceneNamesIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -77,14 +77,14 @@ class CacheSceneNamesIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'scene_names' and data.get('name'):
-            return hashlib.md5(data.get('name')).hexdigest(), None
+            return md5(data.get('name')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheNetworkTimezonesIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -92,14 +92,14 @@ class CacheNetworkTimezonesIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'network_timezones' and data.get('network_name'):
-            return hashlib.md5(data.get('network_name')).hexdigest(), None
+            return md5(data.get('network_name')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheSceneExceptionsRefreshIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -107,14 +107,14 @@ class CacheSceneExceptionsRefreshIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'scene_exceptions_refresh' and data.get('list'):
-            return hashlib.md5(data.get('list')).hexdigest(), None
+            return md5(data.get('list')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
 
 
 class CacheProvidersIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -122,7 +122,7 @@ class CacheProvidersIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'providers' and data.get('provider'):
-            return hashlib.md5(data.get('provider')).hexdigest(), None
+            return md5(data.get('provider')).hexdigest(), None
 
     def make_key(self, key):
-        return hashlib.md5(key.encode('utf-8')).hexdigest()
+        return md5(key.encode('utf-8')).hexdigest()
