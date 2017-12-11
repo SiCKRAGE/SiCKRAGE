@@ -577,7 +577,7 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.app.log.error("Unable to get info from " + IndexerApi(
                 self.show.indexer).name + ", the show info will not be refreshed: {}".format(e.message))
 
-        if IndexerEpList is None:
+        if not IndexerEpList:
             sickrage.app.log.error("No data returned from " + IndexerApi(
                 self.show.indexer).name + ", unable to update this show")
         else:
@@ -592,10 +592,8 @@ class QueueItemUpdate(ShowQueueItem):
                 for curEpisode in DBEpList[curSeason]:
                     sickrage.app.log.info(
                         "Permanently deleting episode " + str(curSeason) + "x" + str(curEpisode) + " from the database")
-
-                    curEp = self.show.getEpisode(curSeason, curEpisode)
                     try:
-                        curEp.deleteEpisode()
+                        self.show.getEpisode(curSeason, curEpisode).deleteEpisode()
                     except EpisodeDeletedException:
                         pass
 
