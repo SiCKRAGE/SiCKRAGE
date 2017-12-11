@@ -58,7 +58,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
                 search_params = {
                     "terms": search_string,
-                    "type": 1,  # get anime types
+                    "type": 1
                 }
 
                 try:
@@ -95,18 +95,16 @@ class TokyoToshokanProvider(TorrentProvider):
                     desc_top = top.find('td', class_='desc-top')
                     title = desc_top.get_text(strip=True)
                     download_url = desc_top.find('a')['href']
+                    if not all([title, download_url]):
+                        continue
+
+                    stats = bot.find('td', class_='stats').get_text(strip=True)
+                    sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)', stats.replace(' ', ''))
+                    seeders = try_int(sl.group('seeders'), 0)
+                    leechers = try_int(sl.group('leechers'), 0)
 
                     desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
                     size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)
-
-                    stats = bot.find('td', class_='stats').get_text(strip=True)
-                    sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)',
-                                  stats.replace(' ', ''))
-                    seeders = try_int(sl.group('seeders')) if sl else 0
-                    leechers = try_int(sl.group('leechers')) if sl else 0
-
-                    if not all([title, download_url]):
-                        continue
 
                     results += [
                         {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}

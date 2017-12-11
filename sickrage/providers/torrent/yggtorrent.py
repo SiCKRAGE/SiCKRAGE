@@ -48,12 +48,18 @@ class YggtorrentProvider(TorrentProvider):
 
         # Miscellaneous Options
         self.translation = {
+            'seconde': 'second',
+            'secondes': 'seconds',
+            'minute': 'minute',
+            'minutes': 'minutes',
             'heure': 'hour',
             'heures': 'hours',
             'jour': 'day',
             'jours': 'days',
             'mois': 'month',
             'an': 'year',
+            'année': 'year',
+            'ans': 'years',
             'années': 'years'
         }
 
