@@ -52,7 +52,7 @@ def shouldRefresh(exList):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
         lastRefresh = int(dbData['last_refreshed'])
         return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     except RecordNotFound:
@@ -66,7 +66,7 @@ def setLastRefresh(exList):
     :param exList: exception list to set refresh time
     """
     try:
-        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
         dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
         sickrage.app.cache_db.update(dbData)
     except RecordNotFound:

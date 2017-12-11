@@ -1,6 +1,7 @@
 # Changelog
 
-- * 219ae81 - 2017-12-11: Fixed issues with SkyTorrents 
+- * dcebc53 - 2017-12-11: refactored remaining GET database calls 
+- * c07404b - 2017-12-11: Fixed issues with SkyTorrents 
 - * 8923500 - 2017-12-11: Fixed issues with failed and cache database md5 checksums 
 - * 93c5ad5 - 2017-12-11: Fixed issues with failed and cache database cleanup on new revs 
 - * 8e43de8 - 2017-12-11: Fixed issues with removing duplicate shows and episodes 

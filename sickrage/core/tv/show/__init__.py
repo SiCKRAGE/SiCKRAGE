@@ -935,7 +935,7 @@ class TVShow(object):
                     'last_update'
                 ]
 
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
                 self._imdb_info = {k: dbData[k] for k in imdb_info_keys if k in dbData}
             except RecordNotFound:
                 pass
@@ -1271,7 +1271,7 @@ class TVShow(object):
         }
 
         try:
-            dbData = sickrage.app.main_db.get('tv_shows', self.indexerid, with_doc=True)['doc']
+            dbData = sickrage.app.main_db.get('tv_shows', self.indexerid)
             dbData.update(tv_show)
             sickrage.app.main_db.update(dbData)
         except RecordNotFound:
@@ -1279,7 +1279,7 @@ class TVShow(object):
 
         if self.imdbid and self.imdb_info:
             try:
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
                 dbData.update(self.imdb_info)
                 sickrage.app.main_db.update(dbData)
             except RecordNotFound:

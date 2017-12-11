@@ -144,6 +144,6 @@ class MainDB(srDatabase):
 
     def fix_orphaned_episodes(self):
         for ep in self.all('tv_episodes'):
-            if not self.get('tv_shows', ep['showid'], with_doc=True)['doc']:
+            if not self.get('tv_shows', ep['showid']):
                 sickrage.app.log.info("Deleting orphan episode with id: {}".format(ep["indexerid"]))
                 self.delete(ep)

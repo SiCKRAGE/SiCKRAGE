@@ -479,7 +479,7 @@ def xem_refresh(indexer_id, indexer, force=False):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = sickrage.app.main_db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+        dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
         lastRefresh = try_int(dbData['last_refreshed'])
         refresh = int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     except RecordNotFound:
@@ -491,7 +491,7 @@ def xem_refresh(indexer_id, indexer, force=False):
 
         # mark refreshed
         try:
-            dbData = sickrage.app.main_db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+            dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
             dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
             sickrage.app.main_db.update(dbData)
         except RecordNotFound:

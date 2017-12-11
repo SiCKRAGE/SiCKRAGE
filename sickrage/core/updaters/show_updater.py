@@ -48,7 +48,7 @@ class ShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = sickrage.app.cache_db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', 'theTVDB')
             last_update = int(dbData['time'])
         except RecordNotFound:
             last_update = update_timestamp

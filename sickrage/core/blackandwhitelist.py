@@ -86,7 +86,7 @@ class BlackAndWhiteList(object):
         :param table: database table remove keywords from
         """
         try:
-            sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id, with_doc=True)['doc'])
+            sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
         except RecordNotFound:
             pass
 
