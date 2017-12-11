@@ -41,8 +41,8 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.app.cache_db.db.delete(x['doc']) for x in
-             sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
+            [sickrage.app.cache_db.db.delete(x) for x in
+             sickrage.app.cache_db.get_many('providers', self.providerID)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -181,8 +181,8 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
-        if len([x for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True) if
-                x['doc']['url'] == url]): return
+        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID)
+                if x['url'] == url]): return
 
         try:
             # parse release name
@@ -247,8 +247,9 @@ class TVCache(object):
                 pass
 
         # get data from internal database
-        dbData += [x['doc'] for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
+        dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
 
+        # sort data by criteria
         dbData = [x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
                   and "|" + str(ep_obj.episode) + "|" in x['episodes']] if ep_obj else dbData
 

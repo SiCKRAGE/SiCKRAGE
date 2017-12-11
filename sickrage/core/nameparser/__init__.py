@@ -268,9 +268,8 @@ class NameParser(object):
             if bestResult.is_air_by_date:
                 airdate = bestResult.air_date.toordinal()
 
-                dbData = [x['doc'] for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
-                          if x['doc']['indexer'] == bestResult.show.indexer and x['doc']['airdate'] == airdate]
+                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', bestResult.show.indexerid)
+                          if x['indexer'] == bestResult.show.indexer and x['airdate'] == airdate]
 
                 season_number = None
                 episode_numbers = []

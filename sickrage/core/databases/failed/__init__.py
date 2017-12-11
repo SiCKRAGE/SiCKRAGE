@@ -43,6 +43,6 @@ class FailedDB(srDatabase):
     def check_versions(self, index_name, current_version, previous_version):
         # Wipe table if versions are different
         if previous_version < current_version:
-            for x in self.db.all(index_name, with_doc=True):
-                self.db.delete(x['doc'])
+            for x in self.all(index_name):
+                self.db.delete(x)
         super(FailedDB, self).check_versions(index_name, current_version, previous_version)

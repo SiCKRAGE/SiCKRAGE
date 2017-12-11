@@ -293,6 +293,11 @@ class srDatabase(object):
                 if os.path.isfile(self.old_db_path + '-shm'):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
+    def all(self, *args):
+        return (x['doc'] for x in self.db.all(*args, with_doc=True))
+
+    def get_many(self, *args):
+        return (x['doc'] for x in self.db.get_many(*args, with_doc=True))
 
 # Monkey-Patch storage to suppress logging messages
 IU_Storage.get = Custom_IU_Storage_get

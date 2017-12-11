@@ -96,8 +96,7 @@ def load_network_dict():
     """
 
     global network_dict
-    network_dict = dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
-                         sickrage.app.cache_db.db.all('network_timezones', with_doc=True)])
+    network_dict = dict([(x['network_name'], x['timezone']) for x in sickrage.app.cache_db.all('network_timezones')])
 
 
 # get timezone of a network or return default timezone

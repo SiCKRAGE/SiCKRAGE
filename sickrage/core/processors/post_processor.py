@@ -523,9 +523,7 @@ class PostProcessor(object):
 
         # search the database for a possible match and return immediately if we find one
         for curName in names:
-            dbData = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
-                      if curName in x['doc']['resource']]
-
+            dbData = [x for x in sickrage.app.main_db.all('history') if curName in x['resource']]
             if len(dbData) == 0:
                 continue
 
@@ -568,7 +566,7 @@ class PostProcessor(object):
         # if the result is complete then remember that for later
         # if the result is complete then set release name
         if parse_result.series_name and (not (not (
-                        parse_result.season_number is not None and parse_result.episode_numbers) and not parse_result.air_date)) and parse_result.release_group:
+                parse_result.season_number is not None and parse_result.episode_numbers) and not parse_result.air_date)) and parse_result.release_group:
 
             if not self.release_name:
                 self.release_name = remove_non_release_groups(
@@ -716,20 +714,16 @@ class PostProcessor(object):
                 airdate = episodes[0].toordinal()
 
                 # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                dbData = [x['doc'] for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                          if x['doc']['indexer'] == show.indexer
-                          and x['doc']['airdate'] == airdate
-                          and x['doc']['season'] != 0]
+                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
+                          if x['indexer'] == show.indexer and x['airdate'] == airdate and x['season'] != 0]
 
                 if dbData:
                     season = int(dbData[0]['season'])
                     episodes = [int(dbData[0]['episode'])]
                 else:
                     # Found no result, try with season 0
-                    dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                              if x['doc']['indexer'] == show.indexer and x['doc']['airdate'] == airdate]
+                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
+                              if x['indexer'] == show.indexer and x['airdate'] == airdate]
 
                     if dbData:
                         season = int(dbData[0]['season'])
@@ -747,13 +741,11 @@ class PostProcessor(object):
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x['doc']['season'] for x in
-                        sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                        if x['doc']['season'] != 0 and x['doc']['indexer'] == show.indexer}) == 1 and season is None:
+                if len({x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
+                        if x['season'] != 0 and x['indexer'] == show.indexer}) == 1:
+                    self._log("Don't have a season number, but this show appears to only have 1 season, setting "
+                              "season number to 1...", sickrage.app.log.DEBUG)
                     season = 1
-                    self._log(
-                        "Don't have a season number, but this show appears to only have 1 season, setting season number to 1...",
-                        sickrage.app.log.DEBUG)
 
             if show and season and episodes:
                 return show, season, episodes, quality, version

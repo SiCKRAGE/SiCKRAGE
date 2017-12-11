@@ -20,9 +20,9 @@
 from __future__ import unicode_literals
 
 from CodernityDB.database import RecordNotFound
-from adba.aniDBerrors import AniDBCommandTimeoutError
 
 import sickrage
+from adba.aniDBerrors import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):
@@ -98,9 +98,7 @@ class BlackAndWhiteList(object):
 
         :return: keywords in list
         """
-        groups = []
-        for result in [x['doc'] for x in sickrage.app.main_db.db.get_many(table, self.show_id, with_doc=True)]:
-            groups.append(result['keyword'])
+        groups = [x['keyword']for x in sickrage.app.main_db.get_many(table, self.show_id)]
 
         sickrage.app.log.debug(
             'BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))

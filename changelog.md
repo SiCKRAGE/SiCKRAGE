@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ceb533 - 2017-12-10: Small memory footprint improvement 
+- * 84cd66d - 2017-12-10: Refactored database calls, resolves memory usage issues 
+- * 0d8b4d1 - 2017-12-10: Small memory footprint improvement 
 - * f2d7dc6 - 2017-12-10: Release v9.2.61 
 - * 656a038 - 2017-12-10: Overall stats now only displayed for main shows page, helps reduce overhead 
 - * 75fa296 - 2017-12-10: Release v9.2.57 

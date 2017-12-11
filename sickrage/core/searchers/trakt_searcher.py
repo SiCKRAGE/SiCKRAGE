@@ -195,7 +195,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("COLLECTION::SYNC::START - Look for Episodes to Add to Trakt Collection")
 
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+            for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if not self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
                     sickrage.app.log.debug(
@@ -218,7 +218,7 @@ class TraktSearcher(object):
             "COLLECTION::REMOVE::START - Look for Episodes to Remove From Trakt Collection")
 
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+            for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
                 if e["location"]: continue
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"], 'Collection'):
@@ -243,7 +243,7 @@ class TraktSearcher(object):
             "WATCHLIST::REMOVE::START - Look for Episodes to Remove from Trakt Watchlist")
 
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+            for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):
                     sickrage.app.log.debug(
@@ -267,7 +267,7 @@ class TraktSearcher(object):
         sickrage.app.log.debug("WATCHLIST::ADD::START - Look for Episodes to Add to Trakt Watchlist")
 
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+            for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
                 if not e['status'] in Quality.SNATCHED + Quality.SNATCHED_PROPER + [UNKNOWN] + [WANTED]: continue
                 trakt_id = IndexerApi(s.indexer).trakt_id
                 if self._checkInList(trakt_id, str(e["showid"]), e["season"], e["episode"]):

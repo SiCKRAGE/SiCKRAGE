@@ -50,6 +50,7 @@ class ProcessResult(object):
     def __str__(self):
         return self.__unicode__().encode('utf-8', errors='replace')
 
+
 def delete_folder(folder, check_empty=True):
     """
     Removes a folder from the filesystem
@@ -307,7 +308,7 @@ def validateDir(process_path, release_name, failed, result):
     # make sure the dir isn't inside a show dir
     for show in sickrage.app.showlist:
         if process_path.lower().startswith(os.path.realpath(show.location).lower() + os.sep) or \
-                        process_path.lower() == os.path.realpath(show.location).lower():
+                process_path.lower() == os.path.realpath(show.location).lower():
             result.output += logHelper(
                 "Cannot process an episode that's already been moved to its show dir, skipping " + process_path,
                 sickrage.app.log.WARNING)
@@ -447,12 +448,11 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if [x for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)
-        if x['doc']['release_name'] == dirName]:
+    if [x for x in sickrage.app.main_db.all('tv_episodes') if x['release_name'] == dirName]:
         return True
     else:
-        if [x for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)
-            if x['doc']['release_name'] == [videofile.rpartition('.')[0]]]: return True
+        if [x for x in sickrage.app.main_db.all('tv_episodes') if x['release_name'] == [videofile.rpartition('.')[0]]]:
+            return True
 
         # Needed if we have downloaded the same episode @ different quality
         # But we need to make sure we check the history of the episode we're going to PP, and not others
@@ -462,19 +462,18 @@ def already_postprocessed(dirName, videofile, force, result):
         except:
             parse_result = False
 
-        for h in [h['doc'] for h in sickrage.app.main_db.db.all('history', with_doc=True)
-                  if h['doc']['resource'].endswith(videofile)]:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', h['showid'], with_doc=True)
-                      if h['season'] == e['doc']['season']
-                      and h['episode'] == e['doc']['episode']
-                      and e['doc']['status'] in Quality.DOWNLOADED]:
+        for h in (h for h in sickrage.app.main_db.all('history') if h['resource'].endswith(videofile)):
+            for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', h['showid'])
+                      if h['season'] == e['season'] and h['episode'] == e['episode']
+                         and e['status'] in Quality.DOWNLOADED):
 
                 # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
-                if parse_result and (
-                                parse_result.indexerid and parse_result.episode_numbers and parse_result.season_number):
-                    if e['showid'] == int(parse_result.indexerid) and e['season'] == int(
-                                    parse_result.season_number and e['episode']) == int(
-                        parse_result.episode_numbers[0]):
+                if parse_result and (parse_result.indexerid and
+                                     parse_result.episode_numbers and
+                                     parse_result.season_number):
+                    if e['showid'] == int(parse_result.indexerid) and \
+                            e['season'] == int(parse_result.season_number and
+                                               e['episode']) == int(parse_result.episode_numbers[0]):
                         return True
                 else:
                     return True

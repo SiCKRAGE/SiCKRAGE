@@ -66,13 +66,12 @@ class SubtitleSearcher(object):
 
         results = []
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in
-                      sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)
+            for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid)
                       if s.subtitles == 1
-                      and e['doc']['location'] != ''
-                      and e['doc']['subtitles'] not in sickrage.subtitles.wanted_languages()
-                      and (e['doc']['subtitles_searchcount'] <= 2 or (
-                                        e['doc']['subtitles_searchcount'] <= 7 and (today - e['doc']['airdate'])))]:
+                         and e['location'] != ''
+                         and e['subtitles'] not in sickrage.subtitles.wanted_languages()
+                         and (e['subtitles_searchcount'] <= 2 or (
+                        e['subtitles_searchcount'] <= 7 and (today - e['airdate'])))):
                 results += [{
                     'show_name': s.name,
                     'showid': e['showid'],
@@ -103,19 +102,19 @@ class SubtitleSearcher(object):
             # I dont think this needs done here, but keeping to be safe
             datetime.datetime.strptime('20110101', '%Y%m%d')
             if (
-                        (epToSub['airdate_daydiff'] > 7 and epToSub[
-                            'searchcount'] < 2 and now - datetime.datetime.strptime(
-                            epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(
-                            hours=rules['old'][epToSub['searchcount']])) or
-                        (
-                                            epToSub['airdate_daydiff'] <= 7 and
-                                            epToSub['searchcount'] < 7 and
-                                            now - datetime.datetime.strptime(
-                                            epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta
-                                        (
-                                        hours=rules['new'][epToSub['searchcount']]
-                                    )
-                        )
+                    (epToSub['airdate_daydiff'] > 7 and epToSub[
+                        'searchcount'] < 2 and now - datetime.datetime.strptime(
+                        epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta(
+                        hours=rules['old'][epToSub['searchcount']])) or
+                    (
+                            epToSub['airdate_daydiff'] <= 7 and
+                            epToSub['searchcount'] < 7 and
+                            now - datetime.datetime.strptime(
+                        epToSub['lastsearch'], dateTimeFormat) > datetime.timedelta
+                                (
+                                hours=rules['new'][epToSub['searchcount']]
+                            )
+                    )
             ):
 
                 sickrage.app.log.debug('Downloading subtitles for episode %dx%d of show %s' % (

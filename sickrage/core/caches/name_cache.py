@@ -55,8 +55,8 @@ class NameCache(object):
             self.cache[name] = int(indexer_id)
 
             try:
-                if not len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                            x['doc']['indexer_id'] == indexer_id]):
+                if not len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
+                            if x['indexer_id'] == indexer_id]):
                     # insert name into cache
                     sickrage.app.cache_db.db.insert({
                         '_t': 'scene_names',
@@ -86,23 +86,22 @@ class NameCache(object):
         """
         Deletes all "unknown" entries from the cache (names with indexer_id of 0).
         """
-        [sickrage.app.cache_db.db.delete(x['doc']) for x in
-         sickrage.app.cache_db.db.all('scene_names', with_doc=True)
-         if x['doc']['indexer_id'] in [indexerid, 0]]
+        [sickrage.app.cache_db.db.delete(x) for x in
+         sickrage.app.cache_db.all('scene_names')
+         if x['indexer_id'] in [indexerid, 0]]
 
         for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
             del item
 
     def load(self):
-        self.cache = dict([(x['doc']['name'], x['doc']['indexer_id']) for x in
-                           sickrage.app.cache_db.db.all('scene_names', with_doc=True)])
+        self.cache = dict([(x['name'], x['indexer_id']) for x in sickrage.app.cache_db.all('scene_names')])
 
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
             try:
-                if len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                        x['doc']['indexer_id'] == indexer_id]):
+                if len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
+                        if x['indexer_id'] == indexer_id]):
                     continue
             except RecordNotFound:
                 pass

@@ -377,9 +377,8 @@ class TVEpisode(object):
         sickrage.app.log.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        dbData = [x['doc'] for x in
-                  sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
-                  if x['doc']['season'] == season and x['doc']['episode'] == episode]
+        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
+                  if x['season'] == season and x['episode'] == episode]
 
         if len(dbData) > 1:
             for ep in dbData:
@@ -720,9 +719,9 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
-         if x['doc']['season'] == self.season and x['doc']['episode'] == self.episode]
+        [sickrage.app.main_db.db.delete(x) for x in
+         sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
+         if x['season'] == self.season and x['episode'] == self.episode]
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -780,9 +779,8 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = \
-                [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.show.indexerid, with_doc=True)
-                 if x['doc']['indexerid'] == self.indexerid][0]
+            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
+                      if x['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
             sickrage.app.main_db.db.update(dbData)

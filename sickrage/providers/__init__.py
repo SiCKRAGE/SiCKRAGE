@@ -377,9 +377,8 @@ class GenericProvider(object):
                     continue
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('tv_episodes', result.show.indexerid, with_doc=True)
-                              if x['doc']['airdate'] == airdate]
+                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', result.show.indexerid)
+                              if x['airdate'] == airdate]
 
                     if len(dbData) != 1:
                         sickrage.app.log.warning(

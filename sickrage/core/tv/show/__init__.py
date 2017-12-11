@@ -415,10 +415,9 @@ class TVShow(object):
             curDate = datetime.date.today()
 
             if not self._next_aired or self._next_aired and curDate.toordinal() > self._next_aired:
-                dbData = sorted(
-                    [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True) if
-                     x['doc']['airdate'] >= curDate.toordinal() and
-                     x['doc']['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
+                dbData = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                                 if x['airdate'] >= curDate.toordinal()
+                                 and x['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
 
                 self._next_aired = dbData[0]['airdate'] if dbData else ''
         return self._next_aired
@@ -444,17 +443,14 @@ class TVShow(object):
 
     def getAllEpisodes(self, season=None, has_location=False):
         results = []
-        for x in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
-            if season and x['season'] != season:
-                continue
-            if has_location and x['location'] == '':
+        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            if (season and x['season'] != season) or (has_location and x['location'] == ''):
                 continue
 
             results += [x]
 
         ep_list = []
-        for cur_result in [x['doc'] for x in
-                           sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+        for cur_result in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
             cur_ep = self.getEpisode(int(cur_result["season"]), int(cur_result["episode"]))
             if not cur_ep:
                 continue
@@ -468,12 +464,10 @@ class TVShow(object):
                            and r['location'] != '' and r['location'] == cur_result['location']
                            and r['episode'] != cur_result['episode']]) > 0:
 
-                    related_eps_result = sorted([x['doc'] for x in
-                                                 sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid,
-                                                                                  with_doc=True)
-                                                 if x['doc']['season'] == cur_ep.season
-                                                 and x['doc']['location'] == cur_ep.location
-                                                 and x['doc']['episode'] == cur_ep.episode], key=lambda d: d['episode'])
+                    related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                                                 if x['season'] == cur_ep.season
+                                                 and x['location'] == cur_ep.location
+                                                 and x['episode'] == cur_ep.episode], key=lambda d: d['episode'])
 
                     for cur_related_ep in related_eps_result:
                         related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
@@ -488,8 +482,8 @@ class TVShow(object):
 
         # if we get an anime get the real season and episode
         if self.is_anime and absolute_number and not season and not episode:
-            dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                      if x['doc']['absolute_number'] == absolute_number and x['doc']['season'] != 0]
+            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                      if x['absolute_number'] == absolute_number and x['season'] != 0]
 
             if len(dbData) == 1:
                 episode = int(dbData[0]["episode"])
@@ -535,10 +529,9 @@ class TVShow(object):
         last_airdate = datetime.date.fromordinal(1)
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
-        dbData = sorted(
-            [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-             if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1],
-            key=lambda d: d['airdate'], reverse=True)
+        dbData = sorted((x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                         if x['season'] > 0 and x['airdate'] > 1 and x['status'] == 1),
+                        key=lambda d: d['airdate'], reverse=True)
 
         if dbData:
             last_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
@@ -546,10 +539,8 @@ class TVShow(object):
                 return True
 
         # get next upcoming UNAIRED episode to compare against today + graceperiod
-        dbData = sorted(
-            [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-             if x['doc']['season'] > 0 and x['doc']['airdate'] > 1 and x['doc']['status'] == 1],
-            key=lambda d: d['airdate'])
+        dbData = sorted((x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                         if x['season'] > 0 and x['airdate'] > 1 and x['status'] == 1), key=lambda d: d['airdate'])
 
         if dbData:
             next_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
@@ -598,14 +589,14 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexerid) + ": Writing NFOs for all episodes")
 
-        for dbData in [x['doc'] for x in
-                       sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                       if x['doc']['location'] != '']:
+        for dbData in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            if dbData['location'] == '':
+                continue
+
             sickrage.app.log.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
                 dbData["season"] or 0, dbData["episode"] or 0))
 
-            curEp = self.getEpisode(dbData["season"], dbData["episode"])
-            curEp.createMetaFiles(force)
+            self.getEpisode(dbData["season"], dbData["episode"]).createMetaFiles(force)
 
     # find all media files in the show folder and create episodes for as many as possible
     def loadEpisodesFromDir(self):
@@ -665,9 +656,7 @@ class TVShow(object):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in [x['doc'] for x in
-                       sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
-
+        for dbData in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
             deleteEp = False
 
             curSeason = int(dbData["season"])
@@ -680,8 +669,8 @@ class TVShow(object):
                 sickrage.app.log.debug(
                     "{}: Loading episode S{:02d}E{:02d} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
-                curEp = self.getEpisode(curSeason, curEpisode)
-                if deleteEp: curEp.deleteEpisode()
+                if deleteEp:
+                    self.getEpisode(curSeason, curEpisode).deleteEpisode()
 
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
@@ -888,7 +877,7 @@ class TVShow(object):
     def loadFromDB(self, skipNFO=False):
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_shows', self.indexerid, with_doc=True)]
+        dbData = [x for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
 
         if len(dbData) > 1:
             raise MultipleShowsInDatabaseException()
@@ -1090,16 +1079,12 @@ class TVShow(object):
             self.saveToDB()
 
     def deleteShow(self, full=False):
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('tv_shows', self.indexerid, with_doc=True)]
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('imdb_info', self.indexerid, with_doc=True)]
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('xem_refresh', self.indexerid, with_doc=True)]
-        [sickrage.app.main_db.db.delete(x['doc']) for x in
-         sickrage.app.main_db.db.get_many('scene_numbering', self.indexerid, with_doc=True)]
+        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)]
+        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
+        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid)]
+        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid)]
+        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid)]
+
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove self from show list
@@ -1170,8 +1155,9 @@ class TVShow(object):
         # run through all locations from DB, check that they exist
         sickrage.app.log.debug(str(self.indexerid) + ": Loading all episodes with a location from the database")
 
-        for ep in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                   if x['doc']['location'] != '']:
+        for ep in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            if ep['location'] == '':
+                continue
 
             curLoc = os.path.normpath(ep["location"])
             season = int(ep["season"])
@@ -1361,8 +1347,8 @@ class TVShow(object):
             sickrage.app.log.debug("Don't want this quality, ignoring found episode")
             return False
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                  if x['doc']['season'] == season and x['doc']['episode'] == episode]
+        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                  if x['season'] == season and x['episode'] == episode]
 
         if not dbData or not len(dbData):
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
@@ -1459,9 +1445,8 @@ class TVShow(object):
             mapped[indexer] = self.indexerid if int(indexer) == int(self.indexer) else 0
 
         # for each mapped entry
-        for dbData in [x['doc'] for x in
-                       sickrage.app.main_db.db.get_many('indexer_mapping', self.indexerid, with_doc=True)
-                       if x['doc']['indexer'] == self.indexer]:
+        for dbData in (x for x in sickrage.app.main_db.get_many('indexer_mapping', self.indexerid)
+                       if x['indexer'] == self.indexer):
 
             # Check if its mapped with both tvdb and tvrage.
             if len([i for i in dbData if i is not None]) >= 4:
@@ -1495,10 +1480,8 @@ class TVShow(object):
 
                     sickrage.app.log.debug("Adding indexer mapping to DB for show: " + self.name)
 
-                    dbData = [x['doc'] for x in
-                              sickrage.app.main_db.db.get_many('indexer_mapping', self.indexerid, with_doc=True)
-                              if x['doc']['indexer'] == self.indexer
-                              and x['doc']['mindexer_id'] == int(mapped_show['id'])]
+                    dbData = [x for x in sickrage.app.main_db.get_many('indexer_mapping', self.indexerid)
+                              if x['indexer'] == self.indexer and x['mindexer_id'] == int(mapped_show['id'])]
 
                     if not len(dbData):
                         sickrage.app.main_db.db.insert({
