@@ -382,7 +382,7 @@ class TVEpisode(object):
 
         if len(dbData) > 1:
             for ep in dbData:
-                sickrage.app.main_db.db.delete(ep)
+                sickrage.app.main_db.delete(ep)
             return False
         elif len(dbData) == 0:
             sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
@@ -719,7 +719,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [sickrage.app.main_db.db.delete(x) for x in
+        [sickrage.app.main_db.delete(x) for x in
          sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
          if x['season'] == self.season and x['episode'] == self.episode]
 
@@ -783,9 +783,9 @@ class TVEpisode(object):
                       if x['indexerid'] == self.indexerid][0]
 
             dbData.update(tv_episode)
-            sickrage.app.main_db.db.update(dbData)
+            sickrage.app.main_db.update(dbData)
         except:
-            sickrage.app.main_db.db.insert(tv_episode)
+            sickrage.app.main_db.insert(tv_episode)
 
     def fullPath(self):
         if self.location is None or self.location == "":

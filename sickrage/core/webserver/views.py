@@ -3511,7 +3511,7 @@ class Manage(Home, WebRoot):
 
         for release in toRemove:
             try:
-                [sickrage.app.failed_db.db.delete(x) for x in sickrage.app.failed_db.get_many('failed', release)]
+                [sickrage.app.failed_db.delete(x) for x in sickrage.app.failed_db.get_many('failed', release)]
             except RecordNotFound:
                 continue
 

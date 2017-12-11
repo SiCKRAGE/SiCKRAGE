@@ -18,13 +18,13 @@
 
 from __future__ import unicode_literals
 
-from hashlib import md5
+import hashlib
 
 from CodernityDB.hash_index import HashIndex
 
 
 class FailedIndex(HashIndex):
-    _version = 2
+    _version = 3
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -32,10 +32,10 @@ class FailedIndex(HashIndex):
 
     def make_key_value(self, data):
         if data.get('_t') == 'failed' and data.get('release'):
-            return md5(data.get('release')).hexdigest(), None
+            return hashlib.md5(data.get('release')).hexdigest(), None
 
     def make_key(self, key):
-        return md5(key.encode('utf-8')).hexdigest()
+        return hashlib.md5(key.encode('utf-8')).hexdigest()
 
 class FailedHistoryIndex(HashIndex):
     _version = 1

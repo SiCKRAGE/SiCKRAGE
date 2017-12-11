@@ -41,7 +41,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.app.cache_db.db.delete(x) for x in
+            [sickrage.app.cache_db.delete(x) for x in
              sickrage.app.cache_db.get_many('providers', self.providerID)]
 
     def _get_title_and_url(self, item):
@@ -120,7 +120,7 @@ class TVCache(object):
     @property
     def last_update(self):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -131,11 +131,11 @@ class TVCache(object):
     @last_update.setter
     def last_update(self, toDate):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.db.update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.cache_db.db.insert({
+            sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
@@ -144,7 +144,7 @@ class TVCache(object):
     @property
     def last_search(self):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID, with_doc=True)['doc']
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -155,11 +155,11 @@ class TVCache(object):
     @last_search.setter
     def last_search(self, toDate):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID, with_doc=True)['doc']
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.db.update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.cache_db.db.insert({
+            sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
@@ -222,7 +222,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    sickrage.app.cache_db.db.insert(dbData)
+                    sickrage.app.cache_db.insert(dbData)
 
                     # add to external database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:

@@ -48,11 +48,11 @@ class ShowUpdater(object):
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
         try:
-            dbData = sickrage.app.cache_db.db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', 'theTVDB', with_doc=True)['doc']
             last_update = int(dbData['time'])
         except RecordNotFound:
             last_update = update_timestamp
-            dbData = sickrage.app.cache_db.db.insert({
+            dbData = sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': 'theTVDB',
                 'time': 0
@@ -79,6 +79,6 @@ class ShowUpdater(object):
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 
         dbData['time'] = update_timestamp
-        sickrage.app.cache_db.db.update(dbData)
+        sickrage.app.cache_db.update(dbData)
 
         self.amActive = False

@@ -183,14 +183,14 @@ class BacklogSearcher(object):
 
         dbData = [x for x in sickrage.app.main_db.all('info')]
         if len(dbData) == 0:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'info',
                 'last_backlog': str(when),
                 'last_indexer': 0
             })
         else:
             dbData[0]['last_backlog'] = str(when)
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
 
     def get_backlog_cycle_time(self):
         return max([sickrage.app.config.daily_searcher_freq * 4, 30])

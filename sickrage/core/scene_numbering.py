@@ -209,9 +209,9 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
         if len(dbData):
             dbData[0]['scene_season'] = sceneSeason
             dbData[0]['scene_episode'] = sceneEpisode
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
         else:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'scene_numbering',
                 'indexer': indexer,
                 'indexer_id': indexer_id,
@@ -230,9 +230,9 @@ def set_scene_numbering(indexer_id, indexer, season=0, episode=0, absolute_numbe
 
         if len(dbData):
             dbData[0]['scene_absolute_number'] = sceneAbsolute
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
         else:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'scene_numbering',
                 'indexer': indexer,
                 'indexer_id': indexer_id,
@@ -479,7 +479,7 @@ def xem_refresh(indexer_id, indexer, force=False):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = sickrage.app.main_db.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+        dbData = sickrage.app.main_db.get('xem_refresh', indexer_id, with_doc=True)['doc']
         lastRefresh = try_int(dbData['last_refreshed'])
         refresh = int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     except RecordNotFound:
@@ -491,11 +491,11 @@ def xem_refresh(indexer_id, indexer, force=False):
 
         # mark refreshed
         try:
-            dbData = sickrage.app.main_db.db.get('xem_refresh', indexer_id, with_doc=True)['doc']
+            dbData = sickrage.app.main_db.get('xem_refresh', indexer_id, with_doc=True)['doc']
             dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
-            sickrage.app.main_db.db.update(dbData)
+            sickrage.app.main_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'xem_refresh',
                 'indexer': indexer,
                 'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
@@ -513,7 +513,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             except Exception:
                 for x in sickrage.app.main_db.get_many('tv_episodes', indexer_id):
                     x['scene_season'], x['scene_episode'], x['scene_absolute_number'] = 0, 0, 0
-                    sickrage.app.main_db.db.update(x)
+                    sickrage.app.main_db.update(x)
                 return
 
             # XEM API URL
@@ -546,7 +546,7 @@ def xem_refresh(indexer_id, indexer, force=False):
                     dbData['scene_episode'] = entry['scene_2']['episode']
                     dbData['scene_absolute_number'] = entry['scene_2']['absolute']
 
-                sickrage.app.main_db.db.update(dbData)
+                sickrage.app.main_db.update(dbData)
 
         except Exception as e:
             sickrage.app.log.warning(

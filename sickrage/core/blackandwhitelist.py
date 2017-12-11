@@ -51,7 +51,7 @@ class BlackAndWhiteList(object):
         :param values: Values to be inserted in table
         """
         for value in values:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': table,
                 'show_id': self.show_id,
                 'keywork': value
@@ -86,7 +86,7 @@ class BlackAndWhiteList(object):
         :param table: database table remove keywords from
         """
         try:
-            sickrage.app.main_db.db.delete(sickrage.app.main_db.db.get(table, self.show_id, with_doc=True)['doc'])
+            sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id, with_doc=True)['doc'])
         except RecordNotFound:
             pass
 

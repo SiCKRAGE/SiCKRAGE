@@ -1,6 +1,7 @@
 # Changelog
 
-- * b23202e - 2017-12-11: Fixed issue #151 - using unicode instead of str to result post-process results 
+- * 42d7ad6 - 2017-12-11: refactored remaining database calls to use custom database calls 
+- * cf0821c - 2017-12-11: Fixed issue #151 - using unicode instead of str to result post-process results 
 - * 4323d84 - 2017-12-10: Refactored database calls, resolves memory usage issues 
 - * 0d8b4d1 - 2017-12-10: Small memory footprint improvement 
 - * f2d7dc6 - 2017-12-10: Release v9.2.61 

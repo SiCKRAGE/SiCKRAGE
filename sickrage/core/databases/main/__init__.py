@@ -91,7 +91,7 @@ class MainDB(srDatabase):
                         pass
 
             if dirty:
-                self.db.update(show)
+                self.update(show)
 
             checked += [show['indexer_id']]
 
@@ -114,7 +114,7 @@ class MainDB(srDatabase):
                         pass
 
             if dirty:
-                self.db.update(ep)
+                self.update(ep)
 
             checked += [ep['showid']]
 
@@ -129,7 +129,7 @@ class MainDB(srDatabase):
 
             for dupe in list(self.get_many('tv_shows', show['indexer_id']))[1::]:
                 sickrage.app.log.info("Deleting duplicate show with id: {}".format(dupe["indexer_id"]))
-                self.db.delete(dupe)
+                self.delete(dupe)
 
             checked += [show['indexer_id']]
 
@@ -145,7 +145,7 @@ class MainDB(srDatabase):
             for dupe in list(self.get_many('tv_episodes', ep['showid']))[1::]:
                 if dupe['indexerid'] == ep['indexerid']:
                     sickrage.app.log.info("Deleting duplicate episode with id: {}".format(dupe["indexerid"]))
-                    self.db.delete(dupe)
+                    self.delete(dupe)
 
             checked += [ep['showid']]
 
@@ -153,6 +153,6 @@ class MainDB(srDatabase):
 
     def fix_orphaned_episodes(self):
         for ep in self.all('tv_episodes'):
-            if not self.db.get('tv_shows', ep['showid'], with_doc=True)['doc']:
+            if not self.get('tv_shows', ep['showid'], with_doc=True)['doc']:
                 sickrage.app.log.info("Deleting orphan episode with id: {}".format(ep["indexerid"]))
-                self.db.delete(ep)
+                self.delete(ep)

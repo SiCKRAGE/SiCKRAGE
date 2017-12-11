@@ -295,7 +295,7 @@ class ProperSearcher(object):
 
         dbData = [x for x in sickrage.app.main_db.all('info')]
         if len(dbData) == 0:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'info',
                 'last_backlog': 0,
                 'last_indexer': 0,
@@ -303,7 +303,7 @@ class ProperSearcher(object):
             })
         else:
             dbData[0]['last_proper_search'] = str(when)
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
 
     @staticmethod
     def _get_lastProperSearch():

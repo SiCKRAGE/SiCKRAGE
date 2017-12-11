@@ -935,7 +935,7 @@ class TVShow(object):
                     'last_update'
                 ]
 
-                dbData = sickrage.app.main_db.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid, with_doc=True)['doc']
                 self._imdb_info = {k: dbData[k] for k in imdb_info_keys if k in dbData}
             except RecordNotFound:
                 pass
@@ -1079,11 +1079,11 @@ class TVShow(object):
             self.saveToDB()
 
     def deleteShow(self, full=False):
-        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)]
-        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
-        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid)]
-        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid)]
-        [sickrage.app.main_db.db.delete(x) for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid)]
+        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)]
+        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
+        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid)]
+        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid)]
+        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid)]
 
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
@@ -1271,24 +1271,24 @@ class TVShow(object):
         }
 
         try:
-            dbData = sickrage.app.main_db.db.get('tv_shows', self.indexerid, with_doc=True)['doc']
+            dbData = sickrage.app.main_db.get('tv_shows', self.indexerid, with_doc=True)['doc']
             dbData.update(tv_show)
-            sickrage.app.main_db.db.update(dbData)
+            sickrage.app.main_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.main_db.db.insert(tv_show)
+            sickrage.app.main_db.insert(tv_show)
 
         if self.imdbid and self.imdb_info:
             try:
-                dbData = sickrage.app.main_db.db.get('imdb_info', self.indexerid, with_doc=True)['doc']
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid, with_doc=True)['doc']
                 dbData.update(self.imdb_info)
-                sickrage.app.main_db.db.update(dbData)
+                sickrage.app.main_db.update(dbData)
             except RecordNotFound:
                 imdb_info = {
                     '_t': 'imdb_info',
                     'indexer_id': self.indexerid
                 }
                 imdb_info.update(self.imdb_info)
-                sickrage.app.main_db.db.insert(imdb_info)
+                sickrage.app.main_db.insert(imdb_info)
 
     def __str__(self):
         toReturn = ""
@@ -1484,7 +1484,7 @@ class TVShow(object):
                               if x['indexer'] == self.indexer and x['mindexer_id'] == int(mapped_show['id'])]
 
                     if not len(dbData):
-                        sickrage.app.main_db.db.insert({
+                        sickrage.app.main_db.insert({
                             '_t': 'indexer_mapping',
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,

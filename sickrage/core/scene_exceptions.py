@@ -52,7 +52,7 @@ def shouldRefresh(exList):
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
     try:
-        dbData = sickrage.app.cache_db.db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
         lastRefresh = int(dbData['last_refreshed'])
         return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
     except RecordNotFound:
@@ -66,11 +66,11 @@ def setLastRefresh(exList):
     :param exList: exception list to set refresh time
     """
     try:
-        dbData = sickrage.app.cache_db.db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
+        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList, with_doc=True)['doc']
         dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
-        sickrage.app.cache_db.db.update(dbData)
+        sickrage.app.cache_db.update(dbData)
     except RecordNotFound:
-        sickrage.app.cache_db.db.insert({
+        sickrage.app.cache_db.insert({
             '_t': 'scene_exceptions_refresh',
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
             'list': exList
@@ -80,7 +80,7 @@ def setLastRefresh(exList):
 def retrieve_exceptions(get_xem=True, get_anidb=True):
     """
     Looks up the exceptions on github, parses them into a dict, and inserts them into the
-    scene_exceptions table in cache.db. Also clears the scene name cache.
+    scene_exceptions table in cache db and also clears the scene name cache.
     """
 
     updated_exceptions = False
@@ -133,7 +133,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
         for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():
             if cur_exception not in existing_exceptions:
                 updated_exceptions = True
-                sickrage.app.cache_db.db.insert({
+                sickrage.app.cache_db.insert({
                     '_t': 'scene_exceptions',
                     'indexer_id': cur_indexer_id,
                     'show_name': cur_exception,
@@ -254,7 +254,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     """
     Given a indexer_id, and a list of all show scene exceptions, update the db.
     """
-    [sickrage.app.cache_db.db.delete(x) for x in sickrage.app.cache_db.get_many('scene_exceptions', indexer_id)
+    [sickrage.app.cache_db.delete(x) for x in sickrage.app.cache_db.get_many('scene_exceptions', indexer_id)
      if x['season'] == season]
 
     sickrage.app.log.info("Updating scene exceptions")
@@ -265,7 +265,7 @@ def update_scene_exceptions(indexer_id, scene_exceptions, season=-1):
     exceptionsCache[indexer_id][season] = scene_exceptions
 
     for cur_exception in scene_exceptions:
-        sickrage.app.cache_db.db.insert({
+        sickrage.app.cache_db.insert({
             '_t': 'scene_exceptions',
             'indexer_id': indexer_id,
             'show_name': cur_exception,

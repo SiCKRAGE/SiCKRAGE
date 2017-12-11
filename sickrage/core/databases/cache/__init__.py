@@ -54,5 +54,5 @@ class CacheDB(srDatabase):
         # Wipe table if versions are different
         if previous_version < current_version:
             for x in self.all(index_name):
-                self.db.delete(x)
+                self.delete(x)
         super(CacheDB, self).check_versions(index_name, current_version, previous_version)
