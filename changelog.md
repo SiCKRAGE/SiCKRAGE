@@ -1,6 +1,7 @@
 # Changelog
 
-- * d335473 - 2017-12-11: Fixed issues with removing duplicate shows and episodes 
+- * 81c44ef - 2017-12-11: Fixed issues with failed and cache database cleanup on new revs 
+- * 8e43de8 - 2017-12-11: Fixed issues with removing duplicate shows and episodes 
 - * 7b19a3c - 2017-12-11: Updated misc provider code 
 - * 3f23fd2 - 2017-12-11: refactored remaining database calls to use custom database calls 
 - * cf0821c - 2017-12-11: Fixed issue #151 - using unicode instead of str to result post-process results 
