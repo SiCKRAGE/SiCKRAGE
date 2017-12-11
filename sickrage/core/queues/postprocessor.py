@@ -194,7 +194,7 @@ class PostProcessorItem(srQueueItem):
         try:
             sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
-            self.result = str(processDir(
+            self.result = unicode(processDir(
                 dirName=self.dirName,
                 nzbName=self.nzbName,
                 process_method=self.process_method,

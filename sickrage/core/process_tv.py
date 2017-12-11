@@ -47,10 +47,6 @@ class ProcessResult(object):
     def __unicode__(self):
         return self.output
 
-    def __str__(self):
-        return self.__unicode__().encode('utf-8', errors='replace')
-
-
 def delete_folder(folder, check_empty=True):
     """
     Removes a folder from the filesystem

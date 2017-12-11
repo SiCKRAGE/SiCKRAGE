@@ -1,6 +1,7 @@
 # Changelog
 
-- * 84cd66d - 2017-12-10: Refactored database calls, resolves memory usage issues 
+- * b23202e - 2017-12-11: Fixed issue #151 - using unicode instead of str to result post-process results 
+- * 4323d84 - 2017-12-10: Refactored database calls, resolves memory usage issues 
 - * 0d8b4d1 - 2017-12-10: Small memory footprint improvement 
 - * f2d7dc6 - 2017-12-10: Release v9.2.61 
 - * 656a038 - 2017-12-10: Overall stats now only displayed for main shows page, helps reduce overhead 
