@@ -301,11 +301,11 @@ class srDatabase(object):
         kwargs['with_doc'] = True
         return (x['doc'] for x in self.db.get_many(*args, **kwargs))
 
-    def delete(self, *args):
-        return self.db.delete(*args)
-
     def get(self, *args, **kwargs):
         return self.db.get(*args, **kwargs)
+
+    def delete(self, *args):
+        return self.db.delete(*args)
 
     def update(self, *args):
         return self.db.update(*args)
