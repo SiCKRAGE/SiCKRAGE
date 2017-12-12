@@ -54,7 +54,8 @@ class PostProcessorQueue(srQueue):
         :return: instance of PostProcessorItem or None
         """
         for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
-            if isinstance(cur_item, PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
+            if isinstance(cur_item,
+                          PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
                 return cur_item
         return None
 
@@ -152,18 +153,16 @@ class PostProcessorQueue(srQueue):
                 "An item with directory {} is already being processed in the queue, item updated".format(dirName))
             return message + "<br\><span class='hidden'>Processing succeeded</span>"
         else:
-            item = PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type)
+            super(PostProcessorQueue, self).put(
+                PostProcessorItem(dirName, nzbName, process_method, force, is_priority, delete_on, failed, proc_type)
+            )
             if force_next:
-                with postprocessor_queue_lock:
-                    item.run()
-                    message = item.result
-                return message
+                return self._result_queue.get()
             else:
-                super(PostProcessorQueue, self).put(item)
                 message = logHelper(
-                    "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName))
+                    "{} post-processing job for {} has been added to the queue".format(proc_type.title(), dirName)
+                )
                 return message + "<br\><span class='hidden'>Processing succeeded</span>"
-
 
 
 class PostProcessorItem(srQueueItem):
@@ -182,8 +181,6 @@ class PostProcessorItem(srQueueItem):
         self.proc_type = proc_type
 
         self.priority = (srQueuePriorities.HIGH, srQueuePriorities.NORMAL)[proc_type == 'auto']
-
-        self.result = None
 
     def run(self):
         """
@@ -213,3 +210,5 @@ class PostProcessorItem(srQueueItem):
             sickrage.app.log.debug(traceback.format_exc())
             self.result = '{}'.format(traceback.format_exc())
             self.result += 'Processing Failed'
+
+        self.result_queue.put(self.result)
