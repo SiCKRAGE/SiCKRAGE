@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 try:
     from Queue import PriorityQueue, Empty, Queue
 except ImportError:
-    from queue import PriorityQueue, Empty
+    from queue import PriorityQueue, Empty, Queue
 
 import time
 import datetime

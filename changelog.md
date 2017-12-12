@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8c6be21 - 2017-12-11: Fixed issue with thread naming for post-processing 
+- * 3d58a74 - 2017-12-12: Py3 compat for queue 
+- * 2c6c207 - 2017-12-11: Fixed issue with thread naming for post-processing 
 - * 5c4b822 - 2017-12-11: refactored remaining GET database calls 
 - * c07404b - 2017-12-11: Fixed issues with SkyTorrents 
 - * 8923500 - 2017-12-11: Fixed issues with failed and cache database md5 checksums 
