@@ -1,6 +1,7 @@
 # Changelog
 
-- * 14048db - 2017-12-13: Added code to name cache to allow adding show names we wish to ignore, helps speed up name parsing and searches 
+- * fbfdeb6 - 2017-12-13: Release v9.2.62 
+- * 34d3b93 - 2017-12-13: Added code to name cache to allow adding show names we wish to ignore, helps speed up name parsing and searches 
 - * b922499 - 2017-12-12: Py3 compat for queue 
 - * 2c6c207 - 2017-12-11: Fixed issue with thread naming for post-processing 
 - * 5c4b822 - 2017-12-11: refactored remaining GET database calls 
