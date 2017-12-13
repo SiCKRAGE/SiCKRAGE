@@ -51,25 +51,25 @@ class NameCache(object):
 
         # standardize the name we're using to account for small differences in providers
         name = full_sanitizeSceneName(name)
-        if name not in self.cache:
-            self.cache[name] = int(indexer_id)
 
-            try:
-                if not len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
-                            if x['indexer_id'] == indexer_id]):
-                    # insert name into cache
-                    sickrage.app.cache_db.insert({
-                        '_t': 'scene_names',
-                        'indexer_id': indexer_id,
-                        'name': name
-                    })
-            except RecordNotFound:
+        self.cache[name] = int(indexer_id)
+
+        try:
+            if not len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
+                        if x['indexer_id'] == indexer_id]):
                 # insert name into cache
                 sickrage.app.cache_db.insert({
                     '_t': 'scene_names',
                     'indexer_id': indexer_id,
                     'name': name
                 })
+        except RecordNotFound:
+            # insert name into cache
+            sickrage.app.cache_db.insert({
+                '_t': 'scene_names',
+                'indexer_id': indexer_id,
+                'name': name
+            })
 
     def get(self, name):
         """
@@ -82,15 +82,15 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexerid=0):
+    def clear(self, indexerid):
         """
-        Deletes all "unknown" entries from the cache (names with indexer_id of 0).
+        Deletes all entries from the cache matching the indexerid.
         """
         [sickrage.app.cache_db.delete(x) for x in
          sickrage.app.cache_db.all('scene_names')
-         if x['indexer_id'] in [indexerid, 0]]
+         if x['indexer_id'] == indexerid]
 
-        for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
+        for item in [self.cache[key] for key, value in self.cache.items() if value == indexerid]:
             del item
 
     def load(self):
