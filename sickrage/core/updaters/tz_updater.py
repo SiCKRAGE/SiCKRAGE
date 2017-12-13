@@ -61,18 +61,18 @@ def update_network_dict():
         existing = network in network_dict
         if not existing:
             try:
-                sickrage.app.cache_db.db.get('network_timezones', network)
+                sickrage.app.cache_db.get('network_timezones', network)
             except RecordNotFound:
-                sickrage.app.cache_db.db.insert({
+                sickrage.app.cache_db.insert({
                     '_t': 'network_timezones',
                     'network_name': network,
                     'timezone': timezone
                 })
         elif network_dict[network] is not timezone:
             try:
-                dbData = sickrage.app.cache_db.db.get('network_timezones', network, with_doc=True)['doc']
+                dbData = sickrage.app.cache_db.get('network_timezones', network)
                 dbData['timezone'] = timezone
-                sickrage.app.cache_db.db.update(dbData)
+                sickrage.app.cache_db.update(dbData)
             except RecordNotFound:
                 continue
 
@@ -81,8 +81,7 @@ def update_network_dict():
 
     for x in network_dict:
         try:
-            sickrage.app.cache_db.db.delete(
-                sickrage.app.cache_db.db.get('network_timezones', x, with_doc=True)['doc'])
+            sickrage.app.cache_db.delete(sickrage.app.cache_db.get('network_timezones', x))
         except RecordNotFound:
             continue
 
@@ -96,8 +95,7 @@ def load_network_dict():
     """
 
     global network_dict
-    network_dict = dict([(x['doc']['network_name'], x['doc']['timezone']) for x in
-                         sickrage.app.cache_db.db.all('network_timezones', with_doc=True)])
+    network_dict = dict([(x['network_name'], x['timezone']) for x in sickrage.app.cache_db.all('network_timezones')])
 
 
 # get timezone of a network or return default timezone

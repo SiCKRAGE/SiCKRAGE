@@ -1549,7 +1549,7 @@ def overall_stats():
         'total_size': 0
     }
 
-    for result in [x['doc'] for x in sickrage.app.main_db.db.all('tv_episodes', with_doc=True)]:
+    for result in sickrage.app.main_db.all('tv_episodes'):
         if not (result['season'] > 0 and result['episode'] > 0 and result['airdate'] > 1):
             continue
 

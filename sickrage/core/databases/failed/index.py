@@ -24,7 +24,7 @@ from CodernityDB.hash_index import HashIndex
 
 
 class FailedIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'

@@ -1,6 +1,20 @@
 # Changelog
 
-- * a264d26 - 2017-12-10: Release v9.2.61 
+- * fbfdeb6 - 2017-12-13: Release v9.2.62 
+- * 34d3b93 - 2017-12-13: Added code to name cache to allow adding show names we wish to ignore, helps speed up name parsing and searches 
+- * b922499 - 2017-12-12: Py3 compat for queue 
+- * 2c6c207 - 2017-12-11: Fixed issue with thread naming for post-processing 
+- * 5c4b822 - 2017-12-11: refactored remaining GET database calls 
+- * c07404b - 2017-12-11: Fixed issues with SkyTorrents 
+- * 8923500 - 2017-12-11: Fixed issues with failed and cache database md5 checksums 
+- * 93c5ad5 - 2017-12-11: Fixed issues with failed and cache database cleanup on new revs 
+- * 8e43de8 - 2017-12-11: Fixed issues with removing duplicate shows and episodes 
+- * 7b19a3c - 2017-12-11: Updated misc provider code 
+- * 3f23fd2 - 2017-12-11: refactored remaining database calls to use custom database calls 
+- * cf0821c - 2017-12-11: Fixed issue #151 - using unicode instead of str to result post-process results 
+- * 4323d84 - 2017-12-10: Refactored database calls, resolves memory usage issues 
+- * 0d8b4d1 - 2017-12-10: Small memory footprint improvement 
+- * f2d7dc6 - 2017-12-10: Release v9.2.61 
 - * 656a038 - 2017-12-10: Overall stats now only displayed for main shows page, helps reduce overhead 
 - * 75fa296 - 2017-12-10: Release v9.2.57 
 - * 6c4534b - 2017-12-10: Fixed TorrentRSSFeed issues 

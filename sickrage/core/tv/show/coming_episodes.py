@@ -97,7 +97,7 @@ class ComingEpisodes:
 
         results = []
         for s in sickrage.app.showlist:
-            for e in [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True)]:
+            for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
                 if e['season'] != 0 and today <= e['airdate'] < next_week and e['status'] not in qualities_list:
                     results += result(s, e)
 

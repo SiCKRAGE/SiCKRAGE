@@ -57,14 +57,14 @@ class FailedSnatchSearcher(object):
         show = None
         failed_snatches = False
 
-        snatched_episodes = [x['doc'] for x in sickrage.app.main_db.db.all('history', with_doc=True)
-                             if x['doc']['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                             and 24 >= int((datetime.datetime.now() - datetime.datetime.strptime(x['doc']['date'],
-                                                                                                History.date_format)).total_seconds() / 3600) >= sickrage.app.config.failed_snatch_age]
+        snatched_episodes = (x for x in sickrage.app.main_db.all('history')
+                             if x['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
+                             and 24 >= int((datetime.datetime.now() - datetime.datetime.strptime(x['date'],
+                                                                                                 History.date_format)).total_seconds() / 3600) >= sickrage.app.config.failed_snatch_age)
 
-        downloaded_releases = [(x['doc']['showid'], x['doc']['season'], x['doc']['episode']) for x in
-                               sickrage.app.main_db.db.all('history', with_doc=True)
-                               if x['doc']['action'] in Quality.DOWNLOADED]
+        downloaded_releases = ((x['showid'], x['season'], x['episode']) for x in
+                               sickrage.app.main_db.all('history')
+                               if x['action'] in Quality.DOWNLOADED)
 
         episodes = [x for x in snatched_episodes if (x['showid'], x['season'], x['episode']) not in downloaded_releases]
 

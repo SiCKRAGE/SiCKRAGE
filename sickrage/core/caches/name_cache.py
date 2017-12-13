@@ -43,7 +43,7 @@ class NameCache(object):
 
     def put(self, name, indexer_id=0):
         """
-        Adds the show & tvdb id to the scene_names table in cache.db.
+        Adds the show & tvdb id to the scene_names table in cache db
 
         :param name: The show name to cache
         :param indexer_id: the TVDB id that this show should be cached with (can be None/0 for unknown)
@@ -51,29 +51,29 @@ class NameCache(object):
 
         # standardize the name we're using to account for small differences in providers
         name = full_sanitizeSceneName(name)
-        if name not in self.cache:
-            self.cache[name] = int(indexer_id)
 
-            try:
-                if not len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                            x['doc']['indexer_id'] == indexer_id]):
-                    # insert name into cache
-                    sickrage.app.cache_db.db.insert({
-                        '_t': 'scene_names',
-                        'indexer_id': indexer_id,
-                        'name': name
-                    })
-            except RecordNotFound:
+        self.cache[name] = int(indexer_id)
+
+        try:
+            if not len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
+                        if x['indexer_id'] == indexer_id]):
                 # insert name into cache
-                sickrage.app.cache_db.db.insert({
+                sickrage.app.cache_db.insert({
                     '_t': 'scene_names',
                     'indexer_id': indexer_id,
                     'name': name
                 })
+        except RecordNotFound:
+            # insert name into cache
+            sickrage.app.cache_db.insert({
+                '_t': 'scene_names',
+                'indexer_id': indexer_id,
+                'name': name
+            })
 
     def get(self, name):
         """
-        Looks up the given name in the scene_names table in cache.db.
+        Looks up the given name in the scene_names table in cache db
 
         :param name: The show name to look up.
         :return: the TVDB id that resulted from the cache lookup or None if the show wasn't found in the cache
@@ -82,33 +82,32 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexerid=0):
+    def clear(self, indexerid):
         """
-        Deletes all "unknown" entries from the cache (names with indexer_id of 0).
+        Deletes all entries from the cache matching the indexerid.
         """
-        [sickrage.app.cache_db.db.delete(x['doc']) for x in
-         sickrage.app.cache_db.db.all('scene_names', with_doc=True)
-         if x['doc']['indexer_id'] in [indexerid, 0]]
+        [sickrage.app.cache_db.delete(x) for x in
+         sickrage.app.cache_db.all('scene_names')
+         if x['indexer_id'] == indexerid]
 
-        for item in [self.cache[key] for key, value in self.cache.items() if value == 0 or value == indexerid]:
+        for item in [self.cache[key] for key, value in self.cache.items() if value == indexerid]:
             del item
 
     def load(self):
-        self.cache = dict([(x['doc']['name'], x['doc']['indexer_id']) for x in
-                           sickrage.app.cache_db.db.all('scene_names', with_doc=True)])
+        self.cache = dict([(x['name'], x['indexer_id']) for x in sickrage.app.cache_db.all('scene_names')])
 
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
             try:
-                if len([x['doc'] for x in sickrage.app.cache_db.db.get_many('scene_names', name, with_doc=True) if
-                        x['doc']['indexer_id'] == indexer_id]):
+                if len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
+                        if x['indexer_id'] == indexer_id]):
                     continue
             except RecordNotFound:
                 pass
 
             # insert name into cache
-            sickrage.app.cache_db.db.insert({
+            sickrage.app.cache_db.insert({
                 '_t': 'scene_names',
                 'indexer_id': indexer_id,
                 'name': name

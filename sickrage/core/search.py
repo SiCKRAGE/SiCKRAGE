@@ -311,6 +311,7 @@ def wantedEpisodes(show, fromDate):
     """
 
     wanted = []
+
     if show.paused:
         sickrage.app.log.debug("Not checking for episodes of {} because the show is paused".format(show.name))
         return wanted
@@ -321,23 +322,22 @@ def wantedEpisodes(show, fromDate):
     sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
     # check through the list of statuses to see if we want any
-    for dbData in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                   if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
+    for dbData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
+        if dbData['season'] > 0 and dbData['airdate'] > fromDate.toordinal():
+            curCompositeStatus = int(dbData["status"] or -1)
+            curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
-        curCompositeStatus = int(dbData["status"] or -1)
-        curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
+            if bestQualities:
+                highestBestQuality = max(allQualities)
+            else:
+                highestBestQuality = 0
 
-        if bestQualities:
-            highestBestQuality = max(allQualities)
-        else:
-            highestBestQuality = 0
-
-        # if we need a better one then say yes
-        if (curStatus in (DOWNLOADED, SNATCHED,
-                          SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-            epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
-            epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
-            wanted.append(epObj)
+            # if we need a better one then say yes
+            if (curStatus in (DOWNLOADED, SNATCHED,
+                              SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
+                epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
+                epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
+                wanted.append(epObj)
 
     return wanted
 
@@ -495,9 +495,8 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x['doc']["episode"]) for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                          if x['doc']['season'] in searchedSeasons]
+                allEps = [int(x["episode"]) for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
+                          if x['season'] in searchedSeasons]
 
                 sickrage.app.log.debug("Episode list: " + str(allEps))
 

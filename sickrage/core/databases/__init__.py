@@ -207,9 +207,9 @@ class srDatabase(object):
             try:
                 for x in self.db.all(index_name):
                     try:
-                        self.db.get('id', x.get('_id'), with_doc=True)
+                        self.get('id', x.get('_id'))
                     except (ValueError, TypeError) as e:
-                        self.db.delete(self.db.get(index_name, x.get('key'), with_doc=True)['doc'])
+                        self.delete(self.get(index_name, x.get('key')))
             except Exception as e:
                 if index_name in self.db.indexes_names:
                     self.db.destroy_index(self.db.indexes_names[index_name])
@@ -265,10 +265,10 @@ class srDatabase(object):
                         if isinstance(v, list):
                             for d in v:
                                 d.update({'_t': t_name})
-                                self.db.insert(d)
+                                self.insert(d)
                         else:
                             v.update({'_t': t_name})
-                            self.db.insert(v)
+                            self.insert(v)
 
                 sickrage.app.log.info('Total migration took %s', (time.time() - migrate_start))
                 sickrage.app.log.info('=' * 30)
@@ -293,6 +293,27 @@ class srDatabase(object):
                 if os.path.isfile(self.old_db_path + '-shm'):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
+    def all(self, *args, **kwargs):
+        kwargs['with_doc'] = True
+        return (x['doc'] for x in self.db.all(*args, **kwargs))
+
+    def get_many(self, *args, **kwargs):
+        kwargs['with_doc'] = True
+        return (x['doc'] for x in self.db.get_many(*args, **kwargs))
+
+    def get(self, *args, **kwargs):
+        kwargs['with_doc'] = True
+        data = self.db.get(*args, **kwargs)
+        return data.get('doc', data)
+
+    def delete(self, *args):
+        return self.db.delete(*args)
+
+    def update(self, *args):
+        return self.db.update(*args)
+
+    def insert(self, *args):
+        return self.db.insert(*args)
 
 # Monkey-Patch storage to suppress logging messages
 IU_Storage.get = Custom_IU_Storage_get

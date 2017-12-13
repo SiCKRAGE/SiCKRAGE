@@ -58,7 +58,7 @@ class NameParser(object):
 
     def get_show(self, name):
         show = None
-        show_id = 0
+        show_id = None
 
         if not all([name, sickrage.app.showlist]):
             return show, show_id
@@ -82,18 +82,23 @@ class NameParser(object):
 
         # lookup show id
         for lookup in lookup_list:
-            if show:
+            if show or show_id is not None:
                 continue
 
             try:
-                from sickrage.core.tv.show import TVShow
+                show_id = int(lookup())
+                sickrage.app.name_cache.put(name, show_id)
                 if self.validate_show:
-                    show = findCertainShow(int(lookup()))
+                    show = findCertainShow(show_id)
                 else:
-                    show = TVShow(1, int(lookup()))
-                sickrage.app.name_cache.put(name, show.indexerid)
+                    from sickrage.core.tv.show import TVShow
+                    show = TVShow(1, show_id)
             except Exception:
                 pass
+
+        if show_id is None:
+            # ignore show name by caching it with a indexerid of 0
+            sickrage.app.name_cache.put(name, 0)
 
         return show, show_id or 0
 
@@ -268,9 +273,8 @@ class NameParser(object):
             if bestResult.is_air_by_date:
                 airdate = bestResult.air_date.toordinal()
 
-                dbData = [x['doc'] for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', bestResult.show.indexerid, with_doc=True)
-                          if x['doc']['indexer'] == bestResult.show.indexer and x['doc']['airdate'] == airdate]
+                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', bestResult.show.indexerid)
+                          if x['indexer'] == bestResult.show.indexer and x['airdate'] == airdate]
 
                 season_number = None
                 episode_numbers = []

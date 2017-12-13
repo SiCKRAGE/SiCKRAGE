@@ -127,8 +127,7 @@ class BacklogSearcher(object):
 
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
-
+        dbData = [x for x in sickrage.app.main_db.all('info')]
         if len(dbData) == 0:
             lastBacklog = 1
         elif dbData[0]["last_backlog"] is None or dbData[0]["last_backlog"] == "":
@@ -152,9 +151,8 @@ class BacklogSearcher(object):
 
         # check through the list of statuses to see if we want any
         wanted = {}
-        for result in [x['doc'] for x in
-                       sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)
-                       if x['doc']['season'] > 0 and x['doc']['airdate'] > fromDate.toordinal()]:
+        for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
+                       if x['season'] > 0 and x['airdate'] > fromDate.toordinal()):
             curCompositeStatus = int(result["status"] or -1)
             curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
@@ -183,16 +181,16 @@ class BacklogSearcher(object):
 
         sickrage.app.log.debug("Setting the last backlog in the DB to " + str(when))
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
+        dbData = [x for x in sickrage.app.main_db.all('info')]
         if len(dbData) == 0:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'info',
                 'last_backlog': str(when),
                 'last_indexer': 0
             })
         else:
             dbData[0]['last_backlog'] = str(when)
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
 
     def get_backlog_cycle_time(self):
         return max([sickrage.app.config.daily_searcher_freq * 4, 30])

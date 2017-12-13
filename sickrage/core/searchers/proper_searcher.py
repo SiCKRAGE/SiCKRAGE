@@ -78,8 +78,7 @@ class ProperSearcher(object):
 
         recently_aired = []
         for show in sickrage.app.showlist:
-            for episode in [e['doc'] for e in
-                            sickrage.app.main_db.db.get_many('tv_episodes', show.indexerid, with_doc=True)]:
+            for episode in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
                 if episode['airdate'] >= str(search_date.toordinal()):
                     if episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
                         recently_aired += [episode]
@@ -187,10 +186,11 @@ class ProperSearcher(object):
                     continue
 
             # check if we actually want this proper (if it's the right quality)            
-            dbData = [x['doc'] for x in
-                      sickrage.app.main_db().db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
-                      if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
-            if not dbData: continue
+            dbData = [x for x in sickrage.app.main_db().get_many('tv_episodes', bestResult.indexerid)
+                      if x['season'] == bestResult.season and x['episode'] == bestResult.episode]
+
+            if not dbData:
+                continue
 
             # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
             oldStatus, oldQuality = Quality.splitCompositeStatus(int(dbData[0]["status"]))
@@ -199,9 +199,8 @@ class ProperSearcher(object):
 
             # check if we actually want this proper (if it's the right release group and a higher version)
             if bestResult.show.is_anime:
-                dbData = [x['doc'] for x in
-                          sickrage.app.main_db.db.get_many('tv_episodes', bestResult.indexerid, with_doc=True)
-                          if x['doc']['season'] == bestResult.season and x['doc']['episode'] == bestResult.episode]
+                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', bestResult.indexerid)
+                          if x['season'] == bestResult.season and x['episode'] == bestResult.episode]
 
                 oldVersion = int(dbData[0]["version"])
                 oldRelease_group = (dbData[0]["release_group"])
@@ -236,12 +235,12 @@ class ProperSearcher(object):
             historyLimit = datetime.datetime.today() - datetime.timedelta(days=30)
 
             # make sure the episode has been downloaded before
-            historyResults = [x for x in
-                              sickrage.app.main_db.db.get_many('history', curProper.indexerid, with_doc=True)
-                              if x['doc']['season'] == curProper.season and x['doc']['episode'] == curProper.episode
-                              and x['doc']['quality'] == curProper.quality
-                              and x['doc']['date'] >= historyLimit.strftime(History.date_format)
-                              and x['doc']['action'] in Quality.SNATCHED + Quality.DOWNLOADED]
+            historyResults = [x for x in sickrage.app.main_db.get_many('history', curProper.indexerid)
+                              if x['season'] == curProper.season
+                              and x['episode'] == curProper.episode
+                              and x['quality'] == curProper.quality
+                              and x['date'] >= historyLimit.strftime(History.date_format)
+                              and x['action'] in Quality.SNATCHED + Quality.DOWNLOADED]
 
             # if we didn't download this episode in the first place we don't know what quality to use for the proper so we can't do it
             if len(historyResults) == 0:
@@ -294,9 +293,9 @@ class ProperSearcher(object):
 
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
+        dbData = [x for x in sickrage.app.main_db.all('info')]
         if len(dbData) == 0:
-            sickrage.app.main_db.db.insert({
+            sickrage.app.main_db.insert({
                 '_t': 'info',
                 'last_backlog': 0,
                 'last_indexer': 0,
@@ -304,7 +303,7 @@ class ProperSearcher(object):
             })
         else:
             dbData[0]['last_proper_search'] = str(when)
-            sickrage.app.main_db.db.update(dbData[0])
+            sickrage.app.main_db.update(dbData[0])
 
     @staticmethod
     def _get_lastProperSearch():
@@ -313,7 +312,7 @@ class ProperSearcher(object):
         """
 
         try:
-            dbData = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)]
+            dbData = [x for x in sickrage.app.main_db.all('info')]
             last_proper_search = datetime.date.fromordinal(int(dbData[0]["last_proper_search"]))
         except:
             last_proper_search = datetime.date.fromordinal(1)

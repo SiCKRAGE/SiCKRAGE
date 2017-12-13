@@ -36,12 +36,12 @@ class SkyTorrents(TorrentProvider):
         self.minleech = None
 
         self.urls.update({
-            "search": "{base_url}/rss/all".format(**self.urls)
+            "search": "{base_url}/rss/all/%s/%s/%s".format(**self.urls)
         })
 
         self.custom_url = ""
 
-        self.cache = TVCache(self, search_params={"RSS": [""]})
+        self.cache = TVCache(self)
 
         self.regex = re.compile(
             '(?P<seeders>\d+) seeder\(s\), (?P<leechers>\d+) leecher\(s\), (\d+) file\(s\) (?P<size>[^\]]*)')
@@ -68,9 +68,7 @@ class SkyTorrents(TorrentProvider):
                     sickrage.app.log.debug("Search string: {0}".format
                                                    (search_string))
 
-                search_url = urljoin(self.urls["search"],
-                                     "{sorting}/{page}/{search_string}".format(sorting=("ed", "ad")[mode == "RSS"],
-                                                                               page=1, search_string=search_string))
+                search_url = self.urls["search"] % (("ed", "ad")[mode == "RSS"], 1, search_string)
 
                 if self.custom_url:
                     if not validate_url(self.custom_url):
@@ -82,8 +80,8 @@ class SkyTorrents(TorrentProvider):
                     data = self.session.get(search_url).text
                     results += self.parse(data, mode)
                 except Exception:
-                    sickrage.app.log.debug("URL did not return results/data, if the results are on the site "
-                                                   "maybe try a custom url, or a different one")
+                    sickrage.app.log.debug("URL did not return results/data, if the results are on the site maybe try "
+                                           "a custom url, or a different one")
 
         return results
 
@@ -98,11 +96,13 @@ class SkyTorrents(TorrentProvider):
         results = []
 
         if not data.startswith("<rss"):
-            sickrage.app.log.info("Expected rss but got something else, is your mirror failing?")
+            if data.startswith("429"):
+                sickrage.app.log.info(data)
+            else:
+                sickrage.app.log.info("Expected rss but got something else, is your mirror failing?")
             return results
 
-        feed = feedparser.parse(data)
-        for item in feed.entries:
+        for item in feedparser.parse(data).entries:
             try:
                 title = item.title
                 download_url = item.link

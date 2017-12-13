@@ -724,8 +724,8 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                  if x['doc']['season'] == self.s and x['doc']['episode'] == self.e]
+        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                  if x['season'] == self.s and x['episode'] == self.e]
 
         if not len(dbData) == 1:
             raise ApiError("Episode not found")
@@ -989,7 +989,7 @@ class CMD_Exceptions(ApiCall):
 
         if self.indexerid is None:
             scene_exceptions = {}
-            for dbData in [x['doc'] for x in sickrage.app.cache_db.db.all('scene_exceptions', with_doc=True)]:
+            for dbData in sickrage.app.cache_db.all('scene_exceptions'):
                 indexerid = dbData['indexer_id']
                 if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
@@ -1000,9 +1000,8 @@ class CMD_Exceptions(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in [x['doc'] for x in
-                           sickrage.app.cache_db.db.all('scene_exceptions', self.indexerid, with_doc=True)
-                           if x['doc']['indexer_id'] == self.indexerid]:
+            for dbData in (x for x in sickrage.app.cache_db.all('scene_exceptions', self.indexerid)
+                           if x['indexer_id'] == self.indexerid):
                 scene_exceptions.append(dbData['show_name'])
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
@@ -1099,9 +1098,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', with_doc=True)]
+            dbData = [x for x in sickrage.app.failed_db.all('failed')]
         else:
-            dbData = [x['doc'] for x in sickrage.app.failed_db.db.all('failed', ulimit, with_doc=True)]
+            dbData = [x for x in sickrage.app.failed_db.all('failed', ulimit)]
 
         return _responds(RESULT_SUCCESS, dbData)
 
@@ -1120,9 +1119,8 @@ class CMD_Backlog(ApiCall):
 
         for s in sickrage.app.showlist:
             showEps = []
-            for e in sorted(
-                    [e['doc'] for e in sickrage.app.main_db.db.get_many('tv_episodes', s.indexerid, with_doc=True) if
-                     s.paused == 0], key=lambda x: (x['season'], x['episode']), reverse=True):
+            for e in sorted((e for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid) if s.paused == 0),
+                            key=lambda d: (d['season'], d['episode']), reverse=True):
 
                 curEpCat = s.getOverview(int(e["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
@@ -1345,7 +1343,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         """ Get information about the scheduler """
 
         try:
-            last_backlog = [x['doc'] for x in sickrage.app.main_db.db.all('info', with_doc=True)][0]["last_backlog"]
+            last_backlog = [x for x in sickrage.app.main_db.all('info')][0]["last_backlog"]
         except:
             last_backlog = 1
 
@@ -2367,16 +2365,8 @@ class CMD_ShowSeasonList(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        if self.sort == "asc":
-            seasonList = sorted(
-                *[{x['doc']['season'] for x in
-                   sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
-                key=lambda d: d)
-        else:
-            seasonList = sorted(
-                *[{x['doc']['season'] for x in
-                   sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)}],
-                key=lambda d: d, reverse=True)
+        seasonList = sorted((x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)),
+                            key=lambda d: d, reverse=not self.sort == "asc")
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2408,15 +2398,15 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in [x['doc'] for x in
-                        sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)]:
+            for row in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
                 status, quality = Quality.splitCompositeStatus(int(row["status"]))
                 row["status"] = _get_status_Strings(status)
                 row["quality"] = get_quality_string(quality)
 
                 if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime.convert_to_setting(
-                        tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network))
+                        tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network)
+                    )
                     row['airdate'] = srdatetime.srDateTime.srfdate(dtEpisodeAirs, d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2433,8 +2423,8 @@ class CMD_ShowSeasons(ApiCall):
                 seasons[curSeason][curEpisode] = row
 
         else:
-            dbData = [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                      if x['doc']['season'] == self.season]
+            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                      if x['season'] == self.season]
 
             if len(dbData) is 0:
                 return _responds(RESULT_FAILURE, msg="Season not found")
@@ -2567,9 +2557,7 @@ class CMD_ShowStats(ApiCall):
             if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in [x['doc'] for x in sickrage.app.main_db.db.get_many('tv_episodes', self.indexerid, with_doc=True)
-                    if x['doc']['season'] != 0]:
-
+        for row in (x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid) if x['season'] != 0):
             status, quality = Quality.splitCompositeStatus(int(row["status"]))
 
             episode_status_counts_total["total"] += 1

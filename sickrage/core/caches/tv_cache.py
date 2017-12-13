@@ -41,8 +41,8 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.app.cache_db.db.delete(x['doc']) for x in
-             sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
+            [sickrage.app.cache_db.delete(x) for x in
+             sickrage.app.cache_db.get_many('providers', self.providerID)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -120,7 +120,7 @@ class TVCache(object):
     @property
     def last_update(self):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -131,11 +131,11 @@ class TVCache(object):
     @last_update.setter
     def last_update(self, toDate):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastUpdate', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.db.update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.cache_db.db.insert({
+            sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
@@ -144,7 +144,7 @@ class TVCache(object):
     @property
     def last_search(self):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
         except RecordNotFound:
@@ -155,11 +155,11 @@ class TVCache(object):
     @last_search.setter
     def last_search(self, toDate):
         try:
-            dbData = sickrage.app.cache_db.db.get('lastSearch', self.providerID, with_doc=True)['doc']
+            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.db.update(dbData)
+            sickrage.app.cache_db.update(dbData)
         except RecordNotFound:
-            sickrage.app.cache_db.db.insert({
+            sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
@@ -181,8 +181,8 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
-        if len([x for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True) if
-                x['doc']['url'] == url]): return
+        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID)
+                if x['url'] == url]): return
 
         try:
             # parse release name
@@ -222,7 +222,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    sickrage.app.cache_db.db.insert(dbData)
+                    sickrage.app.cache_db.insert(dbData)
 
                     # add to external database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
@@ -247,8 +247,9 @@ class TVCache(object):
                 pass
 
         # get data from internal database
-        dbData += [x['doc'] for x in sickrage.app.cache_db.db.get_many('providers', self.providerID, with_doc=True)]
+        dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
 
+        # sort data by criteria
         dbData = [x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
                   and "|" + str(ep_obj.episode) + "|" in x['episodes']] if ep_obj else dbData
 

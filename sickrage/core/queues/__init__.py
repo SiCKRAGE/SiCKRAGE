@@ -20,9 +20,9 @@
 from __future__ import unicode_literals
 
 try:
-    from Queue import PriorityQueue, Empty
+    from Queue import PriorityQueue, Empty, Queue
 except ImportError:
-    from queue import PriorityQueue, Empty
+    from queue import PriorityQueue, Empty, Queue
 
 import time
 import datetime
@@ -42,6 +42,7 @@ class srQueue(threading.Thread):
         super(srQueue, self).__init__(name=name)
         self.daemon = True
         self._queue = PriorityQueue()
+        self._result_queue = Queue()
         self.currentItem = None
         self.min_priority = 0
         self.amActive = False
@@ -89,6 +90,7 @@ class srQueue(threading.Thread):
         """
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
+        item.result_queue = self._result_queue
         self._queue.put((item.priority, time.time(), item), *args, **kwargs)
         return item
 
@@ -119,3 +121,5 @@ class srQueueItem(threading.Thread):
         self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
         self.added = None
+        self.result = None
+        self.result_queue = None

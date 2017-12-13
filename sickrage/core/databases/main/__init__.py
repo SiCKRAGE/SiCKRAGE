@@ -77,7 +77,7 @@ class MainDB(srDatabase):
     def fix_show_none_types(self):
         checked = []
 
-        for show in [x['doc'] for x in self.db.all('tv_shows', with_doc=True)]:
+        for show in self.all('tv_shows'):
             if show['indexer_id'] in checked:
                 continue
 
@@ -91,14 +91,16 @@ class MainDB(srDatabase):
                         pass
 
             if dirty:
-                self.db.update(show)
+                self.update(show)
 
             checked += [show['indexer_id']]
+
+        del checked
 
     def fix_episode_none_types(self):
         checked = []
 
-        for ep in [x['doc'] for x in self.db.all('tv_episodes', with_doc=True)]:
+        for ep in self.all('tv_episodes'):
             if ep['showid'] in checked:
                 continue
 
@@ -112,39 +114,36 @@ class MainDB(srDatabase):
                         pass
 
             if dirty:
-                self.db.update(ep)
+                self.update(ep)
 
             checked += [ep['showid']]
+
+        del checked
 
     def fix_dupe_shows(self):
-        checked = []
+        found = []
 
-        for show in [x['doc'] for x in self.db.all('tv_shows', with_doc=True)]:
-            if show['indexer_id'] in checked:
-                continue
+        for show in self.all('tv_shows'):
+            if show['indexer_id'] in found:
+                sickrage.app.log.info("Deleting duplicate show with id: {}".format(show["indexer_id"]))
+                self.delete(show)
+            found += [show['indexer_id']]
 
-            for dupe in [x['doc'] for x in self.db.get_many('tv_shows', show['indexer_id'], with_doc=True)][1::]:
-                sickrage.app.log.info("Deleting duplicate show with id: {}".format(dupe["indexer_id"]))
-                self.db.delete(dupe)
-
-            checked += [show['indexer_id']]
+        del found
 
     def fix_dupe_episodes(self):
-        checked = []
+        found = []
 
-        for ep in [x['doc'] for x in self.db.all('tv_episodes', with_doc=True)]:
-            if ep['showid'] in checked:
-                continue
+        for ep in self.all('tv_episodes'):
+            if ep['indexerid'] in found:
+                sickrage.app.log.info("Deleting duplicate episode with id: {}".format(ep["indexerid"]))
+                self.delete(ep)
+            found += [ep['indexerid']]
 
-            for dupe in [x['doc'] for x in self.db.get_many('tv_episodes', ep['showid'], with_doc=True) if
-                         x['doc']['indexerid'] == ep['indexerid']][1::]:
-                sickrage.app.log.info("Deleting duplicate episode with id: {}".format(dupe["indexerid"]))
-                self.db.delete(dupe)
-
-            checked += [ep['showid']]
+        del found
 
     def fix_orphaned_episodes(self):
-        for ep in [x['doc'] for x in self.db.all('tv_episodes', with_doc=True)]:
-            if not self.db.get('tv_shows', ep['showid'], with_doc=True)['doc']:
+        for ep in self.all('tv_episodes'):
+            if not self.get('tv_shows', ep['showid']):
                 sickrage.app.log.info("Deleting orphan episode with id: {}".format(ep["indexerid"]))
-                self.db.delete(ep)
+                self.delete(ep)

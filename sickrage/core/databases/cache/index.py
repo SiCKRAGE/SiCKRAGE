@@ -24,7 +24,7 @@ from CodernityDB.hash_index import HashIndex
 
 
 class CacheLastUpdateIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -39,7 +39,7 @@ class CacheLastUpdateIndex(HashIndex):
 
 
 class CacheLastSearchIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -69,7 +69,7 @@ class CacheSceneExceptionsIndex(HashIndex):
 
 
 class CacheSceneNamesIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -84,7 +84,7 @@ class CacheSceneNamesIndex(HashIndex):
 
 
 class CacheNetworkTimezonesIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -99,7 +99,7 @@ class CacheNetworkTimezonesIndex(HashIndex):
 
 
 class CacheSceneExceptionsRefreshIndex(HashIndex):
-    _version = 2
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'
@@ -114,7 +114,7 @@ class CacheSceneExceptionsRefreshIndex(HashIndex):
 
 
 class CacheProvidersIndex(HashIndex):
-    _version = 3
+    _version = 4
 
     def __init__(self, *args, **kwargs):
         kwargs['key_format'] = '32s'

@@ -532,7 +532,7 @@ class Core(object):
         Populates the showlist with shows from the database
         """
 
-        for dbData in [x['doc'] for x in self.main_db.db.all('tv_shows', with_doc=True)]:
+        for dbData in self.main_db.all('tv_shows'):
             try:
                 self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
                 self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
