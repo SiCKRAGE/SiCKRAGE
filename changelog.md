@@ -1,6 +1,8 @@
 # Changelog
 
-- * fbfdeb6 - 2017-12-13: Release v9.2.62 
+- * 3717a05 - 2017-12-14: Release v9.2.63 
+- * 22c5664 - 2017-12-14: Fixed issue &quot;Unable to contact theTVDB: [0]: Series result returned zero&quot; 
+- * 20416e1 - 2017-12-13: Release v9.2.62 
 - * 34d3b93 - 2017-12-13: Added code to name cache to allow adding show names we wish to ignore, helps speed up name parsing and searches 
 - * b922499 - 2017-12-12: Py3 compat for queue 
 - * 2c6c207 - 2017-12-11: Fixed issue with thread naming for post-processing 
