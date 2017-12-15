@@ -166,7 +166,10 @@ class NewpctProvider(TorrentProvider):
 
     def _process_title(self, title, url):
         # Convert to unicode and strip unwanted characters
-        title = title.encode('latin-1').decode('utf8').strip()
+        try:
+            title = title.encode('latin-1').decode('utf8').strip()
+        except Exception:
+            title = title.strip()
 
         # Check if subtitled
         subtitles = re.search(r'\[V.O.[^\[]*]', title, flags=re.I)

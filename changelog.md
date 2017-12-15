@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ddd4d7 - 2017-12-15: Added custom url setting to torrent9 provider 
+- * 54e8976 - 2017-12-15: Fix unicode issues for Newpct torrent provider 
+- * c0f1698 - 2017-12-15: Added custom url setting to torrent9 provider 
 - * 032e9ed - 2017-12-15: Release v9.2.64 
 - * 92337a7 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 
 - * 9d35ea1 - 2017-12-14: Release v9.2.63 
