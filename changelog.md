@@ -1,6 +1,7 @@
 # Changelog
 
-- * 54e8976 - 2017-12-15: Fix unicode issues for Newpct torrent provider 
+- * 5b32791 - 2017-12-15: Added new code for converting magnet links to torrent files via SR API 
+- * bb8a5b8 - 2017-12-15: Fix unicode issues for Newpct torrent provider 
 - * c0f1698 - 2017-12-15: Added custom url setting to torrent9 provider 
 - * 032e9ed - 2017-12-15: Release v9.2.64 
 - * 92337a7 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 

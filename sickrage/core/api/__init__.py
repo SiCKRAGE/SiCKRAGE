@@ -76,3 +76,6 @@ class API(object):
                  'v1/providers/cache/results/{}/indexerids/{}'.format(provider, indexerid))[indexerid is not None]
 
         return self._request('GET', query)
+
+    def magnet2torrent(self, magnet):
+        return self._request('POST', 'v1/mag2tor', data=dict({'magnet':magnet}))

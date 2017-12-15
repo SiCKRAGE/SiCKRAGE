@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 
+import base64
 import datetime
 import importlib
 import io
@@ -632,36 +633,36 @@ class TorrentProvider(GenericProvider):
         return result
 
     def get_content(self, url):
-        urls = [url]
+        result = None
 
-        bt_cache_urls = [
-            'https://itorrents.org/torrent/{info_hash}.torrent',
-            'http://reflektor.karmorra.info/torrent/{info_hash}.torrent',
-            'https://torrent.cd/torrents/download/{info_hash}.torrent',
-            'https://asnet.pw/download/{info_hash}/',
-            'http://p2pdl.com/download/{info_hash}',
-        ]
-
-        if url.startswith('magnet'):
-            info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
-            if len(info_hash) == 32:
-                info_hash = b16encode(b32decode(info_hash)).upper()
-
-            if not info_hash:
-                sickrage.app.log.error("Unable to extract torrent hash from magnet: " + url)
-                return urls
-
-            urls = [x.format(info_hash=info_hash) for x in bt_cache_urls]
-
-        random.shuffle(urls)
-
-        for u in urls:
+        def verify_torrent(content):
             try:
-                content = super(TorrentProvider, self).get_content(u)
                 if bencode.bdecode(content).get('info'):
                     return content
             except Exception:
                 pass
+
+        if url.startswith('magnet'):
+            # try iTorrents
+            info_hash = str(re.findall(r'urn:btih:([\w]{32,40})', url)[0]).upper()
+            if len(info_hash) == 32:
+                info_hash = b16encode(b32decode(info_hash)).upper()
+
+            if info_hash:
+                torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
+                result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
+
+            # try api
+            if not result:
+                try:
+                    result = verify_torrent(base64.b64decode(sickrage.app.api.magnet2torrent(url)['message']).strip())
+                except Exception:
+                    pass
+
+        if not result:
+            result = verify_torrent(super(TorrentProvider, self).get_content(url))
+
+        return result
 
     def _get_title_and_url(self, item):
         title, download_url = '', ''
