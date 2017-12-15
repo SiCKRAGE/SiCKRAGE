@@ -187,7 +187,7 @@ class TVCache(object):
         try:
             # parse release name
             parse_result = NameParser(validate_show=sickrage.app.config.enable_rss_cache_valid_shows).parse(name)
-            if parse_result.series_name:
+            if parse_result.series_name and parse_result.quality != Quality.UNKNOWN:
                 season = parse_result.season_number if parse_result.season_number else 1
                 episodes = parse_result.episode_numbers
 

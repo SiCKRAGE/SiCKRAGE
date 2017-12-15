@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import os
 
 import sickrage
+from sickrage.core.common import Quality
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache.index import CacheLastUpdateIndex, CacheLastSearchIndex, CacheSceneExceptionsIndex, \
     CacheSceneNamesIndex, CacheNetworkTimezonesIndex, CacheSceneExceptionsRefreshIndex, CacheProvidersIndex
@@ -49,3 +50,11 @@ class CacheDB(srDatabase):
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'cache.db')
+
+    def cleanup(self):
+        self.cleanup_provider_cache()
+
+    def cleanup_provider_cache(self):
+        for item in self.all('providers'):
+            if int(item["quality"]) == Quality.UNKNOWN:
+                self.delete(item)

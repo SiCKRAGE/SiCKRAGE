@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3717a05 - 2017-12-14: Release v9.2.63 
+- * 0f01103 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 
+- * 9d35ea1 - 2017-12-14: Release v9.2.63 
 - * 22c5664 - 2017-12-14: Fixed issue &quot;Unable to contact theTVDB: [0]: Series result returned zero&quot; 
 - * 20416e1 - 2017-12-13: Release v9.2.62 
 - * 34d3b93 - 2017-12-13: Added code to name cache to allow adding show names we wish to ignore, helps speed up name parsing and searches 
