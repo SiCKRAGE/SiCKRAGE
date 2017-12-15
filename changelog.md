@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0f01103 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 
+- * 49c2bfe - 2017-12-15: Release v9.2.64 
+- * 92337a7 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 
 - * 9d35ea1 - 2017-12-14: Release v9.2.63 
 - * 22c5664 - 2017-12-14: Fixed issue &quot;Unable to contact theTVDB: [0]: Series result returned zero&quot; 
 - * 20416e1 - 2017-12-13: Release v9.2.62 
