@@ -1,6 +1,7 @@
 # Changelog
 
-- * 17136a1 - 2017-12-16: refactored torrent cache api calls 
+- * f73027b - 2017-12-16: Fixed url issue 
+- * 1c5d901 - 2017-12-16: refactored torrent cache api calls 
 - * e5ee3a3 - 2017-12-16: refactored torrent cache api calls 
 - * 07005ed - 2017-12-16: Refactored API url 
 - * 451aa80 - 2017-12-15: Refactored API url 
