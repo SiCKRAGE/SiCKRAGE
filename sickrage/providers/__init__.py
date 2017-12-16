@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import base64
 import datetime
 import importlib
 import io
@@ -26,7 +25,7 @@ import itertools
 import os
 import random
 import re
-from base64 import b16encode, b32decode
+from base64 import b16encode, b32decode, b64decode
 from collections import OrderedDict, defaultdict
 from time import sleep
 from urlparse import urljoin
@@ -652,12 +651,13 @@ class TorrentProvider(GenericProvider):
                 torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
                 result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
 
-            # try api
-            if not result:
-                try:
-                    result = verify_torrent(base64.b64decode(sickrage.app.api.magnet2torrent(url)['message']).strip())
-                except Exception:
-                    pass
+                # try api
+                if not result:
+                    try:
+                        result = verify_torrent(
+                            b64decode(sickrage.app.api.get_torrent_cache_results(info_hash)['message']).strip())
+                    except Exception:
+                        pass
 
         if not result:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))

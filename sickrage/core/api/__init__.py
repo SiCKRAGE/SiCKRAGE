@@ -68,14 +68,20 @@ class API(object):
     def user_profile(self):
         return self._request('GET', 'users/me')
 
-    def add_cache_result(self, data):
+    def add_provider_cache_result(self, data):
         self._request('POST', 'v1/providers/cache/results', json=data)
 
-    def get_cache_results(self, provider, indexerid=None):
+    def get_provider_cache_results(self, provider, indexerid=None):
         query = ('v1/providers/cache/results/{}'.format(provider),
                  'v1/providers/cache/results/{}/indexerids/{}'.format(provider, indexerid))[indexerid is not None]
 
         return self._request('GET', query)
 
-    def magnet2torrent(self, magnet):
-        return self._request('POST', 'v1/torrents/mag2tor', data=dict({'magnet':magnet}))
+    def get_torrent_cache_results(self, hash=None):
+        query = ('v1/torrents/cache/results',
+                 'v1/torrents/cache/results/{}'.format(hash))[hash is not None]
+
+        return self._request('GET', query)
+
+    def add_torrent_cache_result(self, url):
+        self._request('POST', 'v1/torrents/cache/results', data=dict({'url': url}))

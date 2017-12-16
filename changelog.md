@@ -1,6 +1,7 @@
 # Changelog
 
-- * f41616c - 2017-12-15: Refactored API url 
+- * 4faba09 - 2017-12-16: Refactored API url 
+- * 451aa80 - 2017-12-15: Refactored API url 
 - * a915b3c - 2017-12-15: Added new code for converting magnet links to torrent files via SR API 
 - * bb8a5b8 - 2017-12-15: Fix unicode issues for Newpct torrent provider 
 - * c0f1698 - 2017-12-15: Added custom url setting to torrent9 provider 
