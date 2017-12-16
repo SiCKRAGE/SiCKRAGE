@@ -25,7 +25,7 @@ from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, try_int, convert_size
+from sickrage.core.helpers import bs4_parser, try_int, convert_size, validate_url
 from sickrage.providers import TorrentProvider
 
 
@@ -40,6 +40,8 @@ class Torrent9Provider(TorrentProvider):
 
         self.minseed = None
         self.minleech = None
+
+        self.custom_url = ""
 
         self.proper_strings = ['PROPER', 'REPACK']
 
@@ -64,6 +66,12 @@ class Torrent9Provider(TorrentProvider):
                                          "{search_string}.html,trie-seeds-d".format(search_string=search_string))
                 else:
                     search_url = self.urls['rss']
+
+                if self.custom_url:
+                    if not validate_url(self.custom_url):
+                        sickrage.app.log.warning("Invalid custom url: {0}".format(self.custom_url))
+                        return results
+                    search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
                 try:
                     data = self.session.get(search_url).text
@@ -90,7 +98,8 @@ class Torrent9Provider(TorrentProvider):
                     title = result.find('a').get_text(strip=False).replace("HDTV", "HDTV x264-Torrent9")
                     title = re.sub(r' Saison', ' Season', title, flags=re.I)
                     tmp = result.find("a")['href'].split('/')[-1].replace('.html', '.torrent').strip()
-                    download_url = (self.urls['base_url'] + '/get_torrent/{0}'.format(tmp) + ".torrent")
+                    download_url = urljoin(self.custom_url or self.urls['base_url'],
+                                           '/get_torrent/{0}'.format(tmp) + ".torrent")
                     if not all([title, download_url]):
                         continue
 

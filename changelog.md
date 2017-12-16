@@ -1,6 +1,15 @@
 # Changelog
 
-- * 49c2bfe - 2017-12-15: Release v9.2.64 
+- * 7bc398a - 2017-12-16: Release v9.2.65 
+- * d53ccb0 - 2017-12-16: Fixed url issue 
+- * 1c5d901 - 2017-12-16: refactored torrent cache api calls 
+- * e5ee3a3 - 2017-12-16: refactored torrent cache api calls 
+- * 07005ed - 2017-12-16: Refactored API url 
+- * 451aa80 - 2017-12-15: Refactored API url 
+- * a915b3c - 2017-12-15: Added new code for converting magnet links to torrent files via SR API 
+- * bb8a5b8 - 2017-12-15: Fix unicode issues for Newpct torrent provider 
+- * c0f1698 - 2017-12-15: Added custom url setting to torrent9 provider 
+- * 032e9ed - 2017-12-15: Release v9.2.64 
 - * 92337a7 - 2017-12-15: Added code to cleanup cached provider results with UNKNOWN quality Added code to prevent parsed search results with UNKNOWN quality from being cached 
 - * 9d35ea1 - 2017-12-14: Release v9.2.63 
 - * 22c5664 - 2017-12-14: Fixed issue &quot;Unable to contact theTVDB: [0]: Series result returned zero&quot; 

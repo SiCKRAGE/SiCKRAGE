@@ -224,10 +224,10 @@ class TVCache(object):
                     # add to internal database
                     sickrage.app.cache_db.insert(dbData)
 
-                    # add to external database
+                    # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.api.add_cache_result(dbData)
+                            sickrage.app.api.add_provider_cache_result(dbData)
                         except Exception:
                             pass
 
@@ -242,7 +242,7 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += sickrage.app.api.get_cache_results(self.providerID, ep_obj.show.indexerid)
+                dbData += sickrage.app.api.get_provider_cache_results(self.providerID, ep_obj.show.indexerid)
             except Exception:
                 pass
 
