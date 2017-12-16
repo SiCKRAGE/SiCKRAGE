@@ -1,6 +1,7 @@
 # Changelog
 
-- * a465250 - 2017-12-16: refactored torrent cache api calls 
+- * 17136a1 - 2017-12-16: refactored torrent cache api calls 
+- * e5ee3a3 - 2017-12-16: refactored torrent cache api calls 
 - * 07005ed - 2017-12-16: Refactored API url 
 - * 451aa80 - 2017-12-15: Refactored API url 
 - * a915b3c - 2017-12-15: Added new code for converting magnet links to torrent files via SR API 

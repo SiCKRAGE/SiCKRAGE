@@ -648,16 +648,16 @@ class TorrentProvider(GenericProvider):
                 info_hash = b16encode(b32decode(info_hash)).upper()
 
             if info_hash:
-                torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
+                torrent_url = "https://itrrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
                 result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
 
                 # try api
-                if not result:
+                if not result and sickrage.app.config.enable_api:
                     try:
                         # add to external database
                         sickrage.app.api.add_torrent_cache_result(url)
                         result = verify_torrent(
-                            b64decode(sickrage.app.api.get_torrent_cache_results(info_hash)['message']).strip())
+                            b64decode(sickrage.app.api.get_torrent_cache_results(info_hash)).strip())
                     except Exception:
                         pass
 
