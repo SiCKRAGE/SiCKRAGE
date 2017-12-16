@@ -78,4 +78,4 @@ class API(object):
         return self._request('GET', query)
 
     def magnet2torrent(self, magnet):
-        return self._request('POST', 'v1/mag2tor', data=dict({'magnet':magnet}))
+        return self._request('POST', 'v1/torrents/mag2tor', data=dict({'magnet':magnet}))
