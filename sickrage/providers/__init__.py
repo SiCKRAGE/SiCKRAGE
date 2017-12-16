@@ -654,6 +654,8 @@ class TorrentProvider(GenericProvider):
                 # try api
                 if not result:
                     try:
+                        # add to external database
+                        sickrage.app.api.add_torrent_cache_result(url)
                         result = verify_torrent(
                             b64decode(sickrage.app.api.get_torrent_cache_results(info_hash)['message']).strip())
                     except Exception:
