@@ -3472,6 +3472,7 @@ jQuery(document).ready(function ($) {
                     });
 
                     $('#tv_download_dir').fileBrowser({title: gt('Select TV Download Directory')});
+                    $('#unpack_dir').fileBrowser({title: gt('Select UNPACK Directory')});
                 },
 
                 typewatch: function () {

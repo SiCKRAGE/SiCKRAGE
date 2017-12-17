@@ -1,6 +1,7 @@
 <%inherit file="../layouts/config.mako"/>
 <%def name='formaction()'><% return 'savePostProcessing' %></%def>
 <%!
+    import sys
     import os.path
 
     import sickrage
@@ -284,24 +285,44 @@
                         <label class="component-title">${_('Unpack')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input id="unpack" type="checkbox"
+                        <input id="unpack" class="enabler" type="checkbox"
                                name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                         <label for="unpack">
                             ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
-                            <b>${_('NOTE:')}</b> ${_('Only working with RAR archive')}
+                            <b>${_('NOTE:')}</b> ${_('Only works with RAR archives')}
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Delete RAR contents')}</label>
+                <div id="content_unpack">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Unpack Directory')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group input350">
+                                <div class="input-group-addon">
+                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                </div>
+                                <input name="unpack_dir" id="unpack_dir"
+                                       value="${'|'.join(sickrage.app.config.unpack_dir)}"
+                                       class="form-control" autocapitalize="off"/>
+                            </div>
+                            <label for="unpack_dir">
+                                ${_('Choose a path to unpack files, leave blank to unpack in download dir')}
+                            </label>
+                        </div>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="del_rar_contents"
-                               id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
-                        <label for="del_rar_contents">
-                            ${_('Delete content of RAR files, even if Process Method not set to move?')}
-                        </label>
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Delete RAR contents')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="del_rar_contents"
+                                   id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
+                            <label for="del_rar_contents">
+                                ${_('Delete content of RAR files, even if Process Method not set to move?')}
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="row field-pair">
