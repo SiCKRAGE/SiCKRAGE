@@ -1,6 +1,7 @@
 # Changelog
 
-- * 27a381f - 2017-12-17: Release v9.2.67 
+- * 52905a1 - 2017-12-17: Fixed issue #141 - show/hide seasons in display show page 
+- * 3b4302a - 2017-12-17: Release v9.2.67 
 - * 5f48f83 - 2017-12-17: Release v9.2.66 
 - * 313d7fd - 2017-12-17: Fixed issues with unrar and windows platforms Fixed issues with unrar and *nix platforms Added option to set unpack location 
 - * 7682ad1 - 2017-12-17: Fixed issue #153 - Checking delete files when removing a show didn&#x27;t actually delete the files Added code to remove queue item to be ignored when listing shows 
