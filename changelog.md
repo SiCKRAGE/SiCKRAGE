@@ -1,6 +1,7 @@
 # Changelog
 
-- * feb4197 - 2017-12-17: Fixed issues with unrar and windows platforms Fixed issues with unrar and *nix platforms Added option to set unpack location 
+- * 8cecaef - 2017-12-17: Release v9.2.66 
+- * 313d7fd - 2017-12-17: Fixed issues with unrar and windows platforms Fixed issues with unrar and *nix platforms Added option to set unpack location 
 - * 7682ad1 - 2017-12-17: Fixed issue #153 - Checking delete files when removing a show didn&#x27;t actually delete the files Added code to remove queue item to be ignored when listing shows 
 - * 3c60c67 - 2017-12-16: Release v9.2.65 
 - * d53ccb0 - 2017-12-16: Fixed url issue 
