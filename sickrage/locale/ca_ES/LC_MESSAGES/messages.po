@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-17 13:59-0500\n"
-"PO-Revision-Date: 2017-12-17 13:59-0500\n"
+"POT-Creation-Date: 2017-12-17 14:07-0500\n"
+"PO-Revision-Date: 2017-12-17 14:07-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Catalan\n"
 "MIME-Version: 1.0\n"
@@ -4666,7 +4666,7 @@ msgstr "Mai"
 msgid "Retry Download"
 msgstr "Torni a intentar descarregar"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4958
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4780,7 +4780,7 @@ msgstr "utilitzar l'ordre de DVD en comptes de l'ordre d'aire"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Una \"Actualització ple de força\" és necessari, i si teniu episodis existents cal ordenar-los manualment."
 
-#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4836
+#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4837
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:282
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5113,7 +5113,7 @@ msgstr "Error: El reinici ha esgotat el temps, potser alguna cosa va impedir SiC
 msgid "Daily Search"
 msgstr "Cerca diària"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4945
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Acumulació"
@@ -5138,7 +5138,7 @@ msgstr "Post-procés"
 msgid "Subtitles Finder"
 msgstr "Cercador de subtítols"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4953
 #: sickrage/core/webserver/views/home/status.mako:19
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5171,7 +5171,7 @@ msgstr "NO"
 msgid "True"
 msgstr "Veritable"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4948
 #: sickrage/core/webserver/views/home/status.mako:102
 msgid "Show Queue"
 msgstr "Cua Mostra el"
@@ -5531,17 +5531,17 @@ msgstr "General"
 msgid "Backup and Restore"
 msgstr "Reserva i restaura"
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4271
+#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4272
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Search Providers"
 msgstr "Proveïdors de cerca"
 
-#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:4755
+#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:4756
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "Configuració de subtítols"
 
-#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:4875
+#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:4876
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Escenes de qualitat"
@@ -5552,7 +5552,7 @@ msgstr "Escenes de qualitat"
 msgid "Post Processing"
 msgstr "Processament posterior"
 
-#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4428
+#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4429
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Notifications"
 msgstr "Notificacions"
@@ -6440,7 +6440,7 @@ msgstr "Ja en branca: "
 #: sickrage/core/webserver/views.py:1934 sickrage/core/webserver/views.py:1939
 #: sickrage/core/webserver/views.py:1942 sickrage/core/webserver/views.py:1985
 #: sickrage/core/webserver/views.py:1991 sickrage/core/webserver/views.py:1994
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4955
 msgid "Error"
 msgstr "Error"
 
@@ -6821,9 +6821,9 @@ msgid "General Configuration"
 msgstr "Configuració general"
 
 #: sickrage/core/webserver/views.py:3900 sickrage/core/webserver/views.py:4059
-#: sickrage/core/webserver/views.py:4189 sickrage/core/webserver/views.py:4410
-#: sickrage/core/webserver/views.py:4737 sickrage/core/webserver/views.py:4818
-#: sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:4190 sickrage/core/webserver/views.py:4411
+#: sickrage/core/webserver/views.py:4738 sickrage/core/webserver/views.py:4819
+#: sickrage/core/webserver/views.py:4858
 msgid "Error(s) Saving Configuration"
 msgstr "Configuració d'estalvi han"
 
@@ -6885,133 +6885,133 @@ msgstr "[SEARCH] configuració salvat"
 msgid "Config - Post Processing"
 msgstr "Config - processament de correu"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4116
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Desempaquetant no admet, impossibilitant descomprimir entorn"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4151 sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Provat un anime invàlid nomenar config, no desar la configuració de nomenclatura d'estalvi"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4164
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Heu intentat desar una configuració nomenclatura no és vàlid, no desar la configuració de nomenclatura"
 
-#: sickrage/core/webserver/views.py:4169
+#: sickrage/core/webserver/views.py:4170
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Heu intentat desar un invàlid aire per data nomenclatura config, no desar la configuració de l'aire per data"
 
-#: sickrage/core/webserver/views.py:4175
+#: sickrage/core/webserver/views.py:4176
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Heu intentat desar un invàlid esportiu nomenar config, no desar la configuració d'esports"
 
-#: sickrage/core/webserver/views.py:4191
+#: sickrage/core/webserver/views.py:4192
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:4271
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4312
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "No especifica el nom del proveïdor"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4314
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Cap proveïdor de l'adreça Url especificada"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4316
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Cap clau de proveïdor Api especificat"
 
-#: sickrage/core/webserver/views.py:4412
+#: sickrage/core/webserver/views.py:4413
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4427
+#: sickrage/core/webserver/views.py:4428
 msgid "Config - Notifications"
 msgstr "Config - notificacions"
 
-#: sickrage/core/webserver/views.py:4739
+#: sickrage/core/webserver/views.py:4740
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4754
+#: sickrage/core/webserver/views.py:4755
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4820
+#: sickrage/core/webserver/views.py:4821
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4835
+#: sickrage/core/webserver/views.py:4836
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4859
+#: sickrage/core/webserver/views.py:4860
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4874
+#: sickrage/core/webserver/views.py:4875
 msgid "Config - Quality Settings"
 msgstr "Config - escenes de qualitat"
 
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:4887
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CONFIGURACIÓ DE QUALITAT] Configuració salvat"
 
-#: sickrage/core/webserver/views.py:4899
+#: sickrage/core/webserver/views.py:4900
 msgid "Clear Errors"
 msgstr "Eliminar Errors"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4903
 msgid "Clear Warnings"
 msgstr "Clares advertències"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4944
 msgid "Daily Searcher"
 msgstr "Cercador diària"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4946
 msgid "Show Updater"
 msgstr "Updater Mostra el"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4947
 msgid "Check Version"
 msgstr "Comprovar la versió"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4949
 msgid "Search Queue"
 msgstr "Cua de cerca"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4950
 msgid "Find Propers"
 msgstr "Trobar la devoció"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4951
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4952
 msgid "Find Subtitles"
 msgstr "Trobar subtitula"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4954
 msgid "Event"
 msgstr "Esdeveniment"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4956
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4957
 msgid "Thread"
 msgstr "Fil"
 
