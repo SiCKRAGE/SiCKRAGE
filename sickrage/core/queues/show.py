@@ -68,6 +68,9 @@ class ShowQueue(srQueue):
     def isInSubtitleQueue(self, show):
         return self._isInQueue(show, (ShowQueueActions.SUBTITLE,))
 
+    def isBeingRemoved(self, show):
+        return self._isBeing(show, (ShowQueueActions.REMOVE,))
+
     def isBeingAdded(self, show):
         return self._isBeing(show, (ShowQueueActions.ADD,))
 
@@ -621,6 +624,13 @@ class QueueItemRemove(ShowQueueItem):
         # lets make sure this happens before any other high priority actions
         self.priority = srQueuePriorities.HIGH + srQueuePriorities.HIGH
         self.full = full
+
+    @property
+    def isLoading(self):
+        """
+        Returns false cause we are removing the show.
+        """
+        return False
 
     def run(self):
         sickrage.app.log.info("Removing show: {}".format(self.show.name))

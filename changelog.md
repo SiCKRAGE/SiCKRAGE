@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7bc398a - 2017-12-16: Release v9.2.65 
+- * b0b60fb - 2017-12-17: Fixed issue #153 - Checking delete files when removing a show didn&#x27;t actually delete the files Added code to remove queue item to be ignored when listing shows 
+- * 3c60c67 - 2017-12-16: Release v9.2.65 
 - * d53ccb0 - 2017-12-16: Fixed url issue 
 - * 1c5d901 - 2017-12-16: refactored torrent cache api calls 
 - * e5ee3a3 - 2017-12-16: refactored torrent cache api calls 

@@ -2081,8 +2081,15 @@ jQuery(document).ready(function ($) {
                     $("a.removeshow").confirm({
                         title: gt("Remove Show"),
                         content: gt('Are you sure you want to remove <span class="footerhighlight">') + $('#showtitle').data('showname') + gt('</span> from the database?<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>'),
-                        confirm: function () {
-                            location.href = this.$target.attr('href') + ($('#deleteFiles')[0].checked ? '&full=1' : '');
+                        buttons: {
+                            confirm: function () {
+                                var $deleteFiles = this.$content.find('#deleteFiles').prop('checked');
+                                location.href = this.$target.attr('href') + ($deleteFiles ? '&full=1' : '');
+                            },
+                            cancel: {
+                                action: function () {
+                                }
+                            }
                         }
                     });
                 },
