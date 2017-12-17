@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-13 01:09-0500\n"
-"PO-Revision-Date: 2017-12-13 01:10-0500\n"
+"POT-Creation-Date: 2017-12-17 13:59-0500\n"
+"PO-Revision-Date: 2017-12-17 14:00-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -109,232 +109,236 @@ msgstr "Está seguro que desea eliminar <span class=\"footerhighlight\">"
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "</span> de la base de datos?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check eliminar archivos así. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2212 dist/js/core.js:2244
+#: dist/js/core.js:2219 dist/js/core.js:2251
 msgid "Update failed."
 msgstr "Error de actualización."
 
-#: dist/js/core.js:2255
+#: dist/js/core.js:2262
 msgid "Select Show Location"
 msgstr "Seleccione Mostrar ubicación"
 
-#: dist/js/core.js:2395
+#: dist/js/core.js:2402
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "carpetas de carga <img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" />..."
 
-#: dist/js/core.js:2465
+#: dist/js/core.js:2472
 msgid "Select Unprocessed Episode Folder"
 msgstr "Seleccione carpeta de episodio sin procesar"
 
-#: dist/js/core.js:2748
+#: dist/js/core.js:2755
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "agotado el tiempo de búsqueda, intente aumentar tiempo de espera de indizador"
 
-#: dist/js/core.js:2752
+#: dist/js/core.js:2759
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search resultados:</legend>\n"
 
-#: dist/js/core.js:2756
+#: dist/js/core.js:2763
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No resultados encontrados, pruebe una búsqueda o language.</b>"
 
-#: dist/js/core.js:2775
+#: dist/js/core.js:2782
 msgid " (will debut on )"
 msgstr " (hará su debut en)"
 
-#: dist/js/core.js:2777
+#: dist/js/core.js:2784
 msgid " (started on )"
 msgstr " (iniciado en)"
 
-#: dist/js/core.js:2822
+#: dist/js/core.js:2829
 msgid "Saved Defaults"
 msgstr "Valores predeterminados guardados"
 
-#: dist/js/core.js:2824
+#: dist/js/core.js:2831
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Sus valores por defecto \"Agregar programa\" establecidos a las selecciones actuales."
 
-#: dist/js/core.js:2882
+#: dist/js/core.js:2889
 msgid "<span> Saving...</span>"
 msgstr "<span> de ahorro...</span>"
 
-#: dist/js/core.js:2925
+#: dist/js/core.js:2932
 msgid "Reset Config to Defaults"
 msgstr "Restablecer la configuración a los valores de"
 
-#: dist/js/core.js:2926
+#: dist/js/core.js:2933
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "¿Está seguro que desea restablecer la configuración a los valores de?"
 
-#: dist/js/core.js:3007
+#: dist/js/core.js:3014
 msgid "Select path to pip"
 msgstr "Seleccionar ruta a pip"
 
-#: dist/js/core.js:3013
+#: dist/js/core.js:3020
 msgid "Select path to git"
 msgstr "Seleccionar ruta a git"
 
-#: dist/js/core.js:3021 dist/js/core.js:3039 dist/js/core.js:3933
-#: dist/js/core.js:3951 dist/js/core.js:3972 dist/js/core.js:3994
-#: dist/js/core.js:4017 dist/js/core.js:4039 dist/js/core.js:4067
-#: dist/js/core.js:4084 dist/js/core.js:4128 dist/js/core.js:4213
-#: dist/js/core.js:4271 dist/js/core.js:4288 dist/js/core.js:4318
-#: dist/js/core.js:4375 dist/js/core.js:4451 dist/js/core.js:4470
-#: dist/js/core.js:4486
+#: dist/js/core.js:3028 dist/js/core.js:3046 dist/js/core.js:3941
+#: dist/js/core.js:3959 dist/js/core.js:3980 dist/js/core.js:4002
+#: dist/js/core.js:4025 dist/js/core.js:4047 dist/js/core.js:4075
+#: dist/js/core.js:4092 dist/js/core.js:4136 dist/js/core.js:4221
+#: dist/js/core.js:4279 dist/js/core.js:4296 dist/js/core.js:4326
+#: dist/js/core.js:4383 dist/js/core.js:4459 dist/js/core.js:4478
+#: dist/js/core.js:4494
 msgid "Please fill out the necessary fields above."
 msgstr "Por favor llene los campos necesarios arriba."
 
-#: dist/js/core.js:3071 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3078 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Enlace"
 
-#: dist/js/core.js:3073
+#: dist/js/core.js:3080
 msgid "Unlink"
 msgstr "Unlink"
 
-#: dist/js/core.js:3114
+#: dist/js/core.js:3121
 msgid "Select Subtitles Download Directory"
 msgstr "Seleccione subtítulos descargar directorio"
 
-#: dist/js/core.js:3230
+#: dist/js/core.js:3237
 msgid "Select .nzb blackhole/watch location"
 msgstr "Seleccione NZB negras/ver ubicación"
 
-#: dist/js/core.js:3231
+#: dist/js/core.js:3238
 msgid "Select .torrent blackhole/watch location"
 msgstr "Seleccione .torrent negras/ver ubicación"
 
-#: dist/js/core.js:3232
+#: dist/js/core.js:3239
 msgid "Select .torrent download location"
 msgstr "Seleccione la ubicación de descarga de torrent"
 
-#: dist/js/core.js:3299 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3306 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "Mínimo tiempo de siembra es"
 
-#: dist/js/core.js:3301
+#: dist/js/core.js:3308
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL al cliente uTorrent (p. ej. http://localhost:8000)"
 
-#: dist/js/core.js:3304
+#: dist/js/core.js:3311
 msgid "Stop seeding when inactive for"
 msgstr "Dejar de sembrar cuando esté inactivo para"
 
-#: dist/js/core.js:3310
+#: dist/js/core.js:3317
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL a su cliente de transmisión (p. ej. http://localhost:9091)"
 
-#: dist/js/core.js:3320
+#: dist/js/core.js:3327
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL a su cliente de diluvio (p. ej. http://localhost:8112)"
 
-#: dist/js/core.js:3329
+#: dist/js/core.js:3336
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP o nombre de host de su diluvio Daemon (por ejemplo, scgi://localhost:58846)"
 
-#: dist/js/core.js:3336
+#: dist/js/core.js:3343
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL a su cliente de Synology DS (p. ej. http://localhost:5000)"
 
-#: dist/js/core.js:3341
+#: dist/js/core.js:3348
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL al cliente rTorrent (scgi://localhost:5000 <br> o https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3351
+#: dist/js/core.js:3358
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL a su cliente de qbittorrent (por ejemplo, http://localhost: 8080)"
 
-#: dist/js/core.js:3361
+#: dist/js/core.js:3368
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "Dirección URL para el MLDonkey (p. ej. http://localhost:4080)"
 
-#: dist/js/core.js:3372
+#: dist/js/core.js:3379
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL al cliente putio (por ejemplo, http://localhost: 8080)"
 
-#: dist/js/core.js:3572
+#: dist/js/core.js:3579
 msgid "Select TV Download Directory"
 msgstr "Seleccione TV descargar directorio"
 
-#: dist/js/core.js:3587
+#: dist/js/core.js:3580
+msgid "Select UNPACK Directory"
+msgstr ""
+
+#: dist/js/core.js:3595
 msgid "Unrar Executable not found."
 msgstr "No encontró el archivo ejecutable descomprimir."
 
-#: dist/js/core.js:3633 dist/js/core.js:3677 dist/js/core.js:3721
-#: dist/js/core.js:3781
+#: dist/js/core.js:3641 dist/js/core.js:3685 dist/js/core.js:3729
+#: dist/js/core.js:3789
 msgid "This pattern is invalid."
 msgstr "Este patrón no es válido."
 
-#: dist/js/core.js:3640 dist/js/core.js:3684 dist/js/core.js:3728
-#: dist/js/core.js:3788
+#: dist/js/core.js:3648 dist/js/core.js:3692 dist/js/core.js:3736
+#: dist/js/core.js:3796
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Este patrón sería válido sin las carpetas utilizando obligará a \"Aplane\" apagado para todos los espectáculos."
 
-#: dist/js/core.js:3647 dist/js/core.js:3691 dist/js/core.js:3735
-#: dist/js/core.js:3795
+#: dist/js/core.js:3655 dist/js/core.js:3699 dist/js/core.js:3743
+#: dist/js/core.js:3803
 msgid "This pattern is valid."
 msgstr "Este patrón es válido."
 
-#: dist/js/core.js:4121
+#: dist/js/core.js:4129
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmar la autorización de"
 
-#: dist/js/core.js:4178 dist/js/core.js:4232
+#: dist/js/core.js:4186 dist/js/core.js:4240
 msgid "Please fill in the Popcorn IP address"
 msgstr "Por favor, rellene la dirección IP de palomitas de maíz"
 
-#: dist/js/core.js:4385
+#: dist/js/core.js:4393
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Compruebe el nombre de la lista negra; el valor necesita ser un slug trakt"
 
-#: dist/js/core.js:4417
+#: dist/js/core.js:4425
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You debe especificar un nombre de host SMTP!</li>"
 
-#: dist/js/core.js:4420
+#: dist/js/core.js:4428
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You debe especificar un puerto SMTP!</li>"
 
-#: dist/js/core.js:4422
+#: dist/js/core.js:4430
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "Puerto de <li style=\"color: red;\">SMTP debe estar entre 0 y 65535!</li>"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4436
 msgid "Enter an email address to send the test to:"
 msgstr "Introduzca una dirección de correo electrónico para enviar la prueba a:"
 
-#: dist/js/core.js:4430
+#: dist/js/core.js:4438
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You debe proporcionar una dirección de correo electrónico destinatario!</p>"
 
-#: dist/js/core.js:4500
+#: dist/js/core.js:4508
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Lista de dispositivo actualizada. Por favor, elija un dispositivo para empujar al."
 
-#: dist/js/core.js:4561
+#: dist/js/core.js:4569
 msgid "You didn't supply a Pushbullet api key"
 msgstr "No suministrar una clave de api Pushbullet"
 
-#: dist/js/core.js:4591
+#: dist/js/core.js:4599
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "No te olvides de guardar la nueva configuración pushbullet."
 
-#: dist/js/core.js:4663
+#: dist/js/core.js:4671
 msgid "Select backup folder to save to"
 msgstr "Seleccione la carpeta para guardar"
 
-#: dist/js/core.js:4668
+#: dist/js/core.js:4676
 msgid "Select backup files to restore"
 msgstr "Seleccionar archivos de backup para restaurar"
 
-#: dist/js/core.js:5214
+#: dist/js/core.js:5222
 msgid "No providers available to configure."
 msgstr "No hay proveedores disponibles para configurar."
 
-#: dist/js/core.js:5425
+#: dist/js/core.js:5433
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Has seleccionado para eliminar espectáculos.  ¿Está seguro que desea continuar? Se eliminarán todos los archivos de su sistema."
 
-#: dist/js/core.js:5495
+#: dist/js/core.js:5503
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
@@ -571,7 +575,7 @@ msgid "AniDB is non-profit database of anime information that is freely open to 
 msgstr "AniDB es sin fines de lucro base de datos de anime que está abiertas libremente al público"
 
 #: sickrage/core/webserver/views/config/anime.mako:27
-#: sickrage/core/webserver/views/config/postprocessing.mako:30
+#: sickrage/core/webserver/views/config/postprocessing.mako:31
 #: sickrage/core/webserver/views/config/search.mako:290
 #: sickrage/core/webserver/views/config/search.mako:709
 #: sickrage/core/webserver/views/config/subtitles.mako:30
@@ -636,8 +640,8 @@ msgstr "¿Desea agregar los episodios postprocesada para el MyList?"
 #: sickrage/core/webserver/views/config/notifications.mako:2996
 #: sickrage/core/webserver/views/config/notifications.mako:3091
 #: sickrage/core/webserver/views/config/notifications.mako:3256
-#: sickrage/core/webserver/views/config/postprocessing.mako:367
-#: sickrage/core/webserver/views/config/postprocessing.mako:1337
+#: sickrage/core/webserver/views/config/postprocessing.mako:388
+#: sickrage/core/webserver/views/config/postprocessing.mako:1358
 #: sickrage/core/webserver/views/config/providers.mako:118
 #: sickrage/core/webserver/views/config/providers.mako:901
 #: sickrage/core/webserver/views/config/quality_settings.mako:54
@@ -1081,16 +1085,16 @@ msgstr "Mostrar fechas y horas en su zona horaria o la zona horaria de red muest
 #: sickrage/core/webserver/views/config/notifications.mako:898
 #: sickrage/core/webserver/views/config/notifications.mako:2391
 #: sickrage/core/webserver/views/config/notifications.mako:2476
-#: sickrage/core/webserver/views/config/postprocessing.mako:38
-#: sickrage/core/webserver/views/config/postprocessing.mako:96
-#: sickrage/core/webserver/views/config/postprocessing.mako:259
-#: sickrage/core/webserver/views/config/postprocessing.mako:291
-#: sickrage/core/webserver/views/config/postprocessing.mako:316
-#: sickrage/core/webserver/views/config/postprocessing.mako:422
-#: sickrage/core/webserver/views/config/postprocessing.mako:626
-#: sickrage/core/webserver/views/config/postprocessing.mako:1300
-#: sickrage/core/webserver/views/config/postprocessing.mako:1314
-#: sickrage/core/webserver/views/config/postprocessing.mako:1328
+#: sickrage/core/webserver/views/config/postprocessing.mako:39
+#: sickrage/core/webserver/views/config/postprocessing.mako:97
+#: sickrage/core/webserver/views/config/postprocessing.mako:260
+#: sickrage/core/webserver/views/config/postprocessing.mako:292
+#: sickrage/core/webserver/views/config/postprocessing.mako:337
+#: sickrage/core/webserver/views/config/postprocessing.mako:443
+#: sickrage/core/webserver/views/config/postprocessing.mako:647
+#: sickrage/core/webserver/views/config/postprocessing.mako:1321
+#: sickrage/core/webserver/views/config/postprocessing.mako:1335
+#: sickrage/core/webserver/views/config/postprocessing.mako:1349
 #: sickrage/core/webserver/views/config/search.mako:925
 #: sickrage/core/webserver/views/config/subtitles.mako:124
 #: sickrage/core/webserver/views/config/subtitles.mako:162
@@ -2344,7 +2348,7 @@ msgid "contact @myidbot on Telegram to get an ID"
 msgstr "@myidbot en telegrama para obtener un ID de contacto"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2132
-#: sickrage/core/webserver/views/config/postprocessing.mako:64
+#: sickrage/core/webserver/views/config/postprocessing.mako:65
 msgid "NOTE"
 msgstr "NOTA"
 
@@ -2771,654 +2775,662 @@ msgstr "Enviar notificaciones mediante texto a voz."
 msgid "Test Discord"
 msgstr "Prueba de la discordia"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:15
-#: sickrage/core/webserver/views/config/postprocessing.mako:24
+#: sickrage/core/webserver/views/config/postprocessing.mako:16
+#: sickrage/core/webserver/views/config/postprocessing.mako:25
 msgid "Post-Processing"
 msgstr "Procesamiento posterior"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:16
-#: sickrage/core/webserver/views/config/postprocessing.mako:376
+#: sickrage/core/webserver/views/config/postprocessing.mako:17
+#: sickrage/core/webserver/views/config/postprocessing.mako:397
 msgid "Episode Naming"
 msgstr "Nombre del episodio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:17
-#: sickrage/core/webserver/views/config/postprocessing.mako:1347
+#: sickrage/core/webserver/views/config/postprocessing.mako:18
+#: sickrage/core/webserver/views/config/postprocessing.mako:1368
 msgid "Metadata"
 msgstr "Metadatos de"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:25
+#: sickrage/core/webserver/views/config/postprocessing.mako:26
 msgid "Settings that dictate how SickRage should process completed downloads."
 msgstr "Ajustes que determinan cómo SickRage debe proceso de descargas completadas."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:36
+#: sickrage/core/webserver/views/config/postprocessing.mako:37
 msgid "Enable the automatic post processor to scan and process any files in your"
 msgstr "Permiten que el procesador de correo automático escanear y procesar los archivos de su"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:37
-#: sickrage/core/webserver/views/config/postprocessing.mako:44
+#: sickrage/core/webserver/views/config/postprocessing.mako:38
+#: sickrage/core/webserver/views/config/postprocessing.mako:45
 msgid "Post Processing Dir"
 msgstr "Post procesamiento Dir"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:38
+#: sickrage/core/webserver/views/config/postprocessing.mako:39
 msgid "Do not use if you use an external PostProcessing script"
 msgstr "No utilice si utiliza una secuencia de comandos externo de postproceso"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:63
+#: sickrage/core/webserver/views/config/postprocessing.mako:64
 msgid "The folder where your download client puts the completed TV downloads."
 msgstr "Descargas de la carpeta donde tu cliente de descarga pone la TV completa."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:65
+#: sickrage/core/webserver/views/config/postprocessing.mako:66
 msgid "Please use seperate downloading and completed folders in your download client if possible."
 msgstr "Utilice descargar separado y terminados carpetas en tu cliente de descarga si es posible."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:73
+#: sickrage/core/webserver/views/config/postprocessing.mako:74
 msgid "Processing Method:"
 msgstr "Método de proceso:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:84
+#: sickrage/core/webserver/views/config/postprocessing.mako:85
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Copy"
 msgstr "Copia"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:84
+#: sickrage/core/webserver/views/config/postprocessing.mako:85
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Move"
 msgstr "Movimiento"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:84
+#: sickrage/core/webserver/views/config/postprocessing.mako:85
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Hard Link"
 msgstr "Enlace duro"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:84
+#: sickrage/core/webserver/views/config/postprocessing.mako:85
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Symbolic Link"
 msgstr "Enlace simbólico"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:84
+#: sickrage/core/webserver/views/config/postprocessing.mako:85
 #: sickrage/core/webserver/views/home/postprocess.mako:36
 msgid "Symbolic Link Reversed"
 msgstr "Enlace simbólico invertido"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:95
+#: sickrage/core/webserver/views/config/postprocessing.mako:96
 msgid "What method should be used to put files into the library?"
 msgstr "¿Qué método debe utilizar para poner los archivos en la biblioteca?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:96
+#: sickrage/core/webserver/views/config/postprocessing.mako:97
 msgid "If you keep seeding torrents after they finish, please avoid the 'move' processing method to prevent errors."
 msgstr "Si mantener siembra torrentes después de que acaben, por favor, evite la 'jugada' método para evitar errores de proceso."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:104
+#: sickrage/core/webserver/views/config/postprocessing.mako:105
 msgid "Auto Post-Processing Frequency"
 msgstr "Auto procesamiento posterior frecuencia"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:124
+#: sickrage/core/webserver/views/config/postprocessing.mako:125
 msgid "Postpone post processing"
 msgstr "Aplazar el procesamiento posterior"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:130
+#: sickrage/core/webserver/views/config/postprocessing.mako:131
 msgid "Wait to process a folder if sync files are present."
 msgstr "Espera para procesar una carpeta si sincronizar archivos están presentes."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:136
+#: sickrage/core/webserver/views/config/postprocessing.mako:137
 msgid "Sync File Extensions to Ignore"
 msgstr "Extensiones de archivo de sincronización para ignorar"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:145
+#: sickrage/core/webserver/views/config/postprocessing.mako:146
 msgid "ext1,ext2"
 msgstr "EXT1, ext2"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:153
+#: sickrage/core/webserver/views/config/postprocessing.mako:154
 msgid "Rename Episodes"
 msgstr "Cambiar el nombre de episodios"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:155
+#: sickrage/core/webserver/views/config/postprocessing.mako:156
 msgid "Rename episode using the Episode"
 msgstr "Cambiar el nombre de episodio con el episodio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:159
+#: sickrage/core/webserver/views/config/postprocessing.mako:160
 msgid "Naming settings?"
 msgstr "¿Configuración de nombres?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:165
-#: sickrage/core/webserver/views/config/postprocessing.mako:167
+#: sickrage/core/webserver/views/config/postprocessing.mako:166
+#: sickrage/core/webserver/views/config/postprocessing.mako:168
 msgid "Create missing show directories"
 msgstr "Crear falta mostrar directorios"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:171
+#: sickrage/core/webserver/views/config/postprocessing.mako:172
 msgid "when they get deleted"
 msgstr "Cuando Haz borrados"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:177
+#: sickrage/core/webserver/views/config/postprocessing.mako:178
 msgid "Add shows without directory"
 msgstr "Añadir series sin directorio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:179
+#: sickrage/core/webserver/views/config/postprocessing.mako:180
 msgid "Add shows without creating a"
 msgstr "Añadir series sin crear un"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:183
+#: sickrage/core/webserver/views/config/postprocessing.mako:184
 msgid "directory (not recommended)"
 msgstr "directorio (no recomendado)"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:189
+#: sickrage/core/webserver/views/config/postprocessing.mako:190
 msgid "Move Associated Files"
 msgstr "Mover archivos asociados"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:191
+#: sickrage/core/webserver/views/config/postprocessing.mako:192
 msgid "Move srr/srt/sfv/etc files with the"
 msgstr "Mover archivos de srr/srt/sfv/etcetera con el"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:195
+#: sickrage/core/webserver/views/config/postprocessing.mako:196
 msgid "episode when processed?"
 msgstr "¿episodio cuando el procesado?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:201
+#: sickrage/core/webserver/views/config/postprocessing.mako:202
 msgid "Rename .nfo file"
 msgstr "Cambiar el nombre de archivo .nfo"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:203
+#: sickrage/core/webserver/views/config/postprocessing.mako:204
 msgid "Rename the original .nfo file to"
 msgstr "Renombrar el archivo .nfo original a"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:207
+#: sickrage/core/webserver/views/config/postprocessing.mako:208
 msgid ".nfo-orig to avoid conflicts?"
 msgstr "¿.nfo-orig para evitar conflictos?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:213
+#: sickrage/core/webserver/views/config/postprocessing.mako:214
 msgid "Associated file extensions"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:227
+#: sickrage/core/webserver/views/config/postprocessing.mako:228
 msgid "comma separated list of associated file extensions SickRage should keep while post processing."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:233
+#: sickrage/core/webserver/views/config/postprocessing.mako:234
 msgid "leaving it empty means no associated files will be post processed"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:240
+#: sickrage/core/webserver/views/config/postprocessing.mako:241
 msgid "Delete non associated files"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:246
+#: sickrage/core/webserver/views/config/postprocessing.mako:247
 msgid "delete non associated files while post processing?"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:252
+#: sickrage/core/webserver/views/config/postprocessing.mako:253
 msgid "Change File Date"
 msgstr "Cambio fecha de archivo"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:258
+#: sickrage/core/webserver/views/config/postprocessing.mako:259
 msgid "Set last modified filedate to the date that the episode aired?"
 msgstr "¿Conjunto última modificación fecha a la fecha en que el episodio salió al aire?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:259
+#: sickrage/core/webserver/views/config/postprocessing.mako:260
 msgid "Some systems may ignore this feature."
 msgstr "Algunos sistemas pueden ignorar esta característica."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:265
+#: sickrage/core/webserver/views/config/postprocessing.mako:266
 msgid "Timezone for File Date:"
 msgstr "Zona horaria de fecha del archivo:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:284
+#: sickrage/core/webserver/views/config/postprocessing.mako:285
 msgid "Unpack"
 msgstr "Desembale"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:290
+#: sickrage/core/webserver/views/config/postprocessing.mako:291
 msgid "Unpack any TV releases in your"
 msgstr "Desempaquetar cualquier TV notas en su"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:290
+#: sickrage/core/webserver/views/config/postprocessing.mako:291
 msgid "TV Download Dir"
 msgstr "TV descarga Dir"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:291
-msgid "Only working with RAR archive"
-msgstr "Sólo trabajando con archivo RAR"
+#: sickrage/core/webserver/views/config/postprocessing.mako:292
+msgid "Only works with RAR archives"
+msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:297
+#: sickrage/core/webserver/views/config/postprocessing.mako:299
+msgid "Unpack Directory"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:311
+msgid "Choose a path to unpack files, leave blank to unpack in download dir"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:317
 msgid "Delete RAR contents"
 msgstr "Eliminar el contenido RAR"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:303
+#: sickrage/core/webserver/views/config/postprocessing.mako:323
 msgid "Delete content of RAR files, even if Process Method not set to move?"
 msgstr "¿Borrar contenido de los archivos RAR, si método de proceso no para mover?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:309
+#: sickrage/core/webserver/views/config/postprocessing.mako:330
 msgid "Don't delete empty folders"
 msgstr "No borra las carpetas vacías"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:315
+#: sickrage/core/webserver/views/config/postprocessing.mako:336
 msgid "Leave empty folders when Post Processing?"
 msgstr "¿Deja las carpetas vacías al proceso del poste?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:316
+#: sickrage/core/webserver/views/config/postprocessing.mako:337
 msgid "Can be overridden using manual Post Processing"
 msgstr "Se puede redefinir usando manual Post procesamiento"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:322
+#: sickrage/core/webserver/views/config/postprocessing.mako:343
 msgid "Follow symbolic-links"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:328
+#: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "warning"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:328
+#: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "EXPERTS ONLY."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:329
+#: sickrage/core/webserver/views/config/postprocessing.mako:350
 msgid "Enable only if you know what <b>circular symbolic links</b> are,<br/>and can <b>verify that you have none</b>."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:336
+#: sickrage/core/webserver/views/config/postprocessing.mako:357
 msgid "Delete Failed"
 msgstr "Error al eliminar"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:342
+#: sickrage/core/webserver/views/config/postprocessing.mako:363
 msgid "Delete files left over from a failed download?"
 msgstr "¿Eliminar archivos de una descarga fallida?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:348
+#: sickrage/core/webserver/views/config/postprocessing.mako:369
 #: sickrage/core/webserver/views/config/subtitles.mako:150
 msgid "Extra Scripts"
 msgstr "Scripts adicionales"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:359
+#: sickrage/core/webserver/views/config/postprocessing.mako:380
 #: sickrage/core/webserver/views/config/subtitles.mako:165
 msgid "See"
 msgstr "Ver"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:361
+#: sickrage/core/webserver/views/config/postprocessing.mako:382
 #: sickrage/core/webserver/views/config/subtitles.mako:167
 msgid "Wiki"
 msgstr "Wiki"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:361
+#: sickrage/core/webserver/views/config/postprocessing.mako:382
 msgid "for script arguments description and usage."
 msgstr "para script argumentos Descripción y uso."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:377
+#: sickrage/core/webserver/views/config/postprocessing.mako:398
 msgid "How SickRage will name and sort your episodes."
 msgstr "Cómo SickRage nombre y ordenar tus episodios."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:383
+#: sickrage/core/webserver/views/config/postprocessing.mako:404
 msgid "Name Pattern:"
 msgstr "Patrón de nombre:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:422
+#: sickrage/core/webserver/views/config/postprocessing.mako:443
 msgid "Don't forget to add quality pattern. Otherwise after post-processing the episode will have UNKNOWN quality"
 msgstr "No te olvides de añadir patrón de calidad. Lo contrario después de post-procesamiento el episodio tendrá desconocido calidad"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:431
-#: sickrage/core/webserver/views/config/postprocessing.mako:693
-#: sickrage/core/webserver/views/config/postprocessing.mako:903
-#: sickrage/core/webserver/views/config/postprocessing.mako:1118
-msgid "Meaning"
-msgstr "Significado"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:432
-#: sickrage/core/webserver/views/config/postprocessing.mako:694
-#: sickrage/core/webserver/views/config/postprocessing.mako:904
-#: sickrage/core/webserver/views/config/postprocessing.mako:1119
-msgid "Pattern"
-msgstr "Patrón de"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:433
-#: sickrage/core/webserver/views/config/postprocessing.mako:695
-#: sickrage/core/webserver/views/config/postprocessing.mako:905
-#: sickrage/core/webserver/views/config/postprocessing.mako:1120
-msgid "Result"
-msgstr "Resultado"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:439
-#: sickrage/core/webserver/views/config/postprocessing.mako:701
-#: sickrage/core/webserver/views/config/postprocessing.mako:911
-#: sickrage/core/webserver/views/config/postprocessing.mako:1126
-#, python-format
-msgid "Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)"
-msgstr "Usar minúsculas si quiere nombres en minúsculas (ej. %sn, %e.n, %q_n etcetera)"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:445
-#: sickrage/core/webserver/views/config/postprocessing.mako:707
-#: sickrage/core/webserver/views/config/postprocessing.mako:917
-#: sickrage/core/webserver/views/config/postprocessing.mako:1132
-msgid "Show Name:"
-msgstr "Nombre del programa:"
-
-#: sickrage/core/webserver/views/config/postprocessing.mako:447
-#: sickrage/core/webserver/views/config/postprocessing.mako:709
-#: sickrage/core/webserver/views/config/postprocessing.mako:919
-#: sickrage/core/webserver/views/config/postprocessing.mako:1134
-#: sickrage/core/webserver/views/home/status.mako:107
-#: sickrage/core/webserver/views/manage/mass_update.mako:49
-msgid "Show Name"
-msgstr "Mostrar nombre"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:452
 #: sickrage/core/webserver/views/config/postprocessing.mako:714
 #: sickrage/core/webserver/views/config/postprocessing.mako:924
 #: sickrage/core/webserver/views/config/postprocessing.mako:1139
+msgid "Meaning"
+msgstr "Significado"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:453
+#: sickrage/core/webserver/views/config/postprocessing.mako:715
+#: sickrage/core/webserver/views/config/postprocessing.mako:925
+#: sickrage/core/webserver/views/config/postprocessing.mako:1140
+msgid "Pattern"
+msgstr "Patrón de"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:454
+#: sickrage/core/webserver/views/config/postprocessing.mako:716
+#: sickrage/core/webserver/views/config/postprocessing.mako:926
+#: sickrage/core/webserver/views/config/postprocessing.mako:1141
+msgid "Result"
+msgstr "Resultado"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:460
+#: sickrage/core/webserver/views/config/postprocessing.mako:722
+#: sickrage/core/webserver/views/config/postprocessing.mako:932
+#: sickrage/core/webserver/views/config/postprocessing.mako:1147
+#, python-format
+msgid "Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)"
+msgstr "Usar minúsculas si quiere nombres en minúsculas (ej. %sn, %e.n, %q_n etcetera)"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:466
+#: sickrage/core/webserver/views/config/postprocessing.mako:728
+#: sickrage/core/webserver/views/config/postprocessing.mako:938
+#: sickrage/core/webserver/views/config/postprocessing.mako:1153
+msgid "Show Name:"
+msgstr "Nombre del programa:"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:468
+#: sickrage/core/webserver/views/config/postprocessing.mako:730
+#: sickrage/core/webserver/views/config/postprocessing.mako:940
+#: sickrage/core/webserver/views/config/postprocessing.mako:1155
+#: sickrage/core/webserver/views/home/status.mako:107
+#: sickrage/core/webserver/views/manage/mass_update.mako:49
+msgid "Show Name"
+msgstr "Mostrar nombre"
+
+#: sickrage/core/webserver/views/config/postprocessing.mako:473
+#: sickrage/core/webserver/views/config/postprocessing.mako:735
+#: sickrage/core/webserver/views/config/postprocessing.mako:945
+#: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
 msgstr "Show.Name"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:457
-#: sickrage/core/webserver/views/config/postprocessing.mako:719
-#: sickrage/core/webserver/views/config/postprocessing.mako:929
-#: sickrage/core/webserver/views/config/postprocessing.mako:1144
+#: sickrage/core/webserver/views/config/postprocessing.mako:478
+#: sickrage/core/webserver/views/config/postprocessing.mako:740
+#: sickrage/core/webserver/views/config/postprocessing.mako:950
+#: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
 msgstr "Show_Name"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:460
-#: sickrage/core/webserver/views/config/postprocessing.mako:1147
+#: sickrage/core/webserver/views/config/postprocessing.mako:481
+#: sickrage/core/webserver/views/config/postprocessing.mako:1168
 msgid "Season Number:"
 msgstr "Número de estación:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:470
-#: sickrage/core/webserver/views/config/postprocessing.mako:1157
+#: sickrage/core/webserver/views/config/postprocessing.mako:491
+#: sickrage/core/webserver/views/config/postprocessing.mako:1178
 msgid "XEM Season Number:"
 msgstr "XEM temporada número:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:480
-#: sickrage/core/webserver/views/config/postprocessing.mako:1167
+#: sickrage/core/webserver/views/config/postprocessing.mako:501
+#: sickrage/core/webserver/views/config/postprocessing.mako:1188
 msgid "Episode Number:"
 msgstr "Episodio número:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:490
-#: sickrage/core/webserver/views/config/postprocessing.mako:1177
+#: sickrage/core/webserver/views/config/postprocessing.mako:511
+#: sickrage/core/webserver/views/config/postprocessing.mako:1198
 msgid "XEM Episode Number:"
 msgstr "XEM episodio número:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:500
-#: sickrage/core/webserver/views/config/postprocessing.mako:742
-#: sickrage/core/webserver/views/config/postprocessing.mako:952
-#: sickrage/core/webserver/views/config/postprocessing.mako:1187
+#: sickrage/core/webserver/views/config/postprocessing.mako:521
+#: sickrage/core/webserver/views/config/postprocessing.mako:763
+#: sickrage/core/webserver/views/config/postprocessing.mako:973
+#: sickrage/core/webserver/views/config/postprocessing.mako:1208
 msgid "Episode Name:"
 msgstr "Nombre del episodio:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:502
-#: sickrage/core/webserver/views/config/postprocessing.mako:744
-#: sickrage/core/webserver/views/config/postprocessing.mako:954
-#: sickrage/core/webserver/views/config/postprocessing.mako:1189
+#: sickrage/core/webserver/views/config/postprocessing.mako:523
+#: sickrage/core/webserver/views/config/postprocessing.mako:765
+#: sickrage/core/webserver/views/config/postprocessing.mako:975
+#: sickrage/core/webserver/views/config/postprocessing.mako:1210
 msgid "Episode Name"
 msgstr "Nombre del episodio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:507
-#: sickrage/core/webserver/views/config/postprocessing.mako:749
-#: sickrage/core/webserver/views/config/postprocessing.mako:959
-#: sickrage/core/webserver/views/config/postprocessing.mako:1194
+#: sickrage/core/webserver/views/config/postprocessing.mako:528
+#: sickrage/core/webserver/views/config/postprocessing.mako:770
+#: sickrage/core/webserver/views/config/postprocessing.mako:980
+#: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
 msgstr "Episode.Name"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:512
-#: sickrage/core/webserver/views/config/postprocessing.mako:754
-#: sickrage/core/webserver/views/config/postprocessing.mako:964
-#: sickrage/core/webserver/views/config/postprocessing.mako:1199
+#: sickrage/core/webserver/views/config/postprocessing.mako:533
+#: sickrage/core/webserver/views/config/postprocessing.mako:775
+#: sickrage/core/webserver/views/config/postprocessing.mako:985
+#: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
 msgstr "Episode_Name"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:515
-#: sickrage/core/webserver/views/config/postprocessing.mako:757
-#: sickrage/core/webserver/views/config/postprocessing.mako:967
-#: sickrage/core/webserver/views/config/postprocessing.mako:1202
+#: sickrage/core/webserver/views/config/postprocessing.mako:536
+#: sickrage/core/webserver/views/config/postprocessing.mako:778
+#: sickrage/core/webserver/views/config/postprocessing.mako:988
+#: sickrage/core/webserver/views/config/postprocessing.mako:1223
 #: sickrage/core/webserver/views/home/display_show.mako:140
 msgid "Quality:"
 msgstr "Calidad:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:530
+#: sickrage/core/webserver/views/config/postprocessing.mako:551
 msgid "Scene Quality:"
 msgstr "Calidad de la escena:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:532
+#: sickrage/core/webserver/views/config/postprocessing.mako:553
 msgid "720p HDTV x264"
 msgstr "HDTV 720p x264"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:537
+#: sickrage/core/webserver/views/config/postprocessing.mako:558
 msgid "720p.HDTV.x264"
 msgstr "720p. HDTV.x264"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:542
+#: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
 msgstr "720p_HDTV_x264"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:547
-#: sickrage/core/webserver/views/config/postprocessing.mako:800
-#: sickrage/core/webserver/views/config/postprocessing.mako:1010
-#: sickrage/core/webserver/views/config/postprocessing.mako:1220
+#: sickrage/core/webserver/views/config/postprocessing.mako:568
+#: sickrage/core/webserver/views/config/postprocessing.mako:821
+#: sickrage/core/webserver/views/config/postprocessing.mako:1031
+#: sickrage/core/webserver/views/config/postprocessing.mako:1241
 msgid "Release Name:"
 msgstr "Nombre del estreno:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:550
-#: sickrage/core/webserver/views/config/postprocessing.mako:1223
+#: sickrage/core/webserver/views/config/postprocessing.mako:571
+#: sickrage/core/webserver/views/config/postprocessing.mako:1244
 msgid "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:556
-#: sickrage/core/webserver/views/config/postprocessing.mako:809
-#: sickrage/core/webserver/views/config/postprocessing.mako:1019
-#: sickrage/core/webserver/views/config/postprocessing.mako:1229
+#: sickrage/core/webserver/views/config/postprocessing.mako:577
+#: sickrage/core/webserver/views/config/postprocessing.mako:830
+#: sickrage/core/webserver/views/config/postprocessing.mako:1040
+#: sickrage/core/webserver/views/config/postprocessing.mako:1250
 msgid "Release Group:"
 msgstr "Grupo de liberación:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:565
-#: sickrage/core/webserver/views/config/postprocessing.mako:818
-#: sickrage/core/webserver/views/config/postprocessing.mako:1029
-#: sickrage/core/webserver/views/config/postprocessing.mako:1238
+#: sickrage/core/webserver/views/config/postprocessing.mako:586
+#: sickrage/core/webserver/views/config/postprocessing.mako:839
+#: sickrage/core/webserver/views/config/postprocessing.mako:1050
+#: sickrage/core/webserver/views/config/postprocessing.mako:1259
 msgid "Release Type:"
 msgstr "Tipo de liberación:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:578
-#: sickrage/core/webserver/views/config/postprocessing.mako:1251
+#: sickrage/core/webserver/views/config/postprocessing.mako:599
+#: sickrage/core/webserver/views/config/postprocessing.mako:1272
 msgid "Multi-Episode Style:"
 msgstr "Multi-episodio estilo:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:598
+#: sickrage/core/webserver/views/config/postprocessing.mako:619
 msgid "Single-EP Sample:"
 msgstr "Muestra individual-EP:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:609
+#: sickrage/core/webserver/views/config/postprocessing.mako:630
 msgid "Multi-EP sample:"
 msgstr "Muestra multi-EP:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:619
+#: sickrage/core/webserver/views/config/postprocessing.mako:640
 msgid "Strip Show Year"
 msgstr "Strip Show año"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:625
+#: sickrage/core/webserver/views/config/postprocessing.mako:646
 msgid "Remove the TV show's year when renaming the file?"
 msgstr "¿Eliminar el año de la demostración de la TV al renombrar el archivo?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:626
+#: sickrage/core/webserver/views/config/postprocessing.mako:647
 msgid "Only applies to shows that have year inside parentheses"
 msgstr "Sólo se aplica a los espectáculos que tienen años dentro de paréntesis"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:633
+#: sickrage/core/webserver/views/config/postprocessing.mako:654
 msgid "Custom Air-By-Date"
 msgstr "Encargo de aire por fecha"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:639
+#: sickrage/core/webserver/views/config/postprocessing.mako:660
 msgid "Name Air-By-Date shows differently than regular shows?"
 msgstr "¿Nombre de aire por fecha muestra diferentemente que muestra regular?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:647
+#: sickrage/core/webserver/views/config/postprocessing.mako:668
 msgid "Air-by-date Name Pattern:"
 msgstr "Patrón de nombre fecha de aire:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:722
+#: sickrage/core/webserver/views/config/postprocessing.mako:743
 msgid "Regular Air Date:"
 msgstr "Fecha de aire regular:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:772
-#: sickrage/core/webserver/views/config/postprocessing.mako:982
+#: sickrage/core/webserver/views/config/postprocessing.mako:793
+#: sickrage/core/webserver/views/config/postprocessing.mako:1003
 msgid "Year:"
 msgstr "Año:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:777
-#: sickrage/core/webserver/views/config/postprocessing.mako:987
+#: sickrage/core/webserver/views/config/postprocessing.mako:798
+#: sickrage/core/webserver/views/config/postprocessing.mako:1008
 msgid "Month:"
 msgstr "Mes:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:787
-#: sickrage/core/webserver/views/config/postprocessing.mako:997
+#: sickrage/core/webserver/views/config/postprocessing.mako:808
+#: sickrage/core/webserver/views/config/postprocessing.mako:1018
 msgid "Day:"
 msgstr "Día:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:803
+#: sickrage/core/webserver/views/config/postprocessing.mako:824
 msgid "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
 msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:832
+#: sickrage/core/webserver/views/config/postprocessing.mako:853
 msgid "Air-by-date Sample:"
 msgstr "Muestra fecha de aire:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:843
+#: sickrage/core/webserver/views/config/postprocessing.mako:864
 msgid "Custom Sports"
 msgstr "Deportes personalizados"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:849
+#: sickrage/core/webserver/views/config/postprocessing.mako:870
 msgid "Name Sports shows differently than regular shows?"
 msgstr "¿Nombre de deportes muestra diferentemente que muestra regular?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:857
+#: sickrage/core/webserver/views/config/postprocessing.mako:878
 msgid "Sports Name Pattern:"
 msgstr "Patrón de nombre de deportes:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:874
-#: sickrage/core/webserver/views/config/postprocessing.mako:1085
+#: sickrage/core/webserver/views/config/postprocessing.mako:895
+#: sickrage/core/webserver/views/config/postprocessing.mako:1106
 msgid "Custom..."
 msgstr "Custom..."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:932
+#: sickrage/core/webserver/views/config/postprocessing.mako:953
 msgid "Sports Air Date:"
 msgstr "Deportes fecha de aire:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:934
-#: sickrage/core/webserver/views/config/postprocessing.mako:939
-#: sickrage/core/webserver/views/config/postprocessing.mako:944
-#: sickrage/core/webserver/views/config/postprocessing.mako:949
+#: sickrage/core/webserver/views/config/postprocessing.mako:955
+#: sickrage/core/webserver/views/config/postprocessing.mako:960
+#: sickrage/core/webserver/views/config/postprocessing.mako:965
+#: sickrage/core/webserver/views/config/postprocessing.mako:970
 msgid "Mar"
 msgstr "Mar"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1013
+#: sickrage/core/webserver/views/config/postprocessing.mako:1034
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
 msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1042
+#: sickrage/core/webserver/views/config/postprocessing.mako:1063
 msgid "Sports Sample:"
 msgstr "Muestra de deportes:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1054
+#: sickrage/core/webserver/views/config/postprocessing.mako:1075
 msgid "Custom Anime"
 msgstr "Anime personalizado"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1060
+#: sickrage/core/webserver/views/config/postprocessing.mako:1081
 msgid "Name Anime shows differently than regular shows?"
 msgstr "¿Nombre Anime muestra diferentemente que muestra regular?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1068
+#: sickrage/core/webserver/views/config/postprocessing.mako:1089
 msgid "Anime Name Pattern:"
 msgstr "Patrón de nombre de anime:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1272
+#: sickrage/core/webserver/views/config/postprocessing.mako:1293
 msgid "Single-EP Anime Sample:"
 msgstr "Muestra de Anime solo-EP:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1283
+#: sickrage/core/webserver/views/config/postprocessing.mako:1304
 msgid "Multi-EP Anime sample:"
 msgstr "Muestra de Anime multi-EP:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1293
+#: sickrage/core/webserver/views/config/postprocessing.mako:1314
 msgid "Add Absolute Number"
 msgstr "Agregar número absoluto"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1299
+#: sickrage/core/webserver/views/config/postprocessing.mako:1320
 msgid "Add the absolute number to the season/episode format?"
 msgstr "¿Añadir el número absoluto al formato de temporada/episodio?"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1300
+#: sickrage/core/webserver/views/config/postprocessing.mako:1321
 msgid "Only applies to animes. (eg. S15E45 - 310 vs S15E45)"
 msgstr "Sólo se aplica a los animes. (por ejemplo. S15E45 - 310 vs S15E45)"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1307
+#: sickrage/core/webserver/views/config/postprocessing.mako:1328
 msgid "Only Absolute Number"
 msgstr "Sólo el número absoluto"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1313
+#: sickrage/core/webserver/views/config/postprocessing.mako:1334
 msgid "Replace season/episode format with absolute number"
 msgstr "Cambiar formato de temporada/episodio con número absoluto"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1314
-#: sickrage/core/webserver/views/config/postprocessing.mako:1328
+#: sickrage/core/webserver/views/config/postprocessing.mako:1335
+#: sickrage/core/webserver/views/config/postprocessing.mako:1349
 msgid "Only applies to animes."
 msgstr "Sólo se aplica a los animes."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1321
+#: sickrage/core/webserver/views/config/postprocessing.mako:1342
 msgid "No Absolute Number"
 msgstr "No hay número absoluto"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1327
+#: sickrage/core/webserver/views/config/postprocessing.mako:1348
 msgid "Dont include the absolute number"
 msgstr "Incluyen el número absoluto"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1348
+#: sickrage/core/webserver/views/config/postprocessing.mako:1369
 msgid "The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience."
 msgstr "Los datos asociados a los datos. Estos son los archivos asociados a un programa de televisión en forma de imágenes y texto que, cuando apoyó, mejorará la experiencia de visualización."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1355
+#: sickrage/core/webserver/views/config/postprocessing.mako:1376
 msgid "Metadata Type:"
 msgstr "Tipo de metadatos:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1369
+#: sickrage/core/webserver/views/config/postprocessing.mako:1390
 msgid "Toggle the metadata options that you wish to be created."
 msgstr "Cambiar las opciones de metadatos que desea crear."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1370
+#: sickrage/core/webserver/views/config/postprocessing.mako:1391
 msgid "Multiple targets may be used."
 msgstr "Pueden utilizarse múltiples objetivos."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1377
+#: sickrage/core/webserver/views/config/postprocessing.mako:1398
 msgid "Select Metadata"
 msgstr "Seleccione metadatos"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1387
+#: sickrage/core/webserver/views/config/postprocessing.mako:1408
 msgid "Show Metadata"
 msgstr "Mostrar metadatos"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1396
+#: sickrage/core/webserver/views/config/postprocessing.mako:1417
 msgid "Episode Metadata"
 msgstr "Metadatos de episodio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1405
+#: sickrage/core/webserver/views/config/postprocessing.mako:1426
 msgid "Show Fanart"
 msgstr "Mostrar Fanart"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1415
+#: sickrage/core/webserver/views/config/postprocessing.mako:1436
 msgid "Show Poster"
 msgstr "Ver cartel"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1424
+#: sickrage/core/webserver/views/config/postprocessing.mako:1445
 msgid "Show Banner"
 msgstr "Mostrar Banner"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1433
+#: sickrage/core/webserver/views/config/postprocessing.mako:1454
 msgid "Episode Thumbnails"
 msgstr "Miniaturas de episodio"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1442
+#: sickrage/core/webserver/views/config/postprocessing.mako:1463
 msgid "Season Posters"
 msgstr "Carteles de la temporada"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1451
+#: sickrage/core/webserver/views/config/postprocessing.mako:1472
 msgid "Season Banners"
 msgstr "Estación banderas"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1460
+#: sickrage/core/webserver/views/config/postprocessing.mako:1481
 msgid "Season All Poster"
 msgstr "Todo cartel de la temporada"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1469
+#: sickrage/core/webserver/views/config/postprocessing.mako:1490
 msgid "Season All Banner"
 msgstr "Todos la bandera de la temporada"
 
@@ -6023,53 +6035,53 @@ msgstr "No se encontraron descargas"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "No podía encontrar una descarga para <i>%s</i>"
 
-#: sickrage/core/queues/show.py:283 sickrage/core/queues/show.py:293
-#: sickrage/core/queues/show.py:305 sickrage/core/webserver/views.py:2699
+#: sickrage/core/queues/show.py:286 sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:308 sickrage/core/webserver/views.py:2699
 #: sickrage/core/webserver/views.py:2711
 msgid "Unable to add show"
 msgstr "No se puede Agregar Mostrar"
 
-#: sickrage/core/queues/show.py:284
+#: sickrage/core/queues/show.py:287
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Mostrar en {} no tiene nombre en {}, probablemente el idioma equivocado. Eliminar .nfo y añadir manualmente en el idioma correcto"
 
-#: sickrage/core/queues/show.py:294
+#: sickrage/core/queues/show.py:297
 msgid "Show "
 msgstr "Mostrar "
 
-#: sickrage/core/queues/show.py:294
+#: sickrage/core/queues/show.py:297
 msgid " is on "
 msgstr " está en "
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:299
 msgid " but contains no season/episode data."
 msgstr " pero no contiene ningún dato de temporada/episodio."
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:309
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "No se puede ver el show en {} a {} con {ID}, no usando el NFO. Eliminar .nfo y trate de añadir manualmente otra vez."
 
-#: sickrage/core/queues/show.py:369
+#: sickrage/core/queues/show.py:372
 msgid "Unable to add "
 msgstr "No se puede Agregar "
 
-#: sickrage/core/queues/show.py:369
+#: sickrage/core/queues/show.py:372
 msgid " due to an error with "
 msgstr " debido a un error con "
 
-#: sickrage/core/queues/show.py:373
+#: sickrage/core/queues/show.py:376
 msgid "Unable to add show due to an error with "
 msgstr "No se puede Agregar Mostrar debido a un error con "
 
-#: sickrage/core/queues/show.py:378
+#: sickrage/core/queues/show.py:381
 msgid "Show skipped"
 msgstr "Mostrar omitidos"
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid "The show in "
 msgstr "El espectáculo en "
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid " is already in your show list"
 msgstr " ya está en la lista Mostrar"
 

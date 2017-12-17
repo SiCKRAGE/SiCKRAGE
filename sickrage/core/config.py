@@ -168,6 +168,7 @@ class Config(object):
         self.nfo_rename = True
         self.tv_download_dir = ""
         self.unpack = False
+        self.unpack_dir = ""
         self.skip_removed_files = False
         self.allowed_extensions = ""
         self.nzbs = False
@@ -758,6 +759,7 @@ class Config(object):
                 'web_port': 8081,
                 'launch_browser': False,
                 'unpack': False,
+                'unpack_dir': "",
                 'delete_non_associated_files': True,
                 'move_associated_files': False,
                 'naming_multi_ep': 1,
@@ -977,12 +979,11 @@ class Config(object):
                 # Download
                 if not found:
                     sickrage.app.log.info('Trying to download unrar.exe and set the path')
-                    unrar_dir = os.path.join(sickrage.PROG_DIR, 'unrar')
-                    unrar_zip = os.path.join(unrar_dir, 'unrar_win.zip')
+                    unrar_zip = os.path.join(sickrage.app.data_dir, 'unrar_win.zip')
 
-                    if (WebSession().download("https://sickrage.ca/downloads/unrar_win.zip",
-                                              filename=unrar_zip) and extract_zipfile(archive=unrar_zip,
-                                                                                      targetDir=unrar_dir)):
+                    if WebSession().download("https://sickrage.ca/downloads/unrar_win.zip",
+                                             filename=unrar_zip) and extract_zipfile(archive=unrar_zip,
+                                                                                     targetDir=sickrage.app.data_dir):
                         try:
                             os.remove(unrar_zip)
                         except OSError as e:
@@ -990,14 +991,14 @@ class Config(object):
                                 "Unable to delete downloaded file {}: {}. You may delete it manually".format(unrar_zip,
                                                                                                              e.strerror))
 
-                        check = os.path.join(unrar_dir, "unrar.exe")
+                        check = os.path.join(sickrage.app.data_dir, "unrar.exe")
                         try:
                             rarfile.custom_check(check)
                             unrar_tool = check
                             sickrage.app.log.info('Successfully downloaded unrar.exe and set as unrar tool')
                         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
-                            sickrage.app.log.info(
-                                'Sorry, unrar was not set up correctly. Try installing WinRAR and make sure it is on the system PATH')
+                            sickrage.app.log.info('Sorry, unrar was not set up correctly. Try installing WinRAR and '
+                                                  'make sure it is on the system PATH')
                     else:
                         sickrage.app.log.info('Unable to download unrar.exe')
 
@@ -1494,6 +1495,7 @@ class Config(object):
         self.process_automatically = self.check_setting_bool('General', 'process_automatically')
         self.no_delete = self.check_setting_bool('General', 'no_delete')
         self.unpack = self.check_setting_bool('General', 'unpack')
+        self.unpack_dir = self.check_setting_str('General', 'unpack_dir')
         self.rename_episodes = self.check_setting_bool('General', 'rename_episodes')
         self.airdate_episodes = self.check_setting_bool('General', 'airdate_episodes')
         self.file_timestamp_timezone = self.check_setting_str('General', 'file_timestamp_timezone')
@@ -1988,6 +1990,7 @@ class Config(object):
                 'process_automatically': int(self.process_automatically),
                 'no_delete': int(self.no_delete),
                 'unpack': int(self.unpack),
+                'unpack_dir': self.unpack_dir,
                 'rename_episodes': int(self.rename_episodes),
                 'airdate_episodes': int(self.airdate_episodes),
                 'file_timestamp_timezone': self.file_timestamp_timezone,

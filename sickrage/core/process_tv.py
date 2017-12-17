@@ -22,9 +22,7 @@ import os
 import shutil
 import stat
 
-import UnRAR2
-from UnRAR2.rar_exceptions import ArchiveHeaderBroken, FileOpenError, \
-    IncorrectRARPassword, InvalidRARArchive, InvalidRARArchiveUsage
+import rarfile
 
 import sickrage
 from sickrage.core.common import Quality
@@ -46,6 +44,7 @@ class ProcessResult(object):
 
     def __unicode__(self):
         return self.output
+
 
 def delete_folder(folder, check_empty=True):
     """
@@ -342,92 +341,110 @@ def validateDir(process_path, release_name, failed, result):
     return False
 
 
-def unrar(path, rarFiles, force, result):
+def unrar(path, rar_files, force, result):
     """
     Extracts RAR files
 
     :param path: Path to look for files in
-    :param rarFiles: Names of RAR files
+    :param rar_files: Names of RAR files
     :param force: process currently processing items
     :param result: Previous results
     :return: List of unpacked file names
     """
 
-    unpacked_files = []
+    unpacked_dirs = []
 
-    if sickrage.app.config.unpack and rarFiles:
-
-        result.output += logHelper("Packed Releases detected: " + str(rarFiles), sickrage.app.log.DEBUG)
-
-        for archive in rarFiles:
-
-            result.output += logHelper("Unpacking archive: " + archive, sickrage.app.log.DEBUG)
-
+    if sickrage.app.config.unpack == 1 and rar_files:
+        result.output += logHelper("Packed Releases detected: {0}".format(rar_files), sickrage.app.log.DEBUG)
+        for archive in rar_files:
+            failure = None
+            rar_handle = None
             try:
-                rar_handle = UnRAR2.RarFile(os.path.join(path, archive))
-
-                # Skip extraction if any file in archive has previously been extracted
-                skip_file = False
-                for file_in_archive in [os.path.basename(x.filename) for x in rar_handle.infolist() if not x.isdir]:
-                    if already_postprocessed(path, file_in_archive, force, result):
-                        result.output += logHelper(
-                            "Archive file already post-processed, extraction skipped: " + file_in_archive,
-                            sickrage.app.log.DEBUG)
-                        skip_file = True
-                        break
-
-                if skip_file:
+                archive_path = os.path.join(path, archive)
+                if already_postprocessed(path, archive, force, result):
+                    result.output += logHelper("Archive file already post-processed, extraction skipped: {}".format
+                                               (archive_path), sickrage.app.log.DEBUG)
                     continue
 
-                rar_handle.extract(path=path, withSubpath=False, overwrite=False)
-                for x in rar_handle.infolist():
-                    if not x.isdir:
-                        basename = os.path.basename(x.filename)
-                        if basename not in unpacked_files:
-                            unpacked_files.append(basename)
-                del rar_handle
+                if not is_rar_file(archive_path):
+                    continue
 
-            except ArchiveHeaderBroken as e:
-                result.output += logHelper("Failed Unrar archive {0}: Unrar: Archive Header Broken".format(archive),
-                                           sickrage.app.log.ERROR)
-                result.result = False
-                result.missedfiles.append(archive + " : Unpacking failed because the Archive Header is Broken")
+                result.output += logHelper("Checking if archive is valid and contains a video: {}".format(archive_path),
+                                           sickrage.app.log.DEBUG)
+                rar_handle = rarfile.RarFile(archive_path)
+                if rar_handle.needs_password():
+                    # TODO: Add support in settings for a list of passwords to try here with rar_handle.set_password(x)
+                    result.output += logHelper('Archive needs a password, skipping: {0}'.format(archive_path))
+                    continue
+
+                # If there are no video files in the rar, don't extract it
+                rar_media_files = filter(is_media_file, rar_handle.namelist())
+                if not rar_media_files:
+                    continue
+
+                rar_release_name = archive.rpartition('.')[0]
+
+                # Choose the directory we'll unpack to:
+                if sickrage.app.config.unpack_dir and os.path.isdir(sickrage.app.config.unpack_dir):
+                    unpack_base_dir = sickrage.app.config.unpack_dir
+                else:
+                    unpack_base_dir = path
+                    if sickrage.app.config.unpack_dir:  # Let user know if we can't unpack there
+                        result.output += logHelper('Unpack directory cannot be verified. Using {}'.format(path),
+                                                   sickrage.app.log.DEBUG)
+
+                # Fix up the list for checking if already processed
+                rar_media_files = [os.path.join(unpack_base_dir, rar_release_name, rar_media_file) for rar_media_file in
+                                   rar_media_files]
+
+                skip_rar = False
+                for rar_media_file in rar_media_files:
+                    check_path, check_file = os.path.split(rar_media_file)
+                    if already_postprocessed(check_path, check_file, force, result):
+                        result.output += logHelper(
+                            "Archive file already post-processed, extraction skipped: {0}".format
+                            (rar_media_file), sickrage.app.log.DEBUG)
+                        skip_rar = True
+                        break
+
+                if skip_rar:
+                    continue
+
+                rar_extract_path = os.path.join(unpack_base_dir, rar_release_name)
+                result.output += logHelper("Unpacking archive: {0}".format(archive), sickrage.app.log.DEBUG)
+                rar_handle.extractall(path=rar_extract_path)
+                unpacked_dirs.append(rar_extract_path)
+
+            except rarfile.RarCRCError:
+                failure = ('Archive Broken', 'Unpacking failed because of a CRC error')
+            except rarfile.RarWrongPassword:
+                failure = ('Incorrect RAR Password', 'Unpacking failed because of an Incorrect Rar Password')
+            except rarfile.PasswordRequired:
+                failure = ('Rar is password protected', 'Unpacking failed because it needs a password')
+            except rarfile.RarOpenError:
+                failure = ('Rar Open Error, check the parent folder and destination file permissions.',
+                           'Unpacking failed with a File Open Error (file permissions?)')
+            except rarfile.RarExecError:
+                failure = ('Invalid Rar Archive Usage',
+                           'Unpacking Failed with Invalid Rar Archive Usage. Is unrar installed and on the system PATH?')
+            except rarfile.BadRarFile:
+                failure = ('Invalid Rar Archive', 'Unpacking Failed with an Invalid Rar Archive Error')
+            except rarfile.NeedFirstVolume:
                 continue
-            except IncorrectRARPassword:
-                result.output += logHelper("Failed Unrar archive {0}: Unrar: Incorrect Rar Password".format(archive),
-                                           sickrage.app.log.ERROR)
+            except (Exception, rarfile.Error) as e:
+                failure = (e, 'Unpacking failed')
+            finally:
+                if rar_handle:
+                    del rar_handle
+
+            if failure:
+                result.output += logHelper('Failed to extract the archive {}: {}'.format(archive, failure[0]),
+                                           sickrage.app.log.WARNING)
+                result.missed_files.append('{} : Unpacking failed: {}'.format(archive, failure[1]))
                 result.result = False
-                result.missedfiles.append(archive + " : Unpacking failed because of an Incorrect Rar Password")
-                continue
-            except FileOpenError:
-                result.output += logHelper(
-                    "Failed Unrar archive {0}: Unrar: File Open Error, check the parent folder and destination file permissions.".format(
-                        archive), sickrage.app.log.ERROR)
-                result.result = False
-                result.missedfiles.append(archive + " : Unpacking failed with a File Open Error (file permissions?)")
-                continue
-            except InvalidRARArchiveUsage:
-                result.output += logHelper("Failed Unrar archive {0}: Unrar: Invalid Rar Archive Usage".format(archive),
-                                           sickrage.app.log.ERROR)
-                result.result = False
-                result.missedfiles.append(archive + " : Unpacking Failed with Invalid Rar Archive Usage")
-                continue
-            except InvalidRARArchive:
-                result.output += logHelper("Failed Unrar archive {0}: Unrar: Invalid Rar Archive".format(archive),
-                                           sickrage.app.log.ERROR)
-                result.result = False
-                result.missedfiles.append(archive + " : Unpacking Failed with an Invalid Rar Archive Error")
-                continue
-            except Exception as e:
-                result.output += logHelper("Failed Unrar archive {}: {}".format(archive, e),
-                                           sickrage.app.log.ERROR)
-                result.result = False
-                result.missedfiles.append(archive + " : Unpacking failed for an unknown reason")
                 continue
 
-        result.output += logHelper("UnRar content: " + str(unpacked_files), sickrage.app.log.DEBUG)
-
-    return unpacked_files
+    return unpacked_dirs
 
 
 def already_postprocessed(dirName, videofile, force, result):

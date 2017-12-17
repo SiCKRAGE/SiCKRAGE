@@ -1079,13 +1079,28 @@ class TVShow(object):
             self.saveToDB()
 
     def deleteShow(self, full=False):
-        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)]
-        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
-        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid)]
-        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid)]
-        [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid)]
-
+        # choose delete or trash action
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
+
+        # remove from tv episodes table
+        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            sickrage.app.main_db.delete(x)
+
+        # remove from tv shows table
+        for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid):
+            sickrage.app.main_db.delete(x)
+
+        # remove from imdb info table
+        for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid):
+            sickrage.app.main_db.delete(x)
+
+        # remove from xem scene table
+        for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid):
+            sickrage.app.main_db.delete(x)
+
+        # remove from scene numbering table
+        for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid):
+            sickrage.app.main_db.delete(x)
 
         # remove self from show list
         sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]
@@ -1099,7 +1114,6 @@ class TVShow(object):
                     send2trash.send2trash(cache_file)
                 else:
                     os.remove(cache_file)
-
             except OSError as e:
                 sickrage.app.log.warning('Unable to %s %s: %s / %s' % (action, cache_file, repr(e), str(e)))
 

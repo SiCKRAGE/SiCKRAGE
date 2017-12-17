@@ -317,11 +317,7 @@ def is_media_file(filename):
     if re.search('extras?$', sepFile[0], re.I):
         return False
 
-    if sepFile[2].lower() in mediaExtensions:
-        return True
-    else:
-        return False
-
+    return sepFile[-1].lower() in mediaExtensions
 
 def is_rar_file(filename):
     """
