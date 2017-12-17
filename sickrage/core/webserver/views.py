@@ -4097,7 +4097,7 @@ class ConfigPostProcessing(Config):
                            naming_custom_anime=None, naming_anime_pattern=None,
                            naming_anime_multi_ep=None, autopostprocessor_frequency=None,
                            delete_non_associated_files=None, allowed_extensions=None,
-                           processor_follow_symlinks=None):
+                           processor_follow_symlinks=None, unpack_dir=None):
 
         results = []
 
@@ -4110,6 +4110,7 @@ class ConfigPostProcessing(Config):
         if unpack:
             if self.isRarSupported() != 'not supported':
                 sickrage.app.config.unpack = checkbox_to_value(unpack)
+                sickrage.app.config.unpack_dir = unpack_dir
             else:
                 sickrage.app.config.unpack = 0
                 results.append(_("Unpacking Not Supported, disabling unpack setting"))
