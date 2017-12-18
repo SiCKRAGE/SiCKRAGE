@@ -1,6 +1,7 @@
 # Changelog
 
-- * 52905a1 - 2017-12-17: Fixed issue #141 - show/hide seasons in display show page 
+- * fb80473 - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
+- * 611ea99 - 2017-12-17: Fixed issue #141 - show/hide seasons in display show page 
 - * 3b4302a - 2017-12-17: Release v9.2.67 
 - * 5f48f83 - 2017-12-17: Release v9.2.66 
 - * 313d7fd - 2017-12-17: Fixed issues with unrar and windows platforms Fixed issues with unrar and *nix platforms Added option to set unpack location 

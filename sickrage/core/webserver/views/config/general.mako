@@ -346,7 +346,7 @@
                                id="version_notify" ${('', 'checked')[bool(sickrage.app.config.version_notify)]}/>
                         <label for="version_notify">
                             ${_('and display notifications when updates are available. Checks are run on startup and at '
-                            'the frequency set below*')}
+                            'the frequency set below')}
                         </label>
                     </div>
 
@@ -361,14 +361,14 @@
                                id="auto_update" ${('', 'checked')[bool(sickrage.app.config.auto_update)]}/>
                         <label for="auto_update">
                             ${_('fetch and install software updates.Updates are run on startupand in the background at '
-                            'the frequency setbelow*')}
+                            'the frequency setbelow')}
                         </label>
                     </div>
                 </div>
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Check the server every*')}</label>
+                        <label class="component-title">${_('Check the server every')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group input350">
