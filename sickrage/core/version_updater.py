@@ -37,10 +37,6 @@ from sickrage.notifiers import Notifiers
 
 
 class VersionUpdater(object):
-    """
-    Version check class meant to run as a thread object with the sr scheduler.
-    """
-
     def __init__(self):
         self.name = "VERSIONUPDATER"
         self.amActive = False
