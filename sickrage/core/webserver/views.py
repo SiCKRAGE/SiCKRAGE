@@ -2311,11 +2311,10 @@ class HomePostProcess(Home):
         proc_dir = pp_options.pop("proc_dir", None)
         quite = pp_options.pop("quiet", None)
 
-        if not proc_dir: return self.redirect("/home/postprocess/")
+        if not proc_dir:
+            return self.redirect("/home/postprocess/")
 
-        sickrage.app.scheduler_pause()
         result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
-        sickrage.app.scheduler_resume()
 
         if quite:
             return result

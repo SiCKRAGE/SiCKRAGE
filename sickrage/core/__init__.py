@@ -32,7 +32,7 @@ import urllib
 import urlparse
 import uuid
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
@@ -164,7 +164,7 @@ class Core(object):
         self.main_db = MainDB()
         self.cache_db = CacheDB()
         self.failed_db = FailedDB()
-        self.scheduler = BackgroundScheduler()
+        self.scheduler = TornadoScheduler()
         self.wserver = WebServer()
         self.google_auth = GoogleAuth()
         self.name_cache = NameCache()
@@ -513,19 +513,3 @@ class Core(object):
                 self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
             except Exception as e:
                 self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))
-
-    def scheduler_pause(self):
-        if not self.scheduler:
-            return
-
-        self.scheduler.pause()
-        for job in self.scheduler.get_jobs():
-            job.pause()
-
-    def scheduler_resume(self):
-        if not self.scheduler:
-            return
-
-        self.scheduler.resume()
-        for job in self.scheduler.get_jobs():
-            job.resume()
