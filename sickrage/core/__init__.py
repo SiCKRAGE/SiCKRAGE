@@ -514,18 +514,18 @@ class Core(object):
             except Exception as e:
                 self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))
 
-    def pause_scheduler(self):
+    def scheduler_pause(self):
         if not self.scheduler:
             return
 
         self.scheduler.pause()
-        for job in self.scheduler.get_jobs:
+        for job in self.scheduler.get_jobs():
             job.pause()
 
-    def resume_scheduler(self):
+    def scheduler_resume(self):
         if not self.scheduler:
             return
 
         self.scheduler.resume()
-        for job in self.scheduler.get_jobs:
+        for job in self.scheduler.get_jobs():
             job.resume()

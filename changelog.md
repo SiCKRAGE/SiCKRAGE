@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1203588 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * 9deffab - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * def31cf - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * 52d9960 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * ba50828 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * 16a7332 - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
