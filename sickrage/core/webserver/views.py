@@ -4005,8 +4005,8 @@ class ConfigSearch(Config):
         if not sickrage.app.config.change_torrent_dir(torrent_dir):
             results += [_("Unable to create directory ") + os.path.normpath(torrent_dir) + _(", dir not changed.")]
 
-        sickrage.app.config.change_use_failed_snatcher(use_failed_snatcher)
         sickrage.app.config.change_failed_snatch_age(failed_snatch_age)
+        sickrage.app.config.use_failed_snatcher = checkbox_to_value(use_failed_snatcher)
         sickrage.app.config.change_daily_searcher_freq(dailysearch_frequency)
         sickrage.app.config.change_backlog_searcher_freq(backlog_frequency)
         sickrage.app.config.use_nzbs = checkbox_to_value(use_nzbs)
@@ -4021,7 +4021,7 @@ class ConfigSearch(Config):
         sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
         sickrage.app.config.enable_rss_cache_valid_shows = checkbox_to_value(enable_rss_cache_valid_shows)
         sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
-        sickrage.app.config.change_download_propers(download_propers)
+        sickrage.app.config.download_propers = checkbox_to_value(download_propers)
         sickrage.app.config.proper_searcher_interval = check_propers_interval
         sickrage.app.config.allow_high_priority = checkbox_to_value(allow_high_priority)
         sickrage.app.config.sab_username = sab_username
@@ -4108,7 +4108,7 @@ class ConfigPostProcessing(Config):
             results += [_("Unable to create directory ") + os.path.normpath(tv_download_dir) + _(", dir not changed.")]
 
         sickrage.app.config.change_autopostprocessor_freq(autopostprocessor_frequency)
-        sickrage.app.config.change_process_automatically(process_automatically)
+        sickrage.app.config.process_automatically = checkbox_to_value(process_automatically)
 
         if unpack:
             if self.isRarSupported() != 'not supported':
@@ -4659,7 +4659,7 @@ class ConfigNotifications(Config):
         sickrage.app.config.synologynotifier_notify_onsubtitledownload = checkbox_to_value(
             synologynotifier_notify_onsubtitledownload)
 
-        sickrage.app.config.change_use_trakt(use_trakt)
+        sickrage.app.config.use_trakt = checkbox_to_value(use_trakt)
         sickrage.app.config.trakt_username = trakt_username
         sickrage.app.config.trakt_remove_watchlist = checkbox_to_value(
             trakt_remove_watchlist)
@@ -4780,7 +4780,7 @@ class ConfigSubtitles(Config):
         results = []
 
         sickrage.app.config.change_subtitle_searcher_freq(subtitles_finder_frequency)
-        sickrage.app.config.change_use_subtitles(use_subtitles)
+        sickrage.app.config.use_subtitles = checkbox_to_value(use_subtitles)
 
         sickrage.app.config.subtitles_languages = [code.strip() for code in subtitles_languages.split(',') if
                                                    code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []

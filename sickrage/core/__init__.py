@@ -432,31 +432,6 @@ class Core(object):
         # start scheduler service
         self.scheduler.start()
 
-        # Pause/Resume PROPERSEARCHER job
-        (self.scheduler.get_job(self.proper_searcher.name).pause,
-         self.scheduler.get_job(self.proper_searcher.name).resume
-         )[self.config.download_propers]()
-
-        # Pause/Resume TRAKTSEARCHER job
-        (self.scheduler.get_job(self.trakt_searcher.name).pause,
-         self.scheduler.get_job(self.trakt_searcher.name).resume
-         )[self.config.use_trakt]()
-
-        # Pause/Resume SUBTITLESEARCHER job
-        (self.scheduler.get_job(self.subtitle_searcher.name).pause,
-         self.scheduler.get_job(self.subtitle_searcher.name).resume
-         )[self.config.use_subtitles]()
-
-        # Pause/Resume POSTPROCESS job
-        (self.scheduler.get_job(self.auto_postprocessor.name).pause,
-         self.scheduler.get_job(self.auto_postprocessor.name).resume
-         )[self.config.process_automatically]()
-
-        # Pause/Resume FAILEDSNATCHSEARCHER job
-        (self.scheduler.get_job(self.failed_snatch_searcher.name).pause,
-         self.scheduler.get_job(self.failed_snatch_searcher.name).resume
-         )[self.config.use_failed_snatcher]()
-
         # start queue's
         self.search_queue.start()
         self.show_queue.start()
@@ -544,33 +519,13 @@ class Core(object):
             return
 
         self.scheduler.pause()
+        for job in self.scheduler.get_jobs:
+            job.pause()
 
     def resume_scheduler(self):
         if not self.scheduler:
             return
 
         self.scheduler.resume()
-        # Pause/Resume PROPERSEARCHER job
-        (self.scheduler.get_job(self.proper_searcher.name).pause,
-         self.scheduler.get_job(self.proper_searcher.name).resume
-         )[self.config.download_propers]()
-
-        # Pause/Resume TRAKTSEARCHER job
-        (self.scheduler.get_job(self.trakt_searcher.name).pause,
-         self.scheduler.get_job(self.trakt_searcher.name).resume
-         )[self.config.use_trakt]()
-
-        # Pause/Resume SUBTITLESEARCHER job
-        (self.scheduler.get_job(self.subtitle_searcher.name).pause,
-         self.scheduler.get_job(self.subtitle_searcher.name).resume
-         )[self.config.use_subtitles]()
-
-        # Pause/Resume POSTPROCESS job
-        (self.scheduler.get_job(self.auto_postprocessor.name).pause,
-         self.scheduler.get_job(self.auto_postprocessor.name).resume
-         )[self.config.process_automatically]()
-
-        # Pause/Resume FAILEDSNATCHSEARCHER job
-        (self.scheduler.get_job(self.failed_snatch_searcher.name).pause,
-         self.scheduler.get_job(self.failed_snatch_searcher.name).resume
-         )[self.config.use_failed_snatcher]()
+        for job in self.scheduler.get_jobs:
+            job.resume()
