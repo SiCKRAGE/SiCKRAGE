@@ -2313,9 +2313,12 @@ class HomePostProcess(Home):
 
         if not proc_dir: return self.redirect("/home/postprocess/")
 
+        sickrage.app.scheduler.pause()
         result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
+        sickrage.app.scheduler.resume()
 
-        if quite: return result
+        if quite:
+            return result
 
         return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))
 
