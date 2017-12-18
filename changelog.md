@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1601c62 - 2017-12-18: Replaced main loop with IOLoop 
+- * acab4b8 - 2017-12-18: Fixed IOLoop to use current instead of instance during init period 
+- * 3bc75b9 - 2017-12-18: Replaced main loop with IOLoop 
 - * e3f5f76 - 2017-12-18: Replaced main loop with IOLoop 
 - * e79e570 - 2017-12-18: Switched scheduler to use TornadoScheduler base 
 - * 9e6831e - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 

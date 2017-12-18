@@ -160,7 +160,7 @@ class WebServer(object):
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root)
 
-        self.server = HTTPServer(self.app, no_keep_alive=True, io_loop=sickrage.app.io_loop)
+        self.server = HTTPServer(self.app, no_keep_alive=True)
 
         if sickrage.app.config.enable_https: self.server.ssl_options = {
             "certfile": sickrage.app.config.https_cert,

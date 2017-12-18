@@ -79,7 +79,7 @@ class Core(object):
     def __init__(self):
         self.started = False
         self.daemon = None
-        self.io_loop = IOLoop().instance()
+        self.io_loop = IOLoop().current()
         self.pid = os.getpid()
         self.showlist = []
 
