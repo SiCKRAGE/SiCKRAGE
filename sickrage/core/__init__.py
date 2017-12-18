@@ -440,6 +440,9 @@ class Core(object):
         # start webserver
         self.wserver.start()
 
+        # start ioloop
+        self.io_loop.start()
+
     def shutdown(self, restart=False):
         if self.started:
             self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
@@ -489,6 +492,8 @@ class Core(object):
             sickrage.app.daemon.stop()
 
         self.started = False
+
+        self.io_loop.stop()
 
     def save_all(self):
         # write all shows
