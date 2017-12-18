@@ -1,6 +1,7 @@
 # Changelog
 
-- * 20f258c - 2017-12-18: Switched scheduler to use TornadoScheduler base 
+- * 54e7ba0 - 2017-12-18: Replaced main loop with IOLoop 
+- * e79e570 - 2017-12-18: Switched scheduler to use TornadoScheduler base 
 - * 9e6831e - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * def31cf - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * 52d9960 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 

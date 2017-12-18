@@ -310,7 +310,7 @@ def main():
         app.start()
 
         # main thread loop
-        while app.started: time.sleep(1)
+        app.io_loop.start()
     except (SystemExit, KeyboardInterrupt):
         if app: app.shutdown()
     except ImportError:
