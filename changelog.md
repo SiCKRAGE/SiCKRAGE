@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1906a34 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * e79e005 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * ba50828 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
 - * 16a7332 - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
 - * bf5179f - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
 - * 611ea99 - 2017-12-17: Fixed issue #141 - show/hide seasons in display show page 

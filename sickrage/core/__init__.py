@@ -538,3 +538,39 @@ class Core(object):
                 self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
             except Exception as e:
                 self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))
+
+    def pause_scheduler(self):
+        if not self.scheduler:
+            return
+
+        self.scheduler.pause()
+
+    def resume_scheduler(self):
+        if not self.scheduler:
+            return
+
+        self.scheduler.resume()
+        # Pause/Resume PROPERSEARCHER job
+        (self.scheduler.get_job(self.proper_searcher.name).pause,
+         self.scheduler.get_job(self.proper_searcher.name).resume
+         )[self.config.download_propers]()
+
+        # Pause/Resume TRAKTSEARCHER job
+        (self.scheduler.get_job(self.trakt_searcher.name).pause,
+         self.scheduler.get_job(self.trakt_searcher.name).resume
+         )[self.config.use_trakt]()
+
+        # Pause/Resume SUBTITLESEARCHER job
+        (self.scheduler.get_job(self.subtitle_searcher.name).pause,
+         self.scheduler.get_job(self.subtitle_searcher.name).resume
+         )[self.config.use_subtitles]()
+
+        # Pause/Resume POSTPROCESS job
+        (self.scheduler.get_job(self.auto_postprocessor.name).pause,
+         self.scheduler.get_job(self.auto_postprocessor.name).resume
+         )[self.config.process_automatically]()
+
+        # Pause/Resume FAILEDSNATCHSEARCHER job
+        (self.scheduler.get_job(self.failed_snatch_searcher.name).pause,
+         self.scheduler.get_job(self.failed_snatch_searcher.name).resume
+         )[self.config.use_failed_snatcher]()
