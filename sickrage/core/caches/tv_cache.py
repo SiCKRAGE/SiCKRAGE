@@ -235,7 +235,7 @@ class TVCache(object):
         except (InvalidShowException, InvalidNameException):
             pass
 
-    def search_cache(self, ep_obj=None, manualSearch=False, downCurQuality=False):
+    def search_cache(self, ep_obj, manualSearch=False, downCurQuality=False):
         neededEps = {}
         dbData = []
 
@@ -249,12 +249,9 @@ class TVCache(object):
         # get data from internal database
         dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
 
-        # sort data by criteria
-        dbData = [x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
-                  and "|" + str(ep_obj.episode) + "|" in x['episodes']] if ep_obj else dbData
-
         # for each cache entry
-        for curResult in dbData:
+        for curResult in (x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
+                                               and "|" + str(ep_obj.episode) + "|" in x['episodes']):
             result = self.provider.getResult()
 
             # ignored/required words, and non-tv junk
@@ -262,13 +259,13 @@ class TVCache(object):
                 continue
 
             # get the show object, or if it's not one of our shows then ignore it
-            showObj = findCertainShow(int(curResult["indexerid"]))
-            if not showObj:
+            result.show = findCertainShow(int(curResult["indexerid"]))
+            if not result.show:
                 continue
 
             # skip if provider is anime only and show is not anime
-            if self.provider.anime_only and not showObj.is_anime:
-                sickrage.app.log.debug("" + str(showObj.name) + " is not an anime, skiping")
+            if self.provider.anime_only and not result.show.is_anime:
+                sickrage.app.log.debug("" + str(result.show.name) + " is not an anime, skiping")
                 continue
 
             # get season and ep data (ignoring multi-eps for now)
@@ -276,24 +273,23 @@ class TVCache(object):
             if curSeason == -1:
                 continue
 
-            curEp = curResult["episodes"].split("|")[1]
-            if not curEp:
-                continue
-
-            curEp = int(curEp)
+            result.episodes = [result.show.getEpisode(curSeason, int(curEp)) for curEp in
+                               filter(None, curResult["episodes"].split("|"))]
 
             result.quality = int(curResult["quality"])
             result.release_group = curResult["release_group"]
             result.version = curResult["version"]
 
-            # if the show says we want that episode then add it to the list
-            if not showObj.wantEpisode(curSeason, curEp, result.quality, manualSearch, downCurQuality):
-                sickrage.app.log.info(
-                    "Skipping " + curResult["name"] + " because we don't want an episode that's " +
-                    Quality.qualityStrings[result.quality])
-                continue
+            # make sure we want the episode
+            wantEp = False
+            for curEp in result.episodes:
+                if result.show.wantEpisode(curEp.season, curEp.episode, result.quality, manualSearch, downCurQuality):
+                    wantEp = True
 
-            result.episodes = [showObj.getEpisode(curSeason, curEp)]
+            if not wantEp:
+                sickrage.app.log.info("Skipping " + curResult["name"] + " because we don't want an episode that's " +
+                                      Quality.qualityStrings[result.quality])
+                continue
 
             # build a result object
             result.name = curResult["name"]
@@ -301,17 +297,16 @@ class TVCache(object):
 
             sickrage.app.log.info("Found result " + result.name + " at " + result.url)
 
-            result.show = showObj
             result.seeders = curResult.get("seeders", -1)
             result.leechers = curResult.get("leechers", -1)
             result.size = curResult.get("size", -1)
             result.content = None
 
             # add it to the list
-            if result.episodes[0].episode not in neededEps:
-                neededEps[result.episodes[0].episode] = [result]
+            if ep_obj.episode not in neededEps:
+                neededEps[ep_obj.episode] = [result]
             else:
-                neededEps[result.episodes[0].episode] += [result]
+                neededEps[ep_obj.episode] += [result]
 
         # datetime stamp this search so cache gets cleared
         self.last_search = datetime.datetime.today()

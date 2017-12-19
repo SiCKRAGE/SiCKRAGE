@@ -9,9 +9,9 @@
 <%block name="content">
     <%
         schedulers = {
-        _('Daily Search'): 'daily_searcher',
-        _('Backlog'): 'backlog_searcher',
-        _('Show Update'): 'show_updater',
+            _('Daily Search'): 'daily_searcher',
+            _('Backlog'): 'backlog_searcher',
+            _('Show Update'): 'show_updater',
         }
 
         if sickrage.app.config.version_notify:
