@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3003053 - 2017-12-19: Refactored cache search function to handle multi-ep results 
+- * 20157a9 - 2017-12-19: Added EpisodeNotFoundException handling to provider cache search func 
+- * 7aa5593 - 2017-12-19: Refactored cache search function to handle multi-ep results 
 - * 19a9760 - 2017-12-18: Updated status page to work with new scheduler code 
 - * cea3a5e - 2017-12-18: Fixed IOLoop to use current instead of instance during init period 
 - * 3bc75b9 - 2017-12-18: Replaced main loop with IOLoop 

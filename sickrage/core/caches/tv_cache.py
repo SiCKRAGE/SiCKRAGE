@@ -26,7 +26,7 @@ from CodernityDB.database import RecordNotFound
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.exceptions import AuthException
+from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
 from sickrage.core.helpers import findCertainShow, show_names
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
@@ -273,8 +273,11 @@ class TVCache(object):
             if curSeason == -1:
                 continue
 
-            result.episodes = [result.show.getEpisode(curSeason, int(curEp)) for curEp in
-                               filter(None, curResult["episodes"].split("|"))]
+            try:
+                result.episodes = [result.show.getEpisode(curSeason, int(curEp)) for curEp in
+                                   filter(None, curResult["episodes"].split("|"))]
+            except EpisodeNotFoundException:
+                continue
 
             result.quality = int(curResult["quality"])
             result.release_group = curResult["release_group"]
