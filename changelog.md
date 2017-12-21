@@ -1,6 +1,7 @@
 # Changelog
 
-- * 20157a9 - 2017-12-19: Added EpisodeNotFoundException handling to provider cache search func 
+- * 020afb9 - 2017-12-21: refactored post-process variables 
+- * f8d39ac - 2017-12-19: Added EpisodeNotFoundException handling to provider cache search func 
 - * 7aa5593 - 2017-12-19: Refactored cache search function to handle multi-ep results 
 - * 19a9760 - 2017-12-18: Updated status page to work with new scheduler code 
 - * cea3a5e - 2017-12-18: Fixed IOLoop to use current instead of instance during init period 
