@@ -32,7 +32,7 @@ import urllib
 import urlparse
 import uuid
 
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
@@ -79,7 +79,7 @@ class Core(object):
     def __init__(self):
         self.started = False
         self.daemon = None
-        self.io_loop = IOLoop().instance()
+        self.io_loop = IOLoop().current()
         self.pid = os.getpid()
         self.showlist = []
 
@@ -164,7 +164,7 @@ class Core(object):
         self.main_db = MainDB()
         self.cache_db = CacheDB()
         self.failed_db = FailedDB()
-        self.scheduler = BackgroundScheduler()
+        self.scheduler = TornadoScheduler()
         self.wserver = WebServer()
         self.google_auth = GoogleAuth()
         self.name_cache = NameCache()
@@ -432,31 +432,6 @@ class Core(object):
         # start scheduler service
         self.scheduler.start()
 
-        # Pause/Resume PROPERSEARCHER job
-        (self.scheduler.get_job(self.proper_searcher.name).pause,
-         self.scheduler.get_job(self.proper_searcher.name).resume
-         )[self.config.download_propers]()
-
-        # Pause/Resume TRAKTSEARCHER job
-        (self.scheduler.get_job(self.trakt_searcher.name).pause,
-         self.scheduler.get_job(self.trakt_searcher.name).resume
-         )[self.config.use_trakt]()
-
-        # Pause/Resume SUBTITLESEARCHER job
-        (self.scheduler.get_job(self.subtitle_searcher.name).pause,
-         self.scheduler.get_job(self.subtitle_searcher.name).resume
-         )[self.config.use_subtitles]()
-
-        # Pause/Resume POSTPROCESS job
-        (self.scheduler.get_job(self.auto_postprocessor.name).pause,
-         self.scheduler.get_job(self.auto_postprocessor.name).resume
-         )[self.config.process_automatically]()
-
-        # Pause/Resume FAILEDSNATCHSEARCHER job
-        (self.scheduler.get_job(self.failed_snatch_searcher.name).pause,
-         self.scheduler.get_job(self.failed_snatch_searcher.name).resume
-         )[self.config.use_failed_snatcher]()
-
         # start queue's
         self.search_queue.start()
         self.show_queue.start()
@@ -464,6 +439,9 @@ class Core(object):
 
         # start webserver
         self.wserver.start()
+
+        # start ioloop
+        self.io_loop.start()
 
     def shutdown(self, restart=False):
         if self.started:
@@ -514,6 +492,8 @@ class Core(object):
             sickrage.app.daemon.stop()
 
         self.started = False
+
+        self.io_loop.stop()
 
     def save_all(self):
         # write all shows

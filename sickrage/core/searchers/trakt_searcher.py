@@ -66,8 +66,8 @@ class TraktSearcher(object):
         self.Collectionlist = {}
         self.amActive = False
 
-    def run(self):
-        if self.amActive:
+    def run(self, force=False):
+        if self.amActive or (not sickrage.app.config.use_trakt or sickrage.app.developer) and not force:
             return
 
         self.amActive = True

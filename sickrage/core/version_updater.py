@@ -37,10 +37,6 @@ from sickrage.notifiers import Notifiers
 
 
 class VersionUpdater(object):
-    """
-    Version check class meant to run as a thread object with the sr scheduler.
-    """
-
     def __init__(self):
         self.name = "VERSIONUPDATER"
         self.amActive = False
@@ -59,20 +55,21 @@ class VersionUpdater(object):
         threading.currentThread().setName(self.name)
 
         try:
-            if self.check_for_new_version(force) and sickrage.app.config.auto_update:
-                if sickrage.app.show_updater.amActive:
-                    sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
-                    return
+            if self.check_for_new_version(force):
+                if sickrage.app.config.auto_update:
+                    if sickrage.app.show_updater.amActive:
+                        sickrage.app.log.debug("We can't proceed with auto-updating. Shows are being updated")
+                        return
 
-                sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                sickrage.app.alerts.message(_('New update found for SiCKRAGE, starting auto-updater'))
-                if self.update():
-                    sickrage.app.log.info("Update was successful!")
-                    sickrage.app.alerts.message(_('Update was successful'))
-                    sickrage.app.shutdown(restart=True)
-                else:
-                    sickrage.app.log.info("Update failed!")
-                    sickrage.app.alerts.message(_('Update failed!'))
+                    sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
+                    sickrage.app.alerts.message(_('New update found for SiCKRAGE, starting auto-updater'))
+                    if self.update():
+                        sickrage.app.log.info("Update was successful!")
+                        sickrage.app.alerts.message(_('Update was successful'))
+                        sickrage.app.shutdown(restart=True)
+                    else:
+                        sickrage.app.log.info("Update failed!")
+                        sickrage.app.alerts.message(_('Update failed!'))
         finally:
             self.amActive = False
 
@@ -137,14 +134,15 @@ class VersionUpdater(object):
         Checks the internet for a newer version.
 
         returns: bool, True for new version or False for no new version.
-        :param force: if true the VERSION_NOTIFY setting will be ignored and a check will be forced
+        :param force: if true the version_notify setting will be ignored and a check will be forced
         """
 
-        if sickrage.app.developer:
+        if not self.updater or (not sickrage.app.config.version_notify or sickrage.app.developer) and not force:
             return False
 
-        if self.updater and self.updater.need_update():
-            if force: self.updater.set_newest_text()
+        if self.updater.need_update():
+            if force:
+                self.updater.set_newest_text()
             return True
 
     def update(self):

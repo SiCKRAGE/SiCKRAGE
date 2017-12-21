@@ -1127,9 +1127,7 @@ class Config(object):
             self.autopostprocessor_freq = self.min_autopostprocessor_freq
 
         sickrage.app.scheduler.modify_job(sickrage.app.auto_postprocessor.name,
-                                          trigger=IntervalTrigger(
-                                              minutes=self.autopostprocessor_freq
-                                          ))
+                                          trigger=IntervalTrigger(minutes=self.autopostprocessor_freq))
 
     def change_daily_searcher_freq(self, freq):
         """
@@ -1142,9 +1140,7 @@ class Config(object):
             self.daily_searcher_freq = self.min_daily_searcher_freq
 
         sickrage.app.scheduler.modify_job(sickrage.app.daily_searcher.name,
-                                          trigger=IntervalTrigger(
-                                              minutes=self.daily_searcher_freq
-                                          ))
+                                          trigger=IntervalTrigger(minutes=self.daily_searcher_freq))
 
     def change_backlog_searcher_freq(self, freq):
         """
@@ -1158,9 +1154,7 @@ class Config(object):
             self.backlog_searcher_freq = self.min_backlog_searcher_freq
 
         sickrage.app.scheduler.modify_job(sickrage.app.backlog_searcher.name,
-                                          trigger=IntervalTrigger(
-                                              minutes=self.backlog_searcher_freq
-                                          ))
+                                          trigger=IntervalTrigger(minutes=self.backlog_searcher_freq))
 
     def change_updater_freq(self, freq):
         """
@@ -1173,9 +1167,7 @@ class Config(object):
             self.version_updater_freq = self.min_version_updater_freq
 
         sickrage.app.scheduler.modify_job(sickrage.app.version_updater.name,
-                                          trigger=IntervalTrigger(
-                                              hours=self.version_updater_freq
-                                          ))
+                                          trigger=IntervalTrigger(hours=self.version_updater_freq))
 
     def change_showupdate_hour(self, freq):
         """Change frequency of show updater thread
@@ -1188,10 +1180,10 @@ class Config(object):
             self.showupdate_hour = 0
 
         sickrage.app.scheduler.modify_job(sickrage.app.show_updater.name,
-                                          trigger=IntervalTrigger(
-                                              hours=1,
-                                              start_date=datetime.datetime.now().replace(hour=self.showupdate_hour)
-                                          ))
+                                          trigger=IntervalTrigger(hours=1,
+                                                                  start_date=datetime.datetime.now().replace(
+                                                                      hour=self.showupdate_hour))
+                                          )
 
     def change_subtitle_searcher_freq(self, freq):
         """
@@ -1204,9 +1196,7 @@ class Config(object):
             self.subtitle_searcher_freq = self.min_subtitle_searcher_freq
 
         sickrage.app.scheduler.modify_job(sickrage.app.subtitle_searcher.name,
-                                          trigger=IntervalTrigger(
-                                              hours=self.subtitle_searcher_freq
-                                          ))
+                                          trigger=IntervalTrigger(hours=self.subtitle_searcher_freq))
 
     def change_failed_snatch_age(self, age):
         """
@@ -1227,61 +1217,6 @@ class Config(object):
         self.version_notify = checkbox_to_value(version_notify)
         if not self.version_notify:
             sickrage.app.newest_version_string = None
-
-    def change_download_propers(self, download_propers):
-        """
-        Enable/Disable proper download thread
-        TODO: Make this return True/False on success/failure
-
-        :param download_propers: New desired state
-        """
-        self.download_propers = checkbox_to_value(download_propers)
-        job = sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name)
-        (job.pause, job.resume)[self.download_propers]()
-
-    def change_use_trakt(self, use_trakt):
-        """
-        Enable/disable trakt thread
-        TODO: Make this return true/false on success/failure
-
-        :param use_trakt: New desired state
-        """
-        self.use_trakt = checkbox_to_value(use_trakt)
-        job = sickrage.app.scheduler.get_job(sickrage.app.trakt_searcher.name)
-        (job.pause, job.resume)[self.use_trakt]()
-
-    def change_use_subtitles(self, use_subtitles):
-        """
-        Enable/Disable subtitle searcher
-        TODO: Make this return true/false on success/failure
-
-        :param use_subtitles: New desired state
-        """
-        self.use_subtitles = checkbox_to_value(use_subtitles)
-        job = sickrage.app.scheduler.get_job(sickrage.app.subtitle_searcher.name)
-        (job.pause, job.resume)[self.use_subtitles]()
-
-    def change_process_automatically(self, process_automatically):
-        """
-        Enable/Disable postprocessor thread
-        TODO: Make this return True/False on success/failure
-
-        :param process_automatically: New desired state
-        """
-        self.process_automatically = checkbox_to_value(process_automatically)
-        job = sickrage.app.scheduler.get_job(sickrage.app.auto_postprocessor.name)
-        (job.pause, job.resume)[self.process_automatically]()
-
-    def change_use_failed_snatcher(self, use_failed_snatcher):
-        """
-        Enable/disable failed snatch searcher job
-        TODO: Make this return true/false on success/failure
-
-        :param use_failed_snatcher: New desired state
-        """
-        self.use_failed_snatcher = checkbox_to_value(use_failed_snatcher)
-        job = sickrage.app.scheduler.get_job(sickrage.app.failed_snatch_searcher.name)
-        (job.pause, job.resume)[self.use_failed_snatcher]()
 
     ################################################################################
     # check_setting_int                                                            #

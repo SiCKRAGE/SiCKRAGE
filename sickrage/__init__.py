@@ -308,11 +308,9 @@ def main():
 
         # start app
         app.start()
-
-        # main thread loop
-        while app.started: time.sleep(1)
     except (SystemExit, KeyboardInterrupt):
-        if app: app.shutdown()
+        if app:
+            app.shutdown()
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):

@@ -389,11 +389,10 @@ class GenericProvider(object):
                     actual_episodes = [int(dbData[0]["episode"])]
 
             # make sure we want the episode
-            wantEp = True
+            wantEp = False
             for epNo in actual_episodes:
-                if not result.show.wantEpisode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
-                    wantEp = False
-                    break
+                if result.show.wantEpisode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
+                    wantEp = True
 
             if not wantEp:
                 sickrage.app.log.info(

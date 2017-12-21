@@ -1,6 +1,22 @@
 # Changelog
 
-- * 27a381f - 2017-12-17: Release v9.2.67 
+- * 063ab92 - 2017-12-21: Release v9.2.68 
+- * 328e9d8 - 2017-12-21: refactored post-process variables 
+- * f8d39ac - 2017-12-19: Added EpisodeNotFoundException handling to provider cache search func 
+- * 7aa5593 - 2017-12-19: Refactored cache search function to handle multi-ep results 
+- * 19a9760 - 2017-12-18: Updated status page to work with new scheduler code 
+- * cea3a5e - 2017-12-18: Fixed IOLoop to use current instead of instance during init period 
+- * 3bc75b9 - 2017-12-18: Replaced main loop with IOLoop 
+- * e3f5f76 - 2017-12-18: Replaced main loop with IOLoop 
+- * e79e570 - 2017-12-18: Switched scheduler to use TornadoScheduler base 
+- * 9e6831e - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * def31cf - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * 52d9960 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * ba50828 - 2017-12-18: Pauses background jobs while post-processing then resumes when finished 
+- * 16a7332 - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
+- * bf5179f - 2017-12-18: Fix for issue #155 - display notifications when updates are available 
+- * 611ea99 - 2017-12-17: Fixed issue #141 - show/hide seasons in display show page 
+- * 3b4302a - 2017-12-17: Release v9.2.67 
 - * 5f48f83 - 2017-12-17: Release v9.2.66 
 - * 313d7fd - 2017-12-17: Fixed issues with unrar and windows platforms Fixed issues with unrar and *nix platforms Added option to set unpack location 
 - * 7682ad1 - 2017-12-17: Fixed issue #153 - Checking delete files when removing a show didn&#x27;t actually delete the files Added code to remove queue item to be ignored when listing shows 

@@ -39,8 +39,8 @@ class ProcessResult(object):
     def __init__(self):
         self.result = True
         self.output = ''
-        self.missedfiles = []
-        self.aggresult = True
+        self.missed_files = []
+        self.agg_result = True
 
     def __unicode__(self):
         return self.output
@@ -251,11 +251,11 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
                         os.path.basename(directory_from_rar) == rar_file.rpartition('.')[0]]
             delete_files(dirName, this_rar, result)  # Deletes only if result.result == True
 
-    result.output += logHelper(("Processing Failed", "Successfully processed")[result.aggresult],
-                               (sickrage.app.log.WARNING, sickrage.app.log.INFO)[result.aggresult])
-    if result.missedfiles:
+    result.output += logHelper(("Processing Failed", "Successfully processed")[result.agg_result],
+                               (sickrage.app.log.WARNING, sickrage.app.log.INFO)[result.agg_result])
+    if result.missed_files:
         result.output += logHelper("Some items were not processed.")
-        for missed_file in result.missedfiles:
+        for missed_file in result.missed_files:
             result.output += logHelper(missed_file)
 
     return result
@@ -533,8 +533,8 @@ def process_media(processPath, videoFiles, nzbName, process_method, force, is_pr
             result.output += logHelper(
                 "Processing failed for {0}: {1}".format(cur_video_file_path, process_fail_message),
                 sickrage.app.log.WARNING)
-            result.missedfiles.append("{0} : Processing failed: {1}".format(cur_video_file_path, process_fail_message))
-            result.aggresult = False
+            result.missed_files.append("{0} : Processing failed: {1}".format(cur_video_file_path, process_fail_message))
+            result.agg_result = False
 
 
 def process_failed(dirName, nzbName, result):

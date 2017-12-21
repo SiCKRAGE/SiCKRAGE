@@ -36,6 +36,9 @@ class AutoPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
+        if self.amActive or (not sickrage.app.config.process_automatically or sickrage.app.developer) and not force:
+            return
+
         self.amActive = True
         sickrage.app.postprocessor_queue.put(sickrage.app.config.tv_download_dir, force=force)
         self.amActive = False

@@ -8,16 +8,22 @@
 %>
 <%block name="content">
     <%
-        schedulerList = {
-        _('Daily Search'): 'daily_searcher',
-        _('Backlog'): 'backlog_searcher',
-        _('Show Update'): 'show_updater',
-        _('Version Check'): 'version_updater',
-        _('Proper Finder'): 'proper_searcher',
-        _('Post Process'): 'auto_postprocessor',
-        _('Subtitles Finder'): 'subtitle_searcher',
-        _('Trakt Checker'): 'trakt_searcher',
-    }
+        schedulers = {
+            _('Daily Search'): 'daily_searcher',
+            _('Backlog'): 'backlog_searcher',
+            _('Show Update'): 'show_updater',
+        }
+
+        if sickrage.app.config.version_notify:
+            schedulers.update({_('Version Check'): 'version_updater'})
+        if sickrage.app.config.download_propers:
+            schedulers.update({_('Proper Finder'): 'proper_searcher'})
+        if sickrage.app.config.process_automatically:
+            schedulers.update({_('Post Process'): 'auto_postprocessor'})
+        if sickrage.app.config.use_subtitles:
+            schedulers.update({_('Subtitles Finder'): 'subtitle_searcher'})
+        if sickrage.app.config.use_trakt:
+            schedulers.update({_('Trakt Checker'): 'trakt_searcher'})
     %>
 
     <div class="row">
@@ -41,7 +47,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                        % for schedulerName, scheduler in schedulerList.items():
+                        % for schedulerName, scheduler in schedulers.items():
                             <% service = getattr(sickrage.app, scheduler) %>
                             <% job = sickrage.app.scheduler.get_job(service.name) %>
                             <% enabled = bool(getattr(job, 'next_run_time', False)) %>

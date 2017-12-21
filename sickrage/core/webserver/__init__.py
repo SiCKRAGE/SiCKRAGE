@@ -47,9 +47,10 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
-class WebServer(threading.Thread):
+class WebServer(object):
     def __init__(self):
-        super(WebServer, self).__init__(name="TORNADO")
+        super(WebServer, self).__init__()
+        self.name = "TORNADO"
         self.daemon = True
         self.started = False
         self.video_root = None
@@ -57,7 +58,7 @@ class WebServer(threading.Thread):
         self.app = None
         self.server = None
 
-    def run(self):
+    def start(self):
         self.started = True
 
         # load languages
@@ -188,8 +189,6 @@ class WebServer(threading.Thread):
                                      sickrage.app.config.web_host,
                                      sickrage.app.config.web_port
                                  ), name="LAUNCH-BROWSER").start()
-
-            sickrage.app.io_loop.start()
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
@@ -199,4 +198,3 @@ class WebServer(threading.Thread):
             self.started = False
             self.server.close_all_connections()
             self.server.stop()
-            sickrage.app.io_loop.stop()
