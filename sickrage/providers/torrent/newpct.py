@@ -141,8 +141,11 @@ class NewpctProvider(TorrentProvider):
                 title = unidecode(html.find('h1').get_text().split('/')[1])
                 title = self._process_title(title, link)
                 download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(),
-                                        re.DOTALL).group(1)
-                download_url = self.urls['download'] % download_id
+                                        re.DOTALL)
+
+                download_url = None
+                if download_id:
+                    download_url = self.urls['download'] % download_id.group(1)
                 if not all([title, download_url]):
                     return results
 

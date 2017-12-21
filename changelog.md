@@ -1,6 +1,7 @@
 # Changelog
 
-- * 063ab92 - 2017-12-21: Release v9.2.68 
+- * 36a0206 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
+- * c3eb182 - 2017-12-21: Release v9.2.68 
 - * 328e9d8 - 2017-12-21: refactored post-process variables 
 - * f8d39ac - 2017-12-19: Added EpisodeNotFoundException handling to provider cache search func 
 - * 7aa5593 - 2017-12-19: Refactored cache search function to handle multi-ep results 
