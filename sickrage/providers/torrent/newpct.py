@@ -140,12 +140,13 @@ class NewpctProvider(TorrentProvider):
                 link = html.find(rel='canonical')['href']
                 title = unidecode(html.find('h1').get_text().split('/')[1])
                 title = self._process_title(title, link)
-                download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(),
-                                        re.DOTALL)
 
-                download_url = None
-                if download_id:
-                    download_url = self.urls['download'] % download_id.group(1)
+                try:
+                    download_url = self.urls['download'] % re.search(
+                        r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', html.get_text(), re.DOTALL).group(1)
+                except Exception:
+                    download_url = None
+
                 if not all([title, download_url]):
                     return results
 
@@ -194,7 +195,7 @@ class NewpctProvider(TorrentProvider):
         title_1080p = re.search(r'1080p', title, flags=re.I)
         title_x264 = re.search(r'x264', title, flags=re.I)
         title_bluray = re.search(r'bluray', title, flags=re.I)
-        title_serie_hd = re.search(r'descargar\-seriehd', title, flags=re.I)
+        title_serie_hd = re.search(r'descargar-seriehd', title, flags=re.I)
         url_hdtv = re.search(r'HDTV', url, flags=re.I)
         url_720p = re.search(r'720p', url, flags=re.I)
         url_1080p = re.search(r'1080p', url, flags=re.I)
@@ -230,14 +231,10 @@ class NewpctProvider(TorrentProvider):
 
     def _process_link(self, url):
         try:
-            url = self.session.get(url).text
-            download_id = re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html', url, re.DOTALL).group(1)
-            url = self.urls['download'] % download_id
-        except Exception as e:
+            return self.urls['download'] % re.search(r'http://tumejorserie.com/descargar/.+?(\d{6}).+?\.html',
+                                                     self.session.get(url).text, re.DOTALL).group(1)
+        except Exception:
             pass
-
-        return url
-
 
 class NewpctCache(TVCache):
     def _get_rss_data(self):
