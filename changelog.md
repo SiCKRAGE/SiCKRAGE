@@ -1,6 +1,11 @@
 # Changelog
 
-- * 873fc4c - 2017-12-21: Release v9.2.69 
+- * db494be - 2017-12-22: Release v9.2.70 
+- * c1e9c48 - 2017-12-22: URL validation for provider search results added in to code 
+- * 8ca1761 - 2017-12-21: Fix for torrent9 provider 
+- * d07716c - 2017-12-21: Fixed issue #155 - version updater bar not showing 
+- * a022118 - 2017-12-21: Fixed issue #155 - version updater bar not showing 
+- * af0e32e - 2017-12-21: Release v9.2.69 
 - * 7733262 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * 7dcd312 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * c3eb182 - 2017-12-21: Release v9.2.68 

@@ -323,6 +323,10 @@ class GenericProvider(object):
 
             result.name, result.url = self._get_title_and_url(item)
 
+            # ignore invalid urls
+            if not validate_url(result.url) and not result.url.startswith('magnet'):
+                continue
+
             try:
                 parse_result = NameParser().parse(result.name)
             except (InvalidNameException, InvalidShowException) as e:
@@ -441,6 +445,9 @@ class GenericProvider(object):
                 for item in self.search(search_strngs[0], ep_obj=ep_obj):
                     result = self.getResult([ep_obj])
                     result.name, result.url = self._get_title_and_url(item)
+                    if not validate_url(result.url) and not result.url.startswith('magnet'):
+                        continue
+
                     result.seeders, result.leechers = self._get_result_stats(item)
                     result.size = self._get_size(item)
                     result.date = datetime.datetime.today()
