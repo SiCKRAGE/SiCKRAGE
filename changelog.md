@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5ebe957 - 2017-12-21: Fixed issue #155 - version updater bar not showing 
+- * 2e507af - 2017-12-21: Fix for torrent9 provider 
+- * d07716c - 2017-12-21: Fixed issue #155 - version updater bar not showing 
 - * a022118 - 2017-12-21: Fixed issue #155 - version updater bar not showing 
 - * af0e32e - 2017-12-21: Release v9.2.69 
 - * 7733262 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 

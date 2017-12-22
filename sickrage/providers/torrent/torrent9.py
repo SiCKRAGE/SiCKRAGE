@@ -92,21 +92,36 @@ class Torrent9Provider(TorrentProvider):
         results = []
 
         with bs4_parser(data) as html:
-            torrent_rows = html.findAll('tr')
-            for result in torrent_rows:
+            table_header = html.find('thead')
+            if not table_header:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                return results
+
+            # Nom du torrent, Taille, Seed, Leech
+            labels = [label.get_text() for label in table_header('th')]
+
+            table_body = html.find('tbody')
+            for row in table_body('tr'):
+                cells = row('td')
+
                 try:
-                    title = result.find('a').get_text(strip=False).replace("HDTV", "HDTV x264-Torrent9")
-                    title = re.sub(r' Saison', ' Season', title, flags=re.I)
-                    tmp = result.find("a")['href'].split('/')[-1].replace('.html', '.torrent').strip()
-                    download_url = urljoin(self.custom_url or self.urls['base_url'],
-                                           '/get_torrent/{0}'.format(tmp) + ".torrent")
+                    info_cell = cells[labels.index('Nom du torrent')].a
+                    title = info_cell.get_text()
+                    download_url = info_cell.get('href')
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(result.find(class_="seed_ok").get_text(strip=True))
-                    leechers = try_int(result.find_all('td')[3].get_text(strip=True))
-                    torrent_size = result.find_all('td')[1].get_text(strip=True)
+                    title = '{name} {codec}'.format(name=title, codec='x264')
 
+                    download_link = download_url.replace('/torrent', 'get_torrent')
+                    download_url = self.urls['download'].format(link=download_link)
+                    if self.custom_url:
+                        download_url = urljoin(self.custom_url, download_url.split(self.urls['base_url'])[1])
+
+                    seeders = try_int(cells[labels.index('Seed')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('Leech')].get_text(strip=True))
+
+                    torrent_size = cells[labels.index('Taille')].get_text()
                     size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
 
                     results += [
