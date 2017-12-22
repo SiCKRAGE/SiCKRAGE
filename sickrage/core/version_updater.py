@@ -141,7 +141,7 @@ class VersionUpdater(object):
             return False
 
         if self.updater.need_update():
-            if not sickrage.app.config.auto_update:
+            if not sickrage.app.config.auto_update or force:
                 self.updater.set_newest_text()
             return True
 
