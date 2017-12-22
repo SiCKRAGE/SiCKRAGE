@@ -117,7 +117,7 @@ class ProperSearcher(object):
 
             # if they haven't been added by a different provider than add the proper to the list
             for x in curPropers:
-                if not re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', x.name, re.I):
+                if not re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', x.name, re.I):
                     sickrage.app.log.debug('findPropers returned a non-proper, we have caught and skipped it.')
                     continue
 

@@ -27,7 +27,7 @@ from CodernityDB.database import RecordNotFound
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
-from sickrage.core.helpers import findCertainShow, show_names
+from sickrage.core.helpers import findCertainShow, show_names, validate_url
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
 
@@ -181,8 +181,12 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
-        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID)
-                if x['url'] == url]): return
+        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID) if x['url'] == url]):
+            return
+
+        # ignore invalid urls
+        if not validate_url(url) and not url.startswith('magnet'):
+            return
 
         try:
             # parse release name
@@ -253,6 +257,10 @@ class TVCache(object):
         for curResult in (x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
                                                and "|" + str(ep_obj.episode) + "|" in x['episodes']):
             result = self.provider.getResult()
+
+            # ignore invalid urls
+            if not validate_url(curResult["url"]) and not curResult["url"].startswith('magnet'):
+                continue
 
             # ignored/required words, and non-tv junk
             if not show_names.filterBadReleases(curResult["name"]):
