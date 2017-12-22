@@ -1,6 +1,7 @@
 # Changelog
 
-- * 16a7683 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
+- * 873fc4c - 2017-12-21: Release v9.2.69 
+- * 7733262 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * 7dcd312 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * c3eb182 - 2017-12-21: Release v9.2.68 
 - * 328e9d8 - 2017-12-21: refactored post-process variables 

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2017-12-21 13:15-0500\n"
-"PO-Revision-Date: 2017-12-21 13:17-0500\n"
+"PO-Revision-Date: 2017-12-21 22:45-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -257,7 +257,7 @@ msgstr "Välj TV-nerladdningskatalog"
 
 #: dist/js/core.js:3580
 msgid "Select UNPACK Directory"
-msgstr ""
+msgstr "Välj katalog för uppackning"
 
 #: dist/js/core.js:3595
 msgid "Unrar Executable not found."
@@ -944,7 +944,7 @@ msgstr "Kontrollera uppdateringar"
 
 #: sickrage/core/webserver/views/config/general.mako:348
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
-msgstr ""
+msgstr "och visa notifieringar när uppdateringar är tillgängliga. Kontroll körs vid uppstart och vid den frekvens som anges nedan"
 
 #: sickrage/core/webserver/views/config/general.mako:357
 msgid "Automatically update"
@@ -952,11 +952,11 @@ msgstr "Uppdatera automatiskt"
 
 #: sickrage/core/webserver/views/config/general.mako:363
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
-msgstr ""
+msgstr "hämta och installera programuppdateringar. Uppdateringar körs vid uppstart och i bakgrunden med den frekvens som anges nedan"
 
 #: sickrage/core/webserver/views/config/general.mako:371
 msgid "Check the server every"
-msgstr ""
+msgstr "Kontrollera servern var"
 
 #: sickrage/core/webserver/views/config/general.mako:380
 msgid "default = 12 (hours)"
@@ -2979,15 +2979,15 @@ msgstr "TV Hämta Dir"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:292
 msgid "Only works with RAR archives"
-msgstr ""
+msgstr "Fungerar endast med RAR-arkiv"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:299
 msgid "Unpack Directory"
-msgstr ""
+msgstr "Katalog för uppackning"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:311
 msgid "Choose a path to unpack files, leave blank to unpack in download dir"
-msgstr ""
+msgstr "Välj en sökväg för att packa upp filer, lämna tomt för att packa upp i nedladdningskatalogen"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:317
 msgid "Delete RAR contents"
@@ -4602,11 +4602,11 @@ msgstr "Välj kolumner"
 
 #: sickrage/core/webserver/views/home/display_show.mako:528
 msgid "Specials"
-msgstr ""
+msgstr "Specialare"
 
 #: sickrage/core/webserver/views/home/display_show.mako:528
 msgid "Season"
-msgstr ""
+msgstr "Säsong"
 
 #: sickrage/core/webserver/views/home/display_show.mako:534
 msgid "Hide Episodes"
