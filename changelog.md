@@ -1,6 +1,7 @@
 # Changelog
 
-- * 873fc4c - 2017-12-21: Release v9.2.69 
+- * b62c4c2 - 2017-12-21: Fixed issue #155 - version updater bar not showing 
+- * af0e32e - 2017-12-21: Release v9.2.69 
 - * 7733262 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * 7dcd312 - 2017-12-21: Fixed issue #159 - Error parsing provider newpct.com 
 - * c3eb182 - 2017-12-21: Release v9.2.68 
