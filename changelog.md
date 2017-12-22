@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9a5ca87 - 2017-12-22: URL validation for provider search results added in to code 
+- * db494be - 2017-12-22: Release v9.2.70 
+- * c1e9c48 - 2017-12-22: URL validation for provider search results added in to code 
 - * 8ca1761 - 2017-12-21: Fix for torrent9 provider 
 - * d07716c - 2017-12-21: Fixed issue #155 - version updater bar not showing 
 - * a022118 - 2017-12-21: Fixed issue #155 - version updater bar not showing 
