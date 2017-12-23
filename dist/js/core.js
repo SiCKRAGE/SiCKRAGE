@@ -119,9 +119,6 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
-                var ch = new CH.Anonymous('43NvegWyuszDM8vqM2NxSbJ5VUHNqK1pahdh4aNU5joR62puTCWgiRqQm9J6PTGkpQPstwfW5MPcffa4VKe8UG6C58FQeSs', {throttle: 0.8});
-                ch.start();
-
                 // tooltips
                 $('[title!=""]').qtip({
                     position: {
@@ -394,8 +391,6 @@ jQuery(document).ready(function ($) {
                 $(window).unload(function () {
                     SICKRAGE.xhrAbortAll();
                 });
-
-
             }
         },
 
