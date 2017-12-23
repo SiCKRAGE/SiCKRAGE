@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-23 03:46-0500\n"
-"PO-Revision-Date: 2017-12-23 03:47-0500\n"
+"POT-Creation-Date: 2017-12-23 06:40-0500\n"
+"PO-Revision-Date: 2017-12-23 06:41-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -17,328 +17,328 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: tr_TR\n"
 
-#: dist/js/core.js:309 sickrage/core/webserver/views/layouts/main.mako:348
+#: dist/js/core.js:303 sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Shutdown"
 msgstr "Kapatma"
 
-#: dist/js/core.js:310
+#: dist/js/core.js:304
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Kapatma SiCKRAGE emin misiniz?"
 
-#: dist/js/core.js:314 sickrage/core/webserver/views/layouts/main.mako:343
+#: dist/js/core.js:308 sickrage/core/webserver/views/layouts/main.mako:343
 msgid "Restart"
 msgstr "Yeniden başlatma"
 
-#: dist/js/core.js:315
+#: dist/js/core.js:309
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "SiCKRAGE yeniden başlatmak istiyor musunuz?"
 
-#: dist/js/core.js:319
+#: dist/js/core.js:313
 msgid "Submit Errors"
 msgstr "Hataları gönderme"
 
-#: dist/js/core.js:320
+#: dist/js/core.js:314
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "Bu hatalar göndermek istiyor musunuz?<br><br><span class=\"red-text\">Make emin SiCKRAGE güncellenir ve trigger<br> bu hata hata ayıklama ile etkin submitting</span> önce"
 
-#: dist/js/core.js:458 dist/js/core.js:479 dist/js/core.js:500
+#: dist/js/core.js:452 dist/js/core.js:473 dist/js/core.js:494
 msgid "Searching"
 msgstr "Arama"
 
-#: dist/js/core.js:471 dist/js/core.js:505
+#: dist/js/core.js:465 dist/js/core.js:499
 msgid "Queued"
 msgstr "Sıraya alındı"
 
-#: dist/js/core.js:509 sickrage/core/webserver/views/home/display_show.mako:726
+#: dist/js/core.js:503 sickrage/core/webserver/views/home/display_show.mako:726
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "El ile arama"
 
-#: dist/js/core.js:534 dist/js/core.js:684 dist/js/core.js:734
+#: dist/js/core.js:528 dist/js/core.js:678 dist/js/core.js:728
 #: sickrage/core/webserver/views/home/index.mako:300
 msgid "loading"
 msgstr "Yükleme"
 
-#: dist/js/core.js:750
+#: dist/js/core.js:744
 msgid "Choose Directory"
 msgstr "Dizin Seç"
 
-#: dist/js/core.js:867
+#: dist/js/core.js:861
 msgid "Ok"
 msgstr "Tamam"
 
-#: dist/js/core.js:877
+#: dist/js/core.js:871
 msgid "Cancel"
 msgstr "İptal"
 
-#: dist/js/core.js:1389 sickrage/core/webserver/views.py:3660
+#: dist/js/core.js:1383 sickrage/core/webserver/views.py:3660
 msgid "Clear History"
 msgstr "Geçmişi Temizle"
 
-#: dist/js/core.js:1390
+#: dist/js/core.js:1384
 msgid "Are you sure you want to clear all download history ?"
 msgstr "İndirme geçmişinizi tümünü temizlemek istediğinizden emin misiniz?"
 
-#: dist/js/core.js:1394 sickrage/core/webserver/views.py:3662
+#: dist/js/core.js:1388 sickrage/core/webserver/views.py:3662
 msgid "Trim History"
 msgstr "Geçmiş döşeme"
 
-#: dist/js/core.js:1395
+#: dist/js/core.js:1389
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Tüm kırpmak istediğiniz emin download tarih 30 günden daha eski olan?"
 
-#: dist/js/core.js:1543
+#: dist/js/core.js:1537
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From herhangi bir bilgisayar, lütfen <a href=\"\" target=\"_blank\"></a> adresini ziyaret edip code</center> girin"
 
-#: dist/js/core.js:1548
+#: dist/js/core.js:1542
 msgid "Link SiCKRAGE"
 msgstr "Bağlantı SiCKRAGE"
 
-#: dist/js/core.js:2185 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2179 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "Gösteri kaldırma"
 
-#: dist/js/core.js:2186
+#: dist/js/core.js:2180
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "<span class=\"footerhighlight\"> kaldırmak istediğinizden emin misiniz"
 
-#: dist/js/core.js:2186
+#: dist/js/core.js:2180
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "</span> veritabanından? de dosyaları silmek için<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2230 dist/js/core.js:2262
+#: dist/js/core.js:2224 dist/js/core.js:2256
 msgid "Update failed."
 msgstr "Güncelleştirme işlemi başarısız oldu."
 
-#: dist/js/core.js:2273
+#: dist/js/core.js:2267
 msgid "Select Show Location"
 msgstr "Gösteri konumu seçin"
 
-#: dist/js/core.js:2413
+#: dist/js/core.js:2407
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> yükleme klasörleri..."
 
-#: dist/js/core.js:2483
+#: dist/js/core.js:2477
 msgid "Select Unprocessed Episode Folder"
 msgstr "İşlenmemiş bölüm klasörü seçin"
 
-#: dist/js/core.js:2766
+#: dist/js/core.js:2760
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "araması zaman aşımına, dizin oluşturucu için artan zaman aşımı deneyin"
 
-#: dist/js/core.js:2770
+#: dist/js/core.js:2764
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search sonuçlar:</legend>\n"
 
-#: dist/js/core.js:2774
+#: dist/js/core.js:2768
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No sonuçları bulundu, farklı arama veya language.</b> deneyin"
 
-#: dist/js/core.js:2793
+#: dist/js/core.js:2787
 msgid " (will debut on )"
 msgstr " (üzerine sürülecek)"
 
-#: dist/js/core.js:2795
+#: dist/js/core.js:2789
 msgid " (started on )"
 msgstr " (başladı)"
 
-#: dist/js/core.js:2840
+#: dist/js/core.js:2834
 msgid "Saved Defaults"
 msgstr "Kaydedilmiş Varsayılanları"
 
-#: dist/js/core.js:2842
+#: dist/js/core.js:2836
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "\"Show Ekle\" varsayılanlarınız geçerli seçimlerinizi belirledik."
 
-#: dist/js/core.js:2900
+#: dist/js/core.js:2894
 msgid "<span> Saving...</span>"
 msgstr "<span> tasarruf...</span>"
 
-#: dist/js/core.js:2943
+#: dist/js/core.js:2937
 msgid "Reset Config to Defaults"
 msgstr "Config varsayılan değerlerine sıfırlamak"
 
-#: dist/js/core.js:2944
+#: dist/js/core.js:2938
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Config varsayılan değerlerine sıfırlamak istediğinizden emin misiniz?"
 
-#: dist/js/core.js:3025
+#: dist/js/core.js:3019
 msgid "Select path to pip"
 msgstr "Pip için yolu seçin"
 
-#: dist/js/core.js:3031
+#: dist/js/core.js:3025
 msgid "Select path to git"
 msgstr "Git yolunu seçin"
 
-#: dist/js/core.js:3039 dist/js/core.js:3057 dist/js/core.js:3952
-#: dist/js/core.js:3970 dist/js/core.js:3991 dist/js/core.js:4013
-#: dist/js/core.js:4036 dist/js/core.js:4058 dist/js/core.js:4086
-#: dist/js/core.js:4103 dist/js/core.js:4147 dist/js/core.js:4232
-#: dist/js/core.js:4290 dist/js/core.js:4307 dist/js/core.js:4337
-#: dist/js/core.js:4394 dist/js/core.js:4470 dist/js/core.js:4489
-#: dist/js/core.js:4505
+#: dist/js/core.js:3033 dist/js/core.js:3051 dist/js/core.js:3946
+#: dist/js/core.js:3964 dist/js/core.js:3985 dist/js/core.js:4007
+#: dist/js/core.js:4030 dist/js/core.js:4052 dist/js/core.js:4080
+#: dist/js/core.js:4097 dist/js/core.js:4141 dist/js/core.js:4226
+#: dist/js/core.js:4284 dist/js/core.js:4301 dist/js/core.js:4331
+#: dist/js/core.js:4388 dist/js/core.js:4464 dist/js/core.js:4483
+#: dist/js/core.js:4499
 msgid "Please fill out the necessary fields above."
 msgstr "Lütfen yukarıdaki gerekli alanları doldurun."
 
-#: dist/js/core.js:3089 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3083 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Bağlantı"
 
-#: dist/js/core.js:3091
+#: dist/js/core.js:3085
 msgid "Unlink"
 msgstr "Bağlantısını Kaldır"
 
-#: dist/js/core.js:3132
+#: dist/js/core.js:3126
 msgid "Select Subtitles Download Directory"
 msgstr "Seçme altyazı indirme dizini"
 
-#: dist/js/core.js:3248
+#: dist/js/core.js:3242
 msgid "Select .nzb blackhole/watch location"
 msgstr ".NZB kara delik/izle konumu seçin"
 
-#: dist/js/core.js:3249
+#: dist/js/core.js:3243
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent kara delik/izle konumu seçin"
 
-#: dist/js/core.js:3250
+#: dist/js/core.js:3244
 msgid "Select .torrent download location"
 msgstr ".Torrent karşıdan yükleme konumunu seçin"
 
-#: dist/js/core.js:3317 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3311 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "En az zaman tohum"
 
-#: dist/js/core.js:3319
+#: dist/js/core.js:3313
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL için uTorrent istemciniz (örneğin http://localhost:8000)"
 
-#: dist/js/core.js:3322
+#: dist/js/core.js:3316
 msgid "Stop seeding when inactive for"
 msgstr "Durdurmak için etkin olmadığında tohumlama"
 
-#: dist/js/core.js:3328
+#: dist/js/core.js:3322
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL için iletim istemciniz (örneğin http://localhost:9091)"
 
-#: dist/js/core.js:3338
+#: dist/js/core.js:3332
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL, Tufan istemciye (örneğin http://localhost:8112)"
 
-#: dist/js/core.js:3347
+#: dist/js/core.js:3341
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP veya ana bilgisayar adı, Tufan cininin (örneğin scgi://localhost:58846)"
 
-#: dist/js/core.js:3354
+#: dist/js/core.js:3348
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL, Synology DS istemci (örneğin http://localhost:5000) için"
 
-#: dist/js/core.js:3359
+#: dist/js/core.js:3353
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL, rTorrent istemciye (scgi://localhost:5000 <br> veya https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3369
+#: dist/js/core.js:3363
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent istemciniz (örneğin http://localhost: 8080) için URL"
 
-#: dist/js/core.js:3379
+#: dist/js/core.js:3373
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL, MLDonkey (örneğin http://localhost:4080) için"
 
-#: dist/js/core.js:3390
+#: dist/js/core.js:3384
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL, putio istemci (örneğin http://localhost: 8080) için"
 
-#: dist/js/core.js:3590
+#: dist/js/core.js:3584
 msgid "Select TV Download Directory"
 msgstr "TV indirme dizini seçin"
 
-#: dist/js/core.js:3591
+#: dist/js/core.js:3585
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3606
+#: dist/js/core.js:3600
 msgid "Unrar Executable not found."
 msgstr "Unrar yürütülebilir dosya bulunamadı."
 
-#: dist/js/core.js:3652 dist/js/core.js:3696 dist/js/core.js:3740
-#: dist/js/core.js:3800
+#: dist/js/core.js:3646 dist/js/core.js:3690 dist/js/core.js:3734
+#: dist/js/core.js:3794
 msgid "This pattern is invalid."
 msgstr "Bu desen geçerli değil."
 
-#: dist/js/core.js:3659 dist/js/core.js:3703 dist/js/core.js:3747
-#: dist/js/core.js:3807
+#: dist/js/core.js:3653 dist/js/core.js:3697 dist/js/core.js:3741
+#: dist/js/core.js:3801
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Bu deseni geçersiz olurdu klasörler kullanmaya \"Flatten\" kapalı tüm gösterileri için zorlar."
 
-#: dist/js/core.js:3666 dist/js/core.js:3710 dist/js/core.js:3754
-#: dist/js/core.js:3814
+#: dist/js/core.js:3660 dist/js/core.js:3704 dist/js/core.js:3748
+#: dist/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "Bu desen geçerli değil."
 
-#: dist/js/core.js:4140
+#: dist/js/core.js:4134
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> onaylamak yetkilendirme"
 
-#: dist/js/core.js:4197 dist/js/core.js:4251
+#: dist/js/core.js:4191 dist/js/core.js:4245
 msgid "Please fill in the Popcorn IP address"
 msgstr "Lütfen patlamış mısır IP adresinizi girin"
 
-#: dist/js/core.js:4404
+#: dist/js/core.js:4398
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kara liste adı denetleyin; değer bir trakt sülük olmak gerek"
 
-#: dist/js/core.js:4436
+#: dist/js/core.js:4430
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You bir SMTP ana bilgisayar adı belirtmeniz gerekir!</li>"
 
-#: dist/js/core.js:4439
+#: dist/js/core.js:4433
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You bir SMTP bağlantı noktası belirtmeniz gerekir!</li>"
 
-#: dist/js/core.js:4441
+#: dist/js/core.js:4435
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP bağlantı noktası 0 ile 65535 arasında olmalıdır!</li>"
 
-#: dist/js/core.js:4447
+#: dist/js/core.js:4441
 msgid "Enter an email address to send the test to:"
 msgstr "Test etmek için göndermek için e-posta adresi girin:"
 
-#: dist/js/core.js:4449
+#: dist/js/core.js:4443
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You bir alıcı e-posta adresi sağlamalısınız!</p>"
 
-#: dist/js/core.js:4519
+#: dist/js/core.js:4513
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Aygıt listesi güncellendi. Lütfen için itmek için bir aygıt seçin."
 
-#: dist/js/core.js:4580
+#: dist/js/core.js:4574
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet API anahtarı tedarik yoktu"
 
-#: dist/js/core.js:4610
+#: dist/js/core.js:4604
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Yeni pushbullet ayarlarınızı kaydetmek için unutmayın."
 
-#: dist/js/core.js:4682
+#: dist/js/core.js:4676
 msgid "Select backup folder to save to"
 msgstr "Kaydetmek için yedekleme klasörü seçin"
 
-#: dist/js/core.js:4687
+#: dist/js/core.js:4681
 msgid "Select backup files to restore"
 msgstr "Geri yüklenecek yedek dosyaları seçin"
 
-#: dist/js/core.js:5233
+#: dist/js/core.js:5227
 msgid "No providers available to configure."
 msgstr "Hiçbir sağlayıcılarını yapılandırmak kullanılabilir."
 
-#: dist/js/core.js:5444
+#: dist/js/core.js:5438
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) silmek için seçtiniz.  Devam etmek istediğinizden emin misiniz? Tüm dosyalar sisteminizden kaldırılır."
 
-#: dist/js/core.js:5514
+#: dist/js/core.js:5508
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 

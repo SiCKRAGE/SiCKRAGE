@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-23 03:46-0500\n"
-"PO-Revision-Date: 2017-12-23 03:47-0500\n"
+"POT-Creation-Date: 2017-12-23 06:40-0500\n"
+"PO-Revision-Date: 2017-12-23 06:41-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -17,328 +17,328 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: ja_JP\n"
 
-#: dist/js/core.js:309 sickrage/core/webserver/views/layouts/main.mako:348
+#: dist/js/core.js:303 sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Shutdown"
 msgstr "シャット ダウン"
 
-#: dist/js/core.js:310
+#: dist/js/core.js:304
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "SiCKRAGE 停止するよろしいですか。"
 
-#: dist/js/core.js:314 sickrage/core/webserver/views/layouts/main.mako:343
+#: dist/js/core.js:308 sickrage/core/webserver/views/layouts/main.mako:343
 msgid "Restart"
 msgstr "再起動"
 
-#: dist/js/core.js:315
+#: dist/js/core.js:309
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "あなたは SiCKRAGE を再起動してもよろしいですか。"
 
-#: dist/js/core.js:319
+#: dist/js/core.js:313
 msgid "Submit Errors"
 msgstr "エラーを送信します。"
 
-#: dist/js/core.js:320
+#: dist/js/core.js:314
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "あなたはこれらのエラーを送信してよろしいですか?<br><br><span class=\"red-text\">Make ことを確認 SiCKRAGE が更新され、trigger<br> submitting</span> 前にこのエラーと、デバッグが有効になっています。"
 
-#: dist/js/core.js:458 dist/js/core.js:479 dist/js/core.js:500
+#: dist/js/core.js:452 dist/js/core.js:473 dist/js/core.js:494
 msgid "Searching"
 msgstr "検索"
 
-#: dist/js/core.js:471 dist/js/core.js:505
+#: dist/js/core.js:465 dist/js/core.js:499
 msgid "Queued"
 msgstr "キューに入っています。"
 
-#: dist/js/core.js:509 sickrage/core/webserver/views/home/display_show.mako:726
+#: dist/js/core.js:503 sickrage/core/webserver/views/home/display_show.mako:726
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "手動で検索"
 
-#: dist/js/core.js:534 dist/js/core.js:684 dist/js/core.js:734
+#: dist/js/core.js:528 dist/js/core.js:678 dist/js/core.js:728
 #: sickrage/core/webserver/views/home/index.mako:300
 msgid "loading"
 msgstr "読み込み"
 
-#: dist/js/core.js:750
+#: dist/js/core.js:744
 msgid "Choose Directory"
 msgstr "ディレクトリを選択します。"
 
-#: dist/js/core.js:867
+#: dist/js/core.js:861
 msgid "Ok"
 msgstr "わかりました"
 
-#: dist/js/core.js:877
+#: dist/js/core.js:871
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: dist/js/core.js:1389 sickrage/core/webserver/views.py:3660
+#: dist/js/core.js:1383 sickrage/core/webserver/views.py:3660
 msgid "Clear History"
 msgstr "履歴のクリア"
 
-#: dist/js/core.js:1390
+#: dist/js/core.js:1384
 msgid "Are you sure you want to clear all download history ?"
 msgstr "履歴をダウンロードするすべてをクリアしてもよろしいですか。"
 
-#: dist/js/core.js:1394 sickrage/core/webserver/views.py:3662
+#: dist/js/core.js:1388 sickrage/core/webserver/views.py:3662
 msgid "Trim History"
 msgstr "歴史をトリムします。"
 
-#: dist/js/core.js:1395
+#: dist/js/core.js:1389
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "30 日より古い歴史をダウンロードするすべてをトリミングすることを確認しては?"
 
-#: dist/js/core.js:1543
+#: dist/js/core.js:1537
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From <a href=\"\" target=\"_blank\"></a> を訪問し、code</center> を入力してください、任意のコンピューター"
 
-#: dist/js/core.js:1548
+#: dist/js/core.js:1542
 msgid "Link SiCKRAGE"
 msgstr "リンク SiCKRAGE"
 
-#: dist/js/core.js:2185 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2179 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "表示を削除します。"
 
-#: dist/js/core.js:2186
+#: dist/js/core.js:2180
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "<span class=\"footerhighlight\"> を削除します"
 
-#: dist/js/core.js:2186
+#: dist/js/core.js:2180
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "データベースから </span>?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check 同様にファイルを削除します。IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2230 dist/js/core.js:2262
+#: dist/js/core.js:2224 dist/js/core.js:2256
 msgid "Update failed."
 msgstr "更新に失敗しました。"
 
-#: dist/js/core.js:2273
+#: dist/js/core.js:2267
 msgid "Select Show Location"
 msgstr "ショーの場所を選択します。"
 
-#: dist/js/core.js:2413
+#: dist/js/core.js:2407
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> 読み込みフォルダー."
 
-#: dist/js/core.js:2483
+#: dist/js/core.js:2477
 msgid "Select Unprocessed Episode Folder"
 msgstr "未処理のエピソードのフォルダーを選択します。"
 
-#: dist/js/core.js:2766
+#: dist/js/core.js:2760
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "検索タイムアウト、インデクサーの増加のタイムアウトをしてみてください。"
 
-#: dist/js/core.js:2770
+#: dist/js/core.js:2764
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search 結果:</legend>"
 
-#: dist/js/core.js:2774
+#: dist/js/core.js:2768
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No 結果が見つからない、別の検索または language.</b> を実行"
 
-#: dist/js/core.js:2793
+#: dist/js/core.js:2787
 msgid " (will debut on )"
 msgstr "(上でデビューする)"
 
-#: dist/js/core.js:2795
+#: dist/js/core.js:2789
 msgid " (started on )"
 msgstr "(開始)"
 
-#: dist/js/core.js:2840
+#: dist/js/core.js:2834
 msgid "Saved Defaults"
 msgstr "保存した既定値"
 
-#: dist/js/core.js:2842
+#: dist/js/core.js:2836
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "「ショーを追加」の既定値は、現在の選択に設定されています。"
 
-#: dist/js/core.js:2900
+#: dist/js/core.js:2894
 msgid "<span> Saving...</span>"
 msgstr "<span> を保存.</span>"
 
-#: dist/js/core.js:2943
+#: dist/js/core.js:2937
 msgid "Reset Config to Defaults"
 msgstr "設定を既定値にリセットします。"
 
-#: dist/js/core.js:2944
+#: dist/js/core.js:2938
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "あなたは設定を既定値にリセットしてもよろしいですか。"
 
-#: dist/js/core.js:3025
+#: dist/js/core.js:3019
 msgid "Select path to pip"
 msgstr "Pip へのパスを選択します。"
 
-#: dist/js/core.js:3031
+#: dist/js/core.js:3025
 msgid "Select path to git"
 msgstr "Git へのパスを選択します。"
 
-#: dist/js/core.js:3039 dist/js/core.js:3057 dist/js/core.js:3952
-#: dist/js/core.js:3970 dist/js/core.js:3991 dist/js/core.js:4013
-#: dist/js/core.js:4036 dist/js/core.js:4058 dist/js/core.js:4086
-#: dist/js/core.js:4103 dist/js/core.js:4147 dist/js/core.js:4232
-#: dist/js/core.js:4290 dist/js/core.js:4307 dist/js/core.js:4337
-#: dist/js/core.js:4394 dist/js/core.js:4470 dist/js/core.js:4489
-#: dist/js/core.js:4505
+#: dist/js/core.js:3033 dist/js/core.js:3051 dist/js/core.js:3946
+#: dist/js/core.js:3964 dist/js/core.js:3985 dist/js/core.js:4007
+#: dist/js/core.js:4030 dist/js/core.js:4052 dist/js/core.js:4080
+#: dist/js/core.js:4097 dist/js/core.js:4141 dist/js/core.js:4226
+#: dist/js/core.js:4284 dist/js/core.js:4301 dist/js/core.js:4331
+#: dist/js/core.js:4388 dist/js/core.js:4464 dist/js/core.js:4483
+#: dist/js/core.js:4499
 msgid "Please fill out the necessary fields above."
 msgstr "上記の必要なフィールドに記入してください。"
 
-#: dist/js/core.js:3089 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3083 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "リンク"
 
-#: dist/js/core.js:3091
+#: dist/js/core.js:3085
 msgid "Unlink"
 msgstr "リンクを解除します。"
 
-#: dist/js/core.js:3132
+#: dist/js/core.js:3126
 msgid "Select Subtitles Download Directory"
 msgstr "選択字幕ダウンロード ディレクトリ"
 
-#: dist/js/core.js:3248
+#: dist/js/core.js:3242
 msgid "Select .nzb blackhole/watch location"
 msgstr ".Nzb ブラック ホール/時計の場所を選択します。"
 
-#: dist/js/core.js:3249
+#: dist/js/core.js:3243
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent ブラック ホール/時計の場所を選択します。"
 
-#: dist/js/core.js:3250
+#: dist/js/core.js:3244
 msgid "Select .torrent download location"
 msgstr ".Torrent のダウンロードの場所を選択します。"
 
-#: dist/js/core.js:3317 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3311 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "播種最低です。"
 
-#: dist/js/core.js:3319
+#: dist/js/core.js:3313
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "UTorrent クライアント (例えば http://localhost:8000) の URL"
 
-#: dist/js/core.js:3322
+#: dist/js/core.js:3316
 msgid "Stop seeding when inactive for"
 msgstr "[非アクティブ時の播種を停止します。"
 
-#: dist/js/core.js:3328
+#: dist/js/core.js:3322
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL 転送クライアント (例えば http://localhost:9091) を"
 
-#: dist/js/core.js:3338
+#: dist/js/core.js:3332
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "大洪水クライアント (例えば http://localhost:8112) の URL"
 
-#: dist/js/core.js:3347
+#: dist/js/core.js:3341
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "デリュージ デーモン (例えば scgi://localhost:58846) の IP 又はホスト"
 
-#: dist/js/core.js:3354
+#: dist/js/core.js:3348
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "Synology DS クライアント (例えば http://localhost:5000) の URL"
 
-#: dist/js/core.js:3359
+#: dist/js/core.js:3353
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "RTorrent クライアント (例: scgi://localhost:5000 <br> または https://localhost/rutorrent/plugins/httprpc/action.php) に URL"
 
-#: dist/js/core.js:3369
+#: dist/js/core.js:3363
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent クライアント (例えば http://localhost:8080) の URL"
 
-#: dist/js/core.js:3379
+#: dist/js/core.js:3373
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "あなたの MLDonkey (例えば http://localhost:4080) の URL"
 
-#: dist/js/core.js:3390
+#: dist/js/core.js:3384
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Putio クライアント (例えば http://localhost:8080) の URL"
 
-#: dist/js/core.js:3590
+#: dist/js/core.js:3584
 msgid "Select TV Download Directory"
 msgstr "テレビのダウンロード ディレクトリを選択します。"
 
-#: dist/js/core.js:3591
+#: dist/js/core.js:3585
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3606
+#: dist/js/core.js:3600
 msgid "Unrar Executable not found."
 msgstr "解凍する実行可能ファイルが見つかりません。"
 
-#: dist/js/core.js:3652 dist/js/core.js:3696 dist/js/core.js:3740
-#: dist/js/core.js:3800
+#: dist/js/core.js:3646 dist/js/core.js:3690 dist/js/core.js:3734
+#: dist/js/core.js:3794
 msgid "This pattern is invalid."
 msgstr "このパターンは無効です。"
 
-#: dist/js/core.js:3659 dist/js/core.js:3703 dist/js/core.js:3747
-#: dist/js/core.js:3807
+#: dist/js/core.js:3653 dist/js/core.js:3697 dist/js/core.js:3741
+#: dist/js/core.js:3801
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "このパターンは、無効になります、フォルダーをそれを使用して、強制的に「フラット化」オフすべてショーのため。"
 
-#: dist/js/core.js:3666 dist/js/core.js:3710 dist/js/core.js:3754
-#: dist/js/core.js:3814
+#: dist/js/core.js:3660 dist/js/core.js:3704 dist/js/core.js:3748
+#: dist/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "このパターンは有効です。"
 
-#: dist/js/core.js:4140
+#: dist/js/core.js:4134
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 承認を確認します。"
 
-#: dist/js/core.js:4197 dist/js/core.js:4251
+#: dist/js/core.js:4191 dist/js/core.js:4245
 msgid "Please fill in the Popcorn IP address"
 msgstr "ポップコーン IP アドレスご記入ください。"
 
-#: dist/js/core.js:4404
+#: dist/js/core.js:4398
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "ブラック リスト名をチェックします。値は trakt スラグになる必要があります。"
 
-#: dist/js/core.js:4436
+#: dist/js/core.js:4430
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "SMTP のホスト名を指定する必要があります <li style=\"color: red;\">You!</li>"
 
-#: dist/js/core.js:4439
+#: dist/js/core.js:4433
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You は、SMTP ポートを指定する必要があります!</li>"
 
-#: dist/js/core.js:4441
+#: dist/js/core.js:4435
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP ポートは 0 から 65535 の間でなければなりません!</li>"
 
-#: dist/js/core.js:4447
+#: dist/js/core.js:4441
 msgid "Enter an email address to send the test to:"
 msgstr "テストを送信する電子メール アドレスを入力します。"
 
-#: dist/js/core.js:4449
+#: dist/js/core.js:4443
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "受信者のメール アドレスを提供する必要があります <p style=\"color: red;\">You!</p>"
 
-#: dist/js/core.js:4519
+#: dist/js/core.js:4513
 msgid "Device list updated. Please choose a device to push to."
 msgstr "デバイス リストを更新します。プッシュするデバイスを選択してください。"
 
-#: dist/js/core.js:4580
+#: dist/js/core.js:4574
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet api キーを指定していません。"
 
-#: dist/js/core.js:4610
+#: dist/js/core.js:4604
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "新しい pushbullet 設定を保存することを忘れないでください。"
 
-#: dist/js/core.js:4682
+#: dist/js/core.js:4676
 msgid "Select backup folder to save to"
 msgstr "バックアップ フォルダーに保存するを選択します。"
 
-#: dist/js/core.js:4687
+#: dist/js/core.js:4681
 msgid "Select backup files to restore"
 msgstr "復元するバックアップ ファイルを選択します。"
 
-#: dist/js/core.js:5233
+#: dist/js/core.js:5227
 msgid "No providers available to configure."
 msgstr "構成する使用可能なプロバイダーがありません。"
 
-#: dist/js/core.js:5444
+#: dist/js/core.js:5438
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "ショーの詳細を削除するを選択しました。 続行するよろしいですか。すべてのファイルは、あなたのシステムから削除されます。"
 
-#: dist/js/core.js:5514
+#: dist/js/core.js:5508
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
