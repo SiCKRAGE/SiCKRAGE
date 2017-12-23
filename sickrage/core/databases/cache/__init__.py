@@ -25,7 +25,7 @@ from sickrage.core.common import Quality
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache.index import CacheLastUpdateIndex, CacheLastSearchIndex, CacheSceneExceptionsIndex, \
     CacheSceneNamesIndex, CacheNetworkTimezonesIndex, CacheSceneExceptionsRefreshIndex, CacheProvidersIndex
-from sickrage.core.helpers import validate_url
+from sickrage.core.helpers import validate_url, is_ip_private
 
 
 class CacheDB(srDatabase):
@@ -59,5 +59,5 @@ class CacheDB(srDatabase):
         for item in self.all('providers'):
             if int(item["quality"]) == Quality.UNKNOWN:
                 self.delete(item)
-            elif not validate_url(item["url"]) and not item["url"].startswith("magnet"):
+            elif not validate_url(item["url"]) and not item["url"].startswith("magnet") or is_ip_private(item["url"]):
                 self.delete(item)
