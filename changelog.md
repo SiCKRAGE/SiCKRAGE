@@ -1,6 +1,10 @@
 # Changelog
 
-- * db494be - 2017-12-22: Release v9.2.70 
+- * 4116078 - 2017-12-23: Release v9.2.71 
+- * 9dce9e4 - 2017-12-23: Refactored core js code 
+- * 326f970 - 2017-12-23: Added code to prevent caching private ip range address results 
+- * 653696f - 2017-12-23: Added code to prevent caching private ip range address results 
+- * d41046a - 2017-12-22: Release v9.2.70 
 - * c1e9c48 - 2017-12-22: URL validation for provider search results added in to code 
 - * 8ca1761 - 2017-12-21: Fix for torrent9 provider 
 - * d07716c - 2017-12-21: Fixed issue #155 - version updater bar not showing 

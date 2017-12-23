@@ -27,7 +27,7 @@ from CodernityDB.database import RecordNotFound
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
-from sickrage.core.helpers import findCertainShow, show_names, validate_url
+from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
 
@@ -185,7 +185,8 @@ class TVCache(object):
             return
 
         # ignore invalid urls
-        if not validate_url(url) and not url.startswith('magnet'):
+        if not validate_url(url) and not url.startswith('magnet') \
+                or is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
             return
 
         try:
@@ -259,7 +260,8 @@ class TVCache(object):
             result = self.provider.getResult()
 
             # ignore invalid urls
-            if not validate_url(curResult["url"]) and not curResult["url"].startswith('magnet'):
+            if not validate_url(curResult["url"]) and not curResult["url"].startswith('magnet') \
+                    or is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
                 continue
 
             # ignored/required words, and non-tv junk

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-21 13:15-0500\n"
-"PO-Revision-Date: 2017-12-21 22:45-0500\n"
+"POT-Creation-Date: 2017-12-23 03:31-0500\n"
+"PO-Revision-Date: 2017-12-23 03:32-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -17,328 +17,328 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: ko_KR\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
+#: dist/js/core.js:308 sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Shutdown"
 msgstr "종료"
 
-#: dist/js/core.js:301
+#: dist/js/core.js:309
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "당신은 SiCKRAGE 종료 하 시겠습니까?"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:343
+#: dist/js/core.js:313 sickrage/core/webserver/views/layouts/main.mako:343
 msgid "Restart"
 msgstr "다시 시작"
 
-#: dist/js/core.js:306
+#: dist/js/core.js:314
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "당신은 SiCKRAGE를 다시 시작 하 시겠습니까?"
 
-#: dist/js/core.js:310
+#: dist/js/core.js:318
 msgid "Submit Errors"
 msgstr "제출 오류"
 
-#: dist/js/core.js:311
+#: dist/js/core.js:319
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "이러한 오류를 제출 하려면 시겠습니까?<br><br><span class=\"red-text\">Make 있는지 SiCKRAGE 업데이트 되 고 trigger<br> submitting</span> 하기 전에이 오류 디버그를 사용"
 
-#: dist/js/core.js:447 dist/js/core.js:468 dist/js/core.js:489
+#: dist/js/core.js:457 dist/js/core.js:478 dist/js/core.js:499
 msgid "Searching"
 msgstr "검색"
 
-#: dist/js/core.js:460 dist/js/core.js:494
+#: dist/js/core.js:470 dist/js/core.js:504
 msgid "Queued"
 msgstr "대기"
 
-#: dist/js/core.js:498 sickrage/core/webserver/views/home/display_show.mako:726
+#: dist/js/core.js:508 sickrage/core/webserver/views/home/display_show.mako:726
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "수동 검색"
 
-#: dist/js/core.js:523 dist/js/core.js:673 dist/js/core.js:723
+#: dist/js/core.js:533 dist/js/core.js:683 dist/js/core.js:733
 #: sickrage/core/webserver/views/home/index.mako:300
 msgid "loading"
 msgstr "로드"
 
-#: dist/js/core.js:739
+#: dist/js/core.js:749
 msgid "Choose Directory"
 msgstr "디렉터리 선택"
 
-#: dist/js/core.js:856
+#: dist/js/core.js:866
 msgid "Ok"
 msgstr "그래"
 
-#: dist/js/core.js:866
+#: dist/js/core.js:876
 msgid "Cancel"
 msgstr "취소"
 
-#: dist/js/core.js:1378 sickrage/core/webserver/views.py:3660
+#: dist/js/core.js:1388 sickrage/core/webserver/views.py:3660
 msgid "Clear History"
 msgstr "기록 지우기"
 
-#: dist/js/core.js:1379
+#: dist/js/core.js:1389
 msgid "Are you sure you want to clear all download history ?"
 msgstr "당신은 모두를 다운로드 역사는?"
 
-#: dist/js/core.js:1383 sickrage/core/webserver/views.py:3662
+#: dist/js/core.js:1393 sickrage/core/webserver/views.py:3662
 msgid "Trim History"
 msgstr "역사를 트림"
 
-#: dist/js/core.js:1384
+#: dist/js/core.js:1394
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "당신은 모든 트림을 다운로드 30 일 보다 오래 된 역사는?"
 
-#: dist/js/core.js:1532
+#: dist/js/core.js:1542
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From 어떤 컴퓨터 든 지, <a href=\"\" target=\"_blank\"></a>를 방문 하 고는 code</center> 입력"
 
-#: dist/js/core.js:1537
+#: dist/js/core.js:1547
 msgid "Link SiCKRAGE"
 msgstr "링크 SiCKRAGE"
 
-#: dist/js/core.js:2174 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2184 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "표시 제거"
 
-#: dist/js/core.js:2175
+#: dist/js/core.js:2185
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "당신은 <span class=\"footerhighlight\">를 제거 하 시겠습니까"
 
-#: dist/js/core.js:2175
+#: dist/js/core.js:2185
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "데이터베이스에서 </span>?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check 뿐만 아니라 파일을 삭제. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2219 dist/js/core.js:2251
+#: dist/js/core.js:2229 dist/js/core.js:2261
 msgid "Update failed."
 msgstr "업데이트 하지 못했습니다."
 
-#: dist/js/core.js:2262
+#: dist/js/core.js:2272
 msgid "Select Show Location"
 msgstr "보기 위치 선택"
 
-#: dist/js/core.js:2402
+#: dist/js/core.js:2412
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> 로드 폴더..."
 
-#: dist/js/core.js:2472
+#: dist/js/core.js:2482
 msgid "Select Unprocessed Episode Folder"
 msgstr "처리 되지 않은 에피소드 폴더 선택"
 
-#: dist/js/core.js:2755
+#: dist/js/core.js:2765
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "검색 시간 초과, 인덱서 증가 시간 제한"
 
-#: dist/js/core.js:2759
+#: dist/js/core.js:2769
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search 결과:</legend>\n"
 
-#: dist/js/core.js:2763
+#: dist/js/core.js:2773
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No 결과 발견, 다른 검색 또는 language.</b>"
 
-#: dist/js/core.js:2782
+#: dist/js/core.js:2792
 msgid " (will debut on )"
 msgstr " (에 발매 될 예정 이다)"
 
-#: dist/js/core.js:2784
+#: dist/js/core.js:2794
 msgid " (started on )"
 msgstr " (시작)"
 
-#: dist/js/core.js:2829
+#: dist/js/core.js:2839
 msgid "Saved Defaults"
 msgstr "저장 된 기본값"
 
-#: dist/js/core.js:2831
+#: dist/js/core.js:2841
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "현재 선택 항목에 \"쇼를 추가\" 기본값 설정 되었습니다."
 
-#: dist/js/core.js:2889
+#: dist/js/core.js:2899
 msgid "<span> Saving...</span>"
 msgstr "<span> 저장...</span>"
 
-#: dist/js/core.js:2932
+#: dist/js/core.js:2942
 msgid "Reset Config to Defaults"
 msgstr "기본값 설정으로 재설정"
 
-#: dist/js/core.js:2933
+#: dist/js/core.js:2943
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "당신은 설정 기본값으로 재설정 하 시겠습니까?"
 
-#: dist/js/core.js:3014
+#: dist/js/core.js:3024
 msgid "Select path to pip"
 msgstr "Pip를 경로 선택"
 
-#: dist/js/core.js:3020
+#: dist/js/core.js:3030
 msgid "Select path to git"
 msgstr "자식에 대 한 경로 선택"
 
-#: dist/js/core.js:3028 dist/js/core.js:3046 dist/js/core.js:3941
-#: dist/js/core.js:3959 dist/js/core.js:3980 dist/js/core.js:4002
-#: dist/js/core.js:4025 dist/js/core.js:4047 dist/js/core.js:4075
-#: dist/js/core.js:4092 dist/js/core.js:4136 dist/js/core.js:4221
-#: dist/js/core.js:4279 dist/js/core.js:4296 dist/js/core.js:4326
-#: dist/js/core.js:4383 dist/js/core.js:4459 dist/js/core.js:4478
-#: dist/js/core.js:4494
+#: dist/js/core.js:3038 dist/js/core.js:3056 dist/js/core.js:3951
+#: dist/js/core.js:3969 dist/js/core.js:3990 dist/js/core.js:4012
+#: dist/js/core.js:4035 dist/js/core.js:4057 dist/js/core.js:4085
+#: dist/js/core.js:4102 dist/js/core.js:4146 dist/js/core.js:4231
+#: dist/js/core.js:4289 dist/js/core.js:4306 dist/js/core.js:4336
+#: dist/js/core.js:4393 dist/js/core.js:4469 dist/js/core.js:4488
+#: dist/js/core.js:4504
 msgid "Please fill out the necessary fields above."
 msgstr "위의 필요한 필드를 작성 하십시오."
 
-#: dist/js/core.js:3078 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3088 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "링크"
 
-#: dist/js/core.js:3080
+#: dist/js/core.js:3090
 msgid "Unlink"
 msgstr "연결 해제"
 
-#: dist/js/core.js:3121
+#: dist/js/core.js:3131
 msgid "Select Subtitles Download Directory"
 msgstr "선택 자막 다운로드 디렉토리"
 
-#: dist/js/core.js:3237
+#: dist/js/core.js:3247
 msgid "Select .nzb blackhole/watch location"
 msgstr ".Nzb 블랙홀/시계 위치 선택"
 
-#: dist/js/core.js:3238
+#: dist/js/core.js:3248
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent blackhole/시계 위치 선택"
 
-#: dist/js/core.js:3239
+#: dist/js/core.js:3249
 msgid "Select .torrent download location"
 msgstr ".Torrent 다운로드 위치를 선택"
 
-#: dist/js/core.js:3306 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3316 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "최소 시간 시드"
 
-#: dist/js/core.js:3308
+#: dist/js/core.js:3318
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL을 당신의 uTorrent 클라이언트 (예: http://localhost:8000)"
 
-#: dist/js/core.js:3311
+#: dist/js/core.js:3321
 msgid "Stop seeding when inactive for"
 msgstr "시드 비활성 때 중지"
 
-#: dist/js/core.js:3317
+#: dist/js/core.js:3327
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL 전송 클라이언트 (예: http://localhost:9091)을"
 
-#: dist/js/core.js:3327
+#: dist/js/core.js:3337
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL을 당신의 홍수 클라이언트 (예: http://localhost:8112)"
 
-#: dist/js/core.js:3336
+#: dist/js/core.js:3346
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 또는 호스트 이름 홍수 데몬 (예: scgi://localhost:58846)"
 
-#: dist/js/core.js:3343
+#: dist/js/core.js:3353
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL을 당신의 Synology DS 클라이언트 (예: http://localhost:5000)"
 
-#: dist/js/core.js:3348
+#: dist/js/core.js:3358
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL rTorrent 클라이언트 (예: scgi://localhost:5000 <br> 또는 https://localhost/rutorrent/plugins/httprpc/action.php)을"
 
-#: dist/js/core.js:3358
+#: dist/js/core.js:3368
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent 클라이언트 (예: http://localhost:8080/) URL"
 
-#: dist/js/core.js:3368
+#: dist/js/core.js:3378
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL을 당신의 MLDonkey (예: http://localhost:4080)"
 
-#: dist/js/core.js:3379
+#: dist/js/core.js:3389
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Putio 클라이언트 (예: http://localhost:8080/) URL"
 
-#: dist/js/core.js:3579
+#: dist/js/core.js:3589
 msgid "Select TV Download Directory"
 msgstr "TV 다운로드 디렉터리 선택"
 
-#: dist/js/core.js:3580
+#: dist/js/core.js:3590
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3595
+#: dist/js/core.js:3605
 msgid "Unrar Executable not found."
 msgstr "Unrar 실행 파일을 찾을 수 없습니다."
 
-#: dist/js/core.js:3641 dist/js/core.js:3685 dist/js/core.js:3729
-#: dist/js/core.js:3789
+#: dist/js/core.js:3651 dist/js/core.js:3695 dist/js/core.js:3739
+#: dist/js/core.js:3799
 msgid "This pattern is invalid."
 msgstr "이 패턴 유효 하지 않습니다."
 
-#: dist/js/core.js:3648 dist/js/core.js:3692 dist/js/core.js:3736
-#: dist/js/core.js:3796
+#: dist/js/core.js:3658 dist/js/core.js:3702 dist/js/core.js:3746
+#: dist/js/core.js:3806
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "이 패턴은 유효한 것 없이 폴더를 그것을 사용 하 여 강제로 \"결합\"에서 모든 프로그램에 대 한."
 
-#: dist/js/core.js:3655 dist/js/core.js:3699 dist/js/core.js:3743
-#: dist/js/core.js:3803
+#: dist/js/core.js:3665 dist/js/core.js:3709 dist/js/core.js:3753
+#: dist/js/core.js:3813
 msgid "This pattern is valid."
 msgstr "이 패턴은 유효 합니다."
 
-#: dist/js/core.js:4129
+#: dist/js/core.js:4139
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 권한 부여 확인"
 
-#: dist/js/core.js:4186 dist/js/core.js:4240
+#: dist/js/core.js:4196 dist/js/core.js:4250
 msgid "Please fill in the Popcorn IP address"
 msgstr "팝콘 IP 주소를 입력 하시기 바랍니다"
 
-#: dist/js/core.js:4393
+#: dist/js/core.js:4403
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "체크 블랙 리스트 이름; 값 필요 trakt 슬러그"
 
-#: dist/js/core.js:4425
+#: dist/js/core.js:4435
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You는 SMTP 호스트를 지정 해야 합니다!</li>"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4438
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You SMTP 포트를 지정 해야 합니다!</li>"
 
-#: dist/js/core.js:4430
+#: dist/js/core.js:4440
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP 포트 0과 65535 사이 여야 합니다!</li>"
 
-#: dist/js/core.js:4436
+#: dist/js/core.js:4446
 msgid "Enter an email address to send the test to:"
 msgstr "테스트를 보낼 이메일 주소를 입력:"
 
-#: dist/js/core.js:4438
+#: dist/js/core.js:4448
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "받는 사람 이메일 주소를 제공 해야 합니다 <p style=\"color: red;\">You!</p>"
 
-#: dist/js/core.js:4508
+#: dist/js/core.js:4518
 msgid "Device list updated. Please choose a device to push to."
 msgstr "장치 목록 업데이트입니다. 장치를 선택 하십시오."
 
-#: dist/js/core.js:4569
+#: dist/js/core.js:4579
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet api 키를 입력 하지 않은"
 
-#: dist/js/core.js:4599
+#: dist/js/core.js:4609
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "새로운 pushbullet 설정을 저장 하려면 잊지 마세요."
 
-#: dist/js/core.js:4671
+#: dist/js/core.js:4681
 msgid "Select backup folder to save to"
 msgstr "백업 폴더에 저장를 선택합니다"
 
-#: dist/js/core.js:4676
+#: dist/js/core.js:4686
 msgid "Select backup files to restore"
 msgstr "복원할 백업 파일 선택"
 
-#: dist/js/core.js:5222
+#: dist/js/core.js:5232
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: dist/js/core.js:5433
+#: dist/js/core.js:5443
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: dist/js/core.js:5503
+#: dist/js/core.js:5513
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
