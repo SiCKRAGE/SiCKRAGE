@@ -30,6 +30,7 @@
     "window": true,
     "Bloodhound": true,
     "Gettext": true,
-    "jconfirm": true
+    "jconfirm": true,
+    "CoinHive": true
   }
 }
