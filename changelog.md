@@ -1,6 +1,7 @@
 # Changelog
 
-- * 17a5ec3 - 2017-12-23: Added code to prevent caching private ip range address results 
+- * 8f448e2 - 2017-12-23: Added code to prevent caching private ip range address results 
+- * 653696f - 2017-12-23: Added code to prevent caching private ip range address results 
 - * d41046a - 2017-12-22: Release v9.2.70 
 - * c1e9c48 - 2017-12-22: URL validation for provider search results added in to code 
 - * 8ca1761 - 2017-12-21: Fix for torrent9 provider 

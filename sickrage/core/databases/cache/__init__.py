@@ -59,5 +59,6 @@ class CacheDB(srDatabase):
         for item in self.all('providers'):
             if int(item["quality"]) == Quality.UNKNOWN:
                 self.delete(item)
-            elif not validate_url(item["url"]) and not item["url"].startswith("magnet") or is_ip_private(item["url"]):
+            elif not validate_url(item["url"]) and not item["url"].startswith("magnet") \
+                    or is_ip_private(item["url"].split(r'//')[-1].split(r'/')[0]):
                 self.delete(item)

@@ -185,7 +185,8 @@ class TVCache(object):
             return
 
         # ignore invalid urls
-        if not validate_url(url) and not url.startswith('magnet') or is_ip_private(url):
+        if not validate_url(url) and not url.startswith('magnet') \
+                or is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
             return
 
         try:
@@ -260,7 +261,7 @@ class TVCache(object):
 
             # ignore invalid urls
             if not validate_url(curResult["url"]) and not curResult["url"].startswith('magnet') \
-                    or is_ip_private(curResult["url"]):
+                    or is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
                 continue
 
             # ignored/required words, and non-tv junk
