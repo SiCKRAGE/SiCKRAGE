@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4116078 - 2017-12-23: Release v9.2.71 
+- * 2343a9e - 2017-12-23: Release v9.2.73 
+- * 0eaf7ee - 2017-12-23: Release v9.2.71 
 - * 9dce9e4 - 2017-12-23: Refactored core js code 
 - * 326f970 - 2017-12-23: Added code to prevent caching private ip range address results 
 - * 653696f - 2017-12-23: Added code to prevent caching private ip range address results 
