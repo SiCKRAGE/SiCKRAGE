@@ -216,6 +216,11 @@ class BaseHandler(RequestHandler):
 
         return function(**kwargs)
 
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -544,7 +549,6 @@ class GoogleAuth(WebHandler):
 class UI(WebHandler):
     def __init__(self, *args, **kwargs):
         super(UI, self).__init__(*args, **kwargs)
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
 
     @staticmethod
@@ -574,12 +578,10 @@ class WebFileBrowser(WebHandler):
         super(WebFileBrowser, self).__init__(*args, **kwargs)
 
     def index(self, path='', includeFiles=False, fileTypes=''):
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
         return json_encode(foldersAtPath(path, True, bool(int(includeFiles)), fileTypes.split(',')))
 
     def complete(self, term, includeFiles=False, fileTypes=''):
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
         self.set_header('Content-Type', 'application/json')
         return json_encode([entry['path'] for entry in foldersAtPath(
             os.path.dirname(term),
@@ -701,13 +703,10 @@ class Home(WebHandler):
         return show_stat, max_download_count
 
     def is_alive(self, *args, **kwargs):
+        self.set_header('Content-Type', 'text/javascript')
+
         if not all([kwargs.get('srcallback'), kwargs.get('_')]):
             return _("Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string.")
-
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-        self.set_header('Content-Type', 'text/javascript')
-        self.set_header('Access-Control-Allow-Origin', '*')
-        self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
 
         if sickrage.app.started:
             return "%s({'msg':%s})" % (kwargs['srcallback'], str(sickrage.app.pid))
@@ -789,8 +788,6 @@ class Home(WebHandler):
 
     @staticmethod
     def testGrowl(host=None, password=None):
-        # self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-
         host = clean_host(host, default_port=23053)
 
         result = sickrage.app.notifier_providers['growl'].test_notify(host, password)
@@ -907,8 +904,6 @@ class Home(WebHandler):
         return finalResult
 
     def testPMC(self, host=None, username=None, password=None):
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-
         if None is not password and set('*') == set(password):
             password = sickrage.app.config.plex_client_password
 
@@ -929,8 +924,6 @@ class Home(WebHandler):
         return finalResult
 
     def testPMS(self, host=None, username=None, password=None, plex_server_token=None):
-        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
-
         if password is not None and set('*') == set(password):
             password = sickrage.app.config.plex_password
 

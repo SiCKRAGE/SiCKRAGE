@@ -1,6 +1,7 @@
 # Changelog
 
-- * a90fea7 - 2017-12-23: Release v9.2.78 
+- * be2476f - 2017-12-23: Release v9.2.79 
+- * 484002a - 2017-12-23: Release v9.2.78 
 - * 5439184 - 2017-12-23: Release v9.2.77 
 - * d1d0033 - 2017-12-23: Release v9.2.76 
 - * bad836b - 2017-12-23: Release v9.2.73 
