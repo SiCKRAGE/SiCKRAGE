@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-23 03:31-0500\n"
-"PO-Revision-Date: 2017-12-23 03:32-0500\n"
+"POT-Creation-Date: 2017-12-23 03:46-0500\n"
+"PO-Revision-Date: 2017-12-23 03:47-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -17,328 +17,328 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: vi_VN\n"
 
-#: dist/js/core.js:308 sickrage/core/webserver/views/layouts/main.mako:348
+#: dist/js/core.js:309 sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Shutdown"
 msgstr "Tắt máy"
 
-#: dist/js/core.js:309
+#: dist/js/core.js:310
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Bạn có chắc bạn muốn tắt máy SiCKRAGE?"
 
-#: dist/js/core.js:313 sickrage/core/webserver/views/layouts/main.mako:343
+#: dist/js/core.js:314 sickrage/core/webserver/views/layouts/main.mako:343
 msgid "Restart"
 msgstr "Khởi động lại"
 
-#: dist/js/core.js:314
+#: dist/js/core.js:315
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Bạn có chắc bạn muốn khởi động lại SiCKRAGE?"
 
-#: dist/js/core.js:318
+#: dist/js/core.js:319
 msgid "Submit Errors"
 msgstr "Gửi lỗi"
 
-#: dist/js/core.js:319
+#: dist/js/core.js:320
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "Bạn có chắc bạn muốn gửi các lỗi này?<br><br><span class=\"red-text\">Make SiCKRAGE chắc chắn được Cập Nhật và trigger<br> lỗi này với gỡ lỗi kích hoạt trước khi submitting</span>"
 
-#: dist/js/core.js:457 dist/js/core.js:478 dist/js/core.js:499
+#: dist/js/core.js:458 dist/js/core.js:479 dist/js/core.js:500
 msgid "Searching"
 msgstr "Tìm kiếm"
 
-#: dist/js/core.js:470 dist/js/core.js:504
+#: dist/js/core.js:471 dist/js/core.js:505
 msgid "Queued"
 msgstr "Xếp hàng"
 
-#: dist/js/core.js:508 sickrage/core/webserver/views/home/display_show.mako:726
+#: dist/js/core.js:509 sickrage/core/webserver/views/home/display_show.mako:726
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "Hướng dẫn sử dụng tìm kiếm"
 
-#: dist/js/core.js:533 dist/js/core.js:683 dist/js/core.js:733
+#: dist/js/core.js:534 dist/js/core.js:684 dist/js/core.js:734
 #: sickrage/core/webserver/views/home/index.mako:300
 msgid "loading"
 msgstr "Đang nạp"
 
-#: dist/js/core.js:749
+#: dist/js/core.js:750
 msgid "Choose Directory"
 msgstr "Chọn thư mục"
 
-#: dist/js/core.js:866
+#: dist/js/core.js:867
 msgid "Ok"
 msgstr "Ok"
 
-#: dist/js/core.js:876
+#: dist/js/core.js:877
 msgid "Cancel"
 msgstr "Hủy bỏ"
 
-#: dist/js/core.js:1388 sickrage/core/webserver/views.py:3660
+#: dist/js/core.js:1389 sickrage/core/webserver/views.py:3660
 msgid "Clear History"
 msgstr "Xóa lịch sử"
 
-#: dist/js/core.js:1389
+#: dist/js/core.js:1390
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Có bạn có chắc bạn muốn xóa tất cả lịch sử tải xuống không?"
 
-#: dist/js/core.js:1393 sickrage/core/webserver/views.py:3662
+#: dist/js/core.js:1394 sickrage/core/webserver/views.py:3662
 msgid "Trim History"
 msgstr "Trim lịch sử"
 
-#: dist/js/core.js:1394
+#: dist/js/core.js:1395
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Có chắc chắn muốn cắt tất cả các bạn tải về lịch sử cũ hơn 30 ngày?"
 
-#: dist/js/core.js:1542
+#: dist/js/core.js:1543
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From bất kỳ máy tính nào, xin vui lòng truy cập <a href=\"\" target=\"_blank\"></a> và nhập code</center>"
 
-#: dist/js/core.js:1547
+#: dist/js/core.js:1548
 msgid "Link SiCKRAGE"
 msgstr "Liên kết SiCKRAGE"
 
-#: dist/js/core.js:2184 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2185 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "Loại bỏ các hiển thị"
 
-#: dist/js/core.js:2185
+#: dist/js/core.js:2186
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "Bạn có chắc bạn muốn loại bỏ <span class=\"footerhighlight\">"
 
-#: dist/js/core.js:2185
+#: dist/js/core.js:2186
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "</span> từ cơ sở dữ liệu?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check để xóa các tập tin như là tốt. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2229 dist/js/core.js:2261
+#: dist/js/core.js:2230 dist/js/core.js:2262
 msgid "Update failed."
 msgstr "Cập Nhật không thành công."
 
-#: dist/js/core.js:2272
+#: dist/js/core.js:2273
 msgid "Select Show Location"
 msgstr "Chọn vị trí Hiển thị"
 
-#: dist/js/core.js:2412
+#: dist/js/core.js:2413
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> tải thư mục..."
 
-#: dist/js/core.js:2482
+#: dist/js/core.js:2483
 msgid "Select Unprocessed Episode Folder"
 msgstr "Chọn thư mục tập chưa qua chế biến"
 
-#: dist/js/core.js:2765
+#: dist/js/core.js:2766
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "Tìm hết thời gian, hãy thử tăng thời gian chờ cho chỉ mục"
 
-#: dist/js/core.js:2769
+#: dist/js/core.js:2770
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search kết quả:</legend>\n"
 
-#: dist/js/core.js:2773
+#: dist/js/core.js:2774
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No kết quả tìm thấy, hãy thử một tìm kiếm khác nhau hoặc language.</b>"
 
-#: dist/js/core.js:2792
+#: dist/js/core.js:2793
 msgid " (will debut on )"
 msgstr " (sẽ ra mắt ngày)"
 
-#: dist/js/core.js:2794
+#: dist/js/core.js:2795
 msgid " (started on )"
 msgstr " (bắt đầu)"
 
-#: dist/js/core.js:2839
+#: dist/js/core.js:2840
 msgid "Saved Defaults"
 msgstr "Giá trị mặc định đã lưu"
 
-#: dist/js/core.js:2841
+#: dist/js/core.js:2842
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Mặc định của bạn \"thêm Hiển thị\" đã được thiết lập để lựa chọn hiện tại của bạn."
 
-#: dist/js/core.js:2899
+#: dist/js/core.js:2900
 msgid "<span> Saving...</span>"
 msgstr "<span> tiết kiệm...</span>"
 
-#: dist/js/core.js:2942
+#: dist/js/core.js:2943
 msgid "Reset Config to Defaults"
 msgstr "Đặt lại cấu hình mặc định"
 
-#: dist/js/core.js:2943
+#: dist/js/core.js:2944
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Bạn có chắc bạn muốn đặt lại cấu hình mặc định không?"
 
-#: dist/js/core.js:3024
+#: dist/js/core.js:3025
 msgid "Select path to pip"
 msgstr "Chọn đường dẫn đến giá trị pip"
 
-#: dist/js/core.js:3030
+#: dist/js/core.js:3031
 msgid "Select path to git"
 msgstr "Chọn đường dẫn đến git"
 
-#: dist/js/core.js:3038 dist/js/core.js:3056 dist/js/core.js:3951
-#: dist/js/core.js:3969 dist/js/core.js:3990 dist/js/core.js:4012
-#: dist/js/core.js:4035 dist/js/core.js:4057 dist/js/core.js:4085
-#: dist/js/core.js:4102 dist/js/core.js:4146 dist/js/core.js:4231
-#: dist/js/core.js:4289 dist/js/core.js:4306 dist/js/core.js:4336
-#: dist/js/core.js:4393 dist/js/core.js:4469 dist/js/core.js:4488
-#: dist/js/core.js:4504
+#: dist/js/core.js:3039 dist/js/core.js:3057 dist/js/core.js:3952
+#: dist/js/core.js:3970 dist/js/core.js:3991 dist/js/core.js:4013
+#: dist/js/core.js:4036 dist/js/core.js:4058 dist/js/core.js:4086
+#: dist/js/core.js:4103 dist/js/core.js:4147 dist/js/core.js:4232
+#: dist/js/core.js:4290 dist/js/core.js:4307 dist/js/core.js:4337
+#: dist/js/core.js:4394 dist/js/core.js:4470 dist/js/core.js:4489
+#: dist/js/core.js:4505
 msgid "Please fill out the necessary fields above."
 msgstr "Vui lòng điền vào các lĩnh vực cần thiết trên."
 
-#: dist/js/core.js:3088 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3089 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Liên kết"
 
-#: dist/js/core.js:3090
+#: dist/js/core.js:3091
 msgid "Unlink"
 msgstr "Hủy liên kết"
 
-#: dist/js/core.js:3131
+#: dist/js/core.js:3132
 msgid "Select Subtitles Download Directory"
 msgstr "Chọn phụ đề Download Directory"
 
-#: dist/js/core.js:3247
+#: dist/js/core.js:3248
 msgid "Select .nzb blackhole/watch location"
 msgstr "Chọn vị trí blackhole/watch .nzb"
 
-#: dist/js/core.js:3248
+#: dist/js/core.js:3249
 msgid "Select .torrent blackhole/watch location"
 msgstr "Chọn vị trí blackhole/watch .torrent"
 
-#: dist/js/core.js:3249
+#: dist/js/core.js:3250
 msgid "Select .torrent download location"
 msgstr "Chọn vị trí tải .torrent"
 
-#: dist/js/core.js:3316 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3317 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "Gieo hạt thời gian tối thiểu là"
 
-#: dist/js/core.js:3318
+#: dist/js/core.js:3319
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL để uTorrent khách hàng của bạn (ví dụ: http://localhost:8000)"
 
-#: dist/js/core.js:3321
+#: dist/js/core.js:3322
 msgid "Stop seeding when inactive for"
 msgstr "Dừng seeding khi không hoạt động cho"
 
-#: dist/js/core.js:3327
+#: dist/js/core.js:3328
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL để khách hàng của bạn truyền tải (ví dụ: http://localhost:9091)"
 
-#: dist/js/core.js:3337
+#: dist/js/core.js:3338
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL để vô số khách hàng của bạn (ví dụ: http://localhost:8112)"
 
-#: dist/js/core.js:3346
+#: dist/js/core.js:3347
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP hoặc tên máy chủ của bạn vô số Daemon (ví dụ: scgi://localhost:58846)"
 
-#: dist/js/core.js:3353
+#: dist/js/core.js:3354
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL để khách hàng Synology DS của bạn (ví dụ: http://localhost:5000)"
 
-#: dist/js/core.js:3358
+#: dist/js/core.js:3359
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL để khách hàng rTorrent của bạn (ví dụ như scgi://localhost:5000 <br> hoặc https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3368
+#: dist/js/core.js:3369
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL để qbittorrent khách hàng của bạn (ví dụ: http://localhost:8080)"
 
-#: dist/js/core.js:3378
+#: dist/js/core.js:3379
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL của bạn MLDonkey (ví dụ: http://localhost:4080)"
 
-#: dist/js/core.js:3389
+#: dist/js/core.js:3390
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL để putio khách hàng của bạn (ví dụ: http://localhost:8080)"
 
-#: dist/js/core.js:3589
+#: dist/js/core.js:3590
 msgid "Select TV Download Directory"
 msgstr "Chọn TV Download Directory"
 
-#: dist/js/core.js:3590
+#: dist/js/core.js:3591
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3605
+#: dist/js/core.js:3606
 msgid "Unrar Executable not found."
 msgstr "Unrar thực thi không tìm thấy."
 
-#: dist/js/core.js:3651 dist/js/core.js:3695 dist/js/core.js:3739
-#: dist/js/core.js:3799
+#: dist/js/core.js:3652 dist/js/core.js:3696 dist/js/core.js:3740
+#: dist/js/core.js:3800
 msgid "This pattern is invalid."
 msgstr "Mô hình này là không hợp lệ."
 
-#: dist/js/core.js:3658 dist/js/core.js:3702 dist/js/core.js:3746
-#: dist/js/core.js:3806
+#: dist/js/core.js:3659 dist/js/core.js:3703 dist/js/core.js:3747
+#: dist/js/core.js:3807
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Mô hình này sẽ là không hợp lệ mà không có các thư mục, bằng cách sử dụng nó sẽ buộc \"Phẳng\" ra cho thấy tất cả."
 
-#: dist/js/core.js:3665 dist/js/core.js:3709 dist/js/core.js:3753
-#: dist/js/core.js:3813
+#: dist/js/core.js:3666 dist/js/core.js:3710 dist/js/core.js:3754
+#: dist/js/core.js:3814
 msgid "This pattern is valid."
 msgstr "Mô hình này là hợp lệ."
 
-#: dist/js/core.js:4139
+#: dist/js/core.js:4140
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> xác nhận ủy quyền"
 
-#: dist/js/core.js:4196 dist/js/core.js:4250
+#: dist/js/core.js:4197 dist/js/core.js:4251
 msgid "Please fill in the Popcorn IP address"
 msgstr "Xin vui lòng điền vào địa chỉ IP bỏng ngô"
 
-#: dist/js/core.js:4403
+#: dist/js/core.js:4404
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kiểm tra danh sách đen tên; giá trị cần phải là sên trakt"
 
-#: dist/js/core.js:4435
+#: dist/js/core.js:4436
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You phải chỉ định một tên máy chủ SMTP!</li>"
 
-#: dist/js/core.js:4438
+#: dist/js/core.js:4439
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You phải chỉ định một cổng SMTP!</li>"
 
-#: dist/js/core.js:4440
+#: dist/js/core.js:4441
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP cảng phải trong khoảng từ 0 đến 65535!</li>"
 
-#: dist/js/core.js:4446
+#: dist/js/core.js:4447
 msgid "Enter an email address to send the test to:"
 msgstr "Nhập địa chỉ email để gửi bài kiểm tra để:"
 
-#: dist/js/core.js:4448
+#: dist/js/core.js:4449
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You phải cung cấp một địa chỉ email người nhận!</p>"
 
-#: dist/js/core.js:4518
+#: dist/js/core.js:4519
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Danh sách thiết bị được Cập Nhật. Hãy chọn một thiết bị để đẩy vào."
 
-#: dist/js/core.js:4579
+#: dist/js/core.js:4580
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Bạn đã không cung cấp một khóa Pushbullet api"
 
-#: dist/js/core.js:4609
+#: dist/js/core.js:4610
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Đừng quên để lưu các cài đặt pushbullet mới."
 
-#: dist/js/core.js:4681
+#: dist/js/core.js:4682
 msgid "Select backup folder to save to"
 msgstr "Chọn thư mục sao lưu để lưu vào"
 
-#: dist/js/core.js:4686
+#: dist/js/core.js:4687
 msgid "Select backup files to restore"
 msgstr "Chọn các tập tin sao lưu để khôi phục"
 
-#: dist/js/core.js:5232
+#: dist/js/core.js:5233
 msgid "No providers available to configure."
 msgstr "Không có các nhà cung cấp có sẵn cho cấu hình."
 
-#: dist/js/core.js:5443
+#: dist/js/core.js:5444
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Bạn đã chọn để xoá show(s).  Bạn có chắc bạn muốn tiếp tục không? Tất cả các tập tin sẽ được gỡ bỏ từ hệ thống của bạn."
 
-#: dist/js/core.js:5513
+#: dist/js/core.js:5514
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
