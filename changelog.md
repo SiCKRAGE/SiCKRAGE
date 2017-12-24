@@ -1,6 +1,7 @@
 # Changelog
 
-- * ff2b18a - 2017-12-24: Updated requirement imdbpie to v4.3.0 
+- * 8000e57 - 2017-12-24: Updated more requirements 
+- * c73c554 - 2017-12-24: Updated requirement imdbpie to v4.3.0 
 - * b592d44 - 2017-12-23: Release v9.2.80 
 - * f8908fd - 2017-12-23: Release v9.2.79 
 - * 484002a - 2017-12-23: Release v9.2.78 
