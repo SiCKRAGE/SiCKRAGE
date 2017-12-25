@@ -456,6 +456,8 @@ class Config(object):
         self.unrar_tool = rarfile.UNRAR_TOOL
         self.unrar_alt_tool = rarfile.ALT_TOOL
 
+        self.view_changelog = False
+
     @property
     def defaults(self):
         return {
@@ -801,7 +803,8 @@ class Config(object):
                 'calendar_icons': False,
                 'keep_processed_dir': True,
                 'processor_follow_symlinks': False,
-                'allowed_extensions': 'srt,nfo,srr,sfv'
+                'allowed_extensions': 'srt,nfo,srr,sfv',
+                'view_changelog': False
             },
             'NZBget': {
                 'nzbget_host': '',
@@ -1457,6 +1460,7 @@ class Config(object):
         self.display_all_seasons = self.check_setting_bool('General', 'display_all_seasons')
         self.random_user_agent = self.check_setting_bool('General', 'random_user_agent')
         self.allowed_extensions = self.check_setting_str('General', 'allowed_extensions')
+        self.view_changelog = self.check_setting_bool('General', 'view_changelog')
 
         # GUI SETTINGS
         self.gui_lang = self.check_setting_str('GUI', 'gui_lang')
@@ -1944,7 +1948,8 @@ class Config(object):
                 'random_user_agent': int(self.random_user_agent),
                 'processor_follow_symlinks': int(self.processor_follow_symlinks),
                 'delete_non_associated_files': int(self.delete_non_associated_files),
-                'allowed_extensions': self.allowed_extensions
+                'allowed_extensions': self.allowed_extensions,
+                'view_changelog': int(self.view_changelog)
             },
             'GUI': {
                 'gui_lang': self.gui_lang,

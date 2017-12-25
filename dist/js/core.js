@@ -388,6 +388,22 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
+                $("#changelog").on('click', function () {
+                    $("#mainModal").dialog({
+                        modal: true,
+                        open: function () {
+                            $(this).load(SICKRAGE.srWebRoot + '/changes');
+                        },
+                        height: "800",
+                        width: "800",
+                        title: 'Changelog'
+                    });
+                });
+
+                if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')){
+                    $("#changelog").click();
+                }
+
                 $(window).unload(function () {
                     SICKRAGE.xhrAbortAll();
                 });

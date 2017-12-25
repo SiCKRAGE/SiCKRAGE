@@ -2269,15 +2269,10 @@ class changelog(WebHandler):
             changes if changes else _("The was a problem connecting to the server, please refresh and try again"),
             extras=['header-ids'])
 
-        return self.render(
-            "/markdown.mako",
-            title="Changelog",
-            header="Changelog",
-            topmenu="system",
-            data=data,
-            controller='root',
-            action='changelog'
-        )
+        sickrage.app.config.view_changelog = False
+        sickrage.app.config.save()
+
+        return data
 
 
 @Route('/home/postprocess(/?.*)')

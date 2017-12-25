@@ -52,6 +52,7 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
     <meta data-var="sickrage.TIME_PRESET" data-content="${sickrage.app.config.time_preset}">
     <meta data-var="sickrage.TRIM_ZERO" data-content="${sickrage.app.config.trim_zero}">
+    <meta data-var="sickrage.VIEW_CHANGELOG" data-content="${sickrage.app.config.view_changelog}">
     <meta data-var="sickrage.FANART_BACKGROUND" data-content="${sickrage.app.config.fanart_background}">
     <meta data-var="sickrage.FANART_BACKGROUND_OPACITY"
           data-content="${sickrage.app.config.fanart_background_opacity}">
@@ -300,7 +301,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="${srWebRoot}/changes/">
+                                    <a href="#" id="changelog">
                                         <i class="fa fa-globe"></i>&nbsp;${_('Changelog')}
                                     </a>
                                 </li>
@@ -485,6 +486,8 @@
     <script src="${srWebRoot}/js/bower.min.js"></script>
     <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />
+
+    <div id="mainModal"></div>
 </div>
 </body>
 </html>

@@ -157,6 +157,8 @@ class VersionUpdater(object):
                         [os.remove(os.path.join(root, name)) for name in files]
                         [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
+                    sickrage.app.config.view_changelog = True
+
                     return True
 
     @property
