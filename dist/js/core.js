@@ -2528,62 +2528,6 @@ jQuery(document).ready(function ($) {
 
             },
 
-            restart: function () {
-                var current_pid = '';
-                var timeout_id;
-                var num_restart_waits = 0;
-
-                function checkIsAlive() {
-                    timeout_id = 0;
-
-                    $.ajax({
-                        url: SICKRAGE.srWebRoot + '/home/is_alive/',
-                        dataType: 'jsonp',
-                        jsonp: 'srcallback',
-                        success: function (data) {
-                            if (data.msg === 'nope') {
-                                $('#shut_down_loading').hide();
-                                $('#shut_down_success').show();
-                                $('#restart_message').show();
-                                setTimeout(checkIsAlive, 1000);
-                            } else {
-                                if (current_pid === '' || data.msg === current_pid) {
-                                    current_pid = data.msg;
-                                    setTimeout(checkIsAlive, 1000);
-                                } else {
-                                    $('#restart_loading').hide();
-                                    $('#restart_success').show();
-                                    $('#restart_message').show();
-                                    window.location = SICKRAGE.srWebRoot + '/' + SICKRAGE.srDefaultPage + '/';
-                                }
-                            }
-                        },
-                        error: function (error) {
-                            num_restart_waits += 1;
-
-                            $('#shut_down_loading').hide();
-                            $('#shut_down_success').show();
-                            $('#restart_message').show();
-
-                            // if it is taking forever just give up
-                            if (num_restart_waits > 90) {
-                                $('#restart_loading').hide();
-                                $('#restart_failure').show();
-                                $('#restart_fail_message').show();
-                                return;
-                            }
-
-                            if (timeout_id === 0) {
-                                timeout_id = setTimeout(checkIsAlive, 1000);
-                            }
-                        }
-                    });
-                }
-
-                checkIsAlive();
-
-            },
-
             new_show: {
                 init: function () {
                     $("#addShowForm").steps({
