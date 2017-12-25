@@ -1,6 +1,7 @@
 # Changelog
 
-- * 04e7d98 - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
+- * 66a6198 - 2017-12-25: Release v9.2.85 
+- * 1b9b39a - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
 - * 4c548b6 - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
 - * 552c936 - 2017-12-25: Refactored changelog to modal popup window Changelog now popups up after updates only once 
 - * cd76821 - 2017-12-25: testing changelog viewing 
