@@ -388,6 +388,22 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
+                $("#changelog").on('click', function () {
+                    $("#mainModal").dialog({
+                        modal: true,
+                        open: function () {
+                            $(this).load(SICKRAGE.srWebRoot + '/changes');
+                        },
+                        height: "800",
+                        width: "800",
+                        title: 'Changelog'
+                    });
+                });
+
+                if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')){
+                    $("#changelog").click();
+                }
+
                 $(window).unload(function () {
                     SICKRAGE.xhrAbortAll();
                 });
@@ -2509,62 +2525,6 @@ jQuery(document).ready(function ($) {
 
                     window.location.href = SICKRAGE.srWebRoot + '/home/doRename?show=' + $('#showID').attr('value') + '&eps=' + epArr.join('|');
                 });
-
-            },
-
-            restart: function () {
-                var current_pid = '';
-                var timeout_id;
-                var num_restart_waits = 0;
-
-                function checkIsAlive() {
-                    timeout_id = 0;
-
-                    $.ajax({
-                        url: SICKRAGE.srWebRoot + '/home/is_alive/',
-                        dataType: 'jsonp',
-                        jsonp: 'srcallback',
-                        success: function (data) {
-                            if (data.msg === 'nope') {
-                                $('#shut_down_loading').hide();
-                                $('#shut_down_success').show();
-                                $('#restart_message').show();
-                                setTimeout(checkIsAlive, 1000);
-                            } else {
-                                if (current_pid === '' || data.msg === current_pid) {
-                                    current_pid = data.msg;
-                                    setTimeout(checkIsAlive, 1000);
-                                } else {
-                                    $('#restart_loading').hide();
-                                    $('#restart_success').show();
-                                    $('#restart_message').show();
-                                    window.location = SICKRAGE.srWebRoot + '/' + SICKRAGE.srDefaultPage + '/';
-                                }
-                            }
-                        },
-                        error: function (error) {
-                            num_restart_waits += 1;
-
-                            $('#shut_down_loading').hide();
-                            $('#shut_down_success').show();
-                            $('#restart_message').show();
-
-                            // if it is taking forever just give up
-                            if (num_restart_waits > 90) {
-                                $('#restart_loading').hide();
-                                $('#restart_failure').show();
-                                $('#restart_fail_message').show();
-                                return;
-                            }
-
-                            if (timeout_id === 0) {
-                                timeout_id = setTimeout(checkIsAlive, 1000);
-                            }
-                        }
-                    });
-                }
-
-                checkIsAlive();
 
             },
 

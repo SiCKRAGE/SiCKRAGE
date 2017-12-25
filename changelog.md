@@ -1,6 +1,11 @@
 # Changelog
 
-- * d3a9b15 - 2017-12-25: Release v9.2.84 
+- * 66a6198 - 2017-12-25: Release v9.2.85 
+- * 1b9b39a - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
+- * 4c548b6 - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
+- * 552c936 - 2017-12-25: Refactored changelog to modal popup window Changelog now popups up after updates only once 
+- * cd76821 - 2017-12-25: testing changelog viewing 
+- * ced2fd5 - 2017-12-25: Release v9.2.84 
 - * feea441 - 2017-12-25: Added custome static file handler that doesn&#x27;t cache assets 
 - * bf259dc - 2017-12-25: Release v9.2.83 
 - * 7e6250c - 2017-12-25: Fixed JS error for Failed Downloads template Added missing notify_list property to TV show object 

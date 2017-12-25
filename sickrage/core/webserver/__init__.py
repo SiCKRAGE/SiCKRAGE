@@ -187,13 +187,13 @@ class WebServer(object):
                     sickrage.app.config.web_host, sickrage.app.config.web_port))
 
             # launch browser window
-            if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-                threading.Thread(None,
-                                 lambda: launch_browser(
-                                     ('http', 'https')[sickrage.app.config.enable_https],
-                                     sickrage.app.config.web_host,
-                                     sickrage.app.config.web_port
-                                 ), name="LAUNCH-BROWSER").start()
+            if all([not sickrage.app.no_launch,
+                    sickrage.app.config.launch_browser]) or sickrage.app.config.view_changelog:
+                threading.Thread(None, lambda: launch_browser(
+                    ('http', 'https')[sickrage.app.config.enable_https],
+                    sickrage.app.config.web_host,
+                    sickrage.app.config.web_port
+                ), name="LAUNCH-BROWSER").start()
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
