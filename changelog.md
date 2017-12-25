@@ -1,6 +1,7 @@
 # Changelog
 
-- * d3a9b15 - 2017-12-25: Release v9.2.84 
+- * c67529b - 2017-12-25: testing changelog viewing 
+- * ced2fd5 - 2017-12-25: Release v9.2.84 
 - * feea441 - 2017-12-25: Added custome static file handler that doesn&#x27;t cache assets 
 - * bf259dc - 2017-12-25: Release v9.2.83 
 - * 7e6250c - 2017-12-25: Fixed JS error for Failed Downloads template Added missing notify_list property to TV show object 

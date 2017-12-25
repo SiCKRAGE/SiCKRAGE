@@ -2266,7 +2266,7 @@ class changelog(WebHandler):
             changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(url)
 
         data = markdown2.markdown(
-            changes if changes else _("The was a problem connecting to github, please refresh and try again"),
+            changes if changes else _("The was a problem connecting to the server, please refresh and try again"),
             extras=['header-ids'])
 
         return self.render(
