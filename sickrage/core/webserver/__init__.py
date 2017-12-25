@@ -47,6 +47,11 @@ class StaticImageHandler(StaticFileHandler):
         return super(StaticImageHandler, self).get(path, include_body)
 
 
+class StaticNoCacheFileHandler(StaticFileHandler):
+    def set_extra_headers(self, path):
+        self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+
+
 class WebServer(object):
     def __init__(self):
         super(WebServer, self).__init__()
@@ -77,7 +82,7 @@ class WebServer(object):
         # web root
         if sickrage.app.config.web_root:
             sickrage.app.config.web_root = sickrage.app.config.web_root = (
-                '/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
+                    '/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
 
         # api root
         self.api_root = r'%s/api/%s' % (sickrage.app.config.web_root, sickrage.app.config.api_key)
@@ -86,9 +91,9 @@ class WebServer(object):
         if sickrage.app.config.enable_https:
             # If either the HTTPS certificate or key do not exist, make some self-signed ones.
             if not (
-                        sickrage.app.config.https_cert and os.path.exists(
-                        sickrage.app.config.https_cert)) or not (
-                        sickrage.app.config.https_key and os.path.exists(sickrage.app.config.https_key)):
+                    sickrage.app.config.https_cert and os.path.exists(
+                sickrage.app.config.https_cert)) or not (
+                    sickrage.app.config.https_key and os.path.exists(sickrage.app.config.https_key)):
                 if not create_https_certificates(sickrage.app.config.https_cert,
                                                  sickrage.app.config.https_key):
                     sickrage.app.log.info("Unable to create CERT/KEY files, disabling HTTPS")
@@ -126,7 +131,7 @@ class WebServer(object):
                 (r'%s/calendar' % sickrage.app.config.web_root, CalendarHandler),
 
                 # favicon
-                (r'%s/(favicon\.ico)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/(favicon\.ico)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images/favicon.ico')}),
 
                 # images
@@ -134,23 +139,23 @@ class WebServer(object):
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images')}),
 
                 # css
-                (r'%s/css/(.*)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/css/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'css')}),
 
                 # scss
-                (r'%s/scss/(.*)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/scss/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'scss')}),
 
                 # fonts
-                (r'%s/fonts/(.*)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/fonts/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'fonts')}),
 
                 # javascript
-                (r'%s/js/(.*)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/js/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": os.path.join(sickrage.app.config.gui_static_dir, 'js')}),
 
                 # videos
-                (r'%s/videos/(.*)' % sickrage.app.config.web_root, StaticFileHandler,
+                (r'%s/videos/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
                  {"path": self.video_root}),
             ] + Route.get_routes(sickrage.app.config.web_root),
             debug=True,
