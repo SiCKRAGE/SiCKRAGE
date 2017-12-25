@@ -81,6 +81,7 @@ class TVShow(object):
         self._rls_ignore_words = ""
         self._rls_require_words = ""
         self._default_ep_status = SKIPPED
+        self._notify_list = ""
         self.dirty = True
 
         self._location = ""
@@ -382,6 +383,16 @@ class TVShow(object):
         if self._default_ep_status != value:
             self.dirty = True
         self._default_ep_status = value
+
+    @property
+    def notify_list(self):
+        return self._notify_list
+
+    @notify_list.setter
+    def notify_list(self, value):
+        if self._notify_list != value:
+            self.dirty = True
+        self._notify_list = value
 
     @property
     def subtitles_sr_metadata(self):
@@ -911,6 +922,7 @@ class TVShow(object):
         self._rls_ignore_words = dbData[0].get("rls_ignore_words", self.rls_ignore_words)
         self._rls_require_words = dbData[0].get("rls_require_words", self.rls_require_words)
         self._default_ep_status = try_int(dbData[0]["default_ep_status"], self.default_ep_status)
+        self._notify_list = dbData[0].get("notify_list", self.notify_list)
         self._imdbid = dbData[0].get("imdb_id", self.imdbid)
         self._location = dbData[0].get("location", self.location)
 
@@ -1281,7 +1293,8 @@ class TVShow(object):
             "rls_ignore_words": self.rls_ignore_words,
             "rls_require_words": self.rls_require_words,
             "default_ep_status": self.default_ep_status,
-            "sub_use_sr_metadata": self.subtitles_sr_metadata
+            "sub_use_sr_metadata": self.subtitles_sr_metadata,
+            "notify_list": self.notify_list,
         }
 
         try:

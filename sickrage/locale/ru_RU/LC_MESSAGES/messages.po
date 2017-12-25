@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-23 15:35-0500\n"
-"PO-Revision-Date: 2017-12-23 15:36-0500\n"
+"POT-Creation-Date: 2017-12-25 12:37-0500\n"
+"PO-Revision-Date: 2017-12-25 12:38-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -41,304 +41,304 @@ msgstr "Представляет ошибки"
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "Вы уверены, что вы хотите, чтобы представить эти ошибки?<br><br><span class=\"red-text\">Make обязательно SiCKRAGE обновляется и trigger<br> эту ошибку с отладки включен перед submitting</span>"
 
-#: dist/js/core.js:447 dist/js/core.js:468 dist/js/core.js:489
+#: dist/js/core.js:452 dist/js/core.js:473 dist/js/core.js:494
 msgid "Searching"
 msgstr "Поиск"
 
-#: dist/js/core.js:460 dist/js/core.js:494
+#: dist/js/core.js:465 dist/js/core.js:499
 msgid "Queued"
 msgstr "В очереди"
 
-#: dist/js/core.js:498 sickrage/core/webserver/views/home/display_show.mako:726
+#: dist/js/core.js:503 sickrage/core/webserver/views/home/display_show.mako:726
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "Ручной поиск"
 
-#: dist/js/core.js:523 dist/js/core.js:673 dist/js/core.js:723
+#: dist/js/core.js:528 dist/js/core.js:678 dist/js/core.js:728
 #: sickrage/core/webserver/views/home/index.mako:300
 msgid "loading"
 msgstr "Загрузка"
 
-#: dist/js/core.js:739
+#: dist/js/core.js:744
 msgid "Choose Directory"
 msgstr "Выбор каталога"
 
-#: dist/js/core.js:856
+#: dist/js/core.js:861
 msgid "Ok"
 msgstr "Хорошо"
 
-#: dist/js/core.js:866
+#: dist/js/core.js:871
 msgid "Cancel"
 msgstr "Отмена"
 
-#: dist/js/core.js:1378 sickrage/core/webserver/views.py:3653
+#: dist/js/core.js:1383 sickrage/core/webserver/views.py:3653
 msgid "Clear History"
 msgstr "Очистка истории"
 
-#: dist/js/core.js:1379
+#: dist/js/core.js:1384
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Являются ли вы уверены, что хотите очистить все скачать истории?"
 
-#: dist/js/core.js:1383 sickrage/core/webserver/views.py:3655
+#: dist/js/core.js:1388 sickrage/core/webserver/views.py:3655
 msgid "Trim History"
 msgstr "Трим история"
 
-#: dist/js/core.js:1384
+#: dist/js/core.js:1389
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Являются ли вы уверены, что вы хотите обрезать все скачать истории старше 30 дней?"
 
-#: dist/js/core.js:1532
+#: dist/js/core.js:1537
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From любой компьютер, пожалуйста, посетите <a href=\"\" target=\"_blank\"></a> и введите code</center>"
 
-#: dist/js/core.js:1537
+#: dist/js/core.js:1542
 msgid "Link SiCKRAGE"
 msgstr "Ссылка SiCKRAGE"
 
-#: dist/js/core.js:2174 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2179 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "Удаление шоу"
 
-#: dist/js/core.js:2175
+#: dist/js/core.js:2180
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "Вы уверены, что вы хотите удалить <span class=\"footerhighlight\">"
 
-#: dist/js/core.js:2175
+#: dist/js/core.js:2180
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "</span> из базы данных?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check для удаления файлов, а также. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2219 dist/js/core.js:2251
+#: dist/js/core.js:2224 dist/js/core.js:2256
 msgid "Update failed."
 msgstr "Не удалось обновить."
 
-#: dist/js/core.js:2262
+#: dist/js/core.js:2267
 msgid "Select Show Location"
 msgstr "Выберите Показать местоположение"
 
-#: dist/js/core.js:2402
+#: dist/js/core.js:2407
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> загрузки папки..."
 
-#: dist/js/core.js:2472
+#: dist/js/core.js:2477
 msgid "Select Unprocessed Episode Folder"
 msgstr "Выберите папку необработанных эпизод"
 
-#: dist/js/core.js:2755
+#: dist/js/core.js:2760
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "истекло время ожидания поиска, попробуйте увеличения времени ожидания для индексатора"
 
-#: dist/js/core.js:2759
+#: dist/js/core.js:2764
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search результаты:</legend>\n"
 
-#: dist/js/core.js:2763
+#: dist/js/core.js:2768
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No результаты нашли, попробуйте другой поиск или language.</b>"
 
-#: dist/js/core.js:2782
+#: dist/js/core.js:2787
 msgid " (will debut on )"
 msgstr " (будет дебют на)"
 
-#: dist/js/core.js:2784
+#: dist/js/core.js:2789
 msgid " (started on )"
 msgstr " (запущен на)"
 
-#: dist/js/core.js:2829
+#: dist/js/core.js:2834
 msgid "Saved Defaults"
 msgstr "Сохраненные значения по умолчанию"
 
-#: dist/js/core.js:2831
+#: dist/js/core.js:2836
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Настройки по умолчанию «добавить шоу» были созданы для текущего выбора."
 
-#: dist/js/core.js:2889
+#: dist/js/core.js:2894
 msgid "<span> Saving...</span>"
 msgstr "<span> сохранение...</span>"
 
-#: dist/js/core.js:2932
+#: dist/js/core.js:2937
 msgid "Reset Config to Defaults"
 msgstr "Сброс конфигурации по умолчанию"
 
-#: dist/js/core.js:2933
+#: dist/js/core.js:2938
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Вы уверены, что вы хотите сбросить настройки по умолчанию?"
 
-#: dist/js/core.js:3014
+#: dist/js/core.js:3019
 msgid "Select path to pip"
 msgstr "Выберите путь к пип"
 
-#: dist/js/core.js:3020
+#: dist/js/core.js:3025
 msgid "Select path to git"
 msgstr "Выберите путь к git"
 
-#: dist/js/core.js:3028 dist/js/core.js:3046 dist/js/core.js:3941
-#: dist/js/core.js:3959 dist/js/core.js:3980 dist/js/core.js:4002
-#: dist/js/core.js:4025 dist/js/core.js:4047 dist/js/core.js:4075
-#: dist/js/core.js:4092 dist/js/core.js:4136 dist/js/core.js:4221
-#: dist/js/core.js:4279 dist/js/core.js:4296 dist/js/core.js:4326
-#: dist/js/core.js:4383 dist/js/core.js:4459 dist/js/core.js:4478
-#: dist/js/core.js:4494
+#: dist/js/core.js:3033 dist/js/core.js:3051 dist/js/core.js:3946
+#: dist/js/core.js:3964 dist/js/core.js:3985 dist/js/core.js:4007
+#: dist/js/core.js:4030 dist/js/core.js:4052 dist/js/core.js:4080
+#: dist/js/core.js:4097 dist/js/core.js:4141 dist/js/core.js:4226
+#: dist/js/core.js:4284 dist/js/core.js:4301 dist/js/core.js:4331
+#: dist/js/core.js:4388 dist/js/core.js:4464 dist/js/core.js:4483
+#: dist/js/core.js:4499
 msgid "Please fill out the necessary fields above."
 msgstr "Пожалуйста, заполните все необходимые поля выше."
 
-#: dist/js/core.js:3078 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3083 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Ссылка"
 
-#: dist/js/core.js:3080
+#: dist/js/core.js:3085
 msgid "Unlink"
 msgstr "Удалить связь"
 
-#: dist/js/core.js:3121
+#: dist/js/core.js:3126
 msgid "Select Subtitles Download Directory"
 msgstr "Выберите субтитры скачать каталог"
 
-#: dist/js/core.js:3237
+#: dist/js/core.js:3242
 msgid "Select .nzb blackhole/watch location"
 msgstr "Выберите местоположение .nzb blackhole/часы"
 
-#: dist/js/core.js:3238
+#: dist/js/core.js:3243
 msgid "Select .torrent blackhole/watch location"
 msgstr "Выберите местоположение blackhole/смотреть .torrent"
 
-#: dist/js/core.js:3239
+#: dist/js/core.js:3244
 msgid "Select .torrent download location"
 msgstr "Выберите место загрузки .torrent"
 
-#: dist/js/core.js:3306 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3311 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "Минимальное время посева"
 
-#: dist/js/core.js:3308
+#: dist/js/core.js:3313
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL-адрес для вашего клиента uTorrent (например, http://localhost: 8000)"
 
-#: dist/js/core.js:3311
+#: dist/js/core.js:3316
 msgid "Stop seeding when inactive for"
 msgstr "Остановить посева когда бездействующе для"
 
-#: dist/js/core.js:3317
+#: dist/js/core.js:3322
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL-адрес для передачи клиента (например, http://localhost:9091)"
 
-#: dist/js/core.js:3327
+#: dist/js/core.js:3332
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL-адрес для вашего клиента потоп (например, http://localhost:8112)"
 
-#: dist/js/core.js:3336
+#: dist/js/core.js:3341
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP-адрес или имя хоста вашего потоп демона (например, scgi://localhost:58846)"
 
-#: dist/js/core.js:3343
+#: dist/js/core.js:3348
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL-адрес для вашего Synology DS клиента (например, http://localhost:5000)"
 
-#: dist/js/core.js:3348
+#: dist/js/core.js:3353
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL-адрес для вашего rTorrent клиента (например, scgi://localhost:5000 <br> или https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3358
+#: dist/js/core.js:3363
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL-адрес для вашего qbittorrent клиента (например, http://localhost: 8080)"
 
-#: dist/js/core.js:3368
+#: dist/js/core.js:3373
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL-адрес для вашего MLDonkey (например, http://localhost:4080)"
 
-#: dist/js/core.js:3379
+#: dist/js/core.js:3384
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL-адрес для вашего putio клиента (например, http://localhost: 8080)"
 
-#: dist/js/core.js:3579
+#: dist/js/core.js:3584
 msgid "Select TV Download Directory"
 msgstr "Выберите каталог загрузки ТВ"
 
-#: dist/js/core.js:3580
+#: dist/js/core.js:3585
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3595
+#: dist/js/core.js:3600
 msgid "Unrar Executable not found."
 msgstr "Unrar исполняемый объект не найден."
 
-#: dist/js/core.js:3641 dist/js/core.js:3685 dist/js/core.js:3729
-#: dist/js/core.js:3789
+#: dist/js/core.js:3646 dist/js/core.js:3690 dist/js/core.js:3734
+#: dist/js/core.js:3794
 msgid "This pattern is invalid."
 msgstr "Этот шаблон является недопустимым."
 
-#: dist/js/core.js:3648 dist/js/core.js:3692 dist/js/core.js:3736
-#: dist/js/core.js:3796
+#: dist/js/core.js:3653 dist/js/core.js:3697 dist/js/core.js:3741
+#: dist/js/core.js:3801
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Этот шаблон будет недействительным без папок, используя это заставит «Выпрямление» вне для всех шоу."
 
-#: dist/js/core.js:3655 dist/js/core.js:3699 dist/js/core.js:3743
-#: dist/js/core.js:3803
+#: dist/js/core.js:3660 dist/js/core.js:3704 dist/js/core.js:3748
+#: dist/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "Этот шаблон является допустимым."
 
-#: dist/js/core.js:4129
+#: dist/js/core.js:4134
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> подтверждение авторизации"
 
-#: dist/js/core.js:4186 dist/js/core.js:4240
+#: dist/js/core.js:4191 dist/js/core.js:4245
 msgid "Please fill in the Popcorn IP address"
 msgstr "Пожалуйста, заполните попкорн IP-адрес"
 
-#: dist/js/core.js:4393
+#: dist/js/core.js:4398
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Проверьте черный список имя; значение нужно быть тракт слизень"
 
-#: dist/js/core.js:4425
+#: dist/js/core.js:4430
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You необходимо указать имя хоста SMTP!</li>"
 
-#: dist/js/core.js:4428
+#: dist/js/core.js:4433
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You необходимо указать SMTP-порт!</li>"
 
-#: dist/js/core.js:4430
+#: dist/js/core.js:4435
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP порт должно быть между 0 и 65535!</li>"
 
-#: dist/js/core.js:4436
+#: dist/js/core.js:4441
 msgid "Enter an email address to send the test to:"
 msgstr "Введите адрес электронной почты для отправки теста:"
 
-#: dist/js/core.js:4438
+#: dist/js/core.js:4443
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You необходимо предоставить адрес электронной почты получателя!</p>"
 
-#: dist/js/core.js:4508
+#: dist/js/core.js:4513
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Обновление списка устройств. Пожалуйста, выберите устройство для передачи."
 
-#: dist/js/core.js:4569
+#: dist/js/core.js:4574
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Вы не указать ключ Pushbullet api"
 
-#: dist/js/core.js:4599
+#: dist/js/core.js:4604
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Не забудьте сохранить ваши новые настройки pushbullet."
 
-#: dist/js/core.js:4671
+#: dist/js/core.js:4676
 msgid "Select backup folder to save to"
 msgstr "Выберите папки резервного копирования, чтобы сохранить"
 
-#: dist/js/core.js:4676
+#: dist/js/core.js:4681
 msgid "Select backup files to restore"
 msgstr "Выберите файлы резервных копий для восстановления"
 
-#: dist/js/core.js:5222
+#: dist/js/core.js:5227
 msgid "No providers available to configure."
 msgstr "Поставщики не доступны для настройки."
 
-#: dist/js/core.js:5433
+#: dist/js/core.js:5438
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Вы выбрали для удаления о программе шоу:.  Вы уверены, что вы хотите продолжить? Все файлы будут удалены из вашей системы."
 
-#: dist/js/core.js:5503
+#: dist/js/core.js:5508
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
