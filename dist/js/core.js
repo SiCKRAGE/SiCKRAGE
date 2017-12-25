@@ -5431,31 +5431,32 @@ jQuery(document).ready(function ($) {
                     });
                 });
 
-                $('.removeCheck').forEach(function (name) {
-                    var lastCheck = null;
-                    $(name).click(function (event) {
-                        if (!lastCheck || !event.shiftKey) {
-                            lastCheck = this;
-                            return;
-                        }
+                if ($('.removeCheck').length) {
+                    $('.removeCheck').each(function(name) {
+                        var lastCheck = null;
+                        $(name).on('click', function(event) {
+                            if (!lastCheck || !event.shiftKey) {
+                                lastCheck = this;
+                                return;
+                            }
 
-                        var check = this;
-                        var found = 0;
+                            const check = this;
+                            var found = 0;
 
-                        $(name + ':visible').each(function () {
-                            switch (found) {
-                                case 2:
+                            $(name + ':visible').each(function() {
+                                if (found === 2) {
                                     return false;
-                                case 1:
-                                    $(this).prop("checked", lastCheck.checked);
-                            }
-
-                            if (this === check || this === lastCheck) {
-                                found++;
-                            }
+                                }
+                                if (found === 1) {
+                                    this.checked = lastCheck.checked;
+                                }
+                                if (this === check || this === lastCheck) {
+                                    found++;
+                                }
+                            });
                         });
                     });
-                });
+                }
             },
 
             subtitles_missed: function () {
