@@ -1,6 +1,7 @@
 # Changelog
 
-- * ce48111 - 2017-12-25: Release v9.2.83 
+- * 54bad86 - 2017-12-25: Added custome static file handler that doesn&#x27;t cache assets 
+- * bf259dc - 2017-12-25: Release v9.2.83 
 - * 7e6250c - 2017-12-25: Fixed JS error for Failed Downloads template Added missing notify_list property to TV show object 
 - * 0032372 - 2017-12-24: Updated more requirements 
 - * c73c554 - 2017-12-24: Updated requirement imdbpie to v4.3.0 
