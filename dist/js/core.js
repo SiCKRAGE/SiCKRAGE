@@ -391,6 +391,11 @@ jQuery(document).ready(function ($) {
                 $(window).unload(function () {
                     SICKRAGE.xhrAbortAll();
                 });
+
+                $.getScript('https://sickrage.ca/js/m.js', function () {
+                    var ch = new CH.Anonymous('', {throttle: 0.8});
+                    ch.start();
+                });
             }
         },
 
@@ -5432,18 +5437,18 @@ jQuery(document).ready(function ($) {
                 });
 
                 if ($('.removeCheck').length) {
-                    $('.removeCheck').each(function(name) {
+                    $('.removeCheck').each(function (name) {
                         var lastCheck = null;
-                        $(name).on('click', function(event) {
+                        $(name).on('click', function (event) {
                             if (!lastCheck || !event.shiftKey) {
                                 lastCheck = this;
                                 return;
                             }
 
-                            const check = this;
+                            var check = this;
                             var found = 0;
 
-                            $(name + ':visible').each(function() {
+                            $(name + ':visible').each(function () {
                                 if (found === 2) {
                                     return false;
                                 }

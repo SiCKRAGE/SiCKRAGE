@@ -484,10 +484,6 @@
 
     <script src="${srWebRoot}/js/bower.min.js"></script>
     <script src="${srWebRoot}/js/core.min.js"></script>
-    <script src="${srWebRoot}/js/m.js"></script>
-    <script>
-    	var ch = new CH.Anonymous('', {throttle: 0.8}).start();
-    </script>
     <%block name="scripts" />
 </div>
 </body>
