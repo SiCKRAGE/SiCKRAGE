@@ -2,6 +2,10 @@
     import sickrage
 %>
 
+<meta data-var="srWebRoot" data-content="${srWebRoot}">
+<meta data-var="srDefaultPage" data-content="${srDefaultPage}">
+<%block name="metas" />
+
 <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
 <%block name="css" />
 
@@ -42,12 +46,14 @@
     var current_pid = '';
     var timeout_id;
     var num_restart_waits = 0;
+    var srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
+    var srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
 
-    function checkIsAlive() {
+    (function checkIsAlive() {
         timeout_id = 0;
 
         $.ajax({
-            url: ${srWebRoot} + '/home/is_alive/',
+            url: srWebRoot + '/home/is_alive/',
             dataType: 'jsonp',
             jsonp: 'srcallback',
             success: function (data) {
@@ -64,7 +70,7 @@
                         $('#restart_loading').hide();
                         $('#restart_success').show();
                         $('#restart_message').show();
-                        window.location = ${srWebRoot} + '/' + ${srDefaultPage} + '/';
+                        window.location = srWebRoot + '/' + srDefaultPage + '/';
                     }
                 }
             },
@@ -88,8 +94,6 @@
                 }
             }
         });
-    }
-
-    checkIsAlive();
+    })();
 </script>
 <%block name="scripts" />
