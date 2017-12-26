@@ -66,8 +66,7 @@
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
-    <link rel="stylesheet" type="text/css"
-          href="${srWebRoot}/css/themes/${sickrage.app.config.theme_name}.min.css"/>
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/themes/${srThemeName}.min.css"/>
     <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">

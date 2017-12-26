@@ -27,21 +27,21 @@
     var srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
     var srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
 
-    (function checkIsAlive() {
-        timeout_id = 0;
+    function checkIsAlive() {
+        current_percent += 1;
+
+        $("#dynamic").css("width", current_percent + "%").text(current_percent + "% Complete");
 
         $.ajax({
             url: srWebRoot + '/home/is_alive/',
             dataType: 'jsonp',
             jsonp: 'srcallback',
             success: function (data) {
-                if (data.msg === 'nope') {
-                    setTimeout(checkIsAlive, 1000);
-                } else {
+                if (data.msg !== 'nope') {
                     if (current_pid === '' || data.msg === current_pid) {
                         current_pid = data.msg;
-                        setTimeout(checkIsAlive, 1000);
                     } else {
+                        clearInterval(timeout_id);
                         $("#dynamic").css({"width": "100%", 'background-color': 'green'}).text("100% Complete");
                         $("#message").text("Loading the home page");
                         window.location = srWebRoot + '/' + srDefaultPage + '/';
@@ -49,23 +49,18 @@
                 }
             },
             error: function (error) {
-                current_percent += 1;
-
-                $("#dynamic").css("width", current_percent + "%").text(current_percent + "% Complete");
                 $("#message").text("Waiting for SiCKRAGE to start again");
 
                 // if it is taking forever just give up
                 if (current_percent >= 100) {
+                    clearInterval(timeout_id);
                     $("#dynamic").css({"width": "100%", 'background-color': 'red'});
                     $("#message").text("The restart has timed out, perhaps something prevented SiCKRAGE from starting again?");
-                    return;
-                }
-
-                if (timeout_id === 0) {
-                    timeout_id = setTimeout(checkIsAlive, 1000);
                 }
             }
         });
-    })();
+    }
+
+    timeout_id = setInterval(checkIsAlive, 1000);
 </script>
 <%block name="scripts" />

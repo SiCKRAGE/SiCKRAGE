@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8761615 - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
+- * 894e4d0 - 2017-12-26: Refactored restart template CSS 
+- * 1e25dae - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
 - * 81ded5d - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
 - * 5e417d2 - 2017-12-26: Refactored restart template 
 - * 975d890 - 2017-12-26: Release v9.2.87 
