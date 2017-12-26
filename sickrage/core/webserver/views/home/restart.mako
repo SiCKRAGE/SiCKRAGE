@@ -13,9 +13,7 @@
     <div class="text-center">
         <h2>${_('Performing Restart')}</h2>
         <div class="progress center-block" style="width:50%">
-            <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar" style="width: 25%">
-                25% Complete
-            </div>
+            <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar"></div>
         </div>
         <div id="message">Waiting for SiCKRAGE to shut down</div>
     </div>
@@ -23,9 +21,9 @@
 
 <script src="${srWebRoot}/js/bower.min.js"></script>
 <script>
-    var current_pid = '';
     var timeout_id;
-    var num_restart_waits = 0;
+    var current_pid = '';
+    var current_percent = 0;
     var srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
     var srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
 
@@ -38,7 +36,6 @@
             jsonp: 'srcallback',
             success: function (data) {
                 if (data.msg === 'nope') {
-                    $("#dynamic").css("width", "50%").text("50% Complete");
                     setTimeout(checkIsAlive, 1000);
                 } else {
                     if (current_pid === '' || data.msg === current_pid) {
@@ -52,14 +49,14 @@
                 }
             },
             error: function (error) {
-                num_restart_waits += 1;
+                current_percent += 1;
 
-                $("#dynamic").css("width", "75%").text("75% Complete");
+                $("#dynamic").css("width", current_percent + "%").text(current_percent + "% Complete");
                 $("#message").text("Waiting for SiCKRAGE to start again");
 
                 // if it is taking forever just give up
-                if (num_restart_waits > 90) {
-                    $("#dynamic").css({"width": "100%", 'background-color': 'red'}).text("100% Failed");
+                if (current_percent >= 100) {
+                    $("#dynamic").css({"width": "100%", 'background-color': 'red'});
                     $("#message").text("The restart has timed out, perhaps something prevented SiCKRAGE from starting again?");
                     return;
                 }
