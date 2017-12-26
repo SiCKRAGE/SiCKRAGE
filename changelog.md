@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0ebbf75 - 2017-12-25: Release v9.2.86 
+- * 8ba8105 - 2017-12-26: Misc cleanup 
+- * 1475c1b - 2017-12-25: Release v9.2.86 
 - * a5944f1 - 2017-12-25: Release v9.2.85 
 - * 1b9b39a - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
 - * 4c548b6 - 2017-12-25: Refactored restart template to be bare to avoid template errors on updates 
