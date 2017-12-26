@@ -1,6 +1,7 @@
 # Changelog
 
-- * bffbf1a - 2017-12-26: Release v9.2.87 
+- * 839a98d - 2017-12-26: Refactored restart template 
+- * 975d890 - 2017-12-26: Release v9.2.87 
 - * 15ec220 - 2017-12-26: Misc cleanup 
 - * 1475c1b - 2017-12-25: Release v9.2.86 
 - * a5944f1 - 2017-12-25: Release v9.2.85 
