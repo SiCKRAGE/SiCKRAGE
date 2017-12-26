@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3fd48f9 - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
+- * 8761615 - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
+- * 81ded5d - 2017-12-26: Refactored restart template progress bar to increment by 1 percent 
 - * 5e417d2 - 2017-12-26: Refactored restart template 
 - * 975d890 - 2017-12-26: Release v9.2.87 
 - * 15ec220 - 2017-12-26: Misc cleanup 
