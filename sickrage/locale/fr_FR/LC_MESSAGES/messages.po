@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2017-12-25 18:20-0500\n"
-"PO-Revision-Date: 2017-12-25 18:21-0500\n"
+"POT-Creation-Date: 2018-01-04 19:38-0500\n"
+"PO-Revision-Date: 2018-01-04 19:39-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: fr_FR\n"
 
-#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:349
+#: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
 msgid "Shutdown"
 msgstr "Shutdown"
 
@@ -25,7 +25,7 @@ msgstr "Shutdown"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Êtes-vous sûr de que vouloir arrêter SiCKRAGE ?"
 
-#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:344
+#: dist/js/core.js:305 sickrage/core/webserver/views/layouts/main.mako:343
 msgid "Restart"
 msgstr "Redémarrez"
 
@@ -512,7 +512,7 @@ msgstr "Qualité"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:607
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:451
+#: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Arraché"
 
@@ -836,25 +836,25 @@ msgid "when launching SickRage interface"
 msgstr "lors du lancement d’interface SickRage"
 
 #: sickrage/core/webserver/views/config/general.mako:155
-#: sickrage/core/webserver/views/layouts/main.mako:96
-#: sickrage/core/webserver/views/layouts/main.mako:443
+#: sickrage/core/webserver/views/layouts/main.mako:95
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Shows"
 msgstr "Montre"
 
 #: sickrage/core/webserver/views.py:514 sickrage/core/webserver/views.py:515
 #: sickrage/core/webserver/views/config/general.mako:158
-#: sickrage/core/webserver/views/layouts/main.mako:207
+#: sickrage/core/webserver/views/layouts/main.mako:206
 msgid "Schedule"
 msgstr "Annexe"
 
 #: sickrage/core/webserver/views.py:3660 sickrage/core/webserver/views.py:3661
 #: sickrage/core/webserver/views/config/general.mako:161
-#: sickrage/core/webserver/views/layouts/main.mako:211
+#: sickrage/core/webserver/views/layouts/main.mako:210
 msgid "History"
 msgstr "Histoire"
 
 #: sickrage/core/webserver/views/config/general.mako:164
-#: sickrage/core/webserver/views/layouts/main.mako:300
+#: sickrage/core/webserver/views/layouts/main.mako:299
 msgid "IRC"
 msgstr "IRC"
 
@@ -3466,7 +3466,7 @@ msgstr "Fournisseurs de NZB/Torrent peuvent être affiché/masqués dans"
 
 #: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3966
 #: sickrage/core/webserver/views/config/providers.mako:71
-#: sickrage/core/webserver/views/layouts/main.mako:238
+#: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "Search Clients"
 msgstr "Recherche Clients"
 
@@ -4792,7 +4792,7 @@ msgstr "Une « Force Full Update » est nécessaire, et si vous avez des épis
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:282
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
-#: sickrage/core/webserver/views/layouts/main.mako:268
+#: sickrage/core/webserver/views/layouts/main.mako:267
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
@@ -5009,7 +5009,7 @@ msgstr "Téléchargements"
 
 #: sickrage/core/webserver/views/home/index.mako:274
 #: sickrage/core/webserver/views/home/status.mako:44
-#: sickrage/core/webserver/views/layouts/main.mako:444
+#: sickrage/core/webserver/views/layouts/main.mako:443
 msgid "Active"
 msgstr "Actif"
 
@@ -5097,25 +5097,9 @@ msgstr "Marquez le téléchargement comme ayant échoué :"
 msgid "Process"
 msgstr "Processus de"
 
-#: sickrage/core/webserver/views/home/restart.mako:20
+#: sickrage/core/webserver/views/home/restart.mako:14
 msgid "Performing Restart"
 msgstr "Effectuer le redémarrage"
-
-#: sickrage/core/webserver/views/home/restart.mako:22
-msgid "Waiting for SiCKRAGE to shut down:"
-msgstr "En attente de SiCKRAGE fermer :"
-
-#: sickrage/core/webserver/views/home/restart.mako:28
-msgid "Waiting for SiCKRAGE to start again:"
-msgstr "En attente de SiCKRAGE de recommencer :"
-
-#: sickrage/core/webserver/views/home/restart.mako:35
-msgid "Loading the default page:"
-msgstr "Chargement de la page par défaut :"
-
-#: sickrage/core/webserver/views/home/restart.mako:39
-msgid "Error: The restart has timed out, perhaps something prevented SiCKRAGE from starting again?"
-msgstr "Erreur : Le redémarrage a expiré, peut-être quelque chose empêché SiCKRAGE de démarrer à nouveau ?"
 
 #: sickrage/core/webserver/views/home/status.mako:12
 msgid "Daily Search"
@@ -5455,179 +5439,179 @@ msgstr "Tous les emplacements de dossier non absolue sont relativement à"
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:80
+#: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
 msgstr "Activer/désactiver navigation"
 
-#: sickrage/core/webserver/views/layouts/main.mako:101
+#: sickrage/core/webserver/views/layouts/main.mako:100
 msgid "Show List"
 msgstr "Voir la liste"
 
 #: sickrage/core/webserver/views.py:2322 sickrage/core/webserver/views.py:2323
-#: sickrage/core/webserver/views/layouts/main.mako:106
+#: sickrage/core/webserver/views/layouts/main.mako:105
 msgid "Add Shows"
 msgstr "Ajouter des spectacles"
 
-#: sickrage/core/webserver/views/layouts/main.mako:111
+#: sickrage/core/webserver/views/layouts/main.mako:110
 msgid "Manual Post-Processing"
 msgstr "Post-traitement manuel"
 
 #: sickrage/core/webserver/views.py:3488 sickrage/core/webserver/views.py:3489
-#: sickrage/core/webserver/views/layouts/main.mako:137
+#: sickrage/core/webserver/views/layouts/main.mako:136
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "Mise à jour massive"
 
 #: sickrage/core/webserver/views.py:3096 sickrage/core/webserver/views.py:3097
-#: sickrage/core/webserver/views/layouts/main.mako:142
+#: sickrage/core/webserver/views/layouts/main.mako:141
 msgid "Backlog Overview"
 msgstr "Vue d’ensemble de l’arriéré"
 
 #: sickrage/core/webserver/views.py:3540 sickrage/core/webserver/views.py:3541
-#: sickrage/core/webserver/views/layouts/main.mako:147
+#: sickrage/core/webserver/views/layouts/main.mako:146
 msgid "Manage Queues"
 msgstr "Gérer les files d’attente"
 
-#: sickrage/core/webserver/views/layouts/main.mako:152
+#: sickrage/core/webserver/views/layouts/main.mako:151
 msgid "Episode Status Management"
 msgstr "Gestion de l’État épisode"
 
-#: sickrage/core/webserver/views/layouts/main.mako:158
+#: sickrage/core/webserver/views/layouts/main.mako:157
 msgid "Sync Trakt"
 msgstr "Trakt Sync"
 
-#: sickrage/core/webserver/views/layouts/main.mako:165
+#: sickrage/core/webserver/views/layouts/main.mako:164
 msgid "Update PLEX"
 msgstr "Mise à jour PLEX"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:171
 msgid "Update KODI"
 msgstr "Mise à jour KODI"
 
-#: sickrage/core/webserver/views/layouts/main.mako:179
+#: sickrage/core/webserver/views/layouts/main.mako:178
 msgid "Update Emby"
 msgstr "Mise à jour Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:186
+#: sickrage/core/webserver/views/layouts/main.mako:185
 msgid "Manage Torrents"
 msgstr "Gérer les Torrents"
 
 #: sickrage/core/webserver/views.py:3516 sickrage/core/webserver/views.py:3517
-#: sickrage/core/webserver/views/layouts/main.mako:192
+#: sickrage/core/webserver/views/layouts/main.mako:191
 msgid "Failed Downloads"
 msgstr "Échec de téléchargement"
 
-#: sickrage/core/webserver/views/layouts/main.mako:198
+#: sickrage/core/webserver/views/layouts/main.mako:197
 msgid "Missed Subtitle Management"
 msgstr "Gestion des sous-titres manqués"
 
-#: sickrage/core/webserver/views/layouts/main.mako:217
+#: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Config"
 msgstr "Config"
 
 #: sickrage/core/webserver/views.py:3690
-#: sickrage/core/webserver/views/layouts/main.mako:223
+#: sickrage/core/webserver/views/layouts/main.mako:222
 msgid "Help and Info"
 msgstr "Aide et INFOS"
 
 #: sickrage/core/webserver/views.py:3691
-#: sickrage/core/webserver/views/layouts/main.mako:228
+#: sickrage/core/webserver/views/layouts/main.mako:227
 msgid "General"
 msgstr "Générales"
 
-#: sickrage/core/webserver/views/layouts/main.mako:233
+#: sickrage/core/webserver/views/layouts/main.mako:232
 msgid "Backup and Restore"
 msgstr "Sauvegarde et restauration"
 
 #: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4263
-#: sickrage/core/webserver/views/layouts/main.mako:243
+#: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Search Providers"
 msgstr "Moteurs de recherche"
 
 #: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4747
-#: sickrage/core/webserver/views/layouts/main.mako:248
+#: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "Paramètres de sous-titres"
 
 #: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4867
-#: sickrage/core/webserver/views/layouts/main.mako:253
+#: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Paramètres de qualité"
 
 #: sickrage/core/webserver/views.py:2286 sickrage/core/webserver/views.py:2287
 #: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4068
-#: sickrage/core/webserver/views/layouts/main.mako:258
+#: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Post Processing"
 msgstr "Post traitement"
 
 #: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4420
-#: sickrage/core/webserver/views/layouts/main.mako:263
+#: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Notifications"
 msgstr "Notifications"
 
-#: sickrage/core/webserver/views/layouts/main.mako:293
+#: sickrage/core/webserver/views/layouts/main.mako:292
 msgid "Tools"
 msgstr "Outils"
 
-#: sickrage/core/webserver/views/layouts/main.mako:305
+#: sickrage/core/webserver/views/layouts/main.mako:304
 msgid "Changelog"
 msgstr "Changelog"
 
-#: sickrage/core/webserver/views/layouts/main.mako:311
+#: sickrage/core/webserver/views/layouts/main.mako:310
 msgid "Donate"
 msgstr "Faire un don"
 
-#: sickrage/core/webserver/views/layouts/main.mako:318
+#: sickrage/core/webserver/views/layouts/main.mako:317
 msgid "View Errors"
 msgstr "Voir Erreurs"
 
-#: sickrage/core/webserver/views/layouts/main.mako:326
+#: sickrage/core/webserver/views/layouts/main.mako:325
 msgid "View Warnings"
 msgstr "Voir mises en garde"
 
-#: sickrage/core/webserver/views/layouts/main.mako:333
+#: sickrage/core/webserver/views/layouts/main.mako:332
 msgid "View Log"
 msgstr "Afficher le journal"
 
-#: sickrage/core/webserver/views/layouts/main.mako:339
+#: sickrage/core/webserver/views/layouts/main.mako:338
 msgid "Check For Updates"
 msgstr "Check For Updates"
 
-#: sickrage/core/webserver/views/layouts/main.mako:355
+#: sickrage/core/webserver/views/layouts/main.mako:354
 msgid "Logout"
 msgstr "Logout"
 
-#: sickrage/core/webserver/views/layouts/main.mako:362
+#: sickrage/core/webserver/views/layouts/main.mako:361
 msgid "Server Status"
 msgstr "État du serveur"
 
-#: sickrage/core/webserver/views/layouts/main.mako:454
+#: sickrage/core/webserver/views/layouts/main.mako:453
 msgid "Episodes Downloaded"
 msgstr "Épisodes téléchargés"
 
-#: sickrage/core/webserver/views/layouts/main.mako:455
+#: sickrage/core/webserver/views/layouts/main.mako:454
 msgid "Overall Downloaded"
 msgstr "Dans l’ensemble téléchargé"
 
-#: sickrage/core/webserver/views/layouts/main.mako:460
+#: sickrage/core/webserver/views/layouts/main.mako:459
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Rechercher tous les jours :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:463
+#: sickrage/core/webserver/views/layouts/main.mako:462
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Recherche de carnet de commandes :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:466
+#: sickrage/core/webserver/views/layouts/main.mako:465
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:470
+#: sickrage/core/webserver/views/layouts/main.mako:469
 msgid "Load time:"
 msgstr "Temps de chargement :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:477
+#: sickrage/core/webserver/views/layouts/main.mako:476
 msgid "Now:"
 msgstr "Maintenant :"
 
