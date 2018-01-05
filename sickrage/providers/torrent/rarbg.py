@@ -32,7 +32,7 @@ class RarbgProvider(TorrentProvider):
         super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.to', False)
 
         self.urls.update({
-            'api': 'https://torrentapi.org/pubapi_v2.php'
+            'api': 'http://torrentapi.org/pubapi_v2.php'
         })
 
         self.minseed = None
@@ -106,12 +106,12 @@ class RarbgProvider(TorrentProvider):
 
                 search_params['search_string'] = search_string
 
+                # sleep 5 secs per request
+                sleep(5)
+
                 # Check if token is still valid before search
                 if not self.login():
                     continue
-
-                # sleep 5 secs per request
-                sleep(5)
 
                 try:
                     data = self.session.get(self.urls['api'], params=search_params).json()

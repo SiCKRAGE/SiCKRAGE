@@ -2883,7 +2883,7 @@ class Manage(Home, WebRoot):
             for cur_status_result in sorted((s for s in sickrage.app.showlist for e in
                                              sickrage.app.main_db.get_many('tv_episodes', s.indexerid)
                                              if e['status'] in status_list and e['season'] != 0),
-                                            key=lambda d: d['name']):
+                                            key=lambda d: d.name):
                 cur_indexer_id = int(cur_status_result.indexerid)
                 if cur_indexer_id not in ep_counts:
                     ep_counts[cur_indexer_id] = 1

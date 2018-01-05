@@ -10,90 +10,57 @@
 <%block name="css" />
 
 <%block name="content">
-    <%
-        try:
-            themeSpinner = srThemeName
-        except NameError:
-            themeSpinner = sickrage.app.config.theme_name
-    %>
-    <div class="messages text-center">
+    <div class="text-center">
         <h2>${_('Performing Restart')}</h2>
-        <div id="shut_down_message">
-            ${_('Waiting for SiCKRAGE to shut down:')}
-            <img src="${srWebRoot}/images/loading16-${themeSpinner}.gif" height="16" width="16" id="shut_down_loading"/>
-            <img src="${srWebRoot}/images/yes16.png" height="16" width="16" id="shut_down_success"
-                 style="display: none;"/>
+        <div class="progress center-block" style="width:50%">
+            <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar"></div>
         </div>
-        <div id="restart_message" style="display: none;">
-            ${_('Waiting for SiCKRAGE to start again:')}
-            <img src="${srWebRoot}/images/loading16-${themeSpinner}.gif" height="16" width="16" id="restart_loading"/>
-            <img src="${srWebRoot}/images/yes16.png" height="16" width="16" id="restart_success"
-                 style="display: none;"/>
-            <img src="${srWebRoot}/images/no16.png" height="16" width="16" id="restart_failure" style="display: none;"/>
-        </div>
-        <div id="refresh_message" style="display: none;">
-            ${_('Loading the default page:')}
-            <img src="${srWebRoot}/images/loading16-${themeSpinner}.gif" height="16" width="16" id="refresh_loading"/>
-        </div>
-        <div id="restart_fail_message" style="display: none;">
-            ${_('Error: The restart has timed out, perhaps something prevented SiCKRAGE from starting again?')}
-        </div>
+        <div id="message">Waiting for SiCKRAGE to shut down</div>
     </div>
 </%block>
 
 <script src="${srWebRoot}/js/bower.min.js"></script>
 <script>
-    var current_pid = '';
     var timeout_id;
-    var num_restart_waits = 0;
+    var current_pid = '';
+    var current_percent = 0;
     var srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
     var srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
 
-    (function checkIsAlive() {
-        timeout_id = 0;
+    function checkIsAlive() {
+        current_percent += 1;
+
+        $("#dynamic").css("width", current_percent + "%").text(current_percent + "% Complete");
 
         $.ajax({
             url: srWebRoot + '/home/is_alive/',
             dataType: 'jsonp',
             jsonp: 'srcallback',
             success: function (data) {
-                if (data.msg === 'nope') {
-                    $('#shut_down_loading').hide();
-                    $('#shut_down_success').show();
-                    $('#restart_message').show();
-                    setTimeout(checkIsAlive, 1000);
-                } else {
+                if (data.msg !== 'nope') {
                     if (current_pid === '' || data.msg === current_pid) {
                         current_pid = data.msg;
-                        setTimeout(checkIsAlive, 1000);
                     } else {
-                        $('#restart_loading').hide();
-                        $('#restart_success').show();
-                        $('#restart_message').show();
+                        clearInterval(timeout_id);
+                        $("#dynamic").css({"width": "100%", 'background-color': 'green'}).text("100% Complete");
+                        $("#message").text("Loading the home page");
                         window.location = srWebRoot + '/' + srDefaultPage + '/';
                     }
                 }
             },
             error: function (error) {
-                num_restart_waits += 1;
-
-                $('#shut_down_loading').hide();
-                $('#shut_down_success').show();
-                $('#restart_message').show();
+                $("#message").text("Waiting for SiCKRAGE to start again");
 
                 // if it is taking forever just give up
-                if (num_restart_waits > 90) {
-                    $('#restart_loading').hide();
-                    $('#restart_failure').show();
-                    $('#restart_fail_message').show();
-                    return;
-                }
-
-                if (timeout_id === 0) {
-                    timeout_id = setTimeout(checkIsAlive, 1000);
+                if (current_percent >= 100) {
+                    clearInterval(timeout_id);
+                    $("#dynamic").css({"width": "100%", 'background-color': 'red'});
+                    $("#message").text("The restart has timed out, perhaps something prevented SiCKRAGE from starting again?");
                 }
             }
         });
-    })();
+    }
+
+    timeout_id = setInterval(checkIsAlive, 1000);
 </script>
 <%block name="scripts" />
