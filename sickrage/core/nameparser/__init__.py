@@ -477,14 +477,12 @@ class NameParser(object):
         # build the ParseResult object
         final_result.air_date = self._combine_results(file_name_result, dir_name_result, 'air_date')
 
-        if not final_result.is_air_by_date:
-            # anime absolute numbers
-            final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result,
-                                                                    'ab_episode_numbers')
+        # anime absolute numbers
+        final_result.ab_episode_numbers = self._combine_results(file_name_result, dir_name_result, 'ab_episode_numbers')
 
-            # season and episode numbers
-            final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
-            final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
+        # season and episode numbers
+        final_result.season_number = self._combine_results(file_name_result, dir_name_result, 'season_number')
+        final_result.episode_numbers = self._combine_results(file_name_result, dir_name_result, 'episode_numbers')
 
         # if the dirname has a release group/show name I believe it over the filename
         final_result.series_name = self._combine_results(dir_name_result, file_name_result, 'series_name')

@@ -767,7 +767,7 @@ class TVShow(object):
         sickrage.app.log.debug(str(self.indexerid) + ": Creating episode object from " + file)
 
         try:
-            parse_result = NameParser(showObj=self, validate_show=False).parse(file, skip_scene_detection=True)
+            parse_result = NameParser(showObj=self).parse(file, skip_scene_detection=True)
         except InvalidNameException:
             sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid episode")
             return None
@@ -782,11 +782,9 @@ class TVShow(object):
 
         # for now lets assume that any episode in the show dir belongs to that show
         season = parse_result.season_number if parse_result.season_number is not None else 1
-        episodes = parse_result.episode_numbers
         rootEp = None
 
-        for curEpNum in episodes:
-
+        for curEpNum in parse_result.episode_numbers:
             episode = int(curEpNum)
 
             sickrage.app.log.debug(
