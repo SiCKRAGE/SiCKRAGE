@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-01-04 19:38-0500\n"
-"PO-Revision-Date: 2018-01-04 19:40-0500\n"
+"PO-Revision-Date: 2018-01-07 17:32-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -6686,7 +6686,7 @@ msgstr "Kunde inte läsa ändringar från reporäntan. [Klicka här för CHANGES
 
 #: sickrage/core/webserver/views.py:2269
 msgid "The was a problem connecting to the server, please refresh and try again"
-msgstr ""
+msgstr "Det var problem med att ansluta till servern, vänligen uppdatera och försök igen"
 
 #: sickrage/core/webserver/views.py:2311
 msgid "Postprocessing results"
