@@ -50,7 +50,7 @@ class HDBitsProvider(TorrentProvider):
         if 'status' in parsedJSON and 'message' in parsedJSON:
             if parsedJSON.get('status') == 5:
                 sickrage.app.log.warning(
-                    "Invalid username or password. Check your settings".format(self.name))
+                    "Invalid username or password. Check your settings")
 
         return True
 

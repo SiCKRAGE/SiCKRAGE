@@ -50,7 +50,7 @@ class BitSoupProvider(TorrentProvider):
     def _check_auth(self):
         if not self.username or not self.password:
             sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings")
 
         return True
 
@@ -67,12 +67,12 @@ class BitSoupProvider(TorrentProvider):
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider")
             return False
 
         if re.search('Username or password incorrect', response):
             sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings")
             return False
 
         return True
