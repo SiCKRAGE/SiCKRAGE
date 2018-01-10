@@ -85,3 +85,13 @@ class API(object):
 
     def add_torrent_cache_result(self, url):
         self._request('POST', 'v1/torrents/cache/results', data=dict({'url': url}))
+
+    def search_by_imdb_title(self, title):
+        query = 'v1/imdb/search_by_title/{}'.format(title)
+
+        return self._request('GET', query)
+
+    def search_by_imdb_id(self, id):
+        query = 'v1/imdb/search_by_id/{}'.format(id)
+
+        return self._request('GET', query)

@@ -128,10 +128,10 @@
                                     <tr>
                                         <td class="showLegend">${_('Rating:')}</td>
                                         <td>
-                                            % if 'rating' in show.imdb_info:
-                                            <% rating_tip = str(show.imdb_info['rating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['votes']) + " Votes" %>
+                                            % if 'imdbRating' in show.imdb_info:
+                                            <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['imdbVotes']) + " Votes" %>
                                                 <span class="imdbstars" title="${rating_tip}">
-                                                    ${show.imdb_info['rating']}
+                                                    ${show.imdb_info['imdbRating']}
                                                 </span>
                                             % endif
                                         </td>
@@ -223,7 +223,7 @@
                                         <td>
                                             <ul class="tags">
                                                 % if not show.imdbid and show.genre:
-                                                    % for genre in show.genre[1:-1].split('|'):
+                                                    % for genre in show.genre[1:-1].split(','):
                                                         <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                            target="_blank"
                                                            title="View other popular ${genre} shows on trakt.tv.">
@@ -231,8 +231,8 @@
                                                         </a>
                                                     % endfor
                                                 % endif
-                                                % if 'year' in show.imdb_info:
-                                                    % for imdbgenre in show.imdb_info['genres'].replace('Sci-Fi','Science-Fiction').split('|'):
+                                                % if 'Year' in show.imdb_info:
+                                                    % for imdbgenre in show.imdb_info['Genre'].replace('Sci-Fi','Science-Fiction').split(','):
                                                         <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                            target="_blank"
                                                            title="View other popular ${imdbgenre} shows on trakt.tv.">

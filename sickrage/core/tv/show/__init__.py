@@ -27,9 +27,8 @@ import stat
 import threading
 import traceback
 
-import imdbpie
 import send2trash
-from CodernityDB.database import RecordNotFound
+from CodernityDB.database import RecordNotFound, RevConflict
 from unidecode import unidecode
 
 import sickrage
@@ -930,23 +929,7 @@ class TVShow(object):
         if not skipNFO:
             try:
                 # Get IMDb_info from database
-                imdb_info_keys = [
-                    'imdb_id',
-                    'title',
-                    'year',
-                    'akas',
-                    'runtime',
-                    'genres',
-                    'countries',
-                    'country_codes',
-                    'certificates',
-                    'rating',
-                    'votes',
-                    'last_update'
-                ]
-
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                self._imdb_info = {k: dbData[k] for k in imdb_info_keys if k in dbData}
+                self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
             except RecordNotFound:
                 pass
 
@@ -1005,26 +988,12 @@ class TVShow(object):
         # save to database
         self.saveToDB()
 
-    def loadIMDbInfo(self, imdbapi=None):
-        imdb_info = {'imdb_id': self.imdbid,
-                     'title': '',
-                     'year': '',
-                     'akas': [],
-                     'runtime': '',
-                     'genres': [],
-                     'countries': '',
-                     'country_codes': [],
-                     'certificates': [],
-                     'rating': '',
-                     'votes': '',
-                     'last_update': ''}
-
-        i = imdbpie.Imdb()
+    def loadIMDbInfo(self):
         if not self.imdbid:
-            for x in i.search_for_title(self.name):
+            for x in sickrage.app.api.search_by_imdb_title(self.name):
                 try:
-                    if int(x.get('year'), 0) == self.startyear and x.get('title') in self.name:
-                        self.imdbid = x.get('imdb_id')
+                    if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
+                        self.imdbid = x.get('imdbID')
                         break
                 except:
                     continue
@@ -1032,55 +1001,8 @@ class TVShow(object):
         if self.imdbid:
             sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
-            imdbTv = i.get_title_by_id(self.imdbid)
-            for key in [x for x in imdb_info.keys() if hasattr(imdbTv, x.replace('_', ' '))]:
-                # Store only the first value for string type
-                if isinstance(imdb_info[key], basestring) and isinstance(getattr(imdbTv, key.replace('_', ' ')), list):
-                    imdb_info[key] = getattr(imdbTv, key.replace('_', ' '))[0]
-                else:
-                    imdb_info[key] = getattr(imdbTv, key.replace('_', ' '))
-
-            # Filter only the value
-            if imdb_info['runtime']:
-                imdb_info['runtime'] = int(imdb_info['runtime']) / 60
-            else:
-                imdb_info['runtime'] = self.runtime
-
-            if imdb_info['akas']:
-                imdb_info['akas'] = '|'.join(imdb_info['akas'])
-            else:
-                imdb_info['akas'] = ''
-
-            # Join all genres in a string
-            if imdb_info['genres']:
-                imdb_info['genres'] = '|'.join(imdb_info['genres'])
-            else:
-                imdb_info['genres'] = ''
-
-            # Get only the production country certificate if any
-            if imdb_info['certificates'] and imdb_info['countries']:
-                dct = {}
-                try:
-                    for item in imdb_info['certificates']:
-                        dct[item.split(':')[0]] = item.split(':')[1]
-
-                    imdb_info['certificates'] = dct[imdb_info['countries']]
-                except Exception:
-                    imdb_info['certificates'] = ''
-
-            else:
-                imdb_info['certificates'] = ''
-
-            if imdb_info['country_codes']:
-                imdb_info['country_codes'] = '|'.join(imdb_info['country_codes'])
-            else:
-                imdb_info['country_codes'] = ''
-
-            imdb_info['last_update'] = datetime.date.today().toordinal()
-
-            # Rename dict keys without spaces for DB upsert
-            self.imdb_info = dict(
-                (k.replace(' ', '_'), k(v) if hasattr(v, 'keys') else v) for k, v in imdb_info.items())
+            self.imdb_info = sickrage.app.api.search_by_imdb_id(self.imdbid)
+            self.imdb_info['last_update'] = datetime.date.today().toordinal()
 
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
@@ -1307,6 +1229,15 @@ class TVShow(object):
                 dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
                 dbData.update(self.imdb_info)
                 sickrage.app.main_db.update(dbData)
+            except RevConflict:
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
+                sickrage.app.main_db.delete(dbData)
+                imdb_info = {
+                    '_t': 'imdb_info',
+                    'indexer_id': self.indexerid
+                }
+                imdb_info.update(self.imdb_info)
+                sickrage.app.main_db.insert(imdb_info)
             except RecordNotFound:
                 imdb_info = {
                     '_t': 'imdb_info',
