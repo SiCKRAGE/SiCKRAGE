@@ -1,6 +1,7 @@
 # Changelog
 
-- * 46f85f9 - 2018-01-12: Release v9.2.92 
+- * 9a25a7d - 2018-01-12: Fixed issues with refresh token when using client credentials 
+- * dae404d - 2018-01-12: Release v9.2.92 
 - * b48dd3f - 2018-01-12: Updated requirement psutil from 5.4.1 to 5.4.3 
 - * d3b36d3 - 2018-01-10: added SR external api calls for imdb searches 
 - * 8bbd2b2 - 2018-01-09: thread name added to UI warning/error messages 

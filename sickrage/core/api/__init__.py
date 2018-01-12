@@ -2,11 +2,24 @@ from __future__ import unicode_literals
 
 from urlparse import urljoin
 
-from oauthlib.oauth2 import BackendApplicationClient
+from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
 from sickrage.core.api.exceptions import unauthorized, error
+
+
+class RefreshOAuth2Session(OAuth2Session):
+    def request(self, *args, **kwargs):
+        try:
+            return super(RefreshOAuth2Session, self).request(*args, **kwargs)
+        except TokenExpiredError:
+            self.token = self.fetch_token(
+                token_url=self.auto_refresh_url,
+                **self.auto_refresh_kwargs
+            )
+            self.token_updater(self.token)
+            return super(RefreshOAuth2Session, self).request(*args, **kwargs)
 
 
 class API(object):
@@ -32,8 +45,9 @@ class API(object):
 
         try:
             self.token = oauth.fetch_token(token_url=self.token_url, timeout=30, **credentials)
-            self.client = OAuth2Session(credentials['client_id'], token=self.token, auto_refresh_url=self.token_url,
-                                        auto_refresh_kwargs=credentials, token_updater=self.token_saver)
+            self.client = RefreshOAuth2Session(credentials['client_id'], token=self.token,
+                                               auto_refresh_url=self.token_url, auto_refresh_kwargs=credentials,
+                                               token_updater=self.token_saver)
 
             return True
         except Exception as e:
