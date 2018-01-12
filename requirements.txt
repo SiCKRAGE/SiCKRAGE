@@ -43,4 +43,4 @@ twilio==6.10.0
 chardet==3.0.4
 pytz==2017.3
 tzlocal==1.5.1
-psutil==5.4.1
+psutil==5.4.3
