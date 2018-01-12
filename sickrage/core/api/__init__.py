@@ -9,17 +9,9 @@ import sickrage
 from sickrage.core.api.exceptions import unauthorized, error
 
 
-class RefreshOAuth2Session(OAuth2Session):
-    def request(self, *args, **kwargs):
-        try:
-            return super(RefreshOAuth2Session, self).request(*args, **kwargs)
-        except TokenExpiredError:
-            self.token = self.fetch_token(
-                token_url=self.auto_refresh_url,
-                **self.auto_refresh_kwargs
-            )
-            self.token_updater(self.token)
-            return super(RefreshOAuth2Session, self).request(*args, **kwargs)
+class CustomBackendApplicationClient(BackendApplicationClient):
+    def prepare_refresh_body(self, body='', refresh_token=None, scope=None, **kwargs):
+        return super(CustomBackendApplicationClient, self).prepare_refresh_body(boby=body, scope=scope, **kwargs)
 
 
 class API(object):
@@ -41,8 +33,8 @@ class API(object):
     @property
     def session(self):
         if self._session is None:
-            self._session = RefreshOAuth2Session(
-                client=BackendApplicationClient(client_id=self.credentials['client_id']),
+            self._session = OAuth2Session(
+                client=CustomBackendApplicationClient(client_id=self.credentials['client_id']),
                 token=self.token,
                 token_updater=self.token_updater,
                 auto_refresh_url=self.token_url,
@@ -53,8 +45,8 @@ class API(object):
     @property
     def token(self):
         if self._token is None:
-            self._token = RefreshOAuth2Session(
-                client=BackendApplicationClient(client_id=self.credentials['client_id'])
+            self._token = OAuth2Session(
+                client=CustomBackendApplicationClient(client_id=self.credentials['client_id'])
             ).fetch_token(
                 token_url=self.token_url,
                 timeout=30,
