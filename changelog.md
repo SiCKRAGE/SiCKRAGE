@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5cdf87f - 2018-01-12: Fixed issues with refresh token when using client credentials 
+- * db88209 - 2018-01-12: Release v9.2.93 
+- * 2af9433 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * c9449f9 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * dae404d - 2018-01-12: Release v9.2.92 
 - * b48dd3f - 2018-01-12: Updated requirement psutil from 5.4.1 to 5.4.3 
