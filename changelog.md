@@ -1,6 +1,7 @@
 # Changelog
 
-- * db88209 - 2018-01-12: Release v9.2.93 
+- * 4ffbf15 - 2018-01-12: Release v9.2.94 
+- * deedce0 - 2018-01-12: Release v9.2.93 
 - * 2af9433 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * c9449f9 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * dae404d - 2018-01-12: Release v9.2.92 
