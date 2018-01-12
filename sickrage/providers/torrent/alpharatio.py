@@ -67,7 +67,7 @@ class AlphaRatioProvider(TorrentProvider):
         if re.search('Invalid Username/password', response) \
                 or re.search('<title>Login :: AlphaRatio.cc</title>', response):
             sickrage.app.log.warning(
-                "Invalid username or password. Check your settings".format(self.name))
+                "Invalid username or password. Check your settings")
             return False
 
         return True

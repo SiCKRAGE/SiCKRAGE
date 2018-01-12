@@ -63,11 +63,11 @@ class TorrentLeechProvider(TorrentProvider):
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider")
             return False
 
         if '<title>Login :: TorrentLeech.org</title>' in response:
-            sickrage.app.log.warning("Invalid username or password. Check your settings".format(self.name))
+            sickrage.app.log.warning("Invalid username or password. Check your settings")
             return False
 
         return True

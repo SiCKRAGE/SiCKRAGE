@@ -10,7 +10,6 @@ guessit == 2.1.4
 hachoir_core == 1.3.3
 hachoir_metadata == 1.3.3
 hachoir_parser == 1.3.4
-imdbpie == 4.4.2
 jsonrpclib == 0.1.7
 Mako == 1.0.7
 markdown2 == 2.3.3
@@ -44,4 +43,4 @@ twilio==6.10.0
 chardet==3.0.4
 pytz==2017.3
 tzlocal==1.5.1
-psutil==5.4.1
+psutil==5.4.3

@@ -62,7 +62,7 @@ class HoundDawgsProvider(TorrentProvider):
         try:
             response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
         except Exception:
-            sickrage.app.log.warning("Unable to connect to provider".format(self.name))
+            sickrage.app.log.warning("Unable to connect to provider")
             return False
 
         if any([re.search('Dit brugernavn eller kodeord er forkert.', response),

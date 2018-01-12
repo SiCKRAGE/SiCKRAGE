@@ -147,7 +147,8 @@ class Logger(logging.getLoggerClass()):
             if record.levelno in [WARNING, ERROR]:
                 from sickrage.core.classes import WarningViewer
                 from sickrage.core.classes import ErrorViewer
-                (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(record.msg, True)
+                (WarningViewer(), ErrorViewer())[record.levelno == ERROR].add(
+                    "{}::{}".format(record.threadName, record.msg), True)
 
             return record
 
