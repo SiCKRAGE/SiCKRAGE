@@ -26,48 +26,51 @@ class API(object):
     def __init__(self, client_id=None, client_secret=None):
         self.api_url = 'https://api.sickrage.ca/'
         self.token_url = urljoin(self.api_url, 'oauth/v2/token')
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.token = None
-        self.client = None
-        self.login()
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._session = None
+        self._token = None
 
-    def login(self):
-        if self.client and self.token:
-            return True
-
-        credentials = {
-            'client_id': self.client_id or sickrage.app.config.api_client_id,
-            'client_secret': self.client_secret or sickrage.app.config.api_client_secret
+    @property
+    def credentials(self):
+        return {
+            'client_id': self._client_id or sickrage.app.config.api_client_id,
+            'client_secret': self._client_secret or sickrage.app.config.api_client_secret
         }
 
-        oauth = OAuth2Session(client=BackendApplicationClient(client_id=credentials['client_id']))
+    @property
+    def session(self):
+        if self._session is None:
+            self._session = RefreshOAuth2Session(
+                client=BackendApplicationClient(client_id=self.credentials['client_id']),
+                token=self.token,
+                token_updater=self.token_updater,
+                auto_refresh_url=self.token_url,
+                auto_refresh_kwargs=self.credentials
+            )
+        return self._session
 
-        try:
-            self.token = oauth.fetch_token(token_url=self.token_url, timeout=30, **credentials)
-            self.client = RefreshOAuth2Session(credentials['client_id'], token=self.token,
-                                               auto_refresh_url=self.token_url, auto_refresh_kwargs=credentials,
-                                               token_updater=self.token_saver)
+    @property
+    def token(self):
+        if self._token is None:
+            self._token = RefreshOAuth2Session(
+                client=BackendApplicationClient(client_id=self.credentials['client_id'])
+            ).fetch_token(
+                token_url=self.token_url,
+                timeout=30,
+                **self.credentials
+            )
+        return self._token
 
-            return True
-        except Exception as e:
-            pass
-
-    def logout(self):
-        self.token = self.client = None
-
-    def token_saver(self, token):
-        self.token = token
+    def token_updater(self, token):
+        self._token = token
 
     def _request(self, method, url, **kwargs):
         if not sickrage.app.config.enable_api:
             return
 
-        if not self.login():
-            return
-
         try:
-            resp = self.client.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
+            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
         except Exception as e:
             raise error(e.message)
 
