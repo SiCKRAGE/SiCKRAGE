@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-01-12 15:15-0500\n"
-"PO-Revision-Date: 2018-01-12 15:17-0500\n"
+"POT-Creation-Date: 2018-01-15 14:47-0500\n"
+"PO-Revision-Date: 2018-01-15 14:48-0500\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -257,7 +257,7 @@ msgstr "Seleccione TV descargar directorio"
 
 #: dist/js/core.js:3544
 msgid "Select UNPACK Directory"
-msgstr ""
+msgstr "Seleccione la carpeta de salida"
 
 #: dist/js/core.js:3559
 msgid "Unrar Executable not found."
@@ -729,7 +729,7 @@ msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
-msgstr ""
+msgstr "Credenciales y opciones para api.sickrage.ca"
 
 #: sickrage/core/webserver/views/config/general.mako:36
 #: sickrage/core/webserver/views/config/notifications.mako:31
@@ -766,7 +766,7 @@ msgstr "¿Permitir el acceso a la API?"
 
 #: sickrage/core/webserver/views/config/general.mako:48
 msgid "API Provider Cache"
-msgstr ""
+msgstr "Caché del proveedor de API"
 
 #: sickrage/core/webserver/views/config/general.mako:53
 msgid "Enable provider cache ?"
@@ -774,11 +774,11 @@ msgstr "¿Activar caché de proveedor?"
 
 #: sickrage/core/webserver/views/config/general.mako:59
 msgid "API Client ID"
-msgstr ""
+msgstr "ID de cliente de la API"
 
 #: sickrage/core/webserver/views/config/general.mako:77
 msgid "API Client Secret"
-msgstr ""
+msgstr "La API de Cliente Secreto"
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178
@@ -944,7 +944,7 @@ msgstr "Comprobar actualizaciones de software"
 
 #: sickrage/core/webserver/views/config/general.mako:348
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
-msgstr ""
+msgstr "y mostrar notificaciones cuando hay actualizaciones disponibles. Las comprobaciones se ejecutan al inicio y a la frecuencia establecida a continuación"
 
 #: sickrage/core/webserver/views/config/general.mako:357
 msgid "Automatically update"
@@ -952,7 +952,7 @@ msgstr "Actualizar automáticamente"
 
 #: sickrage/core/webserver/views/config/general.mako:363
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
-msgstr ""
+msgstr "busque e instale actualizaciones de software. Las actualizaciones se ejecutan al inicio y al fondo en la frecuencia establecida a continuación"
 
 #: sickrage/core/webserver/views/config/general.mako:371
 msgid "Check the server every"

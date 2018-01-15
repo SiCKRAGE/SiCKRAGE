@@ -25,6 +25,7 @@ class RefreshOAuth2Session(OAuth2Session):
             resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
         return resp
 
+
 class API(object):
     def __init__(self, client_id=None, client_secret=None):
         self.api_url = 'https://api.sickrage.ca/'
