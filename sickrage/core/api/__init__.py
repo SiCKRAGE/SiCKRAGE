@@ -2,17 +2,28 @@ from __future__ import unicode_literals
 
 from urlparse import urljoin
 
-from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
+from oauthlib.oauth2 import BackendApplicationClient
 from requests_oauthlib import OAuth2Session
 
 import sickrage
 from sickrage.core.api.exceptions import unauthorized, error
 
 
-class CustomBackendApplicationClient(BackendApplicationClient):
-    def prepare_refresh_body(self, body='', refresh_token=None, scope=None, **kwargs):
-        return super(CustomBackendApplicationClient, self).prepare_refresh_body(boby=body, scope=scope, **kwargs)
+class RefreshOAuth2Session(OAuth2Session):
+    def __init__(self, *args, **kwargs):
+        self.token_url = kwargs.pop('token_url')
+        super(RefreshOAuth2Session, self).__init__(*args, **kwargs)
 
+    def request(self, *args, **kwargs):
+        resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
+        if resp.status_code == 401:
+            self.token = self.fetch_token(
+                token_url=self.token_url,
+                **self.auto_refresh_kwargs
+            )
+            self.token_updater(self.token)
+            resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
+        return resp
 
 class API(object):
     def __init__(self, client_id=None, client_secret=None):
@@ -33,20 +44,20 @@ class API(object):
     @property
     def session(self):
         if self._session is None:
-            self._session = OAuth2Session(
-                client=CustomBackendApplicationClient(client_id=self.credentials['client_id']),
+            self._session = RefreshOAuth2Session(
+                client=BackendApplicationClient(client_id=self.credentials['client_id']),
                 token=self.token,
-                token_updater=self.token_updater,
-                auto_refresh_url=self.token_url,
-                auto_refresh_kwargs=self.credentials
+                token_url=self.token_url,
+                token_updater=self.token_updater
             )
         return self._session
 
     @property
     def token(self):
         if self._token is None:
-            self._token = OAuth2Session(
-                client=CustomBackendApplicationClient(client_id=self.credentials['client_id'])
+            self._token = RefreshOAuth2Session(
+                client=BackendApplicationClient(client_id=self.credentials['client_id']),
+                token_url=self.token_url,
             ).fetch_token(
                 token_url=self.token_url,
                 timeout=30,
@@ -63,14 +74,12 @@ class API(object):
 
         try:
             resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
+            if resp.status_code == 401:
+                raise unauthorized(resp.json()['message'])
+            elif resp.status_code >= 400:
+                raise error(resp.json()['message'])
         except Exception as e:
             raise error(e.message)
-
-        # handle requests exceptions
-        if resp.status_code == 401:
-            raise unauthorized(resp.json()['message'])
-        elif resp.status_code >= 400:
-            raise error(resp.json()['message'])
 
         return resp.json()
 
