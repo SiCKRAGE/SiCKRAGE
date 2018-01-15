@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4ffbf15 - 2018-01-12: Release v9.2.94 
+- * 23c711b - 2018-01-14: Fixed issue #167 - PreconditionsException when saving IMDB info 
+- * 4931383 - 2018-01-12: Release v9.2.94 
 - * deedce0 - 2018-01-12: Release v9.2.93 
 - * 2af9433 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * c9449f9 - 2018-01-12: Fixed issues with refresh token when using client credentials 

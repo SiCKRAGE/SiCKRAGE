@@ -389,7 +389,7 @@ class QueueItemAdd(ShowQueueItem):
 
         try:
             sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-            self.show.loadIMDbInfo()
+            self.show.load_imdb_info()
         except Exception as e:
             sickrage.app.log.error("Error loading IMDb info: {}".format(e.message))
 
@@ -564,7 +564,7 @@ class QueueItemUpdate(ShowQueueItem):
 
         try:
             sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-            self.show.loadIMDbInfo()
+            self.show.load_imdb_info()
         except Exception as e:
             sickrage.app.log.error("Error loading IMDb info: {}".format(e.message))
             sickrage.app.log.debug(traceback.format_exc())

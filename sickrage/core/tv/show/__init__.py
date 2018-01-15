@@ -988,7 +988,7 @@ class TVShow(object):
         # save to database
         self.saveToDB()
 
-    def loadIMDbInfo(self):
+    def load_imdb_info(self):
         if not self.imdbid:
             for x in sickrage.app.api.search_by_imdb_title(self.name):
                 try:
@@ -1007,8 +1007,24 @@ class TVShow(object):
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
-            # save show to database
-            self.saveToDB()
+            # save imdb info to database
+            imdb_info = {
+                '_t': 'imdb_info',
+                'indexer_id': self.indexerid
+            }
+
+            try:
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
+                dbData.update(self.imdb_info)
+                sickrage.app.main_db.update(dbData)
+            except RevConflict:
+                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
+                sickrage.app.main_db.delete(dbData)
+                imdb_info.update(self.imdb_info)
+                sickrage.app.main_db.insert(imdb_info)
+            except RecordNotFound:
+                imdb_info.update(self.imdb_info)
+                sickrage.app.main_db.insert(imdb_info)
 
     def deleteShow(self, full=False):
         # choose delete or trash action
@@ -1223,28 +1239,6 @@ class TVShow(object):
             sickrage.app.main_db.update(dbData)
         except RecordNotFound:
             sickrage.app.main_db.insert(tv_show)
-
-        if self.imdbid and self.imdb_info:
-            try:
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                dbData.update(self.imdb_info)
-                sickrage.app.main_db.update(dbData)
-            except RevConflict:
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                sickrage.app.main_db.delete(dbData)
-                imdb_info = {
-                    '_t': 'imdb_info',
-                    'indexer_id': self.indexerid
-                }
-                imdb_info.update(self.imdb_info)
-                sickrage.app.main_db.insert(imdb_info)
-            except RecordNotFound:
-                imdb_info = {
-                    '_t': 'imdb_info',
-                    'indexer_id': self.indexerid
-                }
-                imdb_info.update(self.imdb_info)
-                sickrage.app.main_db.insert(imdb_info)
 
     def __str__(self):
         toReturn = ""
