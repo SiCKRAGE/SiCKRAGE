@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from urlparse import urljoin
 
-from oauthlib.oauth2 import BackendApplicationClient
+from oauthlib.oauth2 import BackendApplicationClient, TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -14,15 +14,23 @@ class RefreshOAuth2Session(OAuth2Session):
         self.token_url = kwargs.pop('token_url')
         super(RefreshOAuth2Session, self).__init__(*args, **kwargs)
 
+    def renew_token(self):
+        self.token = self.fetch_token(
+            token_url=self.token_url,
+            **self.auto_refresh_kwargs
+        )
+        self.token_updater(self.token)
+
     def request(self, *args, **kwargs):
-        resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
-        if resp.status_code == 401:
-            self.token = self.fetch_token(
-                token_url=self.token_url,
-                **self.auto_refresh_kwargs
-            )
-            self.token_updater(self.token)
+        try:
             resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
+            if resp.status_code == 401:
+                self.renew_token()
+                resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
+        except TokenExpiredError:
+            self.renew_token()
+            resp = super(RefreshOAuth2Session, self).request(*args, **kwargs)
+
         return resp
 
 
