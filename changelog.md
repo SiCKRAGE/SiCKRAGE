@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0369f5e - 2018-01-15: Release v9.2.95 
+- * 5a35061 - 2018-01-18: Fixed issue with SR API and expired tokens 
+- * b8ae4e8 - 2018-01-15: Release v9.2.95 
 - * 0817995 - 2018-01-15: Fixed issue #169 - Missing parameter: &quot;refresh_token&quot; is required 
 - * 70d1ecc - 2018-01-14: Fixed issue #167 - PreconditionsException when saving IMDB info 
 - * 4931383 - 2018-01-12: Release v9.2.94 
