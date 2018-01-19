@@ -420,7 +420,7 @@
             </div>
         % elif 'calendar' == layout:
             <div class="col-md-12">
-                <% dates = [today.date() + datetime.timedelta(days = i) for i in range(7)] %>
+                <% dates = [today.date() + datetime.timedelta(days = i) for i in xrange(7)] %>
                 <% tbl_day = 0 %>
                 <br/>
                 <br/>
