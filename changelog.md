@@ -1,6 +1,7 @@
 # Changelog
 
-- * b43fee1 - 2018-01-18: Release v9.2.97 
+- * 0b8e40a - 2018-01-19: Fixed missing token error 
+- * 7cf97c1 - 2018-01-18: Release v9.2.97 
 - * f9983e3 - 2018-01-18: Fixed issue with SR API and expired tokens 
 - * b8ae4e8 - 2018-01-15: Release v9.2.95 
 - * 0817995 - 2018-01-15: Fixed issue #169 - Missing parameter: &quot;refresh_token&quot; is required 
