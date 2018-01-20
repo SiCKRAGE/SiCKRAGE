@@ -1493,7 +1493,7 @@ def convert_size(size, default=0, units=None):
 
 
 def randomString(size=8, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for x in range(size))
+    return ''.join(random.choice(chars) for x in xrange(size))
 
 
 def clean_url(url):

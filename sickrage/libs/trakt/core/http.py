@@ -9,6 +9,7 @@ from threading import RLock
 
 import requests
 from requests.adapters import DEFAULT_POOLBLOCK, HTTPAdapter
+
 from trakt.core.configuration import DEFAULT_HTTP_RETRY, DEFAULT_HTTP_MAX_RETRIES, DEFAULT_HTTP_TIMEOUT, \
     DEFAULT_HTTP_RETRY_SLEEP
 from trakt.core.context_stack import ContextStack
@@ -118,7 +119,7 @@ class HttpClient(object):
         # Send request
         response = None
 
-        for i in range(max_retries + 1):
+        for i in xrange(max_retries + 1):
             if i > 0:
                 log.warn('Retry # %s', i)
 

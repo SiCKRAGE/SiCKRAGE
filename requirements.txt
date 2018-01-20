@@ -33,7 +33,7 @@ pyxdg == 0.25
 urllib3 == 1.22
 py-unrar2 == 0.99.6
 lockfile == 0.12.2
-requests == 2.18.4
+requests[security] == 2.18.4
 codernitydb == 0.5.0
 fake-useragent == 0.1.8
 html5lib == 1.0.1
