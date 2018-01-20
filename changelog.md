@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5715a2a - 2018-01-20: Fixed missing requests security requirement 
+- * 0ff270e - 2018-01-20: Release v9.2.98 
+- * b8fabca - 2018-01-20: Fixed missing requests security requirement 
 - * 0ebcc19 - 2018-01-19: misc range to xrange changes 
 - * 927c3c0 - 2018-01-19: Fixed missing token error 
 - * 7cf97c1 - 2018-01-18: Release v9.2.97 
