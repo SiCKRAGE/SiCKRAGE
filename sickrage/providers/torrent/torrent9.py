@@ -31,10 +31,10 @@ from sickrage.providers import TorrentProvider
 
 class Torrent9Provider(TorrentProvider):
     def __init__(self):
-        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrents9.pe', False)
+        super(Torrent9Provider, self).__init__('Torrent9', 'http://www.torrents9.bz', False)
 
         self.urls.update({
-            'search': '{base_url}/search_torrent'.format(**self.urls),
+            'search': '{base_url}/search_torrent/'.format(**self.urls),
             'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self.urls)
         })
 
@@ -63,7 +63,7 @@ class Torrent9Provider(TorrentProvider):
                     search_string = search_string.replace('.', '-').replace(' ', '-')
 
                     search_url = urljoin(self.urls['search'],
-                                         "{search_string}.html,trie-seeds-d".format(search_string=search_string))
+                                         "{search_string}.html".format(search_string=search_string))
                 else:
                     search_url = self.urls['rss']
 
