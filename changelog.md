@@ -1,6 +1,7 @@
 # Changelog
 
-- * c477af6 - 2018-01-23: reverted requests[&#x27;security&#x27;] to requests requirement, was causing issues for synology devices 
+- * ada88ca - 2018-01-23: Release v9.2.99 
+- * d076678 - 2018-01-23: reverted requests[&#x27;security&#x27;] to requests requirement, was causing issues for synology devices 
 - * 016ec81 - 2018-01-20: Release v9.2.98 
 - * b8fabca - 2018-01-20: Fixed missing requests security requirement 
 - * 0ebcc19 - 2018-01-19: misc range to xrange changes 
