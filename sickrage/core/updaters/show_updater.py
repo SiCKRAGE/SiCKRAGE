@@ -67,6 +67,8 @@ class ShowUpdater(object):
         for show in sickrage.app.showlist:
             if show.paused:
                 sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show.name))
+                continue
+
             try:
                 stale = (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days > 7
                 if show.indexerid in updated_shows or stale:
