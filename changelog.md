@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0ff270e - 2018-01-20: Release v9.2.98 
+- * c477af6 - 2018-01-23: reverted requests[&#x27;security&#x27;] to requests requirement, was causing issues for synology devices 
+- * 016ec81 - 2018-01-20: Release v9.2.98 
 - * b8fabca - 2018-01-20: Fixed missing requests security requirement 
 - * 0ebcc19 - 2018-01-19: misc range to xrange changes 
 - * 927c3c0 - 2018-01-19: Fixed missing token error 
@@ -15,6 +16,7 @@
 - * c9449f9 - 2018-01-12: Fixed issues with refresh token when using client credentials 
 - * dae404d - 2018-01-12: Release v9.2.92 
 - * b48dd3f - 2018-01-12: Updated requirement psutil from 5.4.1 to 5.4.3 
+- * 944065c - 2018-01-11: Update torrent9.py. 
 - * d3b36d3 - 2018-01-10: added SR external api calls for imdb searches 
 - * 8bbd2b2 - 2018-01-09: thread name added to UI warning/error messages 
 - * 1c36a65 - 2018-01-07: Release v9.2.91 
