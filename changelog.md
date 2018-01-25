@@ -1,6 +1,7 @@
 # Changelog
 
-- * ada88ca - 2018-01-23: Release v9.2.99 
+- * fac30f9 - 2018-01-24: Added option to skip automatic refresh/updating of ended shows or to refresh/update them after 90 days 
+- * dff6cff - 2018-01-23: Release v9.2.99 
 - * d076678 - 2018-01-23: reverted requests[&#x27;security&#x27;] to requests requirement, was causing issues for synology devices 
 - * 016ec81 - 2018-01-20: Release v9.2.98 
 - * b8fabca - 2018-01-20: Fixed missing requests security requirement 
