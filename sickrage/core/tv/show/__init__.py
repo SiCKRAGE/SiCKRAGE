@@ -990,7 +990,7 @@ class TVShow(object):
 
     def load_imdb_info(self):
         if not self.imdbid:
-            for x in sickrage.app.api.search_by_imdb_title(self.name):
+            for x in sickrage.app.api.search_by_imdb_title(self.name) or []:
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdbid = x.get('imdbID')
