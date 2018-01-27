@@ -1,6 +1,7 @@
 # Changelog
 
-- * c4df782 - 2018-01-25: Fixed Error loading IMDb info: &#x27;NoneType&#x27; object is not iterable 
+- * bf04e48 - 2018-01-26: Updated usenet-crawler url to new API url 
+- * d1b497f - 2018-01-25: Fixed Error loading IMDb info: &#x27;NoneType&#x27; object is not iterable 
 - * 3b348cb - 2018-01-24: Added option to skip automatic refresh/updating of ended shows or to refresh/update them after 90 days 
 - * dff6cff - 2018-01-23: Release v9.2.99 
 - * d076678 - 2018-01-23: reverted requests[&#x27;security&#x27;] to requests requirement, was causing issues for synology devices 
