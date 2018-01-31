@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.2.99\n"
+"Project-Id-Version: sickrage 9.2.100\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-01-23 13:37-0500\n"
+"POT-Creation-Date: 2018-01-31 16:54-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -436,7 +436,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:159
 #: sickrage/core/webserver/views/api_builder.mako:189
-#: sickrage/core/webserver/views/home/index.mako:467
+#: sickrage/core/webserver/views/home/index.mako:471
 #: sickrage/core/webserver/views/includes/modals.mako:18
 #: sickrage/core/webserver/views/includes/modals.mako:39
 #: sickrage/core/webserver/views/manage/mass_edit.mako:128
@@ -452,7 +452,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:161
 #: sickrage/core/webserver/views/api_builder.mako:188
-#: sickrage/core/webserver/views/home/index.mako:467
+#: sickrage/core/webserver/views/home/index.mako:471
 #: sickrage/core/webserver/views/includes/modals.mako:17
 #: sickrage/core/webserver/views/includes/modals.mako:38
 #: sickrage/core/webserver/views/manage/mass_edit.mako:129
@@ -5109,13 +5109,13 @@ msgid "Loading..."
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:128
-#: sickrage/core/webserver/views/home/index.mako:472
+#: sickrage/core/webserver/views/home/index.mako:476
 #: sickrage/core/webserver/views/manage/mass_update.mako:32
 msgid "Continuing"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:130
-#: sickrage/core/webserver/views/home/index.mako:474
+#: sickrage/core/webserver/views/home/index.mako:478
 #: sickrage/core/webserver/views/manage/mass_update.mako:33
 msgid "Ended"
 msgstr ""
@@ -5144,11 +5144,10 @@ msgstr ""
 msgid "Invalid date"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:239
 #: sickrage/core/webserver/views/home/index.mako:242
 #: sickrage/core/webserver/views/home/index.mako:243
-#: sickrage/core/webserver/views/home/index.mako:440
-#: sickrage/core/webserver/views/home/index.mako:441
+#: sickrage/core/webserver/views/home/index.mako:443
+#: sickrage/core/webserver/views/home/index.mako:444
 msgid "No Network"
 msgstr ""
 

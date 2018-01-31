@@ -1,6 +1,7 @@
 # Changelog
 
-- * 34dc091 - 2018-01-28: Fixed issue #170 - double popup on hover over network in show list 
+- * 30539e5 - 2018-01-31: Release v9.2.100 
+- * c91e143 - 2018-01-28: Fixed issue #170 - double popup on hover over network in show list 
 - * 2155ce3 - 2018-01-26: Updated usenet-crawler url to new API url 
 - * d1b497f - 2018-01-25: Fixed Error loading IMDb info: &#x27;NoneType&#x27; object is not iterable 
 - * 3b348cb - 2018-01-24: Added option to skip automatic refresh/updating of ended shows or to refresh/update them after 90 days 
