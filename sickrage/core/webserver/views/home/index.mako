@@ -229,19 +229,19 @@
                                         <td class="show-table">
                                             % if sickrage.app.config.home_layout != 'simple':
                                                 % if curShow.network:
-                                                    <span title="${curShow.network}">
-                                                    <img class="show-network-image"
-                                                         src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                         alt="${curShow.network}"
-                                                         title="${curShow.network}"/>
-                                                </span>
+                                                    <span>
+                                                        <img class="show-network-image"
+                                                             src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
+                                                             alt="${curShow.network}"
+                                                             title="${curShow.network}"/>
+                                                    </span>
                                                 % else:
-                                                    <span title="${_('No Network')}">
-                                                    <img class="show-network-image"
-                                                         src="${srWebRoot}/images/network/nonetwork.png"
-                                                         alt="${_('No Network')}"
-                                                         title="${_('No Network')}"/>
-                                                </span>
+                                                    <span>
+                                                        <img class="show-network-image"
+                                                             src="${srWebRoot}/images/network/nonetwork.png"
+                                                             alt="${_('No Network')}"
+                                                             title="${_('No Network')}"/>
+                                                    </span>
                                                 % endif
                                             % else:
                                                 <span title="${curShow.network}">${curShow.network}</span>
@@ -429,16 +429,20 @@
                                 % if sickrage.app.config.home_layout != 'simple':
                                     <td align="center">
                                         % if curShow.network:
-                                            <span title="${curShow.network}"><img id="network" width="54" height="27"
-                                                                                  src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                                                  alt="${curShow.network}"
-                                                                                  title="${curShow.network}"/></span>
+                                            <span>
+                                                <img id="network" width="54" height="27"
+                                                     src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
+                                                     alt="${curShow.network}"
+                                                     title="${curShow.network}"/>
+                                            </span>
                                             <span class="visible-print-inline">${curShow.network}</span>
                                         % else:
-                                            <span title="No Network"><img id="network" width="54" height="27"
-                                                                          src="${srWebRoot}/images/network/nonetwork.png"
-                                                                          alt="${_('No Network')}"
-                                                                          title="${_('No Network')}"/></span>
+                                            <span>
+                                                <img id="network" width="54" height="27"
+                                                     src="${srWebRoot}/images/network/nonetwork.png"
+                                                     alt="${_('No Network')}"
+                                                     title="${_('No Network')}"/>
+                                            </span>
                                             <span class="visible-print-inline">No Network</span>
                                         % endif
                                     </td>

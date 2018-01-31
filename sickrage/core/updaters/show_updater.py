@@ -69,8 +69,17 @@ class ShowUpdater(object):
                 sickrage.app.log.info('Show update skipped, show: {} is paused.'.format(show.name))
                 continue
 
+            if show.status == 'Ended':
+                if not sickrage.app.config.showupdate_stale:
+                    sickrage.app.log.info('Show update skipped, show: {} status is ended.'.format(show.name))
+                    continue
+                elif not (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 90:
+                    sickrage.app.log.info(
+                        'Show update skipped, show: {} status is ended and recently updated.'.format(show.name))
+                    continue
+
             try:
-                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days > 7
+                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7
                 if show.indexerid in updated_shows or stale:
                     pi_list.append(sickrage.app.show_queue.updateShow(show, False))
                 else:
