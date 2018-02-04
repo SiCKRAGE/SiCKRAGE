@@ -222,6 +222,7 @@ class BaseHandler(RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
+
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
@@ -1286,11 +1287,13 @@ class Home(WebHandler):
                 else:
                     shows.append(show)
 
-            sortedShowLists = [["Shows", sorted(shows, lambda x, y: cmp(titler(x.name), titler(y.name)))],
-                               ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+            sortedShowLists = [["Shows", sorted(shows,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))],
+                               ["Anime", sorted(anime,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
         else:
-            sortedShowLists = [
-                ["Shows", sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+            sortedShowLists = [["Shows", sorted(sickrage.app.showlist,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
 
         bwl = None
         if showObj.is_anime:

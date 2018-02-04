@@ -1,6 +1,7 @@
 # Changelog
 
-- * 30539e5 - 2018-01-31: Release v9.2.100 
+- * 9e4859e - 2018-02-04: Fixed issue #177 - case-insensitive sorting for drop-down show list 
+- * c5bee33 - 2018-01-31: Release v9.2.100 
 - * c91e143 - 2018-01-28: Fixed issue #170 - double popup on hover over network in show list 
 - * 2155ce3 - 2018-01-26: Updated usenet-crawler url to new API url 
 - * d1b497f - 2018-01-25: Fixed Error loading IMDb info: &#x27;NoneType&#x27; object is not iterable 
