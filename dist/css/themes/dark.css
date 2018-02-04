@@ -1,53 +1,31 @@
 /* =======================================================================
 inc_top.mako
 ========================================================================== */
+
 .ui-dialog,
 .ui-dialog-buttonpane {
     background: #2a2a2a !important;
 }
 
-.ui-menu
-{
-    display: block;
-    float: left;
-    list-style: none outside none;
-    margin: 0;
-    padding: 2px;
+.ui-widget-content {
+    background: #606060;
+    border: 1px solid #111;
+    color: #fff;
 }
-.ui-autocomplete
-{
-    cursor: default;
-    position: absolute;
+
+.ui-widget-content a {
+    color: black;
 }
-.ui-menu .ui-menu-item
-{
-    clear: left;
-    float: left;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-.ui-menu .ui-menu-item a
-{
-    display: block;
-    padding: 3px 3px 3px 3px;
+
+.ui-widget-content a:hover {
+    color: #09A2FF;
     text-decoration: none;
-    cursor: pointer;
-    color: #222222;
-    background-color: White;
 }
-.ui-menu .ui-menu-item a:hover
-{
-    display: block;
-    padding: 3px 3px 3px 3px;
-    text-decoration: none;
-    color: White;
-    cursor: pointer;
-    background-color: ButtonText;
-}
-.ui-widget-content a
-{
-    color: #222222;
+
+.ui-widget-header {
+    background: #3d3d3d;
+    border: 1px solid #111;
+    color: #fff;
 }
 
 .ui-state-default,
