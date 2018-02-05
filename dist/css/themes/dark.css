@@ -14,7 +14,7 @@ inc_top.mako
 }
 
 .ui-widget-content a {
-    color: black;
+    color: #fff;
 }
 
 .ui-widget-content a:hover {

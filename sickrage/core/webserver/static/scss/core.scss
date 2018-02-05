@@ -2029,42 +2029,6 @@ input sizing (for config pages)
   margin-top: -4px; }
 
 /* =======================================================================
-browser.css overrides
-========================================================================== */
-#fileBrowserDialog {
-  overflow-y: auto; }
-
-#fileBrowserDialog ul li a:hover {
-  color: #00f;
-  background: none; }
-
-#fileBrowserDialog h2 {
-  font-size: 20px; }
-
-.ui-autocomplete {
-  max-height: 180px;
-  overflow-x: hidden;
-  overflow-y: auto; }
-
-/* IE6 hack since it doesn't support max-height */
-* html .ui-autocomplete {
-  height: 180px;
-  padding-right: 20px; }
-
-.ui-autocomplete .ui-menu-item .ui-state-focus {
-  color: #fff;
-  background: none;
-  background-color: #0a246a; }
-
-/* restore 1.8.x resize handle on dialog button pane */
-.ui-dialog .ui-resizable-se {
-  width: 14px;
-  height: 14px;
-  right: 3px;
-  bottom: 3px;
-  background-position: -80px -224px; }
-
-/* =======================================================================
 jquery-steps.css
 ========================================================================== */
 .wizard .content {
@@ -2450,28 +2414,11 @@ File Browser
   margin: 0 4px;
   float: left; }
 
-/* jQuery-UI autocomplete overrides to make it look more like the old autocomplete */
 .ui-autocomplete {
   max-height: 180px;
   overflow-y: auto;
-  /* prevent horizontal scrollbar */
   overflow-x: hidden;
-  /* add padding to account for vertical scrollbar */
   padding-right: 20px; }
-
-* html .ui-autocomplete {
-  height: 180px; }
-
-.ui-menu .ui-menu-item {
-  background-color: #eeeeee; }
-
-.ui-menu .ui-menu-item-alternate {
-  background-color: #ffffff; }
-
-.ui-menu a.ui-state-hover {
-  background: none;
-  background-color: #0A246A;
-  color: #ffffff; }
 
 /* =======================================================================
 Country Flags

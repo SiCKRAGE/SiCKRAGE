@@ -1,6 +1,7 @@
 # Changelog
 
-- * 769f33d - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * 1c65baa - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * e73b9af - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * e77ea77 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * 372b59e - 2018-02-04: Fixed issue #177 - case-insensitive sorting for drop-down show list 
 - * c5bee33 - 2018-01-31: Release v9.2.100 

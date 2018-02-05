@@ -400,7 +400,7 @@ jQuery(document).ready(function ($) {
                     });
                 });
 
-                if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')){
+                if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
                     $("#changelog").click();
                 }
 
@@ -837,7 +837,7 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.browser.fileBrowserDialog.dialog('option', 'buttons', [
                     {
                         text: gt("Ok"),
-                        "class": "btn",
+                        class: "btn",
                         click: function () {
                             // store the browsed path to the associated text field
                             callback(SICKRAGE.browser.currentBrowserPath, options);
@@ -846,7 +846,7 @@ jQuery(document).ready(function ($) {
                     },
                     {
                         text: gt("Cancel"),
-                        "class": "btn",
+                        class: "btn",
                         click: function () {
                             $(this).dialog("close");
                         }
@@ -892,10 +892,8 @@ jQuery(document).ready(function ($) {
                         },
                         open: function () {
                             $(".ui-autocomplete li.ui-menu-item a").removeClass("ui-corner-all");
-                            $(".ui-autocomplete li.ui-menu-item:odd a").addClass("ui-menu-item-alternate");
                         }
-                    })
-                        .data("ui-autocomplete")._renderItem = function (ul, item) {
+                    }).data("ui-autocomplete")._renderItem = function (ul, item) {
                         //highlight the matched search term from the item -- note that this is global and will match anywhere
                         var result_item = item.label;
                         var x = new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + query + ")(?![^<>]*>)(?![^&;]+;)", "gi");
