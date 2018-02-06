@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1c65baa - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * c1cee31 - 2018-02-06: Fixed issue #175 - autocomplete &quot;Enter the folder containing the episode &quot; field when manually post-processing using Post-Processing Dir from settings 
+- * b608667 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * e73b9af - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * e77ea77 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * 372b59e - 2018-02-04: Fixed issue #177 - case-insensitive sorting for drop-down show list 

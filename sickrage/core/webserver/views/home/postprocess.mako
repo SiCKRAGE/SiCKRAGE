@@ -18,7 +18,7 @@
                                 <span class="glyphicon glyphicon-folder-open"></span>
                             </div>
                             <input name="proc_dir" id="episodeDir" class="form-control" autocapitalize="off"
-                                   title="directory"/>
+                                   value="${sickrage.app.config.tv_download_dir}" title="directory"/>
                         </div>
                     </div>
                 </div>
