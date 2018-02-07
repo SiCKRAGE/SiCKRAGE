@@ -195,7 +195,6 @@
 
                             <div class="show-date">
                                 % if cur_airs_next:
-                                    <% out = '' %>
                                     <% ldatetime = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                     <%
                                         try:
@@ -204,14 +203,13 @@
                                             out = _('Invalid date')
                                     %>
                                 % else:
-                                    <% out = '' %>
                                     <% display_status = curShow.status %>
                                     <%
+                                        out = ''
                                         if display_status:
+                                            out = display_status
                                             if 'nded' not in display_status and 1 == int(curShow.paused):
                                                 out = _('Paused')
-                                            elif display_status:
-                                                out = display_status
                                     %>
                                 % endif
                                 ${out}
