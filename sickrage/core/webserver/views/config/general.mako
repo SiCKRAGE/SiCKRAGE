@@ -601,7 +601,7 @@
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
                                 % for cur_preset in time_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.time_preset_w_seconds == cur_preset]}>${srDateTime.now().srftime(show_seconds=True, t_preset=cur_preset)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.time_preset_w_seconds == cur_preset]}>${srDateTime(datetime.datetime.now()).srftime(show_seconds=True, t_preset=cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>

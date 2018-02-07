@@ -661,10 +661,10 @@
                 <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
 
                 % if airDate.year >= 1970 or show.network:
-                    <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network)) %>
+                    <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
                 % endif
                     <time datetime="${airDate.isoformat()}"
-                          class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+                          class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                 % else:
                     ${_('Never')}
                 % endif

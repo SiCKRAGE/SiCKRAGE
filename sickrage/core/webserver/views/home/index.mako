@@ -166,7 +166,7 @@
 
                         data_date = '6000000000.0'
                         if cur_airs_next:
-                            data_date = calendar.timegm(srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)).timetuple())
+                            data_date = calendar.timegm(srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
                         elif display_status:
                             if 'nded' not in display_status and 1 == int(curShow.paused):
                                 data_date = '5000000500.0'
@@ -195,17 +195,15 @@
 
                             <div class="show-date">
                                 % if cur_airs_next:
-                            <% ldatetime = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
+                                <% ldatetime = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                 <%
                                     try:
-                                        out = srdatetime.srDateTime.srfdate(ldatetime)
+                                        out = srdatetime.srDateTime(ldatetime).srfdate()
                                     except ValueError:
                                         out = _('Invalid date')
-                                    pass
                                 %>
                                 ${out}
                                 % else:
-                            <% output_html = '?' %>
                                 <% display_status = curShow.status %>
                                 <%
                                     if display_status:
@@ -369,11 +367,11 @@
                             %>
                             <tr>
                                 % if cur_airs_next:
-                                <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network)) %>
+                                <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
                                     <td align="center" class="nowrap">
                                         <time datetime="${airDate.isoformat()}"
-                                              class="date">${srdatetime.srDateTime.srfdate(airDate)}</time>
+                                              class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                     </td>
                                 % except ValueError:
                                     <td align="center" class="nowrap"></td>
@@ -383,11 +381,11 @@
                                 % endif
 
                                 % if cur_airs_prev:
-                                <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network)) %>
+                                <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
                                     <td align="center" class="nowrap">
                                         <time datetime="${airDate.isoformat()}"
-                                              class="date">${srdatetime.srDateTime.srfdate(airDate)}</time>
+                                              class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                     </td>
                                 % except ValueError:
                                     <td align="center" class="nowrap"></td>

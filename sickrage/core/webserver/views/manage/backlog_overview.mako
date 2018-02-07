@@ -86,10 +86,10 @@
                                         ${curResult["name"]}
                                     </td>
                                     <td>
-                                        <% airDate = srdatetime.srDateTime.convert_to_setting(tz_updater.parse_date_time(curResult['airdate'], curShow.airs, curShow.network)) %>
+                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(curResult['airdate'], curShow.airs, curShow.network), convert=True).dt %>
                                         % if int(curResult['airdate']) != 1:
                                             <time datetime="${airDate.isoformat()}"
-                                                  class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+                                                  class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                                         % else:
                                             Never
                                         % endif

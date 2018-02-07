@@ -19,9 +19,7 @@
 
 from __future__ import unicode_literals
 
-import functools
 import locale
-from datetime import datetime
 
 import sickrage
 
@@ -91,116 +89,90 @@ date_presets = (
 time_presets = ('%I:%M:%S %p', '%H:%M:%S')
 
 
-# helper class
-class static_or_instance(object):
-    def __init__(self, func):
-        self.func = func
+class srDateTime(object):
+    def __init__(self, dt, convert=False):
+        self.dt = dt
+        if convert and sickrage.app.config.timezone_display == 'local':
+            self.dt = dt.astimezone(sickrage.app.tz)
 
-    def __get__(self, instance, owner):
-        return functools.partial(self.func, instance)
-
-
-# subclass datetime to add function to display custom date and time formats
-class srDateTime(datetime):
-    has_locale = True
-    en_US_norm = locale.normalize('en_US.utf-8')
-
-    @static_or_instance
-    def convert_to_setting(self, dt=None):
-        try:
-            if sickrage.app.config.timezone_display == 'local':
-                return dt.astimezone(sickrage.app.tz) if self is None else self.astimezone(sickrage.app.tz)
-            else:
-                return dt if self is None else self
-        except Exception:
-            return dt if self is None else self
+        self.has_locale = True
+        self.en_US_norm = locale.normalize('en_US.utf-8')
 
     # display Time in SickRage Format
-    @static_or_instance
-    def srftime(self, dt=None, show_seconds=False, t_preset=None):
+    def srftime(self, show_seconds=False, t_preset=None):
         """
         Display time in SR format
-        TODO: Rename this to srftime
 
-        :param dt: datetime object
         :param show_seconds: Boolean, show seconds
         :param t_preset: Preset time format
         :return: time string
         """
 
+        strt = ''
+
         try:
             locale.setlocale(locale.LC_TIME, '')
         except Exception:
             pass
 
         try:
-            if srDateTime.has_locale:
-                locale.setlocale(locale.LC_TIME, 'en_US')
+            if self.has_locale:
+                locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
         except Exception:
             try:
-                if srDateTime.has_locale:
-                    locale.setlocale(locale.LC_TIME, srDateTime.en_US_norm)
+                if self.has_locale:
+                    locale.setlocale(locale.LC_TIME, self.en_US_norm)
             except Exception:
-                srDateTime.has_locale = False
+                self.has_locale = False
 
-        strt = ''
         try:
-            if self is None:
-                if dt is not None:
-                    if t_preset is not None:
-                        strt = dt.strftime(t_preset)
-                    elif show_seconds:
-                        strt = dt.strftime(sickrage.app.config.time_preset_w_seconds)
-                    else:
-                        strt = dt.strftime(sickrage.app.config.time_preset)
+            if t_preset is not None:
+                strt = self.dt.strftime(t_preset)
+            elif show_seconds:
+                strt = self.dt.strftime(sickrage.app.config.time_preset_w_seconds)
             else:
-                if t_preset is not None:
-                    strt = self.strftime(t_preset)
-                elif show_seconds:
-                    strt = self.strftime(sickrage.app.config.time_preset_w_seconds)
-                else:
-                    strt = self.strftime(sickrage.app.config.time_preset)
+                strt = self.dt.strftime(sickrage.app.config.time_preset)
         finally:
             try:
-                if srDateTime.has_locale:
+                if self.has_locale:
                     locale.setlocale(locale.LC_TIME, '')
             except Exception:
-                srDateTime.has_locale = False
+                self.has_locale = False
 
         return strt
 
     # display Date in SickRage Format
-    @static_or_instance
-    def srfdate(self, dt=None, d_preset=None):
+    def srfdate(self, d_preset=None):
         """
         Display date in SR format
-        TODO: Rename this to srfdate
 
-        :param dt: datetime object
         :param d_preset: Preset date format
         :return: date string
         """
+
+        strd = ''
 
         try:
             locale.setlocale(locale.LC_TIME, '')
         except Exception:
             pass
 
-        strd = ''
         try:
-            if self is None:
-                if dt is not None:
-                    if d_preset is not None:
-                        strd = dt.strftime(d_preset)
-                    else:
-                        strd = dt.strftime(sickrage.app.config.date_preset)
-            else:
-                if d_preset is not None:
-                    strd = self.strftime(d_preset)
-                else:
-                    strd = self.strftime(sickrage.app.config.date_preset)
-        finally:
+            if self.has_locale:
+                locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
+        except Exception:
+            try:
+                if self.has_locale:
+                    locale.setlocale(locale.LC_TIME, self.en_US_norm)
+            except Exception:
+                self.has_locale = False
 
+        try:
+            if d_preset is not None:
+                strd = self.dt.strftime(d_preset)
+            else:
+                strd = self.dt.strftime(sickrage.app.config.date_preset)
+        finally:
             try:
                 locale.setlocale(locale.LC_TIME, '')
             except Exception:
@@ -209,73 +181,50 @@ class srDateTime(datetime):
         return strd
 
     # display Datetime in SickRage Format
-    @static_or_instance
-    def srfdatetime(self, dt=None, show_seconds=False, d_preset=None, t_preset=None):
+    def srfdatetime(self, show_seconds=False, d_preset=None, t_preset=None):
         """
         Show datetime in SR format
-        TODO: Rename this to srfdatetime
 
-        :param dt: datetime object
         :param show_seconds: Boolean, show seconds as well
         :param d_preset: Preset date format
         :param t_preset: Preset time format
         :return: datetime string
         """
 
+        strd = ''
+
         try:
             locale.setlocale(locale.LC_TIME, '')
         except Exception:
             pass
 
-        strd = ''
         try:
-            if self is None:
-                if dt is not None:
-                    if d_preset is not None:
-                        strd = dt.strftime(d_preset)
-                    else:
-                        strd = dt.strftime(sickrage.app.config.date_preset)
-                    try:
-                        if srDateTime.has_locale:
-                            locale.setlocale(locale.LC_TIME, 'en_US')
-                    except Exception:
-                        try:
-                            if srDateTime.has_locale:
-                                locale.setlocale(locale.LC_TIME, srDateTime.en_US_norm)
-                        except Exception:
-                            srDateTime.has_locale = False
-                    if t_preset is not None:
-                        strd += ', {}'.format(dt.strftime(t_preset))
-                    elif show_seconds:
-                        strd += ', {}'.format(dt.strftime(sickrage.app.config.time_preset_w_seconds))
-                    else:
-                        strd += ', {}'.format(dt.strftime(sickrage.app.config.time_preset))
+            if d_preset is not None:
+                strd = self.dt.strftime(d_preset)
             else:
-                if d_preset is not None:
-                    strd = self.strftime(d_preset)
-                else:
-                    strd = self.strftime(sickrage.app.config.date_preset)
+                strd = self.dt.strftime(sickrage.app.config.date_preset)
 
+            try:
+                if self.has_locale:
+                    locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
+            except Exception:
                 try:
-                    if srDateTime.has_locale:
-                        locale.setlocale(locale.LC_TIME, 'en_US')
+                    if self.has_locale:
+                        locale.setlocale(locale.LC_TIME, self.en_US_norm)
                 except Exception:
-                    try:
-                        if srDateTime.has_locale:
-                            locale.setlocale(locale.LC_TIME, srDateTime.en_US_norm)
-                    except Exception:
-                        srDateTime.has_locale = False
-                if t_preset is not None:
-                    strd += ', {}'.format(dt.strftime(t_preset))
-                elif show_seconds:
-                    strd += ', {}'.format(dt.strftime(sickrage.app.config.time_preset_w_seconds))
-                else:
-                    strd += ', {}'.format(dt.strftime(sickrage.app.config.time_preset))
+                    self.has_locale = False
+
+            if t_preset is not None:
+                strd += ', {}'.format(self.dt.strftime(t_preset))
+            elif show_seconds:
+                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.time_preset_w_seconds))
+            else:
+                strd += ', {}'.format(self.dt.strftime(sickrage.app.config.time_preset))
         finally:
             try:
-                if srDateTime.has_locale:
+                if self.has_locale:
                     locale.setlocale(locale.LC_TIME, '')
             except Exception:
-                srDateTime.has_locale = False
+                self.has_locale = False
 
         return strd
