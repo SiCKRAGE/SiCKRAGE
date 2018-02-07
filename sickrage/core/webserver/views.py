@@ -3549,7 +3549,7 @@ class ManageQueues(Manage):
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('BACKLOG').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).func(True):
             sickrage.app.log.info("Backlog search forced")
             sickrage.app.alerts.message(_('Backlog search started'))
 
@@ -3557,7 +3557,7 @@ class ManageQueues(Manage):
 
     def forceSearch(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('DAILYSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).func(True):
             sickrage.app.log.info("Daily search forced")
             sickrage.app.alerts.message(_('Daily search started'))
 
@@ -3565,7 +3565,7 @@ class ManageQueues(Manage):
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('PROPERSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name).func(True):
             sickrage.app.log.info("Find propers search forced")
             sickrage.app.alerts.message(_('Find propers search started'))
 

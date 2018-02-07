@@ -1,6 +1,7 @@
 # Changelog
 
-- * d5fd49c - 2018-02-07: Fixed issue with next airdate and main show page 
+- * 0e667f3 - 2018-02-07: Fixed issues with backlog and proper searches 
+- * f50e104 - 2018-02-07: Fixed issue with next airdate and main show page 
 - * c912546 - 2018-02-07: Fixed issue with next airdate and main show page 
 - * e9494a7 - 2018-02-07: Fixed issue with next airdate and main show page 
 - * 563c4a0 - 2018-02-07: Added search delay feature to edit show options, allows setting a delay in days to delay daily searches for specific shows that may not release same day on provider sites 
