@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0a75896 - 2018-02-06: refactored srDateTime class added locale support for displaying date and time 
+- * f111cb8 - 2018-02-07: Added search delay feature to edit show options, allows setting a delay in days to delay daily searches for specific shows that may not release same day on provider sites 
+- * ca75c7e - 2018-02-06: refactored srDateTime class added locale support for displaying date and time 
 - * 2c89486 - 2018-02-06: Fixed issue #175 - autocomplete &quot;Enter the folder containing the episode &quot; field when manually post-processing using Post-Processing Dir from settings 
 - * b608667 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
 - * e73b9af - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 

@@ -202,17 +202,17 @@
                                     except ValueError:
                                         out = _('Invalid date')
                                 %>
-                                ${out}
                                 % else:
                                 <% display_status = curShow.status %>
                                 <%
+                                    out = ''
                                     if display_status:
                                         if 'nded' not in display_status and 1 == int(curShow.paused):
-                                            output_html = _('Paused')
+                                            out = _('Paused')
                                         elif display_status:
-                                            output_html = display_status
+                                            out = display_status
                                 %>
-                                ${output_html}
+                                ${out}
                                 % endif
                             </div>
 

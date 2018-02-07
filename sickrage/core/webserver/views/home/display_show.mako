@@ -269,6 +269,10 @@
                                         <td class="showLegend">${_('Scene Name:')}</td>
                                         <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
                                     </tr>
+                                    <tr>
+                                        <td class="showLegend">${_('Search Delay:')}</td>
+                                        <td>${show.search_delay} day(s)</td>
+                                    </tr>
                                     % if show.rls_require_words:
                                         <tr>
                                             <td class="showLegend">${_('Required Words:')}</td>

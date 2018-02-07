@@ -1343,7 +1343,7 @@ class Home(WebHandler):
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, subtitles_sr_metadata=None, archive_firstmatch=None,
                  rls_ignore_words=None, rls_require_words=None, anime=None, blacklist=None, whitelist=None,
-                 scene=None, defaultEpStatus=None, quality_preset=None):
+                 scene=None, defaultEpStatus=None, quality_preset=None, search_delay=None):
 
         if exceptions_list is None:
             exceptions_list = []
@@ -1509,6 +1509,7 @@ class Home(WebHandler):
                 showObj.dvdorder = dvdorder
                 showObj.rls_ignore_words = rls_ignore_words.strip()
                 showObj.rls_require_words = rls_require_words.strip()
+                showObj.search_delay = int(search_delay)
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if os.path.normpath(showObj.location) != os.path.normpath(location):
