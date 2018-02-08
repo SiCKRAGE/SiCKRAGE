@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0e667f3 - 2018-02-07: Fixed issues with backlog and proper searches 
+- * 451237f - 2018-02-08: Fixed unicode issues with srDateTime class when using locales 
+- * c94ad9f - 2018-02-07: Fixed issues with backlog and proper searches 
 - * f50e104 - 2018-02-07: Fixed issue with next airdate and main show page 
 - * c912546 - 2018-02-07: Fixed issue with next airdate and main show page 
 - * e9494a7 - 2018-02-07: Fixed issue with next airdate and main show page 

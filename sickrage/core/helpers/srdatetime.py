@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import locale
 
 import sickrage
+from sickrage.core.helpers import encoding
 
 date_presets = (
     '%Y-%m-%d',
@@ -117,7 +118,7 @@ class srDateTime(object):
 
         try:
             if self.has_locale:
-                locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
+                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
         except Exception:
             try:
                 if self.has_locale:
@@ -139,7 +140,7 @@ class srDateTime(object):
             except Exception:
                 self.has_locale = False
 
-        return strt
+        return encoding.to_unicode(strt)
 
     # display Date in SickRage Format
     def srfdate(self, d_preset=None):
@@ -159,7 +160,7 @@ class srDateTime(object):
 
         try:
             if self.has_locale:
-                locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
+                locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
         except Exception:
             try:
                 if self.has_locale:
@@ -178,7 +179,7 @@ class srDateTime(object):
             except Exception:
                 pass
 
-        return strd
+        return encoding.to_unicode(strd)
 
     # display Datetime in SickRage Format
     def srfdatetime(self, show_seconds=False, d_preset=None, t_preset=None):
@@ -206,7 +207,7 @@ class srDateTime(object):
 
             try:
                 if self.has_locale:
-                    locale.setlocale(locale.LC_TIME, sickrage.app.config.gui_lang)
+                    locale.setlocale(locale.LC_TIME, locale.normalize(sickrage.app.config.gui_lang))
             except Exception:
                 try:
                     if self.has_locale:
@@ -227,4 +228,4 @@ class srDateTime(object):
             except Exception:
                 self.has_locale = False
 
-        return strd
+        return encoding.to_unicode(strd)

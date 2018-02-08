@@ -383,8 +383,9 @@
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
                                     <td align="center" class="nowrap">
-                                        <time datetime="${airDate.isoformat()}"
-                                              class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
+                                        <time datetime="${airDate.isoformat()}" class="date">
+                                            ${srdatetime.srDateTime(airDate).srfdate()}
+                                        </time>
                                     </td>
                                 % except ValueError:
                                     <td align="center" class="nowrap"></td>
