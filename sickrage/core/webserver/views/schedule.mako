@@ -128,15 +128,15 @@
 
                                 <tr class="${show_div}">
                                     <td align="center" nowrap="nowrap">
-                                        <% airDate = srdatetime.srDateTime.convert_to_setting(cur_result['localtime']) %>
+                                        <% airDate = srdatetime.srDateTime(cur_result['localtime'], convert=True).dt %>
                                         <time datetime="${airDate.isoformat()}"
-                                              class="date">${srdatetime.srDateTime.srfdatetime(airDate)}</time>
+                                              class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                                     </td>
 
                                     <td align="center" nowrap="nowrap">
-                                        <% ends = srdatetime.srDateTime.convert_to_setting(cur_ep_enddate) %>
+                                        <% ends = srdatetime.srDateTime(cur_ep_enddate, convert=True).dt %>
                                         <time datetime="${ends.isoformat()}"
-                                              class="date">${srdatetime.srDateTime.srfdatetime(ends)}</time>
+                                              class="date">${srdatetime.srDateTime(ends).srfdatetime()}</time>
                                     </td>
 
                                     <td class="tvShow" nowrap="nowrap"><a
@@ -381,7 +381,7 @@
 
                                         <div class="clearfix">
                                             <span class="title">Airs: </span><span
-                                                class="airdate">${srdatetime.srDateTime.srfdatetime(cur_result['localtime'])}</span>${('', '<span> on %s</span>' % cur_result['network'])[bool(cur_result['network'])]}
+                                                class="airdate">${srdatetime.srDateTime(cur_result['localtime']).srfdatetime()}</span>${('', '<span> on %s</span>' % cur_result['network'])[bool(cur_result['network'])]}
                                         </div>
 
                                         <div class="clearfix">
@@ -447,7 +447,7 @@
                                         % if airday == day:
                                             % try:
                                             <% day_has_show = True %>
-                                            <% airtime = srdatetime.srDateTime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple())).srftime().decode(sickrage.app.sys_encoding) %>
+                                            <% airtime = srdatetime.srDateTime(datetime.datetime.fromtimestamp(time.mktime(cur_result['localtime'].timetuple()))).srftime().decode(sickrage.app.sys_encoding) %>
                                             % if sickrage.app.config.trim_zero:
                                                 <% airtime = re.sub(r'0(\d:\d\d)', r'\1', airtime, 0, re.IGNORECASE | re.MULTILINE) %>
                                             % endif

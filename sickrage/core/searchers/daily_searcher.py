@@ -50,9 +50,10 @@ class DailySearcher(object):
         sickrage.app.log.info("Searching for new released episodes")
 
         curDate = datetime.date.today()
-        curDate += datetime.timedelta(days=2)
-        if tz_updater.load_network_dict():
+        if tz_updater.network_dict:
             curDate += datetime.timedelta(days=1)
+        else:
+            curDate += datetime.timedelta(days=2)
 
         curTime = datetime.datetime.now(sickrage.app.tz)
 
@@ -60,13 +61,17 @@ class DailySearcher(object):
         new_episodes = False
 
         for episode in (x for x in sickrage.app.main_db.all('tv_episodes')
-                        if x['status'] == common.UNAIRED and x['season'] > 0
-                           and curDate.toordinal() >= x['airdate'] > 1):
+                        if x['status'] == common.UNAIRED and x['season'] > 0 and x['airdate'] > 1):
             if not show or int(episode["showid"]) != show.indexerid:
                 show = findCertainShow(int(episode["showid"]))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:
+                continue
+
+            air_date = datetime.date.fromordinal(episode['airdate'])
+            air_date += datetime.timedelta(days=show.search_delay)
+            if not curDate.toordinal() >= air_date.toordinal():
                 continue
 
             if show.airs and show.network:
@@ -77,7 +82,8 @@ class DailySearcher(object):
                 # filter out any episodes that haven't started airing yet,
                 # but set them to the default status while they are airing
                 # so they are snatched faster
-                if air_time > curTime: continue
+                if air_time > curTime:
+                    continue
 
             ep_obj = show.getEpisode(int(episode['season']), int(episode['episode']))
             with ep_obj.lock:

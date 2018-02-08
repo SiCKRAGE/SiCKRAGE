@@ -60,8 +60,6 @@ class ProperSearcher(object):
         if propers:
             self._downloadPropers(propers)
 
-        self._set_lastProperSearch(datetime.datetime.today().toordinal())
-
         sickrage.app.log.info("Completed the search for new propers")
 
         self.amActive = False
@@ -78,10 +76,14 @@ class ProperSearcher(object):
 
         recently_aired = []
         for show in sickrage.app.showlist:
+            self._lastProperSearch = self._get_lastProperSearch(show.indexerid)
+
             for episode in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
                 if episode['airdate'] >= str(search_date.toordinal()):
                     if episode['status'] in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_BEST:
                         recently_aired += [episode]
+
+            self._set_lastProperSearch(show.indexerid, datetime.datetime.today().toordinal())
 
         if not recently_aired:
             sickrage.app.log.info('No recently aired episodes, nothing to search for')
@@ -134,7 +136,6 @@ class ProperSearcher(object):
         finalPropers = []
 
         for curProper in sortedPropers:
-
             try:
                 myParser = NameParser(False)
                 parse_result = myParser.parse(curProper.name)
@@ -284,7 +285,7 @@ class ProperSearcher(object):
     def _genericName(self, name):
         return name.replace(".", " ").replace("-", " ").replace("_", " ").lower()
 
-    def _set_lastProperSearch(self, when):
+    def _set_lastProperSearch(self, showid, when):
         """
         Record last propersearch in DB
 
@@ -293,28 +294,20 @@ class ProperSearcher(object):
 
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
-        dbData = [x for x in sickrage.app.main_db.all('info')]
-        if len(dbData) == 0:
-            sickrage.app.main_db.insert({
-                '_t': 'info',
-                'last_backlog': 0,
-                'last_indexer': 0,
-                'last_proper_search': str(when)
-            })
-        else:
-            dbData[0]['last_proper_search'] = str(when)
-            sickrage.app.main_db.update(dbData[0])
+        dbData = sickrage.app.main_db.get('tv_shows', showid)
+        dbData['last_proper_search'] = when
+        sickrage.app.main_db.update(dbData)
 
     @staticmethod
-    def _get_lastProperSearch():
+    def _get_lastProperSearch(showid):
         """
         Find last propersearch from DB
         """
 
-        try:
-            dbData = [x for x in sickrage.app.main_db.all('info')]
-            last_proper_search = datetime.date.fromordinal(int(dbData[0]["last_proper_search"]))
-        except:
-            last_proper_search = datetime.date.fromordinal(1)
+        sickrage.app.log.debug("Retrieving the last check time from the DB")
 
-        return last_proper_search
+        try:
+            dbData = sickrage.app.main_db.get('tv_shows', showid)
+            return int(dbData["last_proper_search"])
+        except:
+            return 1

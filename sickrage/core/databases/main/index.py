@@ -126,21 +126,6 @@ class MainHistoryIndex(HashIndex):
             return data.get('showid'), None
 
 
-class MainInfoIndex(HashIndex):
-    _version = 1
-
-    def __init__(self, *args, **kwargs):
-        kwargs['key_format'] = 'I'
-        super(MainInfoIndex, self).__init__(*args, **kwargs)
-
-    def make_key(self, key):
-        return key
-
-    def make_key_value(self, data):
-        if data.get('_t') == 'info' and data.get('last_indexer'):
-            return data.get('last_indexer'), None
-
-
 class MainBlacklistIndex(HashIndex):
     _version = 1
 

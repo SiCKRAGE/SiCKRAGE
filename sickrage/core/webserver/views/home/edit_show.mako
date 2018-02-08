@@ -353,6 +353,26 @@
                                             </label>
                                         </div>
                                     </div>
+
+                                    <div class="row field-pair">
+                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                            <label class="component-title">${_('Search Delay')}</label>
+                                        </div>
+                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                            <div class="input-group input350">
+                                                <div class="input-group-addon">
+                                                    <span class="fa fa-clock-o"></span>
+                                                </div>
+                                                <input type="text" id="search_delay" name="search_delay"
+                                                       placeholder="${_('ex. 1')}"
+                                                       value="${show.search_delay}"
+                                                       class="form-control "/>
+                                            </div>
+                                            <label for="search_delay">
+                                                <p>${_('Delays searching for new episodes by X number of days.')}</p>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </fieldset>
                             </div>
                         </div>

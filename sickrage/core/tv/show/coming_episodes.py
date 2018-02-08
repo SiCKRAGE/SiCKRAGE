@@ -111,8 +111,8 @@ class ComingEpisodes:
                     results += result(s, e)
 
         for index, item in enumerate(results):
-            results[index]['localtime'] = srDateTime.convert_to_setting(
-                parse_date_time(item['airdate'], item['airs'], item['network']))
+            results[index]['localtime'] = srDateTime(parse_date_time(item['airdate'], item['airs'], item['network']),
+                                                     convert=True).dt
 
         results.sort(ComingEpisodes.sorts[sort])
 
@@ -144,11 +144,10 @@ class ComingEpisodes:
                 result['network'] = ''
 
             result['quality'] = get_quality_string(result['quality'])
-            result['airs'] = srDateTime.srftime(result['localtime'], t_preset=timeFormat).lstrip('0').replace(' 0',
-                                                                                                              ' ')
+            result['airs'] = srDateTime(result['localtime']).srftime(t_preset=timeFormat).lstrip('0').replace(' 0', ' ')
             result['weekday'] = 1 + datetime.date.fromordinal(result['airdate']).weekday()
             result['tvdbid'] = result['indexer_id']
-            result['airdate'] = srDateTime.srfdate(result['localtime'], d_preset=dateFormat)
+            result['airdate'] = srDateTime(result['localtime']).srfdate(d_preset=dateFormat)
             result['localtime'] = result['localtime'].toordinal()
 
             grouped_results[category].append(result)

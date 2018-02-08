@@ -1,6 +1,19 @@
 # Changelog
 
-- * 30539e5 - 2018-01-31: Release v9.2.100 
+- * 10479f1 - 2018-02-08: Release v9.2.101 
+- * e740a8e - 2018-02-08: Fixed unicode issues with srDateTime class when using locales 
+- * c94ad9f - 2018-02-07: Fixed issues with backlog and proper searches 
+- * f50e104 - 2018-02-07: Fixed issue with next airdate and main show page 
+- * c912546 - 2018-02-07: Fixed issue with next airdate and main show page 
+- * e9494a7 - 2018-02-07: Fixed issue with next airdate and main show page 
+- * 563c4a0 - 2018-02-07: Added search delay feature to edit show options, allows setting a delay in days to delay daily searches for specific shows that may not release same day on provider sites 
+- * ca75c7e - 2018-02-06: refactored srDateTime class added locale support for displaying date and time 
+- * 2c89486 - 2018-02-06: Fixed issue #175 - autocomplete &quot;Enter the folder containing the episode &quot; field when manually post-processing using Post-Processing Dir from settings 
+- * b608667 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * e73b9af - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * e77ea77 - 2018-02-04: Fixed issue #176 - autocomplete colors when using dark theme hard to see 
+- * 372b59e - 2018-02-04: Fixed issue #177 - case-insensitive sorting for drop-down show list 
+- * c5bee33 - 2018-01-31: Release v9.2.100 
 - * c91e143 - 2018-01-28: Fixed issue #170 - double popup on hover over network in show list 
 - * 2155ce3 - 2018-01-26: Updated usenet-crawler url to new API url 
 - * d1b497f - 2018-01-25: Fixed Error loading IMDb info: &#x27;NoneType&#x27; object is not iterable 

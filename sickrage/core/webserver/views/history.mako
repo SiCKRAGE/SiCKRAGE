@@ -69,7 +69,7 @@
                                 <% curStatus, curQuality = Quality.splitCompositeStatus(int(hItem["action"])) %>
                                 <tr>
                                     <td align="center">
-                                        <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["date"]), History.date_format), show_seconds=True) %>
+                                        <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["date"]), History.date_format)).srfdatetime(show_seconds=True) %>
                                         <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
                                         <time datetime="${isoDate}" class="date">${airDate}</time>
                                     </td>
@@ -148,7 +148,7 @@
                             % for hItem in compactResults:
                                 <tr>
                                     <td align="center">
-                                        <% airDate = srdatetime.srDateTime.srfdatetime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format), show_seconds=True) %>
+                                        <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format)).srfdatetime(show_seconds=True) %>
                                         <% isoDate = datetime.datetime.strptime(str(hItem["actions"][0]["time"]), History.date_format).isoformat() %>
                                         <time datetime="${isoDate}" class="date">${airDate}</time>
                                     </td>

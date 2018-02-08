@@ -222,6 +222,7 @@ class BaseHandler(RequestHandler):
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
+
 class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
@@ -1265,8 +1266,7 @@ class Home(WebHandler):
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
-                    airDate = srDateTime.convert_to_setting(
-                        tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network))
+                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network), convert=True).dt
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
 
@@ -1286,11 +1286,13 @@ class Home(WebHandler):
                 else:
                     shows.append(show)
 
-            sortedShowLists = [["Shows", sorted(shows, lambda x, y: cmp(titler(x.name), titler(y.name)))],
-                               ["Anime", sorted(anime, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+            sortedShowLists = [["Shows", sorted(shows,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))],
+                               ["Anime", sorted(anime,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
         else:
-            sortedShowLists = [
-                ["Shows", sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name)))]]
+            sortedShowLists = [["Shows", sorted(sickrage.app.showlist,
+                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
 
         bwl = None
         if showObj.is_anime:
@@ -1341,7 +1343,7 @@ class Home(WebHandler):
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
                  indexerLang=None, subtitles=None, subtitles_sr_metadata=None, archive_firstmatch=None,
                  rls_ignore_words=None, rls_require_words=None, anime=None, blacklist=None, whitelist=None,
-                 scene=None, defaultEpStatus=None, quality_preset=None):
+                 scene=None, defaultEpStatus=None, quality_preset=None, search_delay=None):
 
         if exceptions_list is None:
             exceptions_list = []
@@ -1507,6 +1509,7 @@ class Home(WebHandler):
                 showObj.dvdorder = dvdorder
                 showObj.rls_ignore_words = rls_ignore_words.strip()
                 showObj.rls_require_words = rls_require_words.strip()
+                showObj.search_delay = int(search_delay)
 
             # if we change location clear the db of episodes, change it, write to db, and rescan
             if os.path.normpath(showObj.location) != os.path.normpath(location):
@@ -3546,7 +3549,7 @@ class ManageQueues(Manage):
 
     def forceBacklog(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('BACKLOG').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).func(True):
             sickrage.app.log.info("Backlog search forced")
             sickrage.app.alerts.message(_('Backlog search started'))
 
@@ -3554,7 +3557,7 @@ class ManageQueues(Manage):
 
     def forceSearch(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('DAILYSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).func(True):
             sickrage.app.log.info("Daily search forced")
             sickrage.app.alerts.message(_('Daily search started'))
 
@@ -3562,7 +3565,7 @@ class ManageQueues(Manage):
 
     def forceFindPropers(self):
         # force it to run the next time it looks
-        if sickrage.app.scheduler.get_job('PROPERSEARCHER').func(True):
+        if sickrage.app.scheduler.get_job(sickrage.app.proper_searcher.name).func(True):
             sickrage.app.log.info("Find propers search forced")
             sickrage.app.alerts.message(_('Find propers search started'))
 

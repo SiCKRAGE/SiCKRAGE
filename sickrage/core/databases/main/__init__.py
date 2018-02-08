@@ -23,7 +23,7 @@ import os
 import sickrage
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
-    MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, MainInfoIndex, \
+    MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
     MainBlacklistIndex, MainWhitelistIndex
 
 
@@ -35,7 +35,6 @@ class MainDB(srDatabase):
         'xem_refresh': MainXEMRefreshIndex,
         'scene_numbering': MainSceneNumberingIndex,
         'indexer_mapping': MainIndexerMappingIndex,
-        'info': MainInfoIndex,
         'blacklist': MainBlacklistIndex,
         'whitelist': MainWhitelistIndex,
         'history': MainHistoryIndex,
@@ -54,7 +53,6 @@ class MainDB(srDatabase):
         'history': ['action', 'date', 'showid', 'season', 'episode', 'quality', 'resource', 'provider', 'version'],
         'imdb_info': ['indexer_id', 'imdb_id', 'title', 'year', 'akas', 'runtimes', 'genres', 'countries',
                       'country_codes', 'certificates', 'rating', 'votes', 'last_update'],
-        'info': ['last_backlog', 'last_indexer', 'last_proper_search'],
         'scene_numbering': ['indexer', 'indexer_id', 'season', 'episode', 'scene_season', 'scene_episode',
                             'absolute_number', 'scene_absolute_number'],
         'blacklist': ['show_id', 'range', 'keyword'],
