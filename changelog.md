@@ -1,6 +1,7 @@
 # Changelog
 
-- * 10479f1 - 2018-02-08: Release v9.2.101 
+- * 03798c1 - 2018-02-11: revertFailedEpisode changed to use debug instead of warning for episodes without previous snatched statuses 
+- * aa7292f - 2018-02-08: Release v9.2.101 
 - * e740a8e - 2018-02-08: Fixed unicode issues with srDateTime class when using locales 
 - * c94ad9f - 2018-02-07: Fixed issues with backlog and proper searches 
 - * f50e104 - 2018-02-07: Fixed issue with next airdate and main show page 

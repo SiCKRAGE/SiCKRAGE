@@ -37,6 +37,7 @@ class FailedIndex(HashIndex):
     def make_key(self, key):
         return md5(key.encode('utf-8')).hexdigest()
 
+
 class FailedHistoryIndex(HashIndex):
     _version = 1
 
