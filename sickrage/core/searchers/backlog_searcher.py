@@ -145,10 +145,10 @@ class BacklogSearcher(object):
                         continue
                 elif curQuality in anyQualities:
                     continue
-            elif curStatus == DOWNLOADED:
-                # only fetch if not archive on first match
-                if show.archive_firstmatch:
-                    continue
+
+            # only fetch if not archive on first match
+            if curStatus == DOWNLOADED and show.archive_firstmatch:
+                continue
 
             epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
 
