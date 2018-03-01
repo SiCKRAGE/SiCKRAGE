@@ -2196,7 +2196,7 @@ jQuery(document).ready(function ($) {
                         $("#exceptions_list").val(allExceptions);
 
                         if (SICKRAGE.metaToBool('show.is_anime')) {
-                            SICKRAGE.generate_bwlist();
+                            SICKRAGE.home.generate_bwlist();
                         }
                     });
 
