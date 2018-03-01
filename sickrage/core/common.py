@@ -222,7 +222,7 @@ class Quality(object):
             if curQual << 16 & quality:
                 bestQualities.append(curQual)
 
-        return (sorted(anyQualities), sorted(bestQualities))
+        return sorted(anyQualities), sorted(bestQualities)
 
     @staticmethod
     def nameQuality(name, anime=False):

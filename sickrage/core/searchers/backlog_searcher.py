@@ -132,27 +132,30 @@ class BacklogSearcher(object):
         wanted = {}
         for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
                        if x['season'] > 0 and x['airdate'] > fromDate.toordinal()):
-            curCompositeStatus = int(result["status"] or -1)
-            curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
 
-            if bestQualities:
-                highestBestQuality = max(bestQualities)
-                lowestBestQuality = min(bestQualities)
-            else:
-                highestBestQuality = 0
-                lowestBestQuality = 0
+            curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
 
             # if we need a better one then say yes
-            if (curStatus in (DOWNLOADED, SNATCHED,
-                              SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-                epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+            if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
+                continue
 
-                # only fetch if not archive on first match, or if show is lowest than the lower expected quality
-                if epObj.show.archive_firstmatch == 0 or curQuality < lowestBestQuality:
-                    if epObj.season not in wanted:
-                        wanted[epObj.season] = [epObj]
-                    else:
-                        wanted[epObj.season].append(epObj)
+            if curStatus != WANTED:
+                if bestQualities:
+                    if curQuality in bestQualities:
+                        continue
+                elif curQuality in anyQualities:
+                    continue
+            elif curStatus == DOWNLOADED:
+                # only fetch if not archive on first match
+                if show.archive_firstmatch:
+                    continue
+
+            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+
+            if epObj.season not in wanted:
+                wanted[epObj.season] = [epObj]
+            else:
+                wanted[epObj.season].append(epObj)
 
         return wanted
 
