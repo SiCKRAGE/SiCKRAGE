@@ -61,7 +61,7 @@ class DailySearcher(object):
         new_episodes = False
 
         for episode in (x for x in sickrage.app.main_db.all('tv_episodes')
-                        if x['status'] in {common.UNAIRED, common.WANTED} and x['season'] > 0 and x['airdate'] > 1):
+                        if x['status'] == common.UNAIRED and x['season'] > 0 and x['airdate'] > 1):
             if not show or int(episode["showid"]) != show.indexerid:
                 show = findCertainShow(int(episode["showid"]))
 
