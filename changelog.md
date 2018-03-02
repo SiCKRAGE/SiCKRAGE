@@ -1,6 +1,7 @@
 # Changelog
 
-- * 06a3d9c - 2018-03-01: Fix call to generate_bwlist on save 
+- * 4fa2858 - 2018-03-01: Fixed small typo in daily searcher code 
+- * 25f6ef4 - 2018-03-01: Fix call to generate_bwlist on save 
 - * f6de0d6 - 2018-02-28: Fixed daily searcher to search for shows set WANTED aired same-day Fixed backlog searcher issues 
 - * 9453aea - 2018-02-28: Fixed daily searcher to search for shows set WANTED aired same-day Fixed backlog searcher issues 
 - * 54cc664 - 2018-02-11: revertFailedEpisode changed to use debug instead of warning for episodes without previous snatched statuses 
