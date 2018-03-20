@@ -371,7 +371,7 @@ class Tvdb:
 
     def set_authorization_header(self):
         try:
-            if not self.config['apitoken']:
+            if not self.logged_in:
                 self.config['apitoken'] = self._login()
                 self._token_auth_time = datetime.now()
 
