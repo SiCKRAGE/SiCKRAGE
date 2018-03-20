@@ -533,14 +533,14 @@ class GenericProvider(object):
         if self.cookies:
             result = self.add_cookies_from_ui()
             if not result['result']:
-                sickrage.app.alerts.notifications.message(result['message'])
+                sickrage.app.alerts.message(result['message'])
                 sickrage.app.log.warning(result['message'])
                 return False
         else:
             sickrage.app.log.warning('Failed to login, you will need to add your cookies in the provider '
                                      'settings')
 
-            sickrage.app.alerts.notifications.error(
+            sickrage.app.alerts.error(
                 'Failed to auth with {provider}'.format(provider=self.name),
                 'You will need to add your cookies in the provider settings')
             return False
@@ -551,7 +551,7 @@ class GenericProvider(object):
             sickrage.app.log.warning('Please configure the required cookies for this provider. Check your '
                                      'provider settings')
 
-            sickrage.app.alerts.notifications.error(
+            sickrage.app.alerts.error(
                 'Wrong cookies for {}'.format(self.name),
                 'Check your provider settings'
             )
