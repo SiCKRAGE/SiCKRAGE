@@ -1,6 +1,7 @@
 # Changelog
 
-- * d17d760 - 2018-03-02: Fixed small typo in daily searcher code 
+- * 489d0ed - 2018-03-20: Fixed issue #184 - Failed to refresh TheTVDB api token 
+- * e0fa39e - 2018-03-02: Fixed small typo in daily searcher code 
 - * cc43195 - 2018-03-01: Fixed small typo in daily searcher code 
 - * 25f6ef4 - 2018-03-01: Fix call to generate_bwlist on save 
 - * f6de0d6 - 2018-02-28: Fixed daily searcher to search for shows set WANTED aired same-day Fixed backlog searcher issues 

@@ -18,7 +18,6 @@
 
 from __future__ import print_function, unicode_literals
 
-import datetime
 import functools
 import io
 import os
@@ -27,6 +26,7 @@ import re
 import time
 import urlparse
 from collections import OrderedDict
+from datetime import datetime, timedelta
 from operator import itemgetter
 
 import sickrage
@@ -45,12 +45,12 @@ def login_required(f):
     @functools.wraps(f)
     def wrapper(obj, *args, **kwargs):
         if not obj.logged_in:
-            obj.login()
+            obj.set_authorization_header()
 
         try:
             return f(obj, *args, **kwargs)
         except tvdb_unauthorized:
-            obj.login(True)
+            obj.set_authorization_header()
             return f(obj, *args, **kwargs)
 
     return wrapper
@@ -315,6 +315,11 @@ class Tvdb:
                 except:
                     pass
 
+        # api related variables
+        self._token_auth_time = 0
+        self._token_duration_seconds = 23 * 3600  # 23 Hours
+        self._token_max_duration = 24 * 3600  # 24 Hours
+
         self.config = dict(apikey=apikey, debug_enabled=debug, custom_ui=custom_ui, cache_enabled=cache,
                            dvdorder=dvdorder, proxy=proxy, apitoken=None, api={}, headers=headers)
 
@@ -358,23 +363,34 @@ class Tvdb:
     def logged_in(self):
         return self.config['apitoken'] is not None
 
-    def login(self, refresh=False):
+    def _refresh_token(self):
+        return self._request('get', self.config['api']['refresh'])['token']
+
+    def _login(self):
+        return self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+
+    def set_authorization_header(self):
         try:
-            if refresh and self.config['apitoken']:
-                self.config['apitoken'] = \
-                    self._request('post', self.config['api']['refresh'])['token']
-            else:
-                self.config['apitoken'] = \
-                    self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+            if not self.config['apitoken']:
+                self.config['apitoken'] = self._login()
+                self._token_auth_time = datetime.now()
+
+            token_renew_time = self._token_auth_time + timedelta(seconds=self._token_duration_seconds)
+            if datetime.now() > token_renew_time:
+                token_max_time = self._token_auth_time + timedelta(seconds=self._token_max_duration)
+
+                if datetime.now() < token_max_time:
+                    self.config['apitoken'] = self._refresh_token()
+                else:
+                    self.config['apitoken'] = self._login()
+
+                self._token_auth_time = datetime.now()
         except Exception as e:
             self.logout()
 
     def _request(self, method, url, lang=None, **kwargs):
         self.config['headers'].update({'Content-type': 'application/json'})
-
-        if self.config['apitoken']:
-            self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
-
+        self.config['headers']['Authorization'] = 'Bearer {}'.format(self.config['apitoken'])
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
 
         # get response from theTVDB
@@ -580,7 +596,7 @@ class Tvdb:
             self._setItem(sid, seas_no, ep_no, 'filename', image_url)
 
         # set last updated
-        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.datetime.now().timetuple())))
+        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
 
         return self.shows[int(sid)]
 
