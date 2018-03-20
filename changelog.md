@@ -1,6 +1,7 @@
 # Changelog
 
-- * 59fb706 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
+- * af84549 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
+- * 23df733 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
 - * 6a37da8 - 2018-03-20: Added 5 second sleep timer to Torrentz provider 
 - * 7a4aef8 - 2018-03-20: Fixed issue #184 - Failed to refresh TheTVDB api token 
 - * e0fa39e - 2018-03-02: Fixed small typo in daily searcher code 
