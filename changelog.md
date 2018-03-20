@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7c649c9 - 2018-03-20: Added 5 second sleep timer to Torrentz provider 
+- * 59fb706 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
+- * 6a37da8 - 2018-03-20: Added 5 second sleep timer to Torrentz provider 
 - * 7a4aef8 - 2018-03-20: Fixed issue #184 - Failed to refresh TheTVDB api token 
 - * e0fa39e - 2018-03-02: Fixed small typo in daily searcher code 
 - * cc43195 - 2018-03-01: Fixed small typo in daily searcher code 

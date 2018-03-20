@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import re
-from time import sleep
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -58,9 +57,6 @@ class TORRENTZProvider(TorrentProvider):
                 search_url = self.urls['feed']
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
-
-                # sleep 5 secs per request
-                sleep(5)
 
                 try:
                     data = self.session.get(search_url, params={'f': search_string}).text
