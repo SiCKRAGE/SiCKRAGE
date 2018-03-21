@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7d2e27e - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
+- * 05f23cd - 2018-03-20: Minor code update for provider cookie handling 
+- * f303419 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
 - * b169536 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
 - * 23df733 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
 - * 6a37da8 - 2018-03-20: Added 5 second sleep timer to Torrentz provider 

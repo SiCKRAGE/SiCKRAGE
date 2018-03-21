@@ -66,7 +66,6 @@ class GenericProvider(object):
 
         # cookies
         self.enable_cookies = False
-        self.required_cookies = []
         self.cookies = ''
 
         self.session = WebSession()
@@ -485,16 +484,16 @@ class GenericProvider(object):
             return {'result': False,
                     'message': 'Cookie is not correctly formatted: {}'.format(self.cookies)}
 
-        if not all(req_cookie in [x.rsplit('=', 1)[0] for x in self.cookies.split(';')] for req_cookie in
-                   self.required_cookies):
+        if hasattr(self, 'required_cookies') and not all(
+                req_cookie in [x.rsplit('=', 1)[0] for x in self.cookies.split(';')] for req_cookie in
+                self.required_cookies):
             return {'result': False,
                     'message': "You haven't configured the required cookies. Please login at {provider_url}, "
                                "and make sure you have copied the following cookies: {required_cookies!r}"
                         .format(provider_url=self.name, required_cookies=self.required_cookies)}
 
         # cookie_validator got at least one cookie key/value pair, let's return success
-        add_dict_to_cookiejar(self.session.cookies,
-                              dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
+        add_dict_to_cookiejar(self.session.cookies, dict(x.rsplit('=', 1) for x in self.cookies.split(';')))
 
         return {'result': True,
                 'message': ''}
@@ -506,13 +505,12 @@ class GenericProvider(object):
         Meaning that we've already successfully authenticated once, and we don't need to go through this again.
         Note! This doesn't mean the cookies are correct!
         """
-        if not hasattr(self, 'required_cookies'):
-            # A reminder for the developer, implementing cookie based authentication.
-            sickrage.app.log.error(
-                'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
-            return False
-        return all(
-            dict_from_cookiejar(self.session.cookies).get(cookie) for cookie in self.required_cookies)
+        if hasattr(self, 'required_cookies'):
+            return all(dict_from_cookiejar(self.session.cookies).get(cookie) for cookie in self.required_cookies)
+
+        # A reminder for the developer, implementing cookie based authentication.
+        sickrage.app.log.error(
+            'You need to configure the required_cookies attribute, for the provider: {}'.format(self.name))
 
     def cookie_login(self, check_login_text, check_url=None):
         """
@@ -861,6 +859,7 @@ class TorrentRssProvider(TorrentProvider):
         self.enable_backlog = enable_backlog
         self.enable_cookies = True
         self.cookies = cookies
+        self.required_cookies = ('uid', 'pass')
         self.titleTAG = titleTAG
         self.default = default
 
@@ -1276,7 +1275,8 @@ class NewznabProvider(NZBProvider):
             cls('NZB.Cat', 'https://nzb.cat', '', '5030,5040,5010', 'eponly', True, True, True, True),
             cls('NZBGeek', 'https://api.nzbgeek.info', '', '5030,5040', 'eponly', False, False, False, True),
             cls('NZBs.org', 'https://nzbs.org', '', '5030,5040', 'eponly', False, False, False, True),
-            cls('Usenet-Crawler', 'https://api.usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False, True)
+            cls('Usenet-Crawler', 'https://api.usenet-crawler.com', '', '5030,5040', 'eponly', False, False, False,
+                True)
         ]
 
 
