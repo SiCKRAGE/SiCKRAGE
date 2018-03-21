@@ -1,6 +1,7 @@
 # Changelog
 
-- * 05f23cd - 2018-03-20: Minor code update for provider cookie handling 
+- * e4597c7 - 2018-03-21: Fixed issues with RARBG provider and cloudflare protection 
+- * 98fa8b8 - 2018-03-20: Minor code update for provider cookie handling 
 - * f303419 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
 - * b169536 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
 - * 23df733 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
