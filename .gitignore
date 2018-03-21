@@ -47,6 +47,7 @@ sickrage.egg-info
 /.ropeproject/*
 /.settings/*
 /build/
+pre-commit-hook.sh
 
 # OS Generated Files #
 ######################
