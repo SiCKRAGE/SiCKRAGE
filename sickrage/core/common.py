@@ -302,7 +302,7 @@ class Quality(object):
               and not check_name([r"(720|1080)[pi]"], all)
               and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDDVD
-        elif (check_name([r"720p", r"hd.?tv", r"[xh].?26[45]"], all)
+        elif (check_name([r"720p", r"hevc", r"hd.?tv", r"[xh].?26[45]"], all)
               or check_name([r"hr.ws.pdtv.[xh].?26[45]"], any) and not check_name([r"1080[pi]"], all)):
             ret = Quality.HDTV
         elif (check_name([r"720p|1080i", r"hd.?tv", r"mpeg-?2"], all)
