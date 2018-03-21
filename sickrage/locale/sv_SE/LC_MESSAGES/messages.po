@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-02-08 18:30-0500\n"
-"PO-Revision-Date: 2018-02-08 18:31-0500\n"
+"POT-Creation-Date: 2018-03-21 00:54-0400\n"
+"PO-Revision-Date: 2018-03-21 00:56-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -4501,7 +4501,7 @@ msgstr "Scenens namn:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:273
 msgid "Search Delay:"
-msgstr ""
+msgstr "Sökfördröjning:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:278
 msgid "Required Words:"
@@ -4852,7 +4852,7 @@ msgstr "Detta kommer att påverka avsnittssökning på NZB- och torrent-leverant
 
 #: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "Search Delay"
-msgstr ""
+msgstr "Sökfördröjning"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "ex. 1"
@@ -4860,7 +4860,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:372
 msgid "Delays searching for new episodes by X number of days."
-msgstr ""
+msgstr "Fördröjer sökning efter nya avsnitt med X dagar."
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:12
 #: sickrage/core/webserver/views/home/index.mako:31

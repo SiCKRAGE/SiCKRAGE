@@ -1,6 +1,7 @@
 # Changelog
 
-- * c5777cf - 2018-03-21: Updated .gitignore 
+- * eea8e85 - 2018-03-21: Release v9.3.2 
+- * fe0d03b - 2018-03-21: Updated .gitignore 
 - * ded351a - 2018-03-21: Fixed issues with RARBG provider and cloudflare protection 
 - * 98fa8b8 - 2018-03-20: Minor code update for provider cookie handling 
 - * f303419 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
