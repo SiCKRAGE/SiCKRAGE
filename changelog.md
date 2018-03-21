@@ -1,6 +1,22 @@
 # Changelog
 
-- * 10479f1 - 2018-02-08: Release v9.2.101 
+- * eea8e85 - 2018-03-21: Release v9.3.2 
+- * fe0d03b - 2018-03-21: Updated .gitignore 
+- * ded351a - 2018-03-21: Fixed issues with RARBG provider and cloudflare protection 
+- * 98fa8b8 - 2018-03-20: Minor code update for provider cookie handling 
+- * f303419 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
+- * b169536 - 2018-03-20: Updated JWT functions for TheTVDB authentication mechanism 
+- * 23df733 - 2018-03-20: Fixed issues with cloudflare protection not being detected 
+- * 6a37da8 - 2018-03-20: Added 5 second sleep timer to Torrentz provider 
+- * 7a4aef8 - 2018-03-20: Fixed issue #184 - Failed to refresh TheTVDB api token 
+- * e0fa39e - 2018-03-02: Fixed small typo in daily searcher code 
+- * cc43195 - 2018-03-01: Fixed small typo in daily searcher code 
+- * 25f6ef4 - 2018-03-01: Fix call to generate_bwlist on save 
+- * f6de0d6 - 2018-02-28: Fixed daily searcher to search for shows set WANTED aired same-day Fixed backlog searcher issues 
+- * 9453aea - 2018-02-28: Fixed daily searcher to search for shows set WANTED aired same-day Fixed backlog searcher issues 
+- * 54cc664 - 2018-02-11: revertFailedEpisode changed to use debug instead of warning for episodes without previous snatched statuses 
+- * f65fe08 - 2018-02-12: Fix call to generate_bwlist on save 
+- * aa7292f - 2018-02-08: Release v9.2.101 
 - * e740a8e - 2018-02-08: Fixed unicode issues with srDateTime class when using locales 
 - * c94ad9f - 2018-02-07: Fixed issues with backlog and proper searches 
 - * f50e104 - 2018-02-07: Fixed issue with next airdate and main show page 

@@ -43,7 +43,7 @@ class TorrentDayProvider(TorrentProvider):
         self.minleech = None
 
         self.enable_cookies = True
-        self.required_cookies = ['uid', 'pass']
+        self.required_cookies = ('uid', 'pass')
 
         self.categories = {
             'Season': {'c14': 1},

@@ -315,7 +315,7 @@ class FailedHistory(object):
                     sickrage.app.log.info("Found in history")
                     epObj.status = history_eps[epObj.episode]['old_status']
                 else:
-                    sickrage.app.log.warning("WARNING: Episode not found in history. Setting it back to WANTED")
+                    sickrage.app.log.debug("WARNING: Episode not found in history. Setting it back to WANTED")
                     epObj.status = WANTED
                     epObj.saveToDB()
 

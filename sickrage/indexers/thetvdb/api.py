@@ -18,16 +18,20 @@
 
 from __future__ import print_function, unicode_literals
 
-import datetime
 import functools
 import io
+import json
 import os
 import pickle
 import re
 import time
 import urlparse
+from base64 import urlsafe_b64decode
 from collections import OrderedDict
+from datetime import datetime
 from operator import itemgetter
+
+from six import text_type
 
 import sickrage
 from sickrage.core.websession import WebSession
@@ -44,13 +48,13 @@ from sickrage.indexers.thetvdb.exceptions import (tvdb_error, tvdb_shownotfound,
 def login_required(f):
     @functools.wraps(f)
     def wrapper(obj, *args, **kwargs):
-        if not obj.logged_in:
-            obj.login()
+        if not obj.jwt_token:
+            obj.authenticate()
 
         try:
             return f(obj, *args, **kwargs)
         except tvdb_unauthorized:
-            obj.login(True)
+            obj.authenticate()
             return f(obj, *args, **kwargs)
 
     return wrapper
@@ -305,7 +309,8 @@ class Tvdb:
                  proxy=None,
                  headers=None):
 
-        if headers is None: headers = {}
+        if headers is None:
+            headers = {}
 
         self.shows = ShowCache()
         if os.path.isfile(os.path.join(sickrage.app.data_dir, 'thetvdb.db')):
@@ -316,7 +321,7 @@ class Tvdb:
                     pass
 
         self.config = dict(apikey=apikey, debug_enabled=debug, custom_ui=custom_ui, cache_enabled=cache,
-                           dvdorder=dvdorder, proxy=proxy, apitoken=None, api={}, headers=headers)
+                           dvdorder=dvdorder, proxy=proxy, api={}, headers=headers)
 
         # api base url
         self.config['api']['base'] = "https://api.thetvdb.com"
@@ -351,30 +356,89 @@ class Tvdb:
         if language not in self.languages:
             self.config['language'] = None
 
-    def logout(self):
-        self.config['apitoken'] = None
+    @property
+    def jwt_token(self):
+        return getattr(self, '_jwt_token', None)
+
+    @jwt_token.setter
+    def jwt_token(self, value):
+        if self.jwt_token != value:
+            setattr(self, '_jwt_token', value)
 
     @property
-    def logged_in(self):
-        return self.config['apitoken'] is not None
+    def jwt_payload(self):
+        return getattr(self, '_jwt_payload', self.get_jwt_payload(self.token))
 
-    def login(self, refresh=False):
+    @property
+    def jwt_expiration(self):
+        return self.jwt_payload.get('exp', time.time())
+
+    @property
+    def jwt_time_remaining(self):
+        return max(self.jwt_expiration - time.time(), 0)
+
+    @property
+    def jwt_is_expired(self):
+        return self.jwt_expiration <= time.time()
+
+    def logout(self):
+        self.token = None
+
+    def _refresh(self):
+        self.jwt_token = self._request('get', self.config['api']['refresh'])['token']
+
+    def _login(self):
+        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+
+    def authenticate(self):
         try:
-            if refresh and self.config['apitoken']:
-                self.config['apitoken'] = \
-                    self._request('post', self.config['api']['refresh'])['token']
-            else:
-                self.config['apitoken'] = \
-                    self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+            if not self.jwt_token or self.jwt_is_expired:
+                self._login()
+            elif self.jwt_time_remaining < 7200:
+                self._refresh()
         except Exception as e:
             self.logout()
 
+    def jwt_decode(self, data):
+        # make sure data is binary
+        if isinstance(data, text_type):
+            sickrage.app.log.debug('Encoding the JWT token as UTF-8')
+            data = data.encode('utf-8')
+
+        # pad the data to a multiple of 4 bytes
+        remainder = len(data) % 4
+        if remainder > 0:
+            length = 4 - remainder
+            sickrage.app.log.debug('Padding the JWT with {x} bytes'.format(x=length))
+            data += b'=' * length
+
+        # base64 decode the data
+        data = urlsafe_b64decode(data)
+
+        # convert the decoded json to a string
+        data = data.decode('utf-8')
+
+        # return the json string as a dict
+        result = json.loads(data)
+        sickrage.app.log.info('JWT Successfully decoded')
+        return result
+
+    def get_jwt_payload(self, token):
+        result = {}
+
+        try:
+            __, payload, __ = token.split('.')
+        except AttributeError:
+            sickrage.app.log.debug('Unable to extract payload from JWT: {}'.format(token))
+        else:
+            result = self.jwt_decode(payload)
+            sickrage.app.log.debug('Payload extracted from JWT: {}'.format(result))
+        finally:
+            return result
+
     def _request(self, method, url, lang=None, **kwargs):
         self.config['headers'].update({'Content-type': 'application/json'})
-
-        if self.config['apitoken']:
-            self.config['headers']['authorization'] = 'Bearer {}'.format(self.config['apitoken'])
-
+        self.config['headers']['Authorization'] = 'Bearer {}'.format(self.jwt_token)
         self.config['headers'].update({'Accept-Language': lang or self.config['language']})
 
         # get response from theTVDB
@@ -580,7 +644,7 @@ class Tvdb:
             self._setItem(sid, seas_no, ep_no, 'filename', image_url)
 
         # set last updated
-        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.datetime.now().timetuple())))
+        self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
 
         return self.shows[int(sid)]
 
