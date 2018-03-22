@@ -312,6 +312,9 @@ class Quality(object):
         elif (check_name([r"1080p", r"hd.?tv", r"[xh].?26[45]"], all)
               or check_name([r"1080p", r"hevc", r"[xh].?26[45]"], all)):
             ret = Quality.FULLHDTV
+        elif (check_name([r"720p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
+              or check_name([r"720p", r"itunes", r"[xh].?26[45]"], all)):
+            ret = Quality.HDWEBDL
         elif (check_name([r"1080p", r"\bweb\b|web.?dl|web(rip|mux|hd)"], all)
               or check_name([r"1080p", r"itunes", r"[xh].?26[45]"], all)):
             ret = Quality.FULLHDWEBDL
