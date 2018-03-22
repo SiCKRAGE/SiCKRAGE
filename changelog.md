@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0fb8567 - 2018-03-21: Added hevc to list of scene quality checks 
+- * b430327 - 2018-03-22: Added hevc to list of scene quality checks 
+- * e198141 - 2018-03-21: Added hevc to list of scene quality checks 
 - * f546064 - 2018-03-21: Release v9.3.2 
 - * fe0d03b - 2018-03-21: Updated .gitignore 
 - * ded351a - 2018-03-21: Fixed issues with RARBG provider and cloudflare protection 
