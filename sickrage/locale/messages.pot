@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.2\n"
+"Project-Id-Version: sickrage 9.3.3\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-03-21 00:54-0400\n"
+"POT-Creation-Date: 2018-03-27 12:20-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -526,18 +526,18 @@ msgstr ""
 msgid "Quality"
 msgstr ""
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:607
+#: sickrage/core/common.py:185 sickrage/core/common.py:609
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr ""
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:608
+#: sickrage/core/common.py:184 sickrage/core/common.py:610
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr ""
 
-#: sickrage/core/common.py:614
+#: sickrage/core/common.py:616
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -6128,39 +6128,39 @@ msgstr ""
 msgid "Extend (Limited, E-prefixed)"
 msgstr ""
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:610
+#: sickrage/core/common.py:186 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr ""
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:615
+#: sickrage/core/common.py:187 sickrage/core/common.py:617
 msgid "Failed"
 msgstr ""
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:616
+#: sickrage/core/common.py:188 sickrage/core/common.py:618
 msgid "Snatched (Best)"
 msgstr ""
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:612
+#: sickrage/core/common.py:189 sickrage/core/common.py:614
 msgid "Archived"
 msgstr ""
 
-#: sickrage/core/common.py:605
+#: sickrage/core/common.py:607
 msgid "Unknown"
 msgstr ""
 
-#: sickrage/core/common.py:606
+#: sickrage/core/common.py:608
 msgid "Unaired"
 msgstr ""
 
-#: sickrage/core/common.py:609
+#: sickrage/core/common.py:611
 msgid "Skipped"
 msgstr ""
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:613
 msgid "Wanted"
 msgstr ""
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:615
 msgid "Ignored"
 msgstr ""
 
@@ -6233,57 +6233,57 @@ msgstr ""
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr ""
 
-#: sickrage/core/queues/show.py:286 sickrage/core/queues/show.py:296
-#: sickrage/core/queues/show.py:308 sickrage/core/webserver/views.py:2693
+#: sickrage/core/queues/show.py:287 sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:309 sickrage/core/webserver/views.py:2693
 #: sickrage/core/webserver/views.py:2705
 msgid "Unable to add show"
 msgstr ""
 
-#: sickrage/core/queues/show.py:287
+#: sickrage/core/queues/show.py:288
 msgid ""
 "Show in {} has no name on {}, probably the wrong language. Delete .nfo and "
 "add manually in the correct language"
 msgstr ""
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid "Show "
 msgstr ""
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid " is on "
 msgstr ""
 
-#: sickrage/core/queues/show.py:299
+#: sickrage/core/queues/show.py:300
 msgid " but contains no season/episode data."
 msgstr ""
 
-#: sickrage/core/queues/show.py:309
+#: sickrage/core/queues/show.py:310
 msgid ""
 "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete"
 " .nfo and try adding manually again."
 msgstr ""
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid "Unable to add "
 msgstr ""
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid " due to an error with "
 msgstr ""
 
-#: sickrage/core/queues/show.py:376
+#: sickrage/core/queues/show.py:377
 msgid "Unable to add show due to an error with "
 msgstr ""
 
-#: sickrage/core/queues/show.py:381
+#: sickrage/core/queues/show.py:382
 msgid "Show skipped"
 msgstr ""
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid "The show in "
 msgstr ""
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid " is already in your show list"
 msgstr ""
 
