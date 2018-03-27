@@ -1,6 +1,7 @@
 # Changelog
 
-- * dbb3847 - 2018-03-22: Added hevc to list of scene quality checks 
+- * edc9d50 - 2018-03-27: Fixed issue #187 - Qbittorrent failing authentication 
+- * 0b928da - 2018-03-22: Added hevc to list of scene quality checks 
 - * 1891763 - 2018-03-22: Added hevc to list of scene quality checks 
 - * e198141 - 2018-03-21: Added hevc to list of scene quality checks 
 - * f546064 - 2018-03-21: Release v9.3.2 

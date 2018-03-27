@@ -51,7 +51,8 @@ class ShowQueue(srQueue):
         if not show:
             return False
 
-        return show.indexerid in [x.show.indexerid if x.show else 0 for __, __, x in self.queue if x.action_id in actions]
+        return show.indexerid in [x.show.indexerid if x.show else 0 for __, __, x in self.queue if
+                                  x.action_id in actions]
 
     def _isBeing(self, show, actions):
         return self.currentItem is not None and show == self.currentItem.show and self.currentItem.action_id in actions
@@ -284,9 +285,9 @@ class QueueItemAdd(ShowQueueItem):
                     "Show in {} has no name on {}, probably the wrong language used to search with".format(self.showDir,
                                                                                                            index_name))
                 sickrage.app.alerts.error(_("Unable to add show"),
-                                                      _(
-                                                          "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language").format(
-                                                          self.showDir, index_name))
+                                          _(
+                                              "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language").format(
+                                              self.showDir, index_name))
                 return self._finishEarly()
 
             # if the show has no episodes/seasons
@@ -294,10 +295,10 @@ class QueueItemAdd(ShowQueueItem):
                 sickrage.app.log.error("Show " + str(s['seriesname']) + " is on " + str(
                     IndexerApi(self.indexer).name) + " but contains no season/episode data.")
                 sickrage.app.alerts.error(_("Unable to add show"),
-                                                      _("Show ") + str(s['seriesname']) + _(" is on ") + str(
-                                                          IndexerApi(
-                                                              self.indexer).name) + _(
-                                                          " but contains no season/episode data."))
+                                          _("Show ") + str(s['seriesname']) + _(" is on ") + str(
+                                              IndexerApi(
+                                                  self.indexer).name) + _(
+                                              " but contains no season/episode data."))
                 return self._finishEarly()
         except Exception as e:
             sickrage.app.log.error(
@@ -379,7 +380,7 @@ class QueueItemAdd(ShowQueueItem):
         except MultipleShowObjectsException:
             sickrage.app.log.warning("The show in " + self.showDir + " is already in your show list, skipping")
             sickrage.app.alerts.error(_('Show skipped'),
-                                                  _("The show in ") + self.showDir + _(" is already in your show list"))
+                                      _("The show in ") + self.showDir + _(" is already in your show list"))
             return self._finishEarly()
 
         except Exception as e:
@@ -566,7 +567,8 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
             self.show.load_imdb_info()
         except Exception as e:
-            sickrage.app.log.error("Error loading IMDb info: {}".format(e.message))
+            sickrage.app.log.error(
+                "Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e.message))
             sickrage.app.log.debug(traceback.format_exc())
 
         # get episode list from DB
