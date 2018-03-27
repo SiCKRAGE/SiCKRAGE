@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-03-21 00:54-0400\n"
-"PO-Revision-Date: 2018-03-21 00:55-0400\n"
+"POT-Creation-Date: 2018-03-27 12:20-0400\n"
+"PO-Revision-Date: 2018-03-27 12:21-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Udbyder"
 msgid "Quality"
 msgstr "Kvalitet"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:607
+#: sickrage/core/common.py:185 sickrage/core/common.py:609
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Snappede"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:608
+#: sickrage/core/common.py:184 sickrage/core/common.py:610
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Downloadet"
 
-#: sickrage/core/common.py:614
+#: sickrage/core/common.py:616
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -5949,39 +5949,39 @@ msgstr "Udvide (begrænset)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Udvide (begrænset, E-præfiks)"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:610
+#: sickrage/core/common.py:186 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr "Snappede (korrekt)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:615
+#: sickrage/core/common.py:187 sickrage/core/common.py:617
 msgid "Failed"
 msgstr "Mislykkedes"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:616
+#: sickrage/core/common.py:188 sickrage/core/common.py:618
 msgid "Snatched (Best)"
 msgstr "Snappede (bedst)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:612
+#: sickrage/core/common.py:189 sickrage/core/common.py:614
 msgid "Archived"
 msgstr "Arkiveret"
 
-#: sickrage/core/common.py:605
+#: sickrage/core/common.py:607
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: sickrage/core/common.py:606
+#: sickrage/core/common.py:608
 msgid "Unaired"
 msgstr "Unaired"
 
-#: sickrage/core/common.py:609
+#: sickrage/core/common.py:611
 msgid "Skipped"
 msgstr "Sprunget over"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:613
 msgid "Wanted"
 msgstr "Ønskede"
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:615
 msgid "Ignored"
 msgstr "Ignoreret"
 
@@ -6042,53 +6042,53 @@ msgstr "Ingen downloads blev ikke fundet"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Kunne ikke finde en download for <i>%s</i>"
 
-#: sickrage/core/queues/show.py:286 sickrage/core/queues/show.py:296
-#: sickrage/core/queues/show.py:308 sickrage/core/webserver/views.py:2693
+#: sickrage/core/queues/show.py:287 sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:309 sickrage/core/webserver/views.py:2693
 #: sickrage/core/webserver/views.py:2705
 msgid "Unable to add show"
 msgstr "Stand til at tilføje show"
 
-#: sickrage/core/queues/show.py:287
+#: sickrage/core/queues/show.py:288
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Vis i {} har intet navn på {}, sandsynligvis det forkerte sprog. Slette .nfo og tilføje manuelt i det korrekte sprog"
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid "Show "
 msgstr "Vis "
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid " is on "
 msgstr " er på "
 
-#: sickrage/core/queues/show.py:299
+#: sickrage/core/queues/show.py:300
 msgid " but contains no season/episode data."
 msgstr " men indeholder ingen sæson/episode data."
 
-#: sickrage/core/queues/show.py:309
+#: sickrage/core/queues/show.py:310
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Stand til at slå op Vis i {} på {} ved hjælp af ID {}, ikke bruger NFO. Slette .nfo og prøv at tilføje manuelt igen."
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid "Unable to add "
 msgstr "Kunne ikke tilføjes "
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid " due to an error with "
 msgstr " på grund af en fejl med "
 
-#: sickrage/core/queues/show.py:376
+#: sickrage/core/queues/show.py:377
 msgid "Unable to add show due to an error with "
 msgstr "Stand til at tilføje Vis på grund af en fejl med "
 
-#: sickrage/core/queues/show.py:381
+#: sickrage/core/queues/show.py:382
 msgid "Show skipped"
 msgstr "Vis springes"
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid "The show in "
 msgstr "Vis i "
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid " is already in your show list"
 msgstr " er allerede på listen Vis"
 

@@ -150,7 +150,7 @@ class WebHooks(object):
         """
         Bypass CloudFlare's anti-bot protection.
         """
-        if all([resp.status_code in [403,503], 'cloudflare' in resp.headers.get('server')]):
+        if all([resp.status_code in [403,503], 'cloudflare' in resp.headers.get('server', '')]):
             sickrage.app.log.debug('CloudFlare protection detected, trying to bypass it')
 
             # Get the session used or create a new one

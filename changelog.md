@@ -1,6 +1,11 @@
 # Changelog
 
-- * eea8e85 - 2018-03-21: Release v9.3.2 
+- * b99942f - 2018-03-27: Release v9.3.3 
+- * b6885a5 - 2018-03-27: Fixed issue #187 - Qbittorrent failing authentication 
+- * 0b928da - 2018-03-22: Added hevc to list of scene quality checks 
+- * 1891763 - 2018-03-22: Added hevc to list of scene quality checks 
+- * e198141 - 2018-03-21: Added hevc to list of scene quality checks 
+- * f546064 - 2018-03-21: Release v9.3.2 
 - * fe0d03b - 2018-03-21: Updated .gitignore 
 - * ded351a - 2018-03-21: Fixed issues with RARBG provider and cloudflare protection 
 - * 98fa8b8 - 2018-03-20: Minor code update for provider cookie handling 

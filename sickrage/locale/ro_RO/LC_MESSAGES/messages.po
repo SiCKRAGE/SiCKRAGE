@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-03-21 00:54-0400\n"
-"PO-Revision-Date: 2018-03-21 00:56-0400\n"
+"POT-Creation-Date: 2018-03-27 12:20-0400\n"
+"PO-Revision-Date: 2018-03-27 12:22-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Furnizor"
 msgid "Quality"
 msgstr "Calitate"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:607
+#: sickrage/core/common.py:185 sickrage/core/common.py:609
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Smuls"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:608
+#: sickrage/core/common.py:184 sickrage/core/common.py:610
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Descarcat"
 
-#: sickrage/core/common.py:614
+#: sickrage/core/common.py:616
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -5949,39 +5949,39 @@ msgstr "Se extindă (limitat)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Se extindă (limitat, prefixate de E)"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:610
+#: sickrage/core/common.py:186 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr "Smuls (buna)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:615
+#: sickrage/core/common.py:187 sickrage/core/common.py:617
 msgid "Failed"
 msgstr "Nu a reușit"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:616
+#: sickrage/core/common.py:188 sickrage/core/common.py:618
 msgid "Snatched (Best)"
 msgstr "Smuls (cel mai bun)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:612
+#: sickrage/core/common.py:189 sickrage/core/common.py:614
 msgid "Archived"
 msgstr "Arhivate"
 
-#: sickrage/core/common.py:605
+#: sickrage/core/common.py:607
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: sickrage/core/common.py:606
+#: sickrage/core/common.py:608
 msgid "Unaired"
 msgstr "Unaired"
 
-#: sickrage/core/common.py:609
+#: sickrage/core/common.py:611
 msgid "Skipped"
 msgstr "De sarit"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:613
 msgid "Wanted"
 msgstr "Vrut"
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:615
 msgid "Ignored"
 msgstr "Ignorat"
 
@@ -6042,53 +6042,53 @@ msgstr "Download-uri nu au fost găsite"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nu a putut găsi un drum liber pentru <i>%s</i>"
 
-#: sickrage/core/queues/show.py:286 sickrage/core/queues/show.py:296
-#: sickrage/core/queues/show.py:308 sickrage/core/webserver/views.py:2693
+#: sickrage/core/queues/show.py:287 sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:309 sickrage/core/webserver/views.py:2693
 #: sickrage/core/webserver/views.py:2705
 msgid "Unable to add show"
 msgstr "Imposibil de adăugat Arată"
 
-#: sickrage/core/queues/show.py:287
+#: sickrage/core/queues/show.py:288
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Arată în {} are nici un nume {,}, probabil, greşit limba. Ştergeţi .nfo şi adăugaţi manual în limba corectă"
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid "Show "
 msgstr "Arată "
 
-#: sickrage/core/queues/show.py:297
+#: sickrage/core/queues/show.py:298
 msgid " is on "
 msgstr " este pe "
 
-#: sickrage/core/queues/show.py:299
+#: sickrage/core/queues/show.py:300
 msgid " but contains no season/episode data."
 msgstr " dar nu conţine/Episodul date."
 
-#: sickrage/core/queues/show.py:309
+#: sickrage/core/queues/show.py:310
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Imposibilitatea de a căuta Arată în {} pe {} utilizând ID-ul {,}, nu utilizaţi NFO. Ştergeţi .nfo şi încercaţi să adăugaţi manual din nou."
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid "Unable to add "
 msgstr "Imposibil de adăugat "
 
-#: sickrage/core/queues/show.py:372
+#: sickrage/core/queues/show.py:373
 msgid " due to an error with "
 msgstr " din cauza unei erori cu "
 
-#: sickrage/core/queues/show.py:376
+#: sickrage/core/queues/show.py:377
 msgid "Unable to add show due to an error with "
 msgstr "Imposibil de adăugat Arată datorită unei erori cu "
 
-#: sickrage/core/queues/show.py:381
+#: sickrage/core/queues/show.py:382
 msgid "Show skipped"
 msgstr "Arată omit"
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid "The show in "
 msgstr "Spectacol în "
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid " is already in your show list"
 msgstr " este deja în lista de Arată"
 

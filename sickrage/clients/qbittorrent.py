@@ -32,8 +32,7 @@ class qbittorrentAPI(GenericClient):
         """Get API version."""
         try:
             self.url = '{}version/api'.format(self.host)
-            version = int(self.session.get(self.url,
-                                                    verify=sickrage.app.config.torrent_verify_cert).content)
+            version = int(self.session.get(self.url, verify=sickrage.app.config.torrent_verify_cert).content)
         except Exception:
             version = 1
 
@@ -53,8 +52,7 @@ class qbittorrentAPI(GenericClient):
 
         else:
             try:
-                self.response = self.session.get(self.host,
-                                                          verify=sickrage.app.config.torrent_verify_cert)
+                self.response = self.session.get(self.host, verify=sickrage.app.config.torrent_verify_cert)
                 self.auth = self.response.content
             except Exception:
                 return None
