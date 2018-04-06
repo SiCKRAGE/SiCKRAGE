@@ -1,6 +1,7 @@
 # Changelog
 
-- * b99942f - 2018-03-27: Release v9.3.3 
+- * 5f25cbc - 2018-04-06: Resolved issues for post-processing already processed compressed files 
+- * 8c8feea - 2018-03-27: Release v9.3.3 
 - * b6885a5 - 2018-03-27: Fixed issue #187 - Qbittorrent failing authentication 
 - * 0b928da - 2018-03-22: Added hevc to list of scene quality checks 
 - * 1891763 - 2018-03-22: Added hevc to list of scene quality checks 

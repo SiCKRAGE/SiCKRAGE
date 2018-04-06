@@ -461,35 +461,33 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if [x for x in sickrage.app.main_db.all('tv_episodes') if x['release_name'] == dirName]:
+    if [x for x in sickrage.app.main_db.all('tv_episodes') if
+        x['release_name'] and (x['release_name'] in dirName or x['release_name'] in videofile)]:
         return True
-    else:
-        if [x for x in sickrage.app.main_db.all('tv_episodes') if x['release_name'] == [videofile.rpartition('.')[0]]]:
-            return True
 
-        # Needed if we have downloaded the same episode @ different quality
-        # But we need to make sure we check the history of the episode we're going to PP, and not others
-        np = NameParser(dirName)
-        try:
-            parse_result = np.parse(dirName)
-        except:
-            parse_result = False
+    # Needed if we have downloaded the same episode @ different quality
+    # But we need to make sure we check the history of the episode we're going to PP, and not others
+    np = NameParser(dirName)
+    try:
+        parse_result = np.parse(dirName)
+    except:
+        parse_result = False
 
-        for h in (h for h in sickrage.app.main_db.all('history') if h['resource'].endswith(videofile)):
-            for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', h['showid'])
-                      if h['season'] == e['season'] and h['episode'] == e['episode']
-                         and e['status'] in Quality.DOWNLOADED):
+    for h in (h for h in sickrage.app.main_db.all('history') if h['resource'].endswith(videofile)):
+        for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', h['showid'])
+                  if h['season'] == e['season'] and h['episode'] == e['episode']
+                     and e['status'] in Quality.DOWNLOADED):
 
-                # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
-                if parse_result and (parse_result.indexerid and
-                                     parse_result.episode_numbers and
-                                     parse_result.season_number):
-                    if e['showid'] == int(parse_result.indexerid) and \
-                            e['season'] == int(parse_result.season_number and
-                                               e['episode']) == int(parse_result.episode_numbers[0]):
-                        return True
-                else:
+            # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
+            if parse_result and (parse_result.indexerid and
+                                 parse_result.episode_numbers and
+                                 parse_result.season_number):
+                if e['showid'] == int(parse_result.indexerid) and \
+                        e['season'] == int(parse_result.season_number and
+                                           e['episode']) == int(parse_result.episode_numbers[0]):
                     return True
+            else:
+                return True
 
     return False
 
