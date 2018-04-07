@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import re
 from urlparse import urljoin
 
 from requests.utils import dict_from_cookiejar
@@ -31,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
-        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
+        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://classic.torrentleech.org', True)
 
         self.urls.update({
             'login': '{base_url}/user/account/login/'.format(**self.urls),
@@ -44,7 +43,7 @@ class TorrentLeechProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.proper_strings = ['PROPER', 'REPACK']
+        self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=20)
 
@@ -85,11 +84,11 @@ class TorrentLeechProvider(TorrentProvider):
                     sickrage.app.log.debug("Search string: %s" % search_string)
 
                     categories = ["2", "7", "35"]
-                    categories += ["26", "32"] if mode == "Episode" else ["27"]
+                    categories += ["26", "32", "44"] if mode == "Episode" else ["27"]
                     if ep_obj.show and ep_obj.show.is_anime:
                         categories += ["34"]
                 else:
-                    categories = ["2", "26", "27", "32", "7", "34", "35"]
+                    categories = ["2", "26", "27", "32", "7", "34", "35", "44"]
 
                 search_params = {
                     "categories": ",".join(categories),
@@ -114,31 +113,41 @@ class TorrentLeechProvider(TorrentProvider):
 
         results = []
 
+        def process_column_header(td):
+            result = ''
+            if td.a:
+                result = td.a.get('title')
+            if not result:
+                result = td.get_text(strip=True)
+            return result
+
         with bs4_parser(data) as html:
-            torrent_table = html.find('table', attrs={'id': 'torrenttable'})
-            torrent_rows = torrent_table.find_all('tr') if torrent_table else []
+            torrent_table = html.find('table', id='torrenttable')
+            torrent_rows = torrent_table('tr') if torrent_table else []
 
             # Continue only if one Release is found
             if len(torrent_rows) < 2:
                 sickrage.app.log.debug("Data returned from provider does not contain any torrents")
                 return results
 
-            for result in torrent_table.find_all('tr')[1:]:
-                try:
-                    title = result.find("td", class_="name").find("a").get_text(strip=True)
-                    download_url = urljoin(self.urls['base_url'],
-                                           result.find("td", class_="quickdownload").find("a")["href"])
+            labels = [process_column_header(label) for label in torrent_rows[0]('th')]
 
+            for row in torrent_rows[1:]:
+                cells = row('td')
+
+                try:
+                    name = cells[labels.index('Name')]
+                    title = name.find('a').get_text(strip=True)
+                    download_url = row.find('td', class_='quickdownload').find('a')
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(result.find('td', attrs={'class': 'seeders'}).text, 0)
-                    leechers = try_int(result.find('td', attrs={'class': 'leechers'}).text, 0)
+                    download_url = urljoin(self.urls['base_url'], download_url['href'])
 
-                    size = -1
-                    if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',
-                                result('td', class_="listcolumn")[1].text):
-                        size = convert_size(result('td', class_="listcolumn")[1].text.strip(), -1)
+                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True), 0)
+                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True), 0)
+
+                    size = convert_size(cells[labels.index('Size')].get_text(), -1)
 
                     results += [
                         {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}

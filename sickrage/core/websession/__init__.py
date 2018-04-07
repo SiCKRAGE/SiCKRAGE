@@ -150,7 +150,19 @@ class WebHooks(object):
         """
         Bypass CloudFlare's anti-bot protection.
         """
-        if all([resp.status_code in [403,503], 'cloudflare' in resp.headers.get('server', '')]):
+
+        def is_cloudflare_challenge(resp):
+            """Check if the response is a Cloudflare challange.
+            Source: goo.gl/v8FvnD
+            """
+            return (
+                    resp.status_code == 503
+                    and resp.headers.get('Server', '').startswith('cloudflare')
+                    and b'jschl_vc' in resp.content
+                    and b'jschl_answer' in resp.content
+            )
+
+        if is_cloudflare_challenge(resp):
             sickrage.app.log.debug('CloudFlare protection detected, trying to bypass it')
 
             # Get the session used or create a new one
@@ -178,11 +190,7 @@ class WebHooks(object):
             original_request.headers['User-Agent'] = user_agent
 
             # Resend the request
-            cf_resp = session.send(
-                original_request,
-                allow_redirects=True,
-                **kwargs
-            )
+            cf_resp = session.send(original_request, allow_redirects=True, **kwargs)
 
             if cf_resp.ok:
                 sickrage.app.log.debug('CloudFlare successfully bypassed.')
