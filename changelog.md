@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3881371 - 2018-04-07: Fixed issues with TorrentLeech provider and cloudflare bypass 
+- * 3e80a9f - 2018-04-08: Updated RARBG torrent provider code 
+- * 6734d81 - 2018-04-07: Fixed issues with TorrentLeech provider and cloudflare bypass 
 - * a5e76f4 - 2018-04-06: Resolved issues for post-processing already processed compressed files 
 - * 8c8feea - 2018-03-27: Release v9.3.3 
 - * b6885a5 - 2018-03-27: Fixed issue #187 - Qbittorrent failing authentication 
