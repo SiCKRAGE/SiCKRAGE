@@ -339,7 +339,6 @@ class PostProcessor(object):
 
         # deal with all files
         for cur_file_path in file_list:
-
             cur_file_name = os.path.basename(cur_file_path)
 
             # get the extension without .
@@ -560,21 +559,21 @@ class PostProcessor(object):
 
         # remember whether it's a proper
         if parse_result.extra_info:
-            self.is_proper = re.search(r'(^|[\. _-])(proper|repack)([\. _-]|$)', parse_result.extra_info,
-                                       re.I) is not None
+            self.is_proper = re.search(r'\b(proper|repack|real)\b', parse_result.extra_info, re.I) is not None
 
         # if the result is complete then remember that for later
         # if the result is complete then set release name
-        if parse_result.series_name and (not (not (
-                parse_result.season_number is not None and parse_result.episode_numbers) and not parse_result.air_date)) and parse_result.release_group:
+        if parse_result.series_name and (
+                (parse_result.season_number is not None and parse_result.episode_numbers) or parse_result.air_date) \
+                and parse_result.release_group:
 
             if not self.release_name:
                 self.release_name = remove_non_release_groups(
                     remove_extension(os.path.basename(parse_result.original_name)))
 
         else:
-            sickrage.app.log.debug(
-                "Parse result not sufficient (all following have to be set). will not save release name")
+            sickrage.app.log.debug("Parse result not sufficient (all following have to be set). will not save release "
+                                   "name")
             sickrage.app.log.debug("Parse result(series_name): " + str(parse_result.series_name))
             sickrage.app.log.debug("Parse result(season_number): " + str(parse_result.season_number))
             sickrage.app.log.debug("Parse result(episode_numbers): " + str(parse_result.episode_numbers))
@@ -983,19 +982,17 @@ class PostProcessor(object):
         self._log("Is ep a priority download: " + str(priority_download), sickrage.app.log.DEBUG)
 
         # get the version of the episode we're processing
+        new_ep_version = -1
         if version:
             self._log("Snatch history had a version in it, using that: v" + str(version),
                       sickrage.app.log.DEBUG)
             new_ep_version = version
-        else:
-            new_ep_version = -1
 
         # check for an existing file
         existing_file_status = self._checkForExistingFile(ep_obj.location)
 
         # if it's not priority then we don't want to replace smaller files in case it was a mistake
         if not priority_download:
-
             # Not a priority and the quality is lower than what we already have
             if (new_ep_quality < old_ep_quality != Quality.UNKNOWN) \
                     and not existing_file_status == PostProcessor.DOESNT_EXIST:
@@ -1005,22 +1002,19 @@ class PostProcessor(object):
             # if there's an existing file that we don't want to replace stop here
             if existing_file_status == PostProcessor.EXISTS_LARGER:
                 if self.is_proper:
-                    self._log(
-                        "File exists and new file is smaller, new file is a proper/repack, marking it safe to replace")
+                    self._log("File exists and new file is smaller, new file is a proper/repack, marking it safe to "
+                              "replace")
                     return True
-
                 else:
                     self._log("File exists and new file is smaller, marking it unsafe to replace")
                     return False
-
             elif existing_file_status == PostProcessor.EXISTS_SAME:
                 self._log("File exists and new file is same size, marking it unsafe to replace")
                 return False
-
         # if the file is priority then we're going to replace it even if it exists
         else:
-            self._log(
-                "This download is marked a priority download so I'm going to replace an existing file if I find one")
+            self._log("This download is marked a priority download so I'm going to replace an existing file if I find "
+                      "one")
 
         # try to find out if we have enough space to perform the copy or move action.
         if not isFileLocked(self.file_path, False):
@@ -1065,7 +1059,6 @@ class PostProcessor(object):
         # update the ep info before we rename so the quality & release name go into the name properly
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
-
                 if self.release_name:
                     self._log("Found release name " + self.release_name, sickrage.app.log.DEBUG)
                     cur_ep.release_name = self.release_name
@@ -1120,7 +1113,6 @@ class PostProcessor(object):
             orig_extension = self.file_name.rpartition('.')[-1]
             new_base_name = os.path.basename(proper_path)
             new_file_name = new_base_name + '.' + orig_extension
-
         else:
             # if we're not renaming then there's no new base name, we'll just use the existing name
             new_base_name = None
@@ -1211,7 +1203,7 @@ class PostProcessor(object):
 
             # do the library update for Trakt
             sickrage.app.notifier_providers['trakt'].update_library(ep_obj)
-        except:
+        except Exception:
             sickrage.app.log.info("Some notifications could not be sent. Continuing with post-processing...")
 
         self._run_extra_scripts(ep_obj)

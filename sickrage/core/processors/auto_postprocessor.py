@@ -36,7 +36,7 @@ class AutoPostProcessor(object):
         :return: Returns when done without a return state/code
         """
 
-        if self.amActive or (not sickrage.app.config.process_automatically or sickrage.app.developer) and not force:
+        if self.amActive or (not sickrage.app.config.process_automatically) and not force:
             return
 
         self.amActive = True

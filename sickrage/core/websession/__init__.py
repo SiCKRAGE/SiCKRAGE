@@ -26,6 +26,7 @@ import certifi
 import cfscrape as cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
+from fake_useragent import UserAgent
 from requests import Session
 from requests.utils import dict_from_cookiejar
 
@@ -59,9 +60,6 @@ class WebSession(Session):
         # add hooks
         self.hooks['response'] += [WebHooks.log_url, WebHooks.cloudflare]
 
-        # add headers
-        self.headers.update({'Accept-Encoding': 'gzip, deflate', 'User-Agent': sickrage.app.user_agent})
-
     @staticmethod
     def _get_ssl_cert(verify):
         """
@@ -72,7 +70,10 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, *args, **kwargs):
+        self.headers.update({'Accept-Encoding': 'gzip, deflate',
+                             'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
+
         response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
         try:
@@ -150,7 +151,19 @@ class WebHooks(object):
         """
         Bypass CloudFlare's anti-bot protection.
         """
-        if all([resp.status_code in [403,503], 'cloudflare' in resp.headers.get('server', '')]):
+
+        def is_cloudflare_challenge(resp):
+            """Check if the response is a Cloudflare challange.
+            Source: goo.gl/v8FvnD
+            """
+            return (
+                    resp.status_code == 503
+                    and resp.headers.get('Server', '').startswith('cloudflare')
+                    and b'jschl_vc' in resp.content
+                    and b'jschl_answer' in resp.content
+            )
+
+        if is_cloudflare_challenge(resp):
             sickrage.app.log.debug('CloudFlare protection detected, trying to bypass it')
 
             # Get the session used or create a new one
@@ -178,11 +191,7 @@ class WebHooks(object):
             original_request.headers['User-Agent'] = user_agent
 
             # Resend the request
-            cf_resp = session.send(
-                original_request,
-                allow_redirects=True,
-                **kwargs
-            )
+            cf_resp = session.send(original_request, allow_redirects=True, **kwargs)
 
             if cf_resp.ok:
                 sickrage.app.log.debug('CloudFlare successfully bypassed.')

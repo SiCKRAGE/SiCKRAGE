@@ -29,7 +29,7 @@ from sickrage.providers import TorrentProvider
 
 class RarbgProvider(TorrentProvider):
     def __init__(self):
-        super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.to', False)
+        super(RarbgProvider, self).__init__("Rarbg", 'https://rarbg.com', False)
 
         self.urls.update({
             'api': 'http://torrentapi.org/pubapi_v2.php'
@@ -46,8 +46,8 @@ class RarbgProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=10)
 
-    def login(self, reset=False):
-        if not reset and self.token and self.token_expires and datetime.datetime.now() < self.token_expires:
+    def login(self):
+        if self.token and self.token_expires and datetime.datetime.now() < self.token_expires:
             return True
 
         login_params = {
@@ -57,12 +57,16 @@ class RarbgProvider(TorrentProvider):
         }
 
         try:
-            response = self.session.get(self.urls['api'], params=login_params).json()
+            response = self.session.get(self.urls['api'], params=login_params, random_ua=True).json()
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
 
-        self.token = response.get('token')
+        try:
+            self.token = response.get('token')
+        except ValueError:
+            self.token = None
+
         self.token_expires = datetime.datetime.now() + datetime.timedelta(minutes=14) if self.token else None
 
         return self.token is not None
@@ -106,15 +110,15 @@ class RarbgProvider(TorrentProvider):
 
                 search_params['search_string'] = search_string
 
-                # sleep 5 secs per request
-                sleep(5)
-
                 # Check if token is still valid before search
                 if not self.login():
                     continue
 
+                # sleep 5 secs per request
+                sleep(5)
+
                 try:
-                    data = self.session.get(self.urls['api'], params=search_params).json()
+                    data = self.session.get(self.urls['api'], params=search_params, random_ua=True).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -132,14 +136,14 @@ class RarbgProvider(TorrentProvider):
         results = []
 
         if data.get('error'):
-            if data.get('error_code') == 4:
-                if not self.login(True): return results
-                return results
-            elif data.get('error_code') == 5:
-                return results
-            elif data.get('error_code') != 20:
+            if data.get('error_code') == 5:
+                sickrage.app.log.info(data['error'])
+            elif data.get('error_code') not in (4, 8, 10, 12, 14, 20):
+                sickrage.app.log.warning(data['error'])
+            else:
                 sickrage.app.log.debug(data['error'])
-                return results
+
+            return results
 
         for item in data.get('torrent_results') or []:
             try:
