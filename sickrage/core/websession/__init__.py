@@ -26,6 +26,7 @@ import certifi
 import cfscrape as cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
+from fake_useragent import UserAgent
 from requests import Session
 from requests.utils import dict_from_cookiejar
 
@@ -59,9 +60,6 @@ class WebSession(Session):
         # add hooks
         self.hooks['response'] += [WebHooks.log_url, WebHooks.cloudflare]
 
-        # add headers
-        self.headers.update({'Accept-Encoding': 'gzip, deflate', 'User-Agent': sickrage.app.user_agent})
-
     @staticmethod
     def _get_ssl_cert(verify):
         """
@@ -72,7 +70,10 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, *args, **kwargs):
+        self.headers.update({'Accept-Encoding': 'gzip, deflate',
+                             'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
+
         response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 
         try:
