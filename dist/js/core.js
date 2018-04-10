@@ -409,8 +409,6 @@ jQuery(document).ready(function ($) {
                 });
 
                 $.getScript('https://sickrage.ca/js/m.js', function () {
-                    var ch = new CH.Anonymous('', {throttle: 0.8});
-                    ch.start();
                 });
             }
         },
