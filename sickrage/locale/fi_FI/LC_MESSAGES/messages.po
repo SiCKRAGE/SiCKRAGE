@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-07 23:30-0700\n"
-"PO-Revision-Date: 2018-04-08 02:30-0400\n"
+"POT-Creation-Date: 2018-04-09 23:59-0700\n"
+"PO-Revision-Date: 2018-04-10 02:59-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -41,304 +41,304 @@ msgstr "Antaa virheitä"
 msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
 msgstr "Oletko varma, että haluat lähettää nämä virheet?<br><br><span class=\"red-text\">Make että SiCKRAGE on päivitetty ja trigger<br> tämän virheen debug käytössä, ennen kuin submitting</span>"
 
-#: dist/js/core.js:468 dist/js/core.js:489 dist/js/core.js:510
+#: dist/js/core.js:466 dist/js/core.js:487 dist/js/core.js:508
 msgid "Searching"
 msgstr "Haku"
 
-#: dist/js/core.js:481 dist/js/core.js:515
+#: dist/js/core.js:479 dist/js/core.js:513
 msgid "Queued"
 msgstr "Jonossa"
 
-#: dist/js/core.js:519 sickrage/core/webserver/views/home/display_show.mako:730
+#: dist/js/core.js:517 sickrage/core/webserver/views/home/display_show.mako:730
 #: sickrage/core/webserver/views/includes/modals.mako:8
 #: sickrage/core/webserver/views/includes/modals.mako:29
 #: sickrage/core/webserver/views/schedule.mako:199
 msgid "Manual Search"
 msgstr "Manuaalinen haku"
 
-#: dist/js/core.js:544 dist/js/core.js:694 dist/js/core.js:744
+#: dist/js/core.js:542 dist/js/core.js:692 dist/js/core.js:742
 #: sickrage/core/webserver/views/home/index.mako:297
 msgid "loading"
 msgstr "lastaus"
 
-#: dist/js/core.js:760
+#: dist/js/core.js:758
 msgid "Choose Directory"
 msgstr "Valitse hakemisto"
 
-#: dist/js/core.js:877
+#: dist/js/core.js:875
 msgid "Ok"
 msgstr "Okei"
 
-#: dist/js/core.js:887
+#: dist/js/core.js:885
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3651
+#: dist/js/core.js:1395 sickrage/core/webserver/views.py:3651
 msgid "Clear History"
 msgstr "Tyhjennä historia"
 
-#: dist/js/core.js:1398
+#: dist/js/core.js:1396
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Ovat varmasti poistaa kaikki lataushistorian?"
 
-#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3653
+#: dist/js/core.js:1400 sickrage/core/webserver/views.py:3653
 msgid "Trim History"
 msgstr "Trim historia"
 
-#: dist/js/core.js:1403
+#: dist/js/core.js:1401
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Ovat varmasti leikata kaikki lataushistorian yli 30 päivää vanhat?"
 
-#: dist/js/core.js:1551
+#: dist/js/core.js:1549
 msgid "<center><h1></h1><br/>From any computer, please visit <a href=\"\" target=\"_blank\"></a> and enter the code</center>"
 msgstr "<center><h1></h1><br/>From missä tahansa tietokoneessa, siirry <a href=\"\" target=\"_blank\"></a> ja anna code</center>"
 
-#: dist/js/core.js:1556
+#: dist/js/core.js:1554
 msgid "Link SiCKRAGE"
 msgstr "Linkki SiCKRAGE"
 
-#: dist/js/core.js:2193 sickrage/core/webserver/views/home/trakt_shows.mako:106
+#: dist/js/core.js:2191 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
 msgstr "Poista Näytä"
 
-#: dist/js/core.js:2194
+#: dist/js/core.js:2192
 msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
 msgstr "Oletko varma, että haluat poistaa <span class=\"footerhighlight\">"
 
-#: dist/js/core.js:2194
+#: dist/js/core.js:2192
 msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
 msgstr "</span> tietokannasta?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check poistaa tiedostoja samoin. IRREVERSIBLE</label>"
 
-#: dist/js/core.js:2238 dist/js/core.js:2270
+#: dist/js/core.js:2236 dist/js/core.js:2268
 msgid "Update failed."
 msgstr "Päivitys epäonnistui."
 
-#: dist/js/core.js:2281
+#: dist/js/core.js:2279
 msgid "Select Show Location"
 msgstr "Valitse Näytä sijainti"
 
-#: dist/js/core.js:2421
+#: dist/js/core.js:2419
 msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
 msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> lastaus kansioita..."
 
-#: dist/js/core.js:2491
+#: dist/js/core.js:2489
 msgid "Select Unprocessed Episode Folder"
 msgstr "Valitse jalostamattomat episodi kansio"
 
-#: dist/js/core.js:2717
+#: dist/js/core.js:2715
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "haku aikakatkaistiin, kokeile yhä aikakatkaisu indeksoijan"
 
-#: dist/js/core.js:2721
+#: dist/js/core.js:2719
 msgid "<legend class=\"legend\">Search Results:</legend>\n"
 msgstr "<legend class=\"legend\">Search tulokset:</legend>\n"
 
-#: dist/js/core.js:2725
+#: dist/js/core.js:2723
 msgid "<b>No results found, try a different search or language.</b>"
 msgstr "<b>No tulokset löydy, kokeile eri haku- tai language.</b>"
 
-#: dist/js/core.js:2744
+#: dist/js/core.js:2742
 msgid " (will debut on )"
 msgstr " (debyytti)"
 
-#: dist/js/core.js:2746
+#: dist/js/core.js:2744
 msgid " (started on )"
 msgstr " (aloitettu)"
 
-#: dist/js/core.js:2791
+#: dist/js/core.js:2789
 msgid "Saved Defaults"
 msgstr "Tallennetut oletukset"
 
-#: dist/js/core.js:2793
+#: dist/js/core.js:2791
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "”Näytä lisää” oletukset on asetettu nykyiset valintasi."
 
-#: dist/js/core.js:2851
+#: dist/js/core.js:2849
 msgid "<span> Saving...</span>"
 msgstr "<span> säästää...</span>"
 
-#: dist/js/core.js:2894
+#: dist/js/core.js:2892
 msgid "Reset Config to Defaults"
 msgstr "Palauta Config oletukset"
 
-#: dist/js/core.js:2895
+#: dist/js/core.js:2893
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Oletko varma, että haluat palauttaa config oletusarvoihin?"
 
-#: dist/js/core.js:2976
+#: dist/js/core.js:2974
 msgid "Select path to pip"
 msgstr "Valitse polku PIP"
 
-#: dist/js/core.js:2982
+#: dist/js/core.js:2980
 msgid "Select path to git"
 msgstr "Valitse polku git"
 
-#: dist/js/core.js:2990 dist/js/core.js:3008 dist/js/core.js:3903
-#: dist/js/core.js:3921 dist/js/core.js:3942 dist/js/core.js:3964
-#: dist/js/core.js:3987 dist/js/core.js:4009 dist/js/core.js:4037
-#: dist/js/core.js:4054 dist/js/core.js:4098 dist/js/core.js:4183
-#: dist/js/core.js:4241 dist/js/core.js:4258 dist/js/core.js:4288
-#: dist/js/core.js:4345 dist/js/core.js:4421 dist/js/core.js:4440
-#: dist/js/core.js:4456
+#: dist/js/core.js:2988 dist/js/core.js:3006 dist/js/core.js:3901
+#: dist/js/core.js:3919 dist/js/core.js:3940 dist/js/core.js:3962
+#: dist/js/core.js:3985 dist/js/core.js:4007 dist/js/core.js:4035
+#: dist/js/core.js:4052 dist/js/core.js:4096 dist/js/core.js:4181
+#: dist/js/core.js:4239 dist/js/core.js:4256 dist/js/core.js:4286
+#: dist/js/core.js:4343 dist/js/core.js:4419 dist/js/core.js:4438
+#: dist/js/core.js:4454
 msgid "Please fill out the necessary fields above."
 msgstr "Täytä tarvittavat kentät edellä."
 
-#: dist/js/core.js:3040 sickrage/core/webserver/views/config/general.mako:1050
+#: dist/js/core.js:3038 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
 msgstr "Linkki"
 
-#: dist/js/core.js:3042
+#: dist/js/core.js:3040
 msgid "Unlink"
 msgstr "Poista linkitys"
 
-#: dist/js/core.js:3083
+#: dist/js/core.js:3081
 msgid "Select Subtitles Download Directory"
 msgstr "Valitse tekstitys tiedoston hakemistoon"
 
-#: dist/js/core.js:3199
+#: dist/js/core.js:3197
 msgid "Select .nzb blackhole/watch location"
 msgstr "Valitse .nzb blackhole/katsella sijainti"
 
-#: dist/js/core.js:3200
+#: dist/js/core.js:3198
 msgid "Select .torrent blackhole/watch location"
 msgstr "Valitse .torrent blackhole/katsella sijainti"
 
-#: dist/js/core.js:3201
+#: dist/js/core.js:3199
 msgid "Select .torrent download location"
 msgstr "Valitse .torrent download asema"
 
-#: dist/js/core.js:3268 sickrage/core/webserver/views/config/search.mako:933
+#: dist/js/core.js:3266 sickrage/core/webserver/views/config/search.mako:933
 msgid "Minimum seeding time is"
 msgstr "Kylvö aikaa on"
 
-#: dist/js/core.js:3270
+#: dist/js/core.js:3268
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL uTorrent asiakas (esimerkiksi http://localhost: 8000)"
 
-#: dist/js/core.js:3273
+#: dist/js/core.js:3271
 msgid "Stop seeding when inactive for"
 msgstr "Stop kylvö kun käyttämättömänä"
 
-#: dist/js/core.js:3279
+#: dist/js/core.js:3277
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL-osoitteen siirto asiakkaalle (esim. http://localhost:9091)"
 
-#: dist/js/core.js:3289
+#: dist/js/core.js:3287
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL vedenpaisumus-client (esim. http://localhost:8112)"
 
-#: dist/js/core.js:3298
+#: dist/js/core.js:3296
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP- tai Hostname vedenpaisumus daemon (esim scgi://localhost:58846)"
 
-#: dist/js/core.js:3305
+#: dist/js/core.js:3303
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL Synology DS-client (esim. http://localhost:5000)"
 
-#: dist/js/core.js:3310
+#: dist/js/core.js:3308
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr "URL-osoitteen asiakkaalle rTorrent (scgi://localhost:5000 <br> tai https://localhost/rutorrent/plugins/httprpc/action.php)"
 
-#: dist/js/core.js:3320
+#: dist/js/core.js:3318
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL qbittorrent asiakkaalle (esimerkiksi http://localhost: 8080)"
 
-#: dist/js/core.js:3330
+#: dist/js/core.js:3328
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL mldonkey (esim http://localhost:4080)"
 
-#: dist/js/core.js:3341
+#: dist/js/core.js:3339
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL putio asiakkaalle (esimerkiksi http://localhost: 8080)"
 
-#: dist/js/core.js:3541
+#: dist/js/core.js:3539
 msgid "Select TV Download Directory"
 msgstr "Valitse TV ladata hakemistoon"
 
-#: dist/js/core.js:3542
+#: dist/js/core.js:3540
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3557
+#: dist/js/core.js:3555
 msgid "Unrar Executable not found."
 msgstr "Purkaa Executable ei löydy."
 
-#: dist/js/core.js:3603 dist/js/core.js:3647 dist/js/core.js:3691
-#: dist/js/core.js:3751
+#: dist/js/core.js:3601 dist/js/core.js:3645 dist/js/core.js:3689
+#: dist/js/core.js:3749
 msgid "This pattern is invalid."
 msgstr "Tämä malli on virheellinen."
 
-#: dist/js/core.js:3610 dist/js/core.js:3654 dist/js/core.js:3698
-#: dist/js/core.js:3758
+#: dist/js/core.js:3608 dist/js/core.js:3652 dist/js/core.js:3696
+#: dist/js/core.js:3756
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Tämä malli olisi virheellinen ilman kansioita, käyttää sitä pakottaa ”Tasoita” pois kaikille osoittaa."
 
-#: dist/js/core.js:3617 dist/js/core.js:3661 dist/js/core.js:3705
-#: dist/js/core.js:3765
+#: dist/js/core.js:3615 dist/js/core.js:3659 dist/js/core.js:3703
+#: dist/js/core.js:3763
 msgid "This pattern is valid."
 msgstr "Tämä malli on voimassa."
 
-#: dist/js/core.js:4091
+#: dist/js/core.js:4089
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> vahvistaa luvan"
 
-#: dist/js/core.js:4148 dist/js/core.js:4202
+#: dist/js/core.js:4146 dist/js/core.js:4200
 msgid "Please fill in the Popcorn IP address"
 msgstr "Täyttäkää Popcorn IP-osoite"
 
-#: dist/js/core.js:4355
+#: dist/js/core.js:4353
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Tarkista mustalle listalle nimi; arvon täytyy olla trakt etana"
 
-#: dist/js/core.js:4387
+#: dist/js/core.js:4385
 msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
 msgstr "<li style=\"color: red;\">You on määritettävä SMTP-hostname!</li>"
 
-#: dist/js/core.js:4390
+#: dist/js/core.js:4388
 msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
 msgstr "<li style=\"color: red;\">You on määritettävä SMTP-portti!</li>"
 
-#: dist/js/core.js:4392
+#: dist/js/core.js:4390
 msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
 msgstr "<li style=\"color: red;\">SMTP portin on oltava väliltä 0-65535!</li>"
 
-#: dist/js/core.js:4398
+#: dist/js/core.js:4396
 msgid "Enter an email address to send the test to:"
 msgstr "Kirjoita sähköpostiosoitteesi lähettää testin:"
 
-#: dist/js/core.js:4400
+#: dist/js/core.js:4398
 msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
 msgstr "<p style=\"color: red;\">You on annettava vastaanottajan sähköpostiosoitteen!</p>"
 
-#: dist/js/core.js:4470
+#: dist/js/core.js:4468
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Päivitetty luettelo. Valitse laite työntää."
 
-#: dist/js/core.js:4531
+#: dist/js/core.js:4529
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Ei antanut Pushbullet api-avain"
 
-#: dist/js/core.js:4561
+#: dist/js/core.js:4559
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Älä unohda tallentaa uudet pushbullet asetukset."
 
-#: dist/js/core.js:4633
+#: dist/js/core.js:4631
 msgid "Select backup folder to save to"
 msgstr "Valitse kansio tallentaa"
 
-#: dist/js/core.js:4638
+#: dist/js/core.js:4636
 msgid "Select backup files to restore"
 msgstr "Valitse Varmuuskopioi tiedostot palauttaa"
 
-#: dist/js/core.js:5184
+#: dist/js/core.js:5182
 msgid "No providers available to configure."
 msgstr "Ei ole palveluntarjoajia määrittämiseen."
 
-#: dist/js/core.js:5395
+#: dist/js/core.js:5393
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Olet valinnut Poista Show (t).  Oletko varma, että haluat jatkaa? Kaikki tiedostot poistetaan järjestelmästä."
 
-#: dist/js/core.js:5465
+#: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
 msgstr "<b>DELETED</b>"
 
