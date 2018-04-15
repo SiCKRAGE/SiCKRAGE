@@ -46,7 +46,7 @@ class srQueue(threading.Thread):
         self._queue = PriorityQueue()
         self._result_queue = Queue()
         self.currentItem = None
-        self.min_priority = srQueuePriorities.HIGH
+        self.min_priority = srQueuePriorities.EXTREME
         self.amActive = False
         self.lock = threading.Lock()
         self.stop = threading.Event()
@@ -115,7 +115,7 @@ class srQueue(threading.Thread):
     def unpause(self):
         """Unpauses this queue"""
         sickrage.app.log.info("Unpausing queue")
-        self.min_priority = srQueuePriorities.HIGH
+        self.min_priority = srQueuePriorities.EXTREME
 
     def shutdown(self):
         self.stop.set()
