@@ -624,7 +624,7 @@ class QueueItemRemove(ShowQueueItem):
         super(QueueItemRemove, self).__init__(show, ShowQueueActions.REMOVE)
 
         # lets make sure this happens before any other high priority actions
-        self.priority = srQueuePriorities.HIGH + srQueuePriorities.HIGH
+        self.priority = srQueuePriorities.HIGH
         self.full = full
 
     @property
