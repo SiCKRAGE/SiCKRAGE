@@ -1,6 +1,7 @@
 # Changelog
 
-- * 486e7c5 - 2018-04-14: Backlog searches no longer trigger cache updates, speeds up searching Fixed misc queue priority issues 
+- * 2550227 - 2018-04-15: Added ability to pause/unpause daily search queue 
+- * 04cf1ef - 2018-04-14: Backlog searches no longer trigger cache updates, speeds up searching Fixed misc queue priority issues 
 - * 57b8a79 - 2018-04-10: Release v9.3.5 
 - * c056018 - 2018-04-07: Release v9.3.4 
 - * c153794 - 2018-04-07: Fixed User-Agent issues for RARBG torrent provider 

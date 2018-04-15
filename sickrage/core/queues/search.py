@@ -75,15 +75,22 @@ class SearchQueue(srQueue):
                 ep_obj_list.append(cur_item)
         return ep_obj_list
 
-    def pause_backlog(self):
-        self.pause()
+    def pause_daily_searcher(self):
+        sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
+
+    def unpause_daily_searcher(self):
+        sickrage.app.scheduler.resume_job(sickrage.app.daily_searcher.name)
+
+    def is_daily_searcher_paused(self):
+        return not sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).next_run_time
+
+    def pause_backlog_searcher(self):
         sickrage.app.scheduler.pause_job(sickrage.app.backlog_searcher.name)
 
-    def unpause_backlog(self):
-        self.unpause()
+    def unpause_backlog_searcher(self):
         sickrage.app.scheduler.resume_job(sickrage.app.backlog_searcher.name)
 
-    def is_backlog_paused(self):
+    def is_backlog_searcher_paused(self):
         return not sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).next_run_time
 
     def is_manualsearch_in_progress(self):

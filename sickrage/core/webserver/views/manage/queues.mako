@@ -13,14 +13,14 @@
         <div class="col-md-12">
             <h3>
                 <b>${_('Backlog Search:')}</b>
-                ${((_('Not in progress'), _('In Progress'))[backlogRunning], _('Paused'))[backlogPaused]}
+                ${((_('Not in progress'), _('In Progress'))[backlogSearchStatus], _('Paused'))[backlogSearchPaused]}
             </h3>
-            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceBacklog">
+            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceBacklogSearch">
                 <i class="icon-exclamation-sign"></i>${_('Force')}
             </a>
             <a class="btn"
-               href="${srWebRoot}/manage/manageQueues/pauseBacklog?paused=${('1', '0')[bool(backlogPaused)]}">
-                <i class="icon-${('paused', 'play')[bool(backlogPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(backlogPaused)]}
+               href="${srWebRoot}/manage/manageQueues/pauseBacklogSearcher?paused=${('1', '0')[bool(backlogSearchPaused)]}">
+                <i class="icon-${('paused', 'play')[bool(backlogSearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(backlogSearchPaused)]}
             </a>
         </div>
     </div>
@@ -29,10 +29,14 @@
         <div class="col-md-12">
             <h3>
                 <b>${_('Daily Search:')}</b>
-                ${(_('Not in progress'), _('In Progress'))[bool(dailySearchStatus)]}
+                ${((_('Not in progress'), _('In Progress'))[dailySearchStatus], _('Paused'))[dailySearchPaused]}
             </h3>
-            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceSearch">
+            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceDailySearch">
                 <i class="icon-exclamation-sign"></i>${_('Force')}
+            </a>
+            <a class="btn"
+               href="${srWebRoot}/manage/manageQueues/pauseDailySearcher?paused=${('1', '0')[bool(dailySearchPaused)]}">
+                <i class="icon-${('paused', 'play')[bool(dailySearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(dailySearchPaused)]}
             </a>
         </div>
     </div>
