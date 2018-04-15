@@ -57,8 +57,6 @@ class srQueue(threading.Thread):
         """
 
         while not self.stop.is_set():
-            time.sleep(1)
-
             with self.lock:
                 self.amActive = True
 
@@ -66,13 +64,14 @@ class srQueue(threading.Thread):
                     if self.currentItem:
                         if self.next_item_priority < self.currentItem.priority:
                             self.get().start()
-                        elif self.currentItem.isAlive():
-                            continue
 
-                    self.currentItem = self.get()
-                    self.currentItem.start()
+                    if not self.currentItem or not self.currentItem.isAlive():
+                        self.currentItem = self.get()
+                        self.currentItem.start()
 
                 self.amActive = False
+
+            time.sleep(1)
 
     @property
     def queue(self):
