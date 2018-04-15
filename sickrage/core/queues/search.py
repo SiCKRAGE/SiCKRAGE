@@ -183,7 +183,7 @@ class ManualSearchQueueItem(srQueueItem):
         self.segment = segment
         self.success = False
         self.started = False
-        self.priority = srQueuePriorities.HIGH
+        self.priority = srQueuePriorities.EXTREME
         self.downCurQuality = downCurQuality
 
     def run(self):

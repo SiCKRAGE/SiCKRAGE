@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2550227 - 2018-04-15: Added ability to pause/unpause daily search queue 
+- * daf0d57 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * 5d9caa6 - 2018-04-15: Added ability to pause/unpause daily search queue 
 - * 04cf1ef - 2018-04-14: Backlog searches no longer trigger cache updates, speeds up searching Fixed misc queue priority issues 
 - * 57b8a79 - 2018-04-10: Release v9.3.5 
 - * c056018 - 2018-04-07: Release v9.3.4 

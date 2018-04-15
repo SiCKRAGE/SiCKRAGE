@@ -32,6 +32,7 @@ import sickrage
 
 
 class srQueuePriorities(object):
+    EXTREME = 5
     HIGH = 10
     NORMAL = 20
     LOW = 30
@@ -56,16 +57,22 @@ class srQueue(threading.Thread):
         """
 
         while not self.stop.is_set():
+            time.sleep(1)
+
             with self.lock:
                 self.amActive = True
 
-                if not self.is_paused and (not self.currentItem or not self.currentItem.isAlive()):
+                if not self.is_paused:
+                    if self.currentItem:
+                        if self.next_item_priority < self.currentItem.priority:
+                            self.get().start()
+                        elif self.currentItem.isAlive():
+                            continue
+
                     self.currentItem = self.get()
                     self.currentItem.start()
 
                 self.amActive = False
-
-            time.sleep(1)
 
     @property
     def queue(self):
