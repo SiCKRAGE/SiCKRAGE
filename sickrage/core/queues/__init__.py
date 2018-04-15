@@ -63,7 +63,11 @@ class srQueue(threading.Thread):
                 if not self.is_paused:
                     if self.currentItem:
                         if self.next_item_priority < self.currentItem.priority:
-                            self.get().start()
+                            __ = self.currentItem
+                            self.currentItem = self.get()
+                            self.currentItem.start()
+                            self.currentItem.join()
+                            self.currentItem = __
 
                     if not self.currentItem or not self.currentItem.isAlive():
                         self.currentItem = self.get()

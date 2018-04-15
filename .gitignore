@@ -48,6 +48,7 @@ sickrage.egg-info
 /.settings/*
 /build/
 pre-commit-hook.sh
+/venv/
 
 # OS Generated Files #
 ######################
