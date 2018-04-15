@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9077ad5 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * 532be91 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * a7210e4 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * b96a3f9 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * aa08e0c - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * 5d9caa6 - 2018-04-15: Added ability to pause/unpause daily search queue 

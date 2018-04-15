@@ -82,7 +82,7 @@ class srQueue(threading.Thread):
         try:
             priority, __, __ = self._queue.queue[0]
         except IndexError:
-            priority = self.min_priority
+            priority = srQueuePriorities.LOW
 
         return priority
 
