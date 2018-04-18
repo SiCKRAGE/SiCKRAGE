@@ -1,6 +1,7 @@
 # Changelog
 
-- * 108fbca - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * 89d923a - 2018-04-18: Daily/Backlog searches now skip downloaded episodes with higher quality then show&#x27;s set preferred or best. Daily searches skip downloaded episodes if archive on first match enabled. 
+- * 9e76bc0 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * e8cea87 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * a7210e4 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * b96a3f9 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
