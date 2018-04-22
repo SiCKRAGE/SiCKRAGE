@@ -324,20 +324,26 @@ def wantedEpisodes(show, fromDate):
     # check through the list of statuses to see if we want any
     for dbData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
         if dbData['season'] > 0 and dbData['airdate'] > fromDate.toordinal():
-            curCompositeStatus = int(dbData["status"] or -1)
-            curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
-
-            if bestQualities:
-                highestBestQuality = max(allQualities)
-            else:
-                highestBestQuality = 0
+            curStatus, curQuality = Quality.splitCompositeStatus(int(dbData["status"] or -1))
 
             # if we need a better one then say yes
-            if (curStatus in (DOWNLOADED, SNATCHED,
-                              SNATCHED_PROPER) and curQuality < highestBestQuality) or curStatus == WANTED:
-                epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
-                epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
-                wanted.append(epObj)
+            if curStatus not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
+                continue
+
+            if curStatus != WANTED and curQuality != Quality.UNKNOWN:
+                if bestQualities:
+                    if curQuality in bestQualities or curQuality > max(bestQualities):
+                        continue
+                elif curQuality in anyQualities or curQuality > max(anyQualities):
+                    continue
+
+            # only fetch if not archive on first match
+            if curStatus == DOWNLOADED and show.archive_firstmatch:
+                continue
+
+            epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
+            epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
+            wanted.append(epObj)
 
     return wanted
 
@@ -362,7 +368,7 @@ def searchForNeededEpisodes():
     return results
 
 
-def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, cacheOnly=False):
+def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, updateCache=True, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -383,19 +389,22 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
     origThreadName = threading.currentThread().getName()
 
     def perform_searches():
+        searchResults = {}
         foundResults = {}
         finalResults = []
 
         for providerID, providerObj in sickrage.app.search_providers.sort(
                 randomize=sickrage.app.config.randomize_providers).items():
 
-            # check provider type and provider is enabled
+            # check if provider is enabled
+            if not providerObj.isEnabled:
+                continue
+
+            # check provider type
             if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
                 continue
             elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
                                                                                TorrentRssProvider.type]:
-                continue
-            elif not providerObj.isEnabled:
                 continue
 
             if providerObj.anime_only and not show.is_anime:
@@ -404,7 +413,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
             foundResults[providerObj.name] = {}
 
-            searchCount = 0
+            search_count = 0
             search_mode = providerObj.search_mode
 
             # Always search for episode when manually searching when in sponly
@@ -412,13 +421,14 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                 search_mode = 'eponly'
 
             while True:
-                searchCount += 1
+                search_count += 1
 
                 try:
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
 
                     # update provider RSS cache
-                    if sickrage.app.config.enable_rss_cache: providerObj.cache.update()
+                    if sickrage.app.config.enable_rss_cache and updateCache:
+                        providerObj.cache.update()
 
                     if len(episodes):
                         if search_mode == 'eponly':
@@ -456,7 +466,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                             foundResults[providerObj.name][curEp].sort(key=lambda k: int(k.seeders), reverse=True)
 
                     break
-                elif not providerObj.search_fallback or searchCount == 2:
+                elif not providerObj.search_fallback or search_count == 2:
                     break
 
                 if search_mode == 'sponly':
@@ -534,6 +544,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                         # if not, break it apart and add them as the lowest priority results
                         individualResults = splitNZBResult(bestSeasonResult)
                         for curResult in individualResults:
+                            epNum = -1
                             if len(curResult.episodes) == 1:
                                 epNum = curResult.episodes[0].episode
                             elif len(curResult.episodes) > 1:

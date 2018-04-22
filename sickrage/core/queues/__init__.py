@@ -32,9 +32,11 @@ import sickrage
 
 
 class srQueuePriorities(object):
+    EXTREME = 5
     HIGH = 10
     NORMAL = 20
     LOW = 30
+    PAUSED = 99
 
 
 class srQueue(threading.Thread):
@@ -44,7 +46,7 @@ class srQueue(threading.Thread):
         self._queue = PriorityQueue()
         self._result_queue = Queue()
         self.currentItem = None
-        self.min_priority = 0
+        self.min_priority = srQueuePriorities.EXTREME
         self.amActive = False
         self.lock = threading.Lock()
         self.stop = threading.Event()
@@ -58,15 +60,17 @@ class srQueue(threading.Thread):
             with self.lock:
                 self.amActive = True
 
-                if self.currentItem is None or not self.currentItem.isAlive():
+                if not self.is_paused:
                     if self.currentItem:
-                        self.currentItem = None
+                        if self.next_item_priority < self.currentItem.priority:
+                            __ = self.currentItem
+                            self.currentItem = self.get()
+                            self.currentItem.start()
+                            self.currentItem.join()
+                            self.currentItem = __
 
-                    self.currentItem = self.get()
-                    if self.currentItem.priority < self.min_priority:
-                        self.put(self.currentItem)
-                        self.currentItem = None
-                    else:
+                    if not self.currentItem or not self.currentItem.isAlive():
+                        self.currentItem = self.get()
                         self.currentItem.start()
 
                 self.amActive = False
@@ -76,6 +80,15 @@ class srQueue(threading.Thread):
     @property
     def queue(self):
         return self._queue.queue
+
+    @property
+    def next_item_priority(self):
+        try:
+            priority, __, __ = self._queue.queue[0]
+        except IndexError:
+            priority = srQueuePriorities.LOW
+
+        return priority
 
     def get(self, *args, **kwargs):
         __, __, item = self._queue.get(*args, **kwargs)
@@ -94,15 +107,19 @@ class srQueue(threading.Thread):
         self._queue.put((item.priority, time.time(), item), *args, **kwargs)
         return item
 
+    @property
+    def is_paused(self):
+        return self.min_priority == srQueuePriorities.PAUSED
+
     def pause(self):
         """Pauses this queue"""
         sickrage.app.log.info("Pausing queue")
-        self.min_priority = 999999999999
+        self.min_priority = srQueuePriorities.PAUSED
 
     def unpause(self):
         """Unpauses this queue"""
         sickrage.app.log.info("Unpausing queue")
-        self.min_priority = 0
+        self.min_priority = srQueuePriorities.EXTREME
 
     def shutdown(self):
         self.stop.set()

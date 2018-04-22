@@ -1,6 +1,15 @@
 # Changelog
 
-- * 25f4066 - 2018-04-10: Release v9.3.5 
+- * 193d8cd - 2018-04-21: Release v9.3.6 
+- * c32702b - 2018-04-18: Daily/Backlog searches now skip downloaded episodes with higher quality then show&#x27;s set preferred or best. Daily searches skip downloaded episodes if archive on first match enabled. 
+- * 9e76bc0 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * e8cea87 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * a7210e4 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * b96a3f9 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * aa08e0c - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
+- * 5d9caa6 - 2018-04-15: Added ability to pause/unpause daily search queue 
+- * 04cf1ef - 2018-04-14: Backlog searches no longer trigger cache updates, speeds up searching Fixed misc queue priority issues 
+- * 57b8a79 - 2018-04-10: Release v9.3.5 
 - * c056018 - 2018-04-07: Release v9.3.4 
 - * c153794 - 2018-04-07: Fixed User-Agent issues for RARBG torrent provider 
 - * f9a1261 - 2018-04-08: Updated RARBG torrent provider code 

@@ -75,17 +75,23 @@ class SearchQueue(srQueue):
                 ep_obj_list.append(cur_item)
         return ep_obj_list
 
-    def pause_backlog(self):
-        self.min_priority = srQueuePriorities.HIGH
-        sickrage.app.scheduler.pause_job('BACKLOG')
+    def pause_daily_searcher(self):
+        sickrage.app.scheduler.pause_job(sickrage.app.daily_searcher.name)
 
-    def unpause_backlog(self):
-        self.min_priority = 0
-        sickrage.app.scheduler.resume_job('BACKLOG')
+    def unpause_daily_searcher(self):
+        sickrage.app.scheduler.resume_job(sickrage.app.daily_searcher.name)
 
-    def is_backlog_paused(self):
-        # backlog priorities are NORMAL, this should be done properly somewhere
-        return not sickrage.app.scheduler.get_job('BACKLOG').next_run_time
+    def is_daily_searcher_paused(self):
+        return not sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).next_run_time
+
+    def pause_backlog_searcher(self):
+        sickrage.app.scheduler.pause_job(sickrage.app.backlog_searcher.name)
+
+    def unpause_backlog_searcher(self):
+        sickrage.app.scheduler.resume_job(sickrage.app.backlog_searcher.name)
+
+    def is_backlog_searcher_paused(self):
+        return not sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).next_run_time
 
     def is_manualsearch_in_progress(self):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
@@ -177,7 +183,7 @@ class ManualSearchQueueItem(srQueueItem):
         self.segment = segment
         self.success = False
         self.started = False
-        self.priority = srQueuePriorities.HIGH
+        self.priority = srQueuePriorities.EXTREME
         self.downCurQuality = downCurQuality
 
     def run(self):
@@ -186,7 +192,9 @@ class ManualSearchQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting manual search for: [" + self.segment.pretty_name() + "]")
 
-            searchResult = searchProviders(self.show, [self.segment], True, self.downCurQuality)
+            searchResult = searchProviders(self.show, [self.segment], manualSearch=True,
+                                           downCurQuality=self.downCurQuality)
+
             if searchResult:
                 # just use the first result for now
                 sickrage.app.log.info(
@@ -230,7 +238,7 @@ class BacklogQueueItem(srQueueItem):
             try:
                 sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
 
-                searchResult = searchProviders(self.show, self.segment, False)
+                searchResult = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
                 if searchResult:
                     for result in searchResult:
                         # just use the first result for now
@@ -276,7 +284,8 @@ class FailedQueueItem(srQueueItem):
 
                 FailedHistory.revertFailedEpisode(epObj)
 
-            searchResult = searchProviders(self.show, self.segment, True, False)
+            searchResult = searchProviders(self.show, self.segment, manualSearch=True, downCurQuality=False)
+
             if searchResult:
                 for result in searchResult:
                     # just use the first result for now

@@ -247,7 +247,8 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += sickrage.app.api.get_provider_cache_results(self.providerID, ep_obj.show.indexerid)
+                dbData += sickrage.app.api.get_provider_cache_results(self.providerID, ep_obj.show.indexerid,
+                                                                      ep_obj.season, ep_obj.episode)
             except Exception:
                 pass
 

@@ -1345,8 +1345,8 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
         except:
             last_backlog = 1
 
-        backlogPaused = sickrage.app.search_queue.is_backlog_paused()  # @UndefinedVariable
-        backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()  # @UndefinedVariable
+        backlogPaused = sickrage.app.search_queue.is_backlog_searcher_paused()
+        backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()
         nextBacklog = sickrage.app.backlog_searcher.nextRun().strftime(dateFormat).decode(
             sickrage.app.sys_encoding)
 
@@ -1447,6 +1447,27 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
 
         return _responds(RESULT_SUCCESS, _getRootDirs())
 
+class CMD_SiCKRAGEPauseDaily(ApiCall):
+    _cmd = "sr.pausedaily"
+    _help = {
+        "desc": "Pause or unpause the daily search",
+        "optionalParameters": {
+            "pause": {"desc": "True to pause the daily search, False to unpause it"}
+        }
+    }
+
+    def __init__(self, application, request, *args, **kwargs):
+        super(CMD_SiCKRAGEPauseDaily, self).__init__(application, request, *args, **kwargs)
+        self.pause, args = self.check_params("pause", False, False, "bool", [], *args, **kwargs)
+
+    def run(self):
+        """ Pause or unpause the daily search """
+        if self.pause:
+            sickrage.app.search_queue.pause_daily_searcher()
+            return _responds(RESULT_SUCCESS, msg="Daily searcher paused")
+        else:
+            sickrage.app.search_queue.unpause_daily_searcher()
+            return _responds(RESULT_SUCCESS, msg="Daily searcher unpaused")
 
 class CMD_SiCKRAGEPauseBacklog(ApiCall):
     _cmd = "sr.pausebacklog"
@@ -1464,11 +1485,11 @@ class CMD_SiCKRAGEPauseBacklog(ApiCall):
     def run(self):
         """ Pause or unpause the backlog search """
         if self.pause:
-            sickrage.app.search_queue.pause_backlog()  # @UndefinedVariable
-            return _responds(RESULT_SUCCESS, msg="Backlog paused")
+            sickrage.app.search_queue.pause_backlog_searcher()
+            return _responds(RESULT_SUCCESS, msg="Backlog searcher paused")
         else:
-            sickrage.app.search_queue.unpause_backlog()  # @UndefinedVariable
-            return _responds(RESULT_SUCCESS, msg="Backlog unpaused")
+            sickrage.app.search_queue.unpause_backlog_searcher()
+            return _responds(RESULT_SUCCESS, msg="Backlog searcher unpaused")
 
 
 class CMD_SiCKRAGEPing(ApiCall):

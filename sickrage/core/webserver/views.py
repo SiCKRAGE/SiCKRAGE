@@ -3532,8 +3532,9 @@ class ManageQueues(Manage):
     def index(self):
         return self.render(
             "/manage/queues.mako",
-            backlogPaused=sickrage.app.search_queue.is_backlog_paused(),
-            backlogRunning=sickrage.app.search_queue.is_backlog_in_progress(),
+            backlogSearchPaused=sickrage.app.search_queue.is_backlog_searcher_paused(),
+            dailySearchPaused=sickrage.app.search_queue.is_daily_searcher_paused(),
+            backlogSearchStatus=sickrage.app.search_queue.is_backlog_in_progress(),
             dailySearchStatus=sickrage.app.search_queue.is_dailysearch_in_progress(),
             findPropersStatus=sickrage.app.proper_searcher.amActive,
             searchQueueLength=sickrage.app.search_queue.queue_length(),
@@ -3547,7 +3548,7 @@ class ManageQueues(Manage):
             action='queues'
         )
 
-    def forceBacklog(self):
+    def forceBacklogSearch(self):
         # force it to run the next time it looks
         if sickrage.app.scheduler.get_job(sickrage.app.backlog_searcher.name).func(True):
             sickrage.app.log.info("Backlog search forced")
@@ -3555,7 +3556,7 @@ class ManageQueues(Manage):
 
         return self.redirect("/manage/manageQueues/")
 
-    def forceSearch(self):
+    def forceDailySearch(self):
         # force it to run the next time it looks
         if sickrage.app.scheduler.get_job(sickrage.app.daily_searcher.name).func(True):
             sickrage.app.log.info("Daily search forced")
@@ -3571,11 +3572,19 @@ class ManageQueues(Manage):
 
         return self.redirect("/manage/manageQueues/")
 
-    def pauseBacklog(self, paused=None):
+    def pauseDailySearcher(self, paused=None):
         if paused == "1":
-            sickrage.app.search_queue.pause_backlog()
+            sickrage.app.search_queue.pause_daily_searcher()
         else:
-            sickrage.app.search_queue.unpause_backlog()
+            sickrage.app.search_queue.unpause_daily_searcher()
+
+        return self.redirect("/manage/manageQueues/")
+
+    def pauseBacklogSearcher(self, paused=None):
+        if paused == "1":
+            sickrage.app.search_queue.pause_backlog_searcher()
+        else:
+            sickrage.app.search_queue.unpause_backlog_searcher()
 
         return self.redirect("/manage/manageQueues/")
 

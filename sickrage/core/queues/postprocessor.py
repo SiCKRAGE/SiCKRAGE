@@ -67,26 +67,6 @@ class PostProcessorQueue(srQueue):
         return False
 
     @property
-    def is_paused(self):
-        """
-        Shows if the post processing queue is paused
-        :return: bool
-        """
-        return self.min_priority == srQueuePriorities.HIGH
-
-    def pause(self):
-        """
-        Pause the post processing queue
-        """
-        self.min_priority = srQueuePriorities.HIGH
-
-    def unpause(self):
-        """
-        Unpause the processing queue
-        """
-        self.min_priority = 0
-
-    @property
     def queue_length(self):
         """
         Returns a dict showing how many auto and manual tasks are in the queue
@@ -140,14 +120,8 @@ class PostProcessorQueue(srQueue):
                 return logHelper("Directory {} is already being processed right now, please wait until it completes "
                                  "before trying again".format(dirName))
 
-            item.__dict__.update({'dirName': dirName,
-                                  'nzbName': nzbName,
-                                  'process_method': process_method,
-                                  'force': force,
-                                  'is_priority': is_priority,
-                                  'delete_on': delete_on,
-                                  'failed': failed,
-                                  'proc_type': proc_type})
+            item.__dict__.update(dict(dirName=dirName, nzbName=nzbName, process_method=process_method, force=force,
+                                      is_priority=is_priority, delete_on=delete_on, failed=failed, proc_type=proc_type))
 
             message = logHelper(
                 "An item with directory {} is already being processed in the queue, item updated".format(dirName))
