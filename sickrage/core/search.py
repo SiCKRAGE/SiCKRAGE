@@ -396,13 +396,15 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
         for providerID, providerObj in sickrage.app.search_providers.sort(
                 randomize=sickrage.app.config.randomize_providers).items():
 
-            # check provider type and provider is enabled
+            # check if provider is enabled
+            if not providerObj.isEnabled:
+                continue
+
+            # check provider type
             if not sickrage.app.config.use_nzbs and providerObj.type in [NZBProvider.type, NewznabProvider.type]:
                 continue
             elif not sickrage.app.config.use_torrents and providerObj.type in [TorrentProvider.type,
                                                                                TorrentRssProvider.type]:
-                continue
-            elif not providerObj.isEnabled:
                 continue
 
             if providerObj.anime_only and not show.is_anime:
@@ -411,7 +413,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
 
             foundResults[providerObj.name] = {}
 
-            searchCount = 0
+            search_count = 0
             search_mode = providerObj.search_mode
 
             # Always search for episode when manually searching when in sponly
@@ -419,7 +421,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                 search_mode = 'eponly'
 
             while True:
-                searchCount += 1
+                search_count += 1
 
                 try:
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
@@ -464,7 +466,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                             foundResults[providerObj.name][curEp].sort(key=lambda k: int(k.seeders), reverse=True)
 
                     break
-                elif not providerObj.search_fallback or searchCount == 2:
+                elif not providerObj.search_fallback or search_count == 2:
                     break
 
                 if search_mode == 'sponly':

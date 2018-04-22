@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-09 23:59-0700\n"
-"PO-Revision-Date: 2018-04-10 03:00-0400\n"
+"POT-Creation-Date: 2018-04-21 22:59-0700\n"
+"PO-Revision-Date: 2018-04-22 02:00-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "Хорошо"
 msgid "Cancel"
 msgstr "Отмена"
 
-#: dist/js/core.js:1395 sickrage/core/webserver/views.py:3651
+#: dist/js/core.js:1395 sickrage/core/webserver/views.py:3660
 msgid "Clear History"
 msgstr "Очистка истории"
 
@@ -81,7 +81,7 @@ msgstr "Очистка истории"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Являются ли вы уверены, что хотите очистить все скачать истории?"
 
-#: dist/js/core.js:1400 sickrage/core/webserver/views.py:3653
+#: dist/js/core.js:1400 sickrage/core/webserver/views.py:3662
 msgid "Trim History"
 msgstr "Трим история"
 
@@ -847,7 +847,7 @@ msgstr "Шоу"
 msgid "Schedule"
 msgstr "Расписание"
 
-#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:3664
+#: sickrage/core/webserver/views.py:3672 sickrage/core/webserver/views.py:3673
 #: sickrage/core/webserver/views/config/general.mako:161
 #: sickrage/core/webserver/views/layouts/main.mako:210
 msgid "History"
@@ -3464,7 +3464,7 @@ msgstr "По крайней мере один поставщик являетс�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent провайдеры могут быть переключены в"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3969
+#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:3978
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "Search Clients"
@@ -4678,7 +4678,7 @@ msgstr "Никогда не"
 msgid "Retry Download"
 msgstr "Повторить попытку загрузки"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4961
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4743,6 +4743,7 @@ msgstr "метаданные SiCKRAGE использовать при поиск
 #: sickrage/core/webserver/views/manage/mass_edit.mako:152
 #: sickrage/core/webserver/views/manage/mass_update.mako:56
 #: sickrage/core/webserver/views/manage/queues.mako:16
+#: sickrage/core/webserver/views/manage/queues.mako:32
 msgid "Paused"
 msgstr "Приостановлено"
 
@@ -4792,7 +4793,7 @@ msgstr "Используйте порядок DVD вместо воздуха п
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "«Силы полное обновление» необходима, и если у вас есть существующие эпизоды вам нужно сортировать их вручную."
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4831
+#: sickrage/core/webserver/views.py:3711 sickrage/core/webserver/views.py:4840
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5120,7 +5121,7 @@ msgstr "Выполнение перезагрузки"
 msgid "Daily Search"
 msgstr "Ежедневный поиск"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4948
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Невыполненная работа"
@@ -5145,7 +5146,7 @@ msgstr "Процесс пост"
 msgid "Subtitles Finder"
 msgstr "Поиск субтитры"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4956
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5178,7 +5179,7 @@ msgstr "Нет"
 msgid "True"
 msgstr "Правда"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4951
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Показать очередь"
@@ -5190,8 +5191,8 @@ msgstr "Показать код"
 #: sickrage/core/webserver/views/home/status.mako:114
 #: sickrage/core/webserver/views/manage/queues.mako:16
 #: sickrage/core/webserver/views/manage/queues.mako:32
-#: sickrage/core/webserver/views/manage/queues.mako:49
-#: sickrage/core/webserver/views/manage/queues.mako:63
+#: sickrage/core/webserver/views/manage/queues.mako:53
+#: sickrage/core/webserver/views/manage/queues.mako:67
 msgid "In Progress"
 msgstr "В ходе"
 
@@ -5482,7 +5483,7 @@ msgstr "Массовое обновление"
 msgid "Backlog Overview"
 msgstr "Невыполненная работа обзор"
 
-#: sickrage/core/webserver/views.py:3543 sickrage/core/webserver/views.py:3544
+#: sickrage/core/webserver/views.py:3544 sickrage/core/webserver/views.py:3545
 #: sickrage/core/webserver/views/layouts/main.mako:146
 msgid "Manage Queues"
 msgstr "Управление очередями"
@@ -5524,12 +5525,12 @@ msgstr "Пропустил подзаголовок управления"
 msgid "Config"
 msgstr "Конфигурации"
 
-#: sickrage/core/webserver/views.py:3693
+#: sickrage/core/webserver/views.py:3702
 #: sickrage/core/webserver/views/layouts/main.mako:222
 msgid "Help and Info"
 msgstr "Помощь и информация"
 
-#: sickrage/core/webserver/views.py:3694
+#: sickrage/core/webserver/views.py:3703
 #: sickrage/core/webserver/views/layouts/main.mako:227
 msgid "General"
 msgstr "Общие"
@@ -5538,28 +5539,28 @@ msgstr "Общие"
 msgid "Backup and Restore"
 msgstr "Резервное копирование и восстановление"
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4266
+#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:4275
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Search Providers"
 msgstr "Поиск поставщиков"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4750
+#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4759
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "Параметры субтитры"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4879
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Параметры качества"
 
 #: sickrage/core/webserver/views.py:2289 sickrage/core/webserver/views.py:2290
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4071
+#: sickrage/core/webserver/views.py:3709 sickrage/core/webserver/views.py:4080
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Post Processing"
 msgstr "Пост-обработки"
 
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4423
+#: sickrage/core/webserver/views.py:3710 sickrage/core/webserver/views.py:4432
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Notifications"
 msgstr "Уведомления"
@@ -5824,69 +5825,71 @@ msgstr "По умолчанию Ep"
 
 #: sickrage/core/webserver/views/manage/queues.mako:16
 #: sickrage/core/webserver/views/manage/queues.mako:32
-#: sickrage/core/webserver/views/manage/queues.mako:47
-#: sickrage/core/webserver/views/manage/queues.mako:63
+#: sickrage/core/webserver/views/manage/queues.mako:51
+#: sickrage/core/webserver/views/manage/queues.mako:67
 msgid "Not in progress"
 msgstr "Не в прогресс"
 
 #: sickrage/core/webserver/views.py:1227
 #: sickrage/core/webserver/views/manage/queues.mako:23
-#: sickrage/core/webserver/views/manage/queues.mako:67
+#: sickrage/core/webserver/views/manage/queues.mako:39
+#: sickrage/core/webserver/views/manage/queues.mako:71
 msgid "Pause"
 msgstr "Пауза"
 
 #: sickrage/core/webserver/views/manage/queues.mako:23
-#: sickrage/core/webserver/views/manage/queues.mako:67
+#: sickrage/core/webserver/views/manage/queues.mako:39
+#: sickrage/core/webserver/views/manage/queues.mako:71
 msgid "Unpause"
 msgstr "Возобновить"
 
-#: sickrage/core/webserver/views/manage/queues.mako:43
+#: sickrage/core/webserver/views/manage/queues.mako:47
 msgid "Find Propers Search:"
 msgstr "Propers поиска:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:45
+#: sickrage/core/webserver/views/manage/queues.mako:49
 msgid "Propers search disabled"
 msgstr "Propers Поиск отключена"
 
-#: sickrage/core/webserver/views/manage/queues.mako:62
+#: sickrage/core/webserver/views/manage/queues.mako:66
 msgid "Post-Processor:"
 msgstr "Постпроцессор:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:74
+#: sickrage/core/webserver/views/manage/queues.mako:78
 msgid "Search Queue:"
 msgstr "Поиск очереди:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:77
+#: sickrage/core/webserver/views/manage/queues.mako:81
 msgid "Daily:"
 msgstr "Ежедневно:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:78
 #: sickrage/core/webserver/views/manage/queues.mako:82
 #: sickrage/core/webserver/views/manage/queues.mako:86
 #: sickrage/core/webserver/views/manage/queues.mako:90
-#: sickrage/core/webserver/views/manage/queues.mako:102
+#: sickrage/core/webserver/views/manage/queues.mako:94
 #: sickrage/core/webserver/views/manage/queues.mako:106
+#: sickrage/core/webserver/views/manage/queues.mako:110
 msgid "pending items"
 msgstr "Отложенные товары"
 
-#: sickrage/core/webserver/views/manage/queues.mako:81
+#: sickrage/core/webserver/views/manage/queues.mako:85
 msgid "Backlog:"
 msgstr "Невыполненная работа по:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:85
-#: sickrage/core/webserver/views/manage/queues.mako:105
+#: sickrage/core/webserver/views/manage/queues.mako:89
+#: sickrage/core/webserver/views/manage/queues.mako:109
 msgid "Manual:"
 msgstr "Вручную:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:89
+#: sickrage/core/webserver/views/manage/queues.mako:93
 msgid "Failed:"
 msgstr "Не удалось:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:98
+#: sickrage/core/webserver/views/manage/queues.mako:102
 msgid "Post-Processor Queue:"
 msgstr "Постпроцессор очереди:"
 
-#: sickrage/core/webserver/views/manage/queues.mako:101
+#: sickrage/core/webserver/views/manage/queues.mako:105
 msgid "Auto:"
 msgstr "Авто:"
 
@@ -6033,11 +6036,11 @@ msgstr "Неизвестный номер текущей версии: Если 
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Новое обновление SiCKRAGE, найти на серверах PyPy, версия {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/queues/search.py:201
+#: sickrage/core/queues/search.py:209
 msgid "No downloads were found"
 msgstr "Загружаемые файлы не были найдены"
 
-#: sickrage/core/queues/search.py:202
+#: sickrage/core/queues/search.py:210
 #, python-format
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Не мог найти загрузки для <i>%s</i>"
@@ -6447,7 +6450,7 @@ msgstr "Уже на ветке: "
 #: sickrage/core/webserver/views.py:1931 sickrage/core/webserver/views.py:1936
 #: sickrage/core/webserver/views.py:1939 sickrage/core/webserver/views.py:1982
 #: sickrage/core/webserver/views.py:1988 sickrage/core/webserver/views.py:1991
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4958
 msgid "Error"
 msgstr "Ошибка"
 
@@ -6787,238 +6790,238 @@ msgstr "<br><b>Subtitles</b><br><ul><li>"
 msgid "The following actions were queued:"
 msgstr "Следующие действия были в очереди:"
 
-#: sickrage/core/webserver/views.py:3554
+#: sickrage/core/webserver/views.py:3555
 msgid "Backlog search started"
 msgstr "Невыполненная работа Поиск работы"
 
-#: sickrage/core/webserver/views.py:3562
+#: sickrage/core/webserver/views.py:3563
 msgid "Daily search started"
 msgstr "Ежедневный поиск работы"
 
-#: sickrage/core/webserver/views.py:3570
+#: sickrage/core/webserver/views.py:3571
 msgid "Find propers search started"
 msgstr "Поиска propers начал"
 
-#: sickrage/core/webserver/views.py:3673
+#: sickrage/core/webserver/views.py:3682
 msgid "History cleared"
 msgstr "История очищается"
 
-#: sickrage/core/webserver/views.py:3680
+#: sickrage/core/webserver/views.py:3689
 msgid "Removed history entries older than 30 days"
 msgstr "Удалить историю записи старше 30 дней"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:3921
 msgid "Backup/Restore"
 msgstr "Резервное копирование и восстановление"
 
-#: sickrage/core/webserver/views.py:3711 sickrage/core/webserver/views.py:3712
+#: sickrage/core/webserver/views.py:3720 sickrage/core/webserver/views.py:3721
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: sickrage/core/webserver/views.py:3720
+#: sickrage/core/webserver/views.py:3729
 msgid "Configuration Reset to Defaults"
 msgstr "Сброс конфигурации по умолчанию"
 
-#: sickrage/core/webserver/views.py:3733
+#: sickrage/core/webserver/views.py:3742
 msgid "Config - General"
 msgstr "Config - Генеральный"
 
-#: sickrage/core/webserver/views.py:3734
+#: sickrage/core/webserver/views.py:3743
 msgid "General Configuration"
 msgstr "Общие настройки"
 
-#: sickrage/core/webserver/views.py:3894 sickrage/core/webserver/views.py:4053
-#: sickrage/core/webserver/views.py:4184 sickrage/core/webserver/views.py:4405
-#: sickrage/core/webserver/views.py:4732 sickrage/core/webserver/views.py:4813
-#: sickrage/core/webserver/views.py:4852
+#: sickrage/core/webserver/views.py:3903 sickrage/core/webserver/views.py:4062
+#: sickrage/core/webserver/views.py:4193 sickrage/core/webserver/views.py:4414
+#: sickrage/core/webserver/views.py:4741 sickrage/core/webserver/views.py:4822
+#: sickrage/core/webserver/views.py:4861
 msgid "Error(s) Saving Configuration"
 msgstr "Ошибки, сохранение конфигурации"
 
-#: sickrage/core/webserver/views.py:3896
+#: sickrage/core/webserver/views.py:3905
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:3911
+#: sickrage/core/webserver/views.py:3920
 msgid "Config - Backup/Restore"
 msgstr "Config - резервное копирование и восстановление"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3933
 msgid "Backup SUCCESSFUL"
 msgstr "Резервное копирование успешно"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3935
 msgid "Backup FAILED!"
 msgstr "СБОЙ резервного копирования!"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3937
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Необходимо выбрать папку для сохранения резервного копирования для первой!"
 
-#: sickrage/core/webserver/views.py:3947
+#: sickrage/core/webserver/views.py:3956
 msgid "Successfully extracted restore files to "
 msgstr "Успешно извлечения восстановить файлы в "
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3957
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage для завершения процесса восстановления."
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3959
 msgid "Restore FAILED"
 msgstr "Не удалось восстановить"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3961
 msgid "You need to select a backup file to restore!"
 msgstr "Вам нужно выбрать файл резервной копии для восстановления!"
 
-#: sickrage/core/webserver/views.py:3968
+#: sickrage/core/webserver/views.py:3977
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3994 sickrage/core/webserver/views.py:3997
-#: sickrage/core/webserver/views.py:4099
+#: sickrage/core/webserver/views.py:4003 sickrage/core/webserver/views.py:4006
+#: sickrage/core/webserver/views.py:4108
 msgid "Unable to create directory "
 msgstr "Не удается создать каталог "
 
-#: sickrage/core/webserver/views.py:3994 sickrage/core/webserver/views.py:3997
-#: sickrage/core/webserver/views.py:4099
+#: sickrage/core/webserver/views.py:4003 sickrage/core/webserver/views.py:4006
+#: sickrage/core/webserver/views.py:4108
 msgid ", dir not changed."
 msgstr ", dir не изменилась."
 
-#: sickrage/core/webserver/views.py:4055
+#: sickrage/core/webserver/views.py:4064
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4070
+#: sickrage/core/webserver/views.py:4079
 msgid "Config - Post Processing"
 msgstr "Config - пост обработки"
 
-#: sickrage/core/webserver/views.py:4110
+#: sickrage/core/webserver/views.py:4119
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Распаковка не поддерживается, отключение распаковывать параметр"
 
-#: sickrage/core/webserver/views.py:4145 sickrage/core/webserver/views.py:4156
+#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Вы пробовали, сохранение недопустимых аниме именования конфигурации, не сохранение параметров именования"
 
-#: sickrage/core/webserver/views.py:4147 sickrage/core/webserver/views.py:4158
+#: sickrage/core/webserver/views.py:4156 sickrage/core/webserver/views.py:4167
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Вы пробовали, сохранение недопустимых имен конфигурации, не сохранение параметров именования"
 
-#: sickrage/core/webserver/views.py:4164
+#: sickrage/core/webserver/views.py:4173
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Вы пробовали, сохранение недопустимых воздуха к Дата именования конфигурации, не сохранение параметров воздуха к Дата"
 
-#: sickrage/core/webserver/views.py:4170
+#: sickrage/core/webserver/views.py:4179
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Вы пробовали, сохранения поврежденных спорта именования конфигурации, не сохранение параметров спорта"
 
-#: sickrage/core/webserver/views.py:4186
+#: sickrage/core/webserver/views.py:4195
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4265
+#: sickrage/core/webserver/views.py:4274
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4306
+#: sickrage/core/webserver/views.py:4315
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Не указано имя поставщика"
 
-#: sickrage/core/webserver/views.py:4308
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Не указан URL-адрес поставщика"
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4319
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Api поставщика ключа"
 
-#: sickrage/core/webserver/views.py:4407
+#: sickrage/core/webserver/views.py:4416
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4422
+#: sickrage/core/webserver/views.py:4431
 msgid "Config - Notifications"
 msgstr "Config - уведомления"
 
-#: sickrage/core/webserver/views.py:4734
+#: sickrage/core/webserver/views.py:4743
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4749
+#: sickrage/core/webserver/views.py:4758
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:4824
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4830
+#: sickrage/core/webserver/views.py:4839
 msgid "Config - Anime"
 msgstr "Config - аниме"
 
-#: sickrage/core/webserver/views.py:4854
+#: sickrage/core/webserver/views.py:4863
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] конфигурации сохранены"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4878
 msgid "Config - Quality Settings"
 msgstr "Config - параметры качества"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4890
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[НАСТРОЙКИ КАЧЕСТВА] Конфигурация сохраняется"
 
-#: sickrage/core/webserver/views.py:4894
+#: sickrage/core/webserver/views.py:4903
 msgid "Clear Errors"
 msgstr "Очистить ошибки"
 
-#: sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:4906
 msgid "Clear Warnings"
 msgstr "Четкие предупреждения"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4947
 msgid "Daily Searcher"
 msgstr "Ежедневные искателя"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4949
 msgid "Show Updater"
 msgstr "Показать обновления"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4950
 msgid "Check Version"
 msgstr "Проверить версию"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4952
 msgid "Search Queue"
 msgstr "Поиск очереди"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4953
 msgid "Find Propers"
 msgstr "Найти Propers"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4954
 msgid "Postprocessor"
 msgstr "Постпроцессор"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4955
 msgid "Find Subtitles"
 msgstr "Найти субтитры"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4957
 msgid "Event"
 msgstr "События"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4959
 msgid "Tornado"
 msgstr "Торнадо"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4960
 msgid "Thread"
 msgstr "Поток"
 

@@ -98,16 +98,13 @@ class API(object):
     def add_provider_cache_result(self, data):
         self._request('POST', 'v1/providers/cache/results', json=data)
 
-    def get_provider_cache_results(self, provider, indexerid=None):
-        query = ('v1/providers/cache/results/{}'.format(provider),
-                 'v1/providers/cache/results/{}/indexerids/{}'.format(provider, indexerid))[indexerid is not None]
-
+    def get_provider_cache_results(self, provider, indexerid, season, episode):
+        query = 'v1/providers/cache/results/{}/indexerid/{}/season/()/episode/()'.format(provider, indexerid, season,
+                                                                                         episode)
         return self._request('GET', query)
 
-    def get_torrent_cache_results(self, hash=None):
-        query = ('v1/torrents/cache/results',
-                 'v1/torrents/cache/results/{}'.format(hash))[hash is not None]
-
+    def get_torrent_cache_results(self, hash):
+        query = 'v1/torrents/cache/results/{}'.format(hash)
         return self._request('GET', query)
 
     def add_torrent_cache_result(self, url):
@@ -115,10 +112,8 @@ class API(object):
 
     def search_by_imdb_title(self, title):
         query = 'v1/imdb/search_by_title/{}'.format(title)
-
         return self._request('GET', query)
 
     def search_by_imdb_id(self, id):
         query = 'v1/imdb/search_by_id/{}'.format(id)
-
         return self._request('GET', query)
