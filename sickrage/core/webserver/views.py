@@ -4055,6 +4055,8 @@ class ConfigSearch(Config):
         sickrage.app.config.torrent_rpcurl = torrent_rpcurl
         sickrage.app.config.torrent_auth_type = torrent_auth_type
 
+        torrent_webui_url(True)
+
         sickrage.app.config.save()
 
         if len(results) > 0:

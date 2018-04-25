@@ -1599,12 +1599,16 @@ def validate_url(value):
     return (True, False)[not re.compile(regex.format(tld=r'\.[a-z]{2,10}')).match(value)]
 
 
-def torrent_webui_url():
+def torrent_webui_url(reset=False):
+    if not reset:
+        return sickrage.app.client_web_urls.get('torrent', '')
+
     if not sickrage.app.config.use_torrents or \
             not sickrage.app.config.torrent_host.lower().startswith('http') or \
             sickrage.app.config.torrent_method == 'blackhole' or sickrage.app.config.enable_https and \
             not sickrage.app.config.torrent_host.lower().startswith('https'):
-        return ''
+        sickrage.app.client_web_urls['torrent'] = ''
+        return sickrage.app.client_web_urls['torrent']
 
     torrent_ui_url = re.sub('localhost|127.0.0.1', sickrage.app.config.web_host or get_lan_ip(),
                             sickrage.app.config.torrent_host or '', re.I)
@@ -1622,7 +1626,9 @@ def torrent_webui_url():
         if test_exists(urlparse.urljoin(torrent_ui_url, 'download/')):
             torrent_ui_url = urlparse.urljoin(torrent_ui_url, 'download/')
 
-    return ('', torrent_ui_url)[test_exists(torrent_ui_url)]
+    sickrage.app.client_web_urls['torrent'] = ('', torrent_ui_url)[test_exists(torrent_ui_url)]
+
+    return sickrage.app.client_web_urls['torrent']
 
 
 def checkbox_to_value(option, value_on=True, value_off=False):
