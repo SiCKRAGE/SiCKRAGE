@@ -323,7 +323,7 @@ def wantedEpisodes(show, fromDate):
 
     # check through the list of statuses to see if we want any
     for dbData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
-        if dbData['season'] > 0 and dbData['airdate'] > fromDate.toordinal():
+        if dbData['season'] > 0 and dbData['airdate'] >= fromDate.toordinal():
             curStatus, curQuality = Quality.splitCompositeStatus(int(dbData["status"] or -1))
 
             # if we need a better one then say yes
@@ -361,7 +361,7 @@ def searchForNeededEpisodes():
         if curShow.paused:
             continue
 
-        episodes = wantedEpisodes(curShow, date.fromordinal(1))
+        episodes = wantedEpisodes(curShow, date.today())
         result = searchProviders(curShow, episodes, cacheOnly=sickrage.app.config.enable_rss_cache)
         if result: results += result
 

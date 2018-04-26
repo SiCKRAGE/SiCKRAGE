@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1c5657e - 2018-04-25: Fixed issue where cloudflare bypass would loop when unable to bypass Updated torrentleech provider url 
+- * ea787b1 - 2018-04-26: Daily searches hard-coded to search from todays date and greater Backlog searches hard-coded to search from yesterday and less 
+- * 40c2bce - 2018-04-25: Fixed issue where cloudflare bypass would loop when unable to bypass Updated torrentleech provider url 
 - * 9b257bc - 2018-04-25: Fixed issue #202 - Torrent client delaying load times on all pages 
 - * ee7b8bc - 2018-04-21: Release v9.3.6 
 - * c32702b - 2018-04-18: Daily/Backlog searches now skip downloaded episodes with higher quality then show&#x27;s set preferred or best. Daily searches skip downloaded episodes if archive on first match enabled. 

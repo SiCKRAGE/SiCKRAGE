@@ -3058,7 +3058,7 @@ class Manage(Home, WebRoot):
         show_obj = findCertainShow(int(indexer_id))
 
         if show_obj:
-            sickrage.app.backlog_searcher.searchBacklog([show_obj])
+            sickrage.app.backlog_searcher.search_backlog([show_obj])
 
         return self.redirect("/manage/backlogOverview/")
 
