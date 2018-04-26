@@ -148,6 +148,7 @@ class SearchQueue(srQueue):
 class DailySearchQueueItem(srQueueItem):
     def __init__(self, show, segment):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
+        self.name = 'DAILY-' + str(show.indexerid)
         self.show = show
         self.segment = segment
         self.success = False
@@ -164,7 +165,7 @@ class DailySearchQueueItem(srQueueItem):
                 for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    self.success = snatchEpisode(result)
+                    snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -223,13 +224,13 @@ class ManualSearchQueueItem(srQueueItem):
 
 class BacklogQueueItem(srQueueItem):
     def __init__(self, show, segment):
-        super(BacklogQueueItem, self).__init__('Backlog', BACKLOG_SEARCH)
-        self.show = show
+        super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
         self.name = 'BACKLOG-' + str(show.indexerid)
-        self.success = False
-        self.started = False
+        self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.LOW
+        self.success = False
+        self.started = False
 
     def run(self):
         self.started = True
@@ -259,13 +260,13 @@ class BacklogQueueItem(srQueueItem):
 class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
-        self.show = show
         self.name = 'RETRY-' + str(show.indexerid)
-        self.success = False
-        self.started = False
+        self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
+        self.success = False
+        self.started = False
 
     def run(self):
         self.started = True

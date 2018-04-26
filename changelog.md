@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0f3508b - 2018-04-26: Code refactoring for backlog and daily searches 
+- * 288ede0 - 2018-04-26: Fixed issue with stuck current item in queue 
+- * 9f2aac1 - 2018-04-26: Code refactoring for backlog and daily searches 
 - * 26ab1dd - 2018-04-26: Code refactoring for backlog and daily searches 
 - * 37d5cd0 - 2018-04-26: Daily searches hard-coded to search from todays date and greater Backlog searches hard-coded to search from yesterday and less 
 - * 40c2bce - 2018-04-25: Fixed issue where cloudflare bypass would loop when unable to bypass Updated torrentleech provider url 

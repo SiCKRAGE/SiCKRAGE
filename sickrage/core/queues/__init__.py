@@ -70,6 +70,9 @@ class srQueue(threading.Thread):
                             self.currentItem = __
 
                     if not self.currentItem or not self.currentItem.isAlive():
+                        if self.currentItem:
+                            self.currentItem = None
+
                         self.currentItem = self.get()
                         self.currentItem.start()
 
