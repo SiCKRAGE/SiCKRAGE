@@ -1,6 +1,7 @@
 # Changelog
 
-- * 288ede0 - 2018-04-26: Fixed issue with stuck current item in queue 
+- * d7b8337 - 2018-04-26: Pre-Release v9.3.6.dev1 
+- * be6173b - 2018-04-26: Fixed issue with stuck current item in queue 
 - * 9f2aac1 - 2018-04-26: Code refactoring for backlog and daily searches 
 - * 26ab1dd - 2018-04-26: Code refactoring for backlog and daily searches 
 - * 37d5cd0 - 2018-04-26: Daily searches hard-coded to search from todays date and greater Backlog searches hard-coded to search from yesterday and less 

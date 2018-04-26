@@ -393,39 +393,6 @@ module.exports = function (grunt) {
         ]
     );
 
-    grunt.registerTask('release', function () {
-        grunt.task.run(['exec:git:checkout:develop']);
-
-        var vFile = 'sickrage/version.txt';
-
-        var version = grunt.file.read(vFile);
-        var versionParts = version.split('.');
-        var vArray = {
-            vMajor: versionParts[0],
-            vMinor: versionParts[1],
-            vPatch: versionParts[2]
-        };
-        vArray.vPatch = parseFloat(vArray.vPatch) + 1;
-
-        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
-        grunt.config('new_version', newVersion);
-
-        grunt.file.write(vFile, newVersion);
-
-        var tasks = [
-            'default',
-            'sync_trans', // sync translations with crowdin
-            'exec:git_commit:Release v' + newVersion,
-            'exec:git_flow_start:' + newVersion,
-            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
-            'exec:git_push:origin:develop:tags',
-            'exec:git_push:origin:master:tags',
-            'exec:pypi_publish'
-        ];
-
-        grunt.task.run(tasks);
-    });
-
     grunt.registerTask('upload_trans', 'Upload translations', function() {
         grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
@@ -470,5 +437,68 @@ module.exports = function (grunt) {
         } else {
             grunt.log.warn('Environment variable `CROWDIN_API_KEY` is not set, aborting task.'.bold);
         }
+    });
+
+    grunt.registerTask('pre-release', function () {
+        grunt.task.run(['exec:git:checkout:develop']);
+
+        var vFile = 'sickrage/version.txt';
+
+        var version = grunt.file.read(vFile);
+        var versionParts = version.split('.');
+        var vArray = {
+            vMajor: versionParts[0],
+            vMinor: versionParts[1],
+            vPatch: versionParts[2],
+            vPre: versionParts[3] || 0
+        };
+        vArray.vPre = parseFloat(vArray.vPre) + 1;
+
+        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
+        grunt.config('new_version', newVersion);
+
+        grunt.file.write(vFile, newVersion);
+
+        var tasks = [
+            'default',
+            'exec:git_commit:Pre-Release v' + newVersion,
+            'exec:git_push:origin:develop:tags',
+            'exec:pypi_publish'
+        ];
+
+        grunt.task.run(tasks);
+    });
+
+    grunt.registerTask('release', function () {
+        grunt.task.run(['exec:git:checkout:develop']);
+
+        var vFile = 'sickrage/version.txt';
+
+        var version = grunt.file.read(vFile);
+        var versionParts = version.split('.');
+        var vArray = {
+            vMajor: versionParts[0],
+            vMinor: versionParts[1],
+            vPatch: versionParts[2]
+        };
+        vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+
+        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
+        grunt.config('new_version', newVersion);
+
+        grunt.file.write(vFile, newVersion);
+
+        var tasks = [
+            'default',
+            'sync_trans', // sync translations with crowdin
+            'exec:git_commit:Release v' + newVersion,
+            'exec:git_flow_start:' + newVersion,
+            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
+            'exec:git_push:origin:develop:tags',
+            'exec:git_push:origin:master:tags',
+            'exec:pypi_publish'
+        ];
+
+        grunt.task.run(tasks);
     });
 };
