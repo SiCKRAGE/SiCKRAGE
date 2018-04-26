@@ -24,7 +24,6 @@ import threading
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
 from sickrage.core.queues.search import BacklogQueueItem
-from sickrage.core.ui import ProgressIndicator
 
 
 class BacklogSearcher(object):
@@ -37,7 +36,6 @@ class BacklogSearcher(object):
         self.amPaused = False
         self.amWaiting = False
         self.forced = False
-        self._reset_pi()
 
     def run(self, force=False):
         if self.amActive or sickrage.app.developer and not force:
@@ -60,16 +58,6 @@ class BacklogSearcher(object):
             return datetime.date.today()
         else:
             return datetime.date.fromordinal(self._last_backlog_search + self.cycleTime)
-
-    def _reset_pi(self):
-        self.percentDone = 0
-        self.currentSearchInfo = {'title': 'Initializing'}
-
-    def getProgressIndicator(self):
-        if self.amActive:
-            return ProgressIndicator(self.percentDone, self.currentSearchInfo)
-        else:
-            return None
 
     def am_running(self):
         sickrage.app.log.debug("amWaiting: " + str(self.amWaiting) + ", amActive: " + str(self.amActive))
@@ -106,14 +94,10 @@ class BacklogSearcher(object):
             self._last_backlog_search = self._get_last_backlog_search(curShow.indexerid)
 
             segments = self._get_segments(curShow, from_date)
-
-            for season, segment in segments.items():
-                self.currentSearchInfo = {'title': curShow.name + " Season " + str(season)}
-                sickrage.app.search_queue.put(BacklogQueueItem(curShow, segment))
+            sickrage.app.search_queue.put(BacklogQueueItem(curShow, segments))
 
             if not segments:
-                sickrage.app.log.debug(
-                    "Nothing needs to be downloaded for {}, skipping".format(curShow.name))
+                sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
             # don't consider this an actual backlog search if we only did recent eps
             # or if we only did certain shows
@@ -121,7 +105,6 @@ class BacklogSearcher(object):
                 self._set_last_backlog_search(curShow.indexerid, cur_date)
 
         self.amActive = False
-        self._reset_pi()
 
     def _get_segments(self, show, from_date):
         anyQualities, bestQualities = Quality.splitQuality(show.quality)
@@ -129,9 +112,9 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
-        wanted = {}
-        for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                       if x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] > from_date.toordinal()):
+        wanted = []
+        for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid) if
+                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] >= from_date.toordinal()):
 
             curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
 
@@ -151,11 +134,7 @@ class BacklogSearcher(object):
                 continue
 
             epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
-
-            if epObj.season not in wanted:
-                wanted[epObj.season] = [epObj]
-            else:
-                wanted[epObj.season].append(epObj)
+            wanted.append(epObj)
 
         return wanted
 

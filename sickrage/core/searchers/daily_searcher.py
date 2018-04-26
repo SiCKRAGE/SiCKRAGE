@@ -24,6 +24,7 @@ import threading
 
 import sickrage
 from sickrage.core import findCertainShow, common
+from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER
 from sickrage.core.queues.search import DailySearchQueueItem
 from sickrage.core.updaters import tz_updater
 
@@ -100,7 +101,59 @@ class DailySearcher(object):
         if not new_episodes:
             sickrage.app.log.info("No new released episodes found")
 
-        # queue episode for daily search
-        sickrage.app.search_queue.put(DailySearchQueueItem())
+        for curShow in sickrage.app.showlist:
+            if curShow.paused:
+                continue
+
+            segments = self._get_segments(curShow, datetime.date.today())
+            sickrage.app.search_queue.put(DailySearchQueueItem(curShow, segments))
+
+            if not segments:
+                sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
         self.amActive = False
+
+    def _get_segments(self, show, fromDate):
+        """
+        Get a list of episodes that we want to download
+        :param show: Show these episodes are from
+        :param fromDate: Search from a certain date
+        :return: list of wanted episodes
+        """
+
+        wanted = []
+
+        if show.paused:
+            sickrage.app.log.debug("Not checking for episodes of {} because the show is paused".format(show.name))
+            return wanted
+
+        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        allQualities = list(set(anyQualities + bestQualities))
+
+        sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
+
+        # check through the list of statuses to see if we want any
+        for dbData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
+            if dbData['season'] > 0 and dbData['airdate'] >= fromDate.toordinal():
+                curStatus, curQuality = Quality.splitCompositeStatus(int(dbData["status"] or -1))
+
+                # if we need a better one then say yes
+                if curStatus not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):
+                    continue
+
+                if curStatus != WANTED and curQuality != Quality.UNKNOWN:
+                    if bestQualities:
+                        if curQuality in bestQualities or curQuality > max(bestQualities):
+                            continue
+                    elif curQuality in anyQualities or curQuality > max(anyQualities):
+                        continue
+
+                # only fetch if not archive on first match
+                if curStatus == DOWNLOADED and show.archive_firstmatch:
+                    continue
+
+                epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
+                epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
+                wanted.append(epObj)
+
+        return wanted
