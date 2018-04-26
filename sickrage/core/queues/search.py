@@ -157,7 +157,7 @@ class DailySearchQueueItem(srQueueItem):
         self.started = True
 
         try:
-            sickrage.app.log.info("Starting daily search for new episodes")
+            sickrage.app.log.info("Starting daily search for: [" + self.show.name + "]")
 
             search_result = searchProviders(self.show, self.segment, cacheOnly=sickrage.app.config.enable_rss_cache)
             if search_result:
@@ -169,11 +169,11 @@ class DailySearchQueueItem(srQueueItem):
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
-                sickrage.app.log.info("No needed episodes found")
+                sickrage.app.log.info("No needed episodes found during daily search for: [" + self.show.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished daily search for new episodes")
+            sickrage.app.log.info("Finished daily search for: [" + self.show.name + "]")
 
 
 class ManualSearchQueueItem(srQueueItem):
