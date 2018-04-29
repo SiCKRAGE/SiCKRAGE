@@ -144,8 +144,12 @@ class TVChaosUKProvider(TorrentProvider):
                     continue
 
                 with bs4_parser(data) as html:
-                    torrent_table = html.find(id='listtorrents').find_all('tr')
-                    for torrent in torrent_table:
+                    torrent_table = html.find(id='listtorrents')
+                    if not torrent_table:
+                        sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                        return results
+
+                    for torrent in torrent_table.find_all('tr'):
                         try:
                             title = torrent.find(attrs={'class': 'tooltip-content'}).text.strip()
                             download_url = torrent.find(title="Click to Download this Torrent!").parent['href'].strip()
