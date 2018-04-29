@@ -453,6 +453,10 @@ module.exports = function (grunt) {
             vPre: versionParts[3] || 0
         };
 
+        if (vArray.vPre !== 0) {
+            vArray.vPre = vArray.vPre.split('dev')[1];
+        }
+
         if (vArray.vPre === 0) {
             vArray.vPatch = parseFloat(vArray.vPatch) + 1;
         }
