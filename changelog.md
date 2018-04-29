@@ -1,6 +1,7 @@
 # Changelog
 
-- * d8f5423 - 2018-04-26: Pre-Release v9.3.7.dev1 
+- * d4ad1b2 - 2018-04-28: Skips post-processing video if not enough free space available for destination. 
+- * f77cf2d - 2018-04-26: Pre-Release v9.3.7.dev1 
 - * 3afe2b6 - 2018-04-26: Pre-Release v9.3.6.dev1 
 - * be6173b - 2018-04-26: Fixed issue with stuck current item in queue 
 - * 9f2aac1 - 2018-04-26: Code refactoring for backlog and daily searches 

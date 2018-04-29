@@ -27,7 +27,7 @@ import rarfile
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
-    FailedPostProcessingFailedException
+    FailedPostProcessingFailedException, NoFreeSpaceException
 from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, real_path, is_torrent_or_nzb_file, \
     is_sync_file
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -204,7 +204,10 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         video_files = filter(is_media_file, file_names)
         if video_files:
-            process_media(current_directory, video_files, nzbName, process_method, force, is_priority, result)
+            try:
+                process_media(current_directory, video_files, nzbName, process_method, force, is_priority, result)
+            except NoFreeSpaceException:
+                continue
         else:
             result.result = False
 

@@ -28,7 +28,8 @@ import subprocess
 import sickrage
 from adba import aniDBAbstracter
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
-from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException
+from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
+    NoFreeSpaceException
 from sickrage.core.helpers import findCertainShow, show_names, replaceExtension, makeDir, \
     chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape
@@ -1019,8 +1020,9 @@ class PostProcessor(object):
         # try to find out if we have enough space to perform the copy or move action.
         if not isFileLocked(self.file_path, False):
             if not verify_freespace(self.file_path, ep_obj.show.location, [ep_obj] + ep_obj.relatedEps):
-                self._log("Not enough space to continue PP, exiting", sickrage.app.log.WARNING)
-                return False
+                self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
+                #return False
+                raise NoFreeSpaceException
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")
 

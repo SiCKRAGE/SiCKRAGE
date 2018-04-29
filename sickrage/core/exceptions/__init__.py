@@ -107,3 +107,9 @@ class ShowNotFoundException(SickRageException):
     """
     The show wasn't found
     """
+
+
+class NoFreeSpaceException(SickRageException):
+    """
+    No free space left
+    """

@@ -393,7 +393,7 @@ module.exports = function (grunt) {
         ]
     );
 
-    grunt.registerTask('upload_trans', 'Upload translations', function() {
+    grunt.registerTask('upload_trans', 'Upload translations', function () {
         grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
         var tasks = [
@@ -408,7 +408,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('download_trans', 'Download translations', function() {
+    grunt.registerTask('download_trans', 'Download translations', function () {
         grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
 
         var tasks = [
@@ -424,7 +424,7 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function() {
+    grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function () {
         grunt.log.writeln('Syncing translations with Crowdin...'.magenta);
 
         var tasks = [
@@ -452,6 +452,11 @@ module.exports = function (grunt) {
             vPatch: versionParts[2],
             vPre: versionParts[3] || 0
         };
+
+        if (vArray.vPre === 0) {
+            vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+        }
+
         vArray.vPre = parseFloat(vArray.vPre) + 1;
 
         var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
@@ -473,19 +478,22 @@ module.exports = function (grunt) {
         grunt.task.run(['exec:git:checkout:develop']);
 
         var vFile = 'sickrage/version.txt';
-
         var version = grunt.file.read(vFile);
         var versionParts = version.split('.');
         var vArray = {
             vMajor: versionParts[0],
             vMinor: versionParts[1],
-            vPatch: versionParts[2]
+            vPatch: versionParts[2],
+            vPre: versionParts[3] || 0
         };
-        vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+
+        if (vArray.vPre === 0) {
+            vArray.vPatch = parseFloat(vArray.vPatch) + 1;
+        }
 
         var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
-        grunt.config('new_version', newVersion);
 
+        grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
 
         var tasks = [
