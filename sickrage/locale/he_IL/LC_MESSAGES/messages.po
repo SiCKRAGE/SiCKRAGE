@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-21 22:59-0700\n"
-"PO-Revision-Date: 2018-04-22 02:00-0400\n"
+"POT-Creation-Date: 2018-04-29 15:23-0700\n"
+"PO-Revision-Date: 2018-04-29 18:24-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hebrew\n"
 "MIME-Version: 1.0\n"
@@ -4678,7 +4678,7 @@ msgstr "אף פעם לא"
 msgid "Retry Download"
 msgstr "נסה שנית להורדה"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4963
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4793,7 +4793,7 @@ msgstr "להשתמש את סדר DVD במקום סדר אוויר"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"כוח עדכון מלא\" הכרחי, אם יש לך פרקים קיים עליך למיין אותם באופן ידני."
 
-#: sickrage/core/webserver/views.py:3711 sickrage/core/webserver/views.py:4840
+#: sickrage/core/webserver/views.py:3711 sickrage/core/webserver/views.py:4842
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5121,7 +5121,7 @@ msgstr "ביצוע הפעלה מחדש"
 msgid "Daily Search"
 msgstr "חיפוש יומי"
 
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4950
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "מצבור"
@@ -5146,7 +5146,7 @@ msgstr "תהליך פוסט"
 msgid "Subtitles Finder"
 msgstr "Finder כתוביות"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4958
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt בודק"
@@ -5179,7 +5179,7 @@ msgstr "לא"
 msgid "True"
 msgstr "נכון"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4953
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "הצג תור"
@@ -5539,28 +5539,28 @@ msgstr "כללי"
 msgid "Backup and Restore"
 msgstr "גיבוי ושחזור"
 
-#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:4275
+#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:4277
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Search Providers"
 msgstr "ספקי חיפוש"
 
-#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4759
+#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4761
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "הגדרות כתוביות"
 
-#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4879
+#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4881
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "הגדרות איכות"
 
 #: sickrage/core/webserver/views.py:2289 sickrage/core/webserver/views.py:2290
-#: sickrage/core/webserver/views.py:3709 sickrage/core/webserver/views.py:4080
+#: sickrage/core/webserver/views.py:3709 sickrage/core/webserver/views.py:4082
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Post Processing"
 msgstr "לאחר העיבוד"
 
-#: sickrage/core/webserver/views.py:3710 sickrage/core/webserver/views.py:4432
+#: sickrage/core/webserver/views.py:3710 sickrage/core/webserver/views.py:4434
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Notifications"
 msgstr "הודעות"
@@ -6036,11 +6036,11 @@ msgstr "לא ידוע מספר הגירסה הנוכחית: יו אם מעולם
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "עדכון SiCKRAGE החדש נמצא בשרתי PyPy, גירסה {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/queues/search.py:209
+#: sickrage/core/queues/search.py:210
 msgid "No downloads were found"
 msgstr "ללא הורדות נמצאו"
 
-#: sickrage/core/queues/search.py:210
+#: sickrage/core/queues/search.py:211
 #, python-format
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "לא יכולתי למצוא הורדה של <i>%s</i>"
@@ -6450,7 +6450,7 @@ msgstr "כבר בסניף: "
 #: sickrage/core/webserver/views.py:1931 sickrage/core/webserver/views.py:1936
 #: sickrage/core/webserver/views.py:1939 sickrage/core/webserver/views.py:1982
 #: sickrage/core/webserver/views.py:1988 sickrage/core/webserver/views.py:1991
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4960
 msgid "Error"
 msgstr "שגיאה"
 
@@ -6830,10 +6830,10 @@ msgstr "Config - כללי"
 msgid "General Configuration"
 msgstr "תצורה כלליות"
 
-#: sickrage/core/webserver/views.py:3903 sickrage/core/webserver/views.py:4062
-#: sickrage/core/webserver/views.py:4193 sickrage/core/webserver/views.py:4414
-#: sickrage/core/webserver/views.py:4741 sickrage/core/webserver/views.py:4822
-#: sickrage/core/webserver/views.py:4861
+#: sickrage/core/webserver/views.py:3903 sickrage/core/webserver/views.py:4064
+#: sickrage/core/webserver/views.py:4195 sickrage/core/webserver/views.py:4416
+#: sickrage/core/webserver/views.py:4743 sickrage/core/webserver/views.py:4824
+#: sickrage/core/webserver/views.py:4863
 msgid "Error(s) Saving Configuration"
 msgstr "השגיאות שמירת התצורה"
 
@@ -6878,150 +6878,150 @@ msgid "Config - Search Clients"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:4003 sickrage/core/webserver/views.py:4006
-#: sickrage/core/webserver/views.py:4108
+#: sickrage/core/webserver/views.py:4110
 msgid "Unable to create directory "
 msgstr "אין אפשרות ליצור מדריך "
 
 #: sickrage/core/webserver/views.py:4003 sickrage/core/webserver/views.py:4006
-#: sickrage/core/webserver/views.py:4108
+#: sickrage/core/webserver/views.py:4110
 msgid ", dir not changed."
 msgstr ", dir לא השתנו."
 
-#: sickrage/core/webserver/views.py:4064
+#: sickrage/core/webserver/views.py:4066
 msgid "[SEARCH] Configuration Saved"
 msgstr "תצורת [SEARCH] הציל"
 
-#: sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:4081
 msgid "Config - Post Processing"
 msgstr "Config - פוסט עיבוד"
 
-#: sickrage/core/webserver/views.py:4119
+#: sickrage/core/webserver/views.py:4121
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "לפרוק אינה נתמכת, השבתת לפרוק הגדרה"
 
-#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
+#: sickrage/core/webserver/views.py:4156 sickrage/core/webserver/views.py:4167
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "שניסיתם לשמור על אנימה לא חוקי שמות config לא שמירת ההגדרות מתן השמות שלך"
 
-#: sickrage/core/webserver/views.py:4156 sickrage/core/webserver/views.py:4167
+#: sickrage/core/webserver/views.py:4158 sickrage/core/webserver/views.py:4169
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "שניסיתם לשמור על config למתן שמות לא חוקי, לא שמירת ההגדרות מתן השמות שלך"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4175
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "שניסיתם לשמור על config לא חוקי אוויר-לפי תאריך מתן שמות, לא שמירת ההגדרות שלך אוויר-לפי תאריך"
 
-#: sickrage/core/webserver/views.py:4179
+#: sickrage/core/webserver/views.py:4181
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "שניסיתם לשמור על ספורט לא חוקי שמות config, לא שמירת ההגדרות שלך ספורט"
 
-#: sickrage/core/webserver/views.py:4195
+#: sickrage/core/webserver/views.py:4197
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "תצורת [POST-PROCESSING] הציל"
 
-#: sickrage/core/webserver/views.py:4274
+#: sickrage/core/webserver/views.py:4276
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "אין שם הספק שצוין"
 
-#: sickrage/core/webserver/views.py:4317
+#: sickrage/core/webserver/views.py:4319
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "לא צוינה כתובת Url ספק"
 
-#: sickrage/core/webserver/views.py:4319
+#: sickrage/core/webserver/views.py:4321
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "אין ספק Api מפתח שצוינו"
 
-#: sickrage/core/webserver/views.py:4416
+#: sickrage/core/webserver/views.py:4418
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "תצורת [PROVIDERS] הציל"
 
-#: sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:4433
 msgid "Config - Notifications"
 msgstr "Config - הודעות"
 
-#: sickrage/core/webserver/views.py:4743
+#: sickrage/core/webserver/views.py:4745
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "תצורת [NOTIFICATIONS] הציל"
 
-#: sickrage/core/webserver/views.py:4758
+#: sickrage/core/webserver/views.py:4760
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4824
+#: sickrage/core/webserver/views.py:4826
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "תצורת [SUBTITLES] הציל"
 
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:4841
 msgid "Config - Anime"
 msgstr "Config - אנימה"
 
-#: sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:4865
 msgid "[ANIME] Configuration Saved"
 msgstr "תצורת [ANIME] הציל"
 
-#: sickrage/core/webserver/views.py:4878
+#: sickrage/core/webserver/views.py:4880
 msgid "Config - Quality Settings"
 msgstr "Config - הגדרות איכות"
 
-#: sickrage/core/webserver/views.py:4890
+#: sickrage/core/webserver/views.py:4892
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[איכות הגדרות] תצורת הציל"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4905
 msgid "Clear Errors"
 msgstr "נקה שגיאות"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4908
 msgid "Clear Warnings"
 msgstr "אזהרות ברורות"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4949
 msgid "Daily Searcher"
 msgstr "סרצ'ר יומי"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4951
 msgid "Show Updater"
 msgstr "הצג המעדכן"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4952
 msgid "Check Version"
 msgstr "Check Version"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4954
 msgid "Search Queue"
 msgstr "חיפוש תור"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4955
 msgid "Find Propers"
 msgstr "למצוא את Propers"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4956
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4957
 msgid "Find Subtitles"
 msgstr "למצוא כתוביות"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4959
 msgid "Event"
 msgstr "אירוע"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4961
 msgid "Tornado"
 msgstr "טורנדו"
 
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4962
 msgid "Thread"
 msgstr "חוט"
 

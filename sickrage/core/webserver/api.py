@@ -1347,7 +1347,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
         backlogPaused = sickrage.app.search_queue.is_backlog_searcher_paused()
         backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()
-        nextBacklog = sickrage.app.backlog_searcher.nextRun().strftime(dateFormat).decode(
+        nextBacklog = sickrage.app.backlog_searcher.next_run().strftime(dateFormat).decode(
             sickrage.app.sys_encoding)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),

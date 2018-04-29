@@ -3058,7 +3058,7 @@ class Manage(Home, WebRoot):
         show_obj = findCertainShow(int(indexer_id))
 
         if show_obj:
-            sickrage.app.backlog_searcher.searchBacklog([show_obj])
+            sickrage.app.backlog_searcher.search_backlog([show_obj])
 
         return self.redirect("/manage/backlogOverview/")
 
@@ -4054,6 +4054,8 @@ class ConfigSearch(Config):
         sickrage.app.config.torrent_host = clean_url(torrent_host)
         sickrage.app.config.torrent_rpcurl = torrent_rpcurl
         sickrage.app.config.torrent_auth_type = torrent_auth_type
+
+        torrent_webui_url(True)
 
         sickrage.app.config.save()
 

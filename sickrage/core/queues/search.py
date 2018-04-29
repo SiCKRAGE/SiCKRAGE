@@ -25,8 +25,7 @@ import traceback
 import sickrage
 from sickrage.core.common import cpu_presets
 from sickrage.core.queues import srQueue, srQueueItem, srQueuePriorities
-from sickrage.core.search import searchForNeededEpisodes, searchProviders, \
-    snatchEpisode
+from sickrage.core.search import searchProviders, snatchEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
 
 search_queue_lock = threading.Lock()
@@ -147,8 +146,11 @@ class SearchQueue(srQueue):
 
 
 class DailySearchQueueItem(srQueueItem):
-    def __init__(self):
+    def __init__(self, show, segment):
         super(DailySearchQueueItem, self).__init__('Daily Search', DAILY_SEARCH)
+        self.name = 'DAILY-' + str(show.indexerid)
+        self.show = show
+        self.segment = segment
         self.success = False
         self.started = False
 
@@ -156,23 +158,23 @@ class DailySearchQueueItem(srQueueItem):
         self.started = True
 
         try:
-            sickrage.app.log.info("Starting daily search for new episodes")
+            sickrage.app.log.info("Starting daily search for: [" + self.show.name + "]")
 
-            foundResults = searchForNeededEpisodes()
-            if foundResults:
-                for result in foundResults:
+            search_result = searchProviders(self.show, self.segment, cacheOnly=sickrage.app.config.enable_rss_cache)
+            if search_result:
+                for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                    self.success = snatchEpisode(result)
+                    snatchEpisode(result)
 
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
-                sickrage.app.log.info("No needed episodes found")
+                sickrage.app.log.info("No needed episodes found during daily search for: [" + self.show.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
-            sickrage.app.log.info("Finished daily search for new episodes")
+            sickrage.app.log.info("Finished daily search for: [" + self.show.name + "]")
 
 
 class ManualSearchQueueItem(srQueueItem):
@@ -192,14 +194,13 @@ class ManualSearchQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting manual search for: [" + self.segment.pretty_name() + "]")
 
-            searchResult = searchProviders(self.show, [self.segment], manualSearch=True,
-                                           downCurQuality=self.downCurQuality)
-
-            if searchResult:
+            search_result = searchProviders(self.show, [self.segment], manualSearch=True,
+                                            downCurQuality=self.downCurQuality)
+            if search_result:
                 # just use the first result for now
                 sickrage.app.log.info(
-                    "Downloading " + searchResult[0].name + " from " + searchResult[0].provider.name)
-                self.success = snatchEpisode(searchResult[0])
+                    "Downloading " + search_result[0].name + " from " + search_result[0].provider.name)
+                self.success = snatchEpisode(search_result[0])
 
                 # give the CPU a break
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -223,13 +224,13 @@ class ManualSearchQueueItem(srQueueItem):
 
 class BacklogQueueItem(srQueueItem):
     def __init__(self, show, segment):
-        super(BacklogQueueItem, self).__init__('Backlog', BACKLOG_SEARCH)
-        self.show = show
+        super(BacklogQueueItem, self).__init__('Backlog Search', BACKLOG_SEARCH)
         self.name = 'BACKLOG-' + str(show.indexerid)
-        self.success = False
-        self.started = False
+        self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.LOW
+        self.success = False
+        self.started = False
 
     def run(self):
         self.started = True
@@ -238,9 +239,9 @@ class BacklogQueueItem(srQueueItem):
             try:
                 sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
 
-                searchResult = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
-                if searchResult:
-                    for result in searchResult:
+                search_result = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
+                if search_result:
+                    for result in search_result:
                         # just use the first result for now
                         sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                         snatchEpisode(result)
@@ -259,13 +260,13 @@ class BacklogQueueItem(srQueueItem):
 class FailedQueueItem(srQueueItem):
     def __init__(self, show, segment, downCurQuality=False):
         super(FailedQueueItem, self).__init__('Retry', FAILED_SEARCH)
-        self.show = show
         self.name = 'RETRY-' + str(show.indexerid)
-        self.success = False
-        self.started = False
+        self.show = show
         self.segment = segment
         self.priority = srQueuePriorities.HIGH
         self.downCurQuality = downCurQuality
+        self.success = False
+        self.started = False
 
     def run(self):
         self.started = True
@@ -284,10 +285,9 @@ class FailedQueueItem(srQueueItem):
 
                 FailedHistory.revertFailedEpisode(epObj)
 
-            searchResult = searchProviders(self.show, self.segment, manualSearch=True, downCurQuality=False)
-
-            if searchResult:
-                for result in searchResult:
+            search_result = searchProviders(self.show, self.segment, manualSearch=True, downCurQuality=False)
+            if search_result:
+                for result in search_result:
                     # just use the first result for now
                     sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
                     snatchEpisode(result)

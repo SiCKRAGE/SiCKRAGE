@@ -27,7 +27,7 @@ import rarfile
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
-    FailedPostProcessingFailedException
+    FailedPostProcessingFailedException, NoFreeSpaceException
 from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, real_path, is_torrent_or_nzb_file, \
     is_sync_file
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -183,6 +183,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("Processing {}".format(dirName), sickrage.app.log.INFO)
         generator_to_use = os.walk(dirName, followlinks=sickrage.app.config.processor_follow_symlinks)
 
+    rar_files = []
     for current_directory, directory_names, file_names in generator_to_use:
         result.result = True
 
@@ -204,7 +205,10 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
 
         video_files = filter(is_media_file, file_names)
         if video_files:
-            process_media(current_directory, video_files, nzbName, process_method, force, is_priority, result)
+            try:
+                process_media(current_directory, video_files, nzbName, process_method, force, is_priority, result)
+            except NoFreeSpaceException:
+                continue
         else:
             result.result = False
 
@@ -212,7 +216,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         if not (process_method == "move" and result.result) or (proc_type == "manual" and not delete_on):
             continue
 
-        # noinspection PyTypeChecker
+        # Check for unwanted files
         unwanted_files = filter(lambda x: x in video_files + rar_files, file_names)
         if unwanted_files:
             result.output += logHelper("Found unwanted files: {0}".format(unwanted_files), sickrage.app.log.DEBUG)

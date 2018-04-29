@@ -190,11 +190,19 @@ class WebHooks(object):
             # Update the original request with the CloudFlare User-Agent
             original_request.headers['User-Agent'] = user_agent
 
+            # Remove hooks from original request
+            original_hooks = original_request.hooks
+            original_request.hooks = session.hooks
+
             # Resend the request
             cf_resp = session.send(original_request, allow_redirects=True, **kwargs)
 
             if cf_resp.ok:
                 sickrage.app.log.debug('CloudFlare successfully bypassed.')
+
+            # Add original hooks back to original request
+            cf_resp.hooks = original_hooks
+
             return cf_resp
         else:
             return resp

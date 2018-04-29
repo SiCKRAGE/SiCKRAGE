@@ -49,7 +49,8 @@ from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.google import GoogleAuth
 from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser
+    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser, \
+    torrent_webui_url
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -116,6 +117,7 @@ class Core(object):
         self.user_agent = 'SiCKRAGE.CE.1/({};{};{})'.format(platform.system(), platform.release(), str(uuid.uuid1()))
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
         self.sys_encoding = get_sys_encoding()
+        self.client_web_urls = {'torrent': '', 'newznab': ''}
 
         self.api = None
         self.adba_connection = None
@@ -225,6 +227,9 @@ class Core(object):
 
         urlparse.uses_netloc.append('scgi')
         urllib.FancyURLopener.version = self.user_agent
+
+        # set torrent client web url
+        torrent_webui_url(True)
 
         # Check available space
         try:

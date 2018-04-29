@@ -30,7 +30,7 @@ from sickrage.providers import TorrentProvider
 
 class TorrentLeechProvider(TorrentProvider):
     def __init__(self):
-        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://classic.torrentleech.org', True)
+        super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
         self.urls.update({
             'login': '{base_url}/user/account/login/'.format(**self.urls),

@@ -1,6 +1,20 @@
 # Changelog
 
-- * 193d8cd - 2018-04-21: Release v9.3.6 
+- * fb2d9bf - 2018-04-29: Release v9.3.7 
+- * b9546e2 - 2018-04-29: Pre-Release v9.3.7.dev3 
+- * d632a05 - 2018-04-29: Added remote error logging 
+- * 0d890f1 - 2018-04-28: Pre-Release v9.3.7.dev2 
+- * 7b8402e - 2018-04-28: Pre-Release v9.3.7.devNaN 
+- * 6653573 - 2018-04-28: Skips post-processing video if not enough free space available for destination. 
+- * f77cf2d - 2018-04-26: Pre-Release v9.3.7.dev1 
+- * 3afe2b6 - 2018-04-26: Pre-Release v9.3.6.dev1 
+- * be6173b - 2018-04-26: Fixed issue with stuck current item in queue 
+- * 9f2aac1 - 2018-04-26: Code refactoring for backlog and daily searches 
+- * 26ab1dd - 2018-04-26: Code refactoring for backlog and daily searches 
+- * 37d5cd0 - 2018-04-26: Daily searches hard-coded to search from todays date and greater Backlog searches hard-coded to search from yesterday and less 
+- * 40c2bce - 2018-04-25: Fixed issue where cloudflare bypass would loop when unable to bypass Updated torrentleech provider url 
+- * 9b257bc - 2018-04-25: Fixed issue #202 - Torrent client delaying load times on all pages 
+- * ee7b8bc - 2018-04-21: Release v9.3.6 
 - * c32702b - 2018-04-18: Daily/Backlog searches now skip downloaded episodes with higher quality then show&#x27;s set preferred or best. Daily searches skip downloaded episodes if archive on first match enabled. 
 - * 9e76bc0 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
 - * e8cea87 - 2018-04-15: Manual searches and Removal of shows now take extreme priority in queue 
