@@ -183,6 +183,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         result.output += logHelper("Processing {}".format(dirName), sickrage.app.log.INFO)
         generator_to_use = os.walk(dirName, followlinks=sickrage.app.config.processor_follow_symlinks)
 
+    rar_files = []
     for current_directory, directory_names, file_names in generator_to_use:
         result.result = True
 
@@ -215,7 +216,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         if not (process_method == "move" and result.result) or (proc_type == "manual" and not delete_on):
             continue
 
-        # noinspection PyTypeChecker
+        # Check for unwanted files
         unwanted_files = filter(lambda x: x in video_files + rar_files, file_names)
         if unwanted_files:
             result.output += logHelper("Found unwanted files: {0}".format(unwanted_files), sickrage.app.log.DEBUG)
