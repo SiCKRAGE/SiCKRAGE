@@ -87,9 +87,7 @@ class Logger(logging.getLoggerClass()):
         self.handlers = []
 
         # sentry log handler
-        client = Client('https://00d063c336be44eca4dfe03bc14ee7c8:d6214b62214c41d49b55b3f56b952c29@sentry.sickrage.ca'
-                        '/2?verify_ssl=0')
-        sentry_handler = SentryHandler(client=client, level='ERROR')
+        sentry_handler = SentryHandler(client=sickrage.app.sentry_client, level='ERROR')
         formatter = logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S')
         sentry_handler.setFormatter(formatter)
         self.addHandler(sentry_handler)
