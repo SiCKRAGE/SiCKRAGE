@@ -1,6 +1,8 @@
 # Changelog
 
-- * ab52c61 - 2018-04-30: Release v9.3.14 
+- * c3c4bf1 - 2018-04-30: Release v9.3.15 
+- * 48105f6 - 2018-04-30: Prevent sentry log handler from having logging level changed 
+- * 1c5d2fe - 2018-04-30: Release v9.3.14 
 - * 7cd716e - 2018-04-30: Added version update function for Emby notifier 
 - * ab62087 - 2018-04-30: Release v9.3.13 
 - * f3546f0 - 2018-04-30: Pre-Release v9.3.13.dev5 
