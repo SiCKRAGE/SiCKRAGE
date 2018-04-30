@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5d04052 - 2018-04-29: Release v9.3.8 
+- * 2d31da5 - 2018-04-29: Release v9.3.10 
+- * 79bf6f6 - 2018-04-29: Release v9.3.8 
 - * fd43837 - 2018-04-29: Release v9.3.7 
 - * b9546e2 - 2018-04-29: Pre-Release v9.3.7.dev3 
 - * d632a05 - 2018-04-29: Added remote error logging 
