@@ -214,9 +214,11 @@ class Core(object):
         # set socket timeout
         socket.setdefaulttimeout(self.config.socket_timeout)
 
-        self.sentry_client = Client('https://00d063c336be44eca4dfe03bc14ee7c8:d6214b62214c41d49b55b3f56b952c29@sentry'
-                                    '.sickrage.ca/2?verify_ssl=0')
-        self.sentry_client.tags_context({'app_version': self.version_updater.version, 'platform': platform.platform()})
+        self.sentry_client = Client('https://aedcce983da74dbb8a74384cb31fe56b:9642f0779bfa43bf8b849253d7c68972@sentry'
+                                    '.sickrage.ca/3?verify_ssl=0')
+
+        self.sentry_client.tags_context({'app_version': self.version_updater.version,
+                                         'platform': platform.platform()})
 
         # setup logger settings
         self.log.logSize = self.config.log_size

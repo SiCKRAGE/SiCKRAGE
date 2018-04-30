@@ -1,6 +1,7 @@
 # Changelog
 
-- * bdf89e6 - 2018-04-29: Release v9.3.11 
+- * 4b647f9 - 2018-04-29: Updated sentry api url 
+- * de5e70f - 2018-04-29: Release v9.3.11 
 - * ae29eb5 - 2018-04-29: Fixed log level of sentry logging handler to log errors only 
 - * bebb5f6 - 2018-04-29: Pre-Release v9.3.11.dev1 
 - * a82f305 - 2018-04-29: Fixed issue with NewPCT provider and &#x27;NoneType&#x27; object has no attribute &#x27;get&#x27; Fixed missing method from twilio client 
