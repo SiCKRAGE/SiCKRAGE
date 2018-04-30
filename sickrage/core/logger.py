@@ -88,12 +88,13 @@ class Logger(logging.getLoggerClass()):
         self.handlers = []
 
         # sentry log handler
-        sentry_client = raven.Client('https://aedcce983da74dbb8a74384cb31fe56b:9642f0779bfa43bf8b849253d7c68972'
-                                     '@sentry.sickrage.ca/3?verify_ssl=0', release=sickrage.version(),
+        sentry_client = raven.Client('https://3d25da5bd0b34990b282e7112a6113ab:d585806dc45540a891dda0c3418fb8d5'
+                                     '@sentry.sickrage.ca/4?verify_ssl=0', release=sickrage.version(),
                                      repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
         sentry_handler = SentryHandler(client=sentry_client, tags={'platform': platform.platform()})
         sentry_handler.setLevel(self.logLevels['ERROR'])
+        sentry_handler.set_name('sentry')
         self.addHandler(sentry_handler)
 
         # console log handler
@@ -170,7 +171,8 @@ class Logger(logging.getLoggerClass()):
         for __, logger in self.loggers.items():
             logger.setLevel(level)
             for handler in logger.handlers:
-                handler.setLevel(level)
+                if not handler.name == 'sentry':
+                    handler.setLevel(level)
 
     def list_modules(self, package):
         """Return all sub-modules for the specified package.
