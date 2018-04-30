@@ -58,7 +58,7 @@ class TwilioNotifier(Notifiers):
         if sickrage.app.config.twilio_notify_onsubtitledownload:
             self._notifyTwilio(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ': ' + lang)
 
-    def _notify_git_update(self, new_version):
+    def _notify_version_update(self, new_version):
         if sickrage.app.config.use_twilio:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             self._notifyTwilio(update_text + new_version)
