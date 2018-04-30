@@ -342,7 +342,7 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            'git_new_tag': {
+            'git_tag': {
                 cmd: function (sign) {
                     sign = sign !== "true" ? '' : '-s ';
                     return 'git tag ' + sign + grunt.config('new_version') + ' -m "' + grunt.config('commits') + '"';
@@ -489,8 +489,7 @@ module.exports = function (grunt) {
         var tasks = [
             'default',
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_flow_bugfix_start:' + newVersion,
-            'exec:git_flow_bugfix_finish:' + newVersion + ':Pre-Release v' + newVersion,
+            'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_publish'
         ];

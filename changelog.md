@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1132898 - 2018-04-29: Pre-Release v9.3.13.dev2 
+- * 41ac028 - 2018-04-29: Pre-Release v9.3.13.dev4 
+- * 35791f4 - 2018-04-29: Pre-Release v9.3.13.dev2 
 - * e0bc4ae - 2018-04-29: Pre-Release v9.3.13.dev1 
 - * 244264a - 2018-04-29: Fixed issue with sending email notifications Fixed issue with retrieving IMDb info from SR API 
 - * 3a13aca - 2018-04-29: Release v9.3.12 
