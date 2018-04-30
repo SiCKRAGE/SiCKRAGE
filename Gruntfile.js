@@ -316,11 +316,11 @@ module.exports = function (grunt) {
                 }
             },
             'git_last_tag': {
-                cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=\'%(refname:short)\'',
+                cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=%(refname:short)',
                 stdout: false,
                 callback: function (err, stdout) {
                     stdout = stdout.trim();
-                    if (/^\d{1,2}.\d{1,2}.\d+$/.test(stdout)) {
+                    if (/^\d{1,2}.\d{1,2}.\d+(?:.dev\d+)?$/.test(stdout)) {
                         grunt.config('last_tag', stdout);
                     } else {
                         grunt.fatal('Could not get the last tag name. We got: ' + stdout);
@@ -342,14 +342,32 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            'git_new_tag': {
+            'git_tag': {
                 cmd: function (sign) {
                     sign = sign !== "true" ? '' : '-s ';
                     return 'git tag ' + sign + grunt.config('new_version') + ' -m "' + grunt.config('commits') + '"';
                 },
                 stdout: false
             },
-            'git_flow_start': {
+            'git_flow_bugfix_start': {
+                cmd: function (version) {
+                    return 'git flow bugfix start ' + version;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_flow_bugfix_finish': {
+                cmd: function (version, message) {
+                    return 'git flow bugfix finish ' + version;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_flow_release_start': {
                 cmd: function (version) {
                     return 'git flow release start ' + version;
                 },
@@ -358,7 +376,7 @@ module.exports = function (grunt) {
                     grunt.log.write(stderr);
                 }
             },
-            'git_flow_finish': {
+            'git_flow_release_finish': {
                 cmd: function (version, message) {
                     return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
@@ -471,6 +489,7 @@ module.exports = function (grunt) {
         var tasks = [
             'default',
             'exec:git_commit:Pre-Release v' + newVersion,
+            'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_publish'
         ];
@@ -504,8 +523,8 @@ module.exports = function (grunt) {
             'default',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
-            'exec:git_flow_start:' + newVersion,
-            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
+            'exec:git_flow_release_start:' + newVersion,
+            'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
             'exec:pypi_publish'

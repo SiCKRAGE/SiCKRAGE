@@ -1,6 +1,12 @@
 # Changelog
 
-- * 3108b31 - 2018-04-29: Release v9.3.12 
+- * 4bff288 - 2018-04-30: Release v9.3.13 
+- * f3546f0 - 2018-04-30: Pre-Release v9.3.13.dev5 
+- * 55b2e91 - 2018-04-29: Pre-Release v9.3.13.dev4 
+- * 35791f4 - 2018-04-29: Pre-Release v9.3.13.dev2 
+- * e0bc4ae - 2018-04-29: Pre-Release v9.3.13.dev1 
+- * 244264a - 2018-04-29: Fixed issue with sending email notifications Fixed issue with retrieving IMDb info from SR API 
+- * 3a13aca - 2018-04-29: Release v9.3.12 
 - * 03e1ced - 2018-04-29: Updated sentry api url 
 - * de5e70f - 2018-04-29: Release v9.3.11 
 - * ae29eb5 - 2018-04-29: Fixed log level of sentry logging handler to log errors only 

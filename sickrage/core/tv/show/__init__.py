@@ -1014,7 +1014,9 @@ class TVShow(object):
             sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
             self.imdb_info = sickrage.app.api.search_by_imdb_id(self.imdbid)
-            self.imdb_info['last_update'] = datetime.date.today().toordinal()
+            if not self.imdb_info:
+                sickrage.app.log.debug(str(self.indexerid) + ': Unable to obtain IMDb info')
+                return
 
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
@@ -1022,7 +1024,8 @@ class TVShow(object):
             # save imdb info to database
             imdb_info = {
                 '_t': 'imdb_info',
-                'indexer_id': self.indexerid
+                'indexer_id': self.indexerid,
+                'last_update': datetime.date.today().toordinal()
             }
 
             try:

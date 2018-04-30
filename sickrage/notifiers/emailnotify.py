@@ -24,7 +24,6 @@ from __future__ import unicode_literals
 
 import re
 import smtplib
-import traceback
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formatdate
@@ -180,7 +179,7 @@ class EmailNotifier(Notifiers):
 
         # Grab the global recipients
         for addr in sickrage.app.config.email_list.split(','):
-            if (len(addr.strip()) > 0):
+            if len(addr.strip()) > 0:
                 addrs.append(addr)
 
         # Grab the recipients for the show
@@ -197,32 +196,35 @@ class EmailNotifier(Notifiers):
 
     def _sendmail(self, host, port, smtp_from, use_tls, user, pwd, to, msg, smtpDebug=False):
         sickrage.app.log.debug('HOST: %s; PORT: %s; FROM: %s, TLS: %s, USER: %s, PWD: %s, TO: %s' % (
-            host, port, smtp_from, use_tls, user, pwd, to))
+        host, port, smtp_from, use_tls, user, pwd, to))
+
         try:
             srv = smtplib.SMTP(host, int(port))
         except Exception as e:
-            sickrage.app.log.error("Exception generated while sending e-mail: " + str(e))
-            sickrage.app.log.debug(traceback.format_exc())
+            sickrage.app.log.warning("Exception generated while sending e-mail: " + str(e))
+            self.last_err = '{}'.format(e)
             return False
 
         if smtpDebug:
             srv.set_debuglevel(1)
+
         try:
-            if (bool(use_tls)) or (len(user) > 0 and len(pwd) > 0):
-                srv.ehlo()
+            if bool(use_tls) or (user and pwd):
                 sickrage.app.log.debug('Sent initial EHLO command!')
+                srv.ehlo()
             if bool(use_tls):
-                srv.starttls()
                 sickrage.app.log.debug('Sent STARTTLS command!')
-            if len(user) > 0 and len(pwd) > 0:
-                srv.login(str(user), str(pwd))
+                srv.starttls()
+                srv.ehlo()
+            if user and pwd:
                 sickrage.app.log.debug('Sent LOGIN command!')
+                srv.login(user.encode('utf-8'), pwd.encode('utf-8'))
 
             srv.sendmail(smtp_from, to, msg.as_string())
             srv.quit()
             return True
         except Exception as e:
-            self.last_err = '%s' % e
+            self.last_err = '{}'.format(e)
             return False
 
     def _parseEp(self, ep_name):
