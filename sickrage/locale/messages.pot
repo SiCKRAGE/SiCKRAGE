@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.15\n"
+"Project-Id-Version: sickrage 9.3.16\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-30 08:19-0700\n"
+"POT-Creation-Date: 2018-04-30 10:46-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1452,67 +1452,71 @@ msgstr ""
 msgid "SR Version:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:33
+#: sickrage/core/webserver/views/config/index.mako:34
+msgid "SR Commit:"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/index.mako:44
 msgid "SR Type:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:43
+#: sickrage/core/webserver/views/config/index.mako:54
 msgid "SR User:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:53
+#: sickrage/core/webserver/views/config/index.mako:64
 msgid "SR Locale:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:60
+#: sickrage/core/webserver/views/config/index.mako:71
 msgid "SR Config:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:69
+#: sickrage/core/webserver/views/config/index.mako:80
 msgid "SR Cache Dir:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:78
+#: sickrage/core/webserver/views/config/index.mako:89
 msgid "SR Log File:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:87
+#: sickrage/core/webserver/views/config/index.mako:98
 msgid "SR Arguments:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:97
+#: sickrage/core/webserver/views/config/index.mako:108
 msgid "SR Web Root:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:107
+#: sickrage/core/webserver/views/config/index.mako:118
 msgid "Tornado Version:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:116
+#: sickrage/core/webserver/views/config/index.mako:127
 msgid "Python Version:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:125
+#: sickrage/core/webserver/views/config/index.mako:136
 msgid "Homepage"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:136
+#: sickrage/core/webserver/views/config/index.mako:147
 msgid "WiKi"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:146
+#: sickrage/core/webserver/views/config/index.mako:157
 msgid "Forums"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:157
+#: sickrage/core/webserver/views/config/index.mako:168
 msgid "Source"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:168
+#: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:172
+#: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
 msgstr ""
 

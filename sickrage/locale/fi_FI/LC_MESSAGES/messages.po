@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-30 08:19-0700\n"
-"PO-Revision-Date: 2018-04-30 11:20-0400\n"
+"POT-Creation-Date: 2018-04-30 10:46-0700\n"
+"PO-Revision-Date: 2018-04-30 13:46-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -1406,67 +1406,71 @@ msgstr "automaattisesti raportoi bugi/kysymys kysymys tracker virheitä kirjautu
 msgid "SR Version:"
 msgstr "SR-versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:33
+#: sickrage/core/webserver/views/config/index.mako:34
+msgid "SR Commit:"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/index.mako:44
 msgid "SR Type:"
 msgstr "SR tyyppi:"
 
-#: sickrage/core/webserver/views/config/index.mako:43
+#: sickrage/core/webserver/views/config/index.mako:54
 msgid "SR User:"
 msgstr "SR käyttäjä:"
 
-#: sickrage/core/webserver/views/config/index.mako:53
+#: sickrage/core/webserver/views/config/index.mako:64
 msgid "SR Locale:"
 msgstr "SR Locale:"
 
-#: sickrage/core/webserver/views/config/index.mako:60
+#: sickrage/core/webserver/views/config/index.mako:71
 msgid "SR Config:"
 msgstr "SR Config:"
 
-#: sickrage/core/webserver/views/config/index.mako:69
+#: sickrage/core/webserver/views/config/index.mako:80
 msgid "SR Cache Dir:"
 msgstr "SR välimuisti Dir:"
 
-#: sickrage/core/webserver/views/config/index.mako:78
+#: sickrage/core/webserver/views/config/index.mako:89
 msgid "SR Log File:"
 msgstr "SR lokitiedosto:"
 
-#: sickrage/core/webserver/views/config/index.mako:87
+#: sickrage/core/webserver/views/config/index.mako:98
 msgid "SR Arguments:"
 msgstr "SR argumentit:"
 
-#: sickrage/core/webserver/views/config/index.mako:97
+#: sickrage/core/webserver/views/config/index.mako:108
 msgid "SR Web Root:"
 msgstr "SR Web Root:"
 
-#: sickrage/core/webserver/views/config/index.mako:107
+#: sickrage/core/webserver/views/config/index.mako:118
 msgid "Tornado Version:"
 msgstr "Tornado versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:116
+#: sickrage/core/webserver/views/config/index.mako:127
 msgid "Python Version:"
 msgstr "Python-versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:125
+#: sickrage/core/webserver/views/config/index.mako:136
 msgid "Homepage"
 msgstr "Kotisivu"
 
-#: sickrage/core/webserver/views/config/index.mako:136
+#: sickrage/core/webserver/views/config/index.mako:147
 msgid "WiKi"
 msgstr "WiKi"
 
-#: sickrage/core/webserver/views/config/index.mako:146
+#: sickrage/core/webserver/views/config/index.mako:157
 msgid "Forums"
 msgstr "Foorumit"
 
-#: sickrage/core/webserver/views/config/index.mako:157
+#: sickrage/core/webserver/views/config/index.mako:168
 msgid "Source"
 msgstr "Lähde"
 
-#: sickrage/core/webserver/views/config/index.mako:168
+#: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
 msgstr "IRChat"
 
-#: sickrage/core/webserver/views/config/index.mako:172
+#: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
 msgstr "jäsenen"
 

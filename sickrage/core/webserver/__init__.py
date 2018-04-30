@@ -178,7 +178,7 @@ class WebServer(object):
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
             sickrage.app.log.info(
-                "SiCKRAGE :: VERSION:[{}]".format(sickrage.app.version_updater.version))
+                "SiCKRAGE :: VERSION:[{}]".format(sickrage.version()))
             sickrage.app.log.info(
                 "SiCKRAGE :: CONFIG:[{}] [v{}]".format(sickrage.app.config_file, sickrage.app.config.config_version))
             sickrage.app.log.info(

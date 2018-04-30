@@ -24,10 +24,21 @@
                             <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                            ${sickrage.app.version_updater.updater.version}
+                            ${sickrage.version()}
                         </div>
                     </div>
                     <br/>
+                    % if sickrage.app.version_updater.updater.type == 'git':
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                                <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Commit:')}
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                                ${sickrage.app.version_updater.version}
+                            </div>
+                        </div>
+                        <br/>
+                    % endif
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type:')}

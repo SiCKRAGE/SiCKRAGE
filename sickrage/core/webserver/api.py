@@ -1247,7 +1247,7 @@ class CMD_SiCKRAGE(ApiCall):
 
     def run(self):
         """ Get miscellaneous information about SiCKRAGE """
-        data = {"app_version": sickrage.app.version_updater.updater.version, "api_version": self.version,
+        data = {"app_version": sickrage.version(), "api_version": self.version,
                 "api_commands": sorted(self.api_calls.keys())}
         return _responds(RESULT_SUCCESS, data)
 
@@ -1321,7 +1321,7 @@ class CMD_SiCKRAGECheckVersion(ApiCall):
     def run(self):
         return _responds(RESULT_SUCCESS, {
             "current_version": {
-                "version": sickrage.app.version_updater.updater.version,
+                "version": sickrage.app.version_updater.version,
             },
             "latest_version": {
                 "version": sickrage.app.version_updater.updater.get_newest_version,
