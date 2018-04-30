@@ -1,6 +1,7 @@
 # Changelog
 
-- * a0b3d79 - 2018-04-29: Fixed issue with sending email notifications Fixed issue with retrieving IMDb info from SR API 
+- * 71091ae - 2018-04-29: Pre-Release v9.3.13.dev1 
+- * 244264a - 2018-04-29: Fixed issue with sending email notifications Fixed issue with retrieving IMDb info from SR API 
 - * 3a13aca - 2018-04-29: Release v9.3.12 
 - * 03e1ced - 2018-04-29: Updated sentry api url 
 - * de5e70f - 2018-04-29: Release v9.3.11 

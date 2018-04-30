@@ -349,7 +349,25 @@ module.exports = function (grunt) {
                 },
                 stdout: false
             },
-            'git_flow_start': {
+            'git_flow_bugfix_start': {
+                cmd: function (version) {
+                    return 'git flow bugfix start ' + version;
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_flow_bugfix_finish': {
+                cmd: function (version, message) {
+                    return 'git flow bugfix finish ' + version + ' -m "' + message + '"';
+                },
+                stderr: false,
+                callback: function (err, stdout, stderr) {
+                    grunt.log.write(stderr);
+                }
+            },
+            'git_flow_release_start': {
                 cmd: function (version) {
                     return 'git flow release start ' + version;
                 },
@@ -358,7 +376,7 @@ module.exports = function (grunt) {
                     grunt.log.write(stderr);
                 }
             },
-            'git_flow_finish': {
+            'git_flow_release_finish': {
                 cmd: function (version, message) {
                     return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
@@ -471,6 +489,8 @@ module.exports = function (grunt) {
         var tasks = [
             'default',
             'exec:git_commit:Pre-Release v' + newVersion,
+            'exec:git_flow_bugfix_start:' + newVersion,
+            'exec:git_flow_bugfix_finish:' + newVersion + ':Pre-Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:pypi_publish'
         ];
@@ -504,8 +524,8 @@ module.exports = function (grunt) {
             'default',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
-            'exec:git_flow_start:' + newVersion,
-            'exec:git_flow_finish:' + newVersion + ':Release v' + newVersion,
+            'exec:git_flow_release_start:' + newVersion,
+            'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
             'exec:pypi_publish'
