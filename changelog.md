@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4b647f9 - 2018-04-29: Updated sentry api url 
+- * 3108b31 - 2018-04-29: Release v9.3.12 
+- * 03e1ced - 2018-04-29: Updated sentry api url 
 - * de5e70f - 2018-04-29: Release v9.3.11 
 - * ae29eb5 - 2018-04-29: Fixed log level of sentry logging handler to log errors only 
 - * bebb5f6 - 2018-04-29: Pre-Release v9.3.11.dev1 
