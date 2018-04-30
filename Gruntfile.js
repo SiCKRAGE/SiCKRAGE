@@ -360,7 +360,7 @@ module.exports = function (grunt) {
             },
             'git_flow_bugfix_finish': {
                 cmd: function (version, message) {
-                    return 'git flow bugfix finish ' + version + ' -m "' + message + '"';
+                    return 'git flow bugfix finish ' + version;
                 },
                 stderr: false,
                 callback: function (err, stdout, stderr) {
