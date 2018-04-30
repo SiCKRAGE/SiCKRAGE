@@ -316,11 +316,11 @@ module.exports = function (grunt) {
                 }
             },
             'git_last_tag': {
-                cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=\'%(refname:short)\'',
+                cmd: 'git for-each-ref refs/tags --sort=-taggerdate --count=1 --format=%(refname:short)',
                 stdout: false,
                 callback: function (err, stdout) {
                     stdout = stdout.trim();
-                    if (/^\d{1,2}.\d{1,2}.\d+$/.test(stdout)) {
+                    if (/^\d{1,2}.\d{1,2}.\d+(?:.dev\d+)?$/.test(stdout)) {
                         grunt.config('last_tag', stdout);
                     } else {
                         grunt.fatal('Could not get the last tag name. We got: ' + stdout);
