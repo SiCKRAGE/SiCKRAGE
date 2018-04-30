@@ -640,7 +640,7 @@ class TVShow(object):
             try:
                 curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile))
             except (ShowNotFoundException, EpisodeNotFoundException) as e:
-                sickrage.app.log.error("Episode " + mediaFile + " returned an exception: {}".format(e.message))
+                sickrage.app.log.warning("Episode " + mediaFile + " returned an exception: {}".format(e.message))
             except EpisodeDeletedException:
                 sickrage.app.log.debug("The episode deleted itself when I tried making an object for it")
 
