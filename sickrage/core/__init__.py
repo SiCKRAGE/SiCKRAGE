@@ -216,7 +216,7 @@ class Core(object):
 
         self.sentry_client = Client('https://00d063c336be44eca4dfe03bc14ee7c8:d6214b62214c41d49b55b3f56b952c29@sentry'
                                     '.sickrage.ca/2?verify_ssl=0')
-        self.sentry_client.user_context({'sr.version': self.version_updater.version})
+        self.sentry_client.tags_context({'app_version': self.version_updater.version, 'platform': platform.platform()})
 
         # setup logger settings
         self.log.logSize = self.config.log_size
