@@ -36,7 +36,6 @@ from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
-from raven import Client
 from tornado.ioloop import IOLoop
 
 import adba
@@ -119,8 +118,6 @@ class Core(object):
         self.languages = [language for language in os.listdir(sickrage.LOCALE_DIR) if '_' in language]
         self.sys_encoding = get_sys_encoding()
         self.client_web_urls = {'torrent': '', 'newznab': ''}
-
-        self.sentry_client = None
 
         self.api = None
         self.adba_connection = None
@@ -213,12 +210,6 @@ class Core(object):
 
         # set socket timeout
         socket.setdefaulttimeout(self.config.socket_timeout)
-
-        self.sentry_client = Client('https://aedcce983da74dbb8a74384cb31fe56b:9642f0779bfa43bf8b849253d7c68972@sentry'
-                                    '.sickrage.ca/3?verify_ssl=0')
-
-        self.sentry_client.tags_context({'app_version': self.version_updater.version,
-                                         'platform': platform.platform()})
 
         # setup logger settings
         self.log.logSize = self.config.log_size
