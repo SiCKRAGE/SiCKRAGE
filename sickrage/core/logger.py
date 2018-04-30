@@ -25,7 +25,6 @@ import re
 from logging import FileHandler, CRITICAL, DEBUG, ERROR, INFO, WARNING
 from logging.handlers import RotatingFileHandler
 
-from raven import Client
 from raven.handlers.logging import SentryHandler
 from unidecode import unidecode
 
@@ -87,9 +86,8 @@ class Logger(logging.getLoggerClass()):
         self.handlers = []
 
         # sentry log handler
-        sentry_handler = SentryHandler(client=sickrage.app.sentry_client, level='ERROR')
-        formatter = logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S')
-        sentry_handler.setFormatter(formatter)
+        sentry_handler = SentryHandler(client=sickrage.app.sentry_client)
+        sentry_handler.setLevel(self.logLevels['ERROR'])
         self.addHandler(sentry_handler)
 
         # console log handler

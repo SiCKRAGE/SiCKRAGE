@@ -137,12 +137,12 @@ class NewpctProvider(TorrentProvider):
                 return results
 
             try:
-                link = html.find(rel='canonical').get('href')
+                link = html.find(rel='canonical')
                 if not link:
                     return results
 
                 title = unidecode(html.find('h1').get_text().split('/')[1])
-                title = self._process_title(title, link)
+                title = self._process_title(title, link['href'])
 
                 try:
                     download_url = self.urls['download'] % re.search(
