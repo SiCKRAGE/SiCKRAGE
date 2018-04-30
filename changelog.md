@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4bff288 - 2018-04-30: Release v9.3.13 
+- * 65ef5a1 - 2018-04-30: Added version update function for Emby notifier 
+- * ab62087 - 2018-04-30: Release v9.3.13 
 - * f3546f0 - 2018-04-30: Pre-Release v9.3.13.dev5 
 - * 55b2e91 - 2018-04-29: Pre-Release v9.3.13.dev4 
 - * 35791f4 - 2018-04-29: Pre-Release v9.3.13.dev2 

@@ -31,6 +31,9 @@ class EMBYNotifier(Notifiers):
         super(EMBYNotifier, self).__init__()
         self.name = 'emby'
 
+    def test_notify(self, host, emby_apikey):
+        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
+
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
 
@@ -65,13 +68,16 @@ class EMBYNotifier(Notifiers):
             sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
-
             ##############################################################################
             # Public functions
             ##############################################################################
 
-    def test_notify(self, host, emby_apikey):
-        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
+    def _notify_version_update(self, new_version="??"):
+        if sickrage.app.config.use_emby:
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
+            if update_text and title and new_version:
+                self._notify_emby(update_text + new_version, title)
 
     def update_library(self, show=None):
         """Handles updating the Emby Media Server host via HTTP API
