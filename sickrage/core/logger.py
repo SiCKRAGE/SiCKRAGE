@@ -92,12 +92,12 @@ class Logger(logging.getLoggerClass()):
 
         # console log handler
         if self.consoleLogging:
-            console = logging.StreamHandler()
+            console_handler = logging.StreamHandler()
             formatter = logging.Formatter('%(asctime)s %(levelname)s::%(threadName)s::%(message)s', '%H:%M:%S')
 
-            console.setFormatter(formatter)
-            console.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
-            self.addHandler(console)
+            console_handler.setFormatter(formatter)
+            console_handler.setLevel(self.logLevels['INFO'] if not self.debugLogging else self.logLevels['DEBUG'])
+            self.addHandler(console_handler)
 
         # file log handlers
         if self.logFile:
