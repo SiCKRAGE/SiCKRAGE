@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-04-30 10:46-0700\n"
-"PO-Revision-Date: 2018-04-30 13:46-0400\n"
+"POT-Creation-Date: 2018-05-01 11:59-0700\n"
+"PO-Revision-Date: 2018-05-01 15:00-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -257,7 +257,7 @@ msgstr "选择电视下载目录"
 
 #: dist/js/core.js:3540
 msgid "Select UNPACK Directory"
-msgstr ""
+msgstr "选择解包路径"
 
 #: dist/js/core.js:3555
 msgid "Unrar Executable not found."
@@ -729,7 +729,7 @@ msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
-msgstr ""
+msgstr "api.sickrage.ca 凭证和选项"
 
 #: sickrage/core/webserver/views/config/general.mako:36
 #: sickrage/core/webserver/views/config/notifications.mako:31
@@ -766,7 +766,7 @@ msgstr "是否启用 API 访问？"
 
 #: sickrage/core/webserver/views/config/general.mako:48
 msgid "API Provider Cache"
-msgstr ""
+msgstr "API 提供程序缓存"
 
 #: sickrage/core/webserver/views/config/general.mako:53
 msgid "Enable provider cache ?"
@@ -774,11 +774,11 @@ msgstr "启用提供程序缓存？"
 
 #: sickrage/core/webserver/views/config/general.mako:59
 msgid "API Client ID"
-msgstr ""
+msgstr "API 客户端 ID"
 
 #: sickrage/core/webserver/views/config/general.mako:77
 msgid "API Client Secret"
-msgstr ""
+msgstr "API 客户端密钥"
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178
@@ -944,7 +944,7 @@ msgstr "检查软件更新"
 
 #: sickrage/core/webserver/views/config/general.mako:348
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
-msgstr ""
+msgstr "并在更新可用时显示推送消息。将在启动时运行检查并以下面的频率检查更新"
 
 #: sickrage/core/webserver/views/config/general.mako:357
 msgid "Automatically update"
@@ -952,11 +952,11 @@ msgstr "自动更新"
 
 #: sickrage/core/webserver/views/config/general.mako:363
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
-msgstr ""
+msgstr "获取并安装软件更新。将在启动时与后台进行更新并以下面的频率检查更新"
 
 #: sickrage/core/webserver/views/config/general.mako:371
 msgid "Check the server every"
-msgstr ""
+msgstr "检查服务器于"
 
 #: sickrage/core/webserver/views/config/general.mako:380
 msgid "default = 12 (hours)"
@@ -1408,7 +1408,7 @@ msgstr "SR 版本："
 
 #: sickrage/core/webserver/views/config/index.mako:34
 msgid "SR Commit:"
-msgstr ""
+msgstr "SR 提交:"
 
 #: sickrage/core/webserver/views/config/index.mako:44
 msgid "SR Type:"
@@ -2935,7 +2935,7 @@ msgstr ".nfo orig 来避免冲突吗？"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:214
 msgid "Associated file extensions"
-msgstr ""
+msgstr "关联的文件格式"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:228
 msgid "comma separated list of associated file extensions SickRage should keep while post processing."
@@ -2983,15 +2983,15 @@ msgstr "电视的下载目录"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:292
 msgid "Only works with RAR archives"
-msgstr ""
+msgstr "仅适用于 RAR 压缩文档"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:299
 msgid "Unpack Directory"
-msgstr ""
+msgstr "解包目录"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:311
 msgid "Choose a path to unpack files, leave blank to unpack in download dir"
-msgstr ""
+msgstr "选择解包路径，留空解包于下载文件夹"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:317
 msgid "Delete RAR contents"
@@ -3015,19 +3015,19 @@ msgstr "可以使用手动后处理中重写"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:343
 msgid "Follow symbolic-links"
-msgstr ""
+msgstr "跟随符号链接"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "warning"
-msgstr ""
+msgstr "警告"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "EXPERTS ONLY."
-msgstr ""
+msgstr "仅限专家使用."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:350
 msgid "Enable only if you know what <b>circular symbolic links</b> are,<br/>and can <b>verify that you have none</b>."
-msgstr ""
+msgstr "请仅在您知道何为<b>循环符号链接</b>, <br/>并可以<b>验证您的操作时启用."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:357
 msgid "Delete Failed"

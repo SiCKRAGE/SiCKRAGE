@@ -37,11 +37,12 @@ requests == 2.18.4
 codernitydb == 0.5.0
 fake-useragent == 0.1.8
 html5lib == 1.0.1
-arrow==0.10.0
-unidecode==0.4.21
-twilio==6.10.0
-chardet==3.0.4
-pytz==2017.3
-tzlocal==1.5.1
-psutil==5.0.0
-raven==6.7.0
+arrow == 0.10.0
+unidecode == 0.4.21
+twilio == 6.10.0
+chardet == 3.0.4
+pytz == 2017.3
+tzlocal == 1.5.1
+psutil == 5.0.0 ; python_full_version < '2.7.14'
+psutil == 5.4.3 ; python_full_version >= '2.7.14'
+raven == 6.7.0
