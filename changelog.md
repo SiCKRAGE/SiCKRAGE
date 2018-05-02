@@ -1,6 +1,7 @@
 # Changelog
 
-- * 85bffec - 2018-05-01: Release v9.3.17 
+- * 29b8c12 - 2018-05-02: Changed log levels from error to warning where needed 
+- * bd058f0 - 2018-05-01: Release v9.3.17 
 - * ec33e74 - 2018-05-01: Fixed versioning issue with psutil and Synology devices 
 - * 3781227 - 2018-04-30: Changed logging level from error to warning when trying to load episodes from directory and the show or episode is not found 
 - * 1a7b0ca - 2018-04-30: Release v9.3.16 
