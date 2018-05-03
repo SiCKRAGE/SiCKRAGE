@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8af732e - 2018-05-03: Added exception handling when trying to get show data and nothing is returned 
+- * 021c1c8 - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
+- * e5bf9f2 - 2018-05-03: Added exception handling when trying to get show data and nothing is returned 
 - * 1759db6 - 2018-05-02: Changed log levels from error to warning where needed 
 - * bd058f0 - 2018-05-01: Release v9.3.17 
 - * ec33e74 - 2018-05-01: Fixed versioning issue with psutil and Synology devices 

@@ -43,17 +43,18 @@ class DownloadStationAPI(GenericClient):
             'session': 'DownloadStation',
         }
 
+        generic_errors = {
+            100: 'Unknown error',
+            101: 'Invalid parameter',
+            102: 'The requested API does not exist',
+            103: 'The requested method does not exist',
+            104: 'The requested version does not support the functionality',
+            105: 'The logged in session does not have permission',
+            106: 'Session timeout',
+            107: 'Session interrupted by duplicate login',
+        }
+
         self.error_map = {
-            'generic': {
-                100: 'Unknown error',
-                101: 'Invalid parameter',
-                102: 'The requested API does not exist',
-                103: 'The requested method does not exist',
-                104: 'The requested version does not support the functionality',
-                105: 'The logged in session does not have permission',
-                106: 'Session timeout',
-                107: 'Session interrupted by duplicate login',
-            },
             'create': {
                 400: 'File upload failed',
                 401: 'Max number of tasks reached',
@@ -74,6 +75,9 @@ class DownloadStationAPI(GenericClient):
             }
         }
 
+        for api_method in self.error_map:
+            self.error_map[api_method].update(generic_errors)
+
     def _check_response(self):
         try:
             resp = self._response.json()
@@ -84,7 +88,7 @@ class DownloadStationAPI(GenericClient):
         self.auth = resp.get('success')
         if not self.auth:
             error_code = resp.get('error', {}).get('code')
-            api_method = resp.get('method', 'generic')
+            api_method = resp.get('method', 'login')
             log_string = self.error_map.get(api_method)[error_code]
             sickrage.app.log.info('{}: {}'.format(self.name, log_string))
         elif resp.get('data', {}).get('sid'):
@@ -109,7 +113,7 @@ class DownloadStationAPI(GenericClient):
         try:
             # login to API
             self.response = self.session.get(self.urls['auth'], params=params,
-                                                      verify=bool(sickrage.app.config.torrent_verify_cert))
+                                             verify=bool(sickrage.app.config.torrent_verify_cert))
 
             # get sid
             self.auth = self.response
