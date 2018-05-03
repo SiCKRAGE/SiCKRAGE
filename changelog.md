@@ -1,6 +1,7 @@
 # Changelog
 
-- * bb755a8 - 2018-05-03: Converted errors to warnings for DelugeD client 
+- * cf30060 - 2018-05-03: Pre-Release v9.3.18.dev1 
+- * a81ccaf - 2018-05-03: Converted errors to warnings for DelugeD client 
 - * f8d6cc9 - 2018-05-03: Fixed attribute error in Torrentz provider 
 - * 1656459 - 2018-05-03: Fixed IndexNotFoundException in for TV cache when looking up last time updated 
 - * ba588fd - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
