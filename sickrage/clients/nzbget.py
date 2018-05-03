@@ -75,7 +75,7 @@ class NZBGet(object):
             if e.errmsg == "Unauthorized":
                 sickrage.app.log.warning("NZBget username or password is incorrect.")
             else:
-                sickrage.app.log.error("Protocol Error: " + e.errmsg)
+                sickrage.app.log.warning("Protocol Error: " + e.errmsg)
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score
