@@ -2597,7 +2597,7 @@ class HomeAddShows(Home):
             show_dir = os.path.join(location, sanitizeFileName(showName))
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 return
 
             chmodAsParent(show_dir)
@@ -2701,7 +2701,7 @@ class HomeAddShows(Home):
         else:
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.app.alerts.error(_("Unable to add show"),
                                           _("Unable to create the folder " +
                                             show_dir + ", can't add the show"))

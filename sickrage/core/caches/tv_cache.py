@@ -23,6 +23,7 @@ import time
 
 import feedparser
 from CodernityDB.database import RecordNotFound
+from CodernityDB.index import IndexNotFoundException
 
 import sickrage
 from sickrage.core.common import Quality
@@ -122,8 +123,9 @@ class TVCache(object):
         try:
             dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
-        except RecordNotFound:
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+                lastTime = 0
+        except (RecordNotFound, IndexNotFoundException):
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
@@ -134,7 +136,7 @@ class TVCache(object):
             dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except RecordNotFound:
+        except (RecordNotFound, IndexNotFoundException):
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
@@ -146,8 +148,9 @@ class TVCache(object):
         try:
             dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
-        except RecordNotFound:
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+                lastTime = 0
+        except (RecordNotFound, IndexNotFoundException):
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
@@ -158,7 +161,7 @@ class TVCache(object):
             dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except RecordNotFound:
+        except (RecordNotFound, IndexNotFoundException):
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 021c1c8 - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
+- * cac169d - 2018-05-03: Fixed IndexNotFoundException in for TV cache when looking up last time updated 
+- * ba588fd - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
 - * e5bf9f2 - 2018-05-03: Added exception handling when trying to get show data and nothing is returned 
 - * 1759db6 - 2018-05-02: Changed log levels from error to warning where needed 
 - * bd058f0 - 2018-05-01: Release v9.3.17 
