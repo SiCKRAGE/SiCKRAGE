@@ -1,6 +1,7 @@
 # Changelog
 
-- * cac169d - 2018-05-03: Fixed IndexNotFoundException in for TV cache when looking up last time updated 
+- * eeb79a4 - 2018-05-03: Fixed attribute error in Torrentz provider 
+- * 1656459 - 2018-05-03: Fixed IndexNotFoundException in for TV cache when looking up last time updated 
 - * ba588fd - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
 - * e5bf9f2 - 2018-05-03: Added exception handling when trying to get show data and nothing is returned 
 - * 1759db6 - 2018-05-02: Changed log levels from error to warning where needed 
