@@ -1,6 +1,7 @@
 # Changelog
 
-- * d0ecc69 - 2018-05-03: Pre-Release v9.3.18.dev2 
+- * 25aaefe - 2018-05-03: Pre-Release v9.3.18.dev3 
+- * 2a46cba - 2018-05-03: Pre-Release v9.3.18.dev2 
 - * 821cc99 - 2018-05-03: Refactoring of provider code 
 - * f85ba73 - 2018-05-03: Pre-Release v9.3.18.dev1 
 - * a81ccaf - 2018-05-03: Converted errors to warnings for DelugeD client 

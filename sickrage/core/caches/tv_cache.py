@@ -38,7 +38,7 @@ class TVCache(object):
         self.provider = provider
         self.providerID = self.provider.id
         self.min_time = kwargs.pop('min_time', 10)
-        self.search_strings = kwargs.pop('search_params', dict(RSS=['']))
+        self.search_strings = kwargs.pop('search_strings', dict(RSS=['']))
 
     def clear(self):
         if self.shouldClearCache():
