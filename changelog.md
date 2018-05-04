@@ -1,6 +1,7 @@
 # Changelog
 
-- * 25aaefe - 2018-05-03: Pre-Release v9.3.18.dev3 
+- * 52b892b - 2018-05-03: View Changelog now reads changelog.md file 
+- * 4a12c79 - 2018-05-03: Pre-Release v9.3.18.dev3 
 - * 2a46cba - 2018-05-03: Pre-Release v9.3.18.dev2 
 - * 821cc99 - 2018-05-03: Refactoring of provider code 
 - * f85ba73 - 2018-05-03: Pre-Release v9.3.18.dev1 
