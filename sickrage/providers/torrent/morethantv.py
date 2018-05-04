@@ -62,7 +62,7 @@ class MoreThanTVProvider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def _check_auth(self):
 
@@ -96,15 +96,15 @@ class MoreThanTVProvider(TorrentProvider):
                 sickrage.app.log.warning(
                     "Invalid username or password. Check your settings")
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
             return results
 
-        for mode in search_params.keys():
+        for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
-            for search_string in search_params[mode]:
+            for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
@@ -119,7 +119,7 @@ class MoreThanTVProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
@@ -148,8 +148,8 @@ class MoreThanTVProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(result('td', class_="number_column")[1].text, 0)
-                    leechers = try_int(result('td', class_="number_column")[2].text, 0)
+                    seeders = try_int(result('td', class_="number_column")[1].text)
+                    leechers = try_int(result('td', class_="number_column")[2].text)
 
                     size = -1
                     if re.match(r'\d+([,.]\d+)?\s*[KkMmGgTt]?[Bb]',

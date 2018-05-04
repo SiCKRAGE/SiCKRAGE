@@ -1,6 +1,18 @@
 # Changelog
 
-- * 85bffec - 2018-05-01: Release v9.3.17 
+- * db9d994 - 2018-05-04: Release v9.3.18 
+- * de8804b - 2018-05-03: View Changelog now reads changelog.md file 
+- * 4a12c79 - 2018-05-03: Pre-Release v9.3.18.dev3 
+- * 2a46cba - 2018-05-03: Pre-Release v9.3.18.dev2 
+- * 821cc99 - 2018-05-03: Refactoring of provider code 
+- * f85ba73 - 2018-05-03: Pre-Release v9.3.18.dev1 
+- * a81ccaf - 2018-05-03: Converted errors to warnings for DelugeD client 
+- * f8d6cc9 - 2018-05-03: Fixed attribute error in Torrentz provider 
+- * 1656459 - 2018-05-03: Fixed IndexNotFoundException in for TV cache when looking up last time updated 
+- * ba588fd - 2018-05-03: Fixed mapping of error codes to error messages for Synology download station client 
+- * e5bf9f2 - 2018-05-03: Added exception handling when trying to get show data and nothing is returned 
+- * 1759db6 - 2018-05-02: Changed log levels from error to warning where needed 
+- * bd058f0 - 2018-05-01: Release v9.3.17 
 - * ec33e74 - 2018-05-01: Fixed versioning issue with psutil and Synology devices 
 - * 3781227 - 2018-04-30: Changed logging level from error to warning when trying to load episodes from directory and the show or episode is not found 
 - * 1a7b0ca - 2018-04-30: Release v9.3.16 

@@ -22,7 +22,7 @@ from requests.utils import dict_from_cookiejar
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.exceptions import AuthException
-from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser
+from sickrage.core.helpers import sanitizeSceneName, show_names, bs4_parser, try_int, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -86,7 +86,7 @@ class TVChaosUKProvider(TorrentProvider):
                     ep_string += '%i' % int(ep_obj.scene_absolute_number)
                 else:
                     ep_string += sickrage.app.naming_ep_type[2] % {'seasonnumber': ep_obj.scene_season,
-                                                                               'episodenumber': ep_obj.scene_episode}
+                                                                   'episodenumber': ep_obj.scene_episode}
 
                 if add_string:
                     ep_string += ' %s' % add_string
@@ -114,7 +114,7 @@ class TVChaosUKProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         search_params = {
@@ -128,7 +128,7 @@ class TVChaosUKProvider(TorrentProvider):
         if not self.login():
             return results
 
-        for mode in search_strings.keys():
+        for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
@@ -139,49 +139,77 @@ class TVChaosUKProvider(TorrentProvider):
 
                 try:
                     data = self.session.get(self.urls['search'], params=search_params).text
+                    results += self.parse(data, mode, keywords=search_string)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
                     continue
 
-                with bs4_parser(data) as html:
-                    torrent_table = html.find(id='listtorrents')
-                    if not torrent_table:
-                        sickrage.app.log.debug('Data returned from provider does not contain any torrents')
-                        return results
+        return results
 
-                    for torrent in torrent_table.find_all('tr'):
-                        try:
-                            title = torrent.find(attrs={'class': 'tooltip-content'}).text.strip()
-                            download_url = torrent.find(title="Click to Download this Torrent!").parent['href'].strip()
-                            seeders = int(torrent.find(title='Seeders').text.strip())
-                            leechers = int(torrent.find(title='Leechers').text.strip())
+    def parse(self, data, mode, **kwargs):
+        """
+        Parse search results from data
+        :param data: response data
+        :param mode: search mode
+        :return: search results
+        """
 
-                            if not all([title, download_url]):
-                                continue
+        results = []
 
-                            # Chop off tracker/channel prefix or we cant parse the result!
-                            show_name_first_word = re.search(r'^[^ .]+', search_params['keywords']).group()
-                            if not title.startswith(show_name_first_word):
-                                title = re.match(r'(.*)(' + show_name_first_word + '.*)', title).group(2)
+        keywords = kwargs.pop('keywords', None)
 
-                            # Change title from Series to Season, or we can't parse
-                            if 'Series' in search_params['keywords']:
-                                title = re.sub(r'(?i)series', 'Season', title)
+        with bs4_parser(data) as html:
+            torrent_table = html.find(id='sortabletable')
+            torrent_rows = torrent_table('tr') if torrent_table else []
 
-                            # Strip year from the end or we can't parse it!
-                            title = re.sub(r'[. ]?\(\d{4}\)', '', title)
+            if len(torrent_rows) < 2:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                return results
 
-                            # FIXME
-                            size = -1
+            labels = [label.img['title'] if label.img else label.get_text(strip=True) for label in
+                      torrent_rows[0]('td')]
 
-                            results += [
-                                {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
-                                 'leechers': leechers}
-                            ]
+            for row in torrent_rows[1:]:
+                try:
+                    # Skip highlighted torrents
+                    if mode == 'RSS' and row.get('class') == ['highlight']:
+                        continue
 
-                            if mode != 'RSS':
-                                sickrage.app.log.debug("Found result: {}".format(title))
-                        except Exception:
-                            sickrage.app.log.error("Failed parsing provider.")
+                    title = row.find(class_='tooltip-content')
+                    title = title.div.get_text(strip=True) if title else None
+                    download_url = row.find(title='Click to Download this Torrent!')
+                    download_url = download_url.parent['href'] if download_url else None
+                    if not all([title, download_url]):
+                        continue
+
+                    seeders = try_int(row.find(title='Seeders').get_text(strip=True))
+                    leechers = try_int(row.find(title='Leechers').get_text(strip=True))
+
+                    # Chop off tracker/channel prefix or we cant parse the result!
+                    if mode != 'RSS' and keywords:
+                        show_name_first_word = re.search(r'^[^ .]+', keywords).group()
+                        if not title.startswith(show_name_first_word):
+                            title = re.sub(r'.*(' + show_name_first_word + '.*)', r'\1', title)
+
+                    # Change title from Series to Season, or we can't parse
+                    if mode == 'Season':
+                        title = re.sub(r'(.*)(?i)Series', r'\1Season', title)
+
+                    # Strip year from the end or we can't parse it!
+                    title = re.sub(r'(.*)[. ]?\(\d{4}\)', r'\1', title)
+                    title = re.sub(r'\s+', r' ', title)
+
+                    torrent_size = row('td')[labels.index('Size')].get_text(strip=True)
+                    size = convert_size(torrent_size, -1)
+
+                    results += [
+                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders,
+                         'leechers': leechers}
+                    ]
+
+                    if mode != 'RSS':
+                        sickrage.app.log.debug("Found result: {}".format(title))
+                except Exception:
+                    sickrage.app.log.error("Failed parsing provider.")
 
         return results

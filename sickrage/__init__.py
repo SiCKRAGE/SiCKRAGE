@@ -37,6 +37,7 @@ PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(_
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
 REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
+CHANGELOG_FILE = os.path.join(MAIN_DIR, 'changelog.md')
 
 
 class Daemon(object):
@@ -187,6 +188,12 @@ def check_requirements():
 def version():
     # Get the version number
     with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'version.txt'))) as f:
+        return f.read()
+
+
+def changelog():
+    # Get the version number
+    with io.open(CHANGELOG_FILE) as f:
         return f.read()
 
 

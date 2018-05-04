@@ -44,7 +44,7 @@ class RarbgProvider(TorrentProvider):
 
         self.proper_strings = ['{{PROPER|REPACK|REAL|RERIP}}']
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def login(self):
         if self.token and self.token_expires and datetime.datetime.now() < self.token_expires:
@@ -71,7 +71,7 @@ class RarbgProvider(TorrentProvider):
 
         return self.token is not None
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
@@ -125,7 +125,7 @@ class RarbgProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

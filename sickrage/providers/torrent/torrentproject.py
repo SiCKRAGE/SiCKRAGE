@@ -37,9 +37,9 @@ class TorrentProjectProvider(TorrentProvider):
         self.custom_url = ""
 
         # Cache
-        self.cache = TVCache(self, search_params={'RSS': ['0day']})
+        self.cache = TVCache(self, search_strings={'RSS': ['0day']})
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         search_params = {
@@ -75,7 +75,7 @@ class TorrentProjectProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

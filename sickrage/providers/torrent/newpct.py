@@ -93,7 +93,7 @@ class NewpctProvider(TorrentProvider):
 
         return [search_strings]
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         # Only search if user conditions are true
@@ -120,7 +120,7 @@ class NewpctProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results for items.
 

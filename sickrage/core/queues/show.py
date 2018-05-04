@@ -276,8 +276,14 @@ class QueueItemAdd(ShowQueueItem):
             sickrage.app.log.info("{}: {}".format(index_name, repr(lINDEXER_API_PARMS)))
 
             t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
-            s = t[self.indexer_id]
-            if not s: return self._finishEarly()
+
+            try:
+                s = t[self.indexer_id]
+            except indexer_error:
+                s = None
+
+            if not s:
+                return self._finishEarly()
 
             # this usually only happens if they have an NFO in their show dir which gave us a Indexer ID that has no proper english version of the show
             if not getattr(s, 'seriesname'):

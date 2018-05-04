@@ -287,7 +287,7 @@ class GenericClient(object):
                 result.hash = b16encode(b32decode(result.hash)).lower()
         else:
             if not result.content:
-                sickrage.app.log.error('Torrent without content')
+                sickrage.app.log.warning('Torrent without content')
                 raise Exception('Torrent without content')
 
             try:
@@ -314,7 +314,7 @@ class GenericClient(object):
         sickrage.app.log.debug('Calling ' + self.name + ' Client')
 
         if not self._get_auth():
-            sickrage.app.log.error(self.name + ': Authentication Failed')
+            sickrage.app.log.warning(self.name + ': Authentication Failed')
             return r_code
 
         try:
@@ -339,22 +339,22 @@ class GenericClient(object):
                 return False
 
             if not self._set_torrent_pause(result):
-                sickrage.app.log.error(self.name + ': Unable to set the pause for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set the pause for Torrent')
 
             if not self._set_torrent_label(result):
-                sickrage.app.log.error(self.name + ': Unable to set the label for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set the label for Torrent')
 
             if not self._set_torrent_ratio(result):
-                sickrage.app.log.error(self.name + ': Unable to set the ratio for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set the ratio for Torrent')
 
             if not self._set_torrent_seed_time(result):
-                sickrage.app.log.error(self.name + ': Unable to set the seed time for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set the seed time for Torrent')
 
             if not self._set_torrent_path(result):
-                sickrage.app.log.error(self.name + ': Unable to set the path for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set the path for Torrent')
 
             if result.priority != 0 and not self._set_torrent_priority(result):
-                sickrage.app.log.error(self.name + ': Unable to set priority for Torrent')
+                sickrage.app.log.warning(self.name + ': Unable to set priority for Torrent')
 
         except Exception as e:
             sickrage.app.log.error(self.name + ': Failed Sending Torrent')

@@ -136,7 +136,7 @@ class GenericProvider(object):
         quality = Quality.sceneQuality(title, anime)
         return quality
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         return []
 
     def _get_season_search_strings(self, episode):
@@ -1088,7 +1088,7 @@ class NewznabProvider(NZBProvider):
 
         return False
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         """
         Search indexer using the params in search_strings, either for latest releases, or a string/id search.
 
@@ -1169,7 +1169,7 @@ class NewznabProvider(NZBProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         results = []
 
         with bs4_parser(data) as html:

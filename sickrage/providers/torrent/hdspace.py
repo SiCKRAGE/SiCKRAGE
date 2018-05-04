@@ -54,7 +54,7 @@ class HDSpaceProvider(TorrentProvider):
 
         self.urls['search'] = self.urls['search'][:-4]  # remove extra %%3B
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def _check_auth(self):
         if not self.username or not self.password:
@@ -86,13 +86,13 @@ class HDSpaceProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
             return results
 
-        for mode in search_strings.keys():
+        for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
 
@@ -111,7 +111,7 @@ class HDSpaceProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

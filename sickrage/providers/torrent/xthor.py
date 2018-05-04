@@ -42,7 +42,7 @@ class XthorProvider(TorrentProvider):
 
         self.subcategories = [433, 637, 455, 639]
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def _check_auth(self):
         if self.passkey:
@@ -53,14 +53,14 @@ class XthorProvider(TorrentProvider):
 
         return False
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         # check for auth
         if not self._check_auth:
             return results
 
-        for mode in search_strings.keys():
+        for mode in search_strings:
             search_params = {
                 'passkey': self.passkey
             }
@@ -82,7 +82,7 @@ class XthorProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

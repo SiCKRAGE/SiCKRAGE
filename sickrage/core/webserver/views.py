@@ -81,7 +81,6 @@ from sickrage.core.tv.show.history import History as HistoryTool
 from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
-from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.notifiers import Notifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
@@ -1531,8 +1530,8 @@ class Home(WebHandler):
                             # rescan the episodes in the new folder
                     except NoNFOException:
                         errors.append(
-                            _(
-                                "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE.") % location)
+                            _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
+                              "you change the directory in SiCKRAGE.") % location)
 
             # save it to the DB
             showObj.saveToDB()
@@ -2260,21 +2259,9 @@ class changelog(WebHandler):
         super(changelog, self).__init__(*args, **kwargs)
 
     def index(self):
-        url = sickrage.app.changelog_url.format(branch=sickrage.app.version_updater.branch)
-
-        try:
-            changes = WebSession().get(url).text
-        except Exception:
-            sickrage.app.log.debug('Could not load changes from repo, giving a link!')
-            changes = _('Could not load changes from the repo. [Click here for CHANGES.md]({})').format(url)
-
-        data = markdown2.markdown(
-            changes if changes else _("The was a problem connecting to the server, please refresh and try again"),
-            extras=['header-ids'])
-
+        data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])
         sickrage.app.config.view_changelog = False
         sickrage.app.config.save()
-
         return data
 
 
@@ -2597,7 +2584,7 @@ class HomeAddShows(Home):
             show_dir = os.path.join(location, sanitizeFileName(showName))
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 return
 
             chmodAsParent(show_dir)
@@ -2701,7 +2688,7 @@ class HomeAddShows(Home):
         else:
             dir_exists = makeDir(show_dir)
             if not dir_exists:
-                sickrage.app.log.error("Unable to create the folder " + show_dir + ", can't add the show")
+                sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 sickrage.app.alerts.error(_("Unable to add show"),
                                           _("Unable to create the folder " +
                                             show_dir + ", can't add the show"))

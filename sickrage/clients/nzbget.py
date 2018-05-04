@@ -27,6 +27,7 @@ from datetime import date, timedelta
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import try_int
+from sickrage.core.websession import WebSession
 
 
 class NZBGet(object):
@@ -40,7 +41,7 @@ class NZBGet(object):
         """
 
         if sickrage.app.config.nzbget_host is None:
-            sickrage.app.log.error("No NZBget host found in configuration. Please configure it.")
+            sickrage.app.log.warning("No NZBget host found in configuration. Please configure it.")
             return False
 
         dupe_key = ""
@@ -65,18 +66,16 @@ class NZBGet(object):
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
                 sickrage.app.log.debug("Successful connected to NZBget")
             else:
-                sickrage.app.log.error("Successful connected to NZBget, but unable to send a message")
-
+                sickrage.app.log.warning("Successful connected to NZBget, but unable to send a message")
         except httplib.socket.error:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
             return False
-
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
-                sickrage.app.log.error("NZBget username or password is incorrect.")
+                sickrage.app.log.warning("NZBget username or password is incorrect.")
             else:
-                sickrage.app.log.error("Protocol Error: " + e.errmsg)
+                sickrage.app.log.warning("Protocol Error: " + e.errmsg)
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score
@@ -118,7 +117,7 @@ class NZBGet(object):
                 else:
                     if nzb.resultType == "nzb":
                         try:
-                            nzbcontent64 = standard_b64encode(self.session.get(nzb.url).text)
+                            nzbcontent64 = standard_b64encode(WebSession().get(nzb.url).text)
                         except Exception:
                             return False
                     nzbget_result = nzbGetRPC.append(nzb.name + ".nzb", category, addToTop, nzbcontent64)
@@ -149,9 +148,9 @@ class NZBGet(object):
                 sickrage.app.log.debug("NZB sent to NZBget successfully")
                 return True
             else:
-                sickrage.app.log.error("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
+                sickrage.app.log.warning("NZBget could not add %s to the queue" % (nzb.name + ".nzb"))
                 return False
         except Exception:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Connect Error to NZBget: could not add %s to the queue" % (nzb.name + ".nzb"))
             return False

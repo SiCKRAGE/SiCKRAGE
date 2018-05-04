@@ -47,7 +47,7 @@ class Torrent9Provider(TorrentProvider):
 
         self.cache = TVCache(self)
 
-    def search(self, search_strings, age=0, ep_obj=None):  # pylint: disable=too-many-locals
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):  # pylint: disable=too-many-locals
         results = []
 
         for mode in search_strings:
@@ -81,7 +81,7 @@ class Torrent9Provider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

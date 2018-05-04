@@ -23,6 +23,7 @@ import time
 
 import feedparser
 from CodernityDB.database import RecordNotFound
+from CodernityDB.index import IndexNotFoundException
 
 import sickrage
 from sickrage.core.common import Quality
@@ -33,11 +34,11 @@ from sickrage.core.websession import WebSession
 
 
 class TVCache(object):
-    def __init__(self, provider, min_time=10, search_params=None):
+    def __init__(self, provider, **kwargs):
         self.provider = provider
         self.providerID = self.provider.id
-        self.min_time = min_time
-        self.search_params = search_params or {'RSS': ['']}
+        self.min_time = kwargs.pop('min_time', 10)
+        self.search_strings = kwargs.pop('search_strings', dict(RSS=['']))
 
     def clear(self):
         if self.shouldClearCache():
@@ -54,8 +55,8 @@ class TVCache(object):
         return self.provider._get_size(item)
 
     def _get_rss_data(self):
-        if self.search_params:
-            return {'entries': self.provider.search(self.search_params)}
+        if self.search_strings:
+            return {'entries': self.provider.search(self.search_strings)}
 
     def _check_auth(self, data):
         return True
@@ -122,8 +123,9 @@ class TVCache(object):
         try:
             dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
-        except RecordNotFound:
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+                lastTime = 0
+        except (RecordNotFound, IndexNotFoundException):
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
@@ -134,7 +136,7 @@ class TVCache(object):
             dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except RecordNotFound:
+        except (RecordNotFound, IndexNotFoundException):
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
@@ -146,8 +148,9 @@ class TVCache(object):
         try:
             dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             lastTime = int(dbData["time"])
-            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())): lastTime = 0
-        except RecordNotFound:
+            if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
+                lastTime = 0
+        except (RecordNotFound, IndexNotFoundException):
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
@@ -158,7 +161,7 @@ class TVCache(object):
             dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except RecordNotFound:
+        except (RecordNotFound, IndexNotFoundException):
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,

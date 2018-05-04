@@ -71,15 +71,15 @@ class HDBitsProvider(TorrentProvider):
 
         return title, url
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
-        sickrage.app.log.debug("Search string: %s" % search_params)
+        sickrage.app.log.debug("Search string: %s" % search_strings)
 
         self._check_auth()
 
         try:
-            parsedJSON = self.session.post(self.urls['search'], data=search_params).json()
+            parsedJSON = self.session.post(self.urls['search'], data=search_strings).json()
         except Exception:
             return []
 

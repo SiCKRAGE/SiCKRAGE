@@ -70,7 +70,7 @@ class NebulanceProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
@@ -82,7 +82,7 @@ class NebulanceProvider(TorrentProvider):
             "active": 1
         }
 
-        for mode in search_strings.keys():
+        for mode in search_strings:
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
@@ -97,7 +97,7 @@ class NebulanceProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
