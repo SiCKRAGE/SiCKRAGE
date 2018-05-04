@@ -71,7 +71,7 @@ class TorrentLeechProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
@@ -103,7 +103,7 @@ class TorrentLeechProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
@@ -144,8 +144,8 @@ class TorrentLeechProvider(TorrentProvider):
 
                     download_url = urljoin(self.urls['base_url'], download_url['href'])
 
-                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True), 0)
-                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True), 0)
+                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
+                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
 
                     size = convert_size(cells[labels.index('Size')].get_text(), -1)
 

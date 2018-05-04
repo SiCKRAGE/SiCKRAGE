@@ -41,9 +41,9 @@ class BitCannonProvider(TorrentProvider):
             'search': '{base_url}/api/search'.format(**self.urls)
         })
 
-        self.cache = TVCache(self, search_params={'RSS': ['tv', 'anime']})
+        self.cache = TVCache(self, search_strings={'RSS': ['tv', 'anime']})
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         search_url = self.urls["search"]
@@ -74,7 +74,7 @@ class BitCannonProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
@@ -99,8 +99,8 @@ class BitCannonProvider(TorrentProvider):
                     continue
 
                 swarm = row.pop('swarm', {})
-                seeders = try_int(swarm.pop('seeders', 0))
-                leechers = try_int(swarm.pop('leechers', 0))
+                seeders = try_int(swarm.pop('seeders'))
+                leechers = try_int(swarm.pop('leechers'))
 
                 size = convert_size(row.pop('size', -1), -1)
 

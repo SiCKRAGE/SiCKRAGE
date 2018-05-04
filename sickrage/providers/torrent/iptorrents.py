@@ -48,12 +48,12 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.custom_url = ""
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def login(self):
         return self.cookie_login('sign in')
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
@@ -85,7 +85,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

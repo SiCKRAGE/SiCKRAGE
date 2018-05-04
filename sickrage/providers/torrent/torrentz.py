@@ -48,7 +48,7 @@ class TORRENTZProvider(TorrentProvider):
         match = re.findall(r'[0-9]+', description)
         return int(match[0]) * 1024 ** 2, int(match[1]), int(match[2])
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         for mode in search_strings:
@@ -66,7 +66,7 @@ class TORRENTZProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

@@ -49,9 +49,9 @@ class DanishbitsProvider(TorrentProvider):
         # Proper Strings
 
         # Cache
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
         if not self.login():
             return results
@@ -79,7 +79,7 @@ class DanishbitsProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

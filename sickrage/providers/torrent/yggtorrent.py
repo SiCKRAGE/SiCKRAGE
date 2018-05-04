@@ -70,7 +70,7 @@ class YggtorrentProvider(TorrentProvider):
         # Cache
         self.cache = TVCache(self, min_time=30)
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         """
         Search a provider and parse the results.
 
@@ -105,7 +105,7 @@ class YggtorrentProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results for items.
 

@@ -54,7 +54,7 @@ class BTNProvider(TorrentProvider):
 
         return True
 
-    def search(self, search_params, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
 
         self._check_auth()
 
@@ -66,9 +66,9 @@ class BTNProvider(TorrentProvider):
         if age:
             params['age'] = "<=" + str(int(age))
 
-        if search_params:
-            params.update(search_params)
-            sickrage.app.log.debug("Search string: %s" % search_params)
+        if search_strings:
+            params.update(search_strings)
+            sickrage.app.log.debug("Search string: %s" % search_strings)
 
         parsedJSON = self._api_call(apikey, params)
         if not parsedJSON:

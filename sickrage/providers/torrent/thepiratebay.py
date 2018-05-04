@@ -44,7 +44,7 @@ class ThePirateBayProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=20)
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         for mode in search_strings:
@@ -69,7 +69,7 @@ class ThePirateBayProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data

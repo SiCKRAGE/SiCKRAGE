@@ -44,7 +44,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=15)
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not ep_obj.show or not ep_obj.show.is_anime:
@@ -69,7 +69,7 @@ class TokyoToshokanProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
@@ -100,8 +100,8 @@ class TokyoToshokanProvider(TorrentProvider):
 
                     stats = bot.find('td', class_='stats').get_text(strip=True)
                     sl = re.match(r'S:(?P<seeders>\d+)L:(?P<leechers>\d+)C:(?:\d+)ID:(?:\d+)', stats.replace(' ', ''))
-                    seeders = try_int(sl.group('seeders'), 0)
-                    leechers = try_int(sl.group('leechers'), 0)
+                    seeders = try_int(sl.group('seeders'))
+                    leechers = try_int(sl.group('leechers'))
 
                     desc_bottom = bot.find('td', class_='desc-bot').get_text(strip=True)
                     size = convert_size(desc_bottom.split('|')[1].strip('Size: '), -1)

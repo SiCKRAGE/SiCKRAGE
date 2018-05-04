@@ -47,7 +47,7 @@ class TNTVillageProvider(TorrentProvider):
 
         self.cache = TVCache(self, min_time=30)
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
         if not self.login():
@@ -77,7 +77,7 @@ class TNTVillageProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results for items.
 
@@ -125,8 +125,8 @@ class TNTVillageProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    leechers = try_int(cells[3].text)
                     seeders = try_int(cells[4].text, 1)
+                    leechers = try_int(cells[3].text)
 
                     filename_qt = self._reverse_quality(self._episode_quality(title))
                     for text in hdtext:

@@ -1531,8 +1531,8 @@ class Home(WebHandler):
                             # rescan the episodes in the new folder
                     except NoNFOException:
                         errors.append(
-                            _(
-                                "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE.") % location)
+                            _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
+                              "you change the directory in SiCKRAGE.") % location)
 
             # save it to the DB
             showObj.saveToDB()

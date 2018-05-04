@@ -40,7 +40,7 @@ class HD4FreeProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.cache = TVCache(self, min_time=10)
+        self.cache = TVCache(self)
 
     def _check_auth(self):
         if self.username and self.api_key:
@@ -51,7 +51,7 @@ class HD4FreeProvider(TorrentProvider):
 
         return False
 
-    def search(self, search_strings, age=0, ep_obj=None):
+    def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
         if not self._check_auth:
             return results
@@ -84,7 +84,7 @@ class HD4FreeProvider(TorrentProvider):
 
         return results
 
-    def parse(self, data, mode):
+    def parse(self, data, mode, **kwargs):
         """
         Parse search results from data
         :param data: response data
