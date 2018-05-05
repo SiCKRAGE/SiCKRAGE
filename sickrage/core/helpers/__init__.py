@@ -1095,7 +1095,7 @@ def get_size(start_path='.'):
                 try:
                     total_size += os.path.getsize(fp)
                 except OSError as e:
-                    sickrage.app.log.error("Unable to get size for file %s Error: %r" % (fp, e))
+                    sickrage.app.log.warning("Unable to get size for file %s Error: %r" % (fp, e))
                     sickrage.app.log.debug(traceback.format_exc())
     except Exception as e:
         pass

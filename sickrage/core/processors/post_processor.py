@@ -416,8 +416,8 @@ class PostProcessor(object):
                 copyFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                sickrage.app.log.error(
-                    "Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message))
+                self._log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
+                          sickrage.app.log.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,

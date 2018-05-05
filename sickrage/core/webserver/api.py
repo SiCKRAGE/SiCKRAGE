@@ -791,11 +791,11 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
         # make a queue item for it and put it on the queue
-        ep_queue_item = sickrage.app.search_queue.put(
-            ManualSearchQueueItem(showObj, epObj))  # @UndefinedVariable
+        ep_queue_item = ManualSearchQueueItem(showObj, epObj)
+        sickrage.app.search_queue.put(ep_queue_item)
 
         # wait until the queue item tells us whether it worked or not
-        while not ep_queue_item.success:  # @UndefinedVariable
+        while not ep_queue_item.success:
             time.sleep(1)
 
         # return the correct json value
@@ -2083,7 +2083,7 @@ class CMD_ShowAddNew(ApiCall):
         else:
             dir_exists = makeDir(showPath)
             if not dir_exists:
-                sickrage.app.log.error(
+                sickrage.app.log.warning(
                     "Unable to create the folder " + showPath + ", can't add the show")
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
@@ -2562,16 +2562,15 @@ class CMD_ShowStats(ApiCall):
         episode_qualities_counts_download = {"total": 0}
         for statusCode in Quality.DOWNLOADED + Quality.ARCHIVED:
             status, quality = Quality.splitCompositeStatus(statusCode)
-            if quality in [Quality.NONE]:
-                continue
-            episode_qualities_counts_download[statusCode] = 0
+            if not quality == Quality.NONE:
+                episode_qualities_counts_download[statusCode] = 0
 
         # add all snatched qualities
         episode_qualities_counts_snatch = {"total": 0}
-
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
             status, quality = Quality.splitCompositeStatus(statusCode)
-            if quality not in [Quality.NONE]: episode_qualities_counts_snatch[statusCode] = 0
+            if not quality == Quality.NONE:
+                episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
         for row in (x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid) if x['season'] != 0):

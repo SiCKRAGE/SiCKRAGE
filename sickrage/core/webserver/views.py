@@ -2603,7 +2603,7 @@ class HomeAddShows(Home):
 
             sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
-            sickrage.app.log.error("There was an error creating the show, no root directory setting found")
+            sickrage.app.log.warning("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
 
         # done adding show
@@ -2689,7 +2689,7 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.app.alerts.error(_("Unable to add show"),
+                sickrage.app.alerts.warning(_("Unable to add show"),
                                           _("Unable to create the folder " +
                                             show_dir + ", can't add the show"))
 

@@ -104,7 +104,7 @@ class srDatabase(object):
             self.db.create()
 
         # setup database indexes
-        self.setupIndexes()
+        self.setup_indexes()
 
     def compact(self, try_repair=True, **kwargs):
         # Removing left over compact files
@@ -158,7 +158,7 @@ class srDatabase(object):
         except:
             sickrage.app.log.debug('Failed compact: {}'.format(traceback.format_exc()))
 
-    def setupIndexes(self):
+    def setup_indexes(self):
         # setup database indexes
         for index_name in self._indexes:
             try:
@@ -294,26 +294,38 @@ class srDatabase(object):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
     def all(self, *args, **kwargs):
+        if not self.opened:
+            return iter([])
+
         kwargs['with_doc'] = True
         return (x['doc'] for x in self.db.all(*args, **kwargs))
 
     def get_many(self, *args, **kwargs):
+        if not self.opened:
+            return iter([])
+
         kwargs['with_doc'] = True
         return (x['doc'] for x in self.db.get_many(*args, **kwargs))
 
     def get(self, *args, **kwargs):
+        if not self.opened:
+            return iter([])
+
         kwargs['with_doc'] = True
         data = self.db.get(*args, **kwargs)
         return data.get('doc', data)
 
     def delete(self, *args):
-        return self.db.delete(*args)
+        if self.opened:
+            return self.db.delete(*args)
 
     def update(self, *args):
-        return self.db.update(*args)
+        if self.opened:
+            return self.db.update(*args)
 
     def insert(self, *args):
-        return self.db.insert(*args)
+        if self.opened:
+            return self.db.insert(*args)
 
 # Monkey-Patch storage to suppress logging messages
 IU_Storage.get = Custom_IU_Storage_get
