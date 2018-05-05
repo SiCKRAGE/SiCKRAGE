@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-04 09:39-0700\n"
-"PO-Revision-Date: 2018-05-04 12:45-0400\n"
+"POT-Creation-Date: 2018-05-05 12:24-0700\n"
+"PO-Revision-Date: 2018-05-05 15:25-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -5476,6 +5476,12 @@ msgstr "ショーを追加します。"
 msgid "Manual Post-Processing"
 msgstr "手動の後処理"
 
+#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
+#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
+msgid "Manage"
+msgstr "管理"
+
 #: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:136
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
@@ -5678,11 +5684,6 @@ msgstr "あなたのエピソードのどれもがある状態"
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:25
 msgid "Manage episodes with status"
 msgstr "管理状態とのエピソード"
-
-#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
-#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
-msgid "Manage"
-msgstr "管理"
 
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:46
 msgid "Shows containing"
@@ -6036,7 +6037,7 @@ msgstr "あるより新しいバージョン、バージョン {} &mdash; <a hre
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "未知の現在のバージョン番号: もしよ使ったことがない前に SiCKRAGE アップ グレード システム、現在のバージョンが設定されていません。&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:709
+#: sickrage/core/version_updater.py:712
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "PyPy サーバー、バージョン {} &mdash; は、新しい SiCKRAGE 更新 <a href=\"{}\">Update Now</a>"
 
@@ -6050,7 +6051,7 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "<i>%s</i> のダウンロードを見つけることができなかった"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2680
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2680
 #: sickrage/core/webserver/views.py:2692
 msgid "Unable to add show"
 msgstr "ショーを追加できません。"
@@ -6071,31 +6072,31 @@ msgstr "します。"
 msgid " but contains no season/episode data."
 msgstr "シーズン ・ エピソード データが、含まない。"
 
-#: sickrage/core/queues/show.py:316
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "ID {}、nfo ファイルを使用していないを使用して {} に {} でショーを見ることができません。.Nfo を削除し、もう一度手動で追加してみてください。"
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "追加できません。"
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr "エラーのため"
 
-#: sickrage/core/queues/show.py:383
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "追加のエラーのため表示できません。"
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "スキップを表示します。"
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "ショー"
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr "既に表示リストは、します。"
 

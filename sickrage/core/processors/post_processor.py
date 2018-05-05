@@ -386,8 +386,8 @@ class PostProcessor(object):
         """
 
         def _int_move(cur_file_path, new_file_path):
-
             self._log("Moving file from " + cur_file_path + " to " + new_file_path, sickrage.app.log.DEBUG)
+
             try:
                 moveFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
