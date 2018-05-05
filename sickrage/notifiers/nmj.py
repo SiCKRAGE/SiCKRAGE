@@ -132,7 +132,7 @@ class NMJNotifier(Notifiers):
                     sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
                 return False
             except Exception as e:
-                sickrage.app.log.error("NMJ: Unknown exception: {}".format(e.message))
+                sickrage.app.log.error("NMJ: Unknown exception: {}".format(e))
                 return False
 
         # build up the request URL and parameters
@@ -160,7 +160,7 @@ class NMJNotifier(Notifiers):
                 sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
             return False
         except Exception as e:
-            sickrage.app.log.error("NMJ: Unknown exception: {}".format(e.message))
+            sickrage.app.log.error("NMJ: Unknown exception: {}".format(e))
             return False
 
         # try to parse the resulting XML
@@ -168,7 +168,7 @@ class NMJNotifier(Notifiers):
             et = ElementTree.fromstring(response)
             result = et.findtext("returnValue")
         except SyntaxError as e:
-            sickrage.app.log.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e.message))
+            sickrage.app.log.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e))
             return False
 
         # if the result was a number then consider that an error

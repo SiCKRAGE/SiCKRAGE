@@ -450,7 +450,7 @@ def copyFile(srcFile, destFile):
     try:
         shutil.copyfile(srcFile, destFile)
     except Exception as e:
-        sickrage.app.log.warning(e.message)
+        sickrage.app.log.warning(str(e))
     else:
         try:
             shutil.copymode(srcFile, destFile)
@@ -930,7 +930,7 @@ def create_zipfile(fileList, archive, arcname=None):
                 z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip creation error: {} ".format(e.message))
+        sickrage.app.log.error("Zip creation error: {} ".format(e))
         return False
 
 
@@ -969,7 +969,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: {}".format(e.message))
+        sickrage.app.log.error("Zip extraction error: {}".format(e))
         shutil.rmtree(targetDir)
 
 

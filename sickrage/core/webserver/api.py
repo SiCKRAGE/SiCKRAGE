@@ -131,7 +131,7 @@ class ApiHandler(RequestHandler):
         try:
             outDict = self.route(_call_dispatcher, **self.request.arguments)
         except Exception as e:
-            sickrage.app.log.error(e.message)
+            sickrage.app.log.error(str(e))
             errorData = {"error_msg": e, "request arguments": self.request.arguments}
             outDict = _responds(RESULT_FATAL,
                                 errorData,
@@ -220,7 +220,7 @@ class ApiHandler(RequestHandler):
                     else:
                         curOutDict = _responds(RESULT_ERROR, "No such cmd: '" + cmd + "'")
                 except ApiError as e:  # Api errors that we raised, they are harmless
-                    curOutDict = _responds(RESULT_ERROR, msg=e.message)
+                    curOutDict = _responds(RESULT_ERROR, msg=str(e))
             else:  # if someone chained one of the forbiden cmds they will get an error for this one cmd
                 curOutDict = _responds(RESULT_ERROR, msg="The cmd '" + cmd + "' is not supported while chaining")
 
@@ -2355,7 +2355,7 @@ class CMD_ShowRefresh(ApiCall):
         try:
             sickrage.app.show_queue.refreshShow(showObj)
         except CantRefreshShowException as e:
-            return _responds(RESULT_FAILURE, msg=e.message)
+            return _responds(RESULT_FAILURE, msg=str(e))
 
         return _responds(RESULT_SUCCESS, msg='%s has queued to be refreshed' % showObj.name)
 
@@ -2656,7 +2656,7 @@ class CMD_ShowUpdate(ApiCall):
             sickrage.app.show_queue.updateShow(showObj, True)  # @UndefinedVariable
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
-            sickrage.app.log.debug("API::Unable to update show: {}".format(e.message))
+            sickrage.app.log.debug("API::Unable to update show: {}".format(e))
             return _responds(RESULT_FAILURE, msg="Unable to update " + str(showObj.name))
 
 

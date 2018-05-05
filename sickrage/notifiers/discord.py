@@ -79,7 +79,7 @@ class DiscordNotifier(Notifiers):
                                                                     tts=discord_tts)), headers=headers)
             r.raise_for_status()
         except Exception as e:
-            sickrage.app.log.error("Error Sending Discord message: " + e.message)
+            sickrage.app.log.error("Error Sending Discord message: {}".format(e))
             return False
 
         return True

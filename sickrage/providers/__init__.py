@@ -825,7 +825,7 @@ class NZBProvider(GenericProvider):
 
                 return True
             except EnvironmentError as e:
-                sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e.message))
+                sickrage.app.log.error("Error trying to save NZB to black hole: {}".format(e))
 
     def make_filename(self, name):
         return os.path.join(sickrage.app.config.nzb_dir, '{}.nzb'.format(sanitizeFileName(name)))
@@ -917,16 +917,17 @@ class TorrentRssProvider(TorrentProvider):
                     torrent_file = self.session.get(url).content
                     bencode.bdecode(torrent_file)
                 except Exception as e:
-                    if data: self.dumpHTML(torrent_file)
+                    if data:
+                        self.dumpHTML(torrent_file)
                     return {'result': False,
-                            'message': 'Torrent link is not a valid torrent file: {}'.format(e.message)}
+                            'message': 'Torrent link is not a valid torrent file: {}'.format(e)}
 
             return {'result': True,
                     'message': 'RSS feed Parsed correctly'}
 
         except Exception as e:
             return {'result': False,
-                    'message': 'Error when trying to load RSS: {}'.format(e.message)}
+                    'message': 'Error when trying to load RSS: {}'.format(e)}
 
     @staticmethod
     def dumpHTML(data):

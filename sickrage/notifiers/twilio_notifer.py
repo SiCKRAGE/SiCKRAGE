@@ -92,7 +92,7 @@ class TwilioNotifier(Notifiers):
                 from_=self.number.phone_number,
             )
         except TwilioRestException as e:
-            sickrage.app.log.error('Twilio notification failed:' + e.message)
+            sickrage.app.log.error('Twilio notification failed: {}'.format(e))
 
             if allow_raise:
                 raise e

@@ -222,7 +222,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
-            raise ShowNotFoundException(e.message)
+            raise ShowNotFoundException(str(e))
         except indexer_error as e:
             sickrage.app.log.error("Unable to connect to {} while creating meta files - skipping - {}".format(
                 IndexerApi(

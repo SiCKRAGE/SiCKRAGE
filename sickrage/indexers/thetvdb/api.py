@@ -448,7 +448,7 @@ class Tvdb:
                 timeout=sickrage.app.config.indexer_timeout, **kwargs
             )
         except Exception as e:
-            raise tvdb_error(e.message)
+            raise tvdb_error(str(e))
 
         # handle requests exceptions
         if resp.status_code == 401:

@@ -460,7 +460,7 @@ class TVEpisode(object):
                 myEp = cachedSeason[episode]
 
         except (indexer_error, IOError) as e:
-            sickrage.app.log.debug("{} threw up an error: {}".format(indexer_name, e.message))
+            sickrage.app.log.debug("{} threw up an error: {}".format(indexer_name, e))
 
             # if the episode is already valid just log it, if not throw it up
             if self.name:
@@ -604,13 +604,12 @@ class TVEpisode(object):
                     showXML = ElementTree(file=nfoFile)
                 except (SyntaxError, ValueError) as e:
                     sickrage.app.log.error(
-                        "Error loading the NFO, backing up the NFO and skipping for now: {}".format(e.message))
+                        "Error loading the NFO, backing up the NFO and skipping for now: {}".format(e))
                     try:
                         os.rename(nfoFile, nfoFile + ".old")
                     except Exception as e:
                         sickrage.app.log.error(
-                            "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(
-                                e.message))
+                            "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
                     raise NoNFOException("Error in NFO format")
 
                 for epDetails in showXML.iter('episodedetails'):
@@ -1045,7 +1044,7 @@ class TVEpisode(object):
             try:
                 parse_result = NameParser(name, showObj=show, naming_pattern=True).parse(name)
             except (InvalidNameException, InvalidShowException) as e:
-                sickrage.app.log.debug("Unable to get parse release_group: {}".format(e.message))
+                sickrage.app.log.debug("Unable to get parse release_group: {}".format(e))
                 return ''
 
             if not parse_result.release_group:

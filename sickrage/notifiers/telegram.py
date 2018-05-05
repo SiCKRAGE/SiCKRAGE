@@ -70,7 +70,7 @@ class TelegramNotifier(Notifiers):
             message = 'Telegram message sent successfully.'
             success = True
         except IOError as e:
-            message = 'Unknown IO error: {}'.format(e.message)
+            message = 'Unknown IO error: {}'.format(e)
             if hasattr(e, 'code'):
                 error_message = {
                     400: 'Missing parameter(s). Double check your settings or if the channel/user exists.',
@@ -81,7 +81,7 @@ class TelegramNotifier(Notifiers):
                 if e.code in error_message:
                     message = error_message.get(e.code)
         except Exception as e:
-            message = 'Error while sending Telegram message: {} '.format(e.message)
+            message = 'Error while sending Telegram message: {} '.format(e)
         finally:
             sickrage.app.log.info(message)
             return success, message

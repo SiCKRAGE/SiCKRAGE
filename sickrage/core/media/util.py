@@ -83,4 +83,4 @@ def indexerImage(id=None, which=None):
             return Poster(int(id), media_format).url
     except (indexer_error, IOError) as e:
         sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + IndexerApi(
-            INDEXER_TVDB).name + ", not downloading images: {}".format(e.message))
+            INDEXER_TVDB).name + ", not downloading images: {}".format(e))

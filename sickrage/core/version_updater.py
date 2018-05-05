@@ -580,7 +580,7 @@ class SourceUpdateManager(UpdateManager):
             try:
                 os.makedirs(sr_update_dir)
             except OSError as e:
-                sickrage.app.log.warning("Unable to create update folder " + sr_update_dir + ': ' + e.message)
+                sickrage.app.log.warning("Unable to create update folder " + sr_update_dir + ': ' + str(e))
                 return False
 
             # retrieve file
@@ -633,7 +633,7 @@ class SourceUpdateManager(UpdateManager):
                             os.remove(new_path)
                             os.renames(old_path, new_path)
                         except Exception as e:
-                            sickrage.app.log.debug("Unable to update " + new_path + ': ' + e.message)
+                            sickrage.app.log.debug("Unable to update " + new_path + ': ' + str(e))
                             os.remove(old_path)  # Trash the updated file without moving in new path
                         continue
 
@@ -642,7 +642,7 @@ class SourceUpdateManager(UpdateManager):
                     os.renames(old_path, new_path)
 
         except Exception as e:
-            sickrage.app.log.error("Error while trying to update: {}".format(e.message))
+            sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False
 
         # Notify update successful

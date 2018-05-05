@@ -324,8 +324,7 @@ class TIVOMetadata(GenericMetadata):
 
         except EnvironmentError as e:
             sickrage.app.log.error(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                    e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True

@@ -303,7 +303,7 @@ class KODINotifier(Notifiers):
             try:
                 et = ElementTree.fromstring(encSqlXML)
             except SyntaxError as e:
-                sickrage.app.log.error("Unable to parse XML returned from KODI: {}".format(e.message))
+                sickrage.app.log.error("Unable to parse XML returned from KODI: {}".format(e))
                 return False
 
             paths = et.findall('.//field')
@@ -386,7 +386,7 @@ class KODINotifier(Notifiers):
             except (httplib.BadStatusLine, urllib2.URLError) as e:
                 if sickrage.app.config.kodi_always_on:
                     sickrage.app.log.warning(
-                        "Error while trying to retrieve KODI API version for " + host + ": {}".format(e.message))
+                        "Error while trying to retrieve KODI API version for " + host + ": {}".format(e))
                 return False
 
             # parse the json result
@@ -402,7 +402,7 @@ class KODINotifier(Notifiers):
         except IOError as e:
             if sickrage.app.config.kodi_always_on:
                 sickrage.app.log.warning(
-                    "Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e.message))
+                    "Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
             return False
 
     def _update_library_json(self, host=None, showName=None):

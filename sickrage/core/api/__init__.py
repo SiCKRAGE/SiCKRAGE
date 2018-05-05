@@ -88,7 +88,7 @@ class API(object):
             elif resp.status_code >= 400:
                 raise error(resp.json()['message'])
         except Exception as e:
-            raise error(e.message)
+            raise error(str(e))
 
         return resp.json()
 

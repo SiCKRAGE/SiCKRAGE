@@ -103,7 +103,7 @@ class pyTivoNotifier(Notifiers):
                     "pyTivo notification: Error, the server couldn't fulfill the request - " + e.code)
             return False
         except Exception as e:
-            sickrage.app.log.error("PYTIVO: Unknown exception: {}".format(e.message))
+            sickrage.app.log.error("PYTIVO: Unknown exception: {}".format(e))
             return False
         else:
             sickrage.app.log.info("pyTivo notification: Successfully requested transfer of file")

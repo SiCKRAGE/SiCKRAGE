@@ -392,7 +392,7 @@ class PostProcessor(object):
                 moveFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
+                self._log("Unable to move file " + cur_file_path + " to " + new_file_path + ": {}".format(e),
                           sickrage.app.log.ERROR)
                 raise
 
@@ -416,7 +416,7 @@ class PostProcessor(object):
                 copyFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
+                self._log("Unable to copy file " + cur_file_path + " to " + new_file_path + ": {}".format(e),
                           sickrage.app.log.ERROR)
                 raise
 
@@ -466,7 +466,7 @@ class PostProcessor(object):
                 moveAndSymlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(e.message),
+                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": {}".format(e),
                           sickrage.app.log.ERROR)
                 raise
 
@@ -686,7 +686,7 @@ class PostProcessor(object):
             try:
                 (cur_show, cur_season, cur_episodes, cur_quality, cur_version) = cur_attempt()
             except (InvalidNameException, InvalidShowException) as e:
-                sickrage.app.log.debug("Unable to parse, skipping: {}".format(e.message))
+                sickrage.app.log.debug("Unable to parse, skipping: {}".format(e))
                 continue
 
             if not cur_show:
@@ -773,7 +773,7 @@ class PostProcessor(object):
             try:
                 curEp = show.getEpisode(season, cur_episode)
             except EpisodeNotFoundException as e:
-                self._log("Unable to create episode: {}".format(e.message)), sickrage.app.log.DEBUG
+                self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
                 raise EpisodePostProcessingFailedException()
 
             # associate all the episodes together under a single root episode
@@ -870,10 +870,10 @@ class PostProcessor(object):
                 self._log("Script result: " + str(out), sickrage.app.log.DEBUG)
 
             except OSError as e:
-                self._log("Unable to run extra_script: {}".format(e.message))
+                self._log("Unable to run extra_script: {}".format(e))
 
             except Exception as e:
-                self._log("Unable to run extra_script: {}".format(e.message))
+                self._log("Unable to run extra_script: {}".format(e))
 
     def _is_priority(self, ep_obj, new_ep_quality):
         """

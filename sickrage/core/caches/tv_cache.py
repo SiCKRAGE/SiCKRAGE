@@ -80,7 +80,7 @@ class TVCache(object):
 
                 [self._parseItem(item) for item in data['entries']]
             except AuthException as e:
-                sickrage.app.log.warning("Authentication error: {}".format(e.message))
+                sickrage.app.log.warning("Authentication error: {}".format(e))
                 return False
             except Exception as e:
                 sickrage.app.log.debug(
@@ -95,7 +95,7 @@ class TVCache(object):
                 resp = WebSession().get(url, params=params).text
                 return feedparser.parse(resp)
         except Exception as e:
-            sickrage.app.log.debug("RSS Error: {}".format(e.message))
+            sickrage.app.log.debug("RSS Error: {}".format(e))
 
         return feedparser.FeedParserDict()
 

@@ -73,7 +73,7 @@ class SlackNotifier(Notifiers):
                               headers=headers)
             r.raise_for_status()
         except Exception as e:
-            sickrage.app.log.error("Error Sending Slack message: " + e.message)
+            sickrage.app.log.error("Error Sending Slack message: {}".format(e))
             return False
 
         return True

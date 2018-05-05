@@ -216,7 +216,7 @@ def pickBestResult(results, show):
                             file_size, quality_size)
                     )
             except Exception as e:
-                sickrage.app.log.info(e.message)
+                sickrage.app.log.info(str(e))
                 continue
 
         # verify result content
@@ -378,11 +378,11 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                                                                   downCurQuality,
                                                                   cacheOnly)
                 except AuthException as e:
-                    sickrage.app.log.warning("Authentication error: {}".format(e.message))
+                    sickrage.app.log.warning("Authentication error: {}".format(e))
                     break
                 except Exception as e:
                     sickrage.app.log.error(
-                        "Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
+                        "Error while searching " + providerObj.name + ", skipping: {}".format(e))
                     break
                 finally:
                     threading.currentThread().setName(origThreadName)
