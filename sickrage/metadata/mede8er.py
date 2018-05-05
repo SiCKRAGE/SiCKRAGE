@@ -226,10 +226,10 @@ class Mede8erMetadata(MediaBrowserMetadata):
             t = IndexerApi(ep_obj.show.indexer).indexer(**lINDEXER_API_PARMS)
             myShow = t[ep_obj.show.indexerid]
         except indexer_shownotfound as e:
-            raise ShowNotFoundException(e.message)
+            raise ShowNotFoundException(str(e))
         except indexer_error as e:
             sickrage.app.log.error(
-                "Unable to connect to TVDB while creating meta files - skipping - {}".format(e.message))
+                "Unable to connect to TVDB while creating meta files - skipping - {}".format(e))
             return False
 
         rootNode = Element("details")
@@ -380,8 +380,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                    e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True
@@ -426,8 +425,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                    e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True

@@ -80,7 +80,7 @@ class FreeMobileNotifier(Notifiers):
                     sickrage.app.log.error(message)
                     return False, message
         except Exception as e:
-            message = "Error while sending SMS: {0}".format(e.message)
+            message = "Error while sending SMS: {}".format(e)
             sickrage.app.log.error(message)
             return False, message
 

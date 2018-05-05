@@ -85,7 +85,7 @@ class ShowUpdater(object):
                 else:
                     pi_list.append(sickrage.app.show_queue.refreshShow(show, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:
-                sickrage.app.log.debug("Automatic update failed: {}".format(e.message))
+                sickrage.app.log.debug("Automatic update failed: {}".format(e))
 
         ProgressIndicators.setIndicator('dailyShowUpdates', QueueProgressIndicator("Daily Show Updates", pi_list))
 

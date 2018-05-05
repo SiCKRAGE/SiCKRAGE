@@ -187,5 +187,5 @@ class GrowlNotifier(Notifiers):
             return self._send(opts['host'], opts['port'], register.encode(), opts['debug'])
         except Exception as e:
             sickrage.app.log.warning(
-                "GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(e.message))
+                "GROWL: Unable to send growl to " + opts['host'] + ":" + str(opts['port']) + " - {}".format(e))
             return False

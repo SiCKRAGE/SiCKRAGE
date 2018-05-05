@@ -536,7 +536,7 @@ class GoogleAuth(WebHandler):
             data = sickrage.app.google_auth.get_credentials(AttrDict(json_decode(flow_info)))
             return json_encode(data.token_response)
         except Exception as e:
-            return json_encode({'error': e.message})
+            return json_encode({'error': str(e)})
 
     def refresh_credentials(self):
         sickrage.app.google_auth.refresh_credentials()
@@ -1384,7 +1384,7 @@ class Home(WebHandler):
                         anidb_failed = True
                         sickrage.app.alerts.error(_('Unable to retreive Fansub Groups from AniDB.'))
                         sickrage.app.log.debug(
-                            'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(e.message))
+                            'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(e))
 
             with showObj.lock:
                 scene_exceptions = get_scene_exceptions(showObj.indexerid)
@@ -1492,7 +1492,7 @@ class Home(WebHandler):
                 try:
                     sickrage.app.show_queue.refreshShow(showObj)
                 except CantRefreshShowException as e:
-                    errors.append(_("Unable to refresh this show: {}").format(e.message))
+                    errors.append(_("Unable to refresh this show: {}").format(e))
 
             showObj.paused = paused
             showObj.scene = scene
@@ -1524,7 +1524,7 @@ class Home(WebHandler):
                         try:
                             sickrage.app.show_queue.refreshShow(showObj)
                         except CantRefreshShowException as e:
-                            errors.append(_("Unable to refresh this show:{}").format(e.message))
+                            errors.append(_("Unable to refresh this show:{}").format(e))
                             # grab updated info from TVDB
                             # showObj.loadEpisodesFromIndexer()
                             # rescan the episodes in the new folder
@@ -1542,7 +1542,7 @@ class Home(WebHandler):
                 sickrage.app.show_queue.updateShow(showObj, True)
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
-                errors.append(_("Unable to update show: {}").format(e.message))
+                errors.append(_("Unable to update show: {}").format(e))
 
         if do_update_exceptions:
             try:
@@ -1607,7 +1607,7 @@ class Home(WebHandler):
                 )
             )
         except CantRemoveShowException as e:
-            sickrage.app.alerts.error(_('Unable to delete this show.'), e.message)
+            sickrage.app.alerts.error(_('Unable to delete this show.'), str(e))
 
         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
@@ -1626,7 +1626,7 @@ class Home(WebHandler):
         try:
             sickrage.app.show_queue.refreshShow(showObj)
         except CantRefreshShowException as e:
-            sickrage.app.alerts.error(_('Unable to refresh this show.'), e.message)
+            sickrage.app.alerts.error(_('Unable to refresh this show.'), str(e))
 
         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
@@ -1645,7 +1645,7 @@ class Home(WebHandler):
         try:
             sickrage.app.show_queue.updateShow(showObj, bool(force))
         except CantUpdateShowException as e:
-            sickrage.app.alerts.error(_("Unable to update this show."), e.message)
+            sickrage.app.alerts.error(_("Unable to update this show."), str(e))
 
         # just give it some time
         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
@@ -2603,7 +2603,7 @@ class HomeAddShows(Home):
 
             sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
-            sickrage.app.log.error("There was an error creating the show, no root directory setting found")
+            sickrage.app.log.warning("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
 
         # done adding show
@@ -2689,7 +2689,7 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.app.alerts.error(_("Unable to add show"),
+                sickrage.app.alerts.warning(_("Unable to add show"),
                                           _("Unable to create the folder " +
                                             show_dir + ", can't add the show"))
 
@@ -3425,7 +3425,7 @@ class Manage(Home, WebRoot):
                     sickrage.app.show_queue.updateShow(showObj, True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
-                    errors.append(_("Unable to update show: {}").format(e.message))
+                    errors.append(_("Unable to update show: {}").format(e))
 
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:
@@ -3433,7 +3433,7 @@ class Manage(Home, WebRoot):
                     sickrage.app.show_queue.refreshShow(showObj)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
-                    errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e.message))
+                    errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e))
 
             if curShowID in toRename:
                 sickrage.app.show_queue.renameShowEpisodes(showObj)

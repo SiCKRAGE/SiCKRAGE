@@ -122,7 +122,7 @@ class PretomeProvider(TorrentProvider):
 
             torrent_table = html.find('table', attrs={'style': 'border: none; width: 100%;'})
             if not torrent_table:
-                sickrage.app.log.error("Could not find table of torrents")
+                sickrage.app.log.debug("Could not find table of torrents")
                 return results
 
             torrent_rows = torrent_table.find_all('tr', attrs={'class': 'browse'})

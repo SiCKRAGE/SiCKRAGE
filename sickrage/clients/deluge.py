@@ -126,7 +126,7 @@ class DelugeAPI(GenericClient):
         if result.show.is_anime:
             label = sickrage.app.config.torrent_label_anime
         if ' ' in label:
-            sickrage.app.log.error(self.name + ': Invalid label. Label must not contain a space')
+            sickrage.app.log.warning(self.name + ': Invalid label. Label must not contain a space')
             return False
 
         if label:

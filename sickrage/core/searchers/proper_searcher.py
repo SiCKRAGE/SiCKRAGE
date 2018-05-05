@@ -109,11 +109,11 @@ class ProperSearcher(object):
             try:
                 curPropers = providerObj.find_propers(recently_aired)
             except AuthException as e:
-                sickrage.app.log.warning("Authentication error: {}".format(e.message))
+                sickrage.app.log.warning("Authentication error: {}".format(e))
                 continue
             except Exception as e:
                 sickrage.app.log.debug(
-                    "Error while searching " + providerObj.name + ", skipping: {}".format(e.message))
+                    "Error while searching " + providerObj.name + ", skipping: {}".format(e))
                 sickrage.app.log.debug(traceback.format_exc())
                 continue
 

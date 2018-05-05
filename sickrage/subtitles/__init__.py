@@ -354,7 +354,7 @@ def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
                 sickrage.app.log.debug("Script result: %s" % out)
 
             except Exception as e:
-                sickrage.app.log.info("Unable to run subs_extra_script: {}".format(e.message))
+                sickrage.app.log.info("Unable to run subs_extra_script: {}".format(e))
 
 
 def refine_video(video, episode):

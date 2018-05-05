@@ -107,7 +107,7 @@ class WebSession(Session):
 
             chmodAsParent(filename)
         except Exception as e:
-            sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e.message))
+            sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e))
             remove_file_failed(filename)
             return False
 

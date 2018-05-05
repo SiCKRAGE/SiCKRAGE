@@ -227,7 +227,7 @@ class PLEXNotifier(Notifiers):
                     media_container = xml_tree.getroot()
                 except IOError as e:
                     sickrage.app.log.warning(
-                        'PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
+                        'PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
                     continue
                 except Exception as e:
@@ -235,7 +235,7 @@ class PLEXNotifier(Notifiers):
                         sickrage.app.log.error('PLEX: Please set TOKEN in Plex settings: ')
                     else:
                         sickrage.app.log.error(
-                            'PLEX: Error while trying to contact Plex Media Server: {}'.format(e.message))
+                            'PLEX: Error while trying to contact Plex Media Server: {}'.format(e))
                     continue
 
                 sections = media_container.findall('.//Directory')
@@ -271,7 +271,7 @@ class PLEXNotifier(Notifiers):
                     host_list.append(cur_host)
                 except Exception as e:
                     sickrage.app.log.warning(
-                        'PLEX: Error updating library section for Plex Media Server: {}'.format(e.message))
+                        'PLEX: Error updating library section for Plex Media Server: {}'.format(e))
                     hosts_failed.append(cur_host)
 
             if hosts_match:

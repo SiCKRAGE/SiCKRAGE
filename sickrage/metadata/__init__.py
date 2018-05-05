@@ -384,8 +384,7 @@ class GenericMetadata(object):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                    e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True
@@ -428,8 +427,7 @@ class GenericMetadata(object):
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
-                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(
-                    e.message))
+                "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
         return True
@@ -612,8 +610,7 @@ class GenericMetadata(object):
             chmodAsParent(image_path)
         except IOError as e:
             sickrage.app.log.error(
-                "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(
-                    e.message))
+                "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(e))
             return False
 
         return True
@@ -646,7 +643,7 @@ class GenericMetadata(object):
 
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
+                show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
             return None
@@ -705,7 +702,7 @@ class GenericMetadata(object):
             return t.images(show_obj.indexerid, key_type='season', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
+                show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
         except (KeyError, IndexError):
@@ -735,7 +732,7 @@ class GenericMetadata(object):
             return t.images(show_obj.indexerid, key_type='seasonwide', season=season)[which]['filename']
         except (indexer_error, IOError) as e:
             sickrage.app.log.warning("{}: Unable to look up show on ".format(show_obj.indexerid) + IndexerApi(
-                show_obj.indexer).name + ", not downloading images: {}".format(e.message))
+                show_obj.indexer).name + ", not downloading images: {}".format(e))
             sickrage.app.log.debug("Indexer " + IndexerApi(
                 show_obj.indexer).name + " maybe experiencing some problems. Try again later")
         except (KeyError, IndexError):
@@ -805,8 +802,7 @@ class GenericMetadata(object):
 
         except Exception as e:
             sickrage.app.log.warning(
-                "There was an error parsing your existing metadata file: '" + metadata_path + "' error: {}".format(
-                    e.message))
+                "There was an error parsing your existing metadata file: '" + metadata_path + "' error: {}".format(e))
             return empty_return
 
         return indexer_id, name, indexer

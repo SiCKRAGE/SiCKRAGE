@@ -1,6 +1,10 @@
 # Changelog
 
-- * db9d994 - 2018-05-04: Release v9.3.18 
+- * 5cbbbf2 - 2018-05-05: Release v9.3.19 
+- * c478436 - 2018-05-05: Pre-Release v9.3.19.dev3 
+- * ee3e0d4 - 2018-05-04: Pre-Release v9.3.19.dev2 
+- * 793d2a5 - 2018-05-04: Pre-Release v9.3.19.dev1 
+- * 885708b - 2018-05-04: Release v9.3.18 
 - * de8804b - 2018-05-03: View Changelog now reads changelog.md file 
 - * 4a12c79 - 2018-05-03: Pre-Release v9.3.18.dev3 
 - * 2a46cba - 2018-05-03: Pre-Release v9.3.18.dev2 

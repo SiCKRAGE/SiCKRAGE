@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.18\n"
+"Project-Id-Version: sickrage 9.3.19\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-04 09:44-0700\n"
+"POT-Creation-Date: 2018-05-05 12:24-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5649,6 +5649,12 @@ msgstr ""
 msgid "Manual Post-Processing"
 msgstr ""
 
+#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
+#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
+msgid "Manage"
+msgstr ""
+
 #: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:136
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
@@ -5850,11 +5856,6 @@ msgstr ""
 
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:25
 msgid "Manage episodes with status"
-msgstr ""
-
-#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
-#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
-msgid "Manage"
 msgstr ""
 
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:46
@@ -6225,7 +6226,7 @@ msgid ""
 "Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:709
+#: sickrage/core/version_updater.py:712
 msgid ""
 "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a "
 "href=\"{}\">Update Now</a>"
@@ -6241,7 +6242,7 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr ""
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2680
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2680
 #: sickrage/core/webserver/views.py:2692
 msgid "Unable to add show"
 msgstr ""
@@ -6264,33 +6265,33 @@ msgstr ""
 msgid " but contains no season/episode data."
 msgstr ""
 
-#: sickrage/core/queues/show.py:316
+#: sickrage/core/queues/show.py:315
 msgid ""
 "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete"
 " .nfo and try adding manually again."
 msgstr ""
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr ""
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr ""
 
-#: sickrage/core/queues/show.py:383
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr ""
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr ""
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr ""
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr ""
 

@@ -521,4 +521,4 @@ class Core(object):
                 self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
                 self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
             except Exception as e:
-                self.log.error("Show error in [%s]: %s" % (dbData['location'], e.message))
+                self.log.debug("Show error in [%s]: %s" % (dbData['location'], str(e)))

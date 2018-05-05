@@ -552,7 +552,7 @@ def xem_refresh(indexer_id, indexer, force=False):
             sickrage.app.log.warning(
                 "Exception while refreshing XEM data for show {} on {}: {}".format(indexer_id,
                                                                                    IndexerApi(indexer).name,
-                                                                                   e.message))
+                                                                                   e))
             sickrage.app.log.debug(traceback.format_exc())
 
 

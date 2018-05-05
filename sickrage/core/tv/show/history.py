@@ -321,7 +321,7 @@ class FailedHistory(object):
 
         except EpisodeNotFoundException as e:
             sickrage.app.log.warning(
-                "Unable to create episode, please set its status manually: {}".format(e.message))
+                "Unable to create episode, please set its status manually: {}".format(e))
 
     @staticmethod
     def markFailed(epObj):
@@ -341,7 +341,7 @@ class FailedHistory(object):
 
         except EpisodeNotFoundException as e:
             sickrage.app.log.warning(
-                "Unable to get episode, please set its status manually: {}".format(e.message))
+                "Unable to get episode, please set its status manually: {}".format(e))
 
         return log_str
 

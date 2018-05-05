@@ -640,7 +640,7 @@ class TVShow(object):
             try:
                 curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile))
             except (ShowNotFoundException, EpisodeNotFoundException) as e:
-                sickrage.app.log.warning("Episode " + mediaFile + " returned an exception: {}".format(e.message))
+                sickrage.app.log.warning("Episode " + mediaFile + " returned an exception: {}".format(e))
             except EpisodeDeletedException:
                 sickrage.app.log.debug("The episode deleted itself when I tried making an object for it")
 
@@ -1126,7 +1126,7 @@ class TVShow(object):
         try:
             self.loadEpisodesFromDir()
         except Exception as e:
-            sickrage.app.log.debug("Error searching dir for episodes: {}".format(e.message))
+            sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
 
         # run through all locations from DB, check that they exist

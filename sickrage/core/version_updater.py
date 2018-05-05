@@ -31,7 +31,7 @@ import threading
 import traceback
 
 import sickrage
-from sickrage.core.helpers import backupSR
+from sickrage.core.helpers import backupSR, makeDir
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
@@ -577,7 +577,11 @@ class SourceUpdateManager(UpdateManager):
                 shutil.rmtree(sr_update_dir)
 
             sickrage.app.log.info("Creating update folder " + sr_update_dir + " before extracting")
-            os.makedirs(sr_update_dir)
+            try:
+                os.makedirs(sr_update_dir)
+            except OSError as e:
+                sickrage.app.log.warning("Unable to create update folder " + sr_update_dir + ': ' + str(e))
+                return False
 
             # retrieve file
             sickrage.app.log.info("Downloading update from " + repr(tar_download_url))
@@ -590,7 +594,7 @@ class SourceUpdateManager(UpdateManager):
                 return False
 
             if not tarfile.is_tarfile(tar_download_path):
-                sickrage.app.log.error(
+                sickrage.app.log.warning(
                     "Retrieved version from " + tar_download_url + " is corrupt, can't update")
                 return False
 
@@ -608,7 +612,7 @@ class SourceUpdateManager(UpdateManager):
             update_dir_contents = [x for x in os.listdir(sr_update_dir) if
                                    os.path.isdir(os.path.join(sr_update_dir, x))]
             if len(update_dir_contents) != 1:
-                sickrage.app.log.error("Invalid update data, update failed: " + str(update_dir_contents))
+                sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
                 return False
             content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
 
@@ -629,7 +633,7 @@ class SourceUpdateManager(UpdateManager):
                             os.remove(new_path)
                             os.renames(old_path, new_path)
                         except Exception as e:
-                            sickrage.app.log.debug("Unable to update " + new_path + ': ' + e.message)
+                            sickrage.app.log.debug("Unable to update " + new_path + ': ' + str(e))
                             os.remove(old_path)  # Trash the updated file without moving in new path
                         continue
 
@@ -638,8 +642,7 @@ class SourceUpdateManager(UpdateManager):
                     os.renames(old_path, new_path)
 
         except Exception as e:
-            sickrage.app.log.error("Error while trying to update: {}".format(e.message))
-            sickrage.app.log.debug("Traceback: " + traceback.format_exc())
+            sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False
 
         # Notify update successful

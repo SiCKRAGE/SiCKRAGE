@@ -450,7 +450,7 @@ def copyFile(srcFile, destFile):
     try:
         shutil.copyfile(srcFile, destFile)
     except Exception as e:
-        sickrage.app.log.warning(e.message)
+        sickrage.app.log.warning(str(e))
     else:
         try:
             shutil.copymode(srcFile, destFile)
@@ -469,7 +469,7 @@ def moveFile(srcFile, destFile):
     try:
         shutil.move(srcFile, destFile)
         fixSetGroupID(destFile)
-    except OSError as e:
+    except OSError:
         copyFile(srcFile, destFile)
         os.unlink(srcFile)
 
@@ -654,8 +654,7 @@ def chmodAsParent(childPath):
     parentPath = os.path.dirname(childPath)
 
     if not parentPath:
-        sickrage.app.log.debug(
-            "No parent path provided in " + childPath + ", unable to get permissions from it")
+        sickrage.app.log.debug("No parent path provided in " + childPath + ", unable to get permissions from it")
         return
 
     childPath = os.path.join(parentPath, os.path.basename(childPath))
@@ -675,17 +674,15 @@ def chmodAsParent(childPath):
         return
 
     childPath_owner = childPathStat.st_uid
-    user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
+    user_id = os.geteuid()
 
     if user_id != 0 and user_id != childPath_owner:
-        sickrage.app.log.debug(
-            "Not running as root or owner of " + childPath + ", not trying to set permissions")
+        sickrage.app.log.debug("Not running as root or owner of " + childPath + ", not trying to set permissions")
         return
 
     try:
         os.chmod(childPath, childMode)
-        sickrage.app.log.debug(
-            "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
+        sickrage.app.log.debug("Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
     except OSError:
         sickrage.app.log.debug("Failed to set permission for %s to %o" % (childPath, childMode))
 
@@ -716,20 +713,18 @@ def fixSetGroupID(childPath):
             return
 
         childPath_owner = childStat.st_uid
-        user_id = os.geteuid()  # @UndefinedVariable - only available on UNIX
+        user_id = os.geteuid()
 
         if user_id != 0 and user_id != childPath_owner:
-            sickrage.app.log.debug(
-                "Not running as root or owner of " + childPath + ", not trying to set the set-group-ID")
+            sickrage.app.log.debug("Not running as root or owner of {}, not trying to set the set-group-ID".format(childPath))
             return
 
         try:
             os.chown(childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
-            sickrage.app.log.debug("Respecting the set-group-ID bit on the parent directory for %s" % childPath)
+            sickrage.app.log.debug("Respecting the set-group-ID bit on the parent directory for {}".format(childPath))
         except OSError:
-            sickrage.app.log.error(
-                "Failed to respect the set-group-ID bit on the parent directory for %s (setting group ID %i)" % (
-                    childPath, parentGID))
+            sickrage.app.log.error("Failed to respect the set-group-ID bit on the parent directory for {} (setting "
+                                   "group ID {})".format(childPath, parentGID))
 
 
 def sanitizeSceneName(name, anime=False):
@@ -930,7 +925,7 @@ def create_zipfile(fileList, archive, arcname=None):
                 z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip creation error: {} ".format(e.message))
+        sickrage.app.log.error("Zip creation error: {} ".format(e))
         return False
 
 
@@ -969,7 +964,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: {}".format(e.message))
+        sickrage.app.log.error("Zip extraction error: {}".format(e))
         shutil.rmtree(targetDir)
 
 
@@ -1095,7 +1090,7 @@ def get_size(start_path='.'):
                 try:
                     total_size += os.path.getsize(fp)
                 except OSError as e:
-                    sickrage.app.log.error("Unable to get size for file %s Error: %r" % (fp, e))
+                    sickrage.app.log.warning("Unable to get size for file %s Error: %r" % (fp, e))
                     sickrage.app.log.debug(traceback.format_exc())
     except Exception as e:
         pass

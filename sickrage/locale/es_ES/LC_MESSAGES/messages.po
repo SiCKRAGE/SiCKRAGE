@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-04 09:39-0700\n"
-"PO-Revision-Date: 2018-05-04 12:46-0400\n"
+"POT-Creation-Date: 2018-05-05 12:24-0700\n"
+"PO-Revision-Date: 2018-05-05 15:26-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -5476,6 +5476,12 @@ msgstr "Añadir serie"
 msgid "Manual Post-Processing"
 msgstr "Post-procesado manual"
 
+#: sickrage/core/webserver/views/layouts/main.mako:131
+#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
+#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
+msgid "Manage"
+msgstr "Administrar"
+
 #: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:136
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
@@ -5678,11 +5684,6 @@ msgstr "Ninguno de tus episodios tiene estado"
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:25
 msgid "Manage episodes with status"
 msgstr "Gestión de episodios con el estado"
-
-#: sickrage/core/webserver/views/manage/episode_statuses.mako:35
-#: sickrage/core/webserver/views/manage/subtitles_missed.mako:46
-msgid "Manage"
-msgstr "Administrar"
 
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:46
 msgid "Shows containing"
@@ -6036,7 +6037,7 @@ msgstr "Hay una versión más reciente disponible, la versión {} &mdash; <a hre
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Número de versión actual desconocido: si yo nunca ha utilizado el sistema de actualización de SiCKRAGE antes de entonces la versión actual no se ha establecido. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:709
+#: sickrage/core/version_updater.py:712
 msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Nueva actualización de SiCKRAGE encontró en los servidores de PyPy, versión {} &mdash; <a href=\"{}\">Update Now</a>"
 
@@ -6050,7 +6051,7 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "No podía encontrar una descarga para <i>%s</i>"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2680
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2680
 #: sickrage/core/webserver/views.py:2692
 msgid "Unable to add show"
 msgstr "No se puede Agregar Mostrar"
@@ -6071,31 +6072,31 @@ msgstr " está en "
 msgid " but contains no season/episode data."
 msgstr " pero no contiene ningún dato de temporada/episodio."
 
-#: sickrage/core/queues/show.py:316
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "No se puede ver el show en {} a {} con {ID}, no usando el NFO. Eliminar .nfo y trate de añadir manualmente otra vez."
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "No se puede Agregar "
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " debido a un error con "
 
-#: sickrage/core/queues/show.py:383
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "No se puede Agregar Mostrar debido a un error con "
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "Mostrar omitidos"
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "El espectáculo en "
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " ya está en la lista Mostrar"
 

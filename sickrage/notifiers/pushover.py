@@ -99,7 +99,7 @@ class PushoverNotifier(Notifiers):
         except urllib2.HTTPError as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
             if not hasattr(e, 'code'):
-                sickrage.app.log.error("Pushover notification failed.{}".format(e.message))
+                sickrage.app.log.error("Pushover notification failed.{}".format(e))
                 return False
             else:
                 sickrage.app.log.error("Pushover notification failed. Error code: " + str(e.code))

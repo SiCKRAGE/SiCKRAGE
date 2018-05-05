@@ -128,7 +128,7 @@
                             <a href="${srWebRoot}/manage/episodeStatuses/" class="dropdown-toggle"
                                aria-haspopup="true"
                                data-toggle="dropdown" data-hover="dropdown">
-                                <span>Manage</span>
+                                <span>${_('Manage')}</span>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>

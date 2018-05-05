@@ -110,10 +110,10 @@ class SabNZBd(object):
                 f = opener.open(req)
 
         except (EOFError, IOError) as e:
-            sickrage.app.log.error("Unable to connect to SAB: {}".format(e.message))
+            sickrage.app.log.error("Unable to connect to SAB: {}".format(e))
             return False
         except httplib.InvalidURL as e:
-            sickrage.app.log.error("Invalid SAB host, check your config: {}".format(e.message))
+            sickrage.app.log.error("Invalid SAB host, check your config: {}".format(e))
             return False
 
         # this means we couldn't open the connection or something just as bad
@@ -125,7 +125,7 @@ class SabNZBd(object):
         try:
             result = f.readlines()
         except Exception as e:
-            sickrage.app.log.error("Error trying to get result from SAB, NZB not sent: {}".format(e.message))
+            sickrage.app.log.error("Error trying to get result from SAB, NZB not sent: {}".format(e))
             return False
 
         # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
@@ -160,7 +160,7 @@ class SabNZBd(object):
         try:
             result = f.readlines()
         except Exception as e:
-            sickrage.app.log.error("Error trying to get result from SAB{}".format(e.message))
+            sickrage.app.log.error("Error trying to get result from SAB{}".format(e))
             return False, "Error from SAB"
 
         if len(result) == 0:
@@ -194,10 +194,10 @@ class SabNZBd(object):
         try:
             f = urllib.urlopen(url)
         except (EOFError, IOError) as e:
-            sickrage.app.log.error("Unable to connect to SAB: {}".format(e.message))
+            sickrage.app.log.error("Unable to connect to SAB: {}".format(e))
             return False, "Unable to connect"
         except httplib.InvalidURL as e:
-            sickrage.app.log.error("Invalid SAB host, check your config: {}".format(e.message))
+            sickrage.app.log.error("Invalid SAB host, check your config: {}".format(e))
             return False, "Invalid SAB host"
         if f is None:
             sickrage.app.log.error("No data returned from SABnzbd")
