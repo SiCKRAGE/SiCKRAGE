@@ -20,9 +20,8 @@ from __future__ import unicode_literals
 
 import traceback
 
-from rtorrentlib import RTorrent
-
 import sickrage
+from rtorrentlib import RTorrent
 from sickrage.clients import GenericClient
 
 
@@ -161,7 +160,7 @@ class rTorrentAPI(GenericClient):
 
         return True
 
-    def testAuthentication(self):
+    def test_authentication(self):
         try:
             self._get_auth()
 

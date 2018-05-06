@@ -88,7 +88,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         else:
             if any([result.content, result.url.startswith('magnet:')]):
                 client = getClientIstance(sickrage.app.config.torrent_method)()
-                dlResult = client.sendTORRENT(result)
+                dlResult = client.send_torrent(result)
             else:
                 sickrage.app.log.warning("Torrent file content is empty")
     else:

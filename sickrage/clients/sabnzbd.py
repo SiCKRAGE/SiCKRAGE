@@ -230,7 +230,7 @@ class SabNZBd(object):
         return True, sabText
 
     @staticmethod
-    def testAuthentication(host=None, username=None, password=None, apikey=None):
+    def test_authentication(host=None, username=None, password=None, apikey=None):
         """
         Sends a simple API request to SAB to determine if the given connection information is connect
 

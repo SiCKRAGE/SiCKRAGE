@@ -748,7 +748,7 @@ class Home(WebHandler):
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
+            authed, authMsg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
                 return _('Success. Connected and authenticated')
             else:
@@ -764,7 +764,7 @@ class Home(WebHandler):
 
         client = getClientIstance(torrent_method)
 
-        __, accesMsg = client(host, username, password).testAuthentication()
+        __, accesMsg = client(host, username, password).test_authentication()
 
         return accesMsg
 
