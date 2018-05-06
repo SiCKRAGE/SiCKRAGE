@@ -18,19 +18,18 @@
 
 from __future__ import unicode_literals
 
-import io
 import os
 import re
 import subprocess
-import traceback
 
 import subliminal
 from babelfish import language_converters, Language
 from guessit import guessit
+from subliminal import save_subtitles
 
 import sickrage
 from sickrage.core import makeDir
-from sickrage.core.helpers import chmodAsParent, fixSetGroupID
+from sickrage.core.helpers import chmodAsParent
 
 # register provider
 for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
@@ -133,13 +132,11 @@ def download_subtitles(episode):
                                                        hearing_impaired=sickrage.app.config.subtitles_hearing_impaired,
                                                        only_one=not sickrage.app.config.subtitles_multi)
 
-        save_subtitles(video, found_subtitles, directory=subtitles_path,
-                       single=not sickrage.app.config.subtitles_multi)
+        save_subtitles(video, found_subtitles, directory=subtitles_path, single=not sickrage.app.config.subtitles_multi)
 
         if not sickrage.app.config.embedded_subtitles_all and sickrage.app.config.subtitles_extra_scripts and video_path.endswith(
                 ('.mkv', '.mp4')):
-            run_subs_extra_scripts(episode, found_subtitles, video,
-                                   single=not sickrage.app.config.subtitles_multi)
+            run_subs_extra_scripts(episode, found_subtitles, video, single=not sickrage.app.config.subtitles_multi)
 
         new_subtitles = sorted({subtitle.language.opensubtitles for subtitle in found_subtitles})
         current_subtitles = sorted({subtitle for subtitle in new_subtitles + existing_subtitles if subtitle})
@@ -149,9 +146,8 @@ def download_subtitles(episode):
                 current_subtitles.remove(new_code)
             current_subtitles.append('und')
 
-    except Exception:
-        sickrage.app.log.info("Error occurred when downloading subtitles for: %s" % video_path)
-        sickrage.app.log.error(traceback.format_exc())
+    except Exception as e:
+        sickrage.app.log.error("Error occurred when downloading subtitles for {}: {}".format(video_path, e))
         return existing_subtitles, None
 
     if sickrage.app.config.subtitles_history:
@@ -166,44 +162,6 @@ def download_subtitles(episode):
                                 subtitle)
 
     return current_subtitles, new_subtitles
-
-
-def save_subtitles(video, subtitles, single=False, directory=None):
-    saved_subtitles = []
-    for subtitle in subtitles:
-        # check content
-        if subtitle.content is None:
-            sickrage.app.log.debug("Skipping subtitle for %s: no content" % video.name)
-            continue
-
-        # check language
-        if subtitle.language in set(s.language for s in saved_subtitles):
-            sickrage.app.log.debug("Skipping subtitle for %s: language already saved" % video.name)
-            continue
-
-        # create subtitle path
-        subtitle_path = subliminal.subtitle.get_subtitle_path(video.name, None if single else subtitle.language)
-        if directory is not None:
-            subtitle_path = os.path.join(directory, os.path.split(subtitle_path)[1])
-
-        # save content as is or in the specified encoding
-        sickrage.app.log.debug("Saving subtitle for %s to %s" % (video.name, subtitle_path))
-        if subtitle.encoding:
-            with io.open(subtitle_path, 'w', encoding=subtitle.encoding) as f:
-                f.write(subtitle.text)
-        else:
-            with io.open(subtitle_path, 'wb') as f:
-                f.write(subtitle.content)
-
-        # chmod and set group for the saved subtitle
-        chmodAsParent(subtitle_path)
-        fixSetGroupID(subtitle_path)
-
-        # check single
-        if single:
-            break
-
-    return saved_subtitles
 
 
 def wanted_languages():
