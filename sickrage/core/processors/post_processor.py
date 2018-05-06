@@ -491,7 +491,7 @@ class PostProcessor(object):
                 symlink(cur_file_path, new_file_path)
                 chmodAsParent(cur_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + e,
+                self._log("Unable to link file " + cur_file_path + " to " + new_file_path + ": " + str(e),
                           sickrage.app.log.ERROR)
                 raise
 

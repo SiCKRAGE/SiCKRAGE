@@ -1,6 +1,7 @@
 # Changelog
 
-- * c49dcd4 - 2018-05-06: Pre-Release v9.3.20.dev4 
+- * 7958aca - 2018-05-06: Pre-Release v9.3.20.dev5 
+- * 0e6ce30 - 2018-05-06: Pre-Release v9.3.20.dev4 
 - * 67d8ac1 - 2018-05-06: Fixed UnicodeEncode errors when saving subtitles 
 - * f69a02b - 2018-05-05: Pre-Release v9.3.20.dev3 
 - * b7cc531 - 2018-05-05: Refactoring search client code 
