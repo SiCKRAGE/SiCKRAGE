@@ -265,7 +265,7 @@ class LoginHandler(BaseHandler):
             self.set_secure_cookie('sickrage_user', json_encode(sickrage.app.config.api_key),
                                    expires_days=30 if remember_me else None)
 
-            sickrage.app.log.debug('User logged into the SiCKRAGE web interface')
+            sickrage.app.log.info('User logged into the SiCKRAGE web interface')
 
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_page))
@@ -290,7 +290,7 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        self.clear_cookie("user")
+        self.clear_cookie("sickrage_user")
         return self.redirect('/login/')
 
 
