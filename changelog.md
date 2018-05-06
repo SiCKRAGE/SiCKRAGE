@@ -1,6 +1,7 @@
 # Changelog
 
-- * 75b93e9 - 2018-05-06: Fixed UnicodeEncode errors when saving subtitles 
+- * c49dcd4 - 2018-05-06: Pre-Release v9.3.20.dev4 
+- * 67d8ac1 - 2018-05-06: Fixed UnicodeEncode errors when saving subtitles 
 - * f69a02b - 2018-05-05: Pre-Release v9.3.20.dev3 
 - * b7cc531 - 2018-05-05: Refactoring search client code 
 - * e0d01bd - 2018-05-05: Fixed redirect on login Changed secure cookie variable name 
