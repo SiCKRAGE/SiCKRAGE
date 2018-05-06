@@ -130,7 +130,7 @@ class SabNZBd(object):
 
         # SAB shouldn't return a blank result, this most likely (but not always) means that it timed out and didn't recieve the NZB
         if len(result) == 0:
-            sickrage.app.log.error("No data returned from SABnzbd, NZB not sent")
+            sickrage.app.log.warning("No data returned from SABnzbd, NZB not sent")
             return False
 
         # massage the result a little bit
@@ -143,10 +143,10 @@ class SabNZBd(object):
             sickrage.app.log.debug("NZB sent to SAB successfully")
             return True
         elif sabText == "Missing authentication":
-            sickrage.app.log.error("Incorrect username/password sent to SAB, NZB not sent")
+            sickrage.app.log.warning("Incorrect username/password sent to SAB, NZB not sent")
             return False
         else:
-            sickrage.app.log.error("Unknown failure sending NZB to sab. Return text is: " + sabText)
+            sickrage.app.log.warning("Unknown failure sending NZB to sab. Return text is: " + sabText)
             return False
 
     @staticmethod
@@ -164,7 +164,7 @@ class SabNZBd(object):
             return False, "Error from SAB"
 
         if len(result) == 0:
-            sickrage.app.log.error("No data returned from SABnzbd, NZB not sent")
+            sickrage.app.log.warning("No data returned from SABnzbd, NZB not sent")
             return False, "No data from SAB"
 
         sabText = result[0].strip()
@@ -175,10 +175,10 @@ class SabNZBd(object):
             pass
 
         if sabText == "Missing authentication":
-            sickrage.app.log.error("Incorrect username/password sent to SAB")
+            sickrage.app.log.warning("Incorrect username/password sent to SAB")
             return False, "Incorrect username/password sent to SAB"
         elif 'error' in sabJson:
-            sickrage.app.log.error(sabJson['error'])
+            sickrage.app.log.warning(sabJson['error'])
             return False, sabJson['error']
         else:
             return True, sabText
@@ -199,8 +199,9 @@ class SabNZBd(object):
         except httplib.InvalidURL as e:
             sickrage.app.log.error("Invalid SAB host, check your config: {}".format(e))
             return False, "Invalid SAB host"
+
         if f is None:
-            sickrage.app.log.error("No data returned from SABnzbd")
+            sickrage.app.log.warning("No data returned from SABnzbd")
             return False, "No data returned from SABnzbd"
         else:
             return True, f
