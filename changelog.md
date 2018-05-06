@@ -1,6 +1,7 @@
 # Changelog
 
-- * bcb4f02 - 2018-05-06: Merged failed database into main database 
+- * e8aa02e - 2018-05-06: Pre-Release v9.3.20.dev6 
+- * 8ba19bd - 2018-05-06: Merged failed database into main database 
 - * b89ab1b - 2018-05-06: Pre-Release v9.3.20.dev5 
 - * 0e6ce30 - 2018-05-06: Pre-Release v9.3.20.dev4 
 - * 67d8ac1 - 2018-05-06: Fixed UnicodeEncode errors when saving subtitles 
