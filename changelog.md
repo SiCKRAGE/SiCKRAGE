@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd163cc - 2018-05-05: Pre-Release v9.3.20.dev1 
+- * d021e8b - 2018-05-05: Pre-Release v9.3.20.dev2 
+- * ae451c1 - 2018-05-05: Pre-Release v9.3.20.dev1 
 - * f12f59c - 2018-05-05: Checks if download_url is NoneType Fixes SICKRAGE-C6-5J 
 - * 50769a1 - 2018-05-05: Release v9.3.19 
 - * c478436 - 2018-05-05: Pre-Release v9.3.19.dev3 
