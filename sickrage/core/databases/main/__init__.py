@@ -24,7 +24,7 @@ import sickrage
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
     MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
-    MainBlacklistIndex, MainWhitelistIndex
+    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex
 
 
 class MainDB(srDatabase):
@@ -38,6 +38,8 @@ class MainDB(srDatabase):
         'blacklist': MainBlacklistIndex,
         'whitelist': MainWhitelistIndex,
         'history': MainHistoryIndex,
+        'failed_snatch_history': MainFailedSnatchHistoryIndex,
+        'failed_snatches': MainFailedSnatchesIndex,
     }
 
     _migrate_list = {

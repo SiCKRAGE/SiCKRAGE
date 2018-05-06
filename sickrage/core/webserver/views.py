@@ -3485,15 +3485,15 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if int(limit) == 0:
-            dbData = [x for x in sickrage.app.failed_db.all('failed')]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches')]
         else:
-            dbData = [x for x in sickrage.app.failed_db.all('failed', int(limit))]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches', int(limit))]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                [sickrage.app.failed_db.delete(x) for x in sickrage.app.failed_db.get_many('failed', release)]
+                [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('failed_snatches', release)]
             except RecordNotFound:
                 continue
 

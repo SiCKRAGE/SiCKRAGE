@@ -18,6 +18,8 @@
 
 from __future__ import unicode_literals
 
+from hashlib import md5
+
 from CodernityDB.hash_index import HashIndex
 
 
@@ -154,3 +156,32 @@ class MainWhitelistIndex(HashIndex):
     def make_key_value(self, data):
         if data.get('_t') == 'whitelist' and data.get('show_id'):
             return data.get('show_id'), None
+
+class MainFailedSnatchesIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = '32s'
+        super(MainFailedSnatchesIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'failed_snatches' and data.get('release'):
+            return md5(data.get('release')).hexdigest(), None
+
+    def make_key(self, key):
+        return md5(key.encode('utf-8')).hexdigest()
+
+
+class MainFailedSnatchHistoryIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(MainFailedSnatchHistoryIndex, self).__init__(*args, **kwargs)
+
+    def make_key(self, key):
+        return key
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'failed_snatch_history' and data.get('showid'):
+            return data.get('showid'), None

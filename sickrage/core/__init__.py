@@ -45,12 +45,10 @@ from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.google import GoogleAuth
-from sickrage.core.helpers import findCertainShow, \
-    generateCookieSecret, makeDir, get_lan_ip, restoreSR, getDiskSpaceUsage, getFreeSpace, launch_browser, \
-    torrent_webui_url
+from sickrage.core.helpers import findCertainShow, generateCookieSecret, makeDir, get_lan_ip, restoreSR, \
+    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -128,7 +126,6 @@ class Core(object):
         self.alerts = None
         self.main_db = None
         self.cache_db = None
-        self.failed_db = None
         self.scheduler = None
         self.wserver = None
         self.google_auth = None
@@ -164,7 +161,6 @@ class Core(object):
         self.alerts = Notifications()
         self.main_db = MainDB()
         self.cache_db = CacheDB()
-        self.failed_db = FailedDB()
         self.scheduler = TornadoScheduler()
         self.wserver = WebServer()
         self.google_auth = GoogleAuth()
@@ -241,7 +237,7 @@ class Core(object):
             self.log.error('Failed getting diskspace: %s', traceback.format_exc())
 
         # perform database startup actions
-        for db in [self.main_db, self.cache_db, self.failed_db]:
+        for db in [self.main_db, self.cache_db]:
             # initialize database
             db.initialize()
 
@@ -255,7 +251,7 @@ class Core(object):
             db.cleanup()
 
         # compact main database
-        if not sickrage.app.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
+        if self.config.last_db_compact < time.time() - 604800:  # 7 days
             self.main_db.compact()
             self.config.last_db_compact = int(time.time())
 
@@ -481,7 +477,7 @@ class Core(object):
             self.save_all()
 
             # close databases
-            for db in [self.main_db, self.cache_db, self.failed_db]:
+            for db in [self.main_db, self.cache_db]:
                 if db.opened:
                     self.log.debug("Shutting down {} database connection".format(db.name))
                     db.close()

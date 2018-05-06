@@ -21,12 +21,13 @@ from __future__ import print_function, unicode_literals
 import gettext
 import io
 import os
-import os.path
 import shutil
 import site
 import sys
 import threading
 import unittest
+
+import os.path
 
 PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
 if not (PROG_DIR in sys.path):
@@ -45,7 +46,6 @@ gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["nget
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
-from sickrage.core.databases.failed import FailedDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.tv import episode
 from sickrage.core import Core, Config, NameCache, Logger
@@ -125,13 +125,12 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
         super(SiCKRAGETestDBCase, self).setUp()
         sickrage.app.main_db = MainDB()
         sickrage.app.cache_db = CacheDB()
-        sickrage.app.failed_db = FailedDB()
-        for db in [sickrage.app.main_db, sickrage.app.cache_db, sickrage.app.failed_db]:
+        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
             db.initialize()
 
     def tearDown(self):
         super(SiCKRAGETestDBCase, self).tearDown()
-        for db in [sickrage.app.main_db, sickrage.app.cache_db, sickrage.app.failed_db]:
+        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
             db.close()
         if os.path.exists(self.TESTDB_DIR):
             shutil.rmtree(self.TESTDB_DIR)

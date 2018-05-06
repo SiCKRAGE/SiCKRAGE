@@ -1096,9 +1096,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = [x for x in sickrage.app.failed_db.all('failed')]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches')]
         else:
-            dbData = [x for x in sickrage.app.failed_db.all('failed', ulimit)]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches', ulimit)]
 
         return _responds(RESULT_SUCCESS, dbData)
 
