@@ -2690,9 +2690,9 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.app.alerts.warning(_("Unable to add show"),
-                                            _("Unable to create the folder " +
-                                              show_dir + ", can't add the show"))
+                sickrage.app.alerts.error(_("Unable to add show"),
+                                          _("Unable to create the folder " +
+                                            show_dir + ", can't add the show"))
 
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")

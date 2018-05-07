@@ -234,7 +234,7 @@ class Core(object):
                                'otherwise. Only %sMB left', available_space)
                 return
         except Exception:
-            self.log.error('Failed getting diskspace: %s', traceback.format_exc())
+            self.log.error('Failed getting disk space: %s', traceback.format_exc())
 
         # perform database startup actions
         for db in [self.main_db, self.cache_db]:
