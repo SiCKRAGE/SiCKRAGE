@@ -160,7 +160,7 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).redirect(url, permanent, status)
 
     def get_current_user(self):
-        return self.get_secure_cookie('user')
+        return self.get_secure_cookie('sickrage_user')
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -249,7 +249,7 @@ class LoginHandler(BaseHandler):
 
     def auth(self):
         if sickrage.app.developer:
-            self.set_secure_cookie('user', json_encode(sickrage.app.config.api_key))
+            self.set_secure_cookie('sickrage_user', json_encode(sickrage.app.config.api_key))
 
         if self.get_current_user():
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
@@ -262,13 +262,13 @@ class LoginHandler(BaseHandler):
 
             remember_me = int(self.get_argument('remember_me', default=0))
 
-            self.set_secure_cookie('user',
-                                   json_encode(sickrage.app.config.api_key),
-                                   expires_days=30 if remember_me > 0 else None)
+            self.set_secure_cookie('sickrage_user', json_encode(sickrage.app.config.api_key),
+                                   expires_days=30 if remember_me else None)
 
-            sickrage.app.log.debug('User logged into the SiCKRAGE web interface')
+            sickrage.app.log.info('User logged into the SiCKRAGE web interface')
 
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
+            return self.redirect("{}".format(redirect_page))
         elif username and password:
             sickrage.app.log.warning(
                 'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
@@ -290,7 +290,7 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        self.clear_cookie("user")
+        self.clear_cookie("sickrage_user")
         return self.redirect('/login/')
 
 
@@ -748,7 +748,7 @@ class Home(WebHandler):
 
         connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
         if connection:
-            authed, authMsg = SabNZBd.testAuthentication(host, username, password, apikey)
+            authed, authMsg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
                 return _('Success. Connected and authenticated')
             else:
@@ -764,7 +764,7 @@ class Home(WebHandler):
 
         client = getClientIstance(torrent_method)
 
-        __, accesMsg = client(host, username, password).testAuthentication()
+        __, accesMsg = client(host, username, password).test_authentication()
 
         return accesMsg
 
@@ -1265,7 +1265,8 @@ class Home(WebHandler):
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
-                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network), convert=True).dt
+                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
+                                         convert=True).dt
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
 
@@ -2037,7 +2038,7 @@ class Home(WebHandler):
             showObj = findCertainShow(int(searchThread.show.indexerid))
 
             if not showObj:
-                sickrage.app.log.error(
+                sickrage.app.log.warning(
                     'No Show Object found for show with indexerID: ' + str(searchThread.show.indexerid))
                 return results
 
@@ -2689,7 +2690,7 @@ class HomeAddShows(Home):
             dir_exists = makeDir(show_dir)
             if not dir_exists:
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
-                sickrage.app.alerts.warning(_("Unable to add show"),
+                sickrage.app.alerts.error(_("Unable to add show"),
                                           _("Unable to create the folder " +
                                             show_dir + ", can't add the show"))
 
@@ -3484,15 +3485,15 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if int(limit) == 0:
-            dbData = [x for x in sickrage.app.failed_db.all('failed')]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches')]
         else:
-            dbData = [x for x in sickrage.app.failed_db.all('failed', int(limit))]
+            dbData = [x for x in sickrage.app.main_db.all('failed_snatches', int(limit))]
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
             try:
-                [sickrage.app.failed_db.delete(x) for x in sickrage.app.failed_db.get_many('failed', release)]
+                [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('failed_snatches', release)]
             except RecordNotFound:
                 continue
 

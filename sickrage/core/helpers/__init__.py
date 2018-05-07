@@ -764,8 +764,8 @@ def create_https_certificates(ssl_cert, ssl_key):
     try:
         import OpenSSL
     except ImportError:
-        sickrage.app.log.error(
-            "OpenSSL not available, please install for better requests validation: `https://pyopenssl.readthedocs.org/en/latest/install.html`")
+        sickrage.app.log.warning("OpenSSL not available, please install for better requests validation: "
+                                 "`https://pyopenssl.readthedocs.org/en/latest/install.html`")
         return False
 
     # Check happens if the certificate and key pair already exists for a domain
@@ -811,7 +811,7 @@ def create_https_certificates(ssl_cert, ssl_key):
             with io.open(ssl_cert, 'w') as certout:
                 certout.write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert))
         except Exception:
-            sickrage.app.log.error("Error creating SSL key and certificate")
+            sickrage.app.log.warning("Error creating SSL key and certificate")
             return False
 
     return True

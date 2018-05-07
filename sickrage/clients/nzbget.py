@@ -68,14 +68,14 @@ class NZBGet(object):
             else:
                 sickrage.app.log.warning("Successful connected to NZBget, but unable to send a message")
         except httplib.socket.error:
-            sickrage.app.log.warning(
-                "Please check your NZBget host and port (if it is running). NZBget is not responding to this combination")
+            sickrage.app.log.warning("Please check your NZBget host and port (if it is running). NZBget is not "
+                                     "responding to this combination")
             return False
         except xmlrpclib.ProtocolError as e:
             if e.errmsg == "Unauthorized":
                 sickrage.app.log.warning("NZBget username or password is incorrect.")
             else:
-                sickrage.app.log.warning("Protocol Error: " + e.errmsg)
+                sickrage.app.log.error("Protocol Error: " + e.errmsg)
             return False
 
         # if it aired recently make it high priority and generate DupeKey/Score

@@ -1,6 +1,18 @@
 # Changelog
 
-- * 5cbbbf2 - 2018-05-05: Release v9.3.19 
+- * 90b5433 - 2018-05-06: Release v9.3.20 
+- * b9fa094 - 2018-05-06: Pre-Release v9.3.20.dev6 
+- * 8ba19bd - 2018-05-06: Merged failed database into main database 
+- * b89ab1b - 2018-05-06: Pre-Release v9.3.20.dev5 
+- * 0e6ce30 - 2018-05-06: Pre-Release v9.3.20.dev4 
+- * 67d8ac1 - 2018-05-06: Fixed UnicodeEncode errors when saving subtitles 
+- * f69a02b - 2018-05-05: Pre-Release v9.3.20.dev3 
+- * b7cc531 - 2018-05-05: Refactoring search client code 
+- * e0d01bd - 2018-05-05: Fixed redirect on login Changed secure cookie variable name 
+- * b5b3a06 - 2018-05-05: Pre-Release v9.3.20.dev2 
+- * ae451c1 - 2018-05-05: Pre-Release v9.3.20.dev1 
+- * f12f59c - 2018-05-05: Checks if download_url is NoneType Fixes SICKRAGE-C6-5J 
+- * 50769a1 - 2018-05-05: Release v9.3.19 
 - * c478436 - 2018-05-05: Pre-Release v9.3.19.dev3 
 - * ee3e0d4 - 2018-05-04: Pre-Release v9.3.19.dev2 
 - * 793d2a5 - 2018-05-04: Pre-Release v9.3.19.dev1 

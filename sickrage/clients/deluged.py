@@ -20,10 +20,9 @@ from __future__ import unicode_literals
 
 from base64 import b64encode
 
-from synchronousdeluge.client import DelugeClient
-
 import sickrage
 from sickrage.clients import GenericClient
+from synchronousdeluge.client import DelugeClient
 
 
 class DelugeDAPI(GenericClient):
@@ -123,7 +122,7 @@ class DelugeDAPI(GenericClient):
             return self.drpc.pause_torrent(result.hash)
         return True
 
-    def testAuthentication(self):
+    def test_authentication(self):
         if self.connect(True) and self.drpc.test():
             return True, 'Success: Connected and Authenticated'
         else:

@@ -280,7 +280,8 @@ class GenericClient(object):
         """
         return True
 
-    def _get_torrent_hash(self, result):
+    @staticmethod
+    def _get_torrent_hash(result):
         if result.url.startswith('magnet'):
             result.hash = re.findall(r'urn:btih:([\w]{32,40})', result.url)[0]
             if len(result.hash) == 32:
@@ -307,7 +308,7 @@ class GenericClient(object):
 
         return result
 
-    def sendTORRENT(self, result):
+    def send_torrent(self, result):
 
         r_code = False
 
@@ -355,16 +356,15 @@ class GenericClient(object):
 
             if result.priority != 0 and not self._set_torrent_priority(result):
                 sickrage.app.log.warning(self.name + ': Unable to set priority for Torrent')
-
         except Exception as e:
-            sickrage.app.log.error(self.name + ': Failed Sending Torrent')
+            sickrage.app.log.warning(self.name + ': Failed Sending Torrent')
             sickrage.app.log.debug(
                 self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
             return r_code
 
         return r_code
 
-    def testAuthentication(self):
+    def test_authentication(self):
         try:
             # verify valid url
             self.response = self.session.get(self.url, timeout=120, verify=False)

@@ -238,7 +238,7 @@ class FailedHistory(object):
 
         release = FailedHistory.prepareFailedName(release)
 
-        dbData = [x for x in sickrage.app.failed_db.all('history') if x['release'] == release]
+        dbData = [x for x in sickrage.app.main_db.all('failed_snatch_history') if x['release'] == release]
 
         if len(dbData) == 0:
             sickrage.app.log.warning("{}, Release not found in snatch history.".format(release))
@@ -263,8 +263,8 @@ class FailedHistory(object):
             provider = dbData[0]["provider"]
 
         if not FailedHistory.hasFailed(release, size, provider):
-            sickrage.app.failed_db.insert({
-                '_t': 'failed',
+            sickrage.app.main_db.insert({
+                '_t': 'failed_snatches',
                 'release': release,
                 'size': size,
                 'provider': provider
@@ -277,8 +277,8 @@ class FailedHistory(object):
     @staticmethod
     def logSuccess(release):
         release = FailedHistory.prepareFailedName(release)
-        for dbData in (x for x in sickrage.app.failed_db.all('history') if x['release'] == release):
-            sickrage.app.failed_db.delete(dbData)
+        for dbData in (x for x in sickrage.app.main_db.all('failed_snatch_history') if x['release'] == release):
+            sickrage.app.main_db.delete(dbData)
 
     @staticmethod
     def hasFailed(release, size, provider="%"):
@@ -296,7 +296,7 @@ class FailedHistory(object):
         """
 
         release = FailedHistory.prepareFailedName(release)
-        dbData = [x for x in sickrage.app.failed_db.get_many('failed', release)
+        dbData = [x for x in sickrage.app.main_db.get_many('failed_snatches', release)
                   if all([x['size'] == size, x['provider'] == provider])]
 
         return len(dbData) > 0
@@ -304,7 +304,7 @@ class FailedHistory(object):
     @staticmethod
     def revertFailedEpisode(epObj):
         """Restore the episodes of a failed download to their original state"""
-        history_eps = dict([(res["episode"], res) for res in (x for x in sickrage.app.failed_db.all('history')
+        history_eps = dict([(res["episode"], res) for res in (x for x in sickrage.app.main_db.all('failed_snatch_history')
                                                               if x['showid'] == epObj.show.indexerid
                                                               and x['season'] == epObj.season)])
 
@@ -364,8 +364,8 @@ class FailedHistory(object):
         show_obj = searchResult.episodes[0].show
 
         for episode in searchResult.episodes:
-            sickrage.app.failed_db.insert({
-                '_t': 'history',
+            sickrage.app.main_db.insert({
+                '_t': 'failed_snatch_history',
                 'date': logDate,
                 'size': searchResult.size,
                 'release': release,
@@ -386,16 +386,16 @@ class FailedHistory(object):
         :param provider: Provider to delete it from
         """
         release = FailedHistory.prepareFailedName(release)
-        for dbData in (x for x in sickrage.app.failed_db.all('history')
+        for dbData in (x for x in sickrage.app.main_db.all('failed_snatch_history')
                        if x['release'] == release and x['size'] == size and x['provider'] == provider):
-            sickrage.app.failed_db.delete(dbData)
+            sickrage.app.main_db.delete(dbData)
 
     @staticmethod
     def trimHistory():
         """Trims history table to 1 month of history from today"""
         date = str((datetime.today() - timedelta(days=30)).strftime(History.date_format))
-        for dbData in (x for x in sickrage.app.failed_db.all('history') if x['date'] < date):
-            sickrage.app.failed_db.delete(dbData)
+        for dbData in (x for x in sickrage.app.main_db.all('failed_snatch_history') if x['date'] < date):
+            sickrage.app.main_db.delete(dbData)
 
     @staticmethod
     def findFailedRelease(epObj):
@@ -408,12 +408,12 @@ class FailedHistory(object):
         provider = None
 
         # Clear old snatches for this release if any exist
-        [sickrage.app.failed_db.delete(x) for x in
-         sorted((x for x in sickrage.app.failed_db.get_many('history', epObj.show.indexerid)
+        [sickrage.app.main_db.delete(x) for x in
+         sorted((x for x in sickrage.app.main_db.get_many('failed_snatch_history', epObj.show.indexerid)
                  if x['season'] == epObj.season and x['episode'] == epObj.episode), key=lambda d: d['date'])[1::]]
 
         # Search for release in snatch history
-        for dbData in (x for x in sickrage.app.failed_db.get_many('history', epObj.show.indexerid)
+        for dbData in (x for x in sickrage.app.main_db.get_many('failed_snatch_history', epObj.show.indexerid)
                        if x['season'] == epObj.season and x['episode'] == epObj.episode):
 
             release = str(dbData["release"])
@@ -421,9 +421,9 @@ class FailedHistory(object):
             date = dbData["date"]
 
             # Clear any incomplete snatch records for this release if any exist
-            for x in (x for x in sickrage.app.failed_db.all('history')
+            for x in (x for x in sickrage.app.main_db.all('failed_snatch_history')
                       if x['release'] == release and x['date'] != date):
-                sickrage.app.failed_db.delete(x)
+                sickrage.app.main_db.delete(x)
 
             # Found a previously failed release
             sickrage.app.log.debug(

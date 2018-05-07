@@ -108,7 +108,7 @@ class ThePirateBayProvider(TorrentProvider):
                     title = row.find(class_='detName')
                     title = title.get_text(strip=True) if title else None
                     download_url = row.find(title='Download this torrent using magnet')
-                    download_url = download_url.get('href')
+                    download_url = download_url.get('href') if download_url else None
                     if download_url and 'magnet:?' not in download_url:
                         try:
                             details_url = urljoin(self.custom_url or self.urls['base_url'], download_url)
@@ -126,7 +126,7 @@ class ThePirateBayProvider(TorrentProvider):
                     if not all([title, download_url]):
                         continue
 
-                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True), 1)
+                    seeders = try_int(cells[labels.index("SE")].get_text(strip=True))
                     leechers = try_int(cells[labels.index("LE")].get_text(strip=True))
 
                     # Accept Torrent only from Good People for every Episode Search
