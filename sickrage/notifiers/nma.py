@@ -195,7 +195,7 @@ class NMA_Notifier(Notifiers):
         )
 
         if not response[nma_api]['code'] == '200':
-            sickrage.app.log.error('Could not send notification to NotifyMyAndroid')
+            sickrage.app.log.warning('Could not send notification to NotifyMyAndroid')
             return False
         else:
             sickrage.app.log.info("NMA: Notification sent to NotifyMyAndroid")

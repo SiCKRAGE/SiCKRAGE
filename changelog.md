@@ -1,6 +1,7 @@
 # Changelog
 
-- * 23b4be7 - 2018-05-08: Changed log levels from error to warning for misc 
+- * 0b9b07e - 2018-05-09: Pre-Release v9.3.21.dev1 
+- * fcdf2e4 - 2018-05-08: Changed log levels from error to warning for misc 
 - * 7c77db3 - 2018-05-06: Release v9.3.20 
 - * b9fa094 - 2018-05-06: Pre-Release v9.3.20.dev6 
 - * 8ba19bd - 2018-05-06: Merged failed database into main database 
