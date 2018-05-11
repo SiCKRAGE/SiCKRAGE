@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 22:55-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: zh-CN\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: zh_CN\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -3283,7 +3283,7 @@ msgstr "一天："
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:824
 msgid "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:853
 msgid "Air-by-date Sample:"
@@ -3315,11 +3315,11 @@ msgstr "体育空气日期："
 #: sickrage/core/webserver/views/config/postprocessing.mako:965
 #: sickrage/core/webserver/views/config/postprocessing.mako:970
 msgid "Mar"
-msgstr "Mar"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1034
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1063
 msgid "Sports Sample:"
@@ -3606,7 +3606,7 @@ msgstr "此提供程序需要以下 cookie:"
 
 #: sickrage/core/webserver/views/config/providers.mako:581
 msgid "Pin:"
-msgstr "Pin:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
@@ -3658,7 +3658,7 @@ msgstr "通过对结果进行排序"
 
 #: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
-msgstr "Freeleech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
@@ -3666,7 +3666,7 @@ msgstr "仅下载"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
-msgstr "FreeLeech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
@@ -4295,7 +4295,7 @@ msgstr "副标题查找频率"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4626,7 +4626,7 @@ msgstr "电视剧"
 
 #: sickrage/core/webserver/views/home/display_show.mako:557
 msgid "NFO"
-msgstr "NFO"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
@@ -4892,13 +4892,13 @@ msgstr "评级 %> 票"
 #: sickrage/core/webserver/views/home/index.mako:56
 #: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Asc"
-msgstr "Asc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:27
 #: sickrage/core/webserver/views/home/index.mako:60
 #: sickrage/core/webserver/views/home/trakt_shows.mako:35
 msgid "Desc"
-msgstr "Desc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:43
 msgid "Fetching of IMDB Data failed. Are you online?"
@@ -5457,7 +5457,7 @@ msgstr "所有非绝对文件夹位置是相对于"
 
 #: sickrage/core/webserver/views/layouts/main.mako:14
 msgid "SiCKRAGE"
-msgstr "SiCKRAGE"
+msgstr ""
 
 #: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
@@ -6769,19 +6769,19 @@ msgstr "遇到错误"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr "<br><b>Updates</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr "<br><b>Refreshes</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr "<br><b>Renames</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr "<br><b>Subtitles</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
