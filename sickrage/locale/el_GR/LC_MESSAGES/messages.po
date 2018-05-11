@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 23:32-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: el\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: el_GR\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -67,7 +67,7 @@ msgstr "Επιλέξτε κατάλογο"
 
 #: dist/js/core.js:875
 msgid "Ok"
-msgstr "Ok"
+msgstr ""
 
 #: dist/js/core.js:885
 msgid "Cancel"
@@ -340,7 +340,7 @@ msgstr "Έχετε επιλέξει να διαγράψετε παρουσίαζ
 
 #: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
-msgstr "<b>DELETED</b>"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -348,7 +348,7 @@ msgstr "Προφίλ"
 
 #: sickrage/core/webserver/views/api_builder.mako:27
 msgid "JSONP"
-msgstr "JSONP"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:33
 msgid "Command name"
@@ -568,7 +568,7 @@ msgstr "Διεπαφή χρήστη"
 
 #: sickrage/core/webserver/views/config/anime.mako:17
 msgid "AniDB"
-msgstr "AniDB"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:21
 msgid "AniDB is non-profit database of anime information that is freely open to the public"
@@ -599,7 +599,7 @@ msgstr "Κωδικός AniDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:75
 msgid "AniDB MyList"
-msgstr "AniDB MyList"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:81
 msgid "Do you want to add the PostProcessed Episodes to the MyList ?"
@@ -711,7 +711,7 @@ msgstr "Επαναφέρετε τα αρχεία cache"
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:110
 msgid "Misc"
-msgstr "Misc"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:18
 msgid "Interface"
@@ -725,7 +725,7 @@ msgstr "Ρυθμίσεις για προχωρημένους"
 
 #: sickrage/core/webserver/views/config/general.mako:29
 msgid "SiCKRAGE API"
-msgstr "SiCKRAGE API"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
@@ -856,7 +856,7 @@ msgstr "Ιστορία"
 #: sickrage/core/webserver/views/config/general.mako:164
 #: sickrage/core/webserver/views/layouts/main.mako:299
 msgid "IRC"
-msgstr "IRC"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:173
 msgid "Daily show updates start time"
@@ -1179,7 +1179,7 @@ msgstr "Θύρα HTTP"
 
 #: sickrage/core/webserver/views/config/general.mako:790
 msgid "8081"
-msgstr "8081"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:800
 msgid "Listen on IPv6"
@@ -1351,7 +1351,7 @@ msgstr "PIP εκτελέσιμη διαδρομή"
 
 #: sickrage/core/webserver/views/config/general.mako:1176
 msgid "ex: /path/to/pip"
-msgstr "ex: /path/to/pip"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:1189
 #: sickrage/core/webserver/views/config/general.mako:1286
@@ -1384,7 +1384,7 @@ msgstr "GIT εκτελέσιμη διαδρομή"
 
 #: sickrage/core/webserver/views/config/general.mako:1273
 msgid "ex: /path/to/git"
-msgstr "ex: /path/to/git"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:1295
 msgid "Git reset"
@@ -1424,11 +1424,11 @@ msgstr "Γλώσσα SR:"
 
 #: sickrage/core/webserver/views/config/index.mako:71
 msgid "SR Config:"
-msgstr "SR Config:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:80
 msgid "SR Cache Dir:"
-msgstr "SR Cache Dir:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:89
 msgid "SR Log File:"
@@ -1456,7 +1456,7 @@ msgstr "Αρχική σελίδα"
 
 #: sickrage/core/webserver/views/config/index.mako:147
 msgid "WiKi"
-msgstr "WiKi"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:157
 msgid "Forums"
@@ -1468,7 +1468,7 @@ msgstr "Πηγή"
 
 #: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
-msgstr "IRChat"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
@@ -1480,7 +1480,7 @@ msgstr "Αρχική θεάτρου"
 
 #: sickrage/core/webserver/views/config/notifications.mako:14
 msgid "NAS"
-msgstr "NAS"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:15
 msgid "Devices"
@@ -1789,7 +1789,7 @@ msgstr "Διεύθυνση IP ποπ κορν"
 #: sickrage/core/webserver/views/config/notifications.mako:572
 #: sickrage/core/webserver/views/config/notifications.mako:674
 msgid "ex. 192.168.1.100"
-msgstr "ex. 192.168.1.100"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:579
 msgid "Get settings"
@@ -2050,7 +2050,7 @@ msgstr "Pushover ήχο ειδοποίησης"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1418
 msgid "Pushover"
-msgstr "Pushover"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:1421
 msgid "Bike"
@@ -2078,7 +2078,7 @@ msgstr "Που υπάγονται"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1439
 msgid "Gamelan"
-msgstr "Gamelan"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:1442
 msgid "Incoming"
@@ -2498,7 +2498,7 @@ msgstr "όνομα χρήστη"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2563
 msgid "Trakt PIN"
-msgstr "Trakt PIN"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:2571
 msgid "authorization PIN code"
@@ -3050,7 +3050,7 @@ msgstr "Βλ."
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 #: sickrage/core/webserver/views/config/subtitles.mako:167
 msgid "Wiki"
-msgstr "Wiki"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 msgid "for script arguments description and usage."
@@ -3118,14 +3118,14 @@ msgstr "Εμφάνιση ονόματος"
 #: sickrage/core/webserver/views/config/postprocessing.mako:945
 #: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
-msgstr "Show.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:478
 #: sickrage/core/webserver/views/config/postprocessing.mako:740
 #: sickrage/core/webserver/views/config/postprocessing.mako:950
 #: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
-msgstr "Show_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:481
 #: sickrage/core/webserver/views/config/postprocessing.mako:1168
@@ -3166,14 +3166,14 @@ msgstr "Επεισόδιο όνομα"
 #: sickrage/core/webserver/views/config/postprocessing.mako:980
 #: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
-msgstr "Episode.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:533
 #: sickrage/core/webserver/views/config/postprocessing.mako:775
 #: sickrage/core/webserver/views/config/postprocessing.mako:985
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
-msgstr "Episode_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:536
 #: sickrage/core/webserver/views/config/postprocessing.mako:778
@@ -3189,7 +3189,7 @@ msgstr "Σκηνή ποιότητας:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:553
 msgid "720p HDTV x264"
-msgstr "720p HDTV x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:558
 msgid "720p.HDTV.x264"
@@ -3197,7 +3197,7 @@ msgstr "720p. HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
-msgstr "720p_HDTV_x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:568
 #: sickrage/core/webserver/views/config/postprocessing.mako:821
@@ -3209,7 +3209,7 @@ msgstr "Όνομα κυκλοφορίας:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:571
 #: sickrage/core/webserver/views/config/postprocessing.mako:1244
 msgid "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:577
 #: sickrage/core/webserver/views/config/postprocessing.mako:830
@@ -3283,7 +3283,7 @@ msgstr "Ημέρα:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:824
 msgid "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:853
 msgid "Air-by-date Sample:"
@@ -3319,7 +3319,7 @@ msgstr "Μαρ"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1034
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1063
 msgid "Sports Sample:"
@@ -3598,7 +3598,7 @@ msgstr "Κλειδί:"
 #: sickrage/core/webserver/views/config/providers.mako:553
 #: sickrage/core/webserver/views/config/providers.mako:1089
 msgid "Cookies:"
-msgstr "Cookies:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:570
 msgid "this provider requires the following cookies: "
@@ -3666,11 +3666,11 @@ msgstr "μόνο λήψη"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
-msgstr "FreeLeech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
-msgstr "torrents."
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:777
 msgid "Reject Blu-ray M2TS releases"
@@ -3756,7 +3756,7 @@ msgstr "Προσθήκη και εγκατάσταση ή κατάργηση π�
 
 #: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "RSS URL:"
-msgstr "RSS URL:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "ex. uid=xx;pass=yy"
@@ -4131,7 +4131,7 @@ msgstr "Βασική"
 
 #: sickrage/core/webserver/views/config/search.mako:813
 msgid "Digest"
-msgstr "Digest"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/search.mako:825
 msgid "Verify certificate"
@@ -4295,7 +4295,7 @@ msgstr "Συχνότητα εύρεσης υποτίτλων"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4626,11 +4626,11 @@ msgstr "Εμφάνιση επεισοδίων"
 
 #: sickrage/core/webserver/views/home/display_show.mako:557
 msgid "NFO"
-msgstr "NFO"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
-msgstr "TBN"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:560
 msgid "Absolute"
@@ -4654,7 +4654,7 @@ msgstr "Μέγεθος"
 #: sickrage/core/webserver/views/home/display_show.mako:565
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:76
 msgid "Airdate"
-msgstr "Airdate"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:566
 #: sickrage/core/webserver/views/home/display_show.mako:686
@@ -4898,7 +4898,7 @@ msgstr "ASC"
 #: sickrage/core/webserver/views/home/index.mako:60
 #: sickrage/core/webserver/views/home/trakt_shows.mako:35
 msgid "Desc"
-msgstr "Desc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:43
 msgid "Fetching of IMDB Data failed. Are you online?"
@@ -5016,7 +5016,7 @@ msgstr "Επόμενη Ep"
 
 #: sickrage/core/webserver/views/home/index.mako:265
 msgid "Prev Ep"
-msgstr "Prev Ep"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:266
 #: sickrage/core/webserver/views/home/index.mako:279
@@ -5153,7 +5153,7 @@ msgstr "Εύρεση υπότιτλων"
 #: sickrage/core/webserver/views.py:4946
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
-msgstr "Trakt Checker"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Scheduler"
@@ -5457,7 +5457,7 @@ msgstr "Όλα τα μη-απόλυτη φάκελο τοποθεσίες είν
 
 #: sickrage/core/webserver/views/layouts/main.mako:14
 msgid "SiCKRAGE"
-msgstr "SiCKRAGE"
+msgstr ""
 
 #: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
@@ -5533,7 +5533,7 @@ msgstr "Αναπάντητες υπότιτλος διαχείρισης"
 
 #: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Config"
-msgstr "Config"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3690
 #: sickrage/core/webserver/views/layouts/main.mako:222
@@ -5896,7 +5896,7 @@ msgstr "Μετα-επεξεργαστή ουρά:"
 
 #: sickrage/core/webserver/views/manage/queues.mako:105
 msgid "Auto:"
-msgstr "Auto:"
+msgstr ""
 
 #: sickrage/core/webserver/views/manage/subtitles_missed.mako:19
 msgid "All of your episodes have"
@@ -5979,7 +5979,7 @@ msgstr "Άγνωστο"
 
 #: sickrage/core/common.py:608
 msgid "Unaired"
-msgstr "Unaired"
+msgstr ""
 
 #: sickrage/core/common.py:611
 msgid "Skipped"
@@ -6769,19 +6769,19 @@ msgstr "Σφάλματα που αντιμετωπίστηκαν"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr "<br><b>Updates</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr "<br><b>Refreshes</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr "<br><b>Renames</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr "<br><b>Subtitles</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
@@ -7004,7 +7004,7 @@ msgstr "Βρείτε Propers"
 
 #: sickrage/core/webserver/views.py:4944
 msgid "Postprocessor"
-msgstr "Postprocessor"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:4945
 msgid "Find Subtitles"
