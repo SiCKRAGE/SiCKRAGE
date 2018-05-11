@@ -1,6 +1,9 @@
 # Changelog
 
-- * 0b9b07e - 2018-05-09: Pre-Release v9.3.21.dev1 
+- * 0ea13ba - 2018-05-10: Updated Grunt tasks 
+- * cdcc32f - 2018-05-11: New Crowdin translations 
+- * 392eda4 - 2018-05-11: Update Crowdin configuration file 
+- * 8b1ac6e - 2018-05-09: Pre-Release v9.3.21.dev1 
 - * fcdf2e4 - 2018-05-08: Changed log levels from error to warning for misc 
 - * 7c77db3 - 2018-05-06: Release v9.3.20 
 - * b9fa094 - 2018-05-06: Pre-Release v9.3.20.dev6 

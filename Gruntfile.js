@@ -488,6 +488,7 @@ module.exports = function (grunt) {
 
         var tasks = [
             'default',
+            'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
             'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
             'exec:git_push:origin:develop:tags',
