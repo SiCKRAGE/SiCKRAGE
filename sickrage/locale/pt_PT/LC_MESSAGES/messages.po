@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-10 22:28-0400\n"
+"POT-Creation-Date: 2018-05-10 21:21-0700\n"
+"PO-Revision-Date: 2018-05-11 00:23-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: pt-PT\n"
-"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
+"X-Crowdin-File: messages.pot\n"
 "Language: pt_PT\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -95,7 +95,7 @@ msgstr "<center><h1></h1><br/>From qualquer computador, por favor visite <a href
 
 #: dist/js/core.js:1554
 msgid "Link SiCKRAGE"
-msgstr ""
+msgstr "Link SiCKRAGE"
 
 #: dist/js/core.js:2191 sickrage/core/webserver/views/home/trakt_shows.mako:106
 msgid "Remove Show"
@@ -185,7 +185,7 @@ msgstr "Por favor, preencha os campos necessários acima."
 
 #: dist/js/core.js:3038 sickrage/core/webserver/views/config/general.mako:1050
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: dist/js/core.js:3040
 msgid "Unlink"
@@ -340,7 +340,7 @@ msgstr "Você selecionou excluir show(s).  Tem certeza que deseja continuar? Tod
 
 #: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
-msgstr ""
+msgstr "<b>DELETED</b>"
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -348,7 +348,7 @@ msgstr "Perfil"
 
 #: sickrage/core/webserver/views/api_builder.mako:27
 msgid "JSONP"
-msgstr ""
+msgstr "JSONP"
 
 #: sickrage/core/webserver/views/api_builder.mako:33
 msgid "Command name"
@@ -396,7 +396,7 @@ msgstr "Parque infantil"
 #: sickrage/core/webserver/views/api_builder.mako:128
 #: sickrage/core/webserver/views/config/providers.mako:157
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: sickrage/core/webserver/views/api_builder.mako:98
 msgid "Required parameters"
@@ -471,7 +471,7 @@ msgstr "Todos os"
 #: sickrage/core/webserver/views/history.mako:32
 #: sickrage/core/webserver/views/home/index.mako:66
 msgid "Layout:"
-msgstr ""
+msgstr "Layout:"
 
 #: sickrage/core/webserver/views/history.mako:36
 msgid "Compact"
@@ -550,7 +550,7 @@ msgstr "por 30 dias"
 
 #: sickrage/core/webserver/views/login.mako:44
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 #: sickrage/core/webserver/views/schedule.mako:400
 msgid "Toggle Summary"
@@ -568,7 +568,7 @@ msgstr "Interface de usuário"
 
 #: sickrage/core/webserver/views/config/anime.mako:17
 msgid "AniDB"
-msgstr ""
+msgstr "AniDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:21
 msgid "AniDB is non-profit database of anime information that is freely open to the public"
@@ -599,7 +599,7 @@ msgstr "Senha AniDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:75
 msgid "AniDB MyList"
-msgstr ""
+msgstr "AniDB MyList"
 
 #: sickrage/core/webserver/views/config/anime.mako:81
 msgid "Do you want to add the PostProcessed Episodes to the MyList ?"
@@ -711,7 +711,7 @@ msgstr "Restaurar arquivos de cache"
 #: sickrage/core/webserver/views/config/general.mako:17
 #: sickrage/core/webserver/views/config/general.mako:110
 msgid "Misc"
-msgstr ""
+msgstr "Misc"
 
 #: sickrage/core/webserver/views/config/general.mako:18
 msgid "Interface"
@@ -725,7 +725,7 @@ msgstr "Configurações avançadas"
 
 #: sickrage/core/webserver/views/config/general.mako:29
 msgid "SiCKRAGE API"
-msgstr ""
+msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
@@ -758,7 +758,7 @@ msgstr ""
 #: sickrage/core/webserver/views/config/notifications.mako:3017
 #: sickrage/core/webserver/views/config/notifications.mako:3112
 msgid "Enable"
-msgstr ""
+msgstr "Enable"
 
 #: sickrage/core/webserver/views/config/general.mako:41
 msgid "Enable API access ?"
@@ -856,7 +856,7 @@ msgstr "História"
 #: sickrage/core/webserver/views/config/general.mako:164
 #: sickrage/core/webserver/views/layouts/main.mako:299
 msgid "IRC"
-msgstr ""
+msgstr "IRC"
 
 #: sickrage/core/webserver/views/config/general.mako:173
 msgid "Daily show updates start time"
@@ -1065,7 +1065,7 @@ msgstr "Fuso horário"
 
 #: sickrage/core/webserver/views/config/general.mako:618
 msgid "Local"
-msgstr ""
+msgstr "Local"
 
 #: sickrage/core/webserver/views/config/general.mako:622
 #: sickrage/core/webserver/views/home/index.mako:43
@@ -1179,7 +1179,7 @@ msgstr "Porta HTTP"
 
 #: sickrage/core/webserver/views/config/general.mako:790
 msgid "8081"
-msgstr ""
+msgstr "8081"
 
 #: sickrage/core/webserver/views/config/general.mako:800
 msgid "Listen on IPv6"
@@ -1351,7 +1351,7 @@ msgstr "Caminho do executável PIP"
 
 #: sickrage/core/webserver/views/config/general.mako:1176
 msgid "ex: /path/to/pip"
-msgstr ""
+msgstr "ex: /path/to/pip"
 
 #: sickrage/core/webserver/views/config/general.mako:1189
 #: sickrage/core/webserver/views/config/general.mako:1286
@@ -1384,11 +1384,11 @@ msgstr "Caminho do executável GIT"
 
 #: sickrage/core/webserver/views/config/general.mako:1273
 msgid "ex: /path/to/git"
-msgstr ""
+msgstr "ex: /path/to/git"
 
 #: sickrage/core/webserver/views/config/general.mako:1295
 msgid "Git reset"
-msgstr ""
+msgstr "Git reset"
 
 #: sickrage/core/webserver/views/config/general.mako:1301
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
@@ -1424,11 +1424,11 @@ msgstr "Localidade do SR:"
 
 #: sickrage/core/webserver/views/config/index.mako:71
 msgid "SR Config:"
-msgstr ""
+msgstr "SR Config:"
 
 #: sickrage/core/webserver/views/config/index.mako:80
 msgid "SR Cache Dir:"
-msgstr ""
+msgstr "SR Cache Dir:"
 
 #: sickrage/core/webserver/views/config/index.mako:89
 msgid "SR Log File:"
@@ -1456,7 +1456,7 @@ msgstr "Página inicial"
 
 #: sickrage/core/webserver/views/config/index.mako:147
 msgid "WiKi"
-msgstr ""
+msgstr "WiKi"
 
 #: sickrage/core/webserver/views/config/index.mako:157
 msgid "Forums"
@@ -1468,7 +1468,7 @@ msgstr "Fonte"
 
 #: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
-msgstr ""
+msgstr "IRChat"
 
 #: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
@@ -1476,11 +1476,11 @@ msgstr "na"
 
 #: sickrage/core/webserver/views/config/notifications.mako:14
 msgid "Home Theater"
-msgstr ""
+msgstr "Home Theater"
 
 #: sickrage/core/webserver/views/config/notifications.mako:14
 msgid "NAS"
-msgstr ""
+msgstr "NAS"
 
 #: sickrage/core/webserver/views/config/notifications.mako:15
 msgid "Devices"
@@ -1488,7 +1488,7 @@ msgstr "Dispositivos de"
 
 #: sickrage/core/webserver/views/config/notifications.mako:16
 msgid "Social"
-msgstr ""
+msgstr "Social"
 
 #: sickrage/core/webserver/views/config/notifications.mako:26
 msgid "A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV."
@@ -1653,11 +1653,11 @@ msgstr "KODI IP: Port"
 
 #: sickrage/core/webserver/views/config/notifications.mako:136
 msgid "ex. 192.168.1.100:8080, 192.168.1.101:8080"
-msgstr ""
+msgstr "ex. 192.168.1.100:8080, 192.168.1.101:8080"
 
 #: sickrage/core/webserver/views/config/notifications.mako:144
 msgid "KODI username"
-msgstr ""
+msgstr "KODI username"
 
 #: sickrage/core/webserver/views/config/notifications.mako:161
 msgid "KODI password"
@@ -1715,7 +1715,7 @@ msgstr "Plex Media Server IP: Port"
 
 #: sickrage/core/webserver/views/config/notifications.mako:310
 msgid "ex. 192.168.1.1:32400, 192.168.1.2:32400"
-msgstr ""
+msgstr "ex. 192.168.1.1:32400, 192.168.1.2:32400"
 
 #: sickrage/core/webserver/views/config/notifications.mako:321
 msgid "Click below to test Plex servers"
@@ -1735,7 +1735,7 @@ msgstr "Plex cliente IP: Port"
 
 #: sickrage/core/webserver/views/config/notifications.mako:408
 msgid "ex. 192.168.1.100:3000, 192.168.1.101:3000"
-msgstr ""
+msgstr "ex. 192.168.1.100:3000, 192.168.1.101:3000"
 
 #: sickrage/core/webserver/views/config/notifications.mako:433
 msgid "Client Password"
@@ -1763,7 +1763,7 @@ msgstr "Marisete IP: Port"
 
 #: sickrage/core/webserver/views/config/notifications.mako:499
 msgid "ex. 192.168.1.100:8096"
-msgstr ""
+msgstr "ex. 192.168.1.100:8096"
 
 #: sickrage/core/webserver/views/config/notifications.mako:506
 msgid "Emby API Key"
@@ -1789,7 +1789,7 @@ msgstr "Endereço IP de pipoca"
 #: sickrage/core/webserver/views/config/notifications.mako:572
 #: sickrage/core/webserver/views/config/notifications.mako:674
 msgid "ex. 192.168.1.100"
-msgstr ""
+msgstr "ex. 192.168.1.100"
 
 #: sickrage/core/webserver/views/config/notifications.mako:579
 msgid "Get settings"
@@ -1922,7 +1922,7 @@ msgstr "pyTivo IP: Port"
 
 #: sickrage/core/webserver/views/config/notifications.mako:917
 msgid "ex. 192.168.1.1:9032"
-msgstr ""
+msgstr "ex. 192.168.1.1:9032"
 
 #: sickrage/core/webserver/views/config/notifications.mako:924
 msgid "pyTivo share name"
@@ -1954,7 +1954,7 @@ msgstr "IP: Port rosnar"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1041
 msgid "ex. 192.168.1.100:23053"
-msgstr ""
+msgstr "ex. 192.168.1.100:23053"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1048
 msgid "Growl password"
@@ -2098,7 +2098,7 @@ msgstr "Mecânica"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1454
 msgid "Piano Bar"
-msgstr ""
+msgstr "Piano Bar"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1457
 msgid "Siren"
@@ -2199,7 +2199,7 @@ msgstr "Moderada"
 #: sickrage/core/webserver/views/config/notifications.mako:1685
 #: sickrage/core/webserver/views/config/search.mako:662
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1688
 #: sickrage/core/webserver/views/config/search.mako:665
@@ -2299,7 +2299,7 @@ msgstr "ID de cliente móvel livre"
 #: sickrage/core/webserver/views/config/notifications.mako:2262
 #: sickrage/core/webserver/views/config/notifications.mako:2309
 msgid "ex. 12345678"
-msgstr ""
+msgstr "ex. 12345678"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2011
 msgid "Free Mobile API Key"
@@ -2490,7 +2490,7 @@ msgstr "enviar notificações de Trakt.tv?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2544
 msgid "Trakt username"
-msgstr ""
+msgstr "Trakt username"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2554
 msgid "username"
@@ -2498,7 +2498,7 @@ msgstr "nome de usuário"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2563
 msgid "Trakt PIN"
-msgstr ""
+msgstr "Trakt PIN"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2571
 msgid "authorization PIN code"
@@ -2979,7 +2979,7 @@ msgstr "Descompacte qualquer TV lançamentos em seu"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:291
 msgid "TV Download Dir"
-msgstr ""
+msgstr "TV Download Dir"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:292
 msgid "Only works with RAR archives"
@@ -3050,7 +3050,7 @@ msgstr "Ver"
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 #: sickrage/core/webserver/views/config/subtitles.mako:167
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 msgid "for script arguments description and usage."
@@ -3118,14 +3118,14 @@ msgstr "Mostrar nome"
 #: sickrage/core/webserver/views/config/postprocessing.mako:945
 #: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
-msgstr ""
+msgstr "Show.Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:478
 #: sickrage/core/webserver/views/config/postprocessing.mako:740
 #: sickrage/core/webserver/views/config/postprocessing.mako:950
 #: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
-msgstr ""
+msgstr "Show_Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:481
 #: sickrage/core/webserver/views/config/postprocessing.mako:1168
@@ -3166,14 +3166,14 @@ msgstr "Nome do episódio"
 #: sickrage/core/webserver/views/config/postprocessing.mako:980
 #: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
-msgstr ""
+msgstr "Episode.Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:533
 #: sickrage/core/webserver/views/config/postprocessing.mako:775
 #: sickrage/core/webserver/views/config/postprocessing.mako:985
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
-msgstr ""
+msgstr "Episode_Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:536
 #: sickrage/core/webserver/views/config/postprocessing.mako:778
@@ -3189,7 +3189,7 @@ msgstr "Qualidade da cena:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:553
 msgid "720p HDTV x264"
-msgstr ""
+msgstr "720p HDTV x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:558
 msgid "720p.HDTV.x264"
@@ -3197,7 +3197,7 @@ msgstr "720p. HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
-msgstr ""
+msgstr "720p_HDTV_x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:568
 #: sickrage/core/webserver/views/config/postprocessing.mako:821
@@ -3209,7 +3209,7 @@ msgstr "Nome de lançamento:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:571
 #: sickrage/core/webserver/views/config/postprocessing.mako:1244
 msgid "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
-msgstr ""
+msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:577
 #: sickrage/core/webserver/views/config/postprocessing.mako:830
@@ -3283,7 +3283,7 @@ msgstr "Dia:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:824
 msgid "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
-msgstr ""
+msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:853
 msgid "Air-by-date Sample:"
@@ -3315,11 +3315,11 @@ msgstr "Esportes Air Data:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:965
 #: sickrage/core/webserver/views/config/postprocessing.mako:970
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1034
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
-msgstr ""
+msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1063
 msgid "Sports Sample:"
@@ -3581,11 +3581,11 @@ msgstr "Chave da API:"
 
 #: sickrage/core/webserver/views/config/providers.mako:452
 msgid "Digest:"
-msgstr ""
+msgstr "Digest:"
 
 #: sickrage/core/webserver/views/config/providers.mako:472
 msgid "Hash:"
-msgstr ""
+msgstr "Hash:"
 
 #: sickrage/core/webserver/views/config/providers.mako:513
 msgid "Password:"
@@ -3598,7 +3598,7 @@ msgstr "Chave de acesso:"
 #: sickrage/core/webserver/views/config/providers.mako:553
 #: sickrage/core/webserver/views/config/providers.mako:1089
 msgid "Cookies:"
-msgstr ""
+msgstr "Cookies:"
 
 #: sickrage/core/webserver/views/config/providers.mako:570
 msgid "this provider requires the following cookies: "
@@ -3666,7 +3666,7 @@ msgstr "Só baixar"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
-msgstr ""
+msgstr "FreeLeech"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
@@ -3981,7 +3981,7 @@ msgstr "Categoria de uso SABnzbd"
 #: sickrage/core/webserver/views/config/search.mako:581
 #: sickrage/core/webserver/views/config/search.mako:599
 msgid "ex. TV"
-msgstr ""
+msgstr "ex. TV"
 
 #: sickrage/core/webserver/views/config/search.mako:431
 msgid "Use SABnzbd category (backlog episodes)"
@@ -4024,7 +4024,7 @@ msgstr "NZBget host: port"
 
 #: sickrage/core/webserver/views/config/search.mako:526
 msgid "ex. localhost:6789"
-msgstr ""
+msgstr "ex. localhost:6789"
 
 #: sickrage/core/webserver/views/config/search.mako:536
 msgid "NZBget username"
@@ -4131,7 +4131,7 @@ msgstr "Básico"
 
 #: sickrage/core/webserver/views/config/search.mako:813
 msgid "Digest"
-msgstr ""
+msgstr "Digest"
 
 #: sickrage/core/webserver/views/config/search.mako:825
 msgid "Verify certificate"
@@ -4295,7 +4295,7 @@ msgstr "Frequência de encontrar legendas"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4553,7 +4553,7 @@ msgstr "Esportes:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:362
 msgid "Anime:"
-msgstr ""
+msgstr "Anime:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:368
 msgid "DVD Order:"
@@ -4626,11 +4626,11 @@ msgstr "Mostrar episódios"
 
 #: sickrage/core/webserver/views/home/display_show.mako:557
 msgid "NFO"
-msgstr ""
+msgstr "NFO"
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
-msgstr ""
+msgstr "TBN"
 
 #: sickrage/core/webserver/views/home/display_show.mako:560
 msgid "Absolute"
@@ -4686,7 +4686,7 @@ msgstr "Tente novamente baixar"
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
-msgstr ""
+msgstr "Main"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:28
 msgid "Format"
@@ -4805,7 +4805,7 @@ msgstr "Uma \"atualização completa de força\" é necessária, e se você tem 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:195
 #: sickrage/core/webserver/views/manage/mass_update.mako:53
 msgid "Anime"
-msgstr ""
+msgstr "Anime"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:230
 msgid "check if the show is Anime and episodes are released as Show.265 rather than Show.S02E03"
@@ -4992,7 +4992,7 @@ msgstr "Arrebatou: "
 #: sickrage/core/webserver/views/home/index.mako:155
 #: sickrage/core/webserver/views/home/index.mako:355
 msgid "Total: "
-msgstr ""
+msgstr "Total: "
 
 #: sickrage/core/webserver/views/home/index.mako:158
 #: sickrage/core/webserver/views/home/index.mako:358
@@ -5025,7 +5025,7 @@ msgstr "programa"
 
 #: sickrage/core/webserver/views/home/index.mako:269
 msgid "Downloads"
-msgstr ""
+msgstr "Downloads"
 
 #: sickrage/core/webserver/views/home/index.mako:271
 #: sickrage/core/webserver/views/home/status.mako:44
@@ -5071,7 +5071,7 @@ msgstr "Opções personalizadas"
 
 #: sickrage/core/webserver/views/home/new_show.mako:124
 msgid "Skip Show"
-msgstr ""
+msgstr "Skip Show"
 
 #: sickrage/core/webserver/views/home/postprocess.mako:13
 msgid "Enter the folder containing the episode"
@@ -5153,7 +5153,7 @@ msgstr "Localizador de legendas"
 #: sickrage/core/webserver/views.py:4946
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
-msgstr ""
+msgstr "Trakt Checker"
 
 #: sickrage/core/webserver/views/home/status.mako:37
 msgid "Scheduler"
@@ -5220,7 +5220,7 @@ msgstr "BAIXA"
 #: sickrage/core/webserver/views/home/status.mako:143
 #: sickrage/core/webserver/views/home/status.mako:175
 msgid "NORMAL"
-msgstr ""
+msgstr "NORMAL"
 
 #: sickrage/core/webserver/views/home/status.mako:145
 #: sickrage/core/webserver/views/home/status.mako:177
@@ -5241,7 +5241,7 @@ msgstr "Espaço livre"
 
 #: sickrage/core/webserver/views/home/status.mako:204
 msgid "TV Download Directory"
-msgstr ""
+msgstr "TV Download Directory"
 
 #: sickrage/core/webserver/views/home/status.mako:214
 msgid "Media Root Directories"
@@ -5280,7 +5280,7 @@ msgstr "Novo local"
 
 #: sickrage/core/webserver/views/home/trakt_shows.mako:26
 msgid "Original"
-msgstr ""
+msgstr "Original"
 
 #: sickrage/core/webserver/views/home/trakt_shows.mako:38
 msgid "Select Trakt List:"
@@ -5296,7 +5296,7 @@ msgstr "Tendências"
 
 #: sickrage/core/webserver/views/home/trakt_shows.mako:47
 msgid "Popular"
-msgstr ""
+msgstr "Popular"
 
 #: sickrage/core/webserver/views/home/trakt_shows.mako:50
 msgid "Most Watched"
@@ -5354,7 +5354,7 @@ msgstr "<p>Select seu preferido fansub grupos de Groups</b> a <b>Available e adi
 
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:26
 msgid "Whitelist"
-msgstr ""
+msgstr "Whitelist"
 
 #: sickrage/core/webserver/views.py:1229
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
@@ -5457,7 +5457,7 @@ msgstr "Todos os locais de pasta não-absoluto são relativo a"
 
 #: sickrage/core/webserver/views/layouts/main.mako:14
 msgid "SiCKRAGE"
-msgstr ""
+msgstr "SiCKRAGE"
 
 #: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
@@ -5533,7 +5533,7 @@ msgstr "Gestão da legenda perdida"
 
 #: sickrage/core/webserver/views/layouts/main.mako:216
 msgid "Config"
-msgstr ""
+msgstr "Config"
 
 #: sickrage/core/webserver/views.py:3690
 #: sickrage/core/webserver/views/layouts/main.mako:222
@@ -5581,7 +5581,7 @@ msgstr "Ferramentas"
 
 #: sickrage/core/webserver/views/layouts/main.mako:304
 msgid "Changelog"
-msgstr ""
+msgstr "Changelog"
 
 #: sickrage/core/webserver/views/layouts/main.mako:310
 msgid "Donate"
@@ -5605,7 +5605,7 @@ msgstr "Verificar se há atualizações"
 
 #: sickrage/core/webserver/views/layouts/main.mako:354
 msgid "Logout"
-msgstr ""
+msgstr "Logout"
 
 #: sickrage/core/webserver/views/layouts/main.mako:361
 msgid "Server Status"
@@ -5884,7 +5884,7 @@ msgstr "Lista de pendências:"
 #: sickrage/core/webserver/views/manage/queues.mako:89
 #: sickrage/core/webserver/views/manage/queues.mako:109
 msgid "Manual:"
-msgstr ""
+msgstr "Manual:"
 
 #: sickrage/core/webserver/views/manage/queues.mako:93
 msgid "Failed:"
@@ -6769,19 +6769,19 @@ msgstr "Erros encontrados"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr ""
+msgstr "<br><b>Updates</b><br><ul><li>"
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr ""
+msgstr "<br><b>Refreshes</b><br><ul><li>"
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr ""
+msgstr "<br><b>Renames</b><br><ul><li>"
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr ""
+msgstr "<br><b>Subtitles</b><br><ul><li>"
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
@@ -6960,7 +6960,7 @@ msgstr "[SUBTITLES] de configuração salva"
 
 #: sickrage/core/webserver/views.py:4829
 msgid "Config - Anime"
-msgstr ""
+msgstr "Config - Anime"
 
 #: sickrage/core/webserver/views.py:4853
 msgid "[ANIME] Configuration Saved"
@@ -7016,7 +7016,7 @@ msgstr "Evento"
 
 #: sickrage/core/webserver/views.py:4949
 msgid "Tornado"
-msgstr ""
+msgstr "Tornado"
 
 #: sickrage/core/webserver/views.py:4950
 msgid "Thread"

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-10 22:27-0400\n"
+"POT-Creation-Date: 2018-05-10 21:21-0700\n"
+"PO-Revision-Date: 2018-05-11 00:24-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: sv-SE\n"
-"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
+"X-Crowdin-File: messages.pot\n"
 "Language: sv_SE\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -1115,7 +1115,7 @@ msgstr "Visa fanart i bakgrunden"
 
 #: sickrage/core/webserver/views/config/general.mako:666
 msgid "Fanart transparency"
-msgstr "Fanart öppenhet"
+msgstr "Genomskinlighet för fanart"
 
 #: sickrage/core/webserver/views/config/general.mako:691
 msgid "Web Interface"
@@ -5495,7 +5495,7 @@ msgstr "Massuppdatering"
 #: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
 #: sickrage/core/webserver/views/layouts/main.mako:141
 msgid "Backlog Overview"
-msgstr "Eftersläpningen översikt"
+msgstr "Backlog Översikt"
 
 #: sickrage/core/webserver/views.py:3532 sickrage/core/webserver/views.py:3533
 #: sickrage/core/webserver/views/layouts/main.mako:146
@@ -6984,7 +6984,7 @@ msgstr "Rensa fel"
 
 #: sickrage/core/webserver/views.py:4896
 msgid "Clear Warnings"
-msgstr "Tydliga varningar"
+msgstr "Rensa varningar"
 
 #: sickrage/core/webserver/views.py:4937
 msgid "Daily Searcher"

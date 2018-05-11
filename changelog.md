@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0ea13ba - 2018-05-10: Updated Grunt tasks 
+- * 4f75eb0 - 2018-05-10: Pre-Release v9.3.21.dev2 
+- * 5bb7da0 - 2018-05-10: Updated Grunt tasks 
 - * cdcc32f - 2018-05-11: New Crowdin translations 
 - * 392eda4 - 2018-05-11: Update Crowdin configuration file 
 - * 8b1ac6e - 2018-05-09: Pre-Release v9.3.21.dev1 
