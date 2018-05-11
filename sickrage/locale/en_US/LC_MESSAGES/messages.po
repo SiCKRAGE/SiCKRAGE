@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 23:31-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: English\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: en\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: en_US\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -257,7 +257,7 @@ msgstr "Select TV Download Directory"
 
 #: dist/js/core.js:3540
 msgid "Select UNPACK Directory"
-msgstr ""
+msgstr "Select UNPACK Directory"
 
 #: dist/js/core.js:3555
 msgid "Unrar Executable not found."
@@ -729,7 +729,7 @@ msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
-msgstr ""
+msgstr "Credentials and options for api.sickrage.ca"
 
 #: sickrage/core/webserver/views/config/general.mako:36
 #: sickrage/core/webserver/views/config/notifications.mako:31
@@ -766,7 +766,7 @@ msgstr "Enable API access ?"
 
 #: sickrage/core/webserver/views/config/general.mako:48
 msgid "API Provider Cache"
-msgstr ""
+msgstr "API Provider Cache"
 
 #: sickrage/core/webserver/views/config/general.mako:53
 msgid "Enable provider cache ?"
@@ -774,11 +774,11 @@ msgstr "Enable provider cache ?"
 
 #: sickrage/core/webserver/views/config/general.mako:59
 msgid "API Client ID"
-msgstr ""
+msgstr "API Client ID"
 
 #: sickrage/core/webserver/views/config/general.mako:77
 msgid "API Client Secret"
-msgstr ""
+msgstr "API Client Secret"
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178
@@ -944,7 +944,7 @@ msgstr "Check software updates"
 
 #: sickrage/core/webserver/views/config/general.mako:348
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
-msgstr ""
+msgstr "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 
 #: sickrage/core/webserver/views/config/general.mako:357
 msgid "Automatically update"
@@ -952,11 +952,11 @@ msgstr "Automatically update"
 
 #: sickrage/core/webserver/views/config/general.mako:363
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
-msgstr ""
+msgstr "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 
 #: sickrage/core/webserver/views/config/general.mako:371
 msgid "Check the server every"
-msgstr ""
+msgstr "Check the server every"
 
 #: sickrage/core/webserver/views/config/general.mako:380
 msgid "default = 12 (hours)"
@@ -1408,7 +1408,7 @@ msgstr "SR Version:"
 
 #: sickrage/core/webserver/views/config/index.mako:34
 msgid "SR Commit:"
-msgstr ""
+msgstr "SR Commit:"
 
 #: sickrage/core/webserver/views/config/index.mako:44
 msgid "SR Type:"
@@ -2935,23 +2935,23 @@ msgstr ".nfo-orig to avoid conflicts?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:214
 msgid "Associated file extensions"
-msgstr ""
+msgstr "Associated file extensions"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:228
 msgid "comma separated list of associated file extensions SickRage should keep while post processing."
-msgstr ""
+msgstr "comma separated list of associated file extensions SickRage should keep while post processing."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:234
 msgid "leaving it empty means no associated files will be post processed"
-msgstr ""
+msgstr "leaving it empty means no associated files will be post processed"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:241
 msgid "Delete non associated files"
-msgstr ""
+msgstr "Delete non associated files"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:247
 msgid "delete non associated files while post processing?"
-msgstr ""
+msgstr "delete non associated files while post processing?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:253
 msgid "Change File Date"
@@ -2983,15 +2983,15 @@ msgstr "TV Download Dir"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:292
 msgid "Only works with RAR archives"
-msgstr ""
+msgstr "Only works with RAR archives"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:299
 msgid "Unpack Directory"
-msgstr ""
+msgstr "Unpack Directory"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:311
 msgid "Choose a path to unpack files, leave blank to unpack in download dir"
-msgstr ""
+msgstr "Choose a path to unpack files, leave blank to unpack in download dir"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:317
 msgid "Delete RAR contents"
@@ -3015,19 +3015,19 @@ msgstr "Can be overridden using manual Post Processing"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:343
 msgid "Follow symbolic-links"
-msgstr ""
+msgstr "Follow symbolic-links"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "warning"
-msgstr ""
+msgstr "warning"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:349
 msgid "EXPERTS ONLY."
-msgstr ""
+msgstr "EXPERTS ONLY."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:350
 msgid "Enable only if you know what <b>circular symbolic links</b> are,<br/>and can <b>verify that you have none</b>."
-msgstr ""
+msgstr "Enable only if you know what <b>circular symbolic links</b> are,<br/>and can <b>verify that you have none</b>."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:357
 msgid "Delete Failed"
@@ -3193,7 +3193,7 @@ msgstr "720p HDTV x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:558
 msgid "720p.HDTV.x264"
-msgstr "720p. HDTV.x264"
+msgstr "720p.HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
@@ -3532,7 +3532,7 @@ msgstr "Search mode fallback"
 
 #: sickrage/core/webserver/views/config/providers.mako:235
 msgid "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
-msgstr ""
+msgstr "when searching for a complete season depending on search mode you may <br/>return no results, this helps by restarting the search using the opposite <br/>search mode."
 
 #: sickrage/core/webserver/views/config/providers.mako:246
 #: sickrage/core/webserver/views/config/providers.mako:369
@@ -3554,7 +3554,7 @@ msgstr "episodes only."
 
 #: sickrage/core/webserver/views/config/providers.mako:265
 msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
-msgstr ""
+msgstr "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
 
 #: sickrage/core/webserver/views/config/providers.mako:281
 #: sickrage/core/webserver/views/config/providers.mako:492
@@ -3848,15 +3848,15 @@ msgstr "enables/disables converting of public torrent provider file links to mag
 
 #: sickrage/core/webserver/views/config/search.mako:83
 msgid "Enable failed snatch handling"
-msgstr ""
+msgstr "Enable failed snatch handling"
 
 #: sickrage/core/webserver/views/config/search.mako:89
 msgid "enables/disables failed snatch handling, automatically retries failed snatches"
-msgstr ""
+msgstr "enables/disables failed snatch handling, automatically retries failed snatches"
 
 #: sickrage/core/webserver/views/config/search.mako:97
 msgid "Check for failed snatches aged"
-msgstr ""
+msgstr "Check for failed snatches aged"
 
 #: sickrage/core/webserver/views/config/search.mako:121
 msgid "Check propers every:"
@@ -4505,7 +4505,7 @@ msgstr "Scene Name:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:273
 msgid "Search Delay:"
-msgstr ""
+msgstr "Search Delay:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:278
 msgid "Required Words:"
@@ -4610,11 +4610,11 @@ msgstr "Select Columns"
 
 #: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Specials"
-msgstr ""
+msgstr "Specials"
 
 #: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Season"
-msgstr ""
+msgstr "Season"
 
 #: sickrage/core/webserver/views/home/display_show.mako:538
 msgid "Hide Episodes"
@@ -4857,15 +4857,15 @@ msgstr "This will affect episode search on NZB and torrent providers. This list 
 
 #: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "Search Delay"
-msgstr ""
+msgstr "Search Delay"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "ex. 1"
-msgstr ""
+msgstr "ex. 1"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:372
 msgid "Delays searching for new episodes by X number of days."
-msgstr ""
+msgstr "Delays searching for new episodes by X number of days."
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:12
 #: sickrage/core/webserver/views/home/index.mako:31
@@ -6563,7 +6563,7 @@ msgstr "The folder at %s doesn't contain a tvshow.nfo - copy your files to that 
 
 #: sickrage/core/webserver/views.py:1546 sickrage/core/webserver/views.py:3429
 msgid "Unable to update show: {}"
-msgstr ""
+msgstr "Unable to update show: {}"
 
 #: sickrage/core/webserver/views.py:1553
 msgid "Unable to force an update on scene exceptions of the show."
@@ -6876,7 +6876,7 @@ msgstr "You need to select a backup file to restore!"
 
 #: sickrage/core/webserver/views.py:3965
 msgid "Config - Search Clients"
-msgstr ""
+msgstr "Config - Search Clients"
 
 #: sickrage/core/webserver/views.py:3991 sickrage/core/webserver/views.py:3994
 #: sickrage/core/webserver/views.py:4098
@@ -6922,7 +6922,7 @@ msgstr "[POST-PROCESSING] Configuration Saved"
 
 #: sickrage/core/webserver/views.py:4264
 msgid "Config - Search Providers"
-msgstr ""
+msgstr "Config - Search Providers"
 
 #: sickrage/core/webserver/views.py:4305
 msgid "\n"
@@ -6956,7 +6956,7 @@ msgstr "[NOTIFICATIONS] Configuration Saved"
 
 #: sickrage/core/webserver/views.py:4748
 msgid "Config - Subtitles Settings"
-msgstr ""
+msgstr "Config - Subtitles Settings"
 
 #: sickrage/core/webserver/views.py:4814
 msgid "[SUBTITLES] Configuration Saved"
