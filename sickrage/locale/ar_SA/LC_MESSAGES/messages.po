@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 22:26-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: ar\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: ar_SA\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -340,7 +340,7 @@ msgstr "لقد اخترت حذف show(s).  هل تريد المتابعة بال
 
 #: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
-msgstr "<b>DELETED</b>"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -348,7 +348,7 @@ msgstr "الشخصية"
 
 #: sickrage/core/webserver/views/api_builder.mako:27
 msgid "JSONP"
-msgstr "JSONP"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:33
 msgid "Command name"
@@ -396,7 +396,7 @@ msgstr "ملعب للأطفال"
 #: sickrage/core/webserver/views/api_builder.mako:128
 #: sickrage/core/webserver/views/config/providers.mako:157
 msgid "URL:"
-msgstr "URL:"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:98
 msgid "Required parameters"
@@ -1179,7 +1179,7 @@ msgstr "منفذ HTTP"
 
 #: sickrage/core/webserver/views/config/general.mako:790
 msgid "8081"
-msgstr "8081"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:800
 msgid "Listen on IPv6"
@@ -2078,7 +2078,7 @@ msgstr "السقوط"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1439
 msgid "Gamelan"
-msgstr "Gamelan"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:1442
 msgid "Incoming"
@@ -3118,14 +3118,14 @@ msgstr "إظهار اسم"
 #: sickrage/core/webserver/views/config/postprocessing.mako:945
 #: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
-msgstr "Show.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:478
 #: sickrage/core/webserver/views/config/postprocessing.mako:740
 #: sickrage/core/webserver/views/config/postprocessing.mako:950
 #: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
-msgstr "Show_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:481
 #: sickrage/core/webserver/views/config/postprocessing.mako:1168
@@ -3166,14 +3166,14 @@ msgstr "اسم الحلقة"
 #: sickrage/core/webserver/views/config/postprocessing.mako:980
 #: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
-msgstr "Episode.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:533
 #: sickrage/core/webserver/views/config/postprocessing.mako:775
 #: sickrage/core/webserver/views/config/postprocessing.mako:985
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
-msgstr "Episode_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:536
 #: sickrage/core/webserver/views/config/postprocessing.mako:778
@@ -3197,7 +3197,7 @@ msgstr "720 بكسل. HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
-msgstr "720p_HDTV_x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:568
 #: sickrage/core/webserver/views/config/postprocessing.mako:821
@@ -4295,7 +4295,7 @@ msgstr "تكرار البحث عن الترجمة"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4630,7 +4630,7 @@ msgstr "إذا كان ("
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
-msgstr "TBN"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:560
 msgid "Absolute"
@@ -4892,7 +4892,7 @@ msgstr "تصنيف % > صوتا"
 #: sickrage/core/webserver/views/home/index.mako:56
 #: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Asc"
-msgstr "Asc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:27
 #: sickrage/core/webserver/views/home/index.mako:60
@@ -6769,19 +6769,19 @@ msgstr "تمت مصادفة أخطاء"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr "<br><b>Updates</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr "<br><b>Refreshes</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr "<br><b>Renames</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr "<br><b>Subtitles</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
@@ -7004,7 +7004,7 @@ msgstr "البحث عن بروبيرس"
 
 #: sickrage/core/webserver/views.py:4944
 msgid "Postprocessor"
-msgstr "Postprocessor"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:4945
 msgid "Find Subtitles"
