@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 23:35-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: ko\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: ko_KR\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -340,7 +340,7 @@ msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습�
 
 #: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
-msgstr "<b>DELETED</b>"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -348,7 +348,7 @@ msgstr "프로 파일"
 
 #: sickrage/core/webserver/views/api_builder.mako:27
 msgid "JSONP"
-msgstr "JSONP"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:33
 msgid "Command name"
@@ -396,7 +396,7 @@ msgstr "놀이터"
 #: sickrage/core/webserver/views/api_builder.mako:128
 #: sickrage/core/webserver/views/config/providers.mako:157
 msgid "URL:"
-msgstr "URL:"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:98
 msgid "Required parameters"
@@ -568,7 +568,7 @@ msgstr "사용자 인터페이스"
 
 #: sickrage/core/webserver/views/config/anime.mako:17
 msgid "AniDB"
-msgstr "AniDB"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:21
 msgid "AniDB is non-profit database of anime information that is freely open to the public"
@@ -599,7 +599,7 @@ msgstr "AniDB 암호"
 
 #: sickrage/core/webserver/views/config/anime.mako:75
 msgid "AniDB MyList"
-msgstr "AniDB MyList"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:81
 msgid "Do you want to add the PostProcessed Episodes to the MyList ?"
@@ -725,7 +725,7 @@ msgstr "고급 설정"
 
 #: sickrage/core/webserver/views/config/general.mako:29
 msgid "SiCKRAGE API"
-msgstr "SiCKRAGE API"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
@@ -856,7 +856,7 @@ msgstr "역사"
 #: sickrage/core/webserver/views/config/general.mako:164
 #: sickrage/core/webserver/views/layouts/main.mako:299
 msgid "IRC"
-msgstr "IRC"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:173
 msgid "Daily show updates start time"
@@ -1179,7 +1179,7 @@ msgstr "HTTP 포트"
 
 #: sickrage/core/webserver/views/config/general.mako:790
 msgid "8081"
-msgstr "8081"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:800
 msgid "Listen on IPv6"
@@ -1468,7 +1468,7 @@ msgstr "소스"
 
 #: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
-msgstr "IRChat"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
@@ -1480,7 +1480,7 @@ msgstr "홈 시어터"
 
 #: sickrage/core/webserver/views/config/notifications.mako:14
 msgid "NAS"
-msgstr "NAS"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:15
 msgid "Devices"
@@ -3118,14 +3118,14 @@ msgstr "표시 이름"
 #: sickrage/core/webserver/views/config/postprocessing.mako:945
 #: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
-msgstr "Show.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:478
 #: sickrage/core/webserver/views/config/postprocessing.mako:740
 #: sickrage/core/webserver/views/config/postprocessing.mako:950
 #: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
-msgstr "Show_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:481
 #: sickrage/core/webserver/views/config/postprocessing.mako:1168
@@ -3166,14 +3166,14 @@ msgstr "에피소드 이름"
 #: sickrage/core/webserver/views/config/postprocessing.mako:980
 #: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
-msgstr "Episode.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:533
 #: sickrage/core/webserver/views/config/postprocessing.mako:775
 #: sickrage/core/webserver/views/config/postprocessing.mako:985
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
-msgstr "Episode_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:536
 #: sickrage/core/webserver/views/config/postprocessing.mako:778
@@ -3189,7 +3189,7 @@ msgstr "현장 품질:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:553
 msgid "720p HDTV x264"
-msgstr "720p HDTV x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:558
 msgid "720p.HDTV.x264"
@@ -3197,7 +3197,7 @@ msgstr "720 p입니다. HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
-msgstr "720p_HDTV_x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:568
 #: sickrage/core/webserver/views/config/postprocessing.mako:821
@@ -3209,7 +3209,7 @@ msgstr "릴리즈 이름:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:571
 #: sickrage/core/webserver/views/config/postprocessing.mako:1244
 msgid "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:577
 #: sickrage/core/webserver/views/config/postprocessing.mako:830
@@ -3283,7 +3283,7 @@ msgstr "주:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:824
 msgid "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.2010.03.09.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:853
 msgid "Air-by-date Sample:"
@@ -3319,7 +3319,7 @@ msgstr "3 월"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1034
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
-msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:1063
 msgid "Sports Sample:"
@@ -3658,7 +3658,7 @@ msgstr "에 의해 정렬 결과"
 
 #: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
-msgstr "Freeleech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
@@ -3666,7 +3666,7 @@ msgstr "만 다운로드"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
-msgstr "FreeLeech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
@@ -3756,7 +3756,7 @@ msgstr "추가 하 고 설치 하거나 사용자 지정 RSS 공급자를 제거
 
 #: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "RSS URL:"
-msgstr "RSS URL:"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:1096
 msgid "ex. uid=xx;pass=yy"
@@ -4295,7 +4295,7 @@ msgstr "자막 찾기 주파수"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4626,11 +4626,11 @@ msgstr "쇼 에피소드"
 
 #: sickrage/core/webserver/views/home/display_show.mako:557
 msgid "NFO"
-msgstr "NFO"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
-msgstr "TBN"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:560
 msgid "Absolute"
@@ -4654,7 +4654,7 @@ msgstr "크기"
 #: sickrage/core/webserver/views/home/display_show.mako:565
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:76
 msgid "Airdate"
-msgstr "Airdate"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:566
 #: sickrage/core/webserver/views/home/display_show.mako:686
@@ -4892,13 +4892,13 @@ msgstr "% 등급 > 투표"
 #: sickrage/core/webserver/views/home/index.mako:56
 #: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Asc"
-msgstr "Asc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:27
 #: sickrage/core/webserver/views/home/index.mako:60
 #: sickrage/core/webserver/views/home/trakt_shows.mako:35
 msgid "Desc"
-msgstr "Desc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:43
 msgid "Fetching of IMDB Data failed. Are you online?"
@@ -5457,7 +5457,7 @@ msgstr "모든 비 절대 폴더 위치는 상대적으로"
 
 #: sickrage/core/webserver/views/layouts/main.mako:14
 msgid "SiCKRAGE"
-msgstr "SiCKRAGE"
+msgstr ""
 
 #: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
@@ -5581,7 +5581,7 @@ msgstr "도구"
 
 #: sickrage/core/webserver/views/layouts/main.mako:304
 msgid "Changelog"
-msgstr "Changelog"
+msgstr ""
 
 #: sickrage/core/webserver/views/layouts/main.mako:310
 msgid "Donate"
@@ -6769,19 +6769,19 @@ msgstr "발생 한 오류"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr "<br><b>Updates</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr "<br><b>Refreshes</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr "<br><b>Renames</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr "<br><b>Subtitles</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
