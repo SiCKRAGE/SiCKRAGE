@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
 "POT-Creation-Date: 2018-05-06 23:08-0700\n"
-"PO-Revision-Date: 2018-05-07 02:09-0400\n"
+"PO-Revision-Date: 2018-05-10 23:33-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
 "X-Crowdin-Language: ja\n"
-"X-Crowdin-File: messages.pot\n"
+"X-Crowdin-File: /develop/sickrage/locale/messages.pot\n"
 "Language: ja_JP\n"
 
 #: dist/js/core.js:300 sickrage/core/webserver/views/layouts/main.mako:348
@@ -340,7 +340,7 @@ msgstr "ショーの詳細を削除するを選択しました。 続行する�
 
 #: dist/js/core.js:5463
 msgid "<b>DELETED</b>"
-msgstr "<b>DELETED</b>"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -348,7 +348,7 @@ msgstr "プロファイル"
 
 #: sickrage/core/webserver/views/api_builder.mako:27
 msgid "JSONP"
-msgstr "JSONP"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:33
 msgid "Command name"
@@ -396,7 +396,7 @@ msgstr "遊び場"
 #: sickrage/core/webserver/views/api_builder.mako:128
 #: sickrage/core/webserver/views/config/providers.mako:157
 msgid "URL:"
-msgstr "URL:"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:98
 msgid "Required parameters"
@@ -568,7 +568,7 @@ msgstr "ユーザー インターフェイス"
 
 #: sickrage/core/webserver/views/config/anime.mako:17
 msgid "AniDB"
-msgstr "AniDB"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:21
 msgid "AniDB is non-profit database of anime information that is freely open to the public"
@@ -599,7 +599,7 @@ msgstr "AniDB パスワード"
 
 #: sickrage/core/webserver/views/config/anime.mako:75
 msgid "AniDB MyList"
-msgstr "AniDB MyList"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/anime.mako:81
 msgid "Do you want to add the PostProcessed Episodes to the MyList ?"
@@ -725,7 +725,7 @@ msgstr "高度な設定"
 
 #: sickrage/core/webserver/views/config/general.mako:29
 msgid "SiCKRAGE API"
-msgstr "SiCKRAGE API"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:30
 msgid "Credentials and options for api.sickrage.ca"
@@ -856,7 +856,7 @@ msgstr "歴史"
 #: sickrage/core/webserver/views/config/general.mako:164
 #: sickrage/core/webserver/views/layouts/main.mako:299
 msgid "IRC"
-msgstr "IRC"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:173
 msgid "Daily show updates start time"
@@ -1179,7 +1179,7 @@ msgstr "HTTP ポート"
 
 #: sickrage/core/webserver/views/config/general.mako:790
 msgid "8081"
-msgstr "8081"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:800
 msgid "Listen on IPv6"
@@ -1456,7 +1456,7 @@ msgstr "ホームページ"
 
 #: sickrage/core/webserver/views/config/index.mako:147
 msgid "WiKi"
-msgstr "WiKi"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:157
 msgid "Forums"
@@ -1468,7 +1468,7 @@ msgstr "ソース"
 
 #: sickrage/core/webserver/views/config/index.mako:179
 msgid "IRChat"
-msgstr "IRChat"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/index.mako:183
 msgid "on"
@@ -1480,7 +1480,7 @@ msgstr "ホームシアター"
 
 #: sickrage/core/webserver/views/config/notifications.mako:14
 msgid "NAS"
-msgstr "NAS"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:15
 msgid "Devices"
@@ -1649,7 +1649,7 @@ msgstr "ライブラリの更新を送る最初のアクティブなホストだ
 
 #: sickrage/core/webserver/views/config/notifications.mako:127
 msgid "KODI IP:Port"
-msgstr "KODI IP:Port"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:136
 msgid "ex. 192.168.1.100:8080, 192.168.1.101:8080"
@@ -1759,7 +1759,7 @@ msgstr "Emby に更新コマンドを送るか。"
 
 #: sickrage/core/webserver/views/config/notifications.mako:490
 msgid "Emby IP:Port"
-msgstr "Emby IP:Port"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:499
 msgid "ex. 192.168.1.100:8096"
@@ -1918,7 +1918,7 @@ msgstr "ダウンロードしたファイル pyTivo にアクセスできるよ�
 
 #: sickrage/core/webserver/views/config/notifications.mako:907
 msgid "pyTivo IP:Port"
-msgstr "pyTivo IP:Port"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/notifications.mako:917
 msgid "ex. 192.168.1.1:9032"
@@ -3050,7 +3050,7 @@ msgstr "参照してください。"
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 #: sickrage/core/webserver/views/config/subtitles.mako:167
 msgid "Wiki"
-msgstr "Wiki"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:382
 msgid "for script arguments description and usage."
@@ -3118,14 +3118,14 @@ msgstr "名前を表示します。"
 #: sickrage/core/webserver/views/config/postprocessing.mako:945
 #: sickrage/core/webserver/views/config/postprocessing.mako:1160
 msgid "Show.Name"
-msgstr "Show.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:478
 #: sickrage/core/webserver/views/config/postprocessing.mako:740
 #: sickrage/core/webserver/views/config/postprocessing.mako:950
 #: sickrage/core/webserver/views/config/postprocessing.mako:1165
 msgid "Show_Name"
-msgstr "Show_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:481
 #: sickrage/core/webserver/views/config/postprocessing.mako:1168
@@ -3166,14 +3166,14 @@ msgstr "エピソードの名前"
 #: sickrage/core/webserver/views/config/postprocessing.mako:980
 #: sickrage/core/webserver/views/config/postprocessing.mako:1215
 msgid "Episode.Name"
-msgstr "Episode.Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:533
 #: sickrage/core/webserver/views/config/postprocessing.mako:775
 #: sickrage/core/webserver/views/config/postprocessing.mako:985
 #: sickrage/core/webserver/views/config/postprocessing.mako:1220
 msgid "Episode_Name"
-msgstr "Episode_Name"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:536
 #: sickrage/core/webserver/views/config/postprocessing.mako:778
@@ -3197,7 +3197,7 @@ msgstr "720 p。HDTV.x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:563
 msgid "720p_HDTV_x264"
-msgstr "720p_HDTV_x264"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:568
 #: sickrage/core/webserver/views/config/postprocessing.mako:821
@@ -3658,7 +3658,7 @@ msgstr "結果の並べ替え"
 
 #: sickrage/core/webserver/views/config/providers.mako:747
 msgid "Freeleech"
-msgstr "Freeleech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "only download"
@@ -3666,7 +3666,7 @@ msgstr "だけをダウンロードします。"
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "FreeLeech"
-msgstr "FreeLeech"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:753
 msgid "torrents."
@@ -4295,7 +4295,7 @@ msgstr "字幕検索頻度"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:139
 msgid "1"
-msgstr "1"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/subtitles.mako:169
 msgid "for a script arguments description."
@@ -4630,7 +4630,7 @@ msgstr "NFO ファイル"
 
 #: sickrage/core/webserver/views/home/display_show.mako:558
 msgid "TBN"
-msgstr "TBN"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:560
 msgid "Absolute"
@@ -4892,13 +4892,13 @@ msgstr "評価 % > 票"
 #: sickrage/core/webserver/views/home/index.mako:56
 #: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Asc"
-msgstr "Asc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:27
 #: sickrage/core/webserver/views/home/index.mako:60
 #: sickrage/core/webserver/views/home/trakt_shows.mako:35
 msgid "Desc"
-msgstr "Desc"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:43
 msgid "Fetching of IMDB Data failed. Are you online?"
@@ -5457,7 +5457,7 @@ msgstr "すべての非絶対フォルダー場所が相対的に"
 
 #: sickrage/core/webserver/views/layouts/main.mako:14
 msgid "SiCKRAGE"
-msgstr "SiCKRAGE"
+msgstr ""
 
 #: sickrage/core/webserver/views/layouts/main.mako:79
 msgid "Toggle navigation"
@@ -6769,19 +6769,19 @@ msgstr "エラーが発生しました"
 
 #: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Updates</b><br><ul><li>"
-msgstr "<br><b>Updates</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Refreshes</b><br><ul><li>"
-msgstr "<br><b>Refreshes</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Renames</b><br><ul><li>"
-msgstr "<br><b>Renames</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3469
 msgid "<br><b>Subtitles</b><br><ul><li>"
-msgstr "<br><b>Subtitles</b><br><ul><li>"
+msgstr ""
 
 #: sickrage/core/webserver/views.py:3474
 msgid "The following actions were queued:"
