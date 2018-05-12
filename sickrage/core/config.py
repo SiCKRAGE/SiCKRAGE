@@ -232,6 +232,9 @@ class Config(object):
         self.plex_client_username = ""
         self.plex_client_password = ""
         self.use_emby = False
+        self.emby_notify_onsnatch = False
+        self.emby_notify_ondownload = False
+        self.emby_notify_onsubtitledownload = False
         self.emby_host = ""
         self.emby_apikey = ""
         self.use_growl = False
@@ -820,7 +823,10 @@ class Config(object):
             'Emby': {
                 'use_emby': False,
                 'emby_apikey': '',
-                'emby_host': ''
+                'emby_host': '',
+                'emby_notify_onsubtitledownload': False,
+                'emby_notify_ondownload': False,
+                'emby_notify_onsnatch': False,
             },
             'pyTivo': {
                 'pytivo_share_name': '',
@@ -1565,6 +1571,9 @@ class Config(object):
 
         # EMBY SETTINGS
         self.use_emby = self.check_setting_bool('Emby', 'use_emby')
+        self.emby_notify_onsnatch = self.check_setting_bool('Emby', 'emby_notify_onsnatch')
+        self.emby_notify_ondownload = self.check_setting_bool('Emby', 'emby_notify_ondownload')
+        self.emby_notify_onsubtitledownload = self.check_setting_bool('Emby', 'emby_notify_onsubtitledownload')
         self.emby_host = self.check_setting_str('Emby', 'emby_host')
         self.emby_apikey = self.check_setting_str('Emby', 'emby_apikey', censor=True)
 
@@ -2050,6 +2059,9 @@ class Config(object):
             },
             'Emby': {
                 'use_emby': int(self.use_emby),
+                'emby_notify_onsnatch': int(self.emby_notify_onsnatch),
+                'emby_notify_ondownload': int(self.emby_notify_ondownload),
+                'emby_notify_onsubtitledownload': int(self.emby_notify_onsubtitledownload),
                 'emby_host': self.emby_host,
                 'emby_apikey': self.emby_apikey,
             },

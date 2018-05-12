@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f75eb0 - 2018-05-10: Pre-Release v9.3.21.dev2 
+- * eeeabf4 - 2018-05-12: Added more notify options for Emby 
+- * 5c626f6 - 2018-05-10: Pre-Release v9.3.21.dev2 
 - * 5bb7da0 - 2018-05-10: Updated Grunt tasks 
 - * cdcc32f - 2018-05-11: New Crowdin translations 
 - * 392eda4 - 2018-05-11: Update Crowdin configuration file 

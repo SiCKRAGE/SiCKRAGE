@@ -486,6 +486,8 @@ module.exports = function (grunt) {
 
         grunt.file.write(vFile, newVersion);
 
+        grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
+
         var tasks = [
             'default',
             'sync_trans', // sync translations with crowdin
@@ -519,6 +521,8 @@ module.exports = function (grunt) {
 
         grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
+
+        grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
         var tasks = [
             'default',

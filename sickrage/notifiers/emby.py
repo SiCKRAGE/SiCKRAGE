@@ -31,8 +31,23 @@ class EMBYNotifier(Notifiers):
         super(EMBYNotifier, self).__init__()
         self.name = 'emby'
 
-    def test_notify(self, host, emby_apikey):
-        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
+    def _notify_snatch(self, ep_name):
+        if sickrage.app.config.emby_notify_onsnatch:
+            self._notify_emby(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
+
+    def _notify_download(self, ep_name):
+        if sickrage.app.config.emby_notify_ondownload:
+            self._notify_emby(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
+
+    def _notify_subtitle_download(self, ep_name, lang):
+        if sickrage.app.config.emby_notify_onsubtitledownload:
+            self._notify_emby(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
+
+    def _notify_version_update(self, new_version="??"):
+        if sickrage.app.config.use_emby:
+            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
+            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
+            self._notify_emby(title + " - " + update_text + new_version)
 
     def _notify_emby(self, message, host=None, emby_apikey=None):
         """Handles notifying Emby host via HTTP API
@@ -68,27 +83,21 @@ class EMBYNotifier(Notifiers):
             sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
             return False
 
-            ##############################################################################
-            # Public functions
-            ##############################################################################
+    def test_notify(self, host, emby_apikey):
+        return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_login(self, ipaddress=""):
         if sickrage.app.config.use_emby:
-            update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
-            title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
-            if update_text and title and new_version:
-                self._notify_emby(update_text + new_version, title)
+            update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
+            title = self.notifyStrings[self.NOTIFY_LOGIN]
+            self._notify_emby(title + " - " + update_text.format(ipaddress))
 
     def update_library(self, show=None):
         """Handles updating the Emby Media Server host via HTTP API
-
-        Returns:
-            Returns True for no issue or False if there was an error
-
+        Returns: True for no issue or False if there was an error
         """
 
         if sickrage.app.config.use_emby:
-
             if not sickrage.app.config.emby_host:
                 sickrage.app.log.debug('EMBY: No host specified, check your settings')
                 return False
