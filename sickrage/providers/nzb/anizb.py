@@ -36,6 +36,7 @@ class Anizb(NZBProvider):
 
         # URLs
         self.urls.update({
+            'rss': '{base_url}/'.format(**self.urls),
             'api': '{base_url}/api/?q='.format(**self.urls)
         })
 
