@@ -1,6 +1,7 @@
 # Changelog
 
-- * 676870e - 2018-05-12: Fixed KeyError for Anizb provider 
+- * 8e6abc7 - 2018-05-12: Pre-Release v9.3.21.dev3 
+- * 07b7203 - 2018-05-12: Fixed KeyError for Anizb provider 
 - * 3ffb11e - 2018-05-12: Added more notify options for Emby 
 - * 5c626f6 - 2018-05-10: Pre-Release v9.3.21.dev2 
 - * 5bb7da0 - 2018-05-10: Updated Grunt tasks 

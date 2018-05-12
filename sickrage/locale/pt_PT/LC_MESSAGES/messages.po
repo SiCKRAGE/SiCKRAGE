@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-10 21:21-0700\n"
-"PO-Revision-Date: 2018-05-11 00:23-0400\n"
+"POT-Creation-Date: 2018-05-12 12:20-0700\n"
+"PO-Revision-Date: 2018-05-12 15:21-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -618,28 +618,28 @@ msgstr "Você quer adicionar os episódios pós-processado para o MyList?"
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
-#: sickrage/core/webserver/views/config/notifications.mako:529
-#: sickrage/core/webserver/views/config/notifications.mako:632
-#: sickrage/core/webserver/views/config/notifications.mako:765
-#: sickrage/core/webserver/views/config/notifications.mako:801
-#: sickrage/core/webserver/views/config/notifications.mako:871
-#: sickrage/core/webserver/views/config/notifications.mako:962
-#: sickrage/core/webserver/views/config/notifications.mako:1074
-#: sickrage/core/webserver/views/config/notifications.mako:1204
-#: sickrage/core/webserver/views/config/notifications.mako:1284
-#: sickrage/core/webserver/views/config/notifications.mako:1495
-#: sickrage/core/webserver/views/config/notifications.mako:1585
-#: sickrage/core/webserver/views/config/notifications.mako:1709
-#: sickrage/core/webserver/views/config/notifications.mako:1803
-#: sickrage/core/webserver/views/config/notifications.mako:1925
-#: sickrage/core/webserver/views/config/notifications.mako:2037
-#: sickrage/core/webserver/views/config/notifications.mako:2179
-#: sickrage/core/webserver/views/config/notifications.mako:2364
-#: sickrage/core/webserver/views/config/notifications.mako:2509
-#: sickrage/core/webserver/views/config/notifications.mako:2765
-#: sickrage/core/webserver/views/config/notifications.mako:2996
-#: sickrage/core/webserver/views/config/notifications.mako:3091
-#: sickrage/core/webserver/views/config/notifications.mako:3256
+#: sickrage/core/webserver/views/config/notifications.mako:569
+#: sickrage/core/webserver/views/config/notifications.mako:672
+#: sickrage/core/webserver/views/config/notifications.mako:805
+#: sickrage/core/webserver/views/config/notifications.mako:841
+#: sickrage/core/webserver/views/config/notifications.mako:911
+#: sickrage/core/webserver/views/config/notifications.mako:1002
+#: sickrage/core/webserver/views/config/notifications.mako:1114
+#: sickrage/core/webserver/views/config/notifications.mako:1244
+#: sickrage/core/webserver/views/config/notifications.mako:1324
+#: sickrage/core/webserver/views/config/notifications.mako:1535
+#: sickrage/core/webserver/views/config/notifications.mako:1625
+#: sickrage/core/webserver/views/config/notifications.mako:1749
+#: sickrage/core/webserver/views/config/notifications.mako:1843
+#: sickrage/core/webserver/views/config/notifications.mako:1965
+#: sickrage/core/webserver/views/config/notifications.mako:2077
+#: sickrage/core/webserver/views/config/notifications.mako:2219
+#: sickrage/core/webserver/views/config/notifications.mako:2404
+#: sickrage/core/webserver/views/config/notifications.mako:2549
+#: sickrage/core/webserver/views/config/notifications.mako:2805
+#: sickrage/core/webserver/views/config/notifications.mako:3036
+#: sickrage/core/webserver/views/config/notifications.mako:3131
+#: sickrage/core/webserver/views/config/notifications.mako:3296
 #: sickrage/core/webserver/views/config/postprocessing.mako:388
 #: sickrage/core/webserver/views/config/postprocessing.mako:1358
 #: sickrage/core/webserver/views/config/providers.mako:118
@@ -736,27 +736,27 @@ msgstr ""
 #: sickrage/core/webserver/views/config/notifications.mako:207
 #: sickrage/core/webserver/views/config/notifications.mako:348
 #: sickrage/core/webserver/views/config/notifications.mako:477
-#: sickrage/core/webserver/views/config/notifications.mako:549
-#: sickrage/core/webserver/views/config/notifications.mako:650
-#: sickrage/core/webserver/views/config/notifications.mako:786
-#: sickrage/core/webserver/views/config/notifications.mako:821
-#: sickrage/core/webserver/views/config/notifications.mako:891
-#: sickrage/core/webserver/views/config/notifications.mako:982
-#: sickrage/core/webserver/views/config/notifications.mako:1095
-#: sickrage/core/webserver/views/config/notifications.mako:1228
-#: sickrage/core/webserver/views/config/notifications.mako:1303
-#: sickrage/core/webserver/views/config/notifications.mako:1512
-#: sickrage/core/webserver/views/config/notifications.mako:1604
-#: sickrage/core/webserver/views/config/notifications.mako:1729
-#: sickrage/core/webserver/views/config/notifications.mako:1823
-#: sickrage/core/webserver/views/config/notifications.mako:1944
-#: sickrage/core/webserver/views/config/notifications.mako:2055
-#: sickrage/core/webserver/views/config/notifications.mako:2199
-#: sickrage/core/webserver/views/config/notifications.mako:2384
-#: sickrage/core/webserver/views/config/notifications.mako:2530
-#: sickrage/core/webserver/views/config/notifications.mako:2785
-#: sickrage/core/webserver/views/config/notifications.mako:3017
-#: sickrage/core/webserver/views/config/notifications.mako:3112
+#: sickrage/core/webserver/views/config/notifications.mako:589
+#: sickrage/core/webserver/views/config/notifications.mako:690
+#: sickrage/core/webserver/views/config/notifications.mako:826
+#: sickrage/core/webserver/views/config/notifications.mako:861
+#: sickrage/core/webserver/views/config/notifications.mako:931
+#: sickrage/core/webserver/views/config/notifications.mako:1022
+#: sickrage/core/webserver/views/config/notifications.mako:1135
+#: sickrage/core/webserver/views/config/notifications.mako:1268
+#: sickrage/core/webserver/views/config/notifications.mako:1343
+#: sickrage/core/webserver/views/config/notifications.mako:1552
+#: sickrage/core/webserver/views/config/notifications.mako:1644
+#: sickrage/core/webserver/views/config/notifications.mako:1769
+#: sickrage/core/webserver/views/config/notifications.mako:1863
+#: sickrage/core/webserver/views/config/notifications.mako:1984
+#: sickrage/core/webserver/views/config/notifications.mako:2095
+#: sickrage/core/webserver/views/config/notifications.mako:2239
+#: sickrage/core/webserver/views/config/notifications.mako:2424
+#: sickrage/core/webserver/views/config/notifications.mako:2570
+#: sickrage/core/webserver/views/config/notifications.mako:2825
+#: sickrage/core/webserver/views/config/notifications.mako:3057
+#: sickrage/core/webserver/views/config/notifications.mako:3152
 msgid "Enable"
 msgstr "Enable"
 
@@ -782,20 +782,20 @@ msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:95
 #: sickrage/core/webserver/views/config/notifications.mako:178
-#: sickrage/core/webserver/views/config/notifications.mako:522
-#: sickrage/core/webserver/views/config/notifications.mako:625
-#: sickrage/core/webserver/views/config/notifications.mako:759
-#: sickrage/core/webserver/views/config/notifications.mako:1197
-#: sickrage/core/webserver/views/config/notifications.mako:1278
-#: sickrage/core/webserver/views/config/notifications.mako:1578
-#: sickrage/core/webserver/views/config/notifications.mako:1702
-#: sickrage/core/webserver/views/config/notifications.mako:1796
-#: sickrage/core/webserver/views/config/notifications.mako:1918
-#: sickrage/core/webserver/views/config/notifications.mako:2502
-#: sickrage/core/webserver/views/config/notifications.mako:2758
-#: sickrage/core/webserver/views/config/notifications.mako:2989
-#: sickrage/core/webserver/views/config/notifications.mako:3084
-#: sickrage/core/webserver/views/config/notifications.mako:3249
+#: sickrage/core/webserver/views/config/notifications.mako:562
+#: sickrage/core/webserver/views/config/notifications.mako:665
+#: sickrage/core/webserver/views/config/notifications.mako:799
+#: sickrage/core/webserver/views/config/notifications.mako:1237
+#: sickrage/core/webserver/views/config/notifications.mako:1318
+#: sickrage/core/webserver/views/config/notifications.mako:1618
+#: sickrage/core/webserver/views/config/notifications.mako:1742
+#: sickrage/core/webserver/views/config/notifications.mako:1836
+#: sickrage/core/webserver/views/config/notifications.mako:1958
+#: sickrage/core/webserver/views/config/notifications.mako:2542
+#: sickrage/core/webserver/views/config/notifications.mako:2798
+#: sickrage/core/webserver/views/config/notifications.mako:3029
+#: sickrage/core/webserver/views/config/notifications.mako:3124
+#: sickrage/core/webserver/views/config/notifications.mako:3289
 msgid "Click below to test."
 msgstr "Clique abaixo para testar."
 
@@ -1080,11 +1080,11 @@ msgstr "exibir datas e horas em seu fuso horário ou o fuso de horário de rede 
 #: sickrage/core/webserver/views/config/general.mako:627
 #: sickrage/core/webserver/views/config/general.mako:1098
 #: sickrage/core/webserver/views/config/general.mako:1140
-#: sickrage/core/webserver/views/config/notifications.mako:793
-#: sickrage/core/webserver/views/config/notifications.mako:828
-#: sickrage/core/webserver/views/config/notifications.mako:898
-#: sickrage/core/webserver/views/config/notifications.mako:2391
-#: sickrage/core/webserver/views/config/notifications.mako:2476
+#: sickrage/core/webserver/views/config/notifications.mako:833
+#: sickrage/core/webserver/views/config/notifications.mako:868
+#: sickrage/core/webserver/views/config/notifications.mako:938
+#: sickrage/core/webserver/views/config/notifications.mako:2431
+#: sickrage/core/webserver/views/config/notifications.mako:2516
 #: sickrage/core/webserver/views/config/postprocessing.mako:39
 #: sickrage/core/webserver/views/config/postprocessing.mako:97
 #: sickrage/core/webserver/views/config/postprocessing.mako:260
@@ -1161,7 +1161,7 @@ msgstr "Nome de usuário do HTTP"
 #: sickrage/core/webserver/views/config/notifications.mako:278
 #: sickrage/core/webserver/views/config/notifications.mako:426
 #: sickrage/core/webserver/views/config/notifications.mako:442
-#: sickrage/core/webserver/views/config/notifications.mako:1058
+#: sickrage/core/webserver/views/config/notifications.mako:1098
 #: sickrage/core/webserver/views/config/search.mako:368
 #: sickrage/core/webserver/views/config/search.mako:386
 #: sickrage/core/webserver/views/config/search.mako:852
@@ -1508,118 +1508,124 @@ msgstr "log de erros quando inacessível?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:55
 #: sickrage/core/webserver/views/config/notifications.mako:362
-#: sickrage/core/webserver/views/config/notifications.mako:835
-#: sickrage/core/webserver/views/config/notifications.mako:996
-#: sickrage/core/webserver/views/config/notifications.mako:1109
-#: sickrage/core/webserver/views/config/notifications.mako:1242
-#: sickrage/core/webserver/views/config/notifications.mako:1317
-#: sickrage/core/webserver/views/config/notifications.mako:1526
-#: sickrage/core/webserver/views/config/notifications.mako:1618
-#: sickrage/core/webserver/views/config/notifications.mako:1743
-#: sickrage/core/webserver/views/config/notifications.mako:1837
-#: sickrage/core/webserver/views/config/notifications.mako:1958
-#: sickrage/core/webserver/views/config/notifications.mako:2069
-#: sickrage/core/webserver/views/config/notifications.mako:2213
-#: sickrage/core/webserver/views/config/notifications.mako:2399
-#: sickrage/core/webserver/views/config/notifications.mako:2799
-#: sickrage/core/webserver/views/config/notifications.mako:3031
-#: sickrage/core/webserver/views/config/notifications.mako:3126
+#: sickrage/core/webserver/views/config/notifications.mako:523
+#: sickrage/core/webserver/views/config/notifications.mako:875
+#: sickrage/core/webserver/views/config/notifications.mako:1036
+#: sickrage/core/webserver/views/config/notifications.mako:1149
+#: sickrage/core/webserver/views/config/notifications.mako:1282
+#: sickrage/core/webserver/views/config/notifications.mako:1357
+#: sickrage/core/webserver/views/config/notifications.mako:1566
+#: sickrage/core/webserver/views/config/notifications.mako:1658
+#: sickrage/core/webserver/views/config/notifications.mako:1783
+#: sickrage/core/webserver/views/config/notifications.mako:1877
+#: sickrage/core/webserver/views/config/notifications.mako:1998
+#: sickrage/core/webserver/views/config/notifications.mako:2109
+#: sickrage/core/webserver/views/config/notifications.mako:2253
+#: sickrage/core/webserver/views/config/notifications.mako:2439
+#: sickrage/core/webserver/views/config/notifications.mako:2839
+#: sickrage/core/webserver/views/config/notifications.mako:3071
+#: sickrage/core/webserver/views/config/notifications.mako:3166
 msgid "Notify on snatch"
 msgstr "Informe-se sobre arrebatar"
 
 #: sickrage/core/webserver/views/config/notifications.mako:61
 #: sickrage/core/webserver/views/config/notifications.mako:368
-#: sickrage/core/webserver/views/config/notifications.mako:841
-#: sickrage/core/webserver/views/config/notifications.mako:1002
-#: sickrage/core/webserver/views/config/notifications.mako:1115
-#: sickrage/core/webserver/views/config/notifications.mako:1248
-#: sickrage/core/webserver/views/config/notifications.mako:1323
-#: sickrage/core/webserver/views/config/notifications.mako:1532
-#: sickrage/core/webserver/views/config/notifications.mako:1624
-#: sickrage/core/webserver/views/config/notifications.mako:1749
-#: sickrage/core/webserver/views/config/notifications.mako:1843
-#: sickrage/core/webserver/views/config/notifications.mako:2405
-#: sickrage/core/webserver/views/config/notifications.mako:2805
-#: sickrage/core/webserver/views/config/notifications.mako:3037
-#: sickrage/core/webserver/views/config/notifications.mako:3132
+#: sickrage/core/webserver/views/config/notifications.mako:529
+#: sickrage/core/webserver/views/config/notifications.mako:881
+#: sickrage/core/webserver/views/config/notifications.mako:1042
+#: sickrage/core/webserver/views/config/notifications.mako:1155
+#: sickrage/core/webserver/views/config/notifications.mako:1288
+#: sickrage/core/webserver/views/config/notifications.mako:1363
+#: sickrage/core/webserver/views/config/notifications.mako:1572
+#: sickrage/core/webserver/views/config/notifications.mako:1664
+#: sickrage/core/webserver/views/config/notifications.mako:1789
+#: sickrage/core/webserver/views/config/notifications.mako:1883
+#: sickrage/core/webserver/views/config/notifications.mako:2445
+#: sickrage/core/webserver/views/config/notifications.mako:2845
+#: sickrage/core/webserver/views/config/notifications.mako:3077
+#: sickrage/core/webserver/views/config/notifications.mako:3172
 msgid "send a notification when a download starts?"
 msgstr "Enviar uma notificação quando um download é iniciado?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:67
 #: sickrage/core/webserver/views/config/notifications.mako:374
-#: sickrage/core/webserver/views/config/notifications.mako:847
-#: sickrage/core/webserver/views/config/notifications.mako:1008
-#: sickrage/core/webserver/views/config/notifications.mako:1121
-#: sickrage/core/webserver/views/config/notifications.mako:1254
-#: sickrage/core/webserver/views/config/notifications.mako:1329
-#: sickrage/core/webserver/views/config/notifications.mako:1538
-#: sickrage/core/webserver/views/config/notifications.mako:1630
-#: sickrage/core/webserver/views/config/notifications.mako:1755
-#: sickrage/core/webserver/views/config/notifications.mako:1849
-#: sickrage/core/webserver/views/config/notifications.mako:1970
-#: sickrage/core/webserver/views/config/notifications.mako:2081
-#: sickrage/core/webserver/views/config/notifications.mako:2225
-#: sickrage/core/webserver/views/config/notifications.mako:2411
-#: sickrage/core/webserver/views/config/notifications.mako:2811
-#: sickrage/core/webserver/views/config/notifications.mako:3043
-#: sickrage/core/webserver/views/config/notifications.mako:3139
+#: sickrage/core/webserver/views/config/notifications.mako:536
+#: sickrage/core/webserver/views/config/notifications.mako:887
+#: sickrage/core/webserver/views/config/notifications.mako:1048
+#: sickrage/core/webserver/views/config/notifications.mako:1161
+#: sickrage/core/webserver/views/config/notifications.mako:1294
+#: sickrage/core/webserver/views/config/notifications.mako:1369
+#: sickrage/core/webserver/views/config/notifications.mako:1578
+#: sickrage/core/webserver/views/config/notifications.mako:1670
+#: sickrage/core/webserver/views/config/notifications.mako:1795
+#: sickrage/core/webserver/views/config/notifications.mako:1889
+#: sickrage/core/webserver/views/config/notifications.mako:2010
+#: sickrage/core/webserver/views/config/notifications.mako:2121
+#: sickrage/core/webserver/views/config/notifications.mako:2265
+#: sickrage/core/webserver/views/config/notifications.mako:2451
+#: sickrage/core/webserver/views/config/notifications.mako:2851
+#: sickrage/core/webserver/views/config/notifications.mako:3083
+#: sickrage/core/webserver/views/config/notifications.mako:3179
 msgid "Notify on download"
 msgstr "Informe-se sobre download"
 
 #: sickrage/core/webserver/views/config/notifications.mako:73
 #: sickrage/core/webserver/views/config/notifications.mako:380
-#: sickrage/core/webserver/views/config/notifications.mako:853
-#: sickrage/core/webserver/views/config/notifications.mako:1014
-#: sickrage/core/webserver/views/config/notifications.mako:1127
-#: sickrage/core/webserver/views/config/notifications.mako:1260
-#: sickrage/core/webserver/views/config/notifications.mako:1335
-#: sickrage/core/webserver/views/config/notifications.mako:1544
-#: sickrage/core/webserver/views/config/notifications.mako:1636
-#: sickrage/core/webserver/views/config/notifications.mako:1761
-#: sickrage/core/webserver/views/config/notifications.mako:1855
-#: sickrage/core/webserver/views/config/notifications.mako:2417
-#: sickrage/core/webserver/views/config/notifications.mako:2817
-#: sickrage/core/webserver/views/config/notifications.mako:3049
-#: sickrage/core/webserver/views/config/notifications.mako:3145
+#: sickrage/core/webserver/views/config/notifications.mako:542
+#: sickrage/core/webserver/views/config/notifications.mako:893
+#: sickrage/core/webserver/views/config/notifications.mako:1054
+#: sickrage/core/webserver/views/config/notifications.mako:1167
+#: sickrage/core/webserver/views/config/notifications.mako:1300
+#: sickrage/core/webserver/views/config/notifications.mako:1375
+#: sickrage/core/webserver/views/config/notifications.mako:1584
+#: sickrage/core/webserver/views/config/notifications.mako:1676
+#: sickrage/core/webserver/views/config/notifications.mako:1801
+#: sickrage/core/webserver/views/config/notifications.mako:1895
+#: sickrage/core/webserver/views/config/notifications.mako:2457
+#: sickrage/core/webserver/views/config/notifications.mako:2857
+#: sickrage/core/webserver/views/config/notifications.mako:3089
+#: sickrage/core/webserver/views/config/notifications.mako:3185
 msgid "send a notification when a download finishes?"
 msgstr "Enviar uma notificação quando um download termina?"
 
 #: sickrage/core/webserver/views/config/notifications.mako:79
 #: sickrage/core/webserver/views/config/notifications.mako:387
-#: sickrage/core/webserver/views/config/notifications.mako:859
-#: sickrage/core/webserver/views/config/notifications.mako:1020
-#: sickrage/core/webserver/views/config/notifications.mako:1133
-#: sickrage/core/webserver/views/config/notifications.mako:1266
-#: sickrage/core/webserver/views/config/notifications.mako:1341
-#: sickrage/core/webserver/views/config/notifications.mako:1550
-#: sickrage/core/webserver/views/config/notifications.mako:1642
-#: sickrage/core/webserver/views/config/notifications.mako:1767
-#: sickrage/core/webserver/views/config/notifications.mako:1861
-#: sickrage/core/webserver/views/config/notifications.mako:1982
-#: sickrage/core/webserver/views/config/notifications.mako:2093
-#: sickrage/core/webserver/views/config/notifications.mako:2237
-#: sickrage/core/webserver/views/config/notifications.mako:2423
-#: sickrage/core/webserver/views/config/notifications.mako:2823
-#: sickrage/core/webserver/views/config/notifications.mako:3055
-#: sickrage/core/webserver/views/config/notifications.mako:3152
+#: sickrage/core/webserver/views/config/notifications.mako:549
+#: sickrage/core/webserver/views/config/notifications.mako:899
+#: sickrage/core/webserver/views/config/notifications.mako:1060
+#: sickrage/core/webserver/views/config/notifications.mako:1173
+#: sickrage/core/webserver/views/config/notifications.mako:1306
+#: sickrage/core/webserver/views/config/notifications.mako:1381
+#: sickrage/core/webserver/views/config/notifications.mako:1590
+#: sickrage/core/webserver/views/config/notifications.mako:1682
+#: sickrage/core/webserver/views/config/notifications.mako:1807
+#: sickrage/core/webserver/views/config/notifications.mako:1901
+#: sickrage/core/webserver/views/config/notifications.mako:2022
+#: sickrage/core/webserver/views/config/notifications.mako:2133
+#: sickrage/core/webserver/views/config/notifications.mako:2277
+#: sickrage/core/webserver/views/config/notifications.mako:2463
+#: sickrage/core/webserver/views/config/notifications.mako:2863
+#: sickrage/core/webserver/views/config/notifications.mako:3095
+#: sickrage/core/webserver/views/config/notifications.mako:3192
 msgid "Notify on subtitle download"
 msgstr "Informe-se sobre o download de legendas"
 
 #: sickrage/core/webserver/views/config/notifications.mako:85
 #: sickrage/core/webserver/views/config/notifications.mako:393
-#: sickrage/core/webserver/views/config/notifications.mako:865
-#: sickrage/core/webserver/views/config/notifications.mako:1026
-#: sickrage/core/webserver/views/config/notifications.mako:1139
-#: sickrage/core/webserver/views/config/notifications.mako:1272
-#: sickrage/core/webserver/views/config/notifications.mako:1347
-#: sickrage/core/webserver/views/config/notifications.mako:1556
-#: sickrage/core/webserver/views/config/notifications.mako:1648
-#: sickrage/core/webserver/views/config/notifications.mako:1773
-#: sickrage/core/webserver/views/config/notifications.mako:1867
-#: sickrage/core/webserver/views/config/notifications.mako:2429
-#: sickrage/core/webserver/views/config/notifications.mako:2829
-#: sickrage/core/webserver/views/config/notifications.mako:3061
-#: sickrage/core/webserver/views/config/notifications.mako:3158
+#: sickrage/core/webserver/views/config/notifications.mako:555
+#: sickrage/core/webserver/views/config/notifications.mako:905
+#: sickrage/core/webserver/views/config/notifications.mako:1066
+#: sickrage/core/webserver/views/config/notifications.mako:1179
+#: sickrage/core/webserver/views/config/notifications.mako:1312
+#: sickrage/core/webserver/views/config/notifications.mako:1387
+#: sickrage/core/webserver/views/config/notifications.mako:1596
+#: sickrage/core/webserver/views/config/notifications.mako:1688
+#: sickrage/core/webserver/views/config/notifications.mako:1813
+#: sickrage/core/webserver/views/config/notifications.mako:1907
+#: sickrage/core/webserver/views/config/notifications.mako:2469
+#: sickrage/core/webserver/views/config/notifications.mako:2869
+#: sickrage/core/webserver/views/config/notifications.mako:3101
+#: sickrage/core/webserver/views/config/notifications.mako:3198
 msgid "send a notification when subtitles are downloaded?"
 msgstr "Enviar uma notificação quando legendas são baixadas?"
 
@@ -1769,1013 +1775,1013 @@ msgstr "ex. 192.168.1.100:8096"
 msgid "Emby API Key"
 msgstr "Marisete chave de API"
 
-#: sickrage/core/webserver/views/config/notifications.mako:528
+#: sickrage/core/webserver/views/config/notifications.mako:568
 msgid "Test Emby"
 msgstr "Marisete de teste"
 
-#: sickrage/core/webserver/views/config/notifications.mako:544
+#: sickrage/core/webserver/views/config/notifications.mako:584
 msgid "The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series."
 msgstr "Networked Media Jukebox, o MNJ, é a interface de jukebox de meios de comunicação oficiais disponibilizada para o Popcorn Hour 200-série."
 
-#: sickrage/core/webserver/views/config/notifications.mako:555
+#: sickrage/core/webserver/views/config/notifications.mako:595
 msgid "send update commands to NMJ?"
 msgstr "enviar comandos de atualização para Mioneural?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:563
-#: sickrage/core/webserver/views/config/notifications.mako:665
+#: sickrage/core/webserver/views/config/notifications.mako:603
+#: sickrage/core/webserver/views/config/notifications.mako:705
 msgid "Popcorn IP address"
 msgstr "Endereço IP de pipoca"
 
-#: sickrage/core/webserver/views/config/notifications.mako:572
-#: sickrage/core/webserver/views/config/notifications.mako:674
+#: sickrage/core/webserver/views/config/notifications.mako:612
+#: sickrage/core/webserver/views/config/notifications.mako:714
 msgid "ex. 192.168.1.100"
 msgstr "ex. 192.168.1.100"
 
-#: sickrage/core/webserver/views/config/notifications.mako:579
+#: sickrage/core/webserver/views/config/notifications.mako:619
 msgid "Get settings"
 msgstr "Obter configurações"
 
-#: sickrage/core/webserver/views/config/notifications.mako:582
+#: sickrage/core/webserver/views/config/notifications.mako:622
 msgid "Get Settings"
 msgstr "Obter configurações"
 
-#: sickrage/core/webserver/views/config/notifications.mako:585
+#: sickrage/core/webserver/views/config/notifications.mako:625
 msgid "the Popcorn Hour device must be powered on and NMJ running."
 msgstr "o Popcorn Hour dispositivo deve ser ligado e a funcionar MNJ."
 
-#: sickrage/core/webserver/views/config/notifications.mako:591
+#: sickrage/core/webserver/views/config/notifications.mako:631
 msgid "NMJ database"
 msgstr "Banco de dados JNM"
 
-#: sickrage/core/webserver/views/config/notifications.mako:601
-#: sickrage/core/webserver/views/config/notifications.mako:618
+#: sickrage/core/webserver/views/config/notifications.mako:641
+#: sickrage/core/webserver/views/config/notifications.mako:658
 msgid "automatically filled via the Get Settings"
 msgstr "automaticamente preenchido via a obter configurações"
 
-#: sickrage/core/webserver/views/config/notifications.mako:608
+#: sickrage/core/webserver/views/config/notifications.mako:648
 msgid "NMJ mount url"
 msgstr "MNJ montagem url"
 
-#: sickrage/core/webserver/views/config/notifications.mako:631
+#: sickrage/core/webserver/views/config/notifications.mako:671
 msgid "Test NMJ"
 msgstr "Teste JNM"
 
-#: sickrage/core/webserver/views/config/notifications.mako:645
+#: sickrage/core/webserver/views/config/notifications.mako:685
 msgid "The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series."
 msgstr "O Networked Media Jukebox, ou NMJv2, é a interface de jukebox de mídia oficial feita disponível para o Popcorn Hour 300 e 400-série."
 
-#: sickrage/core/webserver/views/config/notifications.mako:656
+#: sickrage/core/webserver/views/config/notifications.mako:696
 msgid "send update commands to NMJv2?"
 msgstr "enviar comandos de atualização para NMJv2?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:681
+#: sickrage/core/webserver/views/config/notifications.mako:721
 msgid "Database location"
 msgstr "Localização do banco de dados"
 
-#: sickrage/core/webserver/views/config/notifications.mako:689
+#: sickrage/core/webserver/views/config/notifications.mako:729
 msgid "Local Media"
 msgstr "Mídia local"
 
-#: sickrage/core/webserver/views/config/notifications.mako:698
+#: sickrage/core/webserver/views/config/notifications.mako:738
 msgid "PCH Network Media"
 msgstr "Mídia de rede PCH"
 
-#: sickrage/core/webserver/views/config/notifications.mako:706
+#: sickrage/core/webserver/views/config/notifications.mako:746
 msgid "Database instance"
 msgstr "Instância de banco de dados"
 
-#: sickrage/core/webserver/views/config/notifications.mako:724
+#: sickrage/core/webserver/views/config/notifications.mako:764
 msgid "adjust this value if the wrong database is selected."
 msgstr "ajuste esse valor, se for selecionado o banco de dados errado."
 
-#: sickrage/core/webserver/views/config/notifications.mako:730
+#: sickrage/core/webserver/views/config/notifications.mako:770
 msgid "Find database"
 msgstr "Encontrar o banco de dados"
 
-#: sickrage/core/webserver/views/config/notifications.mako:733
+#: sickrage/core/webserver/views/config/notifications.mako:773
 msgid "Find Database"
 msgstr "Encontrar o banco de dados"
 
-#: sickrage/core/webserver/views/config/notifications.mako:736
+#: sickrage/core/webserver/views/config/notifications.mako:776
 msgid "the Popcorn Hour device must be powered on."
 msgstr "o dispositivo de Popcorn Hour deve ser ligado."
 
-#: sickrage/core/webserver/views/config/notifications.mako:742
+#: sickrage/core/webserver/views/config/notifications.mako:782
 msgid "NMJv2 database"
 msgstr "NMJv2 banco de dados"
 
-#: sickrage/core/webserver/views/config/notifications.mako:752
+#: sickrage/core/webserver/views/config/notifications.mako:792
 msgid "automatically filled via the Find Database"
 msgstr "automaticamente preenchido via banco de encontrar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:764
+#: sickrage/core/webserver/views/config/notifications.mako:804
 msgid "Test NMJv2"
 msgstr "Teste NMJv2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:779
+#: sickrage/core/webserver/views/config/notifications.mako:819
 msgid "The Synology DiskStation NAS."
 msgstr "A Synology DiskStation NAS."
 
-#: sickrage/core/webserver/views/config/notifications.mako:780
+#: sickrage/core/webserver/views/config/notifications.mako:820
 msgid "Synology Indexer is the daemon running on the Synology NAS to build its media database."
 msgstr "Synology indexador é o daemon rodando sobre o Synology para construir sua base de dados de mídia."
 
-#: sickrage/core/webserver/views/config/notifications.mako:792
+#: sickrage/core/webserver/views/config/notifications.mako:832
 msgid "send Synology notifications?"
 msgstr "enviar notificações Synology?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:793
+#: sickrage/core/webserver/views/config/notifications.mako:833
 msgid "requires SickRage to be running on your Synology NAS."
 msgstr "requer SickRage ser executado em seu NAS Synology."
 
-#: sickrage/core/webserver/views/config/notifications.mako:814
+#: sickrage/core/webserver/views/config/notifications.mako:854
 msgid "Notifier"
 msgstr "Notificador"
 
-#: sickrage/core/webserver/views/config/notifications.mako:815
+#: sickrage/core/webserver/views/config/notifications.mako:855
 msgid "Synology Notifier is the notification system of Synology DSM"
 msgstr "Synology notificador é o sistema de notificação de Synology DSM"
 
-#: sickrage/core/webserver/views/config/notifications.mako:827
+#: sickrage/core/webserver/views/config/notifications.mako:867
 msgid "send notifications to the Synology Notifier?"
 msgstr "enviar notificações para o notificador Synology?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:828
+#: sickrage/core/webserver/views/config/notifications.mako:868
 msgid "requires SickRage to be running on your Synology DSM."
 msgstr "requer SickRage ser executado em seu DSM Synology."
 
-#: sickrage/core/webserver/views/config/notifications.mako:886
+#: sickrage/core/webserver/views/config/notifications.mako:926
 msgid "pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo."
 msgstr "pyTivo é o servidor de um HMO e o GoBack. Este notificador carregará os downloads concluídos para seu Tivo."
 
-#: sickrage/core/webserver/views/config/notifications.mako:897
+#: sickrage/core/webserver/views/config/notifications.mako:937
 msgid "send notifications to pyTivo?"
 msgstr "enviar notificações para pyTivo?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:898
+#: sickrage/core/webserver/views/config/notifications.mako:938
 msgid "requires the downloaded files to be accessible by pyTivo."
 msgstr "requer os arquivos baixados para ser acessível por pyTivo."
 
-#: sickrage/core/webserver/views/config/notifications.mako:907
+#: sickrage/core/webserver/views/config/notifications.mako:947
 msgid "pyTivo IP:Port"
 msgstr "pyTivo IP: Port"
 
-#: sickrage/core/webserver/views/config/notifications.mako:917
+#: sickrage/core/webserver/views/config/notifications.mako:957
 msgid "ex. 192.168.1.1:9032"
 msgstr "ex. 192.168.1.1:9032"
 
-#: sickrage/core/webserver/views/config/notifications.mako:924
+#: sickrage/core/webserver/views/config/notifications.mako:964
 msgid "pyTivo share name"
 msgstr "pyTivo nome do compartilhamento"
 
-#: sickrage/core/webserver/views/config/notifications.mako:937
+#: sickrage/core/webserver/views/config/notifications.mako:977
 msgid "value used in pyTivo Web Configuration to name the share."
 msgstr "valor usado no pyTivo Web configuração para nomear o compartilhamento."
 
-#: sickrage/core/webserver/views/config/notifications.mako:943
+#: sickrage/core/webserver/views/config/notifications.mako:983
 msgid "Tivo name"
 msgstr "TiVo de nome"
 
-#: sickrage/core/webserver/views/config/notifications.mako:956
+#: sickrage/core/webserver/views/config/notifications.mako:996
 msgid "(Messages and Settings > Account and System Information > System Information > DVR name)"
 msgstr "(Mensagens e configurações > conta e informações do sistema > sistema informações > nome DVR)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:977
+#: sickrage/core/webserver/views/config/notifications.mako:1017
 msgid "A cross-platform unobtrusive global notification system."
 msgstr "Um sistema de notificação global discreta de plataforma cruzada."
 
-#: sickrage/core/webserver/views/config/notifications.mako:988
+#: sickrage/core/webserver/views/config/notifications.mako:1028
 msgid "send Growl notifications?"
 msgstr "enviar notificações de Growl?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1032
+#: sickrage/core/webserver/views/config/notifications.mako:1072
 msgid "Growl IP:Port"
 msgstr "IP: Port rosnar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1041
+#: sickrage/core/webserver/views/config/notifications.mako:1081
 msgid "ex. 192.168.1.100:23053"
 msgstr "ex. 192.168.1.100:23053"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1048
+#: sickrage/core/webserver/views/config/notifications.mako:1088
 msgid "Growl password"
 msgstr "Senha de rosnar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1066
+#: sickrage/core/webserver/views/config/notifications.mako:1106
 msgid "Click below to rex.ster and test Growl, this is required for Growl notifications to work."
 msgstr "Clique abaixo para rex.ster e teste de rosnar, isso é necessário para as notificações do rosnado trabalhar."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1073
+#: sickrage/core/webserver/views/config/notifications.mako:1113
 msgid "Register Growl"
 msgstr "Registrar o Growl"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1090
+#: sickrage/core/webserver/views/config/notifications.mako:1130
 msgid "A Growl client for iOS."
 msgstr "Um cliente de rosnar para iOS."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1101
+#: sickrage/core/webserver/views/config/notifications.mako:1141
 msgid "send Prowl notifications?"
 msgstr "enviar notificações de espreita?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1145
+#: sickrage/core/webserver/views/config/notifications.mako:1185
 msgid "Prowl API key"
 msgstr "Chave caça API"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1157
+#: sickrage/core/webserver/views/config/notifications.mako:1197
 msgid "get your key at:"
 msgstr "obter a sua chave em:"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1165
+#: sickrage/core/webserver/views/config/notifications.mako:1205
 msgid "Prowl priority"
 msgstr "Prioridade de espreita"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1191
+#: sickrage/core/webserver/views/config/notifications.mako:1231
 msgid "priority of Prowl messages from SickRage."
 msgstr "prioridade de mensagens de Prowl da SickRage."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1203
+#: sickrage/core/webserver/views/config/notifications.mako:1243
 msgid "Test Prowl"
 msgstr "Teste Prowl"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1221
+#: sickrage/core/webserver/views/config/notifications.mako:1261
 msgid "The standard desktop notification API for Linux/*nix systems. This notifier will only function if the pynotify module is installed"
 msgstr "A notificação de área de trabalho padrão API para Linux / * nix sistemas. Este notificador só funcionará se estiver instalado o módulo pynotify"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1234
+#: sickrage/core/webserver/views/config/notifications.mako:1274
 msgid "send Libnotify notifications?"
 msgstr "enviar notificações Libnotify?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1283
+#: sickrage/core/webserver/views/config/notifications.mako:1323
 msgid "Test Libnotify"
 msgstr "Teste Libnotify"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1298
+#: sickrage/core/webserver/views/config/notifications.mako:1338
 msgid "Pushover makes it easy to send real-time notifications to your Android and iOS devices."
 msgstr "Pushover torna mais fácil para enviar notificações em tempo real para seus dispositivos iOS e Android."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1309
+#: sickrage/core/webserver/views/config/notifications.mako:1349
 msgid "send Pushover notifications?"
 msgstr "enviar notificações de moleza?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1354
+#: sickrage/core/webserver/views/config/notifications.mako:1394
 msgid "Pushover key"
 msgstr "Chave de pau mandado"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1364
+#: sickrage/core/webserver/views/config/notifications.mako:1404
 msgid "user key of your Pushover account"
 msgstr "chave de usuário de sua conta Pushover"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1371
+#: sickrage/core/webserver/views/config/notifications.mako:1411
 msgid "Pushover API key"
 msgstr "Chave de pau mandado API"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1386
+#: sickrage/core/webserver/views/config/notifications.mako:1426
 msgid "Click here"
 msgstr "Clique aqui"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1386
+#: sickrage/core/webserver/views/config/notifications.mako:1426
 msgid "to create a Pushover API key"
 msgstr "para criar uma chave API Pushover"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1392
+#: sickrage/core/webserver/views/config/notifications.mako:1432
 msgid "Pushover devices"
 msgstr "Dispositivos de moleza"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1401
+#: sickrage/core/webserver/views/config/notifications.mako:1441
 msgid "ex. device1,device2"
 msgstr "ex. device1, device2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1409
+#: sickrage/core/webserver/views/config/notifications.mako:1449
 msgid "Pushover notification sound"
 msgstr "Som de notificação de moleza"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1418
+#: sickrage/core/webserver/views/config/notifications.mako:1458
 msgid "Pushover"
 msgstr "Pau mandado"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1421
+#: sickrage/core/webserver/views/config/notifications.mako:1461
 msgid "Bike"
 msgstr "Bicicleta"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1424
+#: sickrage/core/webserver/views/config/notifications.mako:1464
 msgid "Bugle"
 msgstr "Corneta"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1427
+#: sickrage/core/webserver/views/config/notifications.mako:1467
 msgid "Cash Register"
 msgstr "Caixa registradora"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1430
+#: sickrage/core/webserver/views/config/notifications.mako:1470
 msgid "Classical"
 msgstr "Clássica"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1433
+#: sickrage/core/webserver/views/config/notifications.mako:1473
 msgid "Cosmic"
 msgstr "Cósmica"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1436
+#: sickrage/core/webserver/views/config/notifications.mako:1476
 msgid "Falling"
 msgstr "Caindo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1439
+#: sickrage/core/webserver/views/config/notifications.mako:1479
 msgid "Gamelan"
 msgstr "Gamelão"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1442
+#: sickrage/core/webserver/views/config/notifications.mako:1482
 msgid "Incoming"
 msgstr "Entrada"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1445
+#: sickrage/core/webserver/views/config/notifications.mako:1485
 msgid "Intermission"
 msgstr "Intervalo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1448
+#: sickrage/core/webserver/views/config/notifications.mako:1488
 msgid "Magic"
 msgstr "Magia"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1451
+#: sickrage/core/webserver/views/config/notifications.mako:1491
 msgid "Mechanical"
 msgstr "Mecânica"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1454
+#: sickrage/core/webserver/views/config/notifications.mako:1494
 msgid "Piano Bar"
 msgstr "Piano Bar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1457
+#: sickrage/core/webserver/views/config/notifications.mako:1497
 msgid "Siren"
 msgstr "Sirene"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1460
+#: sickrage/core/webserver/views/config/notifications.mako:1500
 msgid "Space Alarm"
 msgstr "Alarme de espaço"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1463
+#: sickrage/core/webserver/views/config/notifications.mako:1503
 msgid "Tug Boat"
 msgstr "Rebocador"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1466
+#: sickrage/core/webserver/views/config/notifications.mako:1506
 msgid "Alien Alarm (long)"
 msgstr "Alarme alienígena (longo)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1469
+#: sickrage/core/webserver/views/config/notifications.mako:1509
 msgid "Climb (long)"
 msgstr "Escalada (longo)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1472
+#: sickrage/core/webserver/views/config/notifications.mako:1512
 msgid "Persistent (long)"
 msgstr "Persistente (longo)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1475
+#: sickrage/core/webserver/views/config/notifications.mako:1515
 msgid "Pushover Echo (long)"
 msgstr "Pushover Echo (longo)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1478
+#: sickrage/core/webserver/views/config/notifications.mako:1518
 msgid "Up Down (long)"
 msgstr "Cima para baixo (longo)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1481
+#: sickrage/core/webserver/views/config/notifications.mako:1521
 msgid "None (silent)"
 msgstr "Nenhum (silêncio)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1484
+#: sickrage/core/webserver/views/config/notifications.mako:1524
 msgid "Device specific"
 msgstr "Dispositivo específico"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1489
+#: sickrage/core/webserver/views/config/notifications.mako:1529
 msgid "Choose notification sound to use"
 msgstr "Escolher o som de notificação para usar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1494
+#: sickrage/core/webserver/views/config/notifications.mako:1534
 msgid "Test Pushover"
 msgstr "Pushover teste"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1507
+#: sickrage/core/webserver/views/config/notifications.mako:1547
 msgid "Read your messages where and when you want them!"
 msgstr "Ler suas mensagens onde e quando quiser!"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1518
+#: sickrage/core/webserver/views/config/notifications.mako:1558
 msgid "send Boxcar2 notifications?"
 msgstr "enviar notificações de Boxcar2?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1562
+#: sickrage/core/webserver/views/config/notifications.mako:1602
 msgid "Boxcar2 access token"
 msgstr "Token de acesso de Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1571
+#: sickrage/core/webserver/views/config/notifications.mako:1611
 msgid "access token for your Boxcar2 account"
 msgstr "token de acesso para sua conta Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1584
+#: sickrage/core/webserver/views/config/notifications.mako:1624
 msgid "Test Boxcar2"
 msgstr "Teste Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1599
+#: sickrage/core/webserver/views/config/notifications.mako:1639
 msgid "Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device."
 msgstr "Informe-se que meu Android é um Android App como Prowl e API que oferece uma maneira fácil para enviar notificações de seu aplicativo diretamente para seu dispositivo Android."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1610
+#: sickrage/core/webserver/views/config/notifications.mako:1650
 msgid "send NMA notifications?"
 msgstr "enviar notificações de NMA?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1654
+#: sickrage/core/webserver/views/config/notifications.mako:1694
 msgid "NMA API key"
 msgstr "Chave da API de NMA"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1663
+#: sickrage/core/webserver/views/config/notifications.mako:1703
 msgid "ex. key1,key2 (max 5)"
 msgstr "ex. key1, key2 (máx. 5)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1670
+#: sickrage/core/webserver/views/config/notifications.mako:1710
 msgid "NMA priority"
 msgstr "Prioridade NMA"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1679
+#: sickrage/core/webserver/views/config/notifications.mako:1719
 msgid "Very Low"
 msgstr "Muito baixa"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1682
+#: sickrage/core/webserver/views/config/notifications.mako:1722
 msgid "Moderate"
 msgstr "Moderada"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1685
+#: sickrage/core/webserver/views/config/notifications.mako:1725
 #: sickrage/core/webserver/views/config/search.mako:662
 msgid "Normal"
 msgstr "Normal"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1688
+#: sickrage/core/webserver/views/config/notifications.mako:1728
 #: sickrage/core/webserver/views/config/search.mako:665
 msgid "High"
 msgstr "Alta"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1691
+#: sickrage/core/webserver/views/config/notifications.mako:1731
 msgid "Emergency"
 msgstr "Emergência"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1696
+#: sickrage/core/webserver/views/config/notifications.mako:1736
 msgid "priority of NMA messages from SickRage."
 msgstr "prioridade de mensagens NMA da SickRage."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1708
+#: sickrage/core/webserver/views/config/notifications.mako:1748
 msgid "Test NMA"
 msgstr "Teste de NMA"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1724
+#: sickrage/core/webserver/views/config/notifications.mako:1764
 msgid "Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8."
 msgstr "Pushalot é uma plataforma para receber notificações de push personalizada para dispositivos conectados, rodando Windows Phone ou Windows 8."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1735
+#: sickrage/core/webserver/views/config/notifications.mako:1775
 msgid "send Pushalot notifications?"
 msgstr "enviar notificações de Pushalot?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1779
+#: sickrage/core/webserver/views/config/notifications.mako:1819
 msgid "Pushalot authorization token"
 msgstr "Pushalot token de autorização"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1789
+#: sickrage/core/webserver/views/config/notifications.mako:1829
 msgid "authorization token of your Pushalot account."
 msgstr "token de autorização de sua conta de Pushalot."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1802
+#: sickrage/core/webserver/views/config/notifications.mako:1842
 msgid "Test Pushalot"
 msgstr "Teste Pushalot"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1818
+#: sickrage/core/webserver/views/config/notifications.mako:1858
 msgid "Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers."
 msgstr "Pushbullet é uma plataforma para receber notificações de push personalizada para dispositivos conectados, rodando Android e desktop browsers Chrome."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1829
+#: sickrage/core/webserver/views/config/notifications.mako:1869
 msgid "send Pushbullet notifications?"
 msgstr "enviar notificações de Pushbullet?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1873
+#: sickrage/core/webserver/views/config/notifications.mako:1913
 msgid "Pushbullet API key"
 msgstr "Chave da API Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1883
+#: sickrage/core/webserver/views/config/notifications.mako:1923
 msgid "API key of your Pushbullet account"
 msgstr "Chave da API de sua conta Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1890
+#: sickrage/core/webserver/views/config/notifications.mako:1930
 msgid "Pushbullet devices"
 msgstr "Dispositivos de Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1902
+#: sickrage/core/webserver/views/config/notifications.mako:1942
 msgid "select device you wish to push to."
 msgstr "Selecione o dispositivo que você deseja empurrar para."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1910
+#: sickrage/core/webserver/views/config/notifications.mako:1950
 msgid "Update device list"
 msgstr "Atualização da lista de dispositivo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1924
+#: sickrage/core/webserver/views/config/notifications.mako:1964
 msgid "Test Pushbullet"
 msgstr "Teste Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1939
+#: sickrage/core/webserver/views/config/notifications.mako:1979
 msgid "Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API."
 msgstr "Grátis Mobile é uma famosa rede de celular francês provider.<br> fornece uma API de SMS gratuito para seus clientes."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1950
+#: sickrage/core/webserver/views/config/notifications.mako:1990
 msgid "send SMS notifications?"
 msgstr "enviar notificações por SMS?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1964
+#: sickrage/core/webserver/views/config/notifications.mako:2004
 msgid "send a SMS when a download starts?"
 msgstr "Envie um SMS quando inicia um download?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1976
+#: sickrage/core/webserver/views/config/notifications.mako:2016
 msgid "send a SMS when a download finishes?"
 msgstr "Envie um SMS quando um download termina?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1988
+#: sickrage/core/webserver/views/config/notifications.mako:2028
 msgid "send a SMS when subtitles are downloaded?"
 msgstr "Envie um SMS quando legendas são baixadas?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1994
+#: sickrage/core/webserver/views/config/notifications.mako:2034
 msgid "Free Mobile customer ID"
 msgstr "ID de cliente móvel livre"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2004
-#: sickrage/core/webserver/views/config/notifications.mako:2117
-#: sickrage/core/webserver/views/config/notifications.mako:2262
-#: sickrage/core/webserver/views/config/notifications.mako:2309
+#: sickrage/core/webserver/views/config/notifications.mako:2044
+#: sickrage/core/webserver/views/config/notifications.mako:2157
+#: sickrage/core/webserver/views/config/notifications.mako:2302
+#: sickrage/core/webserver/views/config/notifications.mako:2349
 msgid "ex. 12345678"
 msgstr "ex. 12345678"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2011
+#: sickrage/core/webserver/views/config/notifications.mako:2051
 msgid "Free Mobile API Key"
 msgstr "Chave de API móvel livre"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2021
-#: sickrage/core/webserver/views/config/notifications.mako:2153
+#: sickrage/core/webserver/views/config/notifications.mako:2061
+#: sickrage/core/webserver/views/config/notifications.mako:2193
 msgid "enter yourt API key"
 msgstr "Inserir chave yourt API"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2029
-#: sickrage/core/webserver/views/config/notifications.mako:2171
-#: sickrage/core/webserver/views/config/notifications.mako:2356
+#: sickrage/core/webserver/views/config/notifications.mako:2069
+#: sickrage/core/webserver/views/config/notifications.mako:2211
+#: sickrage/core/webserver/views/config/notifications.mako:2396
 msgid "Click below to test your settings."
 msgstr "Clique abaixo para testar suas configurações."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2036
+#: sickrage/core/webserver/views/config/notifications.mako:2076
 msgid "Test SMS"
 msgstr "Teste SMS"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2050
+#: sickrage/core/webserver/views/config/notifications.mako:2090
 msgid "Telegram is a cloud-based instant messaging service"
 msgstr "Telegrama é um serviço de mensagens instantâneas baseado em nuvem"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2061
+#: sickrage/core/webserver/views/config/notifications.mako:2101
 msgid "send Telegram notifications?"
 msgstr "enviar notificações de telegrama?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2075
-#: sickrage/core/webserver/views/config/notifications.mako:2219
+#: sickrage/core/webserver/views/config/notifications.mako:2115
+#: sickrage/core/webserver/views/config/notifications.mako:2259
 msgid "send a message when a download starts?"
 msgstr "Enviar uma mensagem quando inicia um download?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2087
-#: sickrage/core/webserver/views/config/notifications.mako:2231
+#: sickrage/core/webserver/views/config/notifications.mako:2127
+#: sickrage/core/webserver/views/config/notifications.mako:2271
 msgid "send a message when a download finishes?"
 msgstr "Enviar uma mensagem quando um download termina?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2099
-#: sickrage/core/webserver/views/config/notifications.mako:2243
+#: sickrage/core/webserver/views/config/notifications.mako:2139
+#: sickrage/core/webserver/views/config/notifications.mako:2283
 msgid "send a message when subtitles are downloaded?"
 msgstr "Enviar uma mensagem quando legendas são baixadas?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2105
+#: sickrage/core/webserver/views/config/notifications.mako:2145
 msgid "User/Group ID"
 msgstr "ID de usuário/grupo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2125
+#: sickrage/core/webserver/views/config/notifications.mako:2165
 msgid "contact @myidbot on Telegram to get an ID"
 msgstr "contato @myidbot em telegrama para obter um ID"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2132
+#: sickrage/core/webserver/views/config/notifications.mako:2172
 #: sickrage/core/webserver/views/config/postprocessing.mako:65
 msgid "NOTE"
 msgstr "NOTA"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2133
+#: sickrage/core/webserver/views/config/notifications.mako:2173
 msgid "Don't forget to talk with your bot at least one time if you get a 403 error."
 msgstr "Não se esqueça de falar com seu bot, pelo menos uma vez, se você receber um erro 403."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2141
+#: sickrage/core/webserver/views/config/notifications.mako:2181
 msgid "Bot API Key"
 msgstr "Chave de API do bot"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2161
+#: sickrage/core/webserver/views/config/notifications.mako:2201
 msgid "contact @BotFather on Telegram to set up one"
 msgstr "entrar em contato com @BotFather no telegrama a criar uma"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2178
+#: sickrage/core/webserver/views/config/notifications.mako:2218
 msgid "Test Telegram"
 msgstr "Telegrama de teste"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2193
+#: sickrage/core/webserver/views/config/notifications.mako:2233
 msgid "Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device."
 msgstr "Twilio é um webservice API que permite que você se comunicar diretamente com um número de celular. Este notificador enviará um texto diretamente para seu dispositivo móvel."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2205
+#: sickrage/core/webserver/views/config/notifications.mako:2245
 msgid "text your mobile device?"
 msgstr "texto seu dispositivo móvel?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2250
+#: sickrage/core/webserver/views/config/notifications.mako:2290
 msgid "Twilio Account SID"
 msgstr "SID da conta de twilio"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2270
+#: sickrage/core/webserver/views/config/notifications.mako:2310
 msgid "account SID of your Twilio account."
 msgstr "conta SID da conta do Twilio."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2279
+#: sickrage/core/webserver/views/config/notifications.mako:2319
 msgid "Twilio Auth Token"
 msgstr "Twilio Token de autenticação"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2289
+#: sickrage/core/webserver/views/config/notifications.mako:2329
 msgid "enter your auth token"
 msgstr "Digite seu token de autenticação"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2297
+#: sickrage/core/webserver/views/config/notifications.mako:2337
 msgid "Twilio Phone SID"
 msgstr "Telefone twilio SID"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2317
+#: sickrage/core/webserver/views/config/notifications.mako:2357
 msgid "phone SID that you would like to send the sms from."
 msgstr "SID, o que você gostaria de enviar o sms a partir de telefone."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2326
+#: sickrage/core/webserver/views/config/notifications.mako:2366
 msgid "Your phone number"
 msgstr "Seu número de telefone"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2338
+#: sickrage/core/webserver/views/config/notifications.mako:2378
 msgid "ex. +1-###-###-####"
 msgstr "ex. + 1-# # #-# # #-# # #"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2346
+#: sickrage/core/webserver/views/config/notifications.mako:2386
 msgid "phone number that will receive the sms."
 msgstr "número de telefone que irá receber a sms."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2363
+#: sickrage/core/webserver/views/config/notifications.mako:2403
 msgid "Test Twilio"
 msgstr "Teste Twilio"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2379
+#: sickrage/core/webserver/views/config/notifications.mako:2419
 msgid "A social networking and microblogging service, enabling its users to send and read other users messages called tweets."
 msgstr "Uma rede social e serviço de microblogging, permitindo que seus usuários enviar e ler mensagens de outros usuários chamados tweets."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2390
+#: sickrage/core/webserver/views/config/notifications.mako:2430
 msgid "post tweets on Twitter?"
 msgstr "postar tweets no Twitter?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2391
+#: sickrage/core/webserver/views/config/notifications.mako:2431
 msgid "you may want to use a secondary account."
 msgstr "Você pode querer usar uma conta secundária."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2435
+#: sickrage/core/webserver/views/config/notifications.mako:2475
 msgid "Send direct message"
 msgstr "Envie mensagem direta"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2441
+#: sickrage/core/webserver/views/config/notifications.mako:2481
 msgid "send a notification via Direct Message, not via status update"
 msgstr "Enviar uma notificação via mensagem direta, não através de atualização de status"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2447
+#: sickrage/core/webserver/views/config/notifications.mako:2487
 msgid "Send DM to"
 msgstr "Enviar DM para"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2457
+#: sickrage/core/webserver/views/config/notifications.mako:2497
 msgid "Twitter account to send messages to"
 msgstr "Twitter conta para enviar mensagens para"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2464
+#: sickrage/core/webserver/views/config/notifications.mako:2504
 msgid "Step One"
 msgstr "Primeiro passo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2469
+#: sickrage/core/webserver/views/config/notifications.mako:2509
 msgid "Request Authorization"
 msgstr "Solicitar autorização"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2474
+#: sickrage/core/webserver/views/config/notifications.mako:2514
 msgid "Click the \"Request Authorization\" button."
 msgstr "Clique no botão \"Solicitar autorização\"."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2475
+#: sickrage/core/webserver/views/config/notifications.mako:2515
 msgid "This will open a new page containing an auth key."
 msgstr "Isto irá abrir uma nova página que contém uma chave de autenticação."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2476
+#: sickrage/core/webserver/views/config/notifications.mako:2516
 msgid "if nothing happens check your popup blocker."
 msgstr "se nada acontecer, verifique seu bloqueador de pop-up."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2483
+#: sickrage/core/webserver/views/config/notifications.mako:2523
 msgid "Step Two"
 msgstr "Passo dois"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2492
+#: sickrage/core/webserver/views/config/notifications.mako:2532
 msgid "Enter the key Twitter gave you"
 msgstr "Inserir a chave do que Twitter te deu"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2508
+#: sickrage/core/webserver/views/config/notifications.mako:2548
 msgid "Test Twitter"
 msgstr "Teste Twitter"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2525
+#: sickrage/core/webserver/views/config/notifications.mako:2565
 msgid "Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you'll enjoy!"
 msgstr "Trakt ajuda a manter um registro de programas de TV e filmes que você está assistindo. Com base em seus favoritos, trakt recomenda shows adicionais e você vai desfrutar de filmes!"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2536
+#: sickrage/core/webserver/views/config/notifications.mako:2576
 msgid "send Trakt.tv notifications?"
 msgstr "enviar notificações de Trakt.tv?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2544
+#: sickrage/core/webserver/views/config/notifications.mako:2584
 msgid "Trakt username"
 msgstr "Trakt username"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2554
+#: sickrage/core/webserver/views/config/notifications.mako:2594
 msgid "username"
 msgstr "nome de usuário"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2563
+#: sickrage/core/webserver/views/config/notifications.mako:2603
 msgid "Trakt PIN"
 msgstr "Trakt PIN"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2571
+#: sickrage/core/webserver/views/config/notifications.mako:2611
 msgid "authorization PIN code"
 msgstr "autorização código PIN"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2575
+#: sickrage/core/webserver/views/config/notifications.mako:2615
 msgid "Authorize"
 msgstr "Autorizar"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2581
+#: sickrage/core/webserver/views/config/notifications.mako:2621
 msgid "Authorize SiCKRAGE"
 msgstr "Autorizar a SiCKRAGE"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2584
+#: sickrage/core/webserver/views/config/notifications.mako:2624
 msgid "API Timeout"
 msgstr "Tempo limite de API"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2599
+#: sickrage/core/webserver/views/config/notifications.mako:2639
 msgid "Seconds to wait for Trakt API to respond. (Use 0 to wait forever)"
 msgstr "Segundos de espera para Trakt API responder. (Use 0 para esperar para sempre)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2605
+#: sickrage/core/webserver/views/config/notifications.mako:2645
 msgid "Default indexer"
 msgstr "Indexador padrão"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2623
+#: sickrage/core/webserver/views/config/notifications.mako:2663
 msgid "Sync libraries"
 msgstr "Bibliotecas de sincronização"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2629
+#: sickrage/core/webserver/views/config/notifications.mako:2669
 msgid "sync your SickRage show library with your trakt show library."
 msgstr "Sincronize sua biblioteca de programa SickRage com a sua biblioteca de mostrar trakt."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2636
+#: sickrage/core/webserver/views/config/notifications.mako:2676
 msgid "Remove Episodes From Collection"
 msgstr "Remover episódios de coleção"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2642
+#: sickrage/core/webserver/views/config/notifications.mako:2682
 msgid "Remove an episode from your Trakt collection if it is not in your SickRage library."
 msgstr "Remova um episódio de sua coleção Trakt, se não for na sua biblioteca de SickRage."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2649
+#: sickrage/core/webserver/views/config/notifications.mako:2689
 msgid "Sync watchlist"
 msgstr "Cotações de sincronização"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2655
+#: sickrage/core/webserver/views/config/notifications.mako:2695
 msgid "sync your SickRage show watchlist with your trakt show watchlist (either Show and Episode)."
 msgstr "Sincronize sua lista de vigiados SickRage mostrar com seu trakt Mostrar lista de vigiados (programa eo episódio)."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2657
+#: sickrage/core/webserver/views/config/notifications.mako:2697
 msgid "Episode will be added on watch list when wanted or snatched and will be removed when downloaded"
 msgstr "Episódio será adicionado na lista de observação quando quis ou arrebatou e será removido quando baixei"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2664
+#: sickrage/core/webserver/views/config/notifications.mako:2704
 msgid "Watchlist add method"
 msgstr "Watchlist método add"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2674
+#: sickrage/core/webserver/views/config/notifications.mako:2714
 msgid "Skip All"
 msgstr "Ignorar todos"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2677
+#: sickrage/core/webserver/views/config/notifications.mako:2717
 msgid "Download Pilot Only"
 msgstr "Download piloto só"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2680
+#: sickrage/core/webserver/views/config/notifications.mako:2720
 msgid "Get whole show"
 msgstr "Se o show inteiro"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2685
+#: sickrage/core/webserver/views/config/notifications.mako:2725
 msgid "method in which to download episodes for new show's."
 msgstr "método baixar episódios do novo programa."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2691
+#: sickrage/core/webserver/views/config/notifications.mako:2731
 msgid "Remove episode"
 msgstr "Remover o episódio"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2697
+#: sickrage/core/webserver/views/config/notifications.mako:2737
 msgid "remove an episode from your watchlist after it is downloaded."
 msgstr "Remova um episódio da sua lista de vigiados, depois é feito o download."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2703
+#: sickrage/core/webserver/views/config/notifications.mako:2743
 msgid "Remove series"
 msgstr "Remover a série"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2709
+#: sickrage/core/webserver/views/config/notifications.mako:2749
 msgid "remove the whole series from your watchlist after any download."
 msgstr "Remova toda a série da sua lista de vigiados após qualquer download."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2715
+#: sickrage/core/webserver/views/config/notifications.mako:2755
 msgid "Remove watched show"
 msgstr "Remover programa assistido"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2721
+#: sickrage/core/webserver/views/config/notifications.mako:2761
 msgid "remove the show from sickrage if it's ended and completely watched"
 msgstr "remover o show de sickrage, se ele tiver terminado e assisti completamente"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2727
+#: sickrage/core/webserver/views/config/notifications.mako:2767
 msgid "Start paused"
 msgstr "Começar em pausa"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2733
+#: sickrage/core/webserver/views/config/notifications.mako:2773
 msgid "show's grabbed from your trakt watchlist start paused."
 msgstr "show do (a) agarrou da sua lista de vigiados trakt começar em pausa."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2740
+#: sickrage/core/webserver/views/config/notifications.mako:2780
 msgid "Trakt blackList name"
 msgstr "Nome de lista negra Trakt"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2752
+#: sickrage/core/webserver/views/config/notifications.mako:2792
 msgid "Name(slug) of list on Trakt for blacklisting show on 'Add from Trakt' page"
 msgstr "Name(Slug) da lista na Trakt para lista negra mostrar na página 'Adicionar de Trakt'"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2764
+#: sickrage/core/webserver/views/config/notifications.mako:2804
 msgid "Test Trakt"
 msgstr "Teste Trakt"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2780
+#: sickrage/core/webserver/views/config/notifications.mako:2820
 msgid "Allows configuration of email notifications on a per show basis."
 msgstr "Permite a configuração de notificações de e-mail em uma base por programa."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2791
+#: sickrage/core/webserver/views/config/notifications.mako:2831
 msgid "send email notifications?"
 msgstr "enviar notificações por email?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2835
+#: sickrage/core/webserver/views/config/notifications.mako:2875
 msgid "SMTP host"
 msgstr "Host SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2844
+#: sickrage/core/webserver/views/config/notifications.mako:2884
 msgid "SMTP server address"
 msgstr "Endereço do servidor SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2851
+#: sickrage/core/webserver/views/config/notifications.mako:2891
 msgid "SMTP port"
 msgstr "Porta SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2860
+#: sickrage/core/webserver/views/config/notifications.mako:2900
 msgid "SMTP server port number"
 msgstr "Número de porta do servidor SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2867
+#: sickrage/core/webserver/views/config/notifications.mako:2907
 msgid "SMTP from"
 msgstr "SMTP de"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2876
+#: sickrage/core/webserver/views/config/notifications.mako:2916
 msgid "sender email address"
 msgstr "Endereço de e-mail do remetente"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2883
+#: sickrage/core/webserver/views/config/notifications.mako:2923
 msgid "Use TLS"
 msgstr "Uso TLS"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2889
+#: sickrage/core/webserver/views/config/notifications.mako:2929
 msgid "check to use TLS encryption."
 msgstr "seleção para usar criptografia TLS."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2895
+#: sickrage/core/webserver/views/config/notifications.mako:2935
 msgid "SMTP user"
 msgstr "Usuário do SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2904
-#: sickrage/core/webserver/views/config/notifications.mako:2920
+#: sickrage/core/webserver/views/config/notifications.mako:2944
+#: sickrage/core/webserver/views/config/notifications.mako:2960
 msgid "optional"
 msgstr "opcional"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2911
+#: sickrage/core/webserver/views/config/notifications.mako:2951
 msgid "SMTP password"
 msgstr "Senha de SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2928
+#: sickrage/core/webserver/views/config/notifications.mako:2968
 msgid "Global email list"
 msgstr "Lista de e-mail global"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2940
+#: sickrage/core/webserver/views/config/notifications.mako:2980
 msgid "all emails here receive notifications for"
 msgstr "todos os e-mails aqui recebem notificações para"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2940
+#: sickrage/core/webserver/views/config/notifications.mako:2980
 msgid "all"
 msgstr "todos os"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2940
+#: sickrage/core/webserver/views/config/notifications.mako:2980
 msgid "shows."
 msgstr "programas."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2946
+#: sickrage/core/webserver/views/config/notifications.mako:2986
 msgid "Show notification list"
 msgstr "Mostrar a lista de notificação"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2956
+#: sickrage/core/webserver/views/config/notifications.mako:2996
 msgid "Select a Show"
 msgstr "Selecione um espetáculo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2960
+#: sickrage/core/webserver/views/config/notifications.mako:3000
 msgid "configure per show notifications here."
 msgstr "Configure por mostrar notificações aqui."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2975
+#: sickrage/core/webserver/views/config/notifications.mako:3015
 msgid "configure per-show notifications here by entering email addresses, separated by commas, after selecting a show in the drop-down box. Be sure to activate the Save for this show button below after each entry."
 msgstr "Configure notificações por-show aqui digitando endereços de e-mail, separados por vírgulas, depois de selecionar um programa na caixa drop-down. Não se esqueça de ativar o salvar para este botão Mostrar abaixo após cada entrada."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2981
+#: sickrage/core/webserver/views/config/notifications.mako:3021
 msgid "Save for this show"
 msgstr "Salvar para este show"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2995
+#: sickrage/core/webserver/views/config/notifications.mako:3035
 msgid "Test Email"
 msgstr "E-mail de teste"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3011
+#: sickrage/core/webserver/views/config/notifications.mako:3051
 msgid "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams."
 msgstr "Folga reúne toda a sua comunicação em um só lugar. É em tempo real de mensagens, arquivamento e busca de equipes modernas."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3023
+#: sickrage/core/webserver/views/config/notifications.mako:3063
 msgid "send slack notifications?"
 msgstr "enviar notificações de folga?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3067
+#: sickrage/core/webserver/views/config/notifications.mako:3107
 msgid "Slack Incoming Webhook"
 msgstr "Webhook entrada frouxo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3076
+#: sickrage/core/webserver/views/config/notifications.mako:3116
 msgid "Slack webhook"
 msgstr "Webhook de folga"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3090
+#: sickrage/core/webserver/views/config/notifications.mako:3130
 msgid "Test Slack"
 msgstr "Folga de teste"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3106
+#: sickrage/core/webserver/views/config/notifications.mako:3146
 msgid "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone."
 msgstr "Texto e voz de tudo-em-um bate-papo para gamers que é gratuito, seguro e funciona em seu desktop e o telefone."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3118
+#: sickrage/core/webserver/views/config/notifications.mako:3158
 msgid "send discord notifications?"
 msgstr "enviar notificações de discórdia?"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3165
+#: sickrage/core/webserver/views/config/notifications.mako:3205
 msgid "Discord Incoming Webhook"
 msgstr "Webhook entrada de discórdia"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3176
+#: sickrage/core/webserver/views/config/notifications.mako:3216
 msgid "Discord webhook"
 msgstr "Webhook da discórdia"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3182
+#: sickrage/core/webserver/views/config/notifications.mako:3222
 msgid "Create webhook under channel settings."
 msgstr "Crie webhook em configurações de canal."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3189
-#: sickrage/core/webserver/views/config/notifications.mako:3200
+#: sickrage/core/webserver/views/config/notifications.mako:3229
+#: sickrage/core/webserver/views/config/notifications.mako:3240
 msgid "Discord Bot Name"
 msgstr "Nome do Bot de discórdia"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3206
+#: sickrage/core/webserver/views/config/notifications.mako:3246
 msgid "Blank will use webhook default name."
 msgstr "Em branco irá usar o nome padrão de webhook."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3213
-#: sickrage/core/webserver/views/config/notifications.mako:3224
+#: sickrage/core/webserver/views/config/notifications.mako:3253
+#: sickrage/core/webserver/views/config/notifications.mako:3264
 msgid "Discord Avatar URL"
 msgstr "URL do Avatar de discórdia"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3230
+#: sickrage/core/webserver/views/config/notifications.mako:3270
 msgid "Blank will use webhook default avatar."
 msgstr "Em branco irá usar avatar padrão de webhook."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3237
+#: sickrage/core/webserver/views/config/notifications.mako:3277
 msgid "Discord TTS"
 msgstr "Discórdia TTS"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3242
+#: sickrage/core/webserver/views/config/notifications.mako:3282
 msgid "Send notifications using text-to-speech."
 msgstr "Envie notificações usando texto em fala."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3255
+#: sickrage/core/webserver/views/config/notifications.mako:3295
 msgid "Test Discord"
 msgstr "Teste de discórdia"
 
@@ -4682,7 +4688,7 @@ msgstr "Nunca"
 msgid "Retry Download"
 msgstr "Tente novamente baixar"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4958
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4797,7 +4803,7 @@ msgstr "Use a ordem de DVD em vez da ordem de ar"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Uma \"atualização completa de força\" é necessária, e se você tem episódios existentes precisa ordená-los manualmente."
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4830
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4837
 #: sickrage/core/webserver/views/home/edit_show.mako:224
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5125,7 +5131,7 @@ msgstr "Realizando a Restart"
 msgid "Daily Search"
 msgstr "Pesquisa diária"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4945
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Lista de pendências"
@@ -5150,7 +5156,7 @@ msgstr "Processo de post"
 msgid "Subtitles Finder"
 msgstr "Localizador de legendas"
 
-#: sickrage/core/webserver/views.py:4946
+#: sickrage/core/webserver/views.py:4953
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5183,7 +5189,7 @@ msgstr "Não"
 msgid "True"
 msgstr "Verdade"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4948
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Mostrar a fila"
@@ -5554,12 +5560,12 @@ msgstr "Backup e restauração"
 msgid "Search Providers"
 msgstr "Provedores de pesquisa"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4749
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4756
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "Configurações de legendas"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4876
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Configurações de qualidade"
@@ -6455,7 +6461,7 @@ msgstr "Já no ramo: "
 #: sickrage/core/webserver/views.py:1931 sickrage/core/webserver/views.py:1936
 #: sickrage/core/webserver/views.py:1939 sickrage/core/webserver/views.py:1982
 #: sickrage/core/webserver/views.py:1988 sickrage/core/webserver/views.py:1991
-#: sickrage/core/webserver/views.py:4948
+#: sickrage/core/webserver/views.py:4955
 msgid "Error"
 msgstr "Erro"
 
@@ -6829,8 +6835,8 @@ msgstr "Configuração geral"
 
 #: sickrage/core/webserver/views.py:3891 sickrage/core/webserver/views.py:4052
 #: sickrage/core/webserver/views.py:4183 sickrage/core/webserver/views.py:4404
-#: sickrage/core/webserver/views.py:4731 sickrage/core/webserver/views.py:4812
-#: sickrage/core/webserver/views.py:4851
+#: sickrage/core/webserver/views.py:4738 sickrage/core/webserver/views.py:4819
+#: sickrage/core/webserver/views.py:4858
 msgid "Error(s) Saving Configuration"
 msgstr "Erro (s) salvando a configuração"
 
@@ -6946,79 +6952,79 @@ msgstr "[PROVIDERS] de configuração salva"
 msgid "Config - Notifications"
 msgstr "Config - notificações"
 
-#: sickrage/core/webserver/views.py:4733
+#: sickrage/core/webserver/views.py:4740
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4748
+#: sickrage/core/webserver/views.py:4755
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4814
+#: sickrage/core/webserver/views.py:4821
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4829
+#: sickrage/core/webserver/views.py:4836
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4853
+#: sickrage/core/webserver/views.py:4860
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4875
 msgid "Config - Quality Settings"
 msgstr "Config - configurações de qualidade"
 
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4887
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CONFIGURAÇÕES DE QUALIDADE] Configuração salvada"
 
-#: sickrage/core/webserver/views.py:4893
+#: sickrage/core/webserver/views.py:4900
 msgid "Clear Errors"
 msgstr "Limpar erros"
 
-#: sickrage/core/webserver/views.py:4896
+#: sickrage/core/webserver/views.py:4903
 msgid "Clear Warnings"
 msgstr "Limpar avisos"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4944
 msgid "Daily Searcher"
 msgstr "Buscador de diária"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4946
 msgid "Show Updater"
 msgstr "Mostrar Updater"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4947
 msgid "Check Version"
 msgstr "Verifique a versão"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4949
 msgid "Search Queue"
 msgstr "Fila de pesquisa"
 
-#: sickrage/core/webserver/views.py:4943
+#: sickrage/core/webserver/views.py:4950
 msgid "Find Propers"
 msgstr "Encontrar mensagens"
 
-#: sickrage/core/webserver/views.py:4944
+#: sickrage/core/webserver/views.py:4951
 msgid "Postprocessor"
 msgstr "Pós-processador"
 
-#: sickrage/core/webserver/views.py:4945
+#: sickrage/core/webserver/views.py:4952
 msgid "Find Subtitles"
 msgstr "Encontrar legendas"
 
-#: sickrage/core/webserver/views.py:4947
+#: sickrage/core/webserver/views.py:4954
 msgid "Event"
 msgstr "Evento"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4956
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4957
 msgid "Thread"
 msgstr "Segmento"
 

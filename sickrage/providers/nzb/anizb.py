@@ -54,9 +54,7 @@ class Anizb(NZBProvider):
 
         for mode in search_strings:
             sickrage.app.log.debug('Search mode: {0}'.format(mode))
-
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
