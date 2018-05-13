@@ -40,19 +40,19 @@ class TwitterNotifier(Notifiers):
         super(TwitterNotifier, self).__init__()
         self.name = 'twitter'
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.twitter_notify_onsnatch:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.twitter_notify_ondownload:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.twitter_notify_onsubtitledownload:
             self._notifyTwitter(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_twitter:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

@@ -54,45 +54,45 @@ class Notifiers(object):
         return str(re.sub(r"[^\w\d_]", "_", str(re.sub(r"[+]", "plus", self.name))).lower())
 
     @staticmethod
-    def notify_download(ep_name):
+    def mass_notify_download(ep_name):
         for n in sickrage.app.notifier_providers.values():
             try:
-                n._notify_download(ep_name)
-            except:
+                n.notify_download(ep_name)
+            except Exception:
                 continue
 
     @staticmethod
-    def notify_subtitle_download(ep_name, lang):
+    def mass_notify_subtitle_download(ep_name, lang):
         for n in sickrage.app.notifier_providers.values():
             try:
-                n._notify_subtitle_download(ep_name, lang)
-            except:
+                n.notify_subtitle_download(ep_name, lang)
+            except Exception:
                 continue
 
     @staticmethod
-    def notify_snatch(ep_name):
+    def mass_notify_snatch(ep_name):
         for n in sickrage.app.notifier_providers.values():
             try:
-                n._notify_snatch(ep_name)
-            except:
+                n.notify_snatch(ep_name)
+            except Exception:
                 continue
 
     @staticmethod
-    def notify_version_update(new_version=""):
+    def mass_notify_version_update(new_version=""):
         if sickrage.app.config.notify_on_update:
             for n in sickrage.app.notifier_providers.values():
                 try:
-                    n._notify_version_update(new_version)
-                except:
+                    n.notify_version_update(new_version)
+                except Exception:
                     continue
 
     @staticmethod
-    def notify_login(ipaddress):
+    def mass_notify_login(ipaddress):
         if sickrage.app.config.notify_on_login and not is_ip_private(ipaddress):
             for n in sickrage.app.notifier_providers.values():
                 try:
-                    n._notify_login(ipaddress)
-                except:
+                    n.notify_login(ipaddress)
+                except Exception:
                     continue
 
 

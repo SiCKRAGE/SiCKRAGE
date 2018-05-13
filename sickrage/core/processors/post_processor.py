@@ -1183,7 +1183,7 @@ class PostProcessor(object):
         # If any notification fails, don't stop postProcessor
         try:
             # send notifications
-            Notifiers.notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
+            Notifiers.mass_notify_download(ep_obj._format_pattern('%SN - %Sx%0E - %EN - %QN'))
 
             # do the library update for KODI
             sickrage.app.notifier_providers['kodi'].update_library(ep_obj.show.name)

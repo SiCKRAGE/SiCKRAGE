@@ -88,28 +88,28 @@ class FreeMobileNotifier(Notifiers):
         sickrage.app.log.info(message)
         return True, message
 
-    def _notify_snatch(self, ep_name, title=None):
+    def notify_snatch(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
         if sickrage.app.config.freemobile_notify_onsnatch:
             self._notifyFreeMobile(title, ep_name)
 
-    def _notify_download(self, ep_name, title=None):
+    def notify_download(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
         if sickrage.app.config.freemobile_notify_ondownload:
             self._notifyFreeMobile(title, ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang, title=None):
+    def notify_subtitle_download(self, ep_name, lang, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
         if sickrage.app.config.freemobile_notify_onsubtitledownload:
             self._notifyFreeMobile(title, ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_freemobile:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

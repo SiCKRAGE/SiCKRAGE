@@ -258,7 +258,7 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', '')
 
         if username == sickrage.app.config.web_username and password == sickrage.app.config.web_password:
-            Notifiers.notify_login(self.request.remote_ip)
+            Notifiers.mass_notify_login(self.request.remote_ip)
 
             remember_me = int(self.get_argument('remember_me', default=0))
 

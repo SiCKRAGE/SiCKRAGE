@@ -86,7 +86,7 @@ class TelegramNotifier(Notifiers):
             sickrage.app.log.info(message)
             return success, message
 
-    def _notify_snatch(self, ep_name, title=None):
+    def notify_snatch(self, ep_name, title=None):
         """
         Sends a Telegram notification when an episode is snatched
 
@@ -99,7 +99,7 @@ class TelegramNotifier(Notifiers):
         if sickrage.app.config.telegram_notify_onsnatch:
             self._notify_telegram(title, ep_name)
 
-    def _notify_download(self, ep_name, title=None):
+    def notify_download(self, ep_name, title=None):
         """
         Sends a Telegram notification when an episode is downloaded
 
@@ -112,7 +112,7 @@ class TelegramNotifier(Notifiers):
         if sickrage.app.config.telegram_notify_ondownload:
             self._notify_telegram(title, ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang, title=None):
+    def notify_subtitle_download(self, ep_name, lang, title=None):
         """
         Sends a Telegram notification when subtitles for an episode are downloaded
 
@@ -126,7 +126,7 @@ class TelegramNotifier(Notifiers):
         if sickrage.app.config.telegram_notify_onsubtitledownload:
             self._notify_telegram(title, '{}: {}'.format(ep_name, lang))
 
-    def _notify_version_update(self, new_version='??'):
+    def notify_version_update(self, new_version='??'):
         """
         Sends a Telegram notification for git updates
 
@@ -137,7 +137,7 @@ class TelegramNotifier(Notifiers):
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_telegram(title, update_text + new_version)
 
-    def _notify_login(self, ipaddress=''):
+    def notify_login(self, ipaddress=''):
         """
         Sends a Telegram notification on login
 

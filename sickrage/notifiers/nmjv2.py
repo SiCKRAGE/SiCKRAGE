@@ -33,17 +33,17 @@ class NMJv2Notifier(Notifiers):
         super(NMJv2Notifier, self).__init__()
         self.name = 'nmjv2'
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         return False
         # Not implemented: Start the scanner when snatched does not make any sense
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         self._notifyNMJ()
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         self._notifyNMJ()
 
-    def _notify_version_update(self, new_version):
+    def notify_version_update(self, new_version):
         return False
         # Not implemented, no reason to start scanner.
 

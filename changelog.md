@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7d6110a - 2018-05-12: Changed iptorrents login url 
+- * b908674 - 2018-05-13: Pre-Release v9.3.21.dev4 
+- * d1b612a - 2018-05-12: Changed iptorrents login url 
 - * 7be1210 - 2018-05-12: Pre-Release v9.3.21.dev3 
 - * 07b7203 - 2018-05-12: Fixed KeyError for Anizb provider 
 - * 3ffb11e - 2018-05-12: Added more notify options for Emby 

@@ -310,7 +310,7 @@ class TVEpisode(object):
             sickrage.app.log.debug("%s: Downloaded %s subtitles for S%02dE%02d" %
                                    (self.show.indexerid, subtitleList, self.season or 0, self.episode or 0))
 
-            Notifiers.notify_subtitle_download(self.pretty_name(), subtitleList)
+            Notifiers.mass_notify_subtitle_download(self.pretty_name(), subtitleList)
         else:
             sickrage.app.log.debug("%s: No subtitles downloaded for S%02dE%02d" %
                                    (self.show.indexerid, self.season or 0, self.episode or 0))
