@@ -1,6 +1,7 @@
 # Changelog
 
-- * affd358 - 2018-05-13: Release v9.3.21 
+- * 4a05a28 - 2018-05-13: Fixed issues with searches and UNKNOWN qualities 
+- * 0869c48 - 2018-05-13: Release v9.3.21 
 - * ea98ece - 2018-05-13: Fixed bug in backlog searcher that was incorrectly comparing date ordinals causing zero results to be found 
 - * 52d12af - 2018-05-13: Pre-Release v9.3.21.dev4 
 - * d1b612a - 2018-05-12: Changed iptorrents login url 
