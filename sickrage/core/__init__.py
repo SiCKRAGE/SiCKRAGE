@@ -448,7 +448,8 @@ class Core(object):
             self.log.info('SiCKRAGE IS SHUTTING DOWN!!!')
 
             # shutdown webserver
-            self.wserver.shutdown()
+            if self.wserver:
+                self.wserver.shutdown()
 
             # shutdown show queue
             if self.show_queue:
@@ -483,7 +484,8 @@ class Core(object):
                     db.close()
 
             # shutdown logging
-            self.log.close()
+            if self.log:
+                self.log.close()
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)

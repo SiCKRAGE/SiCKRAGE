@@ -7,9 +7,8 @@ ARG VERSION
 LABEL build_version="Version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 
 # install app
-COPY requirements.txt /opt/sickrage/
-RUN pip install -r /opt/sickrage/requirements.txt
 COPY . /opt/sickrage/
+RUN pip install -r /opt/sickrage/requirements.txt
 
 # ports and volumes
 EXPOSE 8081

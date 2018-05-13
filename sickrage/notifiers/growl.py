@@ -39,19 +39,19 @@ class GrowlNotifier(Notifiers):
         return self._sendGrowl("Test Growl", "Testing Growl settings from SiCKRAGE", "Test", host, password,
                                force=True)
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.growl_notify_onsnatch:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_SNATCH], ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.growl_notify_ondownload:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_DOWNLOAD], ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.growl_notify_onsubtitledownload:
             self._sendGrowl(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_growl:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

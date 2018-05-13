@@ -37,25 +37,25 @@ class PushalotNotifier(Notifiers):
         return self._sendPushalot(pushalot_authorizationtoken, event="Test",
                                   message="Testing Pushalot settings from SiCKRAGE", force=True)
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.pushalot_notify_onsnatch:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SNATCH],
                                message=ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.pushalot_notify_ondownload:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                                message=ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.pushalot_notify_onsubtitledownload:
             self._sendPushalot(pushalot_authorizationtoken=sickrage.app.config.pushalot_authorizationtoken,
                                event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD],
                                message=ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_pushalot:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

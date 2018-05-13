@@ -258,7 +258,7 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password', '')
 
         if username == sickrage.app.config.web_username and password == sickrage.app.config.web_password:
-            Notifiers.notify_login(self.request.remote_ip)
+            Notifiers.mass_notify_login(self.request.remote_ip)
 
             remember_me = int(self.get_argument('remember_me', default=0))
 
@@ -4431,8 +4431,9 @@ class ConfigNotifications(Config):
                           kodi_password=None, use_plex=None, plex_notify_onsnatch=None, plex_notify_ondownload=None,
                           plex_notify_onsubtitledownload=None, plex_update_library=None,
                           plex_server_host=None, plex_server_token=None, plex_host=None, plex_username=None,
-                          plex_password=None, use_emby=None, emby_host=None, emby_apikey=None,
-                          use_growl=None, growl_notify_onsnatch=None, growl_notify_ondownload=None,
+                          plex_password=None, use_emby=None, emby_notify_onsnatch=None,
+                          emby_notify_ondownload=None, emby_notify_onsubtitledownload=None, emby_host=None,
+                          emby_apikey=None, use_growl=None, growl_notify_onsnatch=None, growl_notify_ondownload=None,
                           growl_notify_onsubtitledownload=None, growl_host=None, growl_password=None,
                           use_freemobile=None, freemobile_notify_onsnatch=None, freemobile_notify_ondownload=None,
                           freemobile_notify_onsubtitledownload=None, freemobile_id=None, freemobile_apikey=None,
@@ -4514,6 +4515,12 @@ class ConfigNotifications(Config):
         sickrage.app.config.plex_client_password = plex_password
 
         sickrage.app.config.use_emby = checkbox_to_value(use_emby)
+        sickrage.app.config.emby_notify_onsnatch = checkbox_to_value(
+            emby_notify_onsnatch)
+        sickrage.app.config.emby_notify_ondownload = checkbox_to_value(
+            emby_notify_ondownload)
+        sickrage.app.config.emby_notify_onsubtitledownload = checkbox_to_value(
+            emby_notify_onsubtitledownload)
         sickrage.app.config.emby_host = clean_host(emby_host)
         sickrage.app.config.emby_apikey = emby_apikey
 

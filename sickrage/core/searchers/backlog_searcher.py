@@ -114,7 +114,7 @@ class BacklogSearcher(object):
         # check through the list of statuses to see if we want any
         wanted = []
         for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid) if
-                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] >= from_date.toordinal()):
+                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] <= from_date.toordinal()):
 
             curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
 
@@ -122,7 +122,7 @@ class BacklogSearcher(object):
             if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
                 continue
 
-            if curStatus != WANTED and curQuality != Quality.UNKNOWN:
+            if curStatus != WANTED:
                 if bestQualities:
                     if curQuality in bestQualities or curQuality > max(bestQualities):
                         continue

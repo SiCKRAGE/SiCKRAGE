@@ -32,25 +32,25 @@ class SlackNotifier(Notifiers):
         super(SlackNotifier, self).__init__()
         self.name = 'slack'
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.slack_notify_onsnatch:
             self._notify_slack(self.notifyStrings[self.NOTIFY_SNATCH] + ': ' + ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.slack_notify_ondownload:
             self._notify_slack(self.notifyStrings[self.NOTIFY_DOWNLOAD] + ': ' + ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.slack_notify_onsubtitledownload:
             self._notify_slack(self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + ' ' + ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_slack:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
             self._notify_slack(title + " - " + update_text + new_version)
 
-    def _notify_login(self, ipaddress=""):
+    def notify_login(self, ipaddress=""):
         if sickrage.app.config.use_slack:
             update_text = self.notifyStrings[self.NOTIFY_LOGIN_TEXT]
             title = self.notifyStrings[self.NOTIFY_LOGIN]

@@ -1,6 +1,19 @@
 # Changelog
 
-- * 90b5433 - 2018-05-06: Release v9.3.20 
+- * affd358 - 2018-05-13: Release v9.3.21 
+- * ea98ece - 2018-05-13: Fixed bug in backlog searcher that was incorrectly comparing date ordinals causing zero results to be found 
+- * 52d12af - 2018-05-13: Pre-Release v9.3.21.dev4 
+- * d1b612a - 2018-05-12: Changed iptorrents login url 
+- * 7be1210 - 2018-05-12: Pre-Release v9.3.21.dev3 
+- * 07b7203 - 2018-05-12: Fixed KeyError for Anizb provider 
+- * 3ffb11e - 2018-05-12: Added more notify options for Emby 
+- * 5c626f6 - 2018-05-10: Pre-Release v9.3.21.dev2 
+- * 5bb7da0 - 2018-05-10: Updated Grunt tasks 
+- * cdcc32f - 2018-05-11: New Crowdin translations 
+- * 392eda4 - 2018-05-11: Update Crowdin configuration file 
+- * 8b1ac6e - 2018-05-09: Pre-Release v9.3.21.dev1 
+- * fcdf2e4 - 2018-05-08: Changed log levels from error to warning for misc 
+- * 7c77db3 - 2018-05-06: Release v9.3.20 
 - * b9fa094 - 2018-05-06: Pre-Release v9.3.20.dev6 
 - * 8ba19bd - 2018-05-06: Merged failed database into main database 
 - * b89ab1b - 2018-05-06: Pre-Release v9.3.20.dev5 

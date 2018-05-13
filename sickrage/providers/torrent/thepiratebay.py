@@ -119,7 +119,7 @@ class ThePirateBayProvider(TorrentProvider):
 
                         with bs4_parser(details_data) as details:
                             download_url = details.find(title='Get this torrent')
-                            download_url = download_url.get('href')
+                            download_url = download_url.get('href') if download_url else None
                             if download_url and 'magnet:?' not in download_url:
                                 sickrage.app.log.debug('Invalid ThePirateBay proxy please try another one')
                                 continue

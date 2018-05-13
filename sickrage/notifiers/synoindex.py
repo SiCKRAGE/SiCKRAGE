@@ -30,16 +30,16 @@ class synoIndexNotifier(Notifiers):
         super(synoIndexNotifier, self).__init__()
         self.name = 'synoindex'
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         pass
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         pass
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         pass
 
-    def _notify_version_update(self, new_version):
+    def notify_version_update(self, new_version):
         pass
 
     def moveFolder(self, old_path, new_path):

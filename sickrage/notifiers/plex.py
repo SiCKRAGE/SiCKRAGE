@@ -134,19 +134,19 @@ class PLEXNotifier(Notifiers):
     # Public functions
     ##############################################################################
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.plex_notify_onsnatch:
             self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_SNATCH])
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.plex_notify_ondownload:
             self._notify_pmc(ep_name, self.notifyStrings[self.NOTIFY_DOWNLOAD])
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.plex_notify_onsubtitledownload:
             self._notify_pmc(ep_name + ': ' + lang, self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD])
 
-    def _notify_version_update(self, new_version='??'):
+    def notify_version_update(self, new_version='??'):
         if sickrage.app.config.use_plex:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

@@ -517,6 +517,46 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Notify on snatch')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="emby_notify_onsnatch"
+                                   id="emby_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.emby_notify_onsnatch)]}/>
+                            <label for="emby_notify_onsnatch">
+                                <p>${_('send a notification when a download starts?')}</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Notify on download')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="emby_notify_ondownload"
+                                   id="emby_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.emby_notify_ondownload)]}/>
+                            <label for="emby_notify_ondownload">
+                                <p>${_('send a notification when a download finishes?')}</p>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" name="emby_notify_onsubtitledownload"
+                                   id="emby_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.emby_notify_onsubtitledownload)]}/>
+                            <label for="emby_notify_onsubtitledownload">
+                                <p>${_('send a notification when subtitles are downloaded?')}</p>
+                            </label>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testEMBY-result">${_('Click below to test.')}</div>

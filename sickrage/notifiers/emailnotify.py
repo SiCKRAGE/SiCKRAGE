@@ -46,7 +46,7 @@ class EmailNotifier(Notifiers):
         msg['Date'] = formatdate(localtime=True)
         return self._sendmail(host, port, smtp_from, use_tls, user, pwd, [to], msg, True)
 
-    def _notify_snatch(self, ep_name, title="Snatched:"):
+    def notify_snatch(self, ep_name, title="Snatched:"):
         """
         Send a notification that an episode was snatched
 
@@ -88,7 +88,7 @@ class EmailNotifier(Notifiers):
                 else:
                     sickrage.app.log.error("Snatch notification ERROR: %s" % self.last_err)
 
-    def _notify_download(self, ep_name, title="Completed:"):
+    def notify_download(self, ep_name, title="Completed:"):
         """
         Send a notification that an episode was downloaded
 
@@ -130,7 +130,7 @@ class EmailNotifier(Notifiers):
                 else:
                     sickrage.app.log.error("Download notification ERROR: %s" % self.last_err)
 
-    def _notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
+    def notify_subtitle_download(self, ep_name, lang, title="Downloaded subtitle:"):
         """
         Send a notification that an subtitle was downloaded
 
@@ -171,7 +171,7 @@ class EmailNotifier(Notifiers):
                 else:
                     sickrage.app.log.error("Download notification ERROR: %s" % self.last_err)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         pass
 
     def _generate_recipients(self, show):

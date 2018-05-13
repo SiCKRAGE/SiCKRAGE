@@ -36,6 +36,7 @@ class Anizb(NZBProvider):
 
         # URLs
         self.urls.update({
+            'rss': '{base_url}/'.format(**self.urls),
             'api': '{base_url}/api/?q='.format(**self.urls)
         })
 
@@ -53,9 +54,7 @@ class Anizb(NZBProvider):
 
         for mode in search_strings:
             sickrage.app.log.debug('Search mode: {0}'.format(mode))
-
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 

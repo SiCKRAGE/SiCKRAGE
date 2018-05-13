@@ -118,7 +118,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
-                Notifiers.notify_snatch(
+                Notifiers.mass_notify_snatch(
                     curEpObj._format_pattern('%SN - %Sx%0E - %EN - %QN') + " from " + result.provider.name)
             except:
                 sickrage.app.log.debug("Failed to send snatch notification")

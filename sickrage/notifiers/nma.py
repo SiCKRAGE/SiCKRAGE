@@ -144,19 +144,19 @@ class NMA_Notifier(Notifiers):
         return self._sendNMA(nma_api, nma_priority, event="Test", message="Testing NMA settings from SiCKRAGE",
                              force=True)
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.nma_notify_onsnatch:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SNATCH], message=ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.nma_notify_ondownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_DOWNLOAD], message=ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.nma_notify_onsubtitledownload:
             self._sendNMA(event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_nma:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]
@@ -195,7 +195,7 @@ class NMA_Notifier(Notifiers):
         )
 
         if not response[nma_api]['code'] == '200':
-            sickrage.app.log.error('Could not send notification to NotifyMyAndroid')
+            sickrage.app.log.warning('Could not send notification to NotifyMyAndroid')
             return False
         else:
             sickrage.app.log.info("NMA: Notification sent to NotifyMyAndroid")

@@ -54,23 +54,23 @@ class PushbulletNotifier(Notifiers):
                 'Pushbullet authorization failed with exception: %r' % traceback.format_exc())
             return False
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.pushbullet_notify_onsnatch:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_SNATCH] + " : " + ep_name,
                                  message=ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.pushbullet_notify_ondownload:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD] + " : " + ep_name,
                                  message=ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.pushbullet_notify_onsubtitledownload:
             self._sendPushbullet(pushbullet_api=None,
                                  event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD] + " : " + ep_name + " : " + lang,
                                  message=ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_pushbullet:
             self._sendPushbullet(pushbullet_api=None, event=self.notifyStrings[self.NOTIFY_GIT_UPDATE],
                                  message=self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT] + new_version)

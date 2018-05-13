@@ -37,22 +37,22 @@ class ProwlNotifier(Notifiers):
         return self._sendProwl(prowl_api, prowl_priority, event="Test",
                                message="Testing Prowl settings from SiCKRAGE", force=True)
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         if sickrage.app.config.prowl_notify_onsnatch:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_SNATCH],
                             message=ep_name)
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         if sickrage.app.config.prowl_notify_ondownload:
             self._sendProwl(prowl_api=None, prowl_priority=None, event=self.notifyStrings[self.NOTIFY_DOWNLOAD],
                             message=ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         if sickrage.app.config.prowl_notify_onsubtitledownload:
             self._sendProwl(prowl_api=None, prowl_priority=None,
                             event=self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD], message=ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_prowl:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

@@ -31,16 +31,16 @@ class pyTivoNotifier(Notifiers):
         super(pyTivoNotifier, self).__init__()
         self.name = 'pytivo'
 
-    def _notify_snatch(self, ep_name):
+    def notify_snatch(self, ep_name):
         pass
 
-    def _notify_download(self, ep_name):
+    def notify_download(self, ep_name):
         pass
 
-    def _notify_subtitle_download(self, ep_name, lang):
+    def notify_subtitle_download(self, ep_name, lang):
         pass
 
-    def _notify_version_update(self, new_version):
+    def notify_version_update(self, new_version):
         pass
 
     def update_library(self, ep_obj):

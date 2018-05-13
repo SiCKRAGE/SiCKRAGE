@@ -135,28 +135,28 @@ class PushoverNotifier(Notifiers):
         sickrage.app.log.info("Pushover notification successful.")
         return True
 
-    def _notify_snatch(self, ep_name, title=None):
+    def notify_snatch(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SNATCH]
 
         if sickrage.app.config.pushover_notify_onsnatch:
             self._notifyPushover(title, ep_name)
 
-    def _notify_download(self, ep_name, title=None):
+    def notify_download(self, ep_name, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_DOWNLOAD]
 
         if sickrage.app.config.pushover_notify_ondownload:
             self._notifyPushover(title, ep_name)
 
-    def _notify_subtitle_download(self, ep_name, lang, title=None):
+    def notify_subtitle_download(self, ep_name, lang, title=None):
         if not title:
             title = self.notifyStrings[self.NOTIFY_SUBTITLE_DOWNLOAD]
 
         if sickrage.app.config.pushover_notify_onsubtitledownload:
             self._notifyPushover(title, ep_name + ": " + lang)
 
-    def _notify_version_update(self, new_version="??"):
+    def notify_version_update(self, new_version="??"):
         if sickrage.app.config.use_pushover:
             update_text = self.notifyStrings[self.NOTIFY_GIT_UPDATE_TEXT]
             title = self.notifyStrings[self.NOTIFY_GIT_UPDATE]

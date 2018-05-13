@@ -486,8 +486,11 @@ module.exports = function (grunt) {
 
         grunt.file.write(vFile, newVersion);
 
+        grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
+
         var tasks = [
             'default',
+            'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
             'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
             'exec:git_push:origin:develop:tags',
@@ -518,6 +521,8 @@ module.exports = function (grunt) {
 
         grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
+
+        grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
         var tasks = [
             'default',
