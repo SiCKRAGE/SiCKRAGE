@@ -1,6 +1,7 @@
 # Changelog
 
-- * b908674 - 2018-05-13: Pre-Release v9.3.21.dev4 
+- * 3a75162 - 2018-05-13: Fixed bug in backlog searcher that was incorrectly comparing date ordinals causing zero results to be found 
+- * 52d12af - 2018-05-13: Pre-Release v9.3.21.dev4 
 - * d1b612a - 2018-05-12: Changed iptorrents login url 
 - * 7be1210 - 2018-05-12: Pre-Release v9.3.21.dev3 
 - * 07b7203 - 2018-05-12: Fixed KeyError for Anizb provider 
