@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-13 10:02-0700\n"
-"PO-Revision-Date: 2018-05-13 13:03-0400\n"
+"POT-Creation-Date: 2018-05-13 22:39-0700\n"
+"PO-Revision-Date: 2018-05-14 01:39-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Anbieter"
 msgid "Quality"
 msgstr "Qualität"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:609
+#: sickrage/core/common.py:186 sickrage/core/common.py:611
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Schnappte sich"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:610
+#: sickrage/core/common.py:185 sickrage/core/common.py:614
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Heruntergeladen"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:619
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -4578,13 +4578,13 @@ msgid "Missed:"
 msgstr "Verpasst:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:428
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:22
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:62
 msgid "Wanted:"
 msgstr "Gesucht:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:434
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:24
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:64
 msgid "Low Quality:"
 msgstr "Niedrige Qualität:"
@@ -5939,63 +5939,67 @@ msgstr "Wählen Sie alle"
 msgid "Clear all"
 msgstr "Alle löschen"
 
-#: sickrage/core/common.py:78
+#: sickrage/core/common.py:79
 msgid "Repeat"
 msgstr "Wiederholen Sie die"
 
-#: sickrage/core/common.py:79
+#: sickrage/core/common.py:80
 msgid "Repeat (Separated)"
 msgstr "Wiederholung (getrennt)"
 
-#: sickrage/core/common.py:80
+#: sickrage/core/common.py:81
 msgid "Duplicate"
 msgstr "Duplikat"
 
-#: sickrage/core/common.py:81
+#: sickrage/core/common.py:82
 msgid "Extend"
 msgstr "Erweitern"
 
-#: sickrage/core/common.py:82
+#: sickrage/core/common.py:83
 msgid "Extend (Limited)"
 msgstr "Erweiterung (Limited)"
 
-#: sickrage/core/common.py:83
+#: sickrage/core/common.py:84
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Verlängern Sie (begrenzt, E vorangestellt)"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:187 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr "Schnappte sich (richtig)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:617
-msgid "Failed"
-msgstr "Fehler beim"
-
-#: sickrage/core/common.py:188 sickrage/core/common.py:618
+#: sickrage/core/common.py:188 sickrage/core/common.py:613
 msgid "Snatched (Best)"
 msgstr "Schnappte sich (am besten)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:614
+#: sickrage/core/common.py:189 sickrage/core/common.py:617
 msgid "Archived"
 msgstr "Archiviert"
 
-#: sickrage/core/common.py:607
+#: sickrage/core/common.py:190 sickrage/core/common.py:620
+msgid "Failed"
+msgstr "Fehler beim"
+
+#: sickrage/core/common.py:191 sickrage/core/common.py:621
+msgid "Missed"
+msgstr ""
+
+#: sickrage/core/common.py:609
 msgid "Unknown"
 msgstr "Unbekannt"
 
-#: sickrage/core/common.py:608
+#: sickrage/core/common.py:610
 msgid "Unaired"
 msgstr "Ausgestrahlte"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:615
 msgid "Skipped"
 msgstr "Übersprungen"
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:616
 msgid "Wanted"
 msgstr "Wollte"
 
-#: sickrage/core/common.py:615
+#: sickrage/core/common.py:618
 msgid "Ignored"
 msgstr "Ignoriert"
 

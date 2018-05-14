@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-13 10:02-0700\n"
-"PO-Revision-Date: 2018-05-13 13:03-0400\n"
+"POT-Creation-Date: 2018-05-13 22:39-0700\n"
+"PO-Revision-Date: 2018-05-14 01:40-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hebrew\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "ספק"
 msgid "Quality"
 msgstr "איכות"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:609
+#: sickrage/core/common.py:186 sickrage/core/common.py:611
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "חטפו"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:610
+#: sickrage/core/common.py:185 sickrage/core/common.py:614
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "הורדת"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:619
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -4578,13 +4578,13 @@ msgid "Missed:"
 msgstr "התגעגעתי:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:428
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:22
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:62
 msgid "Wanted:"
 msgstr "דרושה:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:434
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:24
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:64
 msgid "Low Quality:"
 msgstr "באיכות נמוכה:"
@@ -5939,63 +5939,67 @@ msgstr "בחר את כל"
 msgid "Clear all"
 msgstr "לנקות את כל"
 
-#: sickrage/core/common.py:78
+#: sickrage/core/common.py:79
 msgid "Repeat"
 msgstr "אני חוזר"
 
-#: sickrage/core/common.py:79
+#: sickrage/core/common.py:80
 msgid "Repeat (Separated)"
 msgstr "חזור (מופרדים)"
 
-#: sickrage/core/common.py:80
+#: sickrage/core/common.py:81
 msgid "Duplicate"
 msgstr "שכפל"
 
-#: sickrage/core/common.py:81
+#: sickrage/core/common.py:82
 msgid "Extend"
 msgstr "להרחיב"
 
-#: sickrage/core/common.py:82
+#: sickrage/core/common.py:83
 msgid "Extend (Limited)"
 msgstr "להרחיב (מוגבלת)"
 
-#: sickrage/core/common.py:83
+#: sickrage/core/common.py:84
 msgid "Extend (Limited, E-prefixed)"
 msgstr "להרחיב (מוגבל, הקידומת E)"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:187 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr "חטפו (נכונה)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:617
-msgid "Failed"
-msgstr "נכשל"
-
-#: sickrage/core/common.py:188 sickrage/core/common.py:618
+#: sickrage/core/common.py:188 sickrage/core/common.py:613
 msgid "Snatched (Best)"
 msgstr "חטפו (הטוב)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:614
+#: sickrage/core/common.py:189 sickrage/core/common.py:617
 msgid "Archived"
 msgstr "בארכיון"
 
-#: sickrage/core/common.py:607
+#: sickrage/core/common.py:190 sickrage/core/common.py:620
+msgid "Failed"
+msgstr "נכשל"
+
+#: sickrage/core/common.py:191 sickrage/core/common.py:621
+msgid "Missed"
+msgstr ""
+
+#: sickrage/core/common.py:609
 msgid "Unknown"
 msgstr "ידוע"
 
-#: sickrage/core/common.py:608
+#: sickrage/core/common.py:610
 msgid "Unaired"
 msgstr "סגורים ללא אוורור"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:615
 msgid "Skipped"
 msgstr "המערכת דילגה"
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:616
 msgid "Wanted"
 msgstr "רצה"
 
-#: sickrage/core/common.py:615
+#: sickrage/core/common.py:618
 msgid "Ignored"
 msgstr "המערכת תתעלם"
 

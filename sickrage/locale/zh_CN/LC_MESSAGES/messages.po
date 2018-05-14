@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-13 10:02-0700\n"
-"PO-Revision-Date: 2018-05-13 13:02-0400\n"
+"POT-Creation-Date: 2018-05-13 22:39-0700\n"
+"PO-Revision-Date: 2018-05-14 01:39-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "提供程序"
 msgid "Quality"
 msgstr "质量"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:609
+#: sickrage/core/common.py:186 sickrage/core/common.py:611
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "抢走了"
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:610
+#: sickrage/core/common.py:185 sickrage/core/common.py:614
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "下载"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:619
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -4578,13 +4578,13 @@ msgid "Missed:"
 msgstr "错过:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:428
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:22
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:62
 msgid "Wanted:"
 msgstr "想要："
 
 #: sickrage/core/webserver/views/home/display_show.mako:434
-#: sickrage/core/webserver/views/manage/backlog_overview.mako:24
+#: sickrage/core/webserver/views/manage/backlog_overview.mako:23
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:64
 msgid "Low Quality:"
 msgstr "低质量："
@@ -5939,63 +5939,67 @@ msgstr "选择所有"
 msgid "Clear all"
 msgstr "全部清除"
 
-#: sickrage/core/common.py:78
+#: sickrage/core/common.py:79
 msgid "Repeat"
 msgstr "重复"
 
-#: sickrage/core/common.py:79
+#: sickrage/core/common.py:80
 msgid "Repeat (Separated)"
 msgstr "重复 （分离）"
 
-#: sickrage/core/common.py:80
+#: sickrage/core/common.py:81
 msgid "Duplicate"
 msgstr "重复"
 
-#: sickrage/core/common.py:81
+#: sickrage/core/common.py:82
 msgid "Extend"
 msgstr "扩展"
 
-#: sickrage/core/common.py:82
+#: sickrage/core/common.py:83
 msgid "Extend (Limited)"
 msgstr "扩展 （有限公司）"
 
-#: sickrage/core/common.py:83
+#: sickrage/core/common.py:84
 msgid "Extend (Limited, E-prefixed)"
 msgstr "扩展有限 （E 前缀）"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:187 sickrage/core/common.py:612
 msgid "Snatched (Proper)"
 msgstr "抢 （正确）"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:617
-msgid "Failed"
-msgstr "失败"
-
-#: sickrage/core/common.py:188 sickrage/core/common.py:618
+#: sickrage/core/common.py:188 sickrage/core/common.py:613
 msgid "Snatched (Best)"
 msgstr "抢 （最好）"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:614
+#: sickrage/core/common.py:189 sickrage/core/common.py:617
 msgid "Archived"
 msgstr "存档"
 
-#: sickrage/core/common.py:607
+#: sickrage/core/common.py:190 sickrage/core/common.py:620
+msgid "Failed"
+msgstr "失败"
+
+#: sickrage/core/common.py:191 sickrage/core/common.py:621
+msgid "Missed"
+msgstr ""
+
+#: sickrage/core/common.py:609
 msgid "Unknown"
 msgstr "未知"
 
-#: sickrage/core/common.py:608
+#: sickrage/core/common.py:610
 msgid "Unaired"
 msgstr "试播集中"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:615
 msgid "Skipped"
 msgstr "跳过"
 
-#: sickrage/core/common.py:613
+#: sickrage/core/common.py:616
 msgid "Wanted"
 msgstr "想要"
 
-#: sickrage/core/common.py:615
+#: sickrage/core/common.py:618
 msgid "Ignored"
 msgstr "忽略"
 

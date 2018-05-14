@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4a05a28 - 2018-05-13: Fixed issues with searches and UNKNOWN qualities 
+- * 25a4d34 - 2018-05-13: Pre-Release v9.3.22.dev1 
+- * 3fc98cf - 2018-05-13: Fixed issues with searches and UNKNOWN qualities 
 - * 0869c48 - 2018-05-13: Release v9.3.21 
 - * ea98ece - 2018-05-13: Fixed bug in backlog searcher that was incorrectly comparing date ordinals causing zero results to be found 
 - * 52d12af - 2018-05-13: Pre-Release v9.3.21.dev4 

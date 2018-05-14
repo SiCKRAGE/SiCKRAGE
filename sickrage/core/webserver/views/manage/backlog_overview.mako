@@ -9,8 +9,7 @@
     from sickrage.core.updaters import tz_updater
 %>
 <%block name="content">
-    <% totalWanted = 0 %>
-    <% totalQual = 0 %>
+    <% totalWanted = totalQual = 0 %>
 
     % for curShow in sickrage.app.showlist:
         <% totalWanted = totalWanted + showCounts[curShow.indexerid][Overview.WANTED] %>
@@ -20,10 +19,11 @@
     <div class="row">
         <div class="col-lg-8 col-md-7 col-sm-6 col-xs-12 pull-right">
             <div class="pull-right">
-                <span class="pull-right listing-key wanted">${_('Wanted:')} <b>${totalWanted}</b></span>
-                <span class="pull-right listing-key qual">${_('Low Quality:')} <b>${totalQual}</b></span>
+                <span class="listing-key wanted">${_('Wanted:')} <b>${totalWanted}</b></span>
+                <span class="listing-key qual">${_('Low Quality:')} <b>${totalQual}</b></span>
             </div>
         </div>
+
         <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12">
             <h1 class="title">${title}</h1>
         </div>
@@ -35,7 +35,7 @@
                 <div class="input-group-addon">
                     <span class="fa fa-binoculars"></span>
                 </div>
-                <select id="pickShow" class="form-control" title="${_('Choose show')}">
+                <select id="pickShow" class="form-control form-control-inline input-sm" title="${_('Choose show')}">
                     % for curShow in sorted(sickrage.app.showlist, key=lambda x: x.name):
                         % if showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] != 0:
                             <option value="${curShow.indexerid}">${curShow.name}</option>
@@ -103,5 +103,4 @@
             </div>
         </div>
     </div>
-
 </%block>

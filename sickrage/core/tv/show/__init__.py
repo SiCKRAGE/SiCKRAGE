@@ -1360,6 +1360,7 @@ class TVShow(object):
         return False
 
     def getOverview(self, epStatus):
+        epStatus = try_int(epStatus) or UNKNOWN
 
         if epStatus == WANTED:
             return Overview.WANTED
@@ -1369,9 +1370,18 @@ class TVShow(object):
             return Overview.SKIPPED
         elif epStatus in Quality.ARCHIVED:
             return Overview.GOOD
-        elif epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.FAILED + Quality.SNATCHED_BEST:
+        elif epStatus == Quality.FAILED:
+            return Overview.WANTED
+        elif epStatus in Quality.SNATCHED:
+            return Overview.SNATCHED
+        elif epStatus in Quality.SNATCHED_PROPER:
+            return Overview.SNATCHED_PROPER
+        elif epStatus in Quality.SNATCHED_BEST:
+            return Overview.SNATCHED_BEST
+        elif epStatus in Quality.DOWNLOADED:
+            anyQualities, bestQualities = Quality.splitQuality(self.quality)
+            epStatus, curQuality = Quality.splitCompositeStatus(epStatus)
 
-            __, bestQualities = Quality.splitQuality(self.quality)
             if bestQualities:
                 maxBestQuality = max(bestQualities)
                 minBestQuality = min(bestQualities)
@@ -1379,16 +1389,10 @@ class TVShow(object):
                 maxBestQuality = None
                 minBestQuality = None
 
-            epStatus, curQuality = Quality.splitCompositeStatus(epStatus)
-
-            if epStatus == FAILED:
-                return Overview.WANTED
-            if epStatus == DOWNLOADED and curQuality == Quality.UNKNOWN:
-                return Overview.QUAL
-            elif epStatus in (SNATCHED, SNATCHED_PROPER, SNATCHED_BEST):
-                return Overview.SNATCHED
+            # elif epStatus == DOWNLOADED and curQuality == Quality.UNKNOWN:
+            #    return Overview.QUAL
             # if they don't want re-downloads then we call it good if they have anything
-            elif maxBestQuality is None:
+            if maxBestQuality is None:
                 return Overview.GOOD
             # if the want only first match and already have one call it good
             elif self.archive_firstmatch and curQuality in bestQualities:
@@ -1402,6 +1406,8 @@ class TVShow(object):
             # if it's >= maxBestQuality then it's good
             else:
                 return Overview.GOOD
+        else:
+            sickrage.app.log.error('Could not parse episode status into a valid overview status: {}'.format(epStatus))
 
     def mapIndexers(self):
         mapped = {}
