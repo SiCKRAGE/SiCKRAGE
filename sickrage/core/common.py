@@ -218,6 +218,7 @@ class Quality(object):
     def splitQuality(quality):
         anyQualities = []
         bestQualities = []
+
         for curQual in Quality.qualityStrings.keys():
             if curQual & quality:
                 anyQualities.append(curQual)

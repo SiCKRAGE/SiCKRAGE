@@ -1173,10 +1173,12 @@ jQuery(document).ready(function ($) {
 
             setFromPresets: function (preset) {
                 if (parseInt(preset) === 0) {
+                    $('#qualityPreset_label').hide();
                     $('#customQuality').show();
                     return;
                 } else {
                     $('#customQuality').hide();
+                    $('#qualityPreset_label').show();
                 }
 
                 $('#anyQualities option').each(function () {

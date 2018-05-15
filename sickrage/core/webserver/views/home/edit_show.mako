@@ -52,6 +52,9 @@
                                                        class="form-control "
                                                        autocapitalize="off" title="Location" required=""/>
                                             </div>
+                                            <label for="location">
+                                                <p>${_('Location for where your show resides on your device')}</p>
+                                            </label>
                                         </div>
                                     </div>
 
@@ -85,6 +88,9 @@
                                                     % endfor
                                                 </select>
                                             </div>
+                                            <label for="defaultEpStatusSelect">
+                                                <p>${_('Unaired episodes automatically set to this status when air date reached')}</p>
+                                            </label>
                                         </div>
                                     </div>
 
@@ -106,6 +112,9 @@
                                                         data-language="${show.lang}"
                                                         data-available="${','.join(languages)}"></select>
                                             </div>
+                                            <label for="indexerLangSelect">
+                                                <p>${_('Language of show information is translated into')}</p>
+                                            </label>
                                         </div>
                                     </div>
 
