@@ -295,11 +295,13 @@ class srDatabase(object):
 
     def all(self, *args, **kwargs):
         kwargs['with_doc'] = True
-        return (x['doc'] for x in self.db.all(*args, **kwargs))
+        for x in self.db.all(*args, **kwargs):
+            yield x['doc']
 
     def get_many(self, *args, **kwargs):
         kwargs['with_doc'] = True
-        return (x['doc'] for x in self.db.get_many(*args, **kwargs))
+        for x in self.db.get_many(*args, **kwargs):
+            yield x['doc']
 
     def get(self, *args, **kwargs):
         kwargs['with_doc'] = True
