@@ -1248,31 +1248,37 @@ class Home(WebHandler):
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
                          'icon': 'ui-icon ui-icon-comment'})
 
-        epCounts = {}
         epCats = {}
-        epCounts[Overview.SKIPPED] = 0
-        epCounts[Overview.WANTED] = 0
-        epCounts[Overview.QUAL] = 0
-        epCounts[Overview.GOOD] = 0
-        epCounts[Overview.UNAIRED] = 0
-        epCounts[Overview.SNATCHED] = 0
-        epCounts[Overview.MISSED] = 0
+        epCounts = {
+            Overview.SKIPPED: 0,
+            Overview.WANTED: 0,
+            Overview.QUAL: 0,
+            Overview.GOOD: 0,
+            Overview.UNAIRED: 0,
+            Overview.SNATCHED: 0,
+            Overview.SNATCHED_PROPER: 0,
+            Overview.SNATCHED_BEST: 0,
+            Overview.MISSED: 0,
+        }
 
         for curEp in episodeResults:
             curEpCat = showObj.getOverview(int(curEp['status'] or -1))
 
-            if curEp['airdate'] != 1:
-                today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
-                airDate = datetime.datetime.fromordinal(curEp['airdate'])
-                if airDate.year >= 1970 or showObj.network:
-                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
-                                         convert=True).dt
-                if curEpCat == Overview.WANTED and airDate < today:
-                    curEpCat = Overview.MISSED
+        if curEp['airdate'] != 1:
+            today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
 
-            if curEpCat:
-                epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
-                epCounts[curEpCat] += 1
+        airDate = datetime.datetime.fromordinal(curEp['airdate'])
+        if airDate.year >= 1970 or showObj.network:
+            airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
+                                 convert=True).dt
+
+        if curEpCat == Overview.WANTED and airDate < today:
+            curEpCat = Overview.MISSED
+
+        if curEpCat:
+            epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
+
+        epCounts[curEpCat] += 1
 
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]
@@ -3056,14 +3062,18 @@ class Manage(Home, WebRoot):
         showResults = {}
 
         for curShow in sickrage.app.showlist:
-            epCounts = {}
             epCats = {}
-            epCounts[Overview.SKIPPED] = 0
-            epCounts[Overview.WANTED] = 0
-            epCounts[Overview.QUAL] = 0
-            epCounts[Overview.GOOD] = 0
-            epCounts[Overview.UNAIRED] = 0
-            epCounts[Overview.SNATCHED] = 0
+            epCounts = {
+                Overview.SKIPPED: 0,
+                Overview.WANTED: 0,
+                Overview.QUAL: 0,
+                Overview.GOOD: 0,
+                Overview.UNAIRED: 0,
+                Overview.SNATCHED: 0,
+                Overview.SNATCHED_PROPER: 0,
+                Overview.SNATCHED_BEST: 0,
+                Overview.MISSED: 0,
+            }
 
             showResults[curShow.indexerid] = []
 

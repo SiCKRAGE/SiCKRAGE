@@ -448,7 +448,8 @@
                             </label>
                             <label class="pull-right" for="snatched" style="padding-bottom: 5px;">
                             <span class="snatched"><input type="checkbox" id="snatched" checked/>
-                                ${_('Snatched:')} <b>${epCounts[Overview.SNATCHED]}</b>
+                                <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
+                                ${_('Snatched:')} <b>${total_snatched}</b>
                             </span>
                             </label>
                         </div>
