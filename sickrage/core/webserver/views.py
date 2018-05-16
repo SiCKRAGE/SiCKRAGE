@@ -1264,21 +1264,19 @@ class Home(WebHandler):
         for curEp in episodeResults:
             curEpCat = showObj.getOverview(int(curEp['status'] or -1))
 
-        if curEp['airdate'] != 1:
-            today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
-
-        airDate = datetime.datetime.fromordinal(curEp['airdate'])
-        if airDate.year >= 1970 or showObj.network:
-            airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
+            if curEp['airdate'] != 1:
+                today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
+                airDate = datetime.datetime.fromordinal(curEp['airdate'])
+                if airDate.year >= 1970 or showObj.network:
+                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
                                  convert=True).dt
 
-        if curEpCat == Overview.WANTED and airDate < today:
-            curEpCat = Overview.MISSED
+                if curEpCat == Overview.WANTED and airDate < today:
+                    curEpCat = Overview.MISSED
 
-        if curEpCat:
-            epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
-
-        epCounts[curEpCat] += 1
+            if curEpCat:
+                epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
+                epCounts[curEpCat] += 1
 
         def titler(x):
             return (remove_article(x), x)[not x or sickrage.app.config.sort_article]

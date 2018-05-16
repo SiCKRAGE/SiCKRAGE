@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-15 22:29-0700\n"
-"PO-Revision-Date: 2018-05-16 01:29-0400\n"
+"POT-Creation-Date: 2018-05-15 22:46-0700\n"
+"PO-Revision-Date: 2018-05-16 01:46-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "موافق"
 msgid "Cancel"
 msgstr "إلغاء الأمر"
 
-#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3658
+#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3656
 msgid "Clear History"
 msgstr "مسح المحفوظات"
 
@@ -81,7 +81,7 @@ msgstr "مسح المحفوظات"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "هل أنت متأكد من أنك تريد مسح كافة تاريخ التحميل؟"
 
-#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3660
+#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3658
 msgid "Trim History"
 msgstr "تقليم التاريخ"
 
@@ -847,7 +847,7 @@ msgstr "يظهر"
 msgid "Schedule"
 msgstr "الجدول الزمني"
 
-#: sickrage/core/webserver/views.py:3670 sickrage/core/webserver/views.py:3671
+#: sickrage/core/webserver/views.py:3668 sickrage/core/webserver/views.py:3669
 #: sickrage/core/webserver/views/config/general.mako:161
 #: sickrage/core/webserver/views/layouts/main.mako:210
 msgid "History"
@@ -3474,7 +3474,7 @@ msgstr "موفر واحد على الأقل مطلوب ولكن ينصح باث�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "أسود نيوزيلندي/سيل مقدمي الخدمات يمكن أن يكون مثبت في"
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:3976
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "Search Clients"
@@ -4688,7 +4688,7 @@ msgstr "ابدأ"
 msgid "Retry Download"
 msgstr "إعادة محاولة التحميل"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4966
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4815,7 +4815,7 @@ msgstr "استخدام ترتيب دي في دي بدلاً من النظام ا
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"تحديث كامل القوة\" أمر ضروري، وإذا كان لديك الحلقات الموجودة تحتاج إلى فرزها يدوياً."
 
-#: sickrage/core/webserver/views.py:3709 sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4845
 #: sickrage/core/webserver/views/home/edit_show.mako:233
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5143,7 +5143,7 @@ msgstr "القيام بإعادة التشغيل"
 msgid "Daily Search"
 msgstr "البحث اليومي"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4953
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "المتراكمة"
@@ -5168,7 +5168,7 @@ msgstr "آخر عملية"
 msgid "Subtitles Finder"
 msgstr "الباحث عن الترجمة"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4961
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "مدقق Trakt"
@@ -5201,7 +5201,7 @@ msgstr "لا"
 msgid "True"
 msgstr "صحيح"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4956
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "إظهار قائمة الانتظار"
@@ -5459,7 +5459,7 @@ msgstr "الدلائل الجذر"
 msgid "New"
 msgstr "الجديد"
 
-#: sickrage/core/webserver/views.py:1192 sickrage/core/webserver/views.py:1971
+#: sickrage/core/webserver/views.py:1192 sickrage/core/webserver/views.py:1969
 #: sickrage/core/webserver/views/includes/root_dirs.mako:36
 #: sickrage/core/webserver/views/manage/mass_edit.mako:69
 msgid "Edit"
@@ -5489,7 +5489,7 @@ msgstr "تبديل التنقل"
 msgid "Show List"
 msgstr "إظهار القائمة"
 
-#: sickrage/core/webserver/views.py:2319 sickrage/core/webserver/views.py:2320
+#: sickrage/core/webserver/views.py:2317 sickrage/core/webserver/views.py:2318
 #: sickrage/core/webserver/views/layouts/main.mako:105
 msgid "Add Shows"
 msgstr "إضافة عروض"
@@ -5504,18 +5504,18 @@ msgstr "تجهيز يدوي"
 msgid "Manage"
 msgstr "إدارة"
 
-#: sickrage/core/webserver/views.py:3489 sickrage/core/webserver/views.py:3490
+#: sickrage/core/webserver/views.py:3487 sickrage/core/webserver/views.py:3488
 #: sickrage/core/webserver/views/layouts/main.mako:136
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "التحديث الشامل"
 
-#: sickrage/core/webserver/views.py:3097 sickrage/core/webserver/views.py:3098
+#: sickrage/core/webserver/views.py:3095 sickrage/core/webserver/views.py:3096
 #: sickrage/core/webserver/views/layouts/main.mako:141
 msgid "Backlog Overview"
 msgstr "نظرة عامة على الأعمال المتراكمة"
 
-#: sickrage/core/webserver/views.py:3542 sickrage/core/webserver/views.py:3543
+#: sickrage/core/webserver/views.py:3540 sickrage/core/webserver/views.py:3541
 #: sickrage/core/webserver/views/layouts/main.mako:146
 msgid "Manage Queues"
 msgstr "إدارة قوائم الانتظار"
@@ -5544,7 +5544,7 @@ msgstr "تحديث امبي"
 msgid "Manage Torrents"
 msgstr "إدارة السيول"
 
-#: sickrage/core/webserver/views.py:3517 sickrage/core/webserver/views.py:3518
+#: sickrage/core/webserver/views.py:3515 sickrage/core/webserver/views.py:3516
 #: sickrage/core/webserver/views/layouts/main.mako:191
 msgid "Failed Downloads"
 msgstr "مرات فشل التحميل"
@@ -5557,12 +5557,12 @@ msgstr "إدارة الترجمة الضائعة"
 msgid "Config"
 msgstr "التهيئة"
 
-#: sickrage/core/webserver/views.py:3700
+#: sickrage/core/webserver/views.py:3698
 #: sickrage/core/webserver/views/layouts/main.mako:222
 msgid "Help and Info"
 msgstr "مساعدة ومعلومات"
 
-#: sickrage/core/webserver/views.py:3701
+#: sickrage/core/webserver/views.py:3699
 #: sickrage/core/webserver/views/layouts/main.mako:227
 msgid "General"
 msgstr "العام"
@@ -5571,28 +5571,28 @@ msgstr "العام"
 msgid "Backup and Restore"
 msgstr "النسخ الاحتياطي والاستعادة"
 
-#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:4275
+#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4273
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "Search Providers"
 msgstr "موفرات البحث"
 
-#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:4766
+#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4764
 #: sickrage/core/webserver/views/layouts/main.mako:247
 msgid "Subtitles Settings"
 msgstr "إعدادات الترجمة"
 
-#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:4884
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "إعدادات الجودة"
 
-#: sickrage/core/webserver/views.py:2283 sickrage/core/webserver/views.py:2284
-#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4080
+#: sickrage/core/webserver/views.py:2281 sickrage/core/webserver/views.py:2282
+#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:4078
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Post Processing"
 msgstr "مرحلة ما بعد المعالجة"
 
-#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:4432
+#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:4430
 #: sickrage/core/webserver/views/layouts/main.mako:262
 msgid "Notifications"
 msgstr "إعلامات"
@@ -5805,7 +5805,7 @@ msgstr "تعيين إذا تم الإفراج عن هذه العروض Show.03.0
 msgid "Search for subtitles."
 msgstr "البحث عن الترجمة."
 
-#: sickrage/core/webserver/views.py:3247 sickrage/core/webserver/views.py:3248
+#: sickrage/core/webserver/views.py:3245 sickrage/core/webserver/views.py:3246
 #: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Edit"
 msgstr "تحرير كتلة"
@@ -6077,8 +6077,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "لم أتمكن من العثور تحميل ل <i>%s</i>"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2687
-#: sickrage/core/webserver/views.py:2699
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2685
+#: sickrage/core/webserver/views.py:2697
 msgid "Unable to add show"
 msgstr "غير قادر على إضافة عرض"
 
@@ -6154,8 +6154,8 @@ msgstr "المعاملات عرض غير صالح"
 msgid "Invalid paramaters"
 msgstr "المعاملات غير صالحة"
 
-#: sickrage/core/webserver/views.py:627 sickrage/core/webserver/views.py:1774
-#: sickrage/core/webserver/views.py:1836
+#: sickrage/core/webserver/views.py:627 sickrage/core/webserver/views.py:1772
+#: sickrage/core/webserver/views.py:1834
 msgid "Episode couldn't be retrieved"
 msgstr "لا يمكن استرداد الحلقة"
 
@@ -6465,34 +6465,34 @@ msgid "Already on branch: "
 msgstr "فعلا في فرع: "
 
 #: sickrage/core/webserver/views.py:1179 sickrage/core/webserver/views.py:1184
-#: sickrage/core/webserver/views.py:1367 sickrage/core/webserver/views.py:1376
-#: sickrage/core/webserver/views.py:1581 sickrage/core/webserver/views.py:1586
-#: sickrage/core/webserver/views.py:1599 sickrage/core/webserver/views.py:1604
-#: sickrage/core/webserver/views.py:1626 sickrage/core/webserver/views.py:1631
-#: sickrage/core/webserver/views.py:1644 sickrage/core/webserver/views.py:1649
-#: sickrage/core/webserver/views.py:1665 sickrage/core/webserver/views.py:1670
-#: sickrage/core/webserver/views.py:1743 sickrage/core/webserver/views.py:1746
-#: sickrage/core/webserver/views.py:1750 sickrage/core/webserver/views.py:1752
-#: sickrage/core/webserver/views.py:1755 sickrage/core/webserver/views.py:1774
-#: sickrage/core/webserver/views.py:1792 sickrage/core/webserver/views.py:1795
-#: sickrage/core/webserver/views.py:1800 sickrage/core/webserver/views.py:1803
-#: sickrage/core/webserver/views.py:1808 sickrage/core/webserver/views.py:1810
-#: sickrage/core/webserver/views.py:1813 sickrage/core/webserver/views.py:1836
-#: sickrage/core/webserver/views.py:1937 sickrage/core/webserver/views.py:1942
-#: sickrage/core/webserver/views.py:1945 sickrage/core/webserver/views.py:1988
-#: sickrage/core/webserver/views.py:1994 sickrage/core/webserver/views.py:1997
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:1365 sickrage/core/webserver/views.py:1374
+#: sickrage/core/webserver/views.py:1579 sickrage/core/webserver/views.py:1584
+#: sickrage/core/webserver/views.py:1597 sickrage/core/webserver/views.py:1602
+#: sickrage/core/webserver/views.py:1624 sickrage/core/webserver/views.py:1629
+#: sickrage/core/webserver/views.py:1642 sickrage/core/webserver/views.py:1647
+#: sickrage/core/webserver/views.py:1663 sickrage/core/webserver/views.py:1668
+#: sickrage/core/webserver/views.py:1741 sickrage/core/webserver/views.py:1744
+#: sickrage/core/webserver/views.py:1748 sickrage/core/webserver/views.py:1750
+#: sickrage/core/webserver/views.py:1753 sickrage/core/webserver/views.py:1772
+#: sickrage/core/webserver/views.py:1790 sickrage/core/webserver/views.py:1793
+#: sickrage/core/webserver/views.py:1798 sickrage/core/webserver/views.py:1801
+#: sickrage/core/webserver/views.py:1806 sickrage/core/webserver/views.py:1808
+#: sickrage/core/webserver/views.py:1811 sickrage/core/webserver/views.py:1834
+#: sickrage/core/webserver/views.py:1935 sickrage/core/webserver/views.py:1940
+#: sickrage/core/webserver/views.py:1943 sickrage/core/webserver/views.py:1986
+#: sickrage/core/webserver/views.py:1992 sickrage/core/webserver/views.py:1995
+#: sickrage/core/webserver/views.py:4963
 msgid "Error"
 msgstr "خطأ"
 
-#: sickrage/core/webserver/views.py:1179 sickrage/core/webserver/views.py:1581
-#: sickrage/core/webserver/views.py:1599 sickrage/core/webserver/views.py:1626
-#: sickrage/core/webserver/views.py:1644 sickrage/core/webserver/views.py:1665
+#: sickrage/core/webserver/views.py:1179 sickrage/core/webserver/views.py:1579
+#: sickrage/core/webserver/views.py:1597 sickrage/core/webserver/views.py:1624
+#: sickrage/core/webserver/views.py:1642 sickrage/core/webserver/views.py:1663
 msgid "Invalid show ID"
 msgstr "معرف عرض غير صالح"
 
-#: sickrage/core/webserver/views.py:1184 sickrage/core/webserver/views.py:1942
-#: sickrage/core/webserver/views.py:1993
+#: sickrage/core/webserver/views.py:1184 sickrage/core/webserver/views.py:1940
+#: sickrage/core/webserver/views.py:1991
 msgid "Show not in show list"
 msgstr "إظهار غير موجود في قائمة عرض"
 
@@ -6544,8 +6544,8 @@ msgstr "إظهار التحديث في كودي"
 msgid "Update show in Emby"
 msgstr "إظهار التحديث في امبي"
 
-#: sickrage/core/webserver/views.py:1242 sickrage/core/webserver/views.py:1979
-#: sickrage/core/webserver/views.py:1980
+#: sickrage/core/webserver/views.py:1242 sickrage/core/webserver/views.py:1977
+#: sickrage/core/webserver/views.py:1978
 msgid "Preview Rename"
 msgstr "معاينة تسمية"
 
@@ -6553,498 +6553,498 @@ msgstr "معاينة تسمية"
 msgid "Download Subtitles"
 msgstr "تحميل ترجمات"
 
-#: sickrage/core/webserver/views.py:1363
+#: sickrage/core/webserver/views.py:1361
 msgid "Invalid show ID: "
 msgstr "معرف عرض غير صالح: "
 
-#: sickrage/core/webserver/views.py:1372
+#: sickrage/core/webserver/views.py:1370
 msgid "Unable to find the specified show: "
 msgstr "غير قادر على العثور على العرض المحدد: "
 
-#: sickrage/core/webserver/views.py:1392
+#: sickrage/core/webserver/views.py:1390
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "غير قادر على استرداد مجموعات Fansub من أنيدب."
 
-#: sickrage/core/webserver/views.py:1408 sickrage/core/webserver/views.py:1409
-#: sickrage/core/webserver/views.py:1419 sickrage/core/webserver/views.py:1420
+#: sickrage/core/webserver/views.py:1406 sickrage/core/webserver/views.py:1407
+#: sickrage/core/webserver/views.py:1417 sickrage/core/webserver/views.py:1418
 msgid "Edit Show"
 msgstr "تحرير العرض"
 
-#: sickrage/core/webserver/views.py:1502
+#: sickrage/core/webserver/views.py:1500
 msgid "Unable to refresh this show: {}"
 msgstr "غير قادر على تحديث هذا العرض: {}"
 
-#: sickrage/core/webserver/views.py:1534
+#: sickrage/core/webserver/views.py:1532
 msgid "Unable to refresh this show:{}"
 msgstr "غير قادر على تحديث هذا العرض:{}"
 
-#: sickrage/core/webserver/views.py:1540
+#: sickrage/core/webserver/views.py:1538
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "لا يحتوي المجلد في %s tvshow.nfo--نسخ الملفات إلى هذا المجلد قبل تغيير الدليل في سيكراجي."
 
-#: sickrage/core/webserver/views.py:1552 sickrage/core/webserver/views.py:3439
+#: sickrage/core/webserver/views.py:1550 sickrage/core/webserver/views.py:3437
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1559
+#: sickrage/core/webserver/views.py:1557
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "غير قادر على فرض تحديث على الاستثناءات مشهد من المعرض."
 
-#: sickrage/core/webserver/views.py:1566
+#: sickrage/core/webserver/views.py:1564
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "غير قادر على فرض تحديث ترقيم المشهد من المعرض."
 
-#: sickrage/core/webserver/views.py:1573 sickrage/core/webserver/views.py:3364
+#: sickrage/core/webserver/views.py:1571 sickrage/core/webserver/views.py:3362
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} أثناء حفظ التغييرات:"
 
-#: sickrage/core/webserver/views.py:1586 sickrage/core/webserver/views.py:1604
-#: sickrage/core/webserver/views.py:1631 sickrage/core/webserver/views.py:1649
-#: sickrage/core/webserver/views.py:1670
+#: sickrage/core/webserver/views.py:1584 sickrage/core/webserver/views.py:1602
+#: sickrage/core/webserver/views.py:1629 sickrage/core/webserver/views.py:1647
+#: sickrage/core/webserver/views.py:1668
 msgid "Unable to find the specified show"
 msgstr "غير قادر على العثور على العرض المحدد"
 
-#: sickrage/core/webserver/views.py:1593
+#: sickrage/core/webserver/views.py:1591
 #, python-format
 msgid "%s has been %s"
 msgstr "وقد تم %s %s"
 
-#: sickrage/core/webserver/views.py:1593
+#: sickrage/core/webserver/views.py:1591
 msgid "resumed"
 msgstr "استأنفت"
 
-#: sickrage/core/webserver/views.py:1593
+#: sickrage/core/webserver/views.py:1591
 msgid "paused"
 msgstr "توقف مؤقت"
 
-#: sickrage/core/webserver/views.py:1609
+#: sickrage/core/webserver/views.py:1607
 #, python-format
 msgid "%s has been %s %s"
 msgstr "وقد تم %s %s %s"
 
-#: sickrage/core/webserver/views.py:1612
+#: sickrage/core/webserver/views.py:1610
 msgid "deleted"
 msgstr "حذف"
 
-#: sickrage/core/webserver/views.py:1612
+#: sickrage/core/webserver/views.py:1610
 msgid "trashed"
 msgstr "إلى الحضيض"
 
-#: sickrage/core/webserver/views.py:1613
+#: sickrage/core/webserver/views.py:1611
 msgid "(media untouched)"
 msgstr "(وسائل الإعلام لم يمسها)"
 
-#: sickrage/core/webserver/views.py:1613
+#: sickrage/core/webserver/views.py:1611
 msgid "(with all related media)"
 msgstr "(مع كل ما يتصل وسائل الإعلام)"
 
-#: sickrage/core/webserver/views.py:1617
+#: sickrage/core/webserver/views.py:1615
 msgid "Unable to delete this show."
 msgstr "غير قادر على حذف هذا المعرض."
 
-#: sickrage/core/webserver/views.py:1636
+#: sickrage/core/webserver/views.py:1634
 msgid "Unable to refresh this show."
 msgstr "غير قادر على تحديث هذا العرض."
 
-#: sickrage/core/webserver/views.py:1655
+#: sickrage/core/webserver/views.py:1653
 msgid "Unable to update this show."
 msgstr "غير قادر على تحديث هذا العرض."
 
-#: sickrage/core/webserver/views.py:1694
+#: sickrage/core/webserver/views.py:1692
 msgid "Library update command sent to KODI host(s): "
 msgstr "إرسال الأمر تحديث المكتبة إلى مضيف/مضيفين منطقيين كودي: "
 
-#: sickrage/core/webserver/views.py:1696
+#: sickrage/core/webserver/views.py:1694
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "غير قادر على الاتصال بمضيف/واحد أو أكثر من مضيفين منطقيين كودي: "
 
-#: sickrage/core/webserver/views.py:1706
+#: sickrage/core/webserver/views.py:1704
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "إرسال إلى مضيف ملقم وسائط من نوع Plex الأمر تحديث المكتبة: "
 
-#: sickrage/core/webserver/views.py:1710
+#: sickrage/core/webserver/views.py:1708
 msgid "Unable to contact Plex Media Server host: "
 msgstr "غير قادر على الاتصال بمضيف ملقم وسائط من نوع Plex: "
 
-#: sickrage/core/webserver/views.py:1722
+#: sickrage/core/webserver/views.py:1720
 msgid "Library update command sent to Emby host: "
 msgstr "إرسال إلى المضيف امبي الأمر تحديث المكتبة: "
 
-#: sickrage/core/webserver/views.py:1725
+#: sickrage/core/webserver/views.py:1723
 msgid "Unable to contact Emby host: "
 msgstr "غير قادر على الاتصال بمضيف امبي: "
 
-#: sickrage/core/webserver/views.py:1735
+#: sickrage/core/webserver/views.py:1733
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Trakt المزامنة مع سيكراجي"
 
-#: sickrage/core/webserver/views.py:1741 sickrage/core/webserver/views.py:1790
-#: sickrage/core/webserver/views.py:1987
+#: sickrage/core/webserver/views.py:1739 sickrage/core/webserver/views.py:1788
+#: sickrage/core/webserver/views.py:1985
 msgid "You must specify a show and at least one episode"
 msgstr "يجب عليك تحديد إظهار وحلقة واحدة على الأقل"
 
-#: sickrage/core/webserver/views.py:1798
+#: sickrage/core/webserver/views.py:1796
 msgid "Invalid status"
 msgstr "حالة غير صالحة"
 
-#: sickrage/core/webserver/views.py:1893
+#: sickrage/core/webserver/views.py:1891
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "وبدأ تراكم تلقائياً للمواسم التالية "
 
-#: sickrage/core/webserver/views.py:1900 sickrage/core/webserver/views.py:1920
+#: sickrage/core/webserver/views.py:1898 sickrage/core/webserver/views.py:1918
 msgid "Season "
 msgstr "الموسم "
 
-#: sickrage/core/webserver/views.py:1907
+#: sickrage/core/webserver/views.py:1905
 msgid "Backlog started"
 msgstr "تراكمات بدأت"
 
-#: sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:1911
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "إعادة محاولة البحث تلقائياً بدأت في الموسم التالي من "
 
-#: sickrage/core/webserver/views.py:1927
+#: sickrage/core/webserver/views.py:1925
 msgid "Retry Search started"
 msgstr "بدأ البحث عن إعادة المحاولة"
 
-#: sickrage/core/webserver/views.py:1937
+#: sickrage/core/webserver/views.py:1935
 msgid "You must specify a show"
 msgstr "يجب عليك تحديد إظهار"
 
-#: sickrage/core/webserver/views.py:1945 sickrage/core/webserver/views.py:1997
+#: sickrage/core/webserver/views.py:1943 sickrage/core/webserver/views.py:1995
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "لا يمكن إعادة تسمية الحلقات عند دير إظهار مفقود."
 
-#: sickrage/core/webserver/views.py:2132
+#: sickrage/core/webserver/views.py:2130
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "ترجمات جديدة التحميل: %s"
 
-#: sickrage/core/webserver/views.py:2134
+#: sickrage/core/webserver/views.py:2132
 msgid "No subtitles downloaded"
 msgstr "ترجمة لا تحميل"
 
-#: sickrage/core/webserver/views.py:2308
+#: sickrage/core/webserver/views.py:2306
 msgid "Postprocessing results"
 msgstr "نتائج تحليل نتائج العمل"
 
-#: sickrage/core/webserver/views.py:2368
+#: sickrage/core/webserver/views.py:2366
 msgid "No folders selected."
 msgstr "لا المجلدات المحددة."
 
-#: sickrage/core/webserver/views.py:2504 sickrage/core/webserver/views.py:2505
+#: sickrage/core/webserver/views.py:2502 sickrage/core/webserver/views.py:2503
 msgid "New Show"
 msgstr "عرض جديد"
 
-#: sickrage/core/webserver/views.py:2569 sickrage/core/webserver/views.py:2570
+#: sickrage/core/webserver/views.py:2567 sickrage/core/webserver/views.py:2568
 msgid "Existing Show"
 msgstr "إظهار القائمة"
 
-#: sickrage/core/webserver/views.py:2611 sickrage/core/webserver/views.py:2752
+#: sickrage/core/webserver/views.py:2609 sickrage/core/webserver/views.py:2750
 msgid "Adding Show"
 msgstr "إضافة عرض"
 
-#: sickrage/core/webserver/views.py:2611 sickrage/core/webserver/views.py:2752
+#: sickrage/core/webserver/views.py:2609 sickrage/core/webserver/views.py:2750
 msgid "Adding the specified show into "
 msgstr "إضافة العرض المحدد في "
 
-#: sickrage/core/webserver/views.py:2614
+#: sickrage/core/webserver/views.py:2612
 msgid "No root directories setup, please go back and add one."
 msgstr "لا الدلائل الجذر الإعداد، الرجاء العودة وإضافة واحدة."
 
-#: sickrage/core/webserver/views.py:2664
+#: sickrage/core/webserver/views.py:2662
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "خطأ غير معروف. غير قادر على إضافة تبين سبب المشكلة مع إظهار التحديد."
 
-#: sickrage/core/webserver/views.py:2688
+#: sickrage/core/webserver/views.py:2686
 msgid "Folder "
 msgstr "مجلد "
 
-#: sickrage/core/webserver/views.py:2688
+#: sickrage/core/webserver/views.py:2686
 msgid " exists already"
 msgstr " موجود بالفعل"
 
-#: sickrage/core/webserver/views.py:2700
+#: sickrage/core/webserver/views.py:2698
 msgid "Unable to create the folder , can't add the show"
 msgstr "غير قادر على إنشاء المجلد، لا يمكن إضافة العرض"
 
-#: sickrage/core/webserver/views.py:2827
+#: sickrage/core/webserver/views.py:2825
 msgid "Shows Added"
 msgstr "يظهر المضافة"
 
-#: sickrage/core/webserver/views.py:2828
+#: sickrage/core/webserver/views.py:2826
 msgid "Automatically added "
 msgstr "يضاف تلقائياً "
 
-#: sickrage/core/webserver/views.py:2829
+#: sickrage/core/webserver/views.py:2827
 msgid " from their existing metadata files"
 msgstr " من ملفات بيانات التعريف الموجودة على"
 
-#: sickrage/core/webserver/views.py:3011 sickrage/core/webserver/views.py:3012
+#: sickrage/core/webserver/views.py:3009 sickrage/core/webserver/views.py:3010
 msgid "Missing Subtitles"
 msgstr "ترجمات في عداد المفقودين"
 
-#: sickrage/core/webserver/views.py:3447
+#: sickrage/core/webserver/views.py:3445
 msgid "Unable to refresh show "
 msgstr "غير قادر على تحديث العرض "
 
-#: sickrage/core/webserver/views.py:3458
+#: sickrage/core/webserver/views.py:3456
 msgid "Errors encountered"
 msgstr "تمت مصادفة أخطاء"
 
-#: sickrage/core/webserver/views.py:3464
+#: sickrage/core/webserver/views.py:3462
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3469
+#: sickrage/core/webserver/views.py:3467
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3474
+#: sickrage/core/webserver/views.py:3472
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3479
+#: sickrage/core/webserver/views.py:3477
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3484
+#: sickrage/core/webserver/views.py:3482
 msgid "The following actions were queued:"
 msgstr "وقد اصطف الإجراءات التالية:"
 
-#: sickrage/core/webserver/views.py:3553
+#: sickrage/core/webserver/views.py:3551
 msgid "Backlog search started"
 msgstr "البحث عن تراكمات بدأت"
 
-#: sickrage/core/webserver/views.py:3561
+#: sickrage/core/webserver/views.py:3559
 msgid "Daily search started"
 msgstr "البحث اليومية التي بدأت"
 
-#: sickrage/core/webserver/views.py:3569
+#: sickrage/core/webserver/views.py:3567
 msgid "Find propers search started"
 msgstr "العثور على البحث بروبيرس بدأت"
 
-#: sickrage/core/webserver/views.py:3680
+#: sickrage/core/webserver/views.py:3678
 msgid "History cleared"
 msgstr "مسح المحفوظات"
 
-#: sickrage/core/webserver/views.py:3687
+#: sickrage/core/webserver/views.py:3685
 msgid "Removed history entries older than 30 days"
 msgstr "تاريخ إزالة الإدخالات الأقدم من 30 يوما"
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:3917
 msgid "Backup/Restore"
 msgstr "النسخ الاحتياطي/الاستعادة"
 
-#: sickrage/core/webserver/views.py:3718 sickrage/core/webserver/views.py:3719
+#: sickrage/core/webserver/views.py:3716 sickrage/core/webserver/views.py:3717
 msgid "Configuration"
 msgstr "التكوين"
 
-#: sickrage/core/webserver/views.py:3727
+#: sickrage/core/webserver/views.py:3725
 msgid "Configuration Reset to Defaults"
 msgstr "إعادة تعيين التكوين إلى الإعدادات الافتراضية"
 
-#: sickrage/core/webserver/views.py:3740
+#: sickrage/core/webserver/views.py:3738
 msgid "Config - General"
 msgstr "التكوين-العامة"
 
-#: sickrage/core/webserver/views.py:3741
+#: sickrage/core/webserver/views.py:3739
 msgid "General Configuration"
 msgstr "تكوين عامة"
 
-#: sickrage/core/webserver/views.py:3901 sickrage/core/webserver/views.py:4062
-#: sickrage/core/webserver/views.py:4193 sickrage/core/webserver/views.py:4414
-#: sickrage/core/webserver/views.py:4748 sickrage/core/webserver/views.py:4829
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:3899 sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4191 sickrage/core/webserver/views.py:4412
+#: sickrage/core/webserver/views.py:4746 sickrage/core/webserver/views.py:4827
+#: sickrage/core/webserver/views.py:4866
 msgid "Error(s) Saving Configuration"
 msgstr "خطأ (أخطاء) حفظ التكوين"
 
-#: sickrage/core/webserver/views.py:3903
+#: sickrage/core/webserver/views.py:3901
 msgid "[GENERAL] Configuration Saved"
 msgstr "حفظ التكوين [GENERAL]"
 
-#: sickrage/core/webserver/views.py:3918
+#: sickrage/core/webserver/views.py:3916
 msgid "Config - Backup/Restore"
 msgstr "التكوين--النسخ الاحتياطي/الاستعادة"
 
-#: sickrage/core/webserver/views.py:3931
+#: sickrage/core/webserver/views.py:3929
 msgid "Backup SUCCESSFUL"
 msgstr "نجاح النسخ الاحتياطي"
 
-#: sickrage/core/webserver/views.py:3933
+#: sickrage/core/webserver/views.py:3931
 msgid "Backup FAILED!"
 msgstr "فشلت عملية النسخ الاحتياطي!"
 
-#: sickrage/core/webserver/views.py:3935
+#: sickrage/core/webserver/views.py:3933
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "كنت بحاجة لاختيار مجلد الذي تريد حفظ النسخة الاحتياطية الخاصة بك إلى أول!"
 
-#: sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:3952
 msgid "Successfully extracted restore files to "
 msgstr "استعادة بنجاح استخراج الملفات إلى "
 
-#: sickrage/core/webserver/views.py:3955
+#: sickrage/core/webserver/views.py:3953
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart سيكراجي لإتمام الاستعادة."
 
-#: sickrage/core/webserver/views.py:3957
+#: sickrage/core/webserver/views.py:3955
 msgid "Restore FAILED"
 msgstr "فشل في استعادة"
 
-#: sickrage/core/webserver/views.py:3959
+#: sickrage/core/webserver/views.py:3957
 msgid "You need to select a backup file to restore!"
 msgstr "أنت بحاجة لتحديد ملف النسخ احتياطي لاستعادة!"
 
-#: sickrage/core/webserver/views.py:3975
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4001 sickrage/core/webserver/views.py:4004
-#: sickrage/core/webserver/views.py:4108
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "غير قادر على إنشاء الدليل "
 
-#: sickrage/core/webserver/views.py:4001 sickrage/core/webserver/views.py:4004
-#: sickrage/core/webserver/views.py:4108
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr "، دير لم تتغير."
 
-#: sickrage/core/webserver/views.py:4064
+#: sickrage/core/webserver/views.py:4062
 msgid "[SEARCH] Configuration Saved"
 msgstr "حفظ التكوين [SEARCH]"
 
-#: sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:4077
 msgid "Config - Post Processing"
 msgstr "التكوين-مرحلة ما بعد المعالجة"
 
-#: sickrage/core/webserver/views.py:4119
+#: sickrage/core/webserver/views.py:4117
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "تفريغ غير معتمد، وتعطيل فك الإعداد"
 
-#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
+#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "حاولت إنقاذ أنمي غير صالح تسمية التهيئة، وعدم حفظ إعدادات التسمية"
 
-#: sickrage/core/webserver/views.py:4156 sickrage/core/webserver/views.py:4167
+#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "حاولت حفظ تكوين تسمية غير صالحة، عدم حفظ إعدادات التسمية"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4171
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "حاولت إنقاذ غير صالح الجوية بتاريخ تسمية تكوين، عدم حفظ إعدادات الجوي حسب التاريخ"
 
-#: sickrage/core/webserver/views.py:4179
+#: sickrage/core/webserver/views.py:4177
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "حاولت إنقاذ رياضة غير صالحة تسمية التهيئة، وعدم حفظ إعدادات الألعاب الرياضية"
 
-#: sickrage/core/webserver/views.py:4195
+#: sickrage/core/webserver/views.py:4193
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "حفظ التكوين [POST-PROCESSING]"
 
-#: sickrage/core/webserver/views.py:4274
+#: sickrage/core/webserver/views.py:4272
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "لم يتم تحديد \"اسم موفر\""
 
-#: sickrage/core/webserver/views.py:4317
+#: sickrage/core/webserver/views.py:4315
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "لا Url الموفر المحدد"
 
-#: sickrage/core/webserver/views.py:4319
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "لا يوجد مفتاح Api الموفر المحدد"
 
-#: sickrage/core/webserver/views.py:4416
+#: sickrage/core/webserver/views.py:4414
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "حفظ التكوين [PROVIDERS]"
 
-#: sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:4429
 msgid "Config - Notifications"
 msgstr "التكوين-الإشعارات"
 
-#: sickrage/core/webserver/views.py:4750
+#: sickrage/core/webserver/views.py:4748
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "حفظ التكوين [NOTIFICATIONS]"
 
-#: sickrage/core/webserver/views.py:4765
+#: sickrage/core/webserver/views.py:4763
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4831
+#: sickrage/core/webserver/views.py:4829
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "حفظ التكوين [SUBTITLES]"
 
-#: sickrage/core/webserver/views.py:4846
+#: sickrage/core/webserver/views.py:4844
 msgid "Config - Anime"
 msgstr "التكوين-انيمي"
 
-#: sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:4868
 msgid "[ANIME] Configuration Saved"
 msgstr "حفظ التكوين [ANIME]"
 
-#: sickrage/core/webserver/views.py:4885
+#: sickrage/core/webserver/views.py:4883
 msgid "Config - Quality Settings"
 msgstr "التكوين--إعدادات الجودة"
 
-#: sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:4895
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[إعدادات الجودة] حفظ التكوين"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4908
 msgid "Clear Errors"
 msgstr "أخطاء واضحة"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4911
 msgid "Clear Warnings"
 msgstr "تحذيرات واضحة"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4952
 msgid "Daily Searcher"
 msgstr "الباحث اليومية"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4954
 msgid "Show Updater"
 msgstr "إظهار التحديث"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4955
 msgid "Check Version"
 msgstr "التحقق من الإصدار"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4957
 msgid "Search Queue"
 msgstr "البحث عن قائمة انتظار"
 
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4958
 msgid "Find Propers"
 msgstr "البحث عن بروبيرس"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4959
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4960
 msgid "Find Subtitles"
 msgstr "العثور على ترجمات"
 
-#: sickrage/core/webserver/views.py:4964
+#: sickrage/core/webserver/views.py:4962
 msgid "Event"
 msgstr "الحدث"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4964
 msgid "Tornado"
 msgstr "تورنادو"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4965
 msgid "Thread"
 msgstr "مؤشر ترابط"
 
