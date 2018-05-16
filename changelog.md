@@ -1,6 +1,7 @@
 # Changelog
 
-- * e862700 - 2018-05-15: Fixed KeyError when trying to display a show 
+- * 1be8ad3 - 2018-05-15: Pre-Release v9.3.22.dev2 
+- * a2da132 - 2018-05-15: Fixed KeyError when trying to display a show 
 - * 7b39213 - 2018-05-15: Added labels to better explain options for editing shows 
 - * 2476478 - 2018-05-13: Pre-Release v9.3.22.dev1 
 - * 3fc98cf - 2018-05-13: Fixed issues with searches and UNKNOWN qualities 
