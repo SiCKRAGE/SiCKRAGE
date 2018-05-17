@@ -124,10 +124,15 @@ class BacklogSearcher(object):
 
             if curStatus != WANTED:
                 if bestQualities:
-                    if curQuality in bestQualities or curQuality > max(bestQualities):
+                    if curQuality in bestQualities:
                         continue
-                elif curQuality in anyQualities or curQuality > max(anyQualities):
-                    continue
+                    elif curQuality != Quality.UNKNOWN and curQuality > max(bestQualities):
+                        continue
+                else:
+                    if curQuality in anyQualities:
+                        continue
+                    elif curQuality != Quality.UNKNOWN and curQuality > max(anyQualities):
+                        continue
 
             # only fetch if not archive on first match
             if curStatus == DOWNLOADED and show.archive_firstmatch:

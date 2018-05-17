@@ -67,6 +67,7 @@ SNATCHED_PROPER = 9  # qualified with quality
 SUBTITLED = 10  # qualified with quality
 FAILED = 11  # episode downloaded or snatched we don't want
 SNATCHED_BEST = 12  # episode redownloaded using best quality
+MISSED = 13  # episode missed
 
 NAMING_REPEAT = 1
 NAMING_EXTEND = 2
@@ -184,9 +185,10 @@ class Quality(object):
     statusPrefixes = {DOWNLOADED: _("Downloaded"),
                       SNATCHED: _("Snatched"),
                       SNATCHED_PROPER: _("Snatched (Proper)"),
-                      FAILED: _("Failed"),
                       SNATCHED_BEST: _("Snatched (Best)"),
-                      ARCHIVED: _("Archived")}
+                      ARCHIVED: _("Archived"),
+                      FAILED: _("Failed"),
+                      MISSED: _("Missed"),}
 
     @staticmethod
     def _getStatusStrings(status):
@@ -216,6 +218,7 @@ class Quality(object):
     def splitQuality(quality):
         anyQualities = []
         bestQualities = []
+
         for curQual in Quality.qualityStrings.keys():
             if curQual & quality:
                 anyQualities.append(curQual)
@@ -295,8 +298,8 @@ class Quality(object):
         if (check_name(
                 [r"480p|\bweb\b|web.?dl|web(rip|mux|hd)|[sph]d.?tv|dsr|tv(rip|mux)|satrip", r"xvid|divx|[xh].?26[45]"],
                 all)
-            and not check_name([r"(720|1080)[pi]"], all)
-            and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
+                and not check_name([r"(720|1080)[pi]"], all)
+                and not check_name([r"hr.ws.pdtv.[xh].?26[45]"], any)):
             ret = Quality.SDTV
         elif (check_name([r"dvd(rip|mux)|b[rd](rip|mux)|blue?-?ray", r"xvid|divx|[xh].?26[45]"], all)
               and not check_name([r"(720|1080)[pi]"], all)
@@ -361,13 +364,13 @@ class Quality(object):
 
     @staticmethod
     def statusFromCompositeStatus(status):
-       status, quality = Quality.splitCompositeStatus(status)
-       return status
+        status, quality = Quality.splitCompositeStatus(status)
+        return status
 
     @staticmethod
     def qualityFromCompositeStatus(status):
-       status, quality = Quality.splitCompositeStatus(status)
-       return quality
+        status, quality = Quality.splitCompositeStatus(status)
+        return quality
 
     @staticmethod
     def qualityFromFileMeta(filename):
@@ -488,18 +491,18 @@ class Quality(object):
     DOWNLOADED = None
     SNATCHED = None
     SNATCHED_PROPER = None
-    FAILED = None
     SNATCHED_BEST = None
     ARCHIVED = None
+    FAILED = None
     IGNORED = None
 
 
 Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
-Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
 Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
 Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
+Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
 Quality.IGNORED = [Quality.compositeStatus(IGNORED, x) for x in Quality.qualityStrings.keys()]
 
 HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
@@ -607,27 +610,29 @@ class StatusStrings(UserDict):
 statusStrings = StatusStrings({UNKNOWN: _("Unknown"),
                                UNAIRED: _("Unaired"),
                                SNATCHED: _("Snatched"),
+                               SNATCHED_PROPER: _("Snatched (Proper)"),
+                               SNATCHED_BEST: _("Snatched (Best)"),
                                DOWNLOADED: _("Downloaded"),
                                SKIPPED: _("Skipped"),
-                               SNATCHED_PROPER: _("Snatched (Proper)"),
                                WANTED: _("Wanted"),
                                ARCHIVED: _("Archived"),
                                IGNORED: _("Ignored"),
                                SUBTITLED: _("Subtitled"),
                                FAILED: _("Failed"),
-                               SNATCHED_BEST: _("Snatched (Best)")})
+                               MISSED: _("Missed")})
 
 
 class Overview(object):
     UNAIRED = UNAIRED  # 1
-    QUAL = 2
+    SNATCHED = SNATCHED  # 2
     WANTED = WANTED  # 3
-    GOOD = 4
+    GOOD = DOWNLOADED  # 4
     SKIPPED = SKIPPED  # 5
-    MISSED = 6  # 6
+    SNATCHED_PROPER = SNATCHED_PROPER  # 9
+    SNATCHED_BEST = SNATCHED_BEST  # 12
+    MISSED = MISSED  # 13
 
-    # For both snatched statuses. Note: SNATCHED/QUAL have same value and break dict.
-    SNATCHED = SNATCHED_PROPER = SNATCHED_BEST  # 9
+    QUAL = 50
 
     overviewStrings = {SKIPPED: "skipped",
                        WANTED: "wanted",
@@ -635,6 +640,8 @@ class Overview(object):
                        GOOD: "good",
                        UNAIRED: "unaired",
                        SNATCHED: "snatched",
+                       SNATCHED_BEST: "snatched",
+                       SNATCHED_PROPER: "snatched",
                        MISSED: "missed"}
 
 

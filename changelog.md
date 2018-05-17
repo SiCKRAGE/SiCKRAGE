@@ -1,6 +1,14 @@
 # Changelog
 
-- * affd358 - 2018-05-13: Release v9.3.21 
+- * 39b6919 - 2018-05-17: Release v9.3.22 
+- * 8acce0d - 2018-05-16: Pre-Release v9.3.22.dev4 
+- * 6ea67b3 - 2018-05-15: Pre-Release v9.3.22.dev3 
+- * d2f59fc - 2018-05-15: Pre-Release v9.3.22.dev2 
+- * a2da132 - 2018-05-15: Fixed KeyError when trying to display a show 
+- * 7b39213 - 2018-05-15: Added labels to better explain options for editing shows 
+- * 2476478 - 2018-05-13: Pre-Release v9.3.22.dev1 
+- * 3fc98cf - 2018-05-13: Fixed issues with searches and UNKNOWN qualities 
+- * 0869c48 - 2018-05-13: Release v9.3.21 
 - * ea98ece - 2018-05-13: Fixed bug in backlog searcher that was incorrectly comparing date ordinals causing zero results to be found 
 - * 52d12af - 2018-05-13: Pre-Release v9.3.21.dev4 
 - * d1b612a - 2018-05-12: Changed iptorrents login url 
