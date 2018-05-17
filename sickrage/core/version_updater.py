@@ -690,7 +690,7 @@ class PipUpdateManager(UpdateManager):
 
     def _check_for_new_version(self):
         from distutils.version import StrictVersion
-        url = "https://pypi.python.org/pypi/{}/json".format('sickrage')
+        url = "https://pypi.org/pypi/{}/json".format('sickrage')
         resp = WebSession().get(url)
         versions = resp.json()["releases"].keys()
         versions.sort(key=StrictVersion, reverse=True)

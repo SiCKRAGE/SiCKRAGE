@@ -1,6 +1,7 @@
 # Changelog
 
-- * 908f3b4 - 2018-05-16: Pre-Release v9.3.22.dev4 
+- * 39b6919 - 2018-05-17: Release v9.3.22 
+- * 8acce0d - 2018-05-16: Pre-Release v9.3.22.dev4 
 - * 6ea67b3 - 2018-05-15: Pre-Release v9.3.22.dev3 
 - * d2f59fc - 2018-05-15: Pre-Release v9.3.22.dev2 
 - * a2da132 - 2018-05-15: Fixed KeyError when trying to display a show 
