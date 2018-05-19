@@ -1,6 +1,7 @@
 # Changelog
 
-- * 43687f2 - 2018-05-18: Misc small fixes 
+- * b0c0edf - 2018-05-18: Converted log error to warning for Discord client Refactored SabNZBd client code 
+- * a3c7441 - 2018-05-18: Misc small fixes 
 - * 5f5592c - 2018-05-18: Misc typo corrections Converted errors to warnings for email notifications 
 - * 1630902 - 2018-05-17: Release v9.3.22 
 - * 8acce0d - 2018-05-16: Pre-Release v9.3.22.dev4 

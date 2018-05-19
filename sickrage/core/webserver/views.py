@@ -746,7 +746,7 @@ class Home(WebHandler):
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
         host = clean_url(host)
 
-        connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
+        connection, accesMsg = SabNZBd.getSabAccesMethod(host)
         if connection:
             authed, authMsg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
@@ -1269,7 +1269,7 @@ class Home(WebHandler):
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
                     airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
-                                 convert=True).dt
+                                         convert=True).dt
 
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
