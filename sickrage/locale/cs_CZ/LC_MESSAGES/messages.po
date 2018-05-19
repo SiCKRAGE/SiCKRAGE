@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-17 07:50-0700\n"
-"PO-Revision-Date: 2018-05-17 10:51-0400\n"
+"POT-Creation-Date: 2018-05-18 23:51-0700\n"
+"PO-Revision-Date: 2018-05-19 02:51-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Poskytovatel"
 msgid "Quality"
 msgstr "Kvalita"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Vytrhla"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:615
+#: sickrage/core/common.py:185 sickrage/core/common.py:621
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Stáhnout"
 
-#: sickrage/core/common.py:620
+#: sickrage/core/common.py:626
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -666,8 +666,8 @@ msgstr "Rozdělené zobrazení seznamů"
 msgid "Separate anime and normal shows in groups"
 msgstr "Samostatné anime a normální pořady ve skupinách"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:79 sickrage/core/version_updater.py:87
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -5979,43 +5979,43 @@ msgstr "Rozšířit (Limited)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Rozšířit (omezená, předponu E)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:613
+#: sickrage/core/common.py:187 sickrage/core/common.py:619
 msgid "Snatched (Proper)"
 msgstr "Vytrhla (správné)"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:614
+#: sickrage/core/common.py:188 sickrage/core/common.py:620
 msgid "Snatched (Best)"
 msgstr "Vytrhla (nejlépe)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:618
+#: sickrage/core/common.py:189 sickrage/core/common.py:624
 msgid "Archived"
 msgstr "Archivováno"
 
-#: sickrage/core/common.py:190 sickrage/core/common.py:621
+#: sickrage/core/common.py:190 sickrage/core/common.py:627
 msgid "Failed"
 msgstr "Se nezdařilo"
 
-#: sickrage/core/common.py:191 sickrage/core/common.py:622
+#: sickrage/core/common.py:191 sickrage/core/common.py:628
 msgid "Missed"
 msgstr ""
 
-#: sickrage/core/common.py:610
+#: sickrage/core/common.py:616
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:617
 msgid "Unaired"
 msgstr "Unaired"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:622
 msgid "Skipped"
 msgstr "Vynecháno"
 
-#: sickrage/core/common.py:617
+#: sickrage/core/common.py:623
 msgid "Wanted"
 msgstr "Chtěl"
 
-#: sickrage/core/common.py:619
+#: sickrage/core/common.py:625
 msgid "Ignored"
 msgstr "Ignorováno"
 
@@ -6023,49 +6023,49 @@ msgstr "Ignorováno"
 msgid "Episode snatched"
 msgstr "Epizoda vytrhl"
 
-#: sickrage/core/version_updater.py:65
+#: sickrage/core/version_updater.py:64
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Nová aktualizace pro SiCKRAGE, spouštění automatických aktualizací"
 
-#: sickrage/core/version_updater.py:68
+#: sickrage/core/version_updater.py:67
 msgid "Update was successful"
 msgstr "Aktualizace byla úspěšná"
 
-#: sickrage/core/version_updater.py:72
+#: sickrage/core/version_updater.py:71
 msgid "Update failed!"
 msgstr "Aktualizace se nezdařila!"
 
-#: sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:79
 msgid "Config backup in progress..."
 msgstr "Probíhá konfigurace zálohování..."
 
-#: sickrage/core/version_updater.py:88
+#: sickrage/core/version_updater.py:87
 msgid "Config backup successful, updating..."
 msgstr "Konfigurace zálohování úspěšné, aktualizace..."
 
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 msgid "Config backup failed, aborting update"
 msgstr "Konfigurace zálohování se nezdařilo, přerušení aktualizace"
 
-#: sickrage/core/version_updater.py:217
+#: sickrage/core/version_updater.py:216
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Nelze najít váš git spustitelný - Set git cesta od nastavení-> generála-> Upřesnit nebo odstraňte složku .git a spuštění ze zdroje k povolení aktualizací."
 
-#: sickrage/core/version_updater.py:264
+#: sickrage/core/version_updater.py:263
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Nepodařilo se nalézt váš pip program - nastavení pip cestu od-> generála-> Upřesnit nastavení"
 
-#: sickrage/core/version_updater.py:422 sickrage/core/version_updater.py:559
+#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Je k dispozici novější verze, verze {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:555
+#: sickrage/core/version_updater.py:554
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Neznámé číslo aktuální verze: Pokud jste nikdy nepoužívali SiCKRAGE upgrade systému před, pak aktuální verze není nastavena. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:712
-msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
-msgstr "Nová aktualizace SiCKRAGE na serverech PyPy, verze {} &mdash; <a href=\"{}\">Update Now</a>"
+#: sickrage/core/version_updater.py:711
+msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
 
 #: sickrage/core/queues/search.py:210
 msgid "No downloads were found"

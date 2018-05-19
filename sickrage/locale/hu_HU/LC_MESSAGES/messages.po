@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-17 07:50-0700\n"
-"PO-Revision-Date: 2018-05-17 10:52-0400\n"
+"POT-Creation-Date: 2018-05-18 23:51-0700\n"
+"PO-Revision-Date: 2018-05-19 02:52-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Szolgáltató"
 msgid "Quality"
 msgstr "Minőségi"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Kikapta"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:615
+#: sickrage/core/common.py:185 sickrage/core/common.py:621
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Letöltött"
 
-#: sickrage/core/common.py:620
+#: sickrage/core/common.py:626
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -666,8 +666,8 @@ msgstr "Split Térkép listák"
 msgid "Separate anime and normal shows in groups"
 msgstr "Külön anime, és normál megmutatja a csoportok"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:79 sickrage/core/version_updater.py:87
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -5979,43 +5979,43 @@ msgstr "Kiterjesztése (korlátozott)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Kiterjesztése (korlátozott, E-előtaggal)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:613
+#: sickrage/core/common.py:187 sickrage/core/common.py:619
 msgid "Snatched (Proper)"
 msgstr "Ruházata (megfelelő)"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:614
+#: sickrage/core/common.py:188 sickrage/core/common.py:620
 msgid "Snatched (Best)"
 msgstr "Ruházata (legjobb)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:618
+#: sickrage/core/common.py:189 sickrage/core/common.py:624
 msgid "Archived"
 msgstr "Archivált"
 
-#: sickrage/core/common.py:190 sickrage/core/common.py:621
+#: sickrage/core/common.py:190 sickrage/core/common.py:627
 msgid "Failed"
 msgstr "Nem sikerült"
 
-#: sickrage/core/common.py:191 sickrage/core/common.py:622
+#: sickrage/core/common.py:191 sickrage/core/common.py:628
 msgid "Missed"
 msgstr ""
 
-#: sickrage/core/common.py:610
+#: sickrage/core/common.py:616
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:617
 msgid "Unaired"
 msgstr "Segítség nélkül"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:622
 msgid "Skipped"
 msgstr "Kimarad"
 
-#: sickrage/core/common.py:617
+#: sickrage/core/common.py:623
 msgid "Wanted"
 msgstr "Kívánt"
 
-#: sickrage/core/common.py:619
+#: sickrage/core/common.py:625
 msgid "Ignored"
 msgstr "Figyelmen kívül hagyva"
 
@@ -6023,49 +6023,49 @@ msgstr "Figyelmen kívül hagyva"
 msgid "Episode snatched"
 msgstr "Epizód kikapta"
 
-#: sickrage/core/version_updater.py:65
+#: sickrage/core/version_updater.py:64
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Új frissítés található SiCKRAGE, kezdve az auto-updater"
 
-#: sickrage/core/version_updater.py:68
+#: sickrage/core/version_updater.py:67
 msgid "Update was successful"
 msgstr "A frissítés sikeres volt."
 
-#: sickrage/core/version_updater.py:72
+#: sickrage/core/version_updater.py:71
 msgid "Update failed!"
 msgstr "Nem sikerült frissíteni!"
 
-#: sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:79
 msgid "Config backup in progress..."
 msgstr "Config backup folyamatban..."
 
-#: sickrage/core/version_updater.py:88
+#: sickrage/core/version_updater.py:87
 msgid "Config backup successful, updating..."
 msgstr "Config backup sikeres frissítése..."
 
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 msgid "Config backup failed, aborting update"
 msgstr "Config biztonsági mentés nem sikerült, a frissítés megszakítása"
 
-#: sickrage/core/version_updater.py:217
+#: sickrage/core/version_updater.py:216
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Képtelen-hoz talál a git végrehajtható - készlet git utad-> általános-> vagy speciális beállítások törléséhez a .git mappában, és Futtatás a forráshelyről lehetővé teszi a frissítések."
 
-#: sickrage/core/version_updater.py:264
+#: sickrage/core/version_updater.py:263
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Képtelen-hoz talál a pip végrehajtható - a pip elérési útjának beállítása, a beállítások-általános--> speciális->"
 
-#: sickrage/core/version_updater.py:422 sickrage/core/version_updater.py:559
+#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Van egy újabb verzió, verzió {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:555
+#: sickrage/core/version_updater.py:554
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Ismeretlen aktuális verziószám: Ha yo soha nem használtam a SiCKRAGE frissítés rendszer előtt, akkor a jelenlegi verzió nincs beállítva. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:712
-msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
-msgstr "Új SiCKRAGE frissítés megtalálható PyPy kiszolgálókhoz, version {} &mdash; <a href=\"{}\">Update Now</a>"
+#: sickrage/core/version_updater.py:711
+msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
 
 #: sickrage/core/queues/search.py:210
 msgid "No downloads were found"
