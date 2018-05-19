@@ -36,7 +36,7 @@ from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
-    UNAIRED, ARCHIVED, statusStrings, Overview, FAILED, SNATCHED_BEST
+    UNAIRED, ARCHIVED, statusStrings, Overview
 from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException, MultipleShowObjectsException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, findCertainShow

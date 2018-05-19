@@ -505,6 +505,13 @@ Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualit
 Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
 Quality.IGNORED = [Quality.compositeStatus(IGNORED, x) for x in Quality.qualityStrings.keys()]
 
+Quality.DOWNLOADED.sort()
+Quality.SNATCHED.sort()
+Quality.SNATCHED_BEST.sort()
+Quality.SNATCHED_PROPER.sort()
+Quality.FAILED.sort()
+Quality.ARCHIVED.sort()
+
 HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
 HD1080p = Quality.combineQualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
 UHD_4K = Quality.combineQualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Quality.UHD_4K_BLURAY], [])
@@ -568,7 +575,7 @@ class StatusStrings(UserDict):
         the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
         """
         if isinstance(key, int):  # if the key is already an int...
-            if key in self.keys() + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED:
+            if key in self.keys() + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED:
                 status, quality = Quality.splitCompositeStatus(key)
                 if quality == Quality.NONE:  # If a Quality is not listed... (shouldn't this be 'if not quality:'?)
                     return self[status]  # ...return the status...
@@ -600,8 +607,7 @@ class StatusStrings(UserDict):
         try:
             # This will raise a ValueError if we can't convert the key to int
             return ((int(key) in self.data) or
-                    (int(
-                        key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED))
+                    (int(key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED))
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist

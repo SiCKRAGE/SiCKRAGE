@@ -1,6 +1,7 @@
 # Changelog
 
-- * f130f3e - 2018-05-18: Misc typo corrections Converted errors to warnings for email notifications 
+- * 43687f2 - 2018-05-18: Misc small fixes 
+- * 5f5592c - 2018-05-18: Misc typo corrections Converted errors to warnings for email notifications 
 - * 1630902 - 2018-05-17: Release v9.3.22 
 - * 8acce0d - 2018-05-16: Pre-Release v9.3.22.dev4 
 - * 6ea67b3 - 2018-05-15: Pre-Release v9.3.22.dev3 
