@@ -90,6 +90,8 @@ def getEnabledServiceList():
 
 def download_subtitles(episode):
     existing_subtitles = episode.subtitles
+    if not isinstance(existing_subtitles, list):
+        existing_subtitles = []
 
     # First of all, check if we need subtitles
     languages = get_needed_languages(existing_subtitles)

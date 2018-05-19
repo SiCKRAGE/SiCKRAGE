@@ -98,10 +98,12 @@ class BlackAndWhiteList(object):
 
         :return: keywords in list
         """
-        groups = [x['keyword']for x in sickrage.app.main_db.get_many(table, self.show_id)]
+        try:
+            groups = [x['keyword'] for x in sickrage.app.main_db.get_many(table, self.show_id)]
+        except KeyError:
+            groups = []
 
-        sickrage.app.log.debug(
-            'BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
+        sickrage.app.log.debug('BWL: ' + str(self.show_id) + ' loaded keywords from ' + table + ': ' + str(groups))
 
         return groups
 

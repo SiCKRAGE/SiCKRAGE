@@ -563,7 +563,7 @@ class QueueItemUpdate(ShowQueueItem):
                 "Unable to contact " + IndexerApi(self.show.indexer).name + ", aborting: {}".format(e))
             return
         except indexer_attributenotfound as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Data retrieved from " + IndexerApi(self.show.indexer).name + " was incomplete, aborting: {}".format(e))
             return
 

@@ -138,7 +138,7 @@ class Show(dict):
             return dict.__getitem__(self.data, key)
 
         # Data wasn't found, raise appropriate error
-        if isinstance(key, int) or key.isdigit():
+        if key and (isinstance(key, int) or key.isdigit()):
             # Season number x was not found
             raise tvdb_seasonnotfound("Could not find season {}".format(repr(key)))
         else:
@@ -210,7 +210,7 @@ class Season(dict):
             # Non-numeric request is for season-data
             return dict.__getitem__(self.data, key)
 
-        if isinstance(key, int) or key.isdigit():
+        if key and (isinstance(key, int) or key.isdigit()):
             raise tvdb_episodenotfound("Could not find episode {}".format(repr(key)))
         else:
             raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
