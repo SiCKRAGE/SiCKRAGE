@@ -1808,7 +1808,7 @@ class CMD_Show(ApiCall):
             showDict["rls_ignore_words"] = []
 
         showDict["scene"] = (0, 1)[showObj.scene]
-        showDict["archive_firstmatch"] = (0, 1)[showObj.archive_firstmatch]
+        showDict["skip_downloaded"] = (0, 1)[showObj.skip_downloaded]
 
         showDict["indexerid"] = showObj.indexerid
         showDict["tvdbid"] = showObj.mapIndexers()[1]
@@ -1858,7 +1858,7 @@ class CMD_ShowAddExisting(ApiCall):
         self.archive, args = self.check_params("archive", None, False, "list",
                                                ["sddvd", "hdtv", "rawhdtv", "fullhdtv", "hdwebdl", "fullhdwebdl",
                                                 "hdbluray", "fullhdbluray"], *args, **kwargs)
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch", None, False, "int", [], *args, **kwargs)
+        self.skip_downloaded, args = self.check_params("skip_downloaded", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders",
                                                        bool(sickrage.app.config.flatten_folders_default), False,
                                                        "bool", [], *args, **kwargs)
@@ -1919,7 +1919,7 @@ class CMD_ShowAddExisting(ApiCall):
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.status_default,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
-            default_status_after=sickrage.app.config.status_default_after, archive=self.archive_firstmatch
+            default_status_after=sickrage.app.config.status_default_after, archive=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
@@ -1944,7 +1944,7 @@ class CMD_ShowAddNew(ApiCall):
             "anime": {"desc": "True to mark the show as an anime, False otherwise"},
             "scene": {"desc": "True if episodes search should be made by scene numbering, False otherwise"},
             "future_status": {"desc": "The status of future episodes"},
-            "archive_firstmatch": {
+            "skip_downloaded": {
                 "desc": "True if episodes should be archived when first match is downloaded, False otherwise"
             },
         }
@@ -1976,8 +1976,8 @@ class CMD_ShowAddNew(ApiCall):
                                              *args, **kwargs)
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
-        self.archive_firstmatch, args = self.check_params("archive_firstmatch",
-                                                          bool(sickrage.app.config.archive_default), False, "bool",
+        self.skip_downloaded, args = self.check_params("skip_downloaded",
+                                                          bool(sickrage.app.config.skip_downloaded_default), False, "bool",
                                                           [], *args, **kwargs)
 
     def run(self):
@@ -2093,7 +2093,7 @@ class CMD_ShowAddNew(ApiCall):
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
-            scene=self.scene, default_status_after=default_ep_status_after, archive=self.archive_firstmatch
+            scene=self.scene, default_status_after=default_ep_status_after, archive=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")

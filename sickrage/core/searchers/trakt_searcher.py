@@ -437,7 +437,7 @@ class TraktSearcher(object):
                                                 flatten_folders=int(sickrage.app.config.flatten_folders_default),
                                                 paused=sickrage.app.config.trakt_start_paused,
                                                 default_status_after=status,
-                                                archive=sickrage.app.config.archive_default)
+                                                archive=sickrage.app.config.skip_downloaded_default)
             else:
                 sickrage.app.log.warning(
                     "There was an error creating the show, no root directory setting found")

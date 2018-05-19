@@ -67,6 +67,14 @@ class MainDB(srDatabase):
         super(MainDB, self).__init__(name)
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
 
+    def upgrade(self, index_name, current_version):
+        if index_name == 'tv_shows' and current_version == 2:
+            # convert archive_firstmatch to skip_downloaded
+            for show in self.all(index_name):
+                show['skip_downloaded'] = show['archive_firstmatch']
+                del show['archive_firstmatch']
+                self.update(show)
+
     def cleanup(self):
         self.fix_show_none_types()
         self.fix_episode_none_types()

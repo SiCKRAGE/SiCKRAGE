@@ -120,14 +120,13 @@
 
                                     <div class="row field-pair">
                                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                            <label class="component-title">${_('Archive on first match')}</label>
+                                            <label class="component-title">${_('Skip downloaded')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <input type="checkbox" id="archive_firstmatch"
-                                                   name="archive_firstmatch" ${('', 'checked')[show.archive_firstmatch == 1]} />
-                                            <label for="archive_firstmatch">
-                                                ${_('archive episode after the first best match is found from your '
-                                                'archive quality list')}
+                                            <input type="checkbox" id="skip_downloaded"
+                                                   name="skip_downloaded" ${('', 'checked')[show.skip_downloaded == 1]} />
+                                            <label for="skip_downloaded">
+                                                ${_('Skips updating quality of old/new downloaded episodes')}
                                             </label>
                                         </div>
                                     </div>

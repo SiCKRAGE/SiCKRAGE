@@ -54,12 +54,12 @@
 </div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-        <label class="component-title">${_('Archive on first match')}</label>
+        <label class="component-title">${_('Skip downloaded')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
         <label>
-            <input type="checkbox" name="archive"
-                   id="archive" ${('', 'checked')[bool(sickrage.app.config.archive_default)]} />
+            <input type="checkbox" name="skip_downloaded"
+                   id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
         </label>
     </div>
 </div>

@@ -188,12 +188,16 @@ class srDatabase(object):
     def check_versions(self, index_name, current_version, previous_version):
         # Only edit index if versions are different
         if previous_version < current_version:
+            self.upgrade(index_name, current_version)
             self.db.destroy_index(self.db.indexes_names[index_name])
             self.db.add_index(self._indexes[index_name](self.db.path, index_name))
             self.db.reindex_index(index_name)
 
     def close(self):
         self.db.close()
+
+    def upgrade(self, index_name, current_version):
+        pass
 
     def cleanup(self):
         pass

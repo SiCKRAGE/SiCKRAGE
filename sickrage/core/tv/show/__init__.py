@@ -70,7 +70,7 @@ class TVShow(object):
         self._subtitles = int(sickrage.app.config.subtitles_default)
         self._subtitles_sr_metadata = 0
         self._dvdorder = 0
-        self._archive_firstmatch = 0
+        self._skip_downloaded = 0
         self._lang = lang
         self._last_update = datetime.datetime.now().toordinal()
         self._last_refresh = datetime.datetime.now().toordinal()
@@ -285,14 +285,14 @@ class TVShow(object):
         self._dvdorder = value
 
     @property
-    def archive_firstmatch(self):
-        return self._archive_firstmatch
+    def skip_downloaded(self):
+        return self._skip_downloaded
 
-    @archive_firstmatch.setter
-    def archive_firstmatch(self, value):
-        if self._archive_firstmatch != value:
+    @skip_downloaded.setter
+    def skip_downloaded(self, value):
+        if self._skip_downloaded != value:
             self.dirty = True
-        self._archive_firstmatch = value
+        self._skip_downloaded = value
 
     @property
     def lang(self):
@@ -920,7 +920,7 @@ class TVShow(object):
         self._subtitles = try_int(dbData[0]["subtitles"], self.subtitles)
         self._subtitles_sr_metadata = dbData[0].get("subtitles_sr_metadata", self.subtitles_sr_metadata)
         self._dvdorder = try_int(dbData[0]["dvdorder"], self.dvdorder)
-        self._archive_firstmatch = try_int(dbData[0]["archive_firstmatch"], self.archive_firstmatch)
+        self._skip_downloaded = try_int(dbData[0]["skip_downloaded"], self.skip_downloaded)
         self._quality = try_int(dbData[0]["quality"], self.quality)
         self._flatten_folders = try_int(dbData[0]["flatten_folders"], self.flatten_folders)
         self._paused = try_int(dbData[0]["paused"], self.paused)
@@ -1235,7 +1235,7 @@ class TVShow(object):
             "sports": self.sports,
             "subtitles": self.subtitles,
             "dvdorder": self.dvdorder,
-            "archive_firstmatch": self.archive_firstmatch,
+            "skip_downloaded": self.skip_downloaded,
             "startyear": self.startyear,
             "lang": self.lang,
             "imdb_id": self.imdbid,
@@ -1395,10 +1395,10 @@ class TVShow(object):
             if maxBestQuality is None:
                 return Overview.GOOD
             # if the want only first match and already have one call it good
-            elif self.archive_firstmatch and curQuality in bestQualities:
+            elif self.skip_downloaded and curQuality in bestQualities:
                 return Overview.GOOD
             # if they want only first match and current quality is higher than minimal best quality call it good
-            elif self.archive_firstmatch and minBestQuality is not None and curQuality > minBestQuality:
+            elif self.skip_downloaded and minBestQuality is not None and curQuality > minBestQuality:
                 return Overview.GOOD
             # if they have one but it's not the best they want then mark it as qual
             elif curQuality < maxBestQuality:

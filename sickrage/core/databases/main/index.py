@@ -157,6 +157,7 @@ class MainWhitelistIndex(HashIndex):
         if data.get('_t') == 'whitelist' and data.get('show_id'):
             return data.get('show_id'), None
 
+
 class MainFailedSnatchesIndex(HashIndex):
     _version = 1
 

@@ -345,7 +345,7 @@ class QueueItemAdd(ShowQueueItem):
             self.show.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
             self.show.anime = self.anime or sickrage.app.config.anime_default
             self.show.scene = self.scene or sickrage.app.config.scene_default
-            self.show.archive_firstmatch = self.archive or sickrage.app.config.archive_default
+            self.show.skip_downloaded = self.archive or sickrage.app.config.skip_downloaded_default
             self.show.paused = self.paused or False
 
             # set up default new/missing episode status
