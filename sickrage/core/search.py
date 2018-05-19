@@ -295,7 +295,7 @@ def isFirstBestMatch(result):
 
     any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
 
-    # if there is a redownload that's a match to one of our best qualities and we want to archive the episode then we are done
+    # if there is a re-download that's a match to one of our best qualities and we want to archive the episode then we are done
     if best_qualities and show_obj.archive_firstmatch and result.quality in best_qualities:
         return True
 
