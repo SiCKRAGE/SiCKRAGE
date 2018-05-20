@@ -688,11 +688,12 @@ class PipUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        from distutils.version import StrictVersion
+        from distutils.version import LooseVersion
         url = "https://pypi.org/pypi/{}/json".format('sickrage')
         resp = WebSession().get(url)
         versions = resp.json()["releases"].keys()
-        versions.sort(key=StrictVersion, reverse=True)
+        versions = [x for x in versions if 'dev' not in x]
+        versions.sort(key=LooseVersion, reverse=True)
 
         try:
             return versions[0]
