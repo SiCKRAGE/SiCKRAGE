@@ -24,11 +24,14 @@ import sickrage
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
     MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
-    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex
+    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex, MainVersionIndex
 
 
 class MainDB(srDatabase):
+    _version = 2
+
     _indexes = {
+        'version': MainVersionIndex,
         'tv_shows': MainTVShowsIndex,
         'tv_episodes': MainTVEpisodesIndex,
         'imdb_info': MainIMDBInfoIndex,
@@ -67,10 +70,23 @@ class MainDB(srDatabase):
         super(MainDB, self).__init__(name)
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
 
-    def upgrade(self, index_name, current_version):
-        if index_name == 'tv_shows' and current_version == 2:
-            # convert archive_firstmatch to skip_downloaded
-            for show in self.all(index_name):
+    def upgrade(self):
+        if self.version < self._version:
+            dbData = list(self.all('version'))[-1]
+            for v in xrange(self.version, self._version + 1):
+                dbData['database_version'] = v
+
+                upgrade_func = getattr(self, '_upgrade_v' + str(v), None)
+                if upgrade_func:
+                    sickrage.app.log.info("Upgrading main database to version {}".format(v))
+                    upgrade_func()
+
+                self.update(dbData)
+
+    def _upgrade_v2(self):
+        # convert archive_firstmatch to skip_downloaded
+        for show in self.all('tv_shows'):
+            if 'archive_firstmatch' in show:
                 show['skip_downloaded'] = show['archive_firstmatch']
                 del show['archive_firstmatch']
                 self.update(show)

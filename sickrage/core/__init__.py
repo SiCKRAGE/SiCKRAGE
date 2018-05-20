@@ -250,6 +250,9 @@ class Core(object):
             # misc database cleanups
             db.cleanup()
 
+            # upgrade database
+            db.upgrade()
+
         # compact main database
         if self.config.last_db_compact < time.time() - 604800:  # 7 days
             self.main_db.compact()

@@ -60,51 +60,55 @@ class srDatabase(object):
             self.db.destroy()
 
         if self.db.exists():
-            # Backup before start and cleanup old backups
-            backup_path = os.path.join(sickrage.app.data_dir, 'db_backup', self.name)
-            backup_count = 5
-            existing_backups = []
-            if not os.path.isdir(backup_path): os.makedirs(backup_path)
-
-            for root, dirs, files in os.walk(backup_path):
-                # Only consider files being a direct child of the backup_path
-                if root == backup_path:
-                    for backup_file in sorted(files):
-                        ints = re.findall('\d+', backup_file)
-
-                        # Delete non zip files
-                        if len(ints) != 1:
-                            try:
-                                os.remove(os.path.join(root, backup_file))
-                            except:
-                                pass
-                        else:
-                            existing_backups.append((int(ints[0]), backup_file))
-                else:
-                    # Delete stray directories.
-                    shutil.rmtree(root)
-
-            # Remove all but the last 5
-            for eb in existing_backups[:-backup_count]:
-                os.remove(os.path.join(backup_path, eb[1]))
-
-            # Create new backup
-            new_backup = os.path.join(backup_path, '%s.tar.gz' % int(time.time()))
-            with tarfile.open(new_backup, 'w:gz') as zipf:
-                for root, dirs, files in os.walk(self.db_path):
-                    for zfilename in files:
-                        zipf.add(os.path.join(root, zfilename),
-                                 arcname='database/%s/%s' % (
-                                     self.name,
-                                     os.path.join(root[len(self.db_path) + 1:], zfilename))
-                                 )
-
+            self.backup()
             self.db.open()
         else:
             self.db.create()
 
         # setup database indexes
         self.setup_indexes()
+
+    def backup(self):
+        # Backup before start and cleanup old backups
+        backup_path = os.path.join(sickrage.app.data_dir, 'db_backup', self.name)
+        backup_count = 5
+        existing_backups = []
+
+        if not os.path.isdir(backup_path):
+            os.makedirs(backup_path)
+
+        for root, dirs, files in os.walk(backup_path):
+            # Only consider files being a direct child of the backup_path
+            if root == backup_path:
+                for backup_file in sorted(files):
+                    ints = re.findall('\d+', backup_file)
+
+                    # Delete non zip files
+                    if len(ints) != 1:
+                        try:
+                            os.remove(os.path.join(root, backup_file))
+                        except:
+                            pass
+                    else:
+                        existing_backups.append((int(ints[0]), backup_file))
+            else:
+                # Delete stray directories.
+                shutil.rmtree(root)
+
+        # Remove all but the last 5
+        for eb in existing_backups[:-backup_count]:
+            os.remove(os.path.join(backup_path, eb[1]))
+
+        # Create new backup
+        new_backup = os.path.join(backup_path, '%s.tar.gz' % int(time.time()))
+        with tarfile.open(new_backup, 'w:gz') as zipf:
+            for root, dirs, files in os.walk(self.db_path):
+                for zfilename in files:
+                    zipf.add(os.path.join(root, zfilename),
+                             arcname='database/%s/%s' % (
+                                 self.name,
+                                 os.path.join(root[len(self.db_path) + 1:], zfilename))
+                             )
 
     def compact(self, try_repair=True, **kwargs):
         # Removing left over compact files
@@ -188,7 +192,6 @@ class srDatabase(object):
     def check_versions(self, index_name, current_version, previous_version):
         # Only edit index if versions are different
         if previous_version < current_version:
-            self.upgrade(index_name, current_version)
             self.db.destroy_index(self.db.indexes_names[index_name])
             self.db.add_index(self._indexes[index_name](self.db.path, index_name))
             self.db.reindex_index(index_name)
@@ -196,11 +199,25 @@ class srDatabase(object):
     def close(self):
         self.db.close()
 
-    def upgrade(self, index_name, current_version):
+    def upgrade(self):
         pass
 
     def cleanup(self):
         pass
+
+    @property
+    def version(self):
+        try:
+            dbData = list(self.all('version'))[-1]
+        except IndexError:
+            dbData = {
+                '_t': 'version',
+                'database_version': 1
+            }
+
+            dbData.update(self.insert(dbData))
+
+        return dbData['database_version']
 
     @property
     def opened(self):
@@ -320,6 +337,7 @@ class srDatabase(object):
 
     def insert(self, *args):
         return self.db.insert(*args)
+
 
 # Monkey-Patch storage to suppress logging messages
 IU_Storage.get = Custom_IU_Storage_get

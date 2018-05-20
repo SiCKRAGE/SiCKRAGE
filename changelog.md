@@ -1,6 +1,7 @@
 # Changelog
 
-- * c595b6b - 2018-05-19: Converted archive_firstmatch to skip_downloaded option, skips upgrading quality of downloaded episodes 
+- * f79fcb2 - 2018-05-19: Added database version upgrade functionality 
+- * 249b6b0 - 2018-05-19: Converted archive_firstmatch to skip_downloaded option, skips upgrading quality of downloaded episodes 
 - * c6fd81b - 2018-05-18: Pre-Release v9.3.23.dev1 
 - * 15c6a47 - 2018-05-18: Fixed issues with downloading subtitles Fix KeyError for black and white lists Fixed NoneType error for indexer api 
 - * 0f68f72 - 2018-05-18: Converted log error to warning for Discord client Refactored SabNZBd client code 

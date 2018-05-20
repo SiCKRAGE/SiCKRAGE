@@ -23,6 +23,20 @@ from hashlib import md5
 from CodernityDB.hash_index import HashIndex
 
 
+class MainVersionIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(MainVersionIndex, self).__init__(*args, **kwargs)
+
+    def make_key(self, key):
+        return key
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'version' and data.get('database_version'):
+            return data.get('database_version'), None
+
 class MainTVShowsIndex(HashIndex):
     _version = 1
 
