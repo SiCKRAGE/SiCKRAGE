@@ -117,7 +117,7 @@ class Config(object):
         self.indexer_timeout = 120
         self.scene_default = False
         self.anime_default = False
-        self.archive_default = False
+        self.skip_downloaded_default = False
         self.naming_multi_ep = False
         self.naming_anime_multi_ep = False
         self.naming_pattern = ""
@@ -721,7 +721,7 @@ class Config(object):
                 'auto_update': True,
                 'tv_download_dir': '',
                 'naming_custom_abd': False,
-                'archive_default': False,
+                'skip_downloaded_default': False,
                 'naming_sports_pattern': '%SN - %A-D - %EN',
                 'create_missing_show_dirs': False,
                 'trash_rotate_logs': False,
@@ -1403,7 +1403,7 @@ class Config(object):
         self.indexer_timeout = self.check_setting_int('General', 'indexer_timeout')
         self.anime_default = self.check_setting_bool('General', 'anime_default')
         self.scene_default = self.check_setting_bool('General', 'scene_default')
-        self.archive_default = self.check_setting_bool('General', 'archive_default')
+        self.skip_downloaded_default = self.check_setting_bool('General', 'skip_downloaded_default')
         self.naming_pattern = self.check_setting_str('General', 'naming_pattern')
         self.naming_abd_pattern = self.check_setting_str('General', 'naming_abd_pattern')
         self.naming_custom_abd = self.check_setting_bool('General', 'naming_custom_abd')
@@ -1900,7 +1900,7 @@ class Config(object):
                 'indexer_timeout': int(self.indexer_timeout),
                 'anime_default': int(self.anime_default),
                 'scene_default': int(self.scene_default),
-                'archive_default': int(self.archive_default),
+                'skip_downloaded_default': int(self.skip_downloaded_default),
                 'version_notify': int(self.version_notify),
                 'auto_update': int(self.auto_update),
                 'notify_on_update': int(self.notify_on_update),

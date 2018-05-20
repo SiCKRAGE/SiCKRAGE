@@ -377,10 +377,10 @@
                                                 alt="${("N", "Y")[bool(show.scene)]}" width="16" height="16"/></td>
                                     </tr>
                                     <tr>
-                                        <td class="showLegend">${_('Archive First Match:')}</td>
+                                        <td class="showLegend">${_('Skip Downloaded:')}</td>
                                         <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.archive_firstmatch)]}"
-                                                alt="${("N", "Y")[bool(show.archive_firstmatch)]}" width="16"
+                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.skip_downloaded)]}"
+                                                alt="${("N", "Y")[bool(show.skip_downloaded)]}" width="16"
                                                 height="16"/></td>
                                     </tr>
                                 </table>

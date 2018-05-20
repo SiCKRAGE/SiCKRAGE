@@ -52,7 +52,7 @@
                 <th class="col-legend">${_('Scene')}</th>
                 <th class="col-legend">${_('Anime')}</th>
                 <th class="col-legend">${_('Season folders')}</th>
-                <th class="col-legend">${_('Archive first match')}</th>
+                <th class="col-legend">${_('Skip downloaded')}</th>
                 <th class="col-legend">${_('Paused')}</th>
                 <th class="col-legend">${_('Subtitle')}</th>
                 <th class="col-legend">${_('Default Ep')}<br>${_('Status')}</th>
@@ -91,7 +91,7 @@
                                  width="16" height="16"/>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.archive_firstmatch)]}"
+                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.skip_downloaded)]}"
                                  width="16" height="16"/>
                         </td>
                         <td align="center">

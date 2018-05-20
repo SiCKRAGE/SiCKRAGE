@@ -120,15 +120,15 @@
                         </div>
 
                         <div class="row field-pair">
-                            <label for="edit_archive_firstmatch">
-                                <span class="component-title">${_('Archive on first match')}</span>
+                            <label for="edit_skip_downloaded">
+                                <span class="component-title">${_('Skip downloaded')}</span>
                                 <span class="component-desc">
-                                    <select id="edit_archive_firstmatch" name="archive_firstmatch" class="form-control form-control-inline input-sm">
-                                        <option value="keep" ${('', 'selected')[archive_firstmatch_value is None]}>&lt; ${_('Keep')} &gt;</option>
-                                        <option value="enable" ${('', 'selected')[archive_firstmatch_value == 1]}>${_('Yes')}</option>
-                                        <option value="disable" ${('', 'selected')[archive_firstmatch_value == 0]}>${_('No')}</option>
+                                    <select id="edit_skip_downloaded" name="skip_downloaded" class="form-control form-control-inline input-sm">
+                                        <option value="keep" ${('', 'selected')[skip_downloaded_value is None]}>&lt; ${_('Keep')} &gt;</option>
+                                        <option value="enable" ${('', 'selected')[skip_downloaded_value == 1]}>${_('Yes')}</option>
+                                        <option value="disable" ${('', 'selected')[skip_downloaded_value == 0]}>${_('No')}</option>
                                     </select><br>
-                                    ${_('Archive episode after the first best match is found from your archive quality list.')}
+                                    ${_('Skips updating quality of old/new downloaded episodes.')}
                                 </span>
                             </label>
                         </div>

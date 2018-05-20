@@ -100,7 +100,7 @@ class NorbitsProvider(TorrentProvider):
         if self._check_auth_from_data(data):
             json_items = data.get('data', '')
             if not json_items:
-                sickrage.app.log.error('Resulting JSON from provider is not correct, not parsing it')
+                sickrage.app.log.warning('Resulting JSON from provider is not correct, not parsing it')
                 return results
 
             for item in json_items.get('torrents', []):

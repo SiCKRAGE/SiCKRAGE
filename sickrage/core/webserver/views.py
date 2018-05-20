@@ -746,7 +746,7 @@ class Home(WebHandler):
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
         host = clean_url(host)
 
-        connection, accesMsg = SabNZBd.getSabAccesMethod(host, username, password, apikey)
+        connection, accesMsg = SabNZBd.getSabAccesMethod(host)
         if connection:
             authed, authMsg = SabNZBd.test_authentication(host, username, password, apikey)
             if authed:
@@ -1269,7 +1269,7 @@ class Home(WebHandler):
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
                     airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
-                                 convert=True).dt
+                                         convert=True).dt
 
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
@@ -1345,7 +1345,7 @@ class Home(WebHandler):
 
     def editShow(self, show=None, location=None, anyQualities=None, bestQualities=None, exceptions_list=None,
                  flatten_folders=None, paused=None, directCall=False, air_by_date=None, sports=None, dvdorder=None,
-                 indexerLang=None, subtitles=None, subtitles_sr_metadata=None, archive_firstmatch=None,
+                 indexerLang=None, subtitles=None, subtitles_sr_metadata=None, skip_downloaded=None,
                  rls_ignore_words=None, rls_require_words=None, anime=None, blacklist=None, whitelist=None,
                  scene=None, defaultEpStatus=None, quality_preset=None, search_delay=None):
 
@@ -1422,7 +1422,7 @@ class Home(WebHandler):
 
         flatten_folders = not checkbox_to_value(flatten_folders)  # UI inverts this value
         dvdorder = checkbox_to_value(dvdorder)
-        archive_firstmatch = checkbox_to_value(archive_firstmatch)
+        skip_downloaded = checkbox_to_value(skip_downloaded)
         paused = checkbox_to_value(paused)
         air_by_date = checkbox_to_value(air_by_date)
         scene = checkbox_to_value(scene)
@@ -1489,7 +1489,7 @@ class Home(WebHandler):
                 newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
 
             showObj.quality = newQuality
-            showObj.archive_firstmatch = archive_firstmatch
+            showObj.skip_downloaded = skip_downloaded
 
             # reversed for now
             if bool(showObj.flatten_folders) != bool(flatten_folders):
@@ -2604,7 +2604,7 @@ class HomeAddShows(Home):
                                             anime=sickrage.app.config.anime_default,
                                             scene=sickrage.app.config.scene_default,
                                             default_status_after=sickrage.app.config.status_default_after,
-                                            archive=sickrage.app.config.archive_default)
+                                            skip_downloaded=sickrage.app.config.skip_downloaded_default)
 
             sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
         else:
@@ -2617,7 +2617,7 @@ class HomeAddShows(Home):
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    subtitles_sr_metadata=None, fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None,
-                   anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, archive=None):
+                   anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, skip_downloaded=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2709,7 +2709,7 @@ class HomeAddShows(Home):
         flatten_folders = checkbox_to_value(flatten_folders)
         subtitles = checkbox_to_value(subtitles)
         subtitles_sr_metadata = checkbox_to_value(subtitles_sr_metadata)
-        archive = checkbox_to_value(archive)
+        skip_downloaded = checkbox_to_value(skip_downloaded)
 
         if whitelist:
             whitelist = short_group_names(whitelist)
@@ -2745,7 +2745,7 @@ class HomeAddShows(Home):
                                         blacklist=blacklist,
                                         whitelist=whitelist,
                                         default_status_after=int(defaultStatusAfter),
-                                        archive=archive)
+                                        skip_downloaded=skip_downloaded)
 
         sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
 
@@ -2818,7 +2818,7 @@ class HomeAddShows(Home):
                                                 anime=sickrage.app.config.anime_default,
                                                 scene=sickrage.app.config.scene_default,
                                                 default_status_after=sickrage.app.config.status_default_after,
-                                                archive=sickrage.app.config.archive_default)
+                                                skip_downloaded=sickrage.app.config.skip_downloaded_default)
                 num_added += 1
 
         if num_added:
@@ -3113,8 +3113,8 @@ class Manage(Home, WebRoot):
                 showList.append(showObj)
                 showNames.append(showObj.name)
 
-        archive_firstmatch_all_same = True
-        last_archive_firstmatch = None
+        skip_downloaded_all_same = True
+        last_skip_downloaded = None
 
         flatten_folders_all_same = True
         last_flatten_folders = None
@@ -3151,12 +3151,12 @@ class Manage(Home, WebRoot):
             if cur_root_dir not in root_dir_list:
                 root_dir_list.append(cur_root_dir)
 
-            if archive_firstmatch_all_same:
+            if skip_downloaded_all_same:
                 # if we had a value already and this value is different then they're not all the same
-                if last_archive_firstmatch not in (None, curShow.archive_firstmatch):
-                    archive_firstmatch_all_same = False
+                if last_skip_downloaded not in (None, curShow.skip_downloaded):
+                    skip_downloaded_all_same = False
                 else:
-                    last_archive_firstmatch = curShow.archive_firstmatch
+                    last_skip_downloaded = curShow.skip_downloaded
 
             # if we know they're not all the same then no point even bothering
             if paused_all_same:
@@ -3215,7 +3215,7 @@ class Manage(Home, WebRoot):
                 else:
                     last_air_by_date = curShow.air_by_date
 
-        archive_firstmatch_value = last_archive_firstmatch if archive_firstmatch_all_same else None
+        skip_downloaded_value = last_skip_downloaded if skip_downloaded_all_same else None
         default_ep_status_value = last_default_ep_status if default_ep_status_all_same else None
         paused_value = last_paused if paused_all_same else None
         anime_value = last_anime if anime_all_same else None
@@ -3231,7 +3231,7 @@ class Manage(Home, WebRoot):
             "/manage/mass_edit.mako",
             showList=toEdit,
             showNames=showNames,
-            archive_firstmatch_value=archive_firstmatch_value,
+            skip_downloaded_value=skip_downloaded_value,
             default_ep_status_value=default_ep_status_value,
             paused_value=paused_value,
             anime_value=anime_value,
@@ -3249,7 +3249,7 @@ class Manage(Home, WebRoot):
             action='mass_edit'
         )
 
-    def massEditSubmit(self, archive_firstmatch=None, paused=None, default_ep_status=None,
+    def massEditSubmit(self, skip_downloaded=None, paused=None, default_ep_status=None,
                        anime=None, sports=None, scene=None, flatten_folders=None, quality_preset=None,
                        subtitles=None, air_by_date=None, anyQualities=None, bestQualities=None, toEdit=None, **kwargs):
         if bestQualities is None:
@@ -3281,11 +3281,11 @@ class Manage(Home, WebRoot):
             else:
                 new_show_dir = showObj.location
 
-            if archive_firstmatch == 'keep':
-                new_archive_firstmatch = showObj.archive_firstmatch
+            if skip_downloaded == 'keep':
+                new_skip_downloaded = showObj.skip_downloaded
             else:
-                new_archive_firstmatch = True if archive_firstmatch == 'enable' else False
-            new_archive_firstmatch = 'on' if new_archive_firstmatch else 'off'
+                new_skip_downloaded = True if skip_downloaded == 'enable' else False
+            new_skip_downloaded = 'on' if new_skip_downloaded else 'off'
 
             if paused == 'keep':
                 new_paused = showObj.paused
@@ -3345,7 +3345,7 @@ class Manage(Home, WebRoot):
             curErrors += self.editShow(curShow, new_show_dir, anyQualities,
                                        bestQualities, exceptions_list,
                                        defaultEpStatus=new_default_ep_status,
-                                       archive_firstmatch=new_archive_firstmatch,
+                                       skip_downloaded=new_skip_downloaded,
                                        flatten_folders=new_flatten_folders,
                                        paused=new_paused, sports=new_sports,
                                        subtitles=new_subtitles, anime=new_anime,
@@ -3753,7 +3753,7 @@ class ConfigGeneral(Config):
 
     @staticmethod
     def saveAddShowDefaults(defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
-                            anime=False, scene=False, defaultStatusAfter=WANTED, archive=False):
+                            anime=False, scene=False, defaultStatusAfter=WANTED, skip_downloaded=False):
 
         if anyQualities:
             anyQualities = anyQualities.split(',')
@@ -3777,7 +3777,7 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.anime_default = checkbox_to_value(anime)
         sickrage.app.config.scene_default = checkbox_to_value(scene)
-        sickrage.app.config.archive_default = checkbox_to_value(archive)
+        sickrage.app.config.skip_downloaded_default = checkbox_to_value(skip_downloaded)
 
         sickrage.app.config.save()
 

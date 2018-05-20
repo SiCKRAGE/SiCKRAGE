@@ -28,10 +28,9 @@ import subprocess
 import sys
 import tarfile
 import threading
-import traceback
 
 import sickrage
-from sickrage.core.helpers import backupSR, makeDir
+from sickrage.core.helpers import backupSR
 from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
@@ -709,7 +708,7 @@ class PipUpdateManager(UpdateManager):
             sickrage.app.log.debug("Unknown current version number, don't know if we should update or not")
             return
         else:
-            newest_text = _("New SiCKRAGE update found on PyPy servers, version {} &mdash; "
+            newest_text = _("New SiCKRAGE update found on PyPi servers, version {} &mdash; "
                             "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
         sickrage.app.newest_version_string = newest_text

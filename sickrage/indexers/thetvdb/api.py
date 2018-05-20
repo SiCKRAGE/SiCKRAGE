@@ -31,6 +31,8 @@ from collections import OrderedDict
 from datetime import datetime
 from operator import itemgetter
 
+from requests import RequestException
+from simplejson import JSONDecodeError
 from six import text_type
 
 import sickrage
@@ -136,7 +138,7 @@ class Show(dict):
             return dict.__getitem__(self.data, key)
 
         # Data wasn't found, raise appropriate error
-        if isinstance(key, int) or key.isdigit():
+        if key and (isinstance(key, int) or key.isdigit()):
             # Season number x was not found
             raise tvdb_seasonnotfound("Could not find season {}".format(repr(key)))
         else:
@@ -208,7 +210,7 @@ class Season(dict):
             # Non-numeric request is for season-data
             return dict.__getitem__(self.data, key)
 
-        if isinstance(key, int) or key.isdigit():
+        if key and (isinstance(key, int) or key.isdigit()):
             raise tvdb_episodenotfound("Could not find episode {}".format(repr(key)))
         else:
             raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
@@ -451,10 +453,16 @@ class Tvdb:
             raise tvdb_error(str(e))
 
         # handle requests exceptions
-        if resp.status_code == 401:
-            raise tvdb_unauthorized(resp.json()['Error'])
-        elif resp.status_code >= 400:
-            raise tvdb_error(resp.json()['Error'])
+        try:
+            if resp.status_code == 401:
+                raise tvdb_unauthorized(resp.json()['Error'])
+            elif resp.status_code >= 400:
+                raise tvdb_error(resp.json()['Error'])
+        except JSONDecodeError:
+            try:
+                resp.raise_for_status()
+            except RequestException as e:
+                raise tvdb_error(str(e))
 
         return to_lowercase(resp.json())
 

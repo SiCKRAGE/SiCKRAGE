@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-17 07:50-0700\n"
-"PO-Revision-Date: 2018-05-17 10:51-0400\n"
+"POT-Creation-Date: 2018-05-19 23:20-0700\n"
+"PO-Revision-Date: 2018-05-20 02:21-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -510,18 +510,18 @@ msgstr "Υπηρεσία παροχής"
 msgid "Quality"
 msgstr "Ποιότητα"
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:612
+#: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:450
 msgid "Snatched"
 msgstr "Άρπαξε"
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:615
+#: sickrage/core/common.py:185 sickrage/core/common.py:621
 #: sickrage/core/webserver/views/history.mako:133
 msgid "Downloaded"
 msgstr "Λήψη"
 
-#: sickrage/core/common.py:620
+#: sickrage/core/common.py:626
 #: sickrage/core/webserver/views/config/providers.mako:885
 #: sickrage/core/webserver/views/history.mako:135
 msgid "Subtitled"
@@ -652,7 +652,7 @@ msgstr "Θέλετε να προσθέσετε τα PostProcessed επεισόδ
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
-#: sickrage/core/webserver/views/home/edit_show.mako:391
+#: sickrage/core/webserver/views/home/edit_show.mako:390
 #: sickrage/core/webserver/views/layouts/config.mako:29
 #: sickrage/core/webserver/views/manage/mass_edit.mako:256
 msgid "Save Changes"
@@ -666,8 +666,8 @@ msgstr "Σπλιτ εμφανίζονται λίστες"
 msgid "Separate anime and normal shows in groups"
 msgstr "Ξεχωριστό anime και κανονικές παραστάσεις σε ομάδες"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:79 sickrage/core/version_updater.py:87
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:10
 #: sickrage/core/webserver/views/config/backup_restore.mako:22
@@ -719,7 +719,7 @@ msgstr "Διεπαφή"
 
 #: sickrage/core/webserver/views/config/general.mako:19
 #: sickrage/core/webserver/views/config/general.mako:913
-#: sickrage/core/webserver/views/home/edit_show.mako:281
+#: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Ρυθμίσεις για προχωρημένους"
 
@@ -3911,8 +3911,8 @@ msgstr "Παράβλεψη λέξεων"
 
 #: sickrage/core/webserver/views/config/search.mako:213
 #: sickrage/core/webserver/views/config/search.mako:231
-#: sickrage/core/webserver/views/home/edit_show.mako:296
-#: sickrage/core/webserver/views/home/edit_show.mako:315
+#: sickrage/core/webserver/views/home/edit_show.mako:295
+#: sickrage/core/webserver/views/home/edit_show.mako:314
 msgid "ex. word1,word2,word3"
 msgstr "ex. λέξη1 λέξη2, word3"
 
@@ -4281,7 +4281,7 @@ msgstr "Ο κατάλογος όπου θα πρέπει να αποθηκεύσ
 
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:568
-#: sickrage/core/webserver/views/home/edit_show.mako:137
+#: sickrage/core/webserver/views/home/edit_show.mako:136
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
 msgid "Subtitles"
@@ -4570,8 +4570,8 @@ msgid "Scene Numbering:"
 msgstr "Σκηνή αρίθμηση:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:380
-msgid "Archive First Match:"
-msgstr "Αρχείο πρώτο αγώνα:"
+msgid "Skip Downloaded:"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:422
 msgid "Missed:"
@@ -4741,26 +4741,27 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:123
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:124
-msgid "Archive on first match"
-msgstr "Αρχείο στον πρώτο αγώνα"
+#: sickrage/core/webserver/views/manage/mass_update.mako:55
+msgid "Skip downloaded"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:129
-msgid "archive episode after the first best match is found from your archive quality list"
-msgstr "επεισόδιο αρχείο μετά την πρώτη καλύτερη αντιστοιχία βρίσκεται από τη λίστα σας αρχείο ποιότητας"
+msgid "Skips updating quality of old/new downloaded episodes"
+msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:143
+#: sickrage/core/webserver/views/home/edit_show.mako:142
 msgid "search for subtitles"
 msgstr "Αναζήτηση για υπότιτλους"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:150
+#: sickrage/core/webserver/views/home/edit_show.mako:149
 msgid "Subtitle metdata"
 msgstr "Υπότιτλος είναι metdata"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:156
+#: sickrage/core/webserver/views/home/edit_show.mako:155
 msgid "use SiCKRAGE metadata when searching for subtitle, this will override the auto-discovered metadata"
 msgstr "χρησιμοποιήσετε SiCKRAGE μετα-δεδομένων κατά την αναζήτηση για υπότιτλος, αυτό θα αντικαταστήσει τα μετα-δεδομένα αυτόματης ανακαλύφθηκε"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:164
+#: sickrage/core/webserver/views/home/edit_show.mako:163
 #: sickrage/core/webserver/views/home/index.mako:212
 #: sickrage/core/webserver/views/manage/mass_edit.mako:152
 #: sickrage/core/webserver/views/manage/mass_update.mako:56
@@ -4769,54 +4770,54 @@ msgstr "χρησιμοποιήσετε SiCKRAGE μετα-δεδομένων κα
 msgid "Paused"
 msgstr "Σε παύση"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:170
+#: sickrage/core/webserver/views/home/edit_show.mako:169
 msgid "pause this show (SiCKRAGE will not download episodes)"
 msgstr "διακόψετε αυτήν την επίδειξη (SiCKRAGE δεν θα κατεβάσετε επεισόδια)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:180
+#: sickrage/core/webserver/views/home/edit_show.mako:179
 msgid "Format Settings"
 msgstr "Ρυθμίσεις μορφής"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:186
+#: sickrage/core/webserver/views/home/edit_show.mako:185
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
 msgid "Air by date"
 msgstr "Αέρα κατά την ημερομηνία"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:192
+#: sickrage/core/webserver/views/home/edit_show.mako:191
 msgid "check if the show is released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "Ελέγξτε αν η εμφάνιση κυκλοφορεί ως Show.03.02.2010 και όχι Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:194
-#: sickrage/core/webserver/views/home/edit_show.mako:210
+#: sickrage/core/webserver/views/home/edit_show.mako:193
+#: sickrage/core/webserver/views/home/edit_show.mako:209
 #: sickrage/core/webserver/views/manage/mass_edit.mako:217
 #: sickrage/core/webserver/views/manage/mass_edit.mako:232
 msgid "In case of an air date conflict between regular and special episodes, the later will be ignored."
 msgstr "Στην περίπτωση μιας διένεξης ημερομηνίας αέρα μεταξύ τακτικές και ειδικές επεισόδια, αργότερα θα πρέπει να αγνοηθεί."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:202
+#: sickrage/core/webserver/views/home/edit_show.mako:201
 #: sickrage/core/webserver/views/manage/mass_edit.mako:209
 #: sickrage/core/webserver/views/manage/mass_update.mako:51
 msgid "Sports"
 msgstr "Σπορ"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:208
+#: sickrage/core/webserver/views/home/edit_show.mako:207
 msgid "check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "Ελέγξτε αν η επίδειξη είναι Αθλητικοί ή ΜΜΑ συμβάν κυκλοφορήσει ως Show.03.02.2010 και όχι Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:218
+#: sickrage/core/webserver/views/home/edit_show.mako:217
 msgid "DVD Order"
 msgstr "Παραγγελία DVD"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:224
+#: sickrage/core/webserver/views/home/edit_show.mako:223
 msgid "use the DVD order instead of the air order"
 msgstr "Χρησιμοποιήστε τη σειρά DVD αντί για τη σειρά αέρα"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:225
+#: sickrage/core/webserver/views/home/edit_show.mako:224
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Μια «πλήρη ενημέρωση δύναμη» είναι αναγκαία, και εάν έχετε υπάρχοντα επεισόδια θα πρέπει να τους ταξινομήσετε με μη αυτόματο τρόπο."
 
 #: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views/home/edit_show.mako:233
+#: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -4825,63 +4826,63 @@ msgstr "Μια «πλήρη ενημέρωση δύναμη» είναι ανα�
 msgid "Anime"
 msgstr "Κινούμενο σχέδιο"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:239
+#: sickrage/core/webserver/views/home/edit_show.mako:238
 msgid "check if the show is Anime and episodes are released as Show.265 rather than Show.S02E03"
 msgstr "Ελέγξτε αν η παράσταση είναι κινούμενο σχέδιο και επεισόδια κυκλοφόρησαν ως Show.265 και όχι Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:251
+#: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/manage/mass_edit.mako:138
 #: sickrage/core/webserver/views/manage/mass_update.mako:54
 msgid "Season folders"
 msgstr "Σεζόν φακέλους"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:257
+#: sickrage/core/webserver/views/home/edit_show.mako:256
 msgid "group episodes by season folder (uncheck to store in a single folder)"
 msgstr "ομάδα επεισόδια ανά σεζόν φάκελο (καταργήστε την επιλογή για να αποθηκεύσετε σε ένα φάκελο)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:264
+#: sickrage/core/webserver/views/home/edit_show.mako:263
 #: sickrage/core/webserver/views/includes/add_show_options.mako:46
 #: sickrage/core/webserver/views/manage/mass_edit.mako:181
 msgid "Scene Numbering"
 msgstr "Σκηνή αρίθμηση"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:270
+#: sickrage/core/webserver/views/home/edit_show.mako:269
 msgid "search by scene numbering (uncheck to search by indexer numbering)"
 msgstr "Αναζήτηση ανά σκηνή αρίθμηση (καταργήστε την επιλογή αναζήτησης με δεικτοδότη αρίθμηση)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:287
+#: sickrage/core/webserver/views/home/edit_show.mako:286
 msgid "Ignored Words"
 msgstr "Λέξεις που αγνοούνται"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:300
+#: sickrage/core/webserver/views/home/edit_show.mako:299
 msgid "Search results with one or more words from this list will be ignored."
 msgstr "Αποτελέσματα αναζήτησης με μία ή περισσότερες λέξεις από αυτόν τον κατάλογο θα πρέπει να αγνοηθεί."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:307
+#: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "Required Words"
 msgstr "Απαιτούμενες λέξεις"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:320
+#: sickrage/core/webserver/views/home/edit_show.mako:319
 msgid "Search results with no words from this list will be ignored."
 msgstr "Αποτελέσματα αναζήτησης χωρίς λόγια από αυτήν τη λίστα, θα πρέπει να αγνοηθεί."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:327
+#: sickrage/core/webserver/views/home/edit_show.mako:326
 msgid "Scene Exception"
 msgstr "Εξαίρεση σκηνή"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:360
+#: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "This will affect episode search on NZB and torrent providers. This list overrides the original name it doesn't append to it."
 msgstr "Αυτό θα επηρεάσει επεισόδιο αναζήτηση στους παρόχους NZB και torrent. Ο κατάλογος αυτός αντικαθιστά το αρχικό όνομα αυτό δεν προσαρτήσετε το."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:368
+#: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "Search Delay"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:376
+#: sickrage/core/webserver/views/home/edit_show.mako:375
 msgid "ex. 1"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:381
+#: sickrage/core/webserver/views/home/edit_show.mako:380
 msgid "Delays searching for new episodes by X number of days."
 msgstr ""
 
@@ -5770,8 +5771,8 @@ msgid "Keep"
 msgstr "Κρατήστε"
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:131
-msgid "Archive episode after the first best match is found from your archive quality list."
-msgstr "Αρχείο επεισόδιο μετά τον πρώτο αγώνα καλύτερα βρίσκεται από τη λίστα σας αρχείο ποιότητας."
+msgid "Skips updating quality of old/new downloaded episodes."
+msgstr ""
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:145
 msgid "Group episodes by season folder (set to \"No\" to store in a single folder)."
@@ -5837,10 +5838,6 @@ msgstr "Δείτε καταστάσεις:"
 #: sickrage/core/webserver/views/manage/mass_update.mako:46
 msgid "Selected"
 msgstr "Επιλεγμένο"
-
-#: sickrage/core/webserver/views/manage/mass_update.mako:55
-msgid "Archive first match"
-msgstr "Αρχείο πρώτος αγώνας"
 
 #: sickrage/core/webserver/views/manage/mass_update.mako:57
 msgid "Subtitle"
@@ -5979,43 +5976,43 @@ msgstr "Επεκτείνετε την (περιορισμένη)"
 msgid "Extend (Limited, E-prefixed)"
 msgstr "Επέκταση (περιορισμένη, E-πρόθεμα)"
 
-#: sickrage/core/common.py:187 sickrage/core/common.py:613
+#: sickrage/core/common.py:187 sickrage/core/common.py:619
 msgid "Snatched (Proper)"
 msgstr "Άρπαξε (σωστή)"
 
-#: sickrage/core/common.py:188 sickrage/core/common.py:614
+#: sickrage/core/common.py:188 sickrage/core/common.py:620
 msgid "Snatched (Best)"
 msgstr "Άρπαξε (καλύτερα)"
 
-#: sickrage/core/common.py:189 sickrage/core/common.py:618
+#: sickrage/core/common.py:189 sickrage/core/common.py:624
 msgid "Archived"
 msgstr "Αρχειοθετούνται"
 
-#: sickrage/core/common.py:190 sickrage/core/common.py:621
+#: sickrage/core/common.py:190 sickrage/core/common.py:627
 msgid "Failed"
 msgstr "Απέτυχε"
 
-#: sickrage/core/common.py:191 sickrage/core/common.py:622
+#: sickrage/core/common.py:191 sickrage/core/common.py:628
 msgid "Missed"
 msgstr ""
 
-#: sickrage/core/common.py:610
+#: sickrage/core/common.py:616
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:617
 msgid "Unaired"
 msgstr "Unaired"
 
-#: sickrage/core/common.py:616
+#: sickrage/core/common.py:622
 msgid "Skipped"
 msgstr "Καραβοκύρης"
 
-#: sickrage/core/common.py:617
+#: sickrage/core/common.py:623
 msgid "Wanted"
 msgstr "Ήθελε"
 
-#: sickrage/core/common.py:619
+#: sickrage/core/common.py:625
 msgid "Ignored"
 msgstr "Αγνοούνται"
 
@@ -6023,49 +6020,49 @@ msgstr "Αγνοούνται"
 msgid "Episode snatched"
 msgstr "Άρπαξε το επεισόδιο"
 
-#: sickrage/core/version_updater.py:65
+#: sickrage/core/version_updater.py:64
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Νέα ενημερωμένη έκδοση που βρέθηκαν για SiCKRAGE, ξεκινώντας το αυτόματος-Updater-αυτοκίνητο"
 
-#: sickrage/core/version_updater.py:68
+#: sickrage/core/version_updater.py:67
 msgid "Update was successful"
 msgstr "Ενημέρωση ολοκληρώθηκε με επιτυχία"
 
-#: sickrage/core/version_updater.py:72
+#: sickrage/core/version_updater.py:71
 msgid "Update failed!"
 msgstr "Απέτυχε η ενημέρωση!"
 
-#: sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:79
 msgid "Config backup in progress..."
 msgstr "Config εφεδρική σε εξέλιξη..."
 
-#: sickrage/core/version_updater.py:88
+#: sickrage/core/version_updater.py:87
 msgid "Config backup successful, updating..."
 msgstr "Config backup επιτυχής, ενημέρωση..."
 
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:95
 msgid "Config backup failed, aborting update"
 msgstr "Config δημιουργίας αντιγράφων ασφαλείας απέτυχε, ματαίωση ενημερωμένη έκδοση"
 
-#: sickrage/core/version_updater.py:217
+#: sickrage/core/version_updater.py:216
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Δεν μπορείτε να βρείτε σας git εκτελέσιμο - σετ σας git διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους ή διαγραφή του φακέλου .git και τρέχει από την πηγή για να ενεργοποιήσετε τις ενημερωμένες εκδόσεις."
 
-#: sickrage/core/version_updater.py:264
+#: sickrage/core/version_updater.py:263
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Δεν μπορείτε να βρείτε σας pip εκτελέσιμο - σετ σας pip διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους"
 
-#: sickrage/core/version_updater.py:422 sickrage/core/version_updater.py:559
+#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Υπάρχει νεότερη έκδοση διαθέσιμη, έκδοση {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:555
+#: sickrage/core/version_updater.py:554
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Άγνωστο αριθμό της τρέχουσας έκδοσης: Εάν yo ποτέ δεν έχω χρησιμοποιήσει το σύστημα αναβάθμισης SiCKRAGE πριν από την τότε τρέχουσα έκδοση δεν έχει οριστεί. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:712
-msgid "New SiCKRAGE update found on PyPy servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
-msgstr "Νέα ενημέρωση SiCKRAGE βρέθηκαν σε διακομιστές PyPy, έκδοση {} &mdash; <a href=\"{}\">Update Now</a>"
+#: sickrage/core/version_updater.py:711
+msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
 
 #: sickrage/core/queues/search.py:210
 msgid "No downloads were found"

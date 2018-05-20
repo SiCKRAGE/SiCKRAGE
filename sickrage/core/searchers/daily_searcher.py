@@ -153,8 +153,8 @@ class DailySearcher(object):
                         elif curQuality != Quality.UNKNOWN and curQuality > max(anyQualities):
                             continue
 
-                # only fetch if not archive on first match
-                if curStatus == DOWNLOADED and show.archive_firstmatch:
+                # skip upgrading quality of downloaded episodes if enabled
+                if curStatus == DOWNLOADED and show.skip_downloaded:
                     continue
 
                 epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
