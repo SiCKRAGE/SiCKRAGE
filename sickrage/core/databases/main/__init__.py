@@ -71,17 +71,21 @@ class MainDB(srDatabase):
         self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
 
     def upgrade(self):
-        if self.version < self._version:
+        current_version = self.version
+
+        while current_version < self._version:
             dbData = list(self.all('version'))[-1]
-            for v in xrange(self.version, self._version + 1):
-                dbData['database_version'] = v
 
-                upgrade_func = getattr(self, '_upgrade_v' + str(v), None)
-                if upgrade_func:
-                    sickrage.app.log.info("Upgrading main database to version {}".format(v))
-                    upgrade_func()
+            new_version = current_version + 1
+            dbData['database_version'] = new_version
 
-                self.update(dbData)
+            upgrade_func = getattr(self, '_upgrade_v' + str(new_version), None)
+            if upgrade_func:
+                sickrage.app.log.info("Upgrading main database to version {}".format(new_version))
+                upgrade_func()
+
+            self.update(dbData)
+            current_version = new_version
 
     def _upgrade_v2(self):
         # convert archive_firstmatch to skip_downloaded
