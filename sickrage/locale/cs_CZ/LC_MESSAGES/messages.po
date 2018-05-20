@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-18 23:51-0700\n"
-"PO-Revision-Date: 2018-05-19 02:51-0400\n"
+"POT-Creation-Date: 2018-05-19 19:28-0700\n"
+"PO-Revision-Date: 2018-05-19 22:29-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -652,7 +652,7 @@ msgstr "Chcete přidat epizody zpracovány MyList?"
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
-#: sickrage/core/webserver/views/home/edit_show.mako:391
+#: sickrage/core/webserver/views/home/edit_show.mako:390
 #: sickrage/core/webserver/views/layouts/config.mako:29
 #: sickrage/core/webserver/views/manage/mass_edit.mako:256
 msgid "Save Changes"
@@ -719,7 +719,7 @@ msgstr "Rozhraní"
 
 #: sickrage/core/webserver/views/config/general.mako:19
 #: sickrage/core/webserver/views/config/general.mako:913
-#: sickrage/core/webserver/views/home/edit_show.mako:281
+#: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Upřesnit nastavení"
 
@@ -3911,8 +3911,8 @@ msgstr "Přeskakovat slova"
 
 #: sickrage/core/webserver/views/config/search.mako:213
 #: sickrage/core/webserver/views/config/search.mako:231
-#: sickrage/core/webserver/views/home/edit_show.mako:296
-#: sickrage/core/webserver/views/home/edit_show.mako:315
+#: sickrage/core/webserver/views/home/edit_show.mako:295
+#: sickrage/core/webserver/views/home/edit_show.mako:314
 msgid "ex. word1,word2,word3"
 msgstr "ex. word1 word2, slovo 3"
 
@@ -4281,7 +4281,7 @@ msgstr "Adresář, kde SickRage by měl ukládat vaše"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:568
-#: sickrage/core/webserver/views/home/edit_show.mako:137
+#: sickrage/core/webserver/views/home/edit_show.mako:136
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
 msgid "Subtitles"
@@ -4570,8 +4570,8 @@ msgid "Scene Numbering:"
 msgstr "Scénu číslování:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:380
-msgid "Archive First Match:"
-msgstr "První zápas Archiv:"
+msgid "Skip Downloaded:"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:422
 msgid "Missed:"
@@ -4741,26 +4741,27 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:123
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:124
-msgid "Archive on first match"
-msgstr "Archivovat na první zápas"
+#: sickrage/core/webserver/views/manage/mass_update.mako:55
+msgid "Skip downloaded"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:129
-msgid "archive episode after the first best match is found from your archive quality list"
-msgstr "Archiv díl po první nejlepší shoda nalezena ze seznamu Kvalita archiv"
+msgid "Skips updating quality of old/new downloaded episodes"
+msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:143
+#: sickrage/core/webserver/views/home/edit_show.mako:142
 msgid "search for subtitles"
 msgstr "Hledat titulky"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:150
+#: sickrage/core/webserver/views/home/edit_show.mako:149
 msgid "Subtitle metdata"
 msgstr "Titulků metadat"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:156
+#: sickrage/core/webserver/views/home/edit_show.mako:155
 msgid "use SiCKRAGE metadata when searching for subtitle, this will override the auto-discovered metadata"
 msgstr "SiCKRAGE metadata použít při hledání titulků, to přepíše metadata automobil objevit"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:164
+#: sickrage/core/webserver/views/home/edit_show.mako:163
 #: sickrage/core/webserver/views/home/index.mako:212
 #: sickrage/core/webserver/views/manage/mass_edit.mako:152
 #: sickrage/core/webserver/views/manage/mass_update.mako:56
@@ -4769,54 +4770,54 @@ msgstr "SiCKRAGE metadata použít při hledání titulků, to přepíše metada
 msgid "Paused"
 msgstr "Pozastaveno"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:170
+#: sickrage/core/webserver/views/home/edit_show.mako:169
 msgid "pause this show (SiCKRAGE will not download episodes)"
 msgstr "pozastavíte tuto show (SiCKRAGE nebude stahovat epizody)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:180
+#: sickrage/core/webserver/views/home/edit_show.mako:179
 msgid "Format Settings"
 msgstr "Nastavení formátu"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:186
+#: sickrage/core/webserver/views/home/edit_show.mako:185
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
 msgid "Air by date"
 msgstr "Vzduchu podle data"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:192
+#: sickrage/core/webserver/views/home/edit_show.mako:191
 msgid "check if the show is released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "Zkontrolujte, pokud show je vydána jako Show.03.02.2010, nikoli Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:194
-#: sickrage/core/webserver/views/home/edit_show.mako:210
+#: sickrage/core/webserver/views/home/edit_show.mako:193
+#: sickrage/core/webserver/views/home/edit_show.mako:209
 #: sickrage/core/webserver/views/manage/mass_edit.mako:217
 #: sickrage/core/webserver/views/manage/mass_edit.mako:232
 msgid "In case of an air date conflict between regular and special episodes, the later will be ignored."
 msgstr "V případě vzduchu datum konflikt mezi běžné a speciální epizody pozdější budou ignorovány."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:202
+#: sickrage/core/webserver/views/home/edit_show.mako:201
 #: sickrage/core/webserver/views/manage/mass_edit.mako:209
 #: sickrage/core/webserver/views/manage/mass_update.mako:51
 msgid "Sports"
 msgstr "Sportovní"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:208
+#: sickrage/core/webserver/views/home/edit_show.mako:207
 msgid "check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "Zkontrolujte, zda je sportovní nebo MMA událost vydána jako Show.03.02.2010, nikoli Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:218
+#: sickrage/core/webserver/views/home/edit_show.mako:217
 msgid "DVD Order"
 msgstr "Objednávka DVD"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:224
+#: sickrage/core/webserver/views/home/edit_show.mako:223
 msgid "use the DVD order instead of the air order"
 msgstr "použití DVD pořadí místo pořadí vzduchu"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:225
+#: sickrage/core/webserver/views/home/edit_show.mako:224
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Síla úplná aktualizace\" je nutný, a máte existující epizody je seřadit ručně."
 
 #: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views/home/edit_show.mako:233
+#: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -4825,63 +4826,63 @@ msgstr "\"Síla úplná aktualizace\" je nutný, a máte existující epizody je
 msgid "Anime"
 msgstr "Anime"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:239
+#: sickrage/core/webserver/views/home/edit_show.mako:238
 msgid "check if the show is Anime and episodes are released as Show.265 rather than Show.S02E03"
 msgstr "Zkontrolujte, zda je Anime a epizody jsou vydána jako Show.265, nikoli Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:251
+#: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/manage/mass_edit.mako:138
 #: sickrage/core/webserver/views/manage/mass_update.mako:54
 msgid "Season folders"
 msgstr "Sezóny složky"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:257
+#: sickrage/core/webserver/views/home/edit_show.mako:256
 msgid "group episodes by season folder (uncheck to store in a single folder)"
 msgstr "Skupina epizody sezóny složky (zrušte zaškrtnutí políčka ukládat do jediné složky)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:264
+#: sickrage/core/webserver/views/home/edit_show.mako:263
 #: sickrage/core/webserver/views/includes/add_show_options.mako:46
 #: sickrage/core/webserver/views/manage/mass_edit.mako:181
 msgid "Scene Numbering"
 msgstr "Scénu číslování"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:270
+#: sickrage/core/webserver/views/home/edit_show.mako:269
 msgid "search by scene numbering (uncheck to search by indexer numbering)"
 msgstr "Hledat podle číslování scény (zrušte zaškrtnutí políčka Hledat indexování číslování)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:287
+#: sickrage/core/webserver/views/home/edit_show.mako:286
 msgid "Ignored Words"
 msgstr "Ignorovaná slova"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:300
+#: sickrage/core/webserver/views/home/edit_show.mako:299
 msgid "Search results with one or more words from this list will be ignored."
 msgstr "Výsledky hledání s jedno nebo více slov z tohoto seznamu budou ignorovány."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:307
+#: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "Required Words"
 msgstr "Požadovaná slova"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:320
+#: sickrage/core/webserver/views/home/edit_show.mako:319
 msgid "Search results with no words from this list will be ignored."
 msgstr "Výsledky hledání s žádná slova z tohoto seznamu budou ignorovány."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:327
+#: sickrage/core/webserver/views/home/edit_show.mako:326
 msgid "Scene Exception"
 msgstr "Scénu výjimka"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:360
+#: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "This will affect episode search on NZB and torrent providers. This list overrides the original name it doesn't append to it."
 msgstr "To bude mít vliv na hledání epizoda NZB a torrent poskytovatelů. Tento seznam přepíše původní název, který nelze připojit k němu."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:368
+#: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "Search Delay"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:376
+#: sickrage/core/webserver/views/home/edit_show.mako:375
 msgid "ex. 1"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:381
+#: sickrage/core/webserver/views/home/edit_show.mako:380
 msgid "Delays searching for new episodes by X number of days."
 msgstr ""
 
@@ -5770,8 +5771,8 @@ msgid "Keep"
 msgstr "Ponechat"
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:131
-msgid "Archive episode after the first best match is found from your archive quality list."
-msgstr "Po nalezení první nejlepší zápas ze seznamu Kvalita archiv archiv epizoda."
+msgid "Skips updating quality of old/new downloaded episodes."
+msgstr ""
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:145
 msgid "Group episodes by season folder (set to \"No\" to store in a single folder)."
@@ -5837,10 +5838,6 @@ msgstr "Zobrazit stavy:"
 #: sickrage/core/webserver/views/manage/mass_update.mako:46
 msgid "Selected"
 msgstr "Vybrané"
-
-#: sickrage/core/webserver/views/manage/mass_update.mako:55
-msgid "Archive first match"
-msgstr "První zápas archiv"
 
 #: sickrage/core/webserver/views/manage/mass_update.mako:57
 msgid "Subtitle"

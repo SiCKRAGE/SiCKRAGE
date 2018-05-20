@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-18 23:51-0700\n"
-"PO-Revision-Date: 2018-05-19 02:52-0400\n"
+"POT-Creation-Date: 2018-05-19 19:28-0700\n"
+"PO-Revision-Date: 2018-05-19 22:30-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -652,7 +652,7 @@ msgstr "Bạn có muốn thêm PostProcessed tập MyList?"
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
-#: sickrage/core/webserver/views/home/edit_show.mako:391
+#: sickrage/core/webserver/views/home/edit_show.mako:390
 #: sickrage/core/webserver/views/layouts/config.mako:29
 #: sickrage/core/webserver/views/manage/mass_edit.mako:256
 msgid "Save Changes"
@@ -719,7 +719,7 @@ msgstr "Giao diện"
 
 #: sickrage/core/webserver/views/config/general.mako:19
 #: sickrage/core/webserver/views/config/general.mako:913
-#: sickrage/core/webserver/views/home/edit_show.mako:281
+#: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Cài đặt nâng cao"
 
@@ -3911,8 +3911,8 @@ msgstr "Bỏ qua các từ"
 
 #: sickrage/core/webserver/views/config/search.mako:213
 #: sickrage/core/webserver/views/config/search.mako:231
-#: sickrage/core/webserver/views/home/edit_show.mako:296
-#: sickrage/core/webserver/views/home/edit_show.mako:315
+#: sickrage/core/webserver/views/home/edit_show.mako:295
+#: sickrage/core/webserver/views/home/edit_show.mako:314
 msgid "ex. word1,word2,word3"
 msgstr "Ví dụ: word1, word2, word3"
 
@@ -4281,7 +4281,7 @@ msgstr "Các thư mục nơi SickRage nên lưu trữ của bạn"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:568
-#: sickrage/core/webserver/views/home/edit_show.mako:137
+#: sickrage/core/webserver/views/home/edit_show.mako:136
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
 msgid "Subtitles"
@@ -4570,8 +4570,8 @@ msgid "Scene Numbering:"
 msgstr "Cảnh đánh số:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:380
-msgid "Archive First Match:"
-msgstr "Trận đấu đầu tiên lưu trữ:"
+msgid "Skip Downloaded:"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:422
 msgid "Missed:"
@@ -4741,26 +4741,27 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:123
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:124
-msgid "Archive on first match"
-msgstr "Lưu trữ trên trận đấu đầu tiên"
+#: sickrage/core/webserver/views/manage/mass_update.mako:55
+msgid "Skip downloaded"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:129
-msgid "archive episode after the first best match is found from your archive quality list"
-msgstr "lưu trữ tập sau khi trận đấu đầu tiên tốt nhất được tìm thấy ở danh sách chất lượng lưu trữ của bạn"
+msgid "Skips updating quality of old/new downloaded episodes"
+msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:143
+#: sickrage/core/webserver/views/home/edit_show.mako:142
 msgid "search for subtitles"
 msgstr "Tìm kiếm phụ đề"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:150
+#: sickrage/core/webserver/views/home/edit_show.mako:149
 msgid "Subtitle metdata"
 msgstr "Phụ đề metdata"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:156
+#: sickrage/core/webserver/views/home/edit_show.mako:155
 msgid "use SiCKRAGE metadata when searching for subtitle, this will override the auto-discovered metadata"
 msgstr "sử dụng SiCKRAGE siêu dữ liệu khi đang tìm kiếm phụ đề, điều này sẽ ghi đè lên các siêu dữ liệu tự động phát hiện"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:164
+#: sickrage/core/webserver/views/home/edit_show.mako:163
 #: sickrage/core/webserver/views/home/index.mako:212
 #: sickrage/core/webserver/views/manage/mass_edit.mako:152
 #: sickrage/core/webserver/views/manage/mass_update.mako:56
@@ -4769,54 +4770,54 @@ msgstr "sử dụng SiCKRAGE siêu dữ liệu khi đang tìm kiếm phụ đề
 msgid "Paused"
 msgstr "Tạm dừng"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:170
+#: sickrage/core/webserver/views/home/edit_show.mako:169
 msgid "pause this show (SiCKRAGE will not download episodes)"
 msgstr "tạm dừng này hiển thị (SiCKRAGE sẽ không tải tập)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:180
+#: sickrage/core/webserver/views/home/edit_show.mako:179
 msgid "Format Settings"
 msgstr "Thiết đặt định dạng"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:186
+#: sickrage/core/webserver/views/home/edit_show.mako:185
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
 msgid "Air by date"
 msgstr "Máy theo ngày"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:192
+#: sickrage/core/webserver/views/home/edit_show.mako:191
 msgid "check if the show is released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "kiểm tra nếu chương trình được phát hành như là Show.03.02.2010 chứ không phải là Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:194
-#: sickrage/core/webserver/views/home/edit_show.mako:210
+#: sickrage/core/webserver/views/home/edit_show.mako:193
+#: sickrage/core/webserver/views/home/edit_show.mako:209
 #: sickrage/core/webserver/views/manage/mass_edit.mako:217
 #: sickrage/core/webserver/views/manage/mass_edit.mako:232
 msgid "In case of an air date conflict between regular and special episodes, the later will be ignored."
 msgstr "Trong trường hợp một máy ngày xung đột giữa các tập phim thường xuyên và đặc biệt, sau này sẽ bị bỏ qua."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:202
+#: sickrage/core/webserver/views/home/edit_show.mako:201
 #: sickrage/core/webserver/views/manage/mass_edit.mako:209
 #: sickrage/core/webserver/views/manage/mass_update.mako:51
 msgid "Sports"
 msgstr "Thể thao"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:208
+#: sickrage/core/webserver/views/home/edit_show.mako:207
 msgid "check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "kiểm tra xem các hiển thị là một thể thao hoặc sự kiện MMA phát hành như là Show.03.02.2010 chứ không phải là Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:218
+#: sickrage/core/webserver/views/home/edit_show.mako:217
 msgid "DVD Order"
 msgstr "Thứ tự đĩa DVD"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:224
+#: sickrage/core/webserver/views/home/edit_show.mako:223
 msgid "use the DVD order instead of the air order"
 msgstr "sử dụng bộ đĩa DVD thay vì bộ máy"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:225
+#: sickrage/core/webserver/views/home/edit_show.mako:224
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Một \"lực lượng đầy đủ Cập Nhật\" là cần thiết, và nếu bạn đã sẵn có tập bạn cần phải sắp xếp chúng theo cách thủ công."
 
 #: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views/home/edit_show.mako:233
+#: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -4825,63 +4826,63 @@ msgstr "Một \"lực lượng đầy đủ Cập Nhật\" là cần thiết, v�
 msgid "Anime"
 msgstr "Anime"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:239
+#: sickrage/core/webserver/views/home/edit_show.mako:238
 msgid "check if the show is Anime and episodes are released as Show.265 rather than Show.S02E03"
 msgstr "kiểm tra xem các hiển thị là Anime và tập phim được phát hành như là Show.265 chứ không phải là Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:251
+#: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/manage/mass_edit.mako:138
 #: sickrage/core/webserver/views/manage/mass_update.mako:54
 msgid "Season folders"
 msgstr "Mùa giải thư mục"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:257
+#: sickrage/core/webserver/views/home/edit_show.mako:256
 msgid "group episodes by season folder (uncheck to store in a single folder)"
 msgstr "Nhóm tập thư mục mùa (bỏ chọn để lưu trữ trong một thư mục duy nhất)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:264
+#: sickrage/core/webserver/views/home/edit_show.mako:263
 #: sickrage/core/webserver/views/includes/add_show_options.mako:46
 #: sickrage/core/webserver/views/manage/mass_edit.mako:181
 msgid "Scene Numbering"
 msgstr "Cảnh đánh số"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:270
+#: sickrage/core/webserver/views/home/edit_show.mako:269
 msgid "search by scene numbering (uncheck to search by indexer numbering)"
 msgstr "Tìm kiếm theo cảnh đánh số (bỏ chọn để tìm kiếm theo số lượng chỉ mục)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:287
+#: sickrage/core/webserver/views/home/edit_show.mako:286
 msgid "Ignored Words"
 msgstr "Bỏ qua từ"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:300
+#: sickrage/core/webserver/views/home/edit_show.mako:299
 msgid "Search results with one or more words from this list will be ignored."
 msgstr "Kết quả tìm kiếm với một hoặc nhiều từ từ danh sách này sẽ bị bỏ qua."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:307
+#: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "Required Words"
 msgstr "Yêu cầu lời"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:320
+#: sickrage/core/webserver/views/home/edit_show.mako:319
 msgid "Search results with no words from this list will be ignored."
 msgstr "Kết quả tìm kiếm với các từ từ danh sách này sẽ bị bỏ qua."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:327
+#: sickrage/core/webserver/views/home/edit_show.mako:326
 msgid "Scene Exception"
 msgstr "Cảnh ngoại lệ"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:360
+#: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "This will affect episode search on NZB and torrent providers. This list overrides the original name it doesn't append to it."
 msgstr "Điều này sẽ ảnh hưởng đến tập tìm kiếm trên NZB và torrent các nhà cung cấp. Danh sách này ghi đè lên tên gốc của nó không gắn tiếp vào nó."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:368
+#: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "Search Delay"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:376
+#: sickrage/core/webserver/views/home/edit_show.mako:375
 msgid "ex. 1"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:381
+#: sickrage/core/webserver/views/home/edit_show.mako:380
 msgid "Delays searching for new episodes by X number of days."
 msgstr ""
 
@@ -5770,8 +5771,8 @@ msgid "Keep"
 msgstr "Giữ"
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:131
-msgid "Archive episode after the first best match is found from your archive quality list."
-msgstr "Lưu trữ tập sau trận đấu đầu tiên tốt nhất được tìm thấy danh sách chất lượng lưu trữ của bạn."
+msgid "Skips updating quality of old/new downloaded episodes."
+msgstr ""
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:145
 msgid "Group episodes by season folder (set to \"No\" to store in a single folder)."
@@ -5837,10 +5838,6 @@ msgstr "Xem trạng thái:"
 #: sickrage/core/webserver/views/manage/mass_update.mako:46
 msgid "Selected"
 msgstr "Lựa chọn"
-
-#: sickrage/core/webserver/views/manage/mass_update.mako:55
-msgid "Archive first match"
-msgstr "Trận đấu đầu tiên lưu trữ"
 
 #: sickrage/core/webserver/views/manage/mass_update.mako:57
 msgid "Subtitle"

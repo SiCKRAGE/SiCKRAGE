@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-18 23:51-0700\n"
-"PO-Revision-Date: 2018-05-19 02:52-0400\n"
+"POT-Creation-Date: 2018-05-19 19:28-0700\n"
+"PO-Revision-Date: 2018-05-19 22:30-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -652,7 +652,7 @@ msgstr "Vill du lägga till efterbehandlade episoder till MyList?"
 #: sickrage/core/webserver/views/config/subtitles.mako:197
 #: sickrage/core/webserver/views/config/subtitles.mako:245
 #: sickrage/core/webserver/views/config/subtitles.mako:300
-#: sickrage/core/webserver/views/home/edit_show.mako:391
+#: sickrage/core/webserver/views/home/edit_show.mako:390
 #: sickrage/core/webserver/views/layouts/config.mako:29
 #: sickrage/core/webserver/views/manage/mass_edit.mako:256
 msgid "Save Changes"
@@ -719,7 +719,7 @@ msgstr "Gränssnitt"
 
 #: sickrage/core/webserver/views/config/general.mako:19
 #: sickrage/core/webserver/views/config/general.mako:913
-#: sickrage/core/webserver/views/home/edit_show.mako:281
+#: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Avancerade inställningar"
 
@@ -3911,8 +3911,8 @@ msgstr "Ignorera ord"
 
 #: sickrage/core/webserver/views/config/search.mako:213
 #: sickrage/core/webserver/views/config/search.mako:231
-#: sickrage/core/webserver/views/home/edit_show.mako:296
-#: sickrage/core/webserver/views/home/edit_show.mako:315
+#: sickrage/core/webserver/views/home/edit_show.mako:295
+#: sickrage/core/webserver/views/home/edit_show.mako:314
 msgid "ex. word1,word2,word3"
 msgstr "ex. word1, sökord2 sökord3"
 
@@ -4281,7 +4281,7 @@ msgstr "Katalogen där SiCKRAGE ska lagra dina"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:123
 #: sickrage/core/webserver/views/home/display_show.mako:568
-#: sickrage/core/webserver/views/home/edit_show.mako:137
+#: sickrage/core/webserver/views/home/edit_show.mako:136
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:239
 msgid "Subtitles"
@@ -4570,8 +4570,8 @@ msgid "Scene Numbering:"
 msgstr "Scene-numrering:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:380
-msgid "Archive First Match:"
-msgstr "Arkivera första träff:"
+msgid "Skip Downloaded:"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:422
 msgid "Missed:"
@@ -4713,7 +4713,7 @@ msgstr "Serieplats"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:56
 msgid "Location for where your show resides on your device"
-msgstr ""
+msgstr "Plats där var din serie finns på din enhet"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:65
 #: sickrage/core/webserver/views/includes/add_show_options.mako:108
@@ -4728,7 +4728,7 @@ msgstr "Episod standardstatus"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:92
 msgid "Unaired episodes automatically set to this status when air date reached"
-msgstr ""
+msgstr "Icke sända avsnitt sätts automatiskt till denna status vid sändningsdatum"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:101
 msgid "Info Language"
@@ -4741,26 +4741,27 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:123
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:124
-msgid "Archive on first match"
-msgstr "Arkivera vid första träff"
+#: sickrage/core/webserver/views/manage/mass_update.mako:55
+msgid "Skip downloaded"
+msgstr ""
 
 #: sickrage/core/webserver/views/home/edit_show.mako:129
-msgid "archive episode after the first best match is found from your archive quality list"
-msgstr "arkivera avsnitt efter att den första bästa matchningen hittas från din arkivkvalitetslista"
+msgid "Skips updating quality of old/new downloaded episodes"
+msgstr ""
 
-#: sickrage/core/webserver/views/home/edit_show.mako:143
+#: sickrage/core/webserver/views/home/edit_show.mako:142
 msgid "search for subtitles"
 msgstr "sök efter undertexter"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:150
+#: sickrage/core/webserver/views/home/edit_show.mako:149
 msgid "Subtitle metdata"
 msgstr "Undertext-metadata"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:156
+#: sickrage/core/webserver/views/home/edit_show.mako:155
 msgid "use SiCKRAGE metadata when searching for subtitle, this will override the auto-discovered metadata"
 msgstr "använda metadata från SiCKRAGE när du söker efter undertext, detta kommer att åsidosätta automatiskt upptäckt metadata"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:164
+#: sickrage/core/webserver/views/home/edit_show.mako:163
 #: sickrage/core/webserver/views/home/index.mako:212
 #: sickrage/core/webserver/views/manage/mass_edit.mako:152
 #: sickrage/core/webserver/views/manage/mass_update.mako:56
@@ -4769,54 +4770,54 @@ msgstr "använda metadata från SiCKRAGE när du söker efter undertext, detta k
 msgid "Paused"
 msgstr "Pausad"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:170
+#: sickrage/core/webserver/views/home/edit_show.mako:169
 msgid "pause this show (SiCKRAGE will not download episodes)"
 msgstr "pausa denna serie (SiCKRAGE kommer inte ladda ner avsnitt)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:180
+#: sickrage/core/webserver/views/home/edit_show.mako:179
 msgid "Format Settings"
 msgstr "Formatinställningar"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:186
+#: sickrage/core/webserver/views/home/edit_show.mako:185
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
 msgid "Air by date"
 msgstr "Sändningsdatum"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:192
+#: sickrage/core/webserver/views/home/edit_show.mako:191
 msgid "check if the show is released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "kontrollera om serien är släppt som Show.03.02.2010 istället för Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:194
-#: sickrage/core/webserver/views/home/edit_show.mako:210
+#: sickrage/core/webserver/views/home/edit_show.mako:193
+#: sickrage/core/webserver/views/home/edit_show.mako:209
 #: sickrage/core/webserver/views/manage/mass_edit.mako:217
 #: sickrage/core/webserver/views/manage/mass_edit.mako:232
 msgid "In case of an air date conflict between regular and special episodes, the later will be ignored."
 msgstr "Vid en konflikt mellan sändningsdatum för ordinarie avsnitt och specialavsnitt, ignoreras den sistnämnda."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:202
+#: sickrage/core/webserver/views/home/edit_show.mako:201
 #: sickrage/core/webserver/views/manage/mass_edit.mako:209
 #: sickrage/core/webserver/views/manage/mass_update.mako:51
 msgid "Sports"
 msgstr "Sport"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:208
+#: sickrage/core/webserver/views/home/edit_show.mako:207
 msgid "check if the show is a sporting or MMA event released as Show.03.02.2010 rather than Show.S02E03"
 msgstr "kontrollera om serien är ett sport- eller MMA-evenemang släppt som Show.03.02.2010 istället för Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:218
+#: sickrage/core/webserver/views/home/edit_show.mako:217
 msgid "DVD Order"
 msgstr "DVD-sortering"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:224
+#: sickrage/core/webserver/views/home/edit_show.mako:223
 msgid "use the DVD order instead of the air order"
 msgstr "använd DVD-sortering i stället för sändningsdatum"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:225
+#: sickrage/core/webserver/views/home/edit_show.mako:224
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "En \"Tvinga fullständig uppdatering\" är nödvändig och om du har existerande avsnitt måste du sortera dem manuellt."
 
 #: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views/home/edit_show.mako:233
+#: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -4825,63 +4826,63 @@ msgstr "En \"Tvinga fullständig uppdatering\" är nödvändig och om du har exi
 msgid "Anime"
 msgstr "Anime"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:239
+#: sickrage/core/webserver/views/home/edit_show.mako:238
 msgid "check if the show is Anime and episodes are released as Show.265 rather than Show.S02E03"
 msgstr "kontrollera om serien är en Anime och episoder är släppta som Show.265 istället för Show.S02E03"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:251
+#: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/manage/mass_edit.mako:138
 #: sickrage/core/webserver/views/manage/mass_update.mako:54
 msgid "Season folders"
 msgstr "Säsongsmappar"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:257
+#: sickrage/core/webserver/views/home/edit_show.mako:256
 msgid "group episodes by season folder (uncheck to store in a single folder)"
 msgstr "gruppera episoder i säsongsmapp (avmarkera för att lagra i egen mapp)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:264
+#: sickrage/core/webserver/views/home/edit_show.mako:263
 #: sickrage/core/webserver/views/includes/add_show_options.mako:46
 #: sickrage/core/webserver/views/manage/mass_edit.mako:181
 msgid "Scene Numbering"
 msgstr "Scene-numrering"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:270
+#: sickrage/core/webserver/views/home/edit_show.mako:269
 msgid "search by scene numbering (uncheck to search by indexer numbering)"
 msgstr "sök med scene-numrering (avmarkera för att söka med indexerarens numrering)"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:287
+#: sickrage/core/webserver/views/home/edit_show.mako:286
 msgid "Ignored Words"
 msgstr "Ignorerade ord"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:300
+#: sickrage/core/webserver/views/home/edit_show.mako:299
 msgid "Search results with one or more words from this list will be ignored."
 msgstr "Sökresultat med ett eller flera ord från denna lista kommer att ignoreras."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:307
+#: sickrage/core/webserver/views/home/edit_show.mako:306
 msgid "Required Words"
 msgstr "Krävda ord"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:320
+#: sickrage/core/webserver/views/home/edit_show.mako:319
 msgid "Search results with no words from this list will be ignored."
 msgstr "Sökresultat som inte innehåller några ord från denna lista kommer att ignoreras."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:327
+#: sickrage/core/webserver/views/home/edit_show.mako:326
 msgid "Scene Exception"
 msgstr "Scene-undantag"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:360
+#: sickrage/core/webserver/views/home/edit_show.mako:359
 msgid "This will affect episode search on NZB and torrent providers. This list overrides the original name it doesn't append to it."
 msgstr "Detta kommer att påverka avsnittssökning på NZB- och torrent-leverantörer. Denna lista åsidosätter det ursprungliga namnet."
 
-#: sickrage/core/webserver/views/home/edit_show.mako:368
+#: sickrage/core/webserver/views/home/edit_show.mako:367
 msgid "Search Delay"
 msgstr "Sökfördröjning"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:376
+#: sickrage/core/webserver/views/home/edit_show.mako:375
 msgid "ex. 1"
 msgstr "ex. 1"
 
-#: sickrage/core/webserver/views/home/edit_show.mako:381
+#: sickrage/core/webserver/views/home/edit_show.mako:380
 msgid "Delays searching for new episodes by X number of days."
 msgstr "Fördröjer sökning efter nya avsnitt med X dagar."
 
@@ -5425,7 +5426,7 @@ msgstr "Att välja nr kommer att ignorera några utgåvor med samma episod kvali
 
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:29
 msgid "Preferred qualities replace existing downloads till highest quality is met"
-msgstr ""
+msgstr "Föredragna kvaliteter ersätter befintliga nedladdningar tills högsta kvalitet är uppnådd"
 
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:39
 #: sickrage/core/webserver/views/includes/quality_chooser.mako:60
@@ -5774,8 +5775,8 @@ msgid "Keep"
 msgstr "Hålla"
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:131
-msgid "Archive episode after the first best match is found from your archive quality list."
-msgstr "Arkiv avsnitt efter första bästa matchen finns från listan Arkiv kvalitet."
+msgid "Skips updating quality of old/new downloaded episodes."
+msgstr ""
 
 #: sickrage/core/webserver/views/manage/mass_edit.mako:145
 msgid "Group episodes by season folder (set to \"No\" to store in a single folder)."
@@ -5841,10 +5842,6 @@ msgstr "Visa status:"
 #: sickrage/core/webserver/views/manage/mass_update.mako:46
 msgid "Selected"
 msgstr "Utvalda"
-
-#: sickrage/core/webserver/views/manage/mass_update.mako:55
-msgid "Archive first match"
-msgstr "Arkiv första matchen"
 
 #: sickrage/core/webserver/views/manage/mass_update.mako:57
 msgid "Subtitle"
@@ -6001,7 +5998,7 @@ msgstr "Misslyckad"
 
 #: sickrage/core/common.py:191 sickrage/core/common.py:628
 msgid "Missed"
-msgstr ""
+msgstr "Missade"
 
 #: sickrage/core/common.py:616
 msgid "Unknown"
@@ -6069,7 +6066,7 @@ msgstr "Okänd aktuellt versionsnummer: om du aldrig har använt SiCKRAGE system
 
 #: sickrage/core/version_updater.py:711
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
-msgstr ""
+msgstr "Ny uppdatering för SiCKRAGE finns på PyPi-servrar, version {} &mdash; <a href=\"{}\">Uppdatera nu</a>"
 
 #: sickrage/core/queues/search.py:210
 msgid "No downloads were found"
