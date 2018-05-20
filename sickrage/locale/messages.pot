@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.23\n"
+"Project-Id-Version: sickrage 9.3.24\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-19 23:20-0700\n"
+"POT-Creation-Date: 2018-05-20 00:34-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6245,7 +6245,7 @@ msgid ""
 "Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:711
+#: sickrage/core/version_updater.py:712
 msgid ""
 "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a "
 "href=\"{}\">Update Now</a>"

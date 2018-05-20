@@ -1,6 +1,8 @@
 # Changelog
 
-- * 4f89163 - 2018-05-19: Release v9.3.23 
+- * 99bce92 - 2018-05-20: Release v9.3.24 
+- * f7f766b - 2018-05-20: Fixed issue #221 - PIP update issues due to dev releases and StrictVersion 
+- * 7bd2298 - 2018-05-19: Release v9.3.23 
 - * 1ff0bc5 - 2018-05-19: Converted for loop to while loop for database upgrade function 
 - * 8a40c41 - 2018-05-19: Pre-Release v9.3.23.dev2 
 - * b80633c - 2018-05-19: Added database version upgrade functionality 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-05-19 23:20-0700\n"
-"PO-Revision-Date: 2018-05-20 02:21-0400\n"
+"POT-Creation-Date: 2018-05-20 00:34-0700\n"
+"PO-Revision-Date: 2018-05-20 03:34-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -6060,7 +6060,7 @@ msgstr "Υπάρχει νεότερη έκδοση διαθέσιμη, έκδο�
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Άγνωστο αριθμό της τρέχουσας έκδοσης: Εάν yo ποτέ δεν έχω χρησιμοποιήσει το σύστημα αναβάθμισης SiCKRAGE πριν από την τότε τρέχουσα έκδοση δεν έχει οριστεί. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:711
+#: sickrage/core/version_updater.py:712
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
