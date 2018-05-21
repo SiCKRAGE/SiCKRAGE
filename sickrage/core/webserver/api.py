@@ -1919,7 +1919,7 @@ class CMD_ShowAddExisting(ApiCall):
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.status_default,
             quality=newQuality, flatten_folders=int(self.flatten_folders), subtitles=self.subtitles,
-            default_status_after=sickrage.app.config.status_default_after, archive=self.skip_downloaded
+            default_status_after=sickrage.app.config.status_default_after, skip_downloaded=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
@@ -2093,7 +2093,7 @@ class CMD_ShowAddNew(ApiCall):
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
-            scene=self.scene, default_status_after=default_ep_status_after, archive=self.skip_downloaded
+            scene=self.scene, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
         return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
