@@ -126,7 +126,7 @@ class ShowQueue(srQueue):
 
     def addShow(self, indexer, indexer_id, showDir, default_status=None, quality=None, flatten_folders=None,
                 lang=None, subtitles=None, subtitles_sr_metadata=None, anime=None, scene=None, paused=None,
-                blacklist=None, whitelist=None, default_status_after=None, archive=None):
+                blacklist=None, whitelist=None, default_status_after=None, skip_downloaded=None):
 
         if lang is None:
             lang = sickrage.app.config.indexer_default_language
@@ -146,7 +146,7 @@ class ShowQueue(srQueue):
                                      blacklist=blacklist,
                                      whitelist=whitelist,
                                      default_status_after=default_status_after,
-                                     archive=archive))
+                                     skip_downloaded=skip_downloaded))
 
     def removeShow(self, show, full=False):
         if not show:
@@ -221,7 +221,7 @@ class ShowQueueItem(srQueueItem):
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles,
-                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after, archive):
+                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after, skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
         self.indexer = indexer
@@ -239,7 +239,7 @@ class QueueItemAdd(ShowQueueItem):
         self.blacklist = blacklist
         self.whitelist = whitelist
         self.default_status_after = default_status_after
-        self.archive = archive
+        self.skip_downloaded = skip_downloaded
         self.priority = srQueuePriorities.HIGH
 
     @property
@@ -345,7 +345,7 @@ class QueueItemAdd(ShowQueueItem):
             self.show.flatten_folders = self.flatten_folders or sickrage.app.config.flatten_folders_default
             self.show.anime = self.anime or sickrage.app.config.anime_default
             self.show.scene = self.scene or sickrage.app.config.scene_default
-            self.show.skip_downloaded = self.archive or sickrage.app.config.skip_downloaded_default
+            self.show.skip_downloaded = self.skip_downloaded or sickrage.app.config.skip_downloaded_default
             self.show.paused = self.paused or False
 
             # set up default new/missing episode status

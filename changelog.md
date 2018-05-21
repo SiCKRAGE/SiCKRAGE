@@ -1,6 +1,8 @@
 # Changelog
 
-- * 99bce92 - 2018-05-20: Release v9.3.24 
+- * d459737 - 2018-05-21: Release v9.3.25 
+- * f7f75e7 - 2018-05-21: Fixed issue with unexpected keyword agrument &#x27;skip_downloaded&#x27; 
+- * 706c89e - 2018-05-20: Release v9.3.24 
 - * f7f766b - 2018-05-20: Fixed issue #221 - PIP update issues due to dev releases and StrictVersion 
 - * 7bd2298 - 2018-05-19: Release v9.3.23 
 - * 1ff0bc5 - 2018-05-19: Converted for loop to while loop for database upgrade function 
