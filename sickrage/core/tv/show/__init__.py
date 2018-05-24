@@ -1370,7 +1370,7 @@ class TVShow(object):
             return Overview.SKIPPED
         elif epStatus in Quality.ARCHIVED:
             return Overview.GOOD
-        elif epStatus == Quality.FAILED:
+        elif epStatus in Quality.FAILED:
             return Overview.WANTED
         elif epStatus in Quality.SNATCHED:
             return Overview.SNATCHED
