@@ -1,6 +1,7 @@
 # Changelog
 
-- * f891476 - 2018-05-24: Fixed issue with parsing failed quality for episodes 
+- * 21dc488 - 2018-05-24: Release v9.3.26 
+- * eee20d0 - 2018-05-24: Fixed issue with parsing failed quality for episodes 
 - * 06d160f - 2018-05-21: Release v9.3.25 
 - * f7f75e7 - 2018-05-21: Fixed issue with unexpected keyword agrument &#x27;skip_downloaded&#x27; 
 - * 706c89e - 2018-05-20: Release v9.3.24 
