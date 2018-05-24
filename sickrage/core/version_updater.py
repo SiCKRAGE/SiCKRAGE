@@ -87,11 +87,11 @@ class VersionUpdater(object):
                     sickrage.app.alerts.message(_('Backup'), _('Config backup successful, updating...'))
                     return True
                 else:
-                    sickrage.app.log.error("Config backup failed, aborting update")
+                    sickrage.app.log.warning("Config backup failed, aborting update")
                     sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
                     return False
             except Exception as e:
-                sickrage.app.log.error('Update: Config backup failed. Error: %s' % e)
+                sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
                 sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
 

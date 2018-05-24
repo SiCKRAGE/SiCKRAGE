@@ -134,15 +134,15 @@ class ABNormalProvider(TorrentProvider):
             labels = [label.get_text(strip=True) for label in torrent_rows[0]('td')]
 
             # Skip column headers
-            for result in torrent_rows[1:]:
+            for row in torrent_rows[1:]:
                 try:
-                    cells = result('td')
+                    cells = row('td')
                     if len(cells) < len(labels):
                         continue
 
                     title = cells[labels.index('Release')].get_text(strip=True)
-                    download_url = urljoin(self.urls['base_url'],
-                                           cells[labels.index('DL')].find('a', class_='tooltip')['href'])
+                    download = cells[labels.index('DL')].find('a', class_='tooltip')['href']
+                    download_url = urljoin(self.urls['base_url'], download)
                     if not all([title, download_url]):
                         continue
 
