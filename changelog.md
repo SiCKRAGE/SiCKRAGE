@@ -1,6 +1,7 @@
 # Changelog
 
-- * dba93ee - 2018-05-24: Removes existing symlink or hardlink file if exists when creating new links 
+- * 4a5d989 - 2018-05-26: Misc changes/fixes for database calls 
+- * 1ad45d2 - 2018-05-24: Removes existing symlink or hardlink file if exists when creating new links 
 - * d861c0c - 2018-05-24: Release v9.3.26 
 - * eee20d0 - 2018-05-24: Fixed issue with parsing failed quality for episodes 
 - * 06d160f - 2018-05-21: Release v9.3.25 

@@ -108,7 +108,7 @@
                                 <img alt="" title="${curLoadingShow.show_name}" class="show-image"
                                      style="border-bottom: 1px solid #111;" src="${srWebRoot}/images/poster.png"/>
                                 <div class="show-details">
-                                    <div class="show-add">${_('Loading...')} (${curLoadingShow.show_name})</div>
+                                    <div class="show-add">${_('Loading...')} ${curLoadingShow.show_name}</div>
                                 </div>
                             </div>
                         % endif
@@ -298,7 +298,7 @@
                                         <td></td>
                                         <td>
                                             % if curLoadingShow.show is None:
-                                                <span title="">${_('Loading...')} (${curLoadingShow.show_name})</span>
+                                                <span title="">${_('Loading...')} ${curLoadingShow.show_name}</span>
                                             % else:
                                                 <a data-fancybox
                                                    href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
