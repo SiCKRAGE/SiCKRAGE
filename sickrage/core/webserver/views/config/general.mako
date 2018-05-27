@@ -39,6 +39,12 @@
                         <input type="checkbox" class="enabler" name="use_api"
                                id="use_api" ${('', 'checked')[bool(sickrage.app.config.enable_api)]}/>
                         <label for="use_api">${_('Enable API access ?')}</label>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="${anon_url('https://api.sickrage.ca/')}" rel="noreferrer"
+                                   onclick="window.open(this.href, '_blank'); return false;">${_('Register for API access')}</a></h3>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -56,16 +62,16 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('API Client ID')}</label>
+                            <label class="component-title">${_('API Username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
-                                <input name="api_client_id" id="api_client_id"
-                                       value="${sickrage.app.config.api_client_id}"
-                                       title="API Client ID"
+                                <input name="api_username" id="api_username"
+                                       value="${sickrage.app.config.api_username}"
+                                       title="API Username"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
@@ -74,16 +80,16 @@
 
                     <div class="row field-pair">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('API Client Secret')}</label>
+                            <label class="component-title">${_('API Password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group input350">
                                 <div class="input-group-addon">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
-                                <input type="password" name="api_client_secret" id="api_client_secret"
-                                       value="${sickrage.app.config.api_client_secret}"
-                                       title="API Client Secret"
+                                <input type="password" name="api_password" id="api_password"
+                                       value="${sickrage.app.config.api_password}"
+                                       title="API Password"
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>

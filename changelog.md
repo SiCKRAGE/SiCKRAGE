@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4a5d989 - 2018-05-26: Misc changes/fixes for database calls 
+- * 10663ca - 2018-05-27: Migrated from oauth2 client credential grant to password grant Migrated SiCKRAGE API endpoints 
+- * 510fe7d - 2018-05-26: Misc changes/fixes for database calls 
 - * 1ad45d2 - 2018-05-24: Removes existing symlink or hardlink file if exists when creating new links 
 - * d861c0c - 2018-05-24: Release v9.3.26 
 - * eee20d0 - 2018-05-24: Fixed issue with parsing failed quality for episodes 
