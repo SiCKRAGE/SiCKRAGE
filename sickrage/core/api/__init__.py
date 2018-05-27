@@ -97,9 +97,21 @@ class API(object):
         self._request('POST', 'v1/cache/torrents', data=dict({'url': url}))
 
     def search_by_imdb_title(self, title):
-        query = 'v1/imdb/search_by_title/{}'.format(title)
+        query = 'v1/imdb/search-by-title/{}'.format(title)
         return self._request('GET', query)
 
     def search_by_imdb_id(self, id):
-        query = 'v1/imdb/search_by_id/{}'.format(id)
+        query = 'v1/imdb/search-by-id/{}'.format(id)
+        return self._request('GET', query)
+
+    def clear_drive_app_data(self):
+        query = 'v1/drive/appdata/clear'
+        return self._request('GET', query)
+
+    def upload_drive_app_data_file(self, name, file):
+        query = 'v1/drive/appdata/upload'
+        return self._request('POST', query)
+
+    def download_drive_app_data(self):
+        query = 'v1/drive/appdata/download'
         return self._request('GET', query)

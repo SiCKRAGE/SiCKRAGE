@@ -1,6 +1,7 @@
 # Changelog
 
-- * 10663ca - 2018-05-27: Migrated from oauth2 client credential grant to password grant Migrated SiCKRAGE API endpoints 
+- * e5b8ec2 - 2018-05-27: Added Google drive API endpoints 
+- * 4dd25e6 - 2018-05-27: Migrated from oauth2 client credential grant to password grant Migrated SiCKRAGE API endpoints 
 - * 510fe7d - 2018-05-26: Misc changes/fixes for database calls 
 - * 1ad45d2 - 2018-05-24: Removes existing symlink or hardlink file if exists when creating new links 
 - * d861c0c - 2018-05-24: Release v9.3.26 
