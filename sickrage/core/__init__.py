@@ -116,7 +116,6 @@ class Core(object):
         self.sys_encoding = get_sys_encoding()
         self.client_web_urls = {'torrent': '', 'newznab': ''}
 
-        self.api = None
         self.adba_connection = None
         self.notifier_providers = None
         self.metadata_providers = {}
@@ -157,7 +156,6 @@ class Core(object):
         self.search_providers = SearchProviders()
         self.log = Logger()
         self.config = Config()
-        self.api = API()
         self.alerts = Notifications()
         self.main_db = MainDB()
         self.cache_db = CacheDB()

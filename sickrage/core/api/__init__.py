@@ -4,7 +4,7 @@ import json
 import os
 from urlparse import urljoin
 
-from oauthlib.oauth2 import LegacyApplicationClient, MissingTokenError
+from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -24,8 +24,8 @@ class API(object):
     @property
     def credentials(self):
         return {
-            'client_id': 1,
-            'client_secret': 'NmINyDwMfguMmbEMTSezHxaU5hTeUz12fk5RC9hk',
+            'client_id': 2,
+            'client_secret': '7kEyr9jKuqOV4FFy2bOxOwA2RiB4WSHsEUU2P3BJ',
             'username': self._username or sickrage.app.config.api_username,
             'password': self._password or sickrage.app.config.api_password
         }
@@ -44,19 +44,21 @@ class API(object):
     @property
     def token(self):
         if self._token is None:
-            try:
-                if not os.path.isfile(self.token_file):
-                    oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.credentials['client_id']))
-                    self._token = oauth.fetch_token(token_url=self.token_url,
-                                                    scope=['read-cache', 'write-cache'],
-                                                    timeout=30,
-                                                    **self.credentials)
-                    self._token_updater(self._token)
-                else:
-                    with open(self.token_file) as infile:
-                        self._token = json.load(infile)
-            except MissingTokenError:
-                self._token = ""
+            if self._username != sickrage.app.config.api_username or self._password != sickrage.app.config.api_password:
+                if os.path.isfile(self.token_file):
+                    os.remove(self.token_file)
+
+            if not os.path.isfile(self.token_file):
+                oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.credentials['client_id']))
+                self._token = oauth.fetch_token(token_url=self.token_url,
+                                                timeout=30,
+                                                **self.credentials)
+
+                self._token_updater(self._token)
+            else:
+                with open(self.token_file) as infile:
+                    self._token = json.load(infile)
+
         return self._token
 
     def _token_updater(self, token):
@@ -67,51 +69,13 @@ class API(object):
         if not sickrage.app.config.enable_api:
             return
 
-        try:
-            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
-            if resp.status_code == 401:
-                raise unauthorized(resp.json()['message'])
-            elif resp.status_code >= 400:
-                raise error(resp.json()['message'])
-        except Exception as e:
-            raise error(str(e))
+        resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
+        if resp.status_code == 401:
+            raise unauthorized(resp.json()['message'])
+        elif resp.status_code >= 400:
+            raise error(resp.json()['message'])
 
         return resp.json()
 
     def user_profile(self):
         return self._request('GET', 'user')
-
-    def add_provider_cache_result(self, data):
-        self._request('POST', 'v1/cache/providers', json=data)
-
-    def get_provider_cache_results(self, provider, indexerid, season, episode):
-        query = 'v1/cache/providers/{}/indexerids/{}/seasons/()/episodes/()'.format(provider, indexerid, season,
-                                                                                    episode)
-        return self._request('GET', query)
-
-    def get_torrent_cache_results(self, hash):
-        query = 'v1/cache/torrents/{}'.format(hash)
-        return self._request('GET', query)
-
-    def add_torrent_cache_result(self, url):
-        self._request('POST', 'v1/cache/torrents', data=dict({'url': url}))
-
-    def search_by_imdb_title(self, title):
-        query = 'v1/imdb/search-by-title/{}'.format(title)
-        return self._request('GET', query)
-
-    def search_by_imdb_id(self, id):
-        query = 'v1/imdb/search-by-id/{}'.format(id)
-        return self._request('GET', query)
-
-    def clear_drive_app_data(self):
-        query = 'v1/drive/appdata/clear'
-        return self._request('GET', query)
-
-    def upload_drive_app_data_file(self, name, file):
-        query = 'v1/drive/appdata/upload'
-        return self._request('POST', query)
-
-    def download_drive_app_data(self):
-        query = 'v1/drive/appdata/download'
-        return self._request('GET', query)

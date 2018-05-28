@@ -5,6 +5,8 @@
     import locale
     import tornado.locale
 
+    from oauthlib.oauth2 import MissingTokenError
+
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
@@ -12,6 +14,7 @@
     from sickrage.core.helpers import anon_url
     from sickrage.indexers import IndexerApi
     from sickrage.metadata import GenericMetadata
+    from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="tabs">
     <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Misc')}</a></li>
@@ -93,6 +96,23 @@
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Google Drive')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        % try:
+                            % if GoogleDriveAPI().is_connected()['success']:
+                                <span class="label label-success">CONNECTED</span>
+                            % else:
+                                <span class="label label-danger">DISCONNECTED</span>
+                            % endif
+                        % except Exception:
+                            <span class="label label-danger">DISCONNECTED</span>
+                        % endtry:
                         </div>
                     </div>
 

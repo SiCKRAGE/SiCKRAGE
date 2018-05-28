@@ -35,6 +35,7 @@ from CodernityDB.database import RecordNotFound
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
+from oauthlib.oauth2 import MissingTokenError
 from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, json_decode, recursive_unicode
 from tornado.gen import coroutine
@@ -736,11 +737,13 @@ class Home(WebHandler):
 
     @staticmethod
     def testAPI(username=None, password=None):
-        result = API(username, password).token
-        if result:
-            return _('API access successful')
-        else:
-            return _('API access failed')
+        try:
+            if API(username, password).token:
+                return _('API access successful')
+        except MissingTokenError:
+            pass
+
+        return _('API access failed')
 
     @staticmethod
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
@@ -2617,7 +2620,8 @@ class HomeAddShows(Home):
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    subtitles_sr_metadata=None, fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None,
-                   anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None, skip_downloaded=None):
+                   anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None,
+                   skip_downloaded=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
