@@ -80,7 +80,7 @@ class BacklogSearcher(object):
 
         if not which_shows and self.forced:
             sickrage.app.log.info("Running limited backlog on missed episodes " + str(
-                sickrage.app.config.backlog_days) + " day(s) and older only")
+                sickrage.app.config.backlog_days) + " day(s) old")
             from_date = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
         else:
             sickrage.app.log.info('Running full backlog search on missed episodes for selected shows')
@@ -114,7 +114,7 @@ class BacklogSearcher(object):
         # check through the list of statuses to see if we want any
         wanted = []
         for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid) if
-                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] <= from_date.toordinal()):
+                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] >= from_date.toordinal()):
 
             curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
 
