@@ -26,6 +26,7 @@ from CodernityDB.database import RecordNotFound
 from CodernityDB.index import IndexNotFoundException
 
 import sickrage
+from sickrage.core.api.cache import ProviderCacheAPI
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
 from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private
@@ -235,7 +236,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            sickrage.app.api.add_provider_cache_result(dbData)
+                            ProviderCacheAPI().add(dbData)
                         except Exception:
                             pass
 
@@ -250,8 +251,7 @@ class TVCache(object):
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += sickrage.app.api.get_provider_cache_results(self.providerID, ep_obj.show.indexerid,
-                                                                      ep_obj.season, ep_obj.episode)
+                dbData += ProviderCacheAPI().get(self.providerID, ep_obj.show.indexerid, ep_obj.season, ep_obj.episode)
             except Exception:
                 pass
 

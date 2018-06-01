@@ -1,6 +1,14 @@
 # Changelog
 
-- * 21dc488 - 2018-05-24: Release v9.3.26 
+- * b7dae3b - 2018-06-01: Release v9.3.27 
+- * 22b37e3 - 2018-05-31: Pre-Release v9.3.27.dev1 
+- * 7f39cc3 - 2018-05-31: Fixed issue #224 - backlog searches not working 
+- * 088906e - 2018-05-27: Refactored SiCKRAGE API class 
+- * 39debf7 - 2018-05-27: Added Google drive API endpoints 
+- * 4dd25e6 - 2018-05-27: Migrated from oauth2 client credential grant to password grant Migrated SiCKRAGE API endpoints 
+- * 510fe7d - 2018-05-26: Misc changes/fixes for database calls 
+- * 1ad45d2 - 2018-05-24: Removes existing symlink or hardlink file if exists when creating new links 
+- * d861c0c - 2018-05-24: Release v9.3.26 
 - * eee20d0 - 2018-05-24: Fixed issue with parsing failed quality for episodes 
 - * 06d160f - 2018-05-21: Release v9.3.25 
 - * f7f75e7 - 2018-05-21: Fixed issue with unexpected keyword agrument &#x27;skip_downloaded&#x27; 

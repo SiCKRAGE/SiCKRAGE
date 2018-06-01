@@ -2861,11 +2861,11 @@ jQuery(document).ready(function ($) {
 
                 $('#testAPI').click(function () {
                     $('#testAPI-result').html(SICKRAGE.loadingHTML);
-                    var api_client_id = $.trim($('#api_client_id').val());
-                    var api_client_secret = $.trim($('#api_client_secret').val());
+                    var api_username = $.trim($('#api_username').val());
+                    var api_password = $.trim($('#api_password').val());
                     $.get(SICKRAGE.srWebRoot + '/home/testAPI', {
-                            'client_id': api_client_id,
-                            'client_secret': api_client_secret
+                            'username': api_username,
+                            'password': api_password
                         },
                         function (data) {
                             $('#testAPI-result').html(data);

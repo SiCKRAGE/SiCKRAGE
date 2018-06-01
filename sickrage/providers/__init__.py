@@ -36,6 +36,7 @@ from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
 
 import sickrage
+from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
@@ -659,9 +660,8 @@ class TorrentProvider(GenericProvider):
                 if not result and sickrage.app.config.enable_api:
                     try:
                         # add to external database
-                        sickrage.app.api.add_torrent_cache_result(url)
-                        result = verify_torrent(
-                            b64decode(sickrage.app.api.get_torrent_cache_results(info_hash)).strip())
+                        TorrentCacheAPI().add(url)
+                        result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)).strip())
                     except Exception:
                         pass
 

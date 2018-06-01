@@ -32,6 +32,7 @@ from CodernityDB.database import RecordNotFound, RevConflict
 from unidecode import unidecode
 
 import sickrage
+from sickrage.core.api.imdb import IMDbAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
@@ -1002,7 +1003,7 @@ class TVShow(object):
 
     def load_imdb_info(self):
         if not self.imdbid:
-            for x in sickrage.app.api.search_by_imdb_title(self.name) or []:
+            for x in IMDbAPI().search_by_imdb_title(self.name) or []:
                 try:
                     if int(x.get('Year'), 0) == self.startyear and x.get('Title') in self.name:
                         self.imdbid = x.get('imdbID')
@@ -1013,7 +1014,7 @@ class TVShow(object):
         if self.imdbid:
             sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from IMDb")
 
-            self.imdb_info = sickrage.app.api.search_by_imdb_id(self.imdbid)
+            self.imdb_info = IMDbAPI().search_by_imdb_id(self.imdbid)
             if not self.imdb_info:
                 sickrage.app.log.debug(str(self.indexerid) + ': Unable to obtain IMDb info')
                 return

@@ -315,14 +315,12 @@ class srDatabase(object):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
     def all(self, *args, **kwargs):
-        kwargs['with_doc'] = True
         for x in self.db.all(*args, **kwargs):
-            yield x['doc']
+            yield self.db.get('id', x['_id'])
 
     def get_many(self, *args, **kwargs):
-        kwargs['with_doc'] = True
         for x in self.db.get_many(*args, **kwargs):
-            yield x['doc']
+            yield self.db.get('id', x['_id'])
 
     def get(self, *args, **kwargs):
         kwargs['with_doc'] = True
