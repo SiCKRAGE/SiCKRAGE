@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6f42ab3 - 2018-05-31: Fixed issue #224 - backlog searches not working 
+- * fea9845 - 2018-05-31: Pre-Release v9.3.27.dev1 
+- * 7f39cc3 - 2018-05-31: Fixed issue #224 - backlog searches not working 
 - * 088906e - 2018-05-27: Refactored SiCKRAGE API class 
 - * 39debf7 - 2018-05-27: Added Google drive API endpoints 
 - * 4dd25e6 - 2018-05-27: Migrated from oauth2 client credential grant to password grant Migrated SiCKRAGE API endpoints 
