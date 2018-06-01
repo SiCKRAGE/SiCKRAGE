@@ -4,7 +4,7 @@ import json
 import os
 from urlparse import urljoin
 
-from oauthlib.oauth2 import LegacyApplicationClient
+from oauthlib.oauth2 import LegacyApplicationClient, MissingTokenError, InvalidClientIdError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -69,13 +69,17 @@ class API(object):
         if not sickrage.app.config.enable_api:
             return
 
-        resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
-        if resp.status_code == 401:
-            raise unauthorized(resp.json()['message'])
-        elif resp.status_code >= 400:
-            raise error(resp.json()['message'])
+        try:
+            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
+            if resp.status_code == 401:
+                raise unauthorized(resp.json()['message'])
+            elif resp.status_code >= 400:
+                raise error(resp.json()['message'])
 
-        return resp.json()
+            return resp.json()
+        except (InvalidClientIdError, MissingTokenError):
+            sickrage.app.log.warning("Token is required for interacting with SiCKRAGE API, check username/password "
+                                     "under General settings.")
 
     def user_profile(self):
         return self._request('GET', 'user')

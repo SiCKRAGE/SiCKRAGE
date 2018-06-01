@@ -1,6 +1,7 @@
 # Changelog
 
-- * b7dae3b - 2018-06-01: Release v9.3.27 
+- * 8a0ff7a - 2018-06-01: Release v9.3.28 
+- * 924a877 - 2018-06-01: Release v9.3.27 
 - * 22b37e3 - 2018-05-31: Pre-Release v9.3.27.dev1 
 - * 7f39cc3 - 2018-05-31: Fixed issue #224 - backlog searches not working 
 - * 088906e - 2018-05-27: Refactored SiCKRAGE API class 

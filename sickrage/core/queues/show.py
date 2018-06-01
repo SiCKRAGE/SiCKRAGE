@@ -23,6 +23,8 @@ import os
 import time
 import traceback
 
+from oauthlib.oauth2 import MissingTokenError
+
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
