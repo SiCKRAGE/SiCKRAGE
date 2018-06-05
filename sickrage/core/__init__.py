@@ -46,7 +46,6 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.google import GoogleAuth
 from sickrage.core.helpers import findCertainShow, generateCookieSecret, makeDir, get_lan_ip, restoreSR, \
     getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
@@ -161,7 +160,6 @@ class Core(object):
         self.cache_db = CacheDB()
         self.scheduler = TornadoScheduler()
         self.wserver = WebServer()
-        self.google_auth = GoogleAuth()
         self.name_cache = NameCache()
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()

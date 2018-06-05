@@ -48,6 +48,7 @@ from adba import aniDBAbstracter
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core import API
+from sickrage.core.api.google import GoogleDriveAPI
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
 from sickrage.core.classes import ErrorViewer, AllShowsUI, AttrDict
@@ -521,29 +522,6 @@ class WebRoot(WebHandler):
 
     def getIndexerImage(self, indexerid):
         return indexerImage(id=indexerid, which="poster_thumb")
-
-
-@Route('/google(/?.*)')
-class GoogleAuth(WebHandler):
-    def __init__(self, *args, **kwargs):
-        super(GoogleAuth, self).__init__(*args, **kwargs)
-
-    def get_user_code(self):
-        data = sickrage.app.google_auth.get_user_code()
-        return json_encode({field: str(getattr(data, field)) for field in data._fields})
-
-    def get_credentials(self, flow_info):
-        try:
-            data = sickrage.app.google_auth.get_credentials(AttrDict(json_decode(flow_info)))
-            return json_encode(data.token_response)
-        except Exception as e:
-            return json_encode({'error': str(e)})
-
-    def refresh_credentials(self):
-        sickrage.app.google_auth.refresh_credentials()
-
-    def logout(self):
-        sickrage.app.google_auth.logout()
 
 
 @Route('/ui(/?.*)')
@@ -2243,6 +2221,9 @@ class Home(WebHandler):
             return json_encode({'result': 'success', 'groups': groups})
 
         return json_encode({'result': 'failure'})
+
+
+
 
 
 @Route('/IRC(/?.*)')
