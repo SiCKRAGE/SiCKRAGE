@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7e767e4 - 2018-06-02: Fixed NoneType error in displayShow mako code related to imdb ratings 
+- * 2a9ed57 - 2018-06-04: Release v9.3.29 
+- * d21e3aa - 2018-06-02: Fixed NoneType error in displayShow mako code related to imdb ratings 
 - * 1277227 - 2018-06-01: Release v9.3.28 
 - * 924a877 - 2018-06-01: Release v9.3.27 
 - * 22b37e3 - 2018-05-31: Pre-Release v9.3.27.dev1 

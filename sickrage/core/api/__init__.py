@@ -1,7 +1,11 @@
 from __future__ import unicode_literals
 
+import datetime
 import json
 import os
+import sys
+import time
+from time import sleep
 from urlparse import urljoin
 
 from oauthlib.oauth2 import LegacyApplicationClient, MissingTokenError, InvalidClientIdError
@@ -44,11 +48,10 @@ class API(object):
     @property
     def token(self):
         if self._token is None:
-            if self._username != sickrage.app.config.api_username or self._password != sickrage.app.config.api_password:
-                if os.path.isfile(self.token_file):
-                    os.remove(self.token_file)
+            if any([self._username, self._password]) and os.path.isfile(self.token_file):
+                os.remove(self.token_file)
 
-            if not os.path.isfile(self.token_file):
+            if not os.path.exists(self.token_file):
                 oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.credentials['client_id']))
                 self._token = oauth.fetch_token(token_url=self.token_url,
                                                 timeout=30,
@@ -70,16 +73,25 @@ class API(object):
             return
 
         try:
-            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30, **kwargs)
+            resp = self.session.request(method, urljoin(self.api_url, url), timeout=30,
+                                        hooks={'response': self.throttle_hook}, **kwargs)
+
             if resp.status_code == 401:
                 raise unauthorized(resp.json()['message'])
             elif resp.status_code >= 400:
                 raise error(resp.json()['message'])
 
             return resp.json()
-        except (InvalidClientIdError, MissingTokenError):
+        except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("Token is required for interacting with SiCKRAGE API, check username/password "
                                      "under General settings.")
 
-    def user_profile(self):
-        return self._request('GET', 'user')
+    @staticmethod
+    def throttle_hook(response, **kwargs):
+        ratelimited = "X-RateLimit-Remaining" in response.headers
+
+        if ratelimited:
+            remaining = int(response.headers["X-RateLimit-Remaining"])
+            if remaining == 1:
+                sickrage.app.log.debug("Throttling SiCKRAGE API Calls... Sleeping for 60 secs...\n")
+                time.sleep(60)
