@@ -1,6 +1,8 @@
 # Changelog
 
-- * 2a9ed57 - 2018-06-04: Release v9.3.29 
+- * 3fdf29e - 2018-06-10: Release v9.3.34 
+- * 5c47d7c - 2018-06-10: Added Google Drive support for syncing app data local and remote Added ability to download unverified torrent magnet links Fixed issues for access data retrieved from SR API endpoints 
+- * a65bc0f - 2018-06-04: Release v9.3.29 
 - * d21e3aa - 2018-06-02: Fixed NoneType error in displayShow mako code related to imdb ratings 
 - * 1277227 - 2018-06-01: Release v9.3.28 
 - * 924a877 - 2018-06-01: Release v9.3.27 

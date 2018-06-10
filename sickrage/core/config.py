@@ -51,6 +51,8 @@ class Config(object):
         self.encryption_secret = ""
         self.encryption_version = 2
 
+        self.app_id = ""
+
         self.debug = False
 
         self.last_db_compact = 0
@@ -141,6 +143,7 @@ class Config(object):
         self.enable_rss_cache = True
         self.enable_rss_cache_valid_shows = False
         self.torrent_file_to_magnet = False
+        self.download_unverified_magnet_link = False
         self.proper_searcher_interval = ""
         self.allow_high_priority = False
         self.sab_forced = False
@@ -686,6 +689,7 @@ class Config(object):
                 'torrent_dir': ''
             },
             'General': {
+                'app_id': uuid.uuid4(),
                 'enable_api': True,
                 'enable_api_providers_cache': True,
                 'api_username': '',
@@ -750,6 +754,7 @@ class Config(object):
                 'enable_rss_cache': True,
                 'enable_rss_cache_valid_shows': False,
                 'torrent_file_to_magnet': False,
+                'download_unverified_magnet_link': False,
                 'status_default': SKIPPED,
                 'naming_anime': 3,
                 'naming_custom_sports': False,
@@ -1347,6 +1352,7 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
+        self.app_id = self.check_setting_str('General', 'app_id')
         self.enable_api = self.check_setting_bool('General', 'enable_api')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.api_username = self.check_setting_str('General', 'api_username', censor=True)
@@ -1423,6 +1429,7 @@ class Config(object):
         self.enable_rss_cache = self.check_setting_bool('General', 'enable_rss_cache')
         self.enable_rss_cache_valid_shows = self.check_setting_bool('General', 'enable_rss_cache_valid_shows')
         self.torrent_file_to_magnet = self.check_setting_bool('General', 'torrent_file_to_magnet')
+        self.download_unverified_magnet_link = self.check_setting_bool('General', 'download_unverified_magnet_link')
         self.proper_searcher_interval = self.check_setting_str('General', 'check_propers_interval')
         self.randomize_providers = self.check_setting_bool('General', 'randomize_providers')
         self.allow_high_priority = self.check_setting_bool('General', 'allow_high_priority')
@@ -1841,6 +1848,7 @@ class Config(object):
                 'encryption_version': int(self.encryption_version),
                 'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
+                'app_id': self.app_id,
                 'enable_api': int(self.enable_api),
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'api_username': self.api_username,
@@ -1888,6 +1896,7 @@ class Config(object):
                 'enable_rss_cache': int(self.enable_rss_cache),
                 'enable_rss_cache_valid_shows': int(self.enable_rss_cache_valid_shows),
                 'torrent_file_to_magnet': int(self.torrent_file_to_magnet),
+                'download_unverified_magnet_link': int(self.download_unverified_magnet_link),
                 'randomize_providers': int(self.randomize_providers),
                 'check_propers_interval': self.proper_searcher_interval,
                 'allow_high_priority': int(self.allow_high_priority),

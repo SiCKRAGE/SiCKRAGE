@@ -1,3 +1,22 @@
+<!-- Main Modals -->
+<%def name="mainModals()">
+    <div class="modal fade" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Please Wait</h1>
+                </div>
+                <div class="modal-body">
+                    <div id="ajax_loader">
+                        <i class="fa fa-spinner fa-spin"></i>
+                        <div id="current_info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</%def>
+
 <!-- displayShow Modals -->
 <%def name="displayShowModals()">
     <div id="manualSearchModalFailed" class="modal fade">

@@ -14,10 +14,18 @@ class GoogleDriveAPI(API):
         query = 'api/v1/google-drive/download/{id}'.format(id=id)
         return self._request('GET', query)
 
-    def list_appdata(self):
-        query = 'api/v1/google-drive/appdata'
+    def delete(self, id):
+        query = 'api/v1/google-drive/delete/{id}'.format(id=id)
         return self._request('GET', query)
 
-    def clear_appdata(self):
-        query = 'api/v1/google-drive/appdata/clear'
+    def search_files(self, id, term):
+        query = 'api/v1/google-drive/search-files/{id}/{term}'.format(id=id, term=term)
+        return self._request('GET', query)
+
+    def list_files(self, id):
+        query = 'api/v1/google-drive/list-files/{id}'.format(id=id)
+        return self._request('GET', query)
+
+    def clear_folder(self, id):
+        query = 'api/v1/google-drive/clear-folder/{id}'.format(id=id)
         return self._request('GET', query)

@@ -65,6 +65,20 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Download UNVERIFIED torrent magnet links')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="download_unverified_magnet_link" id="download_unverified_magnet_link"
+                               class="enabler" ${('', 'checked')[bool(sickrage.app.config.download_unverified_magnet_link)]}/>
+                        <label for="download_unverified_magnet_link">
+                            <p>${_('enables/disables downloading of unverified torrent magnet links via clients')}</p>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Convert provider torrent file links to magnetic links')}</label>

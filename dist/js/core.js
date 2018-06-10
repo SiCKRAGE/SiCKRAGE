@@ -2793,6 +2793,30 @@ jQuery(document).ready(function ($) {
                         });
                 });
 
+                $('#syncRemote').click(function () {
+                    function updateProgress() {
+                        $.getJSON(SICKRAGE.srWebRoot + '/googleDrive/getProgress', function (data) {
+                            $('#current_info').html(data.current_info);
+                        }).error(function (data) {
+                            clearInterval(window.progressInterval);
+                            $('#current_info').html('Uh oh, something went wrong');
+                        });
+                    }
+
+                    $.ajax({
+                        type: "GET",
+                        url: SICKRAGE.srWebRoot + '/googleDrive/syncRemote',
+                        beforeSend: function () {
+                            window.progressInterval = setInterval(updateProgress, 100);
+                            $('#pleaseWaitDialog').modal();
+                        },
+                        success: function (result) {
+                            clearInterval(window.progressInterval);
+                            $('#pleaseWaitDialog').modal('hide');
+                        },
+                    });
+                });
+
                 $('#pip_path').fileBrowser({
                     title: gt('Select path to pip'),
                     key: 'pip_path',
@@ -2848,20 +2872,6 @@ jQuery(document).ready(function ($) {
                 $('#branchCheckout').on('click', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/home/branchCheckout?branch=' + $("#branchVersion").val();
                 });
-
-                $('#google_link').on('click', function () {
-                    if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
-                        SICKRAGE.google.login();
-                    } else {
-                        SICKRAGE.google.logout();
-                    }
-                });
-
-                if (localStorage.getItem('google_token_type') === null || localStorage.getItem('google_access_token') === null) {
-                    $('#google_link').prop('value', gt('Link'));
-                } else {
-                    $('#google_link').prop('value', gt('Unlink'));
-                }
             },
 
             subtitles: {

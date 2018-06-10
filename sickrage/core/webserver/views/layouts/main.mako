@@ -8,6 +8,9 @@
     from sickrage.core.updaters import tz_updater
     from sickrage.core.helpers import pretty_filesize, memory_usage
 %>
+
+<%namespace file="../includes/modals.mako" import="mainModals"/>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -487,6 +490,7 @@
     <%block name="scripts" />
 
     <div id="mainModal"></div>
+    ${mainModals()}
 </div>
 </body>
 </html>
