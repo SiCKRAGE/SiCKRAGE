@@ -2794,20 +2794,6 @@ jQuery(document).ready(function ($) {
                 });
 
                 $('#syncRemote').click(function () {
-                    window.progressInterval = setInterval(updateProgress, 100);
-
-                    $.ajax({
-                        type: "GET",
-                        url: SICKRAGE.srWebRoot + '/googleDrive/syncRemote',
-                        beforeSend: function () {
-                            $('#pleaseWaitDialog').modal();
-                        },
-                        success: function (result) {
-                            clearInterval(window.progressInterval);
-                            $('#pleaseWaitDialog').modal('hide');
-                        },
-                    });
-
                     function updateProgress() {
                         $.getJSON(SICKRAGE.srWebRoot + '/googleDrive/getProgress', function (data) {
                             $('#current_info').html(data.current_info);
@@ -2816,6 +2802,19 @@ jQuery(document).ready(function ($) {
                             $('#current_info').html('Uh oh, something went wrong');
                         });
                     }
+
+                    $.ajax({
+                        type: "GET",
+                        url: SICKRAGE.srWebRoot + '/googleDrive/syncRemote',
+                        beforeSend: function () {
+                            window.progressInterval = setInterval(updateProgress, 100);
+                            $('#pleaseWaitDialog').modal();
+                        },
+                        success: function (result) {
+                            clearInterval(window.progressInterval);
+                            $('#pleaseWaitDialog').modal('hide');
+                        },
+                    });
                 });
 
                 $('#pip_path').fileBrowser({
