@@ -222,8 +222,13 @@ def pickBestResult(results, show):
         # verify result content
         if not cur_result.provider.private:
             if cur_result.resultType in ["nzb", "torrent"] and not cur_result.provider.get_content(cur_result.url):
-                sickrage.app.log.info("Ignoring " + cur_result.name + " because it does not have valid download url")
-                continue
+                if sickrage.app.config.download_unverified_magnet_link and cur_result.url.startswith('magnet'):
+                    # Attempt downloading unverified torrent magnet link
+                    pass
+                else:
+                    sickrage.app.log.info(
+                        "Ignoring {} because we are unable to verify the download url".format(cur_result.name))
+                    continue
 
         if not bestResult:
             bestResult = cur_result
@@ -373,11 +378,11 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
 
                     # search provider for episodes
                     search_results = providerObj.findSearchResults(show,
-                                                                  episodes,
-                                                                  search_mode,
-                                                                  manualSearch,
-                                                                  downCurQuality,
-                                                                  cacheOnly)
+                                                                   episodes,
+                                                                   search_mode,
+                                                                   manualSearch,
+                                                                   downCurQuality,
+                                                                   cacheOnly)
                 except AuthException as e:
                     sickrage.app.log.warning("Authentication error: {}".format(e))
                     break

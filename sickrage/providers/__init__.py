@@ -117,10 +117,11 @@ class GenericProvider(object):
             if url.startswith('http'):
                 headers = {'Referer': '/'.join(url.split('/')[:3]) + '/'}
 
-            try:
-                return self.session.get(url, verify=False, headers=headers).content
-            except Exception:
-                pass
+            if not url.startswith('magnet'):
+                try:
+                    return self.session.get(url, verify=False, headers=headers).content
+                except Exception:
+                    pass
 
     def make_filename(self, name):
         return ""
@@ -661,7 +662,7 @@ class TorrentProvider(GenericProvider):
                     try:
                         # add to external database
                         TorrentCacheAPI().add(url)
-                        result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)).strip())
+                        result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
                     except Exception:
                         pass
 

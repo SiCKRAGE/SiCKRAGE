@@ -37,7 +37,7 @@ from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from oauthlib.oauth2 import MissingTokenError
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, json_decode, recursive_unicode
+from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
@@ -47,11 +47,10 @@ import sickrage.subtitles
 from adba import aniDBAbstracter
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core import API
-from sickrage.core.api.google import GoogleDriveAPI
+from sickrage.core import API, google_drive
 from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
     short_group_names
-from sickrage.core.classes import ErrorViewer, AllShowsUI, AttrDict
+from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
@@ -241,6 +240,15 @@ class WebHandler(BaseHandler):
             result = yield self.route(method, **self.request.arguments)
             self.finish(result)
 
+    def _genericMessage(self, subject, message):
+        return self.render(
+            "/generic_message.mako",
+            message=message,
+            subject=subject,
+            title="",
+            controller='root',
+            action='genericmessage'
+        )
 
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
@@ -573,17 +581,6 @@ class WebFileBrowser(WebHandler):
 class Home(WebHandler):
     def __init__(self, *args, **kwargs):
         super(Home, self).__init__(*args, **kwargs)
-
-    def _genericMessage(self, subject, message):
-        return self.render(
-            "/generic_message.mako",
-            message=message,
-            subject=subject,
-            topmenu="home",
-            title="",
-            controller='home',
-            action='genericmessage'
-        )
 
     @staticmethod
     def _getEpisode(show, season=None, episode=None, absolute=None):
@@ -2223,7 +2220,21 @@ class Home(WebHandler):
         return json_encode({'result': 'failure'})
 
 
+@Route('/googleDrive(/?.*)')
+class GoogleDrive(WebHandler):
+    def __init__(self, *args, **kwargs):
+        super(GoogleDrive, self).__init__(*args, **kwargs)
 
+    def getProgress(self):
+        return google_drive.GoogleDrive.get_progress()
+
+    def syncRemote(self):
+        self._genericMessage(_("Google Drive Sync"), _("Syncing app data to Google Drive"))
+        google_drive.GoogleDrive().sync_remote()
+
+    def syncLocal(self):
+        self._genericMessage(_("Google Drive Sync"), _("Syncing app data from Google Drive"))
+        google_drive.GoogleDrive().sync_local()
 
 
 @Route('/IRC(/?.*)')
@@ -3976,7 +3987,7 @@ class ConfigSearch(Config):
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
                    ignored_subs_list=None, enable_rss_cache=None, enable_rss_cache_valid_shows=None,
-                   torrent_file_to_magnet=None):
+                   torrent_file_to_magnet=None, download_unverified_magnet_link=None):
 
         results = []
 
@@ -4002,6 +4013,7 @@ class ConfigSearch(Config):
         sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
         sickrage.app.config.enable_rss_cache_valid_shows = checkbox_to_value(enable_rss_cache_valid_shows)
         sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
+        sickrage.app.config.download_unverified_magnet_link = checkbox_to_value(download_unverified_magnet_link)
         sickrage.app.config.download_propers = checkbox_to_value(download_propers)
         sickrage.app.config.proper_searcher_interval = check_propers_interval
         sickrage.app.config.allow_high_priority = checkbox_to_value(allow_high_priority)
