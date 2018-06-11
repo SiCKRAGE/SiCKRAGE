@@ -106,7 +106,20 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         % try:
                             % if GoogleDriveAPI().is_connected()['success']:
-                                <span class="label label-success">CONNECTED</span>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <span class="label label-success">CONNECTED</span>
+                                    </div>
+                                </div>
+                                    <br/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input class="btn" type="button" value="${_('Sync To Google Drive')}"
+                                               id="syncRemote"/>
+                                        <input class="btn" type="button" value="${_('Sync To Local Drive')}"
+                                               id="syncLocal"/>
+                                    </div>
+                                </div>
                             % else:
                                 <span class="label label-danger">DISCONNECTED</span>
                             % endif
@@ -244,6 +257,7 @@
                         <label for="trash_rotate_logs">
                             ${_('on scheduled deletes of the oldest log files')}
                         </label>
+                        <br/>
                         <label>
                             <pre>${_('selected actions use trash (recycle bin) instead of the default permanent delete')}</pre>
                         </label>

@@ -373,6 +373,22 @@
         </nav>
     % endif
 
+    % if current_user and sickrage.app.developer:
+        <div class="row">
+            <span class="alert alert-danger center-block">
+                <b>!!! DEVELOPER MODE !!!</b>
+            </span>
+        </div>
+    % endif
+
+    % if current_user and sickrage.app.newest_version_string:
+        <div class="row">
+            <span class="alert alert-success upgrade-notification center-block">
+                ${sickrage.app.newest_version_string}
+            </span>
+        </div>
+    % endif
+
 <div class="container-fluid">
     <div id="sub-menu-container" class="row">
         % if submenu:
@@ -403,26 +419,6 @@
             </div>
         % endif
     </div>
-
-    % if current_user and sickrage.app.developer:
-        <div class="row">
-            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <div class="alert alert-danger upgrade-notification text-center">
-                    <span>!!! SiCKRAGE is in <b>developer</b> mode !!!</span>
-                </div>
-            </div>
-        </div>
-    % endif
-
-    % if current_user and sickrage.app.newest_version_string:
-        <div class="row">
-            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <div class="alert alert-success upgrade-notification text-center">
-                    <span>${sickrage.app.newest_version_string}</span>
-                </div>
-            </div>
-        </div>
-    % endif
 
     <div class="row">
         <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
