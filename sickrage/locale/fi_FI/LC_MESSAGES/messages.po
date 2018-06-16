@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-10 01:34-0700\n"
-"PO-Revision-Date: 2018-06-10 04:35-0400\n"
+"POT-Creation-Date: 2018-06-16 15:11-0700\n"
+"PO-Revision-Date: 2018-06-16 18:11-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -496,7 +496,7 @@ msgstr "Laatu"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:453
+#: sickrage/core/webserver/views/layouts/main.mako:449
 msgid "Snatched"
 msgstr "Nappasi"
 
@@ -546,7 +546,7 @@ msgstr "AnimeDB asetukset"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:98
-#: sickrage/core/webserver/views/config/general.mako:442
+#: sickrage/core/webserver/views/config/general.mako:456
 msgid "User Interface"
 msgstr "Käyttöliittymä"
 
@@ -591,14 +591,14 @@ msgstr "Haluatko lisätä PostProcessed jaksot MyList?"
 
 #: sickrage/core/webserver/views/config/anime.mako:88
 #: sickrage/core/webserver/views/config/anime.mako:115
-#: sickrage/core/webserver/views/config/general.mako:128
-#: sickrage/core/webserver/views/config/general.mako:351
-#: sickrage/core/webserver/views/config/general.mako:431
-#: sickrage/core/webserver/views/config/general.mako:709
-#: sickrage/core/webserver/views/config/general.mako:927
-#: sickrage/core/webserver/views/config/general.mako:1177
-#: sickrage/core/webserver/views/config/general.mako:1227
-#: sickrage/core/webserver/views/config/general.mako:1350
+#: sickrage/core/webserver/views/config/general.mako:141
+#: sickrage/core/webserver/views/config/general.mako:365
+#: sickrage/core/webserver/views/config/general.mako:445
+#: sickrage/core/webserver/views/config/general.mako:723
+#: sickrage/core/webserver/views/config/general.mako:941
+#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1241
+#: sickrage/core/webserver/views/config/general.mako:1364
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -693,7 +693,7 @@ msgid "Restore cache files"
 msgstr "Palauttaa välimuistitiedostoja"
 
 #: sickrage/core/webserver/views/config/general.mako:20
-#: sickrage/core/webserver/views/config/general.mako:136
+#: sickrage/core/webserver/views/config/general.mako:149
 msgid "Misc"
 msgstr "Muut"
 
@@ -702,7 +702,7 @@ msgid "Interface"
 msgstr "Käyttöliittymä"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:939
+#: sickrage/core/webserver/views/config/general.mako:953
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Lisäasetukset"
@@ -772,7 +772,15 @@ msgstr ""
 msgid "Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:121
+#: sickrage/core/webserver/views/config/general.mako:117
+msgid "Sync To Google Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:119
+msgid "Sync To Local Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:134
 #: sickrage/core/webserver/views/config/notifications.mako:178
 #: sickrage/core/webserver/views/config/notifications.mako:562
 #: sickrage/core/webserver/views/config/notifications.mako:665
@@ -791,287 +799,287 @@ msgstr ""
 msgid "Click below to test."
 msgstr "Napsauta alla testata."
 
-#: sickrage/core/webserver/views/config/general.mako:127
+#: sickrage/core/webserver/views/config/general.mako:140
 msgid "Test API"
 msgstr "Testi API"
 
-#: sickrage/core/webserver/views/config/general.mako:137
+#: sickrage/core/webserver/views/config/general.mako:150
 msgid "Startup options. Indexer options. Log and show file locations."
 msgstr "Käynnistysasetukset. Indeksoijan vaihtoehtoja. Kirjaudu ja Näytä tiedostojen sijainnit."
 
-#: sickrage/core/webserver/views/config/general.mako:138
+#: sickrage/core/webserver/views/config/general.mako:151
 msgid "Some options may require a manual restart to take effect."
 msgstr "Jotkin vaihtoehdot voivat vaatia manuaalinen uudelleen käynnistämisen."
 
-#: sickrage/core/webserver/views/config/general.mako:144
+#: sickrage/core/webserver/views/config/general.mako:157
 msgid "Default Indexer Language"
 msgstr "Indeksoijan oletuskieli"
 
-#: sickrage/core/webserver/views/config/general.mako:153
+#: sickrage/core/webserver/views/config/general.mako:166
 msgid "for adding shows and metadata providers"
 msgstr "lisäämällä ohjelmia ja metatietopalveluiden"
 
-#: sickrage/core/webserver/views/config/general.mako:161
+#: sickrage/core/webserver/views/config/general.mako:174
 msgid "Launch browser"
 msgstr "Käynnistä selain"
 
-#: sickrage/core/webserver/views/config/general.mako:166
+#: sickrage/core/webserver/views/config/general.mako:179
 msgid "open the SickRage home page on startup"
 msgstr "Avaa käynnistettäessä SickRage-Kotisivu"
 
-#: sickrage/core/webserver/views/config/general.mako:171
+#: sickrage/core/webserver/views/config/general.mako:184
 msgid "Initial page"
 msgstr "Aloitussivu"
 
-#: sickrage/core/webserver/views/config/general.mako:179
+#: sickrage/core/webserver/views/config/general.mako:192
 msgid "when launching SickRage interface"
 msgstr "käynnistettäessä SickRage liitäntä"
 
-#: sickrage/core/webserver/views/config/general.mako:181
+#: sickrage/core/webserver/views/config/general.mako:194
 #: sickrage/core/webserver/views/layouts/main.mako:98
-#: sickrage/core/webserver/views/layouts/main.mako:445
+#: sickrage/core/webserver/views/layouts/main.mako:441
 msgid "Shows"
 msgstr "Näyttää"
 
 #: sickrage/core/webserver/views.py:524 sickrage/core/webserver/views.py:525
-#: sickrage/core/webserver/views/config/general.mako:184
+#: sickrage/core/webserver/views/config/general.mako:197
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Aikataulu"
 
 #: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3665
-#: sickrage/core/webserver/views/config/general.mako:187
+#: sickrage/core/webserver/views/config/general.mako:200
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
 msgstr "Historia"
 
-#: sickrage/core/webserver/views/config/general.mako:190
+#: sickrage/core/webserver/views/config/general.mako:203
 #: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "IRC"
 msgstr "IRC"
 
-#: sickrage/core/webserver/views/config/general.mako:199
+#: sickrage/core/webserver/views/config/general.mako:212
 msgid "Daily show updates start time"
 msgstr "Näytä päivittäin päivitykset aloitusaika"
 
-#: sickrage/core/webserver/views/config/general.mako:214
+#: sickrage/core/webserver/views/config/general.mako:227
 msgid "with information such as next air dates, show ended, etc."
 msgstr "tietoja, kuten seuraava air päivämäärät osoittavat, päättyi, jne."
 
-#: sickrage/core/webserver/views/config/general.mako:215
+#: sickrage/core/webserver/views/config/general.mako:228
 msgid "Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)"
 msgstr "Viisitoista, 4 4 am 15 käyttöä jne. Mitään yli 23 tai 0 arvoksi 0 (12 am)"
 
-#: sickrage/core/webserver/views/config/general.mako:222
+#: sickrage/core/webserver/views/config/general.mako:235
 msgid "Daily show updates stale shows"
 msgstr "Päivittäinen Näytä päivitykset tunkkainen osoittaa"
 
-#: sickrage/core/webserver/views/config/general.mako:228
+#: sickrage/core/webserver/views/config/general.mako:241
 msgid "should ended shows last updated less then 90 days get updated and refreshed automatically ?"
 msgstr "päättyi osoittaa viimeksi päivitetty alle 90 päivää Hanki päivitetty ja päivittyvät automaattisesti?"
 
-#: sickrage/core/webserver/views/config/general.mako:235
+#: sickrage/core/webserver/views/config/general.mako:248
 msgid "Send to trash for actions"
 msgstr "Lähetä trash toimille"
 
-#: sickrage/core/webserver/views/config/general.mako:240
+#: sickrage/core/webserver/views/config/general.mako:253
 msgid "when using show \"Remove\" and delete files"
 msgstr "Kun Näytä ”Poista” ja Poista tiedostot"
 
-#: sickrage/core/webserver/views/config/general.mako:245
+#: sickrage/core/webserver/views/config/general.mako:258
 msgid "on scheduled deletes of the oldest log files"
 msgstr "on suunniteltu poistaa vanhin lokitiedostoja"
 
-#: sickrage/core/webserver/views/config/general.mako:248
+#: sickrage/core/webserver/views/config/general.mako:262
 msgid "selected actions use trash (recycle bin) instead of the default permanent delete"
 msgstr "valittujen toimien käyttää trash (Roskakori) sijasta oletuksena pysyvän poista"
 
-#: sickrage/core/webserver/views/config/general.mako:256
+#: sickrage/core/webserver/views/config/general.mako:270
 msgid "Number of Log files saved"
 msgstr "Tallennettu lokitiedostojen määrä"
 
-#: sickrage/core/webserver/views/config/general.mako:265
+#: sickrage/core/webserver/views/config/general.mako:279
 msgid "default = 5"
 msgstr "oletus = 5"
 
-#: sickrage/core/webserver/views/config/general.mako:276
+#: sickrage/core/webserver/views/config/general.mako:290
 msgid "Size of Log files saved"
 msgstr "Kokoa lokitiedostot tallennetaan"
 
-#: sickrage/core/webserver/views/config/general.mako:285
+#: sickrage/core/webserver/views/config/general.mako:299
 msgid "default = 1048576 (1MB)"
 msgstr "oletus = 1048576 (1MB)"
 
-#: sickrage/core/webserver/views/config/general.mako:296
+#: sickrage/core/webserver/views/config/general.mako:310
 msgid "Default indexer for adding shows"
 msgstr "Oletus indexer lisäämällä osoittaa"
 
-#: sickrage/core/webserver/views/config/general.mako:307
+#: sickrage/core/webserver/views/config/general.mako:321
 msgid "All Indexers"
 msgstr "Kaikki Indeksoijilla"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:335
 msgid "Show indexer timeout"
 msgstr "Näytä indeksoijan aikakatkaisu"
 
-#: sickrage/core/webserver/views/config/general.mako:330
+#: sickrage/core/webserver/views/config/general.mako:344
 msgid "default = 10"
 msgstr "oletus = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:343
+#: sickrage/core/webserver/views/config/general.mako:357
 msgid "Show root directories"
 msgstr "Näytä päähakemistot"
 
-#: sickrage/core/webserver/views/config/general.mako:360
+#: sickrage/core/webserver/views/config/general.mako:374
 msgid "Updates"
 msgstr "Päivitykset"
 
-#: sickrage/core/webserver/views/config/general.mako:361
+#: sickrage/core/webserver/views/config/general.mako:375
 msgid "Options for software updates."
 msgstr "Ohjelmistopäivitysten asetukset."
 
-#: sickrage/core/webserver/views/config/general.mako:368
+#: sickrage/core/webserver/views/config/general.mako:382
 msgid "Check software updates"
 msgstr "Tarkista ohjelmistopäivitykset"
 
-#: sickrage/core/webserver/views/config/general.mako:374
+#: sickrage/core/webserver/views/config/general.mako:388
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:383
+#: sickrage/core/webserver/views/config/general.mako:397
 msgid "Automatically update"
 msgstr "Päivitä automaattisesti"
 
-#: sickrage/core/webserver/views/config/general.mako:389
+#: sickrage/core/webserver/views/config/general.mako:403
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:397
+#: sickrage/core/webserver/views/config/general.mako:411
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:406
+#: sickrage/core/webserver/views/config/general.mako:420
 msgid "default = 12 (hours)"
 msgstr "oletus = 12 (tuntia)"
 
-#: sickrage/core/webserver/views/config/general.mako:418
+#: sickrage/core/webserver/views/config/general.mako:432
 msgid "Notify on software update"
 msgstr "Ilmoita ohjelmistopäivitys"
 
-#: sickrage/core/webserver/views/config/general.mako:424
+#: sickrage/core/webserver/views/config/general.mako:438
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "Lähetä viesti kaikki käytössä ilmoittajat päivitettäessä SickRage"
 
-#: sickrage/core/webserver/views/config/general.mako:443
+#: sickrage/core/webserver/views/config/general.mako:457
 msgid "Options for visual appearance."
 msgstr "Visuaalisen ulkoasun asetukset."
 
-#: sickrage/core/webserver/views/config/general.mako:449
+#: sickrage/core/webserver/views/config/general.mako:463
 msgid "Interface Language"
 msgstr "Käyttöliittymän kieli"
 
-#: sickrage/core/webserver/views/config/general.mako:460
+#: sickrage/core/webserver/views/config/general.mako:474
 msgid "System Language"
 msgstr "Järjestelmän kieli"
 
-#: sickrage/core/webserver/views/config/general.mako:472
+#: sickrage/core/webserver/views/config/general.mako:486
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "ulkonäkö voimaan Tallenna sitten Päivitä selaimesi"
 
-#: sickrage/core/webserver/views/config/general.mako:481
+#: sickrage/core/webserver/views/config/general.mako:495
 msgid "Display theme"
 msgstr "Näytön teema"
 
-#: sickrage/core/webserver/views/config/general.mako:491
+#: sickrage/core/webserver/views/config/general.mako:505
 msgid "Dark"
 msgstr "Tumma"
 
-#: sickrage/core/webserver/views/config/general.mako:494
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid "Light"
 msgstr "Valo"
 
-#: sickrage/core/webserver/views/config/general.mako:503
+#: sickrage/core/webserver/views/config/general.mako:517
 msgid "Show all seasons"
 msgstr "Näytä hotelli all seasons"
 
-#: sickrage/core/webserver/views/config/general.mako:509
-#: sickrage/core/webserver/views/config/general.mako:685
+#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:699
 msgid "on the show summary page"
 msgstr "Näytä Yhteenveto-sivulla"
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:531
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Lajittele sanalla ”The”, ”A”, ”on”"
 
-#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:537
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "sisältää artikkeleita (”The”, ”A”, ”on”) Kun lajittelu Näytä luettelot"
 
-#: sickrage/core/webserver/views/config/general.mako:531
+#: sickrage/core/webserver/views/config/general.mako:545
 msgid "Filter Row"
 msgstr "Suodatinrivi"
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:551
 msgid "Add a filter row to the show display on the home page"
 msgstr "Lisää suodatinrivi Näytä kotisivulla"
 
-#: sickrage/core/webserver/views/config/general.mako:544
+#: sickrage/core/webserver/views/config/general.mako:558
 msgid "Missed episodes range"
 msgstr "Jääneet jaksot alue"
 
-#: sickrage/core/webserver/views/config/general.mako:554
+#: sickrage/core/webserver/views/config/general.mako:568
 msgid "# of days"
 msgstr "# päivää"
 
-#: sickrage/core/webserver/views/config/general.mako:563
+#: sickrage/core/webserver/views/config/general.mako:577
 msgid "Display fuzzy dates"
 msgstr "Sumea päivämäärät"
 
-#: sickrage/core/webserver/views/config/general.mako:570
+#: sickrage/core/webserver/views/config/general.mako:584
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "absoluuttiset päivämäärät siirtyä vihjeet ja näyttää esimerkiksi ”viime to”, ”ti”"
 
-#: sickrage/core/webserver/views/config/general.mako:577
+#: sickrage/core/webserver/views/config/general.mako:591
 msgid "Trim zero padding"
 msgstr "Trim nolla täyte"
 
-#: sickrage/core/webserver/views/config/general.mako:583
+#: sickrage/core/webserver/views/config/general.mako:597
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "Poista johtava numero ”0” näkyy kellonaika ja kuukauden päivä"
 
-#: sickrage/core/webserver/views/config/general.mako:590
+#: sickrage/core/webserver/views/config/general.mako:604
 msgid "Date style"
 msgstr "Päivämäärätyyli"
 
-#: sickrage/core/webserver/views/config/general.mako:608
+#: sickrage/core/webserver/views/config/general.mako:622
 msgid "Use System Default"
 msgstr "Käytä järjestelmän oletusarvoa"
 
-#: sickrage/core/webserver/views/config/general.mako:620
+#: sickrage/core/webserver/views/config/general.mako:634
 msgid "Time style"
 msgstr "Ajan tyyli"
 
-#: sickrage/core/webserver/views/config/general.mako:639
+#: sickrage/core/webserver/views/config/general.mako:653
 msgid "Timezone"
 msgstr "Aikavyöhyke"
 
-#: sickrage/core/webserver/views/config/general.mako:644
+#: sickrage/core/webserver/views/config/general.mako:658
 msgid "Local"
 msgstr "Paikallinen"
 
-#: sickrage/core/webserver/views/config/general.mako:648
+#: sickrage/core/webserver/views/config/general.mako:662
 #: sickrage/core/webserver/views/home/index.mako:43
 #: sickrage/core/webserver/views/home/index.mako:267
 msgid "Network"
 msgstr "Verkko"
 
-#: sickrage/core/webserver/views/config/general.mako:651
+#: sickrage/core/webserver/views/config/general.mako:665
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "ajat ja päivämäärät näytetään aikavyöhykkeen tai osoittaa verkon aikavyöhyke"
 
-#: sickrage/core/webserver/views/config/general.mako:653
-#: sickrage/core/webserver/views/config/general.mako:1124
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:667
+#: sickrage/core/webserver/views/config/general.mako:1138
+#: sickrage/core/webserver/views/config/general.mako:1180
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1093,60 +1101,60 @@ msgstr "ajat ja päivämäärät näytetään aikavyöhykkeen tai osoittaa verko
 msgid "NOTE:"
 msgstr "HUOMAUTUS:"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:667
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Käyttö paikallisen aikavyöhykkeen etsitään jaksot Näytä päätyttyä minuuttia (riippuu dailysearch-taajuus)"
 
-#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:675
 msgid "Download url"
 msgstr "Lataa url"
 
-#: sickrage/core/webserver/views/config/general.mako:678
+#: sickrage/core/webserver/views/config/general.mako:692
 msgid "Show fanart in the background"
 msgstr "Näytä fanart taustalla"
 
-#: sickrage/core/webserver/views/config/general.mako:692
+#: sickrage/core/webserver/views/config/general.mako:706
 msgid "Fanart transparency"
 msgstr "Fanitaiteen avoimuus"
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:731
 msgid "Web Interface"
 msgstr "Web-käyttöliittymä"
 
-#: sickrage/core/webserver/views/config/general.mako:718
+#: sickrage/core/webserver/views/config/general.mako:732
 msgid "It is recommended that you enable a username and password to secure SickRage from being tampered with remotely."
 msgstr "On suositeltavaa, että otat käyttäjätunnuksen ja salasanan varmistaa SickRage olisi peukaloitu etänä."
 
-#: sickrage/core/webserver/views/config/general.mako:719
+#: sickrage/core/webserver/views/config/general.mako:733
 msgid "These options require a manual restart to take effect."
 msgstr "Nämä asetukset vaativat manuaalinen uudelleen käynnistämisen."
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:739
 msgid "API key"
 msgstr "API-avain"
 
-#: sickrage/core/webserver/views/config/general.mako:747
+#: sickrage/core/webserver/views/config/general.mako:761
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "käytetään antamaan 3rd party ohjelmia rajoitettuja SiCKRAGE voit yrittää kaikki ominaisuudet API"
 
-#: sickrage/core/webserver/views/config/general.mako:748
+#: sickrage/core/webserver/views/config/general.mako:762
 msgid "here"
 msgstr "Täällä"
 
-#: sickrage/core/webserver/views/config/general.mako:758
+#: sickrage/core/webserver/views/config/general.mako:772
 msgid "HTTP logs"
 msgstr "HTTP loki"
 
-#: sickrage/core/webserver/views/config/general.mako:763
+#: sickrage/core/webserver/views/config/general.mako:777
 msgid "enable logs from the internal Tornado web server"
 msgstr "Ota lokit sisäiseen Tornado web-palvelimeen"
 
-#: sickrage/core/webserver/views/config/general.mako:769
+#: sickrage/core/webserver/views/config/general.mako:783
 msgid "HTTP username"
 msgstr "HTTP-käyttäjätunnus"
 
-#: sickrage/core/webserver/views/config/general.mako:779
-#: sickrage/core/webserver/views/config/general.mako:798
+#: sickrage/core/webserver/views/config/general.mako:793
+#: sickrage/core/webserver/views/config/general.mako:812
 #: sickrage/core/webserver/views/config/notifications.mako:154
 #: sickrage/core/webserver/views/config/notifications.mako:171
 #: sickrage/core/webserver/views/config/notifications.mako:262
@@ -1161,240 +1169,240 @@ msgstr "HTTP-käyttäjätunnus"
 msgid "blank = no authentication"
 msgstr "tyhjä = ei todennusta"
 
-#: sickrage/core/webserver/views/config/general.mako:788
+#: sickrage/core/webserver/views/config/general.mako:802
 msgid "HTTP password"
 msgstr "HTTP-salasana"
 
-#: sickrage/core/webserver/views/config/general.mako:807
+#: sickrage/core/webserver/views/config/general.mako:821
 msgid "HTTP port"
 msgstr "HTTP-portti"
 
-#: sickrage/core/webserver/views/config/general.mako:816
+#: sickrage/core/webserver/views/config/general.mako:830
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:826
+#: sickrage/core/webserver/views/config/general.mako:840
 msgid "Listen on IPv6"
 msgstr "Kuunnellaan IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:831
+#: sickrage/core/webserver/views/config/general.mako:845
 msgid "attempt binding to any available IPv6 address"
 msgstr "yritys sitova käytettävissä IPv6-osoite"
 
-#: sickrage/core/webserver/views/config/general.mako:839
+#: sickrage/core/webserver/views/config/general.mako:853
 msgid "Enable HTTPS"
 msgstr "Ota HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:845
+#: sickrage/core/webserver/views/config/general.mako:859
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "Salli web-käyttöliittymän avulla HTTPS-osoite"
 
-#: sickrage/core/webserver/views/config/general.mako:854
+#: sickrage/core/webserver/views/config/general.mako:868
 msgid "HTTPS certificate"
 msgstr "HTTPS-sertifikaatti"
 
-#: sickrage/core/webserver/views/config/general.mako:868
+#: sickrage/core/webserver/views/config/general.mako:882
 msgid "file name or path to HTTPS certificate"
 msgstr "tiedostonimi tai polku HTTPS-varmenteeseen"
 
-#: sickrage/core/webserver/views/config/general.mako:878
+#: sickrage/core/webserver/views/config/general.mako:892
 msgid "HTTPS key"
 msgstr "HTTPS-avain"
 
-#: sickrage/core/webserver/views/config/general.mako:890
+#: sickrage/core/webserver/views/config/general.mako:904
 msgid "file name or path to HTTPS key"
 msgstr "tiedostonimi tai polku HTTPS-avain"
 
-#: sickrage/core/webserver/views/config/general.mako:900
+#: sickrage/core/webserver/views/config/general.mako:914
 msgid "Reverse proxy headers"
 msgstr "Käänteisen välityspalvelimen otsikot"
 
-#: sickrage/core/webserver/views/config/general.mako:906
+#: sickrage/core/webserver/views/config/general.mako:920
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "hyväksy seuraavat käänteisen välityspalvelimen otsikot (Lisäasetukset)..."
 
-#: sickrage/core/webserver/views/config/general.mako:907
+#: sickrage/core/webserver/views/config/general.mako:921
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X-Forwarded-For X toimitti isäntä ja X toimitti Proto)"
 
-#: sickrage/core/webserver/views/config/general.mako:914
+#: sickrage/core/webserver/views/config/general.mako:928
 msgid "Notify on login"
 msgstr "Ilmoitettava kirjautuminen"
 
-#: sickrage/core/webserver/views/config/general.mako:920
+#: sickrage/core/webserver/views/config/general.mako:934
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "lähettää sanoman kaikki käytössä ilmoittajat, kun joku kirjautuu SiCKRAGE julkinen IP-osoite"
 
-#: sickrage/core/webserver/views/config/general.mako:945
+#: sickrage/core/webserver/views/config/general.mako:959
 msgid "CPU throttling"
 msgstr "Suorittimen rajoitus"
 
-#: sickrage/core/webserver/views/config/general.mako:964
+#: sickrage/core/webserver/views/config/general.mako:978
 msgid "Anonymous redirect"
 msgstr "Nimetön uudelleenohjaus"
 
-#: sickrage/core/webserver/views/config/general.mako:982
+#: sickrage/core/webserver/views/config/general.mako:996
 msgid "Enable debug"
 msgstr "Salli debug"
 
-#: sickrage/core/webserver/views/config/general.mako:988
+#: sickrage/core/webserver/views/config/general.mako:1002
 msgid "Enable debug logs"
 msgstr "Mahdollistaa virheenkorjauksen lokit"
 
-#: sickrage/core/webserver/views/config/general.mako:995
+#: sickrage/core/webserver/views/config/general.mako:1009
 msgid "Verify SSL Certs"
 msgstr "Tarkista SSL CERT"
 
-#: sickrage/core/webserver/views/config/general.mako:1001
+#: sickrage/core/webserver/views/config/general.mako:1015
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Tarkista SSL-sertifikaatit (Poista tämä rikki SSL asentaa (kuten QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1010
+#: sickrage/core/webserver/views/config/general.mako:1024
 msgid "No Restart"
 msgstr "Ei uudelleenkäynnistyksen"
 
-#: sickrage/core/webserver/views/config/general.mako:1017
+#: sickrage/core/webserver/views/config/general.mako:1031
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "Shutdown SiCKRAGE käynnistyy uudelleen (ulkoinen palvelu on käynnistettävä uudelleen SiCKRAGE omasta)."
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1041
 msgid "Encrypt settings"
 msgstr "Salaa asetukset"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "in the"
 msgstr "Tässä"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "file."
 msgstr "tiedosto."
 
-#: sickrage/core/webserver/views/config/general.mako:1042
+#: sickrage/core/webserver/views/config/general.mako:1056
 msgid "Unprotected calendar"
 msgstr "Suojaamaton kalenteri"
 
-#: sickrage/core/webserver/views/config/general.mako:1048
+#: sickrage/core/webserver/views/config/general.mako:1062
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "Salli tilaamalla kalenterin ilman käyttäjä ja tunnussana. Jotkin palvelut, kuten Google-kalenteriin vain toimi näin"
 
-#: sickrage/core/webserver/views/config/general.mako:1058
+#: sickrage/core/webserver/views/config/general.mako:1072
 msgid "Google Calendar Icons"
 msgstr "Google-kalenterin kuvakkeet"
 
-#: sickrage/core/webserver/views/config/general.mako:1064
+#: sickrage/core/webserver/views/config/general.mako:1078
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "Näytä kuvake vieressä vietyä kalenteria, Google-kalenterissa."
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1087
 msgid "Link Google Account"
 msgstr "Google-tili"
 
-#: sickrage/core/webserver/views/config/general.mako:1076
+#: sickrage/core/webserver/views/config/general.mako:1090
 msgid "Link"
 msgstr "Linkki"
 
-#: sickrage/core/webserver/views/config/general.mako:1078
+#: sickrage/core/webserver/views/config/general.mako:1092
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "linkki google-tilin SiCKRAGE lisäominaisuudet käyttöön kuten asetustietokanta/varastointi"
 
-#: sickrage/core/webserver/views/config/general.mako:1086
+#: sickrage/core/webserver/views/config/general.mako:1100
 msgid "Proxy host"
 msgstr "Välityspalvelimen isäntä"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1117
 msgid "Use proxy for indexers"
 msgstr "Käytä välityspalvelinta Indeksoijilla"
 
-#: sickrage/core/webserver/views/config/general.mako:1109
+#: sickrage/core/webserver/views/config/general.mako:1123
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "käyttää välityspalvelimen isäntä ja liittää Indeksoijilla (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1117
+#: sickrage/core/webserver/views/config/general.mako:1131
 msgid "Skip Remove Detection"
 msgstr "Poista Ohita tunnistus"
 
-#: sickrage/core/webserver/views/config/general.mako:1123
+#: sickrage/core/webserver/views/config/general.mako:1137
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Ohita toteaminen poistetut tiedostot. Poista se asettaa oletus poistettua tila"
 
-#: sickrage/core/webserver/views/config/general.mako:1124
+#: sickrage/core/webserver/views/config/general.mako:1138
 msgid "This may mean SickRage misses renames as well"
 msgstr "Tämä voi tarkoittaa SickRage piti nimeää myös"
 
-#: sickrage/core/webserver/views/config/general.mako:1132
+#: sickrage/core/webserver/views/config/general.mako:1146
 msgid "Default deleted episode status"
 msgstr "Poistaa jakson oletustila"
 
-#: sickrage/core/webserver/views/config/general.mako:1164
+#: sickrage/core/webserver/views/config/general.mako:1178
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Määrittää tila määrittämään mediatiedoston, joka on poistettu."
 
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:1180
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Arkistoidut-valinta säilyttää edellisen ladattu laatu"
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1182
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Esimerkki: Ladata (1080p WEB-DL) ==> arkistoidut (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1186
+#: sickrage/core/webserver/views/config/general.mako:1200
 msgid "PIP Settings"
 msgstr "PIP-asetus"
 
-#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1205
 msgid "PIP executable path"
 msgstr "PIP suoritettavan tiedoston polku"
 
-#: sickrage/core/webserver/views/config/general.mako:1202
+#: sickrage/core/webserver/views/config/general.mako:1216
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1215
-#: sickrage/core/webserver/views/config/general.mako:1312
+#: sickrage/core/webserver/views/config/general.mako:1229
+#: sickrage/core/webserver/views/config/general.mako:1326
 msgid "Click vefify path to test."
 msgstr "Valitse vefify polku testata."
 
-#: sickrage/core/webserver/views/config/general.mako:1240
+#: sickrage/core/webserver/views/config/general.mako:1254
 msgid "GIT Settings"
 msgstr "GIT asetukset"
 
-#: sickrage/core/webserver/views/config/general.mako:1245
+#: sickrage/core/webserver/views/config/general.mako:1259
 msgid "Git Branches"
 msgstr "Git oksat"
 
-#: sickrage/core/webserver/views/config/general.mako:1255
+#: sickrage/core/webserver/views/config/general.mako:1269
 msgid "GIT Branch Version"
 msgstr "GIT haara versio"
 
-#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1289
 msgid "Error: No branches found."
 msgstr "Virhe: Oksat ei löytynyt."
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1293
 msgid "select branch to use (restart required)"
 msgstr "Valitse haara käynnistämällä (vaaditaan)"
 
-#: sickrage/core/webserver/views/config/general.mako:1288
+#: sickrage/core/webserver/views/config/general.mako:1302
 msgid "GIT executable path"
 msgstr "GIT suoritettavan tiedoston polku"
 
-#: sickrage/core/webserver/views/config/general.mako:1299
+#: sickrage/core/webserver/views/config/general.mako:1313
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1321
+#: sickrage/core/webserver/views/config/general.mako:1335
 msgid "Git reset"
 msgstr "Git reset"
 
-#: sickrage/core/webserver/views/config/general.mako:1327
+#: sickrage/core/webserver/views/config/general.mako:1341
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "poistaa ei-seurattu tiedostot ja suorittaa nollauksen git-haara automaattisesti auttaa ratkaisemaan update-ongelmien"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1349
 msgid "Git auto-issues submit"
 msgstr "Git auto-kysymykset Lähetä"
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1356
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "automaattisesti raportoi bugi/kysymys kysymys tracker virheitä kirjautuneena"
 
@@ -5052,7 +5060,7 @@ msgstr "Lataukset"
 
 #: sickrage/core/webserver/views/home/index.mako:271
 #: sickrage/core/webserver/views/home/status.mako:44
-#: sickrage/core/webserver/views/layouts/main.mako:446
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Active"
 msgstr "Aktiivinen"
 
@@ -5638,33 +5646,33 @@ msgstr "Kirjaudu ulos"
 msgid "Server Status"
 msgstr "Palvelimen tila"
 
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:452
 msgid "Episodes Downloaded"
 msgstr "Jaksot ladata"
 
-#: sickrage/core/webserver/views/layouts/main.mako:457
+#: sickrage/core/webserver/views/layouts/main.mako:453
 msgid "Overall Downloaded"
 msgstr "Kaiken kaikkiaan ladata"
 
-#: sickrage/core/webserver/views/layouts/main.mako:462
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Päivittäin haku:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:465
+#: sickrage/core/webserver/views/layouts/main.mako:461
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Ruuhkan haku:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:472
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "Latausaika:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:479
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "Nyt:"
 

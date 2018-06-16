@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-10 01:34-0700\n"
-"PO-Revision-Date: 2018-06-10 04:35-0400\n"
+"POT-Creation-Date: 2018-06-16 15:11-0700\n"
+"PO-Revision-Date: 2018-06-16 18:12-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -496,7 +496,7 @@ msgstr "Ποιότητα"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:453
+#: sickrage/core/webserver/views/layouts/main.mako:449
 msgid "Snatched"
 msgstr "Άρπαξε"
 
@@ -546,7 +546,7 @@ msgstr "AnimeDB ρυθμίσεις"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:98
-#: sickrage/core/webserver/views/config/general.mako:442
+#: sickrage/core/webserver/views/config/general.mako:456
 msgid "User Interface"
 msgstr "Διεπαφή χρήστη"
 
@@ -591,14 +591,14 @@ msgstr "Θέλετε να προσθέσετε τα PostProcessed επεισόδ
 
 #: sickrage/core/webserver/views/config/anime.mako:88
 #: sickrage/core/webserver/views/config/anime.mako:115
-#: sickrage/core/webserver/views/config/general.mako:128
-#: sickrage/core/webserver/views/config/general.mako:351
-#: sickrage/core/webserver/views/config/general.mako:431
-#: sickrage/core/webserver/views/config/general.mako:709
-#: sickrage/core/webserver/views/config/general.mako:927
-#: sickrage/core/webserver/views/config/general.mako:1177
-#: sickrage/core/webserver/views/config/general.mako:1227
-#: sickrage/core/webserver/views/config/general.mako:1350
+#: sickrage/core/webserver/views/config/general.mako:141
+#: sickrage/core/webserver/views/config/general.mako:365
+#: sickrage/core/webserver/views/config/general.mako:445
+#: sickrage/core/webserver/views/config/general.mako:723
+#: sickrage/core/webserver/views/config/general.mako:941
+#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1241
+#: sickrage/core/webserver/views/config/general.mako:1364
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -693,7 +693,7 @@ msgid "Restore cache files"
 msgstr "Επαναφέρετε τα αρχεία cache"
 
 #: sickrage/core/webserver/views/config/general.mako:20
-#: sickrage/core/webserver/views/config/general.mako:136
+#: sickrage/core/webserver/views/config/general.mako:149
 msgid "Misc"
 msgstr "Misc"
 
@@ -702,7 +702,7 @@ msgid "Interface"
 msgstr "Διεπαφή"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:939
+#: sickrage/core/webserver/views/config/general.mako:953
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Ρυθμίσεις για προχωρημένους"
@@ -772,7 +772,15 @@ msgstr ""
 msgid "Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:121
+#: sickrage/core/webserver/views/config/general.mako:117
+msgid "Sync To Google Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:119
+msgid "Sync To Local Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:134
 #: sickrage/core/webserver/views/config/notifications.mako:178
 #: sickrage/core/webserver/views/config/notifications.mako:562
 #: sickrage/core/webserver/views/config/notifications.mako:665
@@ -791,287 +799,287 @@ msgstr ""
 msgid "Click below to test."
 msgstr "Κάντε κλικ παρακάτω για να δοκιμάσετε."
 
-#: sickrage/core/webserver/views/config/general.mako:127
+#: sickrage/core/webserver/views/config/general.mako:140
 msgid "Test API"
 msgstr "Δοκιμή API"
 
-#: sickrage/core/webserver/views/config/general.mako:137
+#: sickrage/core/webserver/views/config/general.mako:150
 msgid "Startup options. Indexer options. Log and show file locations."
 msgstr "Επιλογές εκκίνησης. Επιλογές ευρετηρίου. Θέσεις αρχείων καταγραφής και εμφάνιση."
 
-#: sickrage/core/webserver/views/config/general.mako:138
+#: sickrage/core/webserver/views/config/general.mako:151
 msgid "Some options may require a manual restart to take effect."
 msgstr "Ορισμένες επιλογές ενδέχεται να απαιτούν μη αυτόματη επανεκκίνηση για να τεθούν σε ισχύ."
 
-#: sickrage/core/webserver/views/config/general.mako:144
+#: sickrage/core/webserver/views/config/general.mako:157
 msgid "Default Indexer Language"
 msgstr "Προεπιλεγμένη γλώσσα δεικτοδότη"
 
-#: sickrage/core/webserver/views/config/general.mako:153
+#: sickrage/core/webserver/views/config/general.mako:166
 msgid "for adding shows and metadata providers"
 msgstr "για την προσθήκη δείχνει και παροχείς μεταδεδομένων"
 
-#: sickrage/core/webserver/views/config/general.mako:161
+#: sickrage/core/webserver/views/config/general.mako:174
 msgid "Launch browser"
 msgstr "Εκκίνηση προγράμματος περιήγησης"
 
-#: sickrage/core/webserver/views/config/general.mako:166
+#: sickrage/core/webserver/views/config/general.mako:179
 msgid "open the SickRage home page on startup"
 msgstr "Ανοίξτε την κεντρική σελίδα του SickRage κατά την εκκίνηση"
 
-#: sickrage/core/webserver/views/config/general.mako:171
+#: sickrage/core/webserver/views/config/general.mako:184
 msgid "Initial page"
 msgstr "Αρχική σελίδα"
 
-#: sickrage/core/webserver/views/config/general.mako:179
+#: sickrage/core/webserver/views/config/general.mako:192
 msgid "when launching SickRage interface"
 msgstr "κατά την εκκίνηση του SickRage διασύνδεση"
 
-#: sickrage/core/webserver/views/config/general.mako:181
+#: sickrage/core/webserver/views/config/general.mako:194
 #: sickrage/core/webserver/views/layouts/main.mako:98
-#: sickrage/core/webserver/views/layouts/main.mako:445
+#: sickrage/core/webserver/views/layouts/main.mako:441
 msgid "Shows"
 msgstr "Δείχνει"
 
 #: sickrage/core/webserver/views.py:524 sickrage/core/webserver/views.py:525
-#: sickrage/core/webserver/views/config/general.mako:184
+#: sickrage/core/webserver/views/config/general.mako:197
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Χρονοδιάγραμμα"
 
 #: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3665
-#: sickrage/core/webserver/views/config/general.mako:187
+#: sickrage/core/webserver/views/config/general.mako:200
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
 msgstr "Ιστορία"
 
-#: sickrage/core/webserver/views/config/general.mako:190
+#: sickrage/core/webserver/views/config/general.mako:203
 #: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "IRC"
 msgstr "IRC"
 
-#: sickrage/core/webserver/views/config/general.mako:199
+#: sickrage/core/webserver/views/config/general.mako:212
 msgid "Daily show updates start time"
 msgstr "Καθημερινά δείχνουν ενημερώσεις ώρα έναρξης"
 
-#: sickrage/core/webserver/views/config/general.mako:214
+#: sickrage/core/webserver/views/config/general.mako:227
 msgid "with information such as next air dates, show ended, etc."
 msgstr "με πληροφορίες όπως η επόμενη αέρα ημερομηνίες, δείχνουν έληξε, κλπ."
 
-#: sickrage/core/webserver/views/config/general.mako:215
+#: sickrage/core/webserver/views/config/general.mako:228
 msgid "Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)"
 msgstr "Χρήση 15 για 3 pm, 4 για 4 am κλπ. Οτιδήποτε πάνω από 23 ή κάτω από 0 θα οριστεί σε 0 (12 πμ)"
 
-#: sickrage/core/webserver/views/config/general.mako:222
+#: sickrage/core/webserver/views/config/general.mako:235
 msgid "Daily show updates stale shows"
 msgstr "Καθημερινή εκπομπή ενημερώσεις μπαγιάτικο δείχνει"
 
-#: sickrage/core/webserver/views/config/general.mako:228
+#: sickrage/core/webserver/views/config/general.mako:241
 msgid "should ended shows last updated less then 90 days get updated and refreshed automatically ?"
 msgstr "θα πρέπει να ενημερώνεται και ανανεώνεται αυτόματα έληξε δείχνει Τελευταία ενημέρωση λιγότερο από 90 ημέρες;"
 
-#: sickrage/core/webserver/views/config/general.mako:235
+#: sickrage/core/webserver/views/config/general.mako:248
 msgid "Send to trash for actions"
 msgstr "Στέλνετε στον κάδο απορριμμάτων για δράσεις"
 
-#: sickrage/core/webserver/views/config/general.mako:240
+#: sickrage/core/webserver/views/config/general.mako:253
 msgid "when using show \"Remove\" and delete files"
 msgstr "Όταν χρησιμοποιώντας εμφάνιση «Αφαίρεση» και να διαγράψετε αρχεία"
 
-#: sickrage/core/webserver/views/config/general.mako:245
+#: sickrage/core/webserver/views/config/general.mako:258
 msgid "on scheduled deletes of the oldest log files"
 msgstr "σε προγραμματισμένη διαγράφει τα παλαιότερα αρχεία καταγραφής"
 
-#: sickrage/core/webserver/views/config/general.mako:248
+#: sickrage/core/webserver/views/config/general.mako:262
 msgid "selected actions use trash (recycle bin) instead of the default permanent delete"
 msgstr "επιλεγμένες δράσεις χρήση σκουπίδια (recycle bin) αντί για το προεπιλεγμένο μόνιμη διαγραφή"
 
-#: sickrage/core/webserver/views/config/general.mako:256
+#: sickrage/core/webserver/views/config/general.mako:270
 msgid "Number of Log files saved"
 msgstr "Αριθμός αρχείων καταγραφής που Αποθηκεύτηκε"
 
-#: sickrage/core/webserver/views/config/general.mako:265
+#: sickrage/core/webserver/views/config/general.mako:279
 msgid "default = 5"
 msgstr "προεπιλογή = 5"
 
-#: sickrage/core/webserver/views/config/general.mako:276
+#: sickrage/core/webserver/views/config/general.mako:290
 msgid "Size of Log files saved"
 msgstr "Μέγεθος των αρχείων καταγραφής που Αποθηκεύτηκε"
 
-#: sickrage/core/webserver/views/config/general.mako:285
+#: sickrage/core/webserver/views/config/general.mako:299
 msgid "default = 1048576 (1MB)"
 msgstr "προεπιλογή = 1048576 (1MB)"
 
-#: sickrage/core/webserver/views/config/general.mako:296
+#: sickrage/core/webserver/views/config/general.mako:310
 msgid "Default indexer for adding shows"
 msgstr "Προεπιλεγμένο ευρετήριο για την προσθήκη δείχνει"
 
-#: sickrage/core/webserver/views/config/general.mako:307
+#: sickrage/core/webserver/views/config/general.mako:321
 msgid "All Indexers"
 msgstr "Όλες οι δεικτοδότες"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:335
 msgid "Show indexer timeout"
 msgstr "Εμφάνιση δεικτοδότη χρονικού ορίου"
 
-#: sickrage/core/webserver/views/config/general.mako:330
+#: sickrage/core/webserver/views/config/general.mako:344
 msgid "default = 10"
 msgstr "προεπιλογή = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:343
+#: sickrage/core/webserver/views/config/general.mako:357
 msgid "Show root directories"
 msgstr "Εμφάνιση ριζικούς καταλόγους"
 
-#: sickrage/core/webserver/views/config/general.mako:360
+#: sickrage/core/webserver/views/config/general.mako:374
 msgid "Updates"
 msgstr "Ενημερώσεις"
 
-#: sickrage/core/webserver/views/config/general.mako:361
+#: sickrage/core/webserver/views/config/general.mako:375
 msgid "Options for software updates."
 msgstr "Επιλογές για ενημερωμένες εκδόσεις λογισμικού."
 
-#: sickrage/core/webserver/views/config/general.mako:368
+#: sickrage/core/webserver/views/config/general.mako:382
 msgid "Check software updates"
 msgstr "Ελέγξτε τις ενημερωμένες εκδόσεις λογισμικού"
 
-#: sickrage/core/webserver/views/config/general.mako:374
+#: sickrage/core/webserver/views/config/general.mako:388
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:383
+#: sickrage/core/webserver/views/config/general.mako:397
 msgid "Automatically update"
 msgstr "Αυτόματη ενημέρωση"
 
-#: sickrage/core/webserver/views/config/general.mako:389
+#: sickrage/core/webserver/views/config/general.mako:403
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:397
+#: sickrage/core/webserver/views/config/general.mako:411
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:406
+#: sickrage/core/webserver/views/config/general.mako:420
 msgid "default = 12 (hours)"
 msgstr "προεπιλογή = 12 (ώρες)"
 
-#: sickrage/core/webserver/views/config/general.mako:418
+#: sickrage/core/webserver/views/config/general.mako:432
 msgid "Notify on software update"
 msgstr "Ειδοποίηση σχετικά με την ενημερωμένη έκδοση λογισμικού"
 
-#: sickrage/core/webserver/views/config/general.mako:424
+#: sickrage/core/webserver/views/config/general.mako:438
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "Στείλτε ένα μήνυμα σε όλους τους κοινοποιούντες ενεργοποιημένη όταν SickRage έχει ενημερωθεί"
 
-#: sickrage/core/webserver/views/config/general.mako:443
+#: sickrage/core/webserver/views/config/general.mako:457
 msgid "Options for visual appearance."
 msgstr "Επιλογές για την οπτική εμφάνιση."
 
-#: sickrage/core/webserver/views/config/general.mako:449
+#: sickrage/core/webserver/views/config/general.mako:463
 msgid "Interface Language"
 msgstr "Γλώσσα διεπαφής"
 
-#: sickrage/core/webserver/views/config/general.mako:460
+#: sickrage/core/webserver/views/config/general.mako:474
 msgid "System Language"
 msgstr "Γλώσσα του συστήματος"
 
-#: sickrage/core/webserver/views/config/general.mako:472
+#: sickrage/core/webserver/views/config/general.mako:486
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "για εμφάνιση να τεθούν σε ισχύ, αποθηκεύσετε στη συνέχεια, ανανεώστε το πρόγραμμα περιήγησης"
 
-#: sickrage/core/webserver/views/config/general.mako:481
+#: sickrage/core/webserver/views/config/general.mako:495
 msgid "Display theme"
 msgstr "Θέμα απεικόνισης"
 
-#: sickrage/core/webserver/views/config/general.mako:491
+#: sickrage/core/webserver/views/config/general.mako:505
 msgid "Dark"
 msgstr "Σκούρο"
 
-#: sickrage/core/webserver/views/config/general.mako:494
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid "Light"
 msgstr "Φως"
 
-#: sickrage/core/webserver/views/config/general.mako:503
+#: sickrage/core/webserver/views/config/general.mako:517
 msgid "Show all seasons"
 msgstr "Δείχνουν όλες τις εποχές"
 
-#: sickrage/core/webserver/views/config/general.mako:509
-#: sickrage/core/webserver/views/config/general.mako:685
+#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:699
 msgid "on the show summary page"
 msgstr "στη σελίδα σύνοψης Εμφάνιση"
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:531
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Ταξινόμηση με «Η», «A», «Ένας»"
 
-#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:537
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "περιλαμβάνει άρθρα («Η», «Ένα», «Ένας») όταν διαλογή εμφανίζονται λίστες"
 
-#: sickrage/core/webserver/views/config/general.mako:531
+#: sickrage/core/webserver/views/config/general.mako:545
 msgid "Filter Row"
 msgstr "Φίλτρο γραμμής"
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:551
 msgid "Add a filter row to the show display on the home page"
 msgstr "Προσθέσετε ένα φίλτρο γραμμής στην οθόνη εμφάνιση στην αρχική σελίδα"
 
-#: sickrage/core/webserver/views/config/general.mako:544
+#: sickrage/core/webserver/views/config/general.mako:558
 msgid "Missed episodes range"
 msgstr "Εύρος αναπάντητες επεισόδια"
 
-#: sickrage/core/webserver/views/config/general.mako:554
+#: sickrage/core/webserver/views/config/general.mako:568
 msgid "# of days"
 msgstr "# ημερών"
 
-#: sickrage/core/webserver/views/config/general.mako:563
+#: sickrage/core/webserver/views/config/general.mako:577
 msgid "Display fuzzy dates"
 msgstr "Εμφανίζει ασαφής τις ημερομηνίες"
 
-#: sickrage/core/webserver/views/config/general.mako:570
+#: sickrage/core/webserver/views/config/general.mako:584
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "Μετακινήστε την απόλυτη ημερομηνίες σε επεξηγήσεις εργαλείων και να εμφανίσετε π.χ. «Τελευταία Πέμ», «Στις Τρι»"
 
-#: sickrage/core/webserver/views/config/general.mako:577
+#: sickrage/core/webserver/views/config/general.mako:591
 msgid "Trim zero padding"
 msgstr "Τελειώματα μηδέν γεμίσει"
 
-#: sickrage/core/webserver/views/config/general.mako:583
+#: sickrage/core/webserver/views/config/general.mako:597
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "Αφαιρέστε τον ηγετικό αριθμό «0» εμφανίζονται στην ώρα της ημέρας, και η ημερομηνία του μήνα"
 
-#: sickrage/core/webserver/views/config/general.mako:590
+#: sickrage/core/webserver/views/config/general.mako:604
 msgid "Date style"
 msgstr "Ημερομηνία στυλ"
 
-#: sickrage/core/webserver/views/config/general.mako:608
+#: sickrage/core/webserver/views/config/general.mako:622
 msgid "Use System Default"
 msgstr "Χρήση προεπιλογής συστήματος"
 
-#: sickrage/core/webserver/views/config/general.mako:620
+#: sickrage/core/webserver/views/config/general.mako:634
 msgid "Time style"
 msgstr "Time στυλ"
 
-#: sickrage/core/webserver/views/config/general.mako:639
+#: sickrage/core/webserver/views/config/general.mako:653
 msgid "Timezone"
 msgstr "Ζώνη ώρας"
 
-#: sickrage/core/webserver/views/config/general.mako:644
+#: sickrage/core/webserver/views/config/general.mako:658
 msgid "Local"
 msgstr "Τοπική"
 
-#: sickrage/core/webserver/views/config/general.mako:648
+#: sickrage/core/webserver/views/config/general.mako:662
 #: sickrage/core/webserver/views/home/index.mako:43
 #: sickrage/core/webserver/views/home/index.mako:267
 msgid "Network"
 msgstr "Δίκτυο"
 
-#: sickrage/core/webserver/views/config/general.mako:651
+#: sickrage/core/webserver/views/config/general.mako:665
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "εμφανίζετε ημερομηνίες και ώρες σε ζώνη ώρας σας ή τη ζώνη ώρας του δικτύου δείχνει"
 
-#: sickrage/core/webserver/views/config/general.mako:653
-#: sickrage/core/webserver/views/config/general.mako:1124
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:667
+#: sickrage/core/webserver/views/config/general.mako:1138
+#: sickrage/core/webserver/views/config/general.mako:1180
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1093,60 +1101,60 @@ msgstr "εμφανίζετε ημερομηνίες και ώρες σε ζών�
 msgid "NOTE:"
 msgstr "ΣΗΜΕΊΩΣΗ:"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:667
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Χρήση τοπικής ζώνης ώρας που να ξεκινήσετε την αναζήτηση για επεισόδια λεπτά μετά την εμφάνιση καταλήγει (εξαρτάται από τη συχνότητα dailysearch σας)"
 
-#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:675
 msgid "Download url"
 msgstr "Λήψη διεύθυνσης url"
 
-#: sickrage/core/webserver/views/config/general.mako:678
+#: sickrage/core/webserver/views/config/general.mako:692
 msgid "Show fanart in the background"
 msgstr "Εμφάνιση fanart στο παρασκήνιο"
 
-#: sickrage/core/webserver/views/config/general.mako:692
+#: sickrage/core/webserver/views/config/general.mako:706
 msgid "Fanart transparency"
 msgstr "Fanart διαφάνειας"
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:731
 msgid "Web Interface"
 msgstr "Διεπαφή ιστού"
 
-#: sickrage/core/webserver/views/config/general.mako:718
+#: sickrage/core/webserver/views/config/general.mako:732
 msgid "It is recommended that you enable a username and password to secure SickRage from being tampered with remotely."
 msgstr "Συνιστάται να ενεργοποιήσετε ένα όνομα χρήστη και τον κωδικό πρόσβασης για την εξασφάλιση SickRage από τυχόν παραποίηση εξ αποστάσεως."
 
-#: sickrage/core/webserver/views/config/general.mako:719
+#: sickrage/core/webserver/views/config/general.mako:733
 msgid "These options require a manual restart to take effect."
 msgstr "Αυτές τις επιλογές απαιτούν μη αυτόματη επανεκκίνηση για να τεθούν σε ισχύ."
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:739
 msgid "API key"
 msgstr "Κλειδί API"
 
-#: sickrage/core/webserver/views/config/general.mako:747
+#: sickrage/core/webserver/views/config/general.mako:761
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "χρησιμοποιείται για να δώσει 3rd όμαδα προγράμματα περιορισμένη πρόσβαση σε SiCKRAGE μπορείτε να δοκιμάσετε όλες τις δυνατότητες του API"
 
-#: sickrage/core/webserver/views/config/general.mako:748
+#: sickrage/core/webserver/views/config/general.mako:762
 msgid "here"
 msgstr "Εδώ"
 
-#: sickrage/core/webserver/views/config/general.mako:758
+#: sickrage/core/webserver/views/config/general.mako:772
 msgid "HTTP logs"
 msgstr "Αρχεία καταγραφής HTTP"
 
-#: sickrage/core/webserver/views/config/general.mako:763
+#: sickrage/core/webserver/views/config/general.mako:777
 msgid "enable logs from the internal Tornado web server"
 msgstr "Ενεργοποίηση καταγραφής από τον εσωτερικό διακομιστή web ανεμοστρόβιλος"
 
-#: sickrage/core/webserver/views/config/general.mako:769
+#: sickrage/core/webserver/views/config/general.mako:783
 msgid "HTTP username"
 msgstr "HTTP όνομα χρήστη"
 
-#: sickrage/core/webserver/views/config/general.mako:779
-#: sickrage/core/webserver/views/config/general.mako:798
+#: sickrage/core/webserver/views/config/general.mako:793
+#: sickrage/core/webserver/views/config/general.mako:812
 #: sickrage/core/webserver/views/config/notifications.mako:154
 #: sickrage/core/webserver/views/config/notifications.mako:171
 #: sickrage/core/webserver/views/config/notifications.mako:262
@@ -1161,240 +1169,240 @@ msgstr "HTTP όνομα χρήστη"
 msgid "blank = no authentication"
 msgstr "κενό = χωρίς έλεγχο ταυτότητας"
 
-#: sickrage/core/webserver/views/config/general.mako:788
+#: sickrage/core/webserver/views/config/general.mako:802
 msgid "HTTP password"
 msgstr "Κωδικός HTTP"
 
-#: sickrage/core/webserver/views/config/general.mako:807
+#: sickrage/core/webserver/views/config/general.mako:821
 msgid "HTTP port"
 msgstr "Θύρα HTTP"
 
-#: sickrage/core/webserver/views/config/general.mako:816
+#: sickrage/core/webserver/views/config/general.mako:830
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:826
+#: sickrage/core/webserver/views/config/general.mako:840
 msgid "Listen on IPv6"
 msgstr "Ακούστε στο IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:831
+#: sickrage/core/webserver/views/config/general.mako:845
 msgid "attempt binding to any available IPv6 address"
 msgstr "προσπάθεια σύνδεσης σε οποιαδήποτε διαθέσιμη διεύθυνση IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:839
+#: sickrage/core/webserver/views/config/general.mako:853
 msgid "Enable HTTPS"
 msgstr "Ενεργοποιήσετε HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:845
+#: sickrage/core/webserver/views/config/general.mako:859
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "επιτρέψει την πρόσβαση στο web interface που χρησιμοποιεί μια διεύθυνση HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:854
+#: sickrage/core/webserver/views/config/general.mako:868
 msgid "HTTPS certificate"
 msgstr "HTTPS πιστοποιητικό"
 
-#: sickrage/core/webserver/views/config/general.mako:868
+#: sickrage/core/webserver/views/config/general.mako:882
 msgid "file name or path to HTTPS certificate"
 msgstr "όνομα αρχείου ή διαδρομή HTTPS πιστοποιητικό"
 
-#: sickrage/core/webserver/views/config/general.mako:878
+#: sickrage/core/webserver/views/config/general.mako:892
 msgid "HTTPS key"
 msgstr "Κλειδί HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:890
+#: sickrage/core/webserver/views/config/general.mako:904
 msgid "file name or path to HTTPS key"
 msgstr "όνομα αρχείου ή διαδρομή HTTPS κλειδί"
 
-#: sickrage/core/webserver/views/config/general.mako:900
+#: sickrage/core/webserver/views/config/general.mako:914
 msgid "Reverse proxy headers"
 msgstr "Αντίστροφη μεσολάβησης κεφαλίδες"
 
-#: sickrage/core/webserver/views/config/general.mako:906
+#: sickrage/core/webserver/views/config/general.mako:920
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "δέχονται τις ακόλουθες κεφαλίδες αντίστροφη μεσολάβησης (για προχωρημένους)..."
 
-#: sickrage/core/webserver/views/config/general.mako:907
+#: sickrage/core/webserver/views/config/general.mako:921
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X-Forwarded-For, X-διαβίβασε-υποδοχής και X-διαβίβασε-ΠΡΩΤΟ)"
 
-#: sickrage/core/webserver/views/config/general.mako:914
+#: sickrage/core/webserver/views/config/general.mako:928
 msgid "Notify on login"
 msgstr "Ειδοποιεί σχετικά με εισόδου"
 
-#: sickrage/core/webserver/views/config/general.mako:920
+#: sickrage/core/webserver/views/config/general.mako:934
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "Στείλτε ένα μήνυμα σε όλους τους κοινοποιούντες ενεργοποιημένη όταν κάποιος συνδεθεί στο SiCKRAGE από μια δημόσια διεύθυνση IP"
 
-#: sickrage/core/webserver/views/config/general.mako:945
+#: sickrage/core/webserver/views/config/general.mako:959
 msgid "CPU throttling"
 msgstr "Επιτάχυνση της CPU"
 
-#: sickrage/core/webserver/views/config/general.mako:964
+#: sickrage/core/webserver/views/config/general.mako:978
 msgid "Anonymous redirect"
 msgstr "Ανώνυμος ανακατεύθυνση"
 
-#: sickrage/core/webserver/views/config/general.mako:982
+#: sickrage/core/webserver/views/config/general.mako:996
 msgid "Enable debug"
 msgstr "Ενεργοποίηση εντοπισμού σφαλμάτων"
 
-#: sickrage/core/webserver/views/config/general.mako:988
+#: sickrage/core/webserver/views/config/general.mako:1002
 msgid "Enable debug logs"
 msgstr "Ενεργοποίηση εντοπισμού σφαλμάτων αρχείων καταγραφής"
 
-#: sickrage/core/webserver/views/config/general.mako:995
+#: sickrage/core/webserver/views/config/general.mako:1009
 msgid "Verify SSL Certs"
 msgstr "Επαληθεύει πιστοποιητικά SSL"
 
-#: sickrage/core/webserver/views/config/general.mako:1001
+#: sickrage/core/webserver/views/config/general.mako:1015
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Επαληθεύστε πιστοποιητικών SSL (αχρηστεύω αυτό για σπασμένα SSL εγκαθιστά (όπως QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1010
+#: sickrage/core/webserver/views/config/general.mako:1024
 msgid "No Restart"
 msgstr "Δεν απαιτείται επανεκκίνηση"
 
-#: sickrage/core/webserver/views/config/general.mako:1017
+#: sickrage/core/webserver/views/config/general.mako:1031
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "Τερματισμού SiCKRAGE για επανεκκίνηση (εξωτερικής υπηρεσίας πρέπει να επανεκκινήσετε SiCKRAGE από μόνη της)."
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1041
 msgid "Encrypt settings"
 msgstr "Κρυπτογράφηση ρυθμίσεων"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "in the"
 msgstr "για το"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "file."
 msgstr "το αρχείο."
 
-#: sickrage/core/webserver/views/config/general.mako:1042
+#: sickrage/core/webserver/views/config/general.mako:1056
 msgid "Unprotected calendar"
 msgstr "Απροστάτευτα ημερολόγιο"
 
-#: sickrage/core/webserver/views/config/general.mako:1048
+#: sickrage/core/webserver/views/config/general.mako:1062
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "επιτρέπουν εγγραφή στο ημερολόγιο χωρίς χρήστη και κωδικό πρόσβασης. Ορισμένες υπηρεσίες, όπως το ημερολόγιο Google λειτουργούν μόνο με τον τρόπο αυτό"
 
-#: sickrage/core/webserver/views/config/general.mako:1058
+#: sickrage/core/webserver/views/config/general.mako:1072
 msgid "Google Calendar Icons"
 msgstr "Εικονίδια ημερολογίου Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1064
+#: sickrage/core/webserver/views/config/general.mako:1078
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "εμφανίζεται ένα εικονίδιο δίπλα στην επιλογή Εξαγωγή ημερολογίου εκδηλώσεων στο ημερολόγιο Google."
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1087
 msgid "Link Google Account"
 msgstr "Σύνδεση λογαριασμού Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1076
+#: sickrage/core/webserver/views/config/general.mako:1090
 msgid "Link"
 msgstr "Σύνδεση"
 
-#: sickrage/core/webserver/views/config/general.mako:1078
+#: sickrage/core/webserver/views/config/general.mako:1092
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "συνδέσετε το λογαριασμό σας google με SiCKRAGE για χρήση εξελιγμένος χαρακτηριστικό όπως ρυθμίσεις/βάσης δεδομένων αποθήκευσης"
 
-#: sickrage/core/webserver/views/config/general.mako:1086
+#: sickrage/core/webserver/views/config/general.mako:1100
 msgid "Proxy host"
 msgstr "Κεντρικού υπολογιστή του διακομιστή μεσολάβησης"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1117
 msgid "Use proxy for indexers"
 msgstr "Χρήση διακομιστή μεσολάβησης για Οι δεικτοδότες"
 
-#: sickrage/core/webserver/views/config/general.mako:1109
+#: sickrage/core/webserver/views/config/general.mako:1123
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "χρήση του κεντρικού υπολογιστή του διακομιστή μεσολάβησης για τη σύνδεση στα ευρετήρια (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1117
+#: sickrage/core/webserver/views/config/general.mako:1131
 msgid "Skip Remove Detection"
 msgstr "Skip κατάργηση ανίχνευσης"
 
-#: sickrage/core/webserver/views/config/general.mako:1123
+#: sickrage/core/webserver/views/config/general.mako:1137
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Παραλείψτε ανίχνευση καταργούνται τα αρχεία. Εάν απενεργοποιήσετε θα θέσει προεπιλογή διαγραφεί κατάστασης"
 
-#: sickrage/core/webserver/views/config/general.mako:1124
+#: sickrage/core/webserver/views/config/general.mako:1138
 msgid "This may mean SickRage misses renames as well"
 msgstr "Αυτό μπορεί να σημαίνει SickRage δεσποινίδες μετονομάζει καθώς και"
 
-#: sickrage/core/webserver/views/config/general.mako:1132
+#: sickrage/core/webserver/views/config/general.mako:1146
 msgid "Default deleted episode status"
 msgstr "Προεπιλεγμένη κατάσταση διαγραμμένα επεισόδιο"
 
-#: sickrage/core/webserver/views/config/general.mako:1164
+#: sickrage/core/webserver/views/config/general.mako:1178
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Για να ορίσετε την κατάσταση για να οριστούν για το αρχείο πολυμέσων που έχει διαγραφεί."
 
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:1180
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Αρχειοθετημένα η επιλογή θα κρατήσει την προηγούμενη λήψη ποιότητας"
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1182
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Παράδειγμα: (WEB 1080p-DL) κατεβάσει ==> αρχείο (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1186
+#: sickrage/core/webserver/views/config/general.mako:1200
 msgid "PIP Settings"
 msgstr "Ρυθμίσεις PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1205
 msgid "PIP executable path"
 msgstr "PIP εκτελέσιμη διαδρομή"
 
-#: sickrage/core/webserver/views/config/general.mako:1202
+#: sickrage/core/webserver/views/config/general.mako:1216
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1215
-#: sickrage/core/webserver/views/config/general.mako:1312
+#: sickrage/core/webserver/views/config/general.mako:1229
+#: sickrage/core/webserver/views/config/general.mako:1326
 msgid "Click vefify path to test."
 msgstr "Κάντε κλικ στο vefify διαδρομή για τη δοκιμή."
 
-#: sickrage/core/webserver/views/config/general.mako:1240
+#: sickrage/core/webserver/views/config/general.mako:1254
 msgid "GIT Settings"
 msgstr "Ρυθμίσεων GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1245
+#: sickrage/core/webserver/views/config/general.mako:1259
 msgid "Git Branches"
 msgstr "Git κλαδιά"
 
-#: sickrage/core/webserver/views/config/general.mako:1255
+#: sickrage/core/webserver/views/config/general.mako:1269
 msgid "GIT Branch Version"
 msgstr "Έκδοση κλάδου GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1289
 msgid "Error: No branches found."
 msgstr "Σφάλμα: Δεν βρέθηκαν υποκαταστήματα."
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1293
 msgid "select branch to use (restart required)"
 msgstr "Επιλέξτε κατάστημα χρήσης (απαιτείται επανεκκίνηση)"
 
-#: sickrage/core/webserver/views/config/general.mako:1288
+#: sickrage/core/webserver/views/config/general.mako:1302
 msgid "GIT executable path"
 msgstr "GIT εκτελέσιμη διαδρομή"
 
-#: sickrage/core/webserver/views/config/general.mako:1299
+#: sickrage/core/webserver/views/config/general.mako:1313
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1321
+#: sickrage/core/webserver/views/config/general.mako:1335
 msgid "Git reset"
 msgstr "Επαναφορά ρυθμίσεων git"
 
-#: sickrage/core/webserver/views/config/general.mako:1327
+#: sickrage/core/webserver/views/config/general.mako:1341
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "καταργεί αρχεία untracked και εκτελεί ένα hard reset σε git υποκατάστημα αυτόματα για να σας βοηθήσουν να επιλύσετε ζητήματα ενημέρωσης"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1349
 msgid "Git auto-issues submit"
 msgstr "Git auto-θέματα υποβολής"
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1356
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "αυτόματα υποβάλλουν εκθέσεις ζωύφιου/ΤΕΥΧΟΣ tracker το θέμα μας, όταν τα σφάλματα καταγράφονται"
 
@@ -5052,7 +5060,7 @@ msgstr "Λήψεις"
 
 #: sickrage/core/webserver/views/home/index.mako:271
 #: sickrage/core/webserver/views/home/status.mako:44
-#: sickrage/core/webserver/views/layouts/main.mako:446
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Active"
 msgstr "Ενεργό"
 
@@ -5638,33 +5646,33 @@ msgstr "Αποσύνδεση"
 msgid "Server Status"
 msgstr "Κατάσταση διακομιστή"
 
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:452
 msgid "Episodes Downloaded"
 msgstr "Επεισόδια κατεβάσετε"
 
-#: sickrage/core/webserver/views/layouts/main.mako:457
+#: sickrage/core/webserver/views/layouts/main.mako:453
 msgid "Overall Downloaded"
 msgstr "Συνολική λήψη"
 
-#: sickrage/core/webserver/views/layouts/main.mako:462
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Καθημερινή αναζήτηση:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:465
+#: sickrage/core/webserver/views/layouts/main.mako:461
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Αναζήτηση λίστας εκκρεμοτήτων:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:472
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "Χρόνος φόρτωσης:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:479
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "Τώρα:"
 

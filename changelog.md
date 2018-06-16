@@ -1,6 +1,7 @@
 # Changelog
 
-- * 35df238 - 2018-06-16: Added UPNP functionality to app 
+- * 5a118a8 - 2018-06-16: Pre-Release v9.3.35.dev1 
+- * 8f7a4e2 - 2018-06-16: Added UPNP functionality to app 
 - * 2eef0d8 - 2018-06-16: Fixed requirements issues 
 - * f316113 - 2018-06-11: Changed placement of announcement&#x27;s for main layout 
 - * 7bd322b - 2018-06-10: Release v9.3.34 
