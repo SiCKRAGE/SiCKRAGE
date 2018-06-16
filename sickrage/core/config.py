@@ -65,6 +65,7 @@ class Config(object):
         self.api_username = ""
         self.api_password = ""
 
+        self.enable_upnp = True
         self.version_notify = True
         self.auto_update = True
         self.notify_on_update = True
@@ -709,6 +710,7 @@ class Config(object):
                 'web_cookie_secret': generateCookieSecret(),
                 'ssl_verify': True,
                 'encryption_secret': generateCookieSecret(),
+                'enable_upnp': True,
                 'version_notify': True,
                 'web_root': '',
                 'add_shows_wo_dir': False,
@@ -1400,6 +1402,7 @@ class Config(object):
         self.quality_default = self.check_setting_int('General', 'quality_default')
         self.status_default = self.check_setting_int('General', 'status_default')
         self.status_default_after = self.check_setting_int('General', 'status_default_after')
+        self.enable_upnp = self.check_setting_bool('General', 'enable_upnp')
         self.version_notify = self.check_setting_bool('General', 'version_notify')
         self.auto_update = self.check_setting_bool('General', 'auto_update')
         self.notify_on_update = self.check_setting_bool('General', 'notify_on_update')
@@ -1910,6 +1913,7 @@ class Config(object):
                 'anime_default': int(self.anime_default),
                 'scene_default': int(self.scene_default),
                 'skip_downloaded_default': int(self.skip_downloaded_default),
+                'enable_upnp': int(self.enable_upnp),
                 'version_notify': int(self.version_notify),
                 'auto_update': int(self.auto_update),
                 'notify_on_update': int(self.notify_on_update),

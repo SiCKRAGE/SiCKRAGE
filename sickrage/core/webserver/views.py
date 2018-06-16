@@ -3790,7 +3790,7 @@ class ConfigGeneral(Config):
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, api_username=None,
-                    api_password=None, use_api=None, enable_api_providers_cache=None, **kwargs):
+                    api_password=None, use_api=None, enable_api_providers_cache=None, enable_upnp=None, **kwargs):
 
         results = []
 
@@ -3847,6 +3847,7 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
+        sickrage.app.config.enable_upnp = checkbox_to_value(enable_upnp)
         sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
         sickrage.app.config.web_username = web_username
         sickrage.app.config.web_password = web_password

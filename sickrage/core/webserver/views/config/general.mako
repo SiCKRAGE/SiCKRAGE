@@ -835,7 +835,17 @@
                 </div>
 
                 <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Enable UPnP')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="enable_upnp"
+                               id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
+                        <label for="enable_upnp">${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}</label>
+                    </div>
+                </div>
 
+                <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Listen on IPv6')}</label>
                     </div>
@@ -844,7 +854,6 @@
                                id="web_ipv6" ${('', 'checked')[bool(sickrage.app.config.web_ipv6)]}/>
                         <label for="web_ipv6">${_('attempt binding to any available IPv6 address')}</label>
                     </div>
-
                 </div>
 
                 <div class="row field-pair">

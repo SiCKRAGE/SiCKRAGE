@@ -140,6 +140,7 @@ class Core(object):
         self.trakt_searcher = None
         self.subtitle_searcher = None
         self.auto_postprocessor = None
+        self.upnp_client = None
 
     def start(self):
         self.started = True
@@ -174,7 +175,6 @@ class Core(object):
         self.trakt_searcher = TraktSearcher()
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
-        self.upnp_client = UPNPClient()
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
@@ -439,7 +439,9 @@ class Core(object):
         self.postprocessor_queue.start()
 
         # start upnp client
-        self.upnp_client.start()
+        if self.config.enable_upnp:
+            self.upnp_client = UPNPClient()
+            self.upnp_client.start()
 
         # start webserver
         self.wserver.start()
@@ -455,6 +457,7 @@ class Core(object):
             if self.wserver:
                 self.wserver.shutdown()
 
+            # shutdown upnp client
             if self.upnp_client:
                 self.upnp_client.shutdown()
 

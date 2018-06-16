@@ -55,16 +55,16 @@ class UPNPClient(threading.Thread):
                 # didn't clean it up after it expired or it has been configured by other piece
                 # of software, either way we should not override it.
                 # https://tools.ietf.org/id/draft-ietf-pcp-upnp-igd-interworking-07.html#errors
-                sickrage.app.log.debug("UPNP port mapping already configured, not overriding it")
+                sickrage.app.log.debug("UPnP port mapping already configured, not overriding it")
             else:
-                sickrage.app.log.exception("Failed to setup UPNP portmap")
+                sickrage.app.log.exception("Failed to setup UPnP portmap")
         except Exception:
-            sickrage.app.log.exception("Failed to setup UPNP portmap")
+            sickrage.app.log.exception("Failed to setup UPnP portmap")
 
     def _add_nat_portmap(self, upnp_dev):
         internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
         if internal_ip is None:
-            sickrage.app.log.warn("Unable to detect internal IP address in order to setup UPNP portmap")
+            sickrage.app.log.warn("Unable to detect internal IP address in order to setup UPnP portmap")
             return
 
         for protocol, description in [('TCP', 'SiCKRAGE')]:
@@ -79,7 +79,7 @@ class UPNPClient(threading.Thread):
                 NewLeaseDuration=self._nat_portmap_lifetime,
             )
 
-        sickrage.app.log.debug("UPNP port forwarding successfully setup")
+        sickrage.app.log.debug("UPnP port forwarding successfully setup")
 
     def delete_nat_portmap(self):
         upnp_dev = self._discover_upnp_device()
@@ -90,7 +90,7 @@ class UPNPClient(threading.Thread):
     def _delete_nat_portmap(self, upnp_dev):
         internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
         if internal_ip is None:
-            sickrage.app.log.warn("Unable to detect internal IP address in order to delete UPNP portmap")
+            sickrage.app.log.warn("Unable to detect internal IP address in order to delete UPnP portmap")
             return
 
         for protocol, description in [('TCP', 'SiCKRAGE')]:
@@ -100,7 +100,7 @@ class UPNPClient(threading.Thread):
                 NewProtocol=protocol,
             )
 
-        sickrage.app.log.debug("UPNP port forwarding successfully deleted")
+        sickrage.app.log.debug("UPnP port forwarding successfully deleted")
 
     def _discover_upnp_device(self):
         devices = upnpclient.discover()
