@@ -66,6 +66,7 @@ from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import Notifications
 from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import update_network_dict
+from sickrage.core.upnp import UPNPClient
 from sickrage.core.version_updater import VersionUpdater
 from sickrage.core.webserver import WebServer
 from sickrage.metadata import MetadataProviders
@@ -173,6 +174,7 @@ class Core(object):
         self.trakt_searcher = TraktSearcher()
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
+        self.upnp_client = UPNPClient()
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
@@ -436,6 +438,9 @@ class Core(object):
         self.show_queue.start()
         self.postprocessor_queue.start()
 
+        # start upnp client
+        self.upnp_client.start()
+
         # start webserver
         self.wserver.start()
 
@@ -449,6 +454,9 @@ class Core(object):
             # shutdown webserver
             if self.wserver:
                 self.wserver.shutdown()
+
+            if self.upnp_client:
+                self.upnp_client.shutdown()
 
             # shutdown show queue
             if self.show_queue:
