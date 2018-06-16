@@ -1,6 +1,7 @@
 # Changelog
 
-- * ffdd815 - 2018-06-11: Changed placement of announcement&#x27;s for main layout 
+- * 7659fec - 2018-06-16: Fixed requirements issues 
+- * f316113 - 2018-06-11: Changed placement of announcement&#x27;s for main layout 
 - * 7bd322b - 2018-06-10: Release v9.3.34 
 - * 5c47d7c - 2018-06-10: Added Google Drive support for syncing app data local and remote Added ability to download unverified torrent magnet links Fixed issues for access data retrieved from SR API endpoints 
 - * a65bc0f - 2018-06-04: Release v9.3.29 

@@ -1,3 +1,4 @@
+uPnPClient == 0.0.8
 APScheduler == 3.5.0
 babelfish == 0.5.5
 bencode == 1.0
@@ -25,7 +26,6 @@ beautifulsoup4 == 4.6.0
 python_dateutil == 2.6.0
 pynzb == 0.1.0
 futures == 3.2.0
-gi == 1.2
 gntp == 1.0.3
 google_api_python_client == 1.5.1
 python_twitter == 3.3
