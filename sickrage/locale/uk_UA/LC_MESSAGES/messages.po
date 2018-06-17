@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-10 01:34-0700\n"
-"PO-Revision-Date: 2018-06-10 04:35-0400\n"
+"POT-Creation-Date: 2018-06-16 22:20-0700\n"
+"PO-Revision-Date: 2018-06-17 01:24-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -496,7 +496,7 @@ msgstr "Якість"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:453
+#: sickrage/core/webserver/views/layouts/main.mako:449
 msgid "Snatched"
 msgstr "Схопив"
 
@@ -546,7 +546,7 @@ msgstr "Параметри AnimeDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:98
-#: sickrage/core/webserver/views/config/general.mako:442
+#: sickrage/core/webserver/views/config/general.mako:456
 msgid "User Interface"
 msgstr "Інтерфейс користувача"
 
@@ -591,14 +591,14 @@ msgstr "Додати PostProcessed епізоди в MyList?"
 
 #: sickrage/core/webserver/views/config/anime.mako:88
 #: sickrage/core/webserver/views/config/anime.mako:115
-#: sickrage/core/webserver/views/config/general.mako:128
-#: sickrage/core/webserver/views/config/general.mako:351
-#: sickrage/core/webserver/views/config/general.mako:431
-#: sickrage/core/webserver/views/config/general.mako:709
-#: sickrage/core/webserver/views/config/general.mako:927
-#: sickrage/core/webserver/views/config/general.mako:1177
-#: sickrage/core/webserver/views/config/general.mako:1227
-#: sickrage/core/webserver/views/config/general.mako:1350
+#: sickrage/core/webserver/views/config/general.mako:141
+#: sickrage/core/webserver/views/config/general.mako:365
+#: sickrage/core/webserver/views/config/general.mako:445
+#: sickrage/core/webserver/views/config/general.mako:723
+#: sickrage/core/webserver/views/config/general.mako:992
+#: sickrage/core/webserver/views/config/general.mako:1242
+#: sickrage/core/webserver/views/config/general.mako:1292
+#: sickrage/core/webserver/views/config/general.mako:1415
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -693,7 +693,7 @@ msgid "Restore cache files"
 msgstr "Відновити файли кешу"
 
 #: sickrage/core/webserver/views/config/general.mako:20
-#: sickrage/core/webserver/views/config/general.mako:136
+#: sickrage/core/webserver/views/config/general.mako:149
 msgid "Misc"
 msgstr "Різне"
 
@@ -702,7 +702,7 @@ msgid "Interface"
 msgstr "Інтерфейс"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:939
+#: sickrage/core/webserver/views/config/general.mako:1004
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Додаткові налаштування"
@@ -772,7 +772,15 @@ msgstr ""
 msgid "Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:121
+#: sickrage/core/webserver/views/config/general.mako:117
+msgid "Sync To Google Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:119
+msgid "Sync To Local Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:134
 #: sickrage/core/webserver/views/config/notifications.mako:178
 #: sickrage/core/webserver/views/config/notifications.mako:562
 #: sickrage/core/webserver/views/config/notifications.mako:665
@@ -791,287 +799,287 @@ msgstr ""
 msgid "Click below to test."
 msgstr "Натисніть нижче, щоб перевірити."
 
-#: sickrage/core/webserver/views/config/general.mako:127
+#: sickrage/core/webserver/views/config/general.mako:140
 msgid "Test API"
 msgstr "Тест API"
 
-#: sickrage/core/webserver/views/config/general.mako:137
+#: sickrage/core/webserver/views/config/general.mako:150
 msgid "Startup options. Indexer options. Log and show file locations."
 msgstr "Параметри запуску. Параметри індексування. Розташування файлів журналу та шоу."
 
-#: sickrage/core/webserver/views/config/general.mako:138
+#: sickrage/core/webserver/views/config/general.mako:151
 msgid "Some options may require a manual restart to take effect."
 msgstr "Деякі варіанти може знадобитися вручну перезавантаження вступили в силу."
 
-#: sickrage/core/webserver/views/config/general.mako:144
+#: sickrage/core/webserver/views/config/general.mako:157
 msgid "Default Indexer Language"
 msgstr "Indexer мову за замовчуванням"
 
-#: sickrage/core/webserver/views/config/general.mako:153
+#: sickrage/core/webserver/views/config/general.mako:166
 msgid "for adding shows and metadata providers"
 msgstr "для додавання шоу та метадані провайдерів"
 
-#: sickrage/core/webserver/views/config/general.mako:161
+#: sickrage/core/webserver/views/config/general.mako:174
 msgid "Launch browser"
 msgstr "Запуск браузера"
 
-#: sickrage/core/webserver/views/config/general.mako:166
+#: sickrage/core/webserver/views/config/general.mako:179
 msgid "open the SickRage home page on startup"
 msgstr "Відкрийте домашню сторінку SickRage під час запуску"
 
-#: sickrage/core/webserver/views/config/general.mako:171
+#: sickrage/core/webserver/views/config/general.mako:184
 msgid "Initial page"
 msgstr "Початкова сторінка"
 
-#: sickrage/core/webserver/views/config/general.mako:179
+#: sickrage/core/webserver/views/config/general.mako:192
 msgid "when launching SickRage interface"
 msgstr "під час запуску SickRage інтерфейс"
 
-#: sickrage/core/webserver/views/config/general.mako:181
+#: sickrage/core/webserver/views/config/general.mako:194
 #: sickrage/core/webserver/views/layouts/main.mako:98
-#: sickrage/core/webserver/views/layouts/main.mako:445
+#: sickrage/core/webserver/views/layouts/main.mako:441
 msgid "Shows"
 msgstr "Показує"
 
 #: sickrage/core/webserver/views.py:524 sickrage/core/webserver/views.py:525
-#: sickrage/core/webserver/views/config/general.mako:184
+#: sickrage/core/webserver/views/config/general.mako:197
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Розклад"
 
 #: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3665
-#: sickrage/core/webserver/views/config/general.mako:187
+#: sickrage/core/webserver/views/config/general.mako:200
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
 msgstr "Історія"
 
-#: sickrage/core/webserver/views/config/general.mako:190
+#: sickrage/core/webserver/views/config/general.mako:203
 #: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "IRC"
 msgstr "FR,"
 
-#: sickrage/core/webserver/views/config/general.mako:199
+#: sickrage/core/webserver/views/config/general.mako:212
 msgid "Daily show updates start time"
 msgstr "Щодня показувати час початку оновлення"
 
-#: sickrage/core/webserver/views/config/general.mako:214
+#: sickrage/core/webserver/views/config/general.mako:227
 msgid "with information such as next air dates, show ended, etc."
 msgstr "з інформацію, таку як наступний повітряні дат Показати закінчився, і т. д."
 
-#: sickrage/core/webserver/views/config/general.mako:215
+#: sickrage/core/webserver/views/config/general.mako:228
 msgid "Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)"
 msgstr "Використання 15 на 3 вечора, 4 для 4 ранку і т. д. Все, що над 23 або під 0 буде виставлено як 0 (12 ранку)"
 
-#: sickrage/core/webserver/views/config/general.mako:222
+#: sickrage/core/webserver/views/config/general.mako:235
 msgid "Daily show updates stale shows"
 msgstr "Денне шоу оновлює черствий шоу"
 
-#: sickrage/core/webserver/views/config/general.mako:228
+#: sickrage/core/webserver/views/config/general.mako:241
 msgid "should ended shows last updated less then 90 days get updated and refreshed automatically ?"
 msgstr "слід закінчився шоу, останнє оновлення менше ніж 90 днів отримати оновлюється і оновлюється автоматично?"
 
-#: sickrage/core/webserver/views/config/general.mako:235
+#: sickrage/core/webserver/views/config/general.mako:248
 msgid "Send to trash for actions"
 msgstr "Надіслати до смітника для дій"
 
-#: sickrage/core/webserver/views/config/general.mako:240
+#: sickrage/core/webserver/views/config/general.mako:253
 msgid "when using show \"Remove\" and delete files"
 msgstr "коли за допомогою шоу \"Видалити\" а видаліть файли"
 
-#: sickrage/core/webserver/views/config/general.mako:245
+#: sickrage/core/webserver/views/config/general.mako:258
 msgid "on scheduled deletes of the oldest log files"
 msgstr "про заплановане видалення старих лог-файли"
 
-#: sickrage/core/webserver/views/config/general.mako:248
+#: sickrage/core/webserver/views/config/general.mako:262
 msgid "selected actions use trash (recycle bin) instead of the default permanent delete"
 msgstr "вибрані дії використання кошик (кошик) замість постійного видалення за промовчанням"
 
-#: sickrage/core/webserver/views/config/general.mako:256
+#: sickrage/core/webserver/views/config/general.mako:270
 msgid "Number of Log files saved"
 msgstr "Кількість лог-файли, збережені"
 
-#: sickrage/core/webserver/views/config/general.mako:265
+#: sickrage/core/webserver/views/config/general.mako:279
 msgid "default = 5"
 msgstr "за замовчуванням = 5"
 
-#: sickrage/core/webserver/views/config/general.mako:276
+#: sickrage/core/webserver/views/config/general.mako:290
 msgid "Size of Log files saved"
 msgstr "Розмір лог-файли, збережені"
 
-#: sickrage/core/webserver/views/config/general.mako:285
+#: sickrage/core/webserver/views/config/general.mako:299
 msgid "default = 1048576 (1MB)"
 msgstr "за замовчуванням = 1048576 (до 1 МБ)"
 
-#: sickrage/core/webserver/views/config/general.mako:296
+#: sickrage/core/webserver/views/config/general.mako:310
 msgid "Default indexer for adding shows"
 msgstr "За промовчанням програма індексування для додавання шоу"
 
-#: sickrage/core/webserver/views/config/general.mako:307
+#: sickrage/core/webserver/views/config/general.mako:321
 msgid "All Indexers"
 msgstr "Всі індексатори"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:335
 msgid "Show indexer timeout"
 msgstr "Показати індексатор таймаут"
 
-#: sickrage/core/webserver/views/config/general.mako:330
+#: sickrage/core/webserver/views/config/general.mako:344
 msgid "default = 10"
 msgstr "за замовчуванням = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:343
+#: sickrage/core/webserver/views/config/general.mako:357
 msgid "Show root directories"
 msgstr "Показати кореневої директорії"
 
-#: sickrage/core/webserver/views/config/general.mako:360
+#: sickrage/core/webserver/views/config/general.mako:374
 msgid "Updates"
 msgstr "Оновлення"
 
-#: sickrage/core/webserver/views/config/general.mako:361
+#: sickrage/core/webserver/views/config/general.mako:375
 msgid "Options for software updates."
 msgstr "Варіантів для оновлення програмного забезпечення."
 
-#: sickrage/core/webserver/views/config/general.mako:368
+#: sickrage/core/webserver/views/config/general.mako:382
 msgid "Check software updates"
 msgstr "Перевірити оновлення програмного забезпечення"
 
-#: sickrage/core/webserver/views/config/general.mako:374
+#: sickrage/core/webserver/views/config/general.mako:388
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:383
+#: sickrage/core/webserver/views/config/general.mako:397
 msgid "Automatically update"
 msgstr "Автоматичне оновлення"
 
-#: sickrage/core/webserver/views/config/general.mako:389
+#: sickrage/core/webserver/views/config/general.mako:403
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:397
+#: sickrage/core/webserver/views/config/general.mako:411
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:406
+#: sickrage/core/webserver/views/config/general.mako:420
 msgid "default = 12 (hours)"
 msgstr "за замовчуванням = 12 (години)"
 
-#: sickrage/core/webserver/views/config/general.mako:418
+#: sickrage/core/webserver/views/config/general.mako:432
 msgid "Notify on software update"
 msgstr "Повідомити про оновлення програмного забезпечення"
 
-#: sickrage/core/webserver/views/config/general.mako:424
+#: sickrage/core/webserver/views/config/general.mako:438
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "Надіслати повідомлення для всіх доступних повідомник, коли SickRage було оновлено"
 
-#: sickrage/core/webserver/views/config/general.mako:443
+#: sickrage/core/webserver/views/config/general.mako:457
 msgid "Options for visual appearance."
 msgstr "Параметри для зовнішнього вигляду."
 
-#: sickrage/core/webserver/views/config/general.mako:449
+#: sickrage/core/webserver/views/config/general.mako:463
 msgid "Interface Language"
 msgstr "Мова інтерфейсу"
 
-#: sickrage/core/webserver/views/config/general.mako:460
+#: sickrage/core/webserver/views/config/general.mako:474
 msgid "System Language"
 msgstr "Мову системи"
 
-#: sickrage/core/webserver/views/config/general.mako:472
+#: sickrage/core/webserver/views/config/general.mako:486
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "за появи вступили в силу зберегти а потім оновіть сторінку в браузері"
 
-#: sickrage/core/webserver/views/config/general.mako:481
+#: sickrage/core/webserver/views/config/general.mako:495
 msgid "Display theme"
 msgstr "Відображення теми"
 
-#: sickrage/core/webserver/views/config/general.mako:491
+#: sickrage/core/webserver/views/config/general.mako:505
 msgid "Dark"
 msgstr "Темний"
 
-#: sickrage/core/webserver/views/config/general.mako:494
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid "Light"
 msgstr "Світло"
 
-#: sickrage/core/webserver/views/config/general.mako:503
+#: sickrage/core/webserver/views/config/general.mako:517
 msgid "Show all seasons"
 msgstr "Показати всі пори року"
 
-#: sickrage/core/webserver/views/config/general.mako:509
-#: sickrage/core/webserver/views/config/general.mako:685
+#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:699
 msgid "on the show summary page"
 msgstr "на сторінці зведення шоу"
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:531
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Сортування з \"В\", \"A\", \"На\""
 
-#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:537
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "відносяться статей (\"В\", \"\", \"В\") при сортування Показати списки"
 
-#: sickrage/core/webserver/views/config/general.mako:531
+#: sickrage/core/webserver/views/config/general.mako:545
 msgid "Filter Row"
 msgstr "Фільтр рядка"
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:551
 msgid "Add a filter row to the show display on the home page"
 msgstr "Додати рядок фільтр для відображення на головній сторінці"
 
-#: sickrage/core/webserver/views/config/general.mako:544
+#: sickrage/core/webserver/views/config/general.mako:558
 msgid "Missed episodes range"
 msgstr "Пропущені епізодів діапазон"
 
-#: sickrage/core/webserver/views/config/general.mako:554
+#: sickrage/core/webserver/views/config/general.mako:568
 msgid "# of days"
 msgstr "# днів"
 
-#: sickrage/core/webserver/views/config/general.mako:563
+#: sickrage/core/webserver/views/config/general.mako:577
 msgid "Display fuzzy dates"
 msgstr "Відображення дати у фазі"
 
-#: sickrage/core/webserver/views/config/general.mako:570
+#: sickrage/core/webserver/views/config/general.mako:584
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "Перемістіть абсолютними датами в підказках та відображення, наприклад \"останній Чт\", \"На вів\""
 
-#: sickrage/core/webserver/views/config/general.mako:577
+#: sickrage/core/webserver/views/config/general.mako:591
 msgid "Trim zero padding"
 msgstr "Подрежьте нульовий оббивка"
 
-#: sickrage/core/webserver/views/config/general.mako:583
+#: sickrage/core/webserver/views/config/general.mako:597
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "видалити провідних число \"0\" зображений на годину, день і дата місяць"
 
-#: sickrage/core/webserver/views/config/general.mako:590
+#: sickrage/core/webserver/views/config/general.mako:604
 msgid "Date style"
 msgstr "Стиль дати"
 
-#: sickrage/core/webserver/views/config/general.mako:608
+#: sickrage/core/webserver/views/config/general.mako:622
 msgid "Use System Default"
 msgstr "Використовувати типовий системний"
 
-#: sickrage/core/webserver/views/config/general.mako:620
+#: sickrage/core/webserver/views/config/general.mako:634
 msgid "Time style"
 msgstr "Час стиль"
 
-#: sickrage/core/webserver/views/config/general.mako:639
+#: sickrage/core/webserver/views/config/general.mako:653
 msgid "Timezone"
 msgstr "Часовий пояс"
 
-#: sickrage/core/webserver/views/config/general.mako:644
+#: sickrage/core/webserver/views/config/general.mako:658
 msgid "Local"
 msgstr "Місцеві"
 
-#: sickrage/core/webserver/views/config/general.mako:648
+#: sickrage/core/webserver/views/config/general.mako:662
 #: sickrage/core/webserver/views/home/index.mako:43
 #: sickrage/core/webserver/views/home/index.mako:267
 msgid "Network"
 msgstr "Мережа"
 
-#: sickrage/core/webserver/views/config/general.mako:651
+#: sickrage/core/webserver/views/config/general.mako:665
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "Відображати значення дати й часу у ваш часовий пояс або шоу мережі часовий пояс"
 
-#: sickrage/core/webserver/views/config/general.mako:653
-#: sickrage/core/webserver/views/config/general.mako:1124
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:667
+#: sickrage/core/webserver/views/config/general.mako:1189
+#: sickrage/core/webserver/views/config/general.mako:1231
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1093,60 +1101,76 @@ msgstr "Відображати значення дати й часу у ваш �
 msgid "NOTE:"
 msgstr "ПРИМІТКА:"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:667
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Використання місцевих часовий пояс почати пошук епізодів хвилин після того, як шоу закінчується (залежить від dailysearch частоти)"
 
-#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:675
 msgid "Download url"
 msgstr "Завантажити url"
 
-#: sickrage/core/webserver/views/config/general.mako:678
+#: sickrage/core/webserver/views/config/general.mako:692
 msgid "Show fanart in the background"
 msgstr "Показати fanart у фоновому режимі"
 
-#: sickrage/core/webserver/views/config/general.mako:692
+#: sickrage/core/webserver/views/config/general.mako:706
 msgid "Fanart transparency"
 msgstr "Fanart прозорість"
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:731
 msgid "Web Interface"
 msgstr "Веб-інтерфейс"
 
-#: sickrage/core/webserver/views/config/general.mako:718
+#: sickrage/core/webserver/views/config/general.mako:732
 msgid "It is recommended that you enable a username and password to secure SickRage from being tampered with remotely."
 msgstr "Радимо, що ви дозволите ім'я користувача і пароль для захисту SickRage від несанкціонованих віддалено."
 
-#: sickrage/core/webserver/views/config/general.mako:719
+#: sickrage/core/webserver/views/config/general.mako:733
 msgid "These options require a manual restart to take effect."
 msgstr "Ці параметри вимагає ручного перезавантаження вступили в силу."
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:739
+msgid "Enable UPnP"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:745
+msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:753
+msgid "HTTP public port"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:772
+msgid "used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:782
 msgid "API key"
 msgstr "Ключ API"
 
-#: sickrage/core/webserver/views/config/general.mako:747
+#: sickrage/core/webserver/views/config/general.mako:804
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "використовується дати 3-й партії програм обмежений доступ до SiCKRAGE ви можете спробувати всі функції API"
 
-#: sickrage/core/webserver/views/config/general.mako:748
+#: sickrage/core/webserver/views/config/general.mako:805
 msgid "here"
 msgstr "Тут"
 
-#: sickrage/core/webserver/views/config/general.mako:758
+#: sickrage/core/webserver/views/config/general.mako:815
 msgid "HTTP logs"
 msgstr "HTTP журнали"
 
-#: sickrage/core/webserver/views/config/general.mako:763
+#: sickrage/core/webserver/views/config/general.mako:820
 msgid "enable logs from the internal Tornado web server"
 msgstr "Увімкнути журнали з внутрішніх торнадо веб-сервера"
 
-#: sickrage/core/webserver/views/config/general.mako:769
+#: sickrage/core/webserver/views/config/general.mako:826
 msgid "HTTP username"
 msgstr "HTTP ім'я користувача"
 
-#: sickrage/core/webserver/views/config/general.mako:779
-#: sickrage/core/webserver/views/config/general.mako:798
+#: sickrage/core/webserver/views/config/general.mako:836
+#: sickrage/core/webserver/views/config/general.mako:855
 #: sickrage/core/webserver/views/config/notifications.mako:154
 #: sickrage/core/webserver/views/config/notifications.mako:171
 #: sickrage/core/webserver/views/config/notifications.mako:262
@@ -1161,240 +1185,244 @@ msgstr "HTTP ім'я користувача"
 msgid "blank = no authentication"
 msgstr "пустий = без автентифікації"
 
-#: sickrage/core/webserver/views/config/general.mako:788
+#: sickrage/core/webserver/views/config/general.mako:845
 msgid "HTTP password"
 msgstr "HTTP паролів"
 
-#: sickrage/core/webserver/views/config/general.mako:807
-msgid "HTTP port"
-msgstr "Порт HTTP"
+#: sickrage/core/webserver/views/config/general.mako:864
+msgid "HTTP private port"
+msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:816
+#: sickrage/core/webserver/views/config/general.mako:875
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:826
+#: sickrage/core/webserver/views/config/general.mako:884
+msgid "used to access SiCKRAGE over a private internal IP address"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:893
 msgid "Listen on IPv6"
 msgstr "Слухайте на IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:831
+#: sickrage/core/webserver/views/config/general.mako:898
 msgid "attempt binding to any available IPv6 address"
 msgstr "Спроба прив'язку до будь-яких наявних IPv6-адреса"
 
-#: sickrage/core/webserver/views/config/general.mako:839
+#: sickrage/core/webserver/views/config/general.mako:904
 msgid "Enable HTTPS"
 msgstr "Увімкнути HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:845
+#: sickrage/core/webserver/views/config/general.mako:910
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "дозволити доступ до веб-інтерфейсу за допомогою HTTPS-адреси"
 
-#: sickrage/core/webserver/views/config/general.mako:854
+#: sickrage/core/webserver/views/config/general.mako:919
 msgid "HTTPS certificate"
 msgstr "HTTPS сертифікат"
 
-#: sickrage/core/webserver/views/config/general.mako:868
+#: sickrage/core/webserver/views/config/general.mako:933
 msgid "file name or path to HTTPS certificate"
 msgstr "ім'я файлу або шлях до HTTPS сертифікат"
 
-#: sickrage/core/webserver/views/config/general.mako:878
+#: sickrage/core/webserver/views/config/general.mako:943
 msgid "HTTPS key"
 msgstr "HTTPS ключ"
 
-#: sickrage/core/webserver/views/config/general.mako:890
+#: sickrage/core/webserver/views/config/general.mako:955
 msgid "file name or path to HTTPS key"
 msgstr "ім'я файлу або шлях до HTTPS ключ"
 
-#: sickrage/core/webserver/views/config/general.mako:900
+#: sickrage/core/webserver/views/config/general.mako:965
 msgid "Reverse proxy headers"
 msgstr "Зворотний проксі заголовки"
 
-#: sickrage/core/webserver/views/config/general.mako:906
+#: sickrage/core/webserver/views/config/general.mako:971
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "прийняти такі зворотний проксі заголовки (додатково)..."
 
-#: sickrage/core/webserver/views/config/general.mako:907
+#: sickrage/core/webserver/views/config/general.mako:972
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X направлений для X переслано хост та X переслано прото)"
 
-#: sickrage/core/webserver/views/config/general.mako:914
+#: sickrage/core/webserver/views/config/general.mako:979
 msgid "Notify on login"
 msgstr "Повідомити про Логін"
 
-#: sickrage/core/webserver/views/config/general.mako:920
+#: sickrage/core/webserver/views/config/general.mako:985
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "Надіслати повідомлення для всіх доступних повідомник, коли хтось входить в SiCKRAGE від відкритої IP-адреси"
 
-#: sickrage/core/webserver/views/config/general.mako:945
+#: sickrage/core/webserver/views/config/general.mako:1010
 msgid "CPU throttling"
 msgstr "Дроселювання Процесорів"
 
-#: sickrage/core/webserver/views/config/general.mako:964
+#: sickrage/core/webserver/views/config/general.mako:1029
 msgid "Anonymous redirect"
 msgstr "Анонімні перенаправлення"
 
-#: sickrage/core/webserver/views/config/general.mako:982
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "Enable debug"
 msgstr "Увімкнути налагодження"
 
-#: sickrage/core/webserver/views/config/general.mako:988
+#: sickrage/core/webserver/views/config/general.mako:1053
 msgid "Enable debug logs"
 msgstr "Увімкнути журналами зневадження"
 
-#: sickrage/core/webserver/views/config/general.mako:995
+#: sickrage/core/webserver/views/config/general.mako:1060
 msgid "Verify SSL Certs"
 msgstr "Перевірте, чи SSL сертифікатів"
 
-#: sickrage/core/webserver/views/config/general.mako:1001
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Перевірте, чи SSL сертифікати (вимкнути це для сломанной SSL встановлює (наприклад, QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1010
+#: sickrage/core/webserver/views/config/general.mako:1075
 msgid "No Restart"
 msgstr "Не перезавантаження"
 
-#: sickrage/core/webserver/views/config/general.mako:1017
+#: sickrage/core/webserver/views/config/general.mako:1082
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "Завершення роботи SiCKRAGE на час перезавантаження (зовнішньої служби, перезавантажте SiCKRAGE по собі)."
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1092
 msgid "Encrypt settings"
 msgstr "Зашифрувати настройки"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "in the"
 msgstr "у в"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "file."
 msgstr "файл."
 
-#: sickrage/core/webserver/views/config/general.mako:1042
+#: sickrage/core/webserver/views/config/general.mako:1107
 msgid "Unprotected calendar"
 msgstr "Незахищений календар"
 
-#: sickrage/core/webserver/views/config/general.mako:1048
+#: sickrage/core/webserver/views/config/general.mako:1113
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "дозволити підписатися на календар без користувача і пароль. Деякі послуги, такі як Календар Google тільки працювати таким чином"
 
-#: sickrage/core/webserver/views/config/general.mako:1058
+#: sickrage/core/webserver/views/config/general.mako:1123
 msgid "Google Calendar Icons"
 msgstr "Календар Google іконки"
 
-#: sickrage/core/webserver/views/config/general.mako:1064
+#: sickrage/core/webserver/views/config/general.mako:1129
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "відображають поруч з експортованого Календар подій в календарі Google."
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1138
 msgid "Link Google Account"
 msgstr "Пов'язати обліковий запис Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1076
+#: sickrage/core/webserver/views/config/general.mako:1141
 msgid "Link"
 msgstr "Посилання"
 
-#: sickrage/core/webserver/views/config/general.mako:1078
+#: sickrage/core/webserver/views/config/general.mako:1143
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "зв'язати свій обліковий запис google SiCKRAGE для користування: вдосконалена функція налаштування/базу даних для зберігання"
 
-#: sickrage/core/webserver/views/config/general.mako:1086
+#: sickrage/core/webserver/views/config/general.mako:1151
 msgid "Proxy host"
 msgstr "Проксі-хост"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1168
 msgid "Use proxy for indexers"
 msgstr "Використовувати проксі-сервер для індексатори"
 
-#: sickrage/core/webserver/views/config/general.mako:1109
+#: sickrage/core/webserver/views/config/general.mako:1174
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "використовувати проксі-хост для підключення до індексатори (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1117
+#: sickrage/core/webserver/views/config/general.mako:1182
 msgid "Skip Remove Detection"
 msgstr "Пропустити видалити виявлення"
 
-#: sickrage/core/webserver/views/config/general.mako:1123
+#: sickrage/core/webserver/views/config/general.mako:1188
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Пропустіть виявлення видалені файли. Якщо вимкнути це буде встановити за замовчуванням видаляються статус"
 
-#: sickrage/core/webserver/views/config/general.mako:1124
+#: sickrage/core/webserver/views/config/general.mako:1189
 msgid "This may mean SickRage misses renames as well"
 msgstr "Це може означати, що SickRage промахів перейменовує також"
 
-#: sickrage/core/webserver/views/config/general.mako:1132
+#: sickrage/core/webserver/views/config/general.mako:1197
 msgid "Default deleted episode status"
 msgstr "За промовчанням, видалити епізод статус"
 
-#: sickrage/core/webserver/views/config/general.mako:1164
+#: sickrage/core/webserver/views/config/general.mako:1229
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Визначити стан з мультимедійний файл, який було видалено."
 
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:1231
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Заархівовані варіант буде тримати попередній завантажений якість"
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1233
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Приклад: Скачали (1080 р веб DL) ==> архівні (1080 р веб DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1186
+#: sickrage/core/webserver/views/config/general.mako:1251
 msgid "PIP Settings"
 msgstr "Піп настройки"
 
-#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1256
 msgid "PIP executable path"
 msgstr "Піп шлях виконуваного файлу"
 
-#: sickrage/core/webserver/views/config/general.mako:1202
+#: sickrage/core/webserver/views/config/general.mako:1267
 msgid "ex: /path/to/pip"
 msgstr "EX: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1215
-#: sickrage/core/webserver/views/config/general.mako:1312
+#: sickrage/core/webserver/views/config/general.mako:1280
+#: sickrage/core/webserver/views/config/general.mako:1377
 msgid "Click vefify path to test."
 msgstr "Натисніть кнопку vefify шлях для тестування."
 
-#: sickrage/core/webserver/views/config/general.mako:1240
+#: sickrage/core/webserver/views/config/general.mako:1305
 msgid "GIT Settings"
 msgstr "GIT настройки"
 
-#: sickrage/core/webserver/views/config/general.mako:1245
+#: sickrage/core/webserver/views/config/general.mako:1310
 msgid "Git Branches"
 msgstr "Git гілок"
 
-#: sickrage/core/webserver/views/config/general.mako:1255
+#: sickrage/core/webserver/views/config/general.mako:1320
 msgid "GIT Branch Version"
 msgstr "GIT відділення версія"
 
-#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1340
 msgid "Error: No branches found."
 msgstr "Помилка: Не було відділень знайшов."
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1344
 msgid "select branch to use (restart required)"
 msgstr "Оберіть відділення за допомогою (необхідно перезапустити)"
 
-#: sickrage/core/webserver/views/config/general.mako:1288
+#: sickrage/core/webserver/views/config/general.mako:1353
 msgid "GIT executable path"
 msgstr "GIT шлях виконуваного файлу"
 
-#: sickrage/core/webserver/views/config/general.mako:1299
+#: sickrage/core/webserver/views/config/general.mako:1364
 msgid "ex: /path/to/git"
 msgstr "EX: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1321
+#: sickrage/core/webserver/views/config/general.mako:1386
 msgid "Git reset"
 msgstr "Скидання Git"
 
-#: sickrage/core/webserver/views/config/general.mako:1327
+#: sickrage/core/webserver/views/config/general.mako:1392
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "видалення скасовується файли та виконання Жорстке скидання git відділення автоматично, щоб допомогти вирішити проблеми оновлення"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1400
 msgid "Git auto-issues submit"
 msgstr "Надіслати Git авто питань"
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1407
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "автоматично подавати звіти bug/випуск нашого трекері коли помилками реєструються"
 
@@ -3470,7 +3498,7 @@ msgstr "Принаймні одного постачальника не потр
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent провайдери можуть бути переведені в"
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3970
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Search Clients"
@@ -4692,7 +4720,7 @@ msgstr "Ніколи не"
 msgid "Retry Download"
 msgstr "Повторити завантаження"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4967
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4820,7 +4848,7 @@ msgstr "використовувати замовлення DVD-ДИСКА, а �
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Сила повного оновлення\" є необхідним, а за наявності існуючих епізодів потрібно сортувати їх вручну."
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4842
+#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4846
 #: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5052,7 +5080,7 @@ msgstr "Завантаження"
 
 #: sickrage/core/webserver/views/home/index.mako:271
 #: sickrage/core/webserver/views/home/status.mako:44
-#: sickrage/core/webserver/views/layouts/main.mako:446
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Active"
 msgstr "Активні"
 
@@ -5148,7 +5176,7 @@ msgstr "Виконання перезавантаження"
 msgid "Daily Search"
 msgstr "Щоденний пошук"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4954
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Відставання"
@@ -5173,7 +5201,7 @@ msgstr "Пост процес"
 msgid "Subtitles Finder"
 msgstr "Субтитри Finder"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4962
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt перевірки"
@@ -5206,7 +5234,7 @@ msgstr "Ні"
 msgid "True"
 msgstr "Правда"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4957
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Показати черги"
@@ -5576,28 +5604,28 @@ msgstr "Загальні"
 msgid "Backup and Restore"
 msgstr "Резервне копіювання та відновлення"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4274
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Providers"
 msgstr "Пошукових служб"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4765
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Subtitles Settings"
 msgstr "Параметри субтитрів"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4885
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Quality Settings"
 msgstr "Параметри якості"
 
 #: sickrage/core/webserver/views.py:2276 sickrage/core/webserver/views.py:2277
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4079
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Пост-обробка"
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4427
+#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4431
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Notifications"
 msgstr "Сповіщення"
@@ -5638,33 +5666,33 @@ msgstr "Вихід із системи"
 msgid "Server Status"
 msgstr "Стан сервера"
 
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:452
 msgid "Episodes Downloaded"
 msgstr "Епізоди завантажити"
 
-#: sickrage/core/webserver/views/layouts/main.mako:457
+#: sickrage/core/webserver/views/layouts/main.mako:453
 msgid "Overall Downloaded"
 msgstr "В цілому скачав"
 
-#: sickrage/core/webserver/views/layouts/main.mako:462
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Щоденний пошук:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:465
+#: sickrage/core/webserver/views/layouts/main.mako:461
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Відставання пошук:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:472
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "Час завантаження:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:479
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "Зараз:"
 
@@ -6482,7 +6510,7 @@ msgstr "Вже на філії: "
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1918
 #: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1964
 #: sickrage/core/webserver/views.py:1970 sickrage/core/webserver/views.py:1973
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4964
 msgid "Error"
 msgstr "Помилка"
 
@@ -6846,7 +6874,7 @@ msgstr "Історії очищено"
 msgid "Removed history entries older than 30 days"
 msgstr "Вилучений історію записів старше, ніж 30 днів"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3913
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3917
 msgid "Backup/Restore"
 msgstr "Резервне копіювання/відновлення"
 
@@ -6866,198 +6894,198 @@ msgstr "Config - Генеральний"
 msgid "General Configuration"
 msgstr "Загальні конфігурація"
 
-#: sickrage/core/webserver/views.py:3895 sickrage/core/webserver/views.py:4057
-#: sickrage/core/webserver/views.py:4188 sickrage/core/webserver/views.py:4409
-#: sickrage/core/webserver/views.py:4743 sickrage/core/webserver/views.py:4824
-#: sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:3899 sickrage/core/webserver/views.py:4061
+#: sickrage/core/webserver/views.py:4192 sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:4747 sickrage/core/webserver/views.py:4828
+#: sickrage/core/webserver/views.py:4867
 msgid "Error(s) Saving Configuration"
 msgstr "Помилки збереження конфігурації"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3901
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3916
 msgid "Config - Backup/Restore"
 msgstr "Config - резервне копіювання/відновлення"
 
-#: sickrage/core/webserver/views.py:3925
+#: sickrage/core/webserver/views.py:3929
 msgid "Backup SUCCESSFUL"
 msgstr "УСПІШНЕ резервне копіювання"
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3931
 msgid "Backup FAILED!"
 msgstr "Помилка резервного копіювання!"
 
-#: sickrage/core/webserver/views.py:3929
+#: sickrage/core/webserver/views.py:3933
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Потрібно вибрати папку для збереження резервної копії на перший!"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3952
 msgid "Successfully extracted restore files to "
 msgstr "Файли успішно витягнуті відновлення до "
 
-#: sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3953
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage для завершення відновлення."
 
-#: sickrage/core/webserver/views.py:3951
+#: sickrage/core/webserver/views.py:3955
 msgid "Restore FAILED"
 msgstr "Не вдалося відновити"
 
-#: sickrage/core/webserver/views.py:3953
+#: sickrage/core/webserver/views.py:3957
 msgid "You need to select a backup file to restore!"
 msgstr "Слід вибрати файл резервної копії для відновлення!"
 
-#: sickrage/core/webserver/views.py:3969
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid "Unable to create directory "
 msgstr "Не вдається створити каталог "
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid ", dir not changed."
 msgstr ", dir не змінюється."
 
-#: sickrage/core/webserver/views.py:4059
+#: sickrage/core/webserver/views.py:4063
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4074
+#: sickrage/core/webserver/views.py:4078
 msgid "Config - Post Processing"
 msgstr "Config - пост-обробки"
 
-#: sickrage/core/webserver/views.py:4114
+#: sickrage/core/webserver/views.py:4118
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Розпакування не підтримуються, відключивши розпакувати налаштування"
 
-#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4164
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Ви пробували збереження неприпустимий аніме іменування config, не збереження настройок іменування"
 
-#: sickrage/core/webserver/views.py:4151 sickrage/core/webserver/views.py:4162
+#: sickrage/core/webserver/views.py:4155 sickrage/core/webserver/views.py:4166
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Ви пробували збереження неприпустимий іменування config, не збереження настройок іменування"
 
-#: sickrage/core/webserver/views.py:4168
+#: sickrage/core/webserver/views.py:4172
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Ви пробували збереження є неприпустимим повітря за датою іменування config не збереження настройок повітря за датою"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4178
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Ви пробували збереження неприпустимий спорт іменування config, не збереження настройок спорт"
 
-#: sickrage/core/webserver/views.py:4190
+#: sickrage/core/webserver/views.py:4194
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:4273
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4314
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Ні постачальник, указані"
 
-#: sickrage/core/webserver/views.py:4312
+#: sickrage/core/webserver/views.py:4316
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ні постачальник Указана URL-адреса"
 
-#: sickrage/core/webserver/views.py:4314
+#: sickrage/core/webserver/views.py:4318
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Немає постачальника послуг Api ключ вказано"
 
-#: sickrage/core/webserver/views.py:4411
+#: sickrage/core/webserver/views.py:4415
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4426
+#: sickrage/core/webserver/views.py:4430
 msgid "Config - Notifications"
 msgstr "Config - сповіщення"
 
-#: sickrage/core/webserver/views.py:4745
+#: sickrage/core/webserver/views.py:4749
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4760
+#: sickrage/core/webserver/views.py:4764
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4826
+#: sickrage/core/webserver/views.py:4830
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4845
 msgid "Config - Anime"
 msgstr "Config - аніме"
 
-#: sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:4869
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4884
 msgid "Config - Quality Settings"
 msgstr "Config - параметри якості"
 
-#: sickrage/core/webserver/views.py:4892
+#: sickrage/core/webserver/views.py:4896
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[УСТАНОВКИ ЯКОСТІ] Конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4909
 msgid "Clear Errors"
 msgstr "Зніміть помилки"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4912
 msgid "Clear Warnings"
 msgstr "Зніміть попередження"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4953
 msgid "Daily Searcher"
 msgstr "Щоденний шукача"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4955
 msgid "Show Updater"
 msgstr "Показати Updater"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4956
 msgid "Check Version"
 msgstr "Перевірте версію"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4958
 msgid "Search Queue"
 msgstr "Пошук черги"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4959
 msgid "Find Propers"
 msgstr "Знайти Propers"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4960
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4961
 msgid "Find Subtitles"
 msgstr "Знайти субтитри"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4963
 msgid "Event"
 msgstr "Подія"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4965
 msgid "Tornado"
 msgstr "\"Торнадо\""
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4966
 msgid "Thread"
 msgstr "Нитка"
 

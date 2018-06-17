@@ -1,6 +1,13 @@
 # Changelog
 
-- * 3fdf29e - 2018-06-10: Release v9.3.34 
+- * 9199b10 - 2018-06-16: Release v9.3.35 
+- * 2e05d78 - 2018-06-16: Added function to randomize external upnp port number Added ability to manually set external upnp port number 
+- * 8ee962a - 2018-06-16: Pre-Release v9.3.35.dev2 
+- * bcdcce3 - 2018-06-16: Pre-Release v9.3.35.dev1 
+- * 8f7a4e2 - 2018-06-16: Added UPNP functionality to app 
+- * 2eef0d8 - 2018-06-16: Fixed requirements issues 
+- * f316113 - 2018-06-11: Changed placement of announcement&#x27;s for main layout 
+- * 7bd322b - 2018-06-10: Release v9.3.34 
 - * 5c47d7c - 2018-06-10: Added Google Drive support for syncing app data local and remote Added ability to download unverified torrent magnet links Fixed issues for access data retrieved from SR API endpoints 
 - * a65bc0f - 2018-06-04: Release v9.3.29 
 - * d21e3aa - 2018-06-02: Fixed NoneType error in displayShow mako code related to imdb ratings 

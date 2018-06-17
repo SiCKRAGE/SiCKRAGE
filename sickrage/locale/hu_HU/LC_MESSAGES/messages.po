@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-10 01:34-0700\n"
-"PO-Revision-Date: 2018-06-10 04:35-0400\n"
+"POT-Creation-Date: 2018-06-16 22:20-0700\n"
+"PO-Revision-Date: 2018-06-17 01:23-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -496,7 +496,7 @@ msgstr "Minőségi"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:132
-#: sickrage/core/webserver/views/layouts/main.mako:453
+#: sickrage/core/webserver/views/layouts/main.mako:449
 msgid "Snatched"
 msgstr "Kikapta"
 
@@ -546,7 +546,7 @@ msgstr "Beállítások AnimeDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:98
-#: sickrage/core/webserver/views/config/general.mako:442
+#: sickrage/core/webserver/views/config/general.mako:456
 msgid "User Interface"
 msgstr "Felhasználói felület"
 
@@ -591,14 +591,14 @@ msgstr "Szeretné hozzáadni a kottává epizódok a MyList?"
 
 #: sickrage/core/webserver/views/config/anime.mako:88
 #: sickrage/core/webserver/views/config/anime.mako:115
-#: sickrage/core/webserver/views/config/general.mako:128
-#: sickrage/core/webserver/views/config/general.mako:351
-#: sickrage/core/webserver/views/config/general.mako:431
-#: sickrage/core/webserver/views/config/general.mako:709
-#: sickrage/core/webserver/views/config/general.mako:927
-#: sickrage/core/webserver/views/config/general.mako:1177
-#: sickrage/core/webserver/views/config/general.mako:1227
-#: sickrage/core/webserver/views/config/general.mako:1350
+#: sickrage/core/webserver/views/config/general.mako:141
+#: sickrage/core/webserver/views/config/general.mako:365
+#: sickrage/core/webserver/views/config/general.mako:445
+#: sickrage/core/webserver/views/config/general.mako:723
+#: sickrage/core/webserver/views/config/general.mako:992
+#: sickrage/core/webserver/views/config/general.mako:1242
+#: sickrage/core/webserver/views/config/general.mako:1292
+#: sickrage/core/webserver/views/config/general.mako:1415
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -693,7 +693,7 @@ msgid "Restore cache files"
 msgstr "Gyorsítótár-fájlok visszaállítása"
 
 #: sickrage/core/webserver/views/config/general.mako:20
-#: sickrage/core/webserver/views/config/general.mako:136
+#: sickrage/core/webserver/views/config/general.mako:149
 msgid "Misc"
 msgstr "Misc"
 
@@ -702,7 +702,7 @@ msgid "Interface"
 msgstr "Felület"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:939
+#: sickrage/core/webserver/views/config/general.mako:1004
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "A speciális beállítások"
@@ -772,7 +772,15 @@ msgstr ""
 msgid "Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:121
+#: sickrage/core/webserver/views/config/general.mako:117
+msgid "Sync To Google Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:119
+msgid "Sync To Local Drive"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:134
 #: sickrage/core/webserver/views/config/notifications.mako:178
 #: sickrage/core/webserver/views/config/notifications.mako:562
 #: sickrage/core/webserver/views/config/notifications.mako:665
@@ -791,287 +799,287 @@ msgstr ""
 msgid "Click below to test."
 msgstr "Kattintson az alábbi teszt."
 
-#: sickrage/core/webserver/views/config/general.mako:127
+#: sickrage/core/webserver/views/config/general.mako:140
 msgid "Test API"
 msgstr "Teszt API"
 
-#: sickrage/core/webserver/views/config/general.mako:137
+#: sickrage/core/webserver/views/config/general.mako:150
 msgid "Startup options. Indexer options. Log and show file locations."
 msgstr "Indítási beállításokat. Tartalomjegyzékbe vett választások. Log és Térkép fájlok helyét."
 
-#: sickrage/core/webserver/views/config/general.mako:138
+#: sickrage/core/webserver/views/config/general.mako:151
 msgid "Some options may require a manual restart to take effect."
 msgstr "Bizonyos beállítások szükség lehet a kézi újraindítás érvénybe."
 
-#: sickrage/core/webserver/views/config/general.mako:144
+#: sickrage/core/webserver/views/config/general.mako:157
 msgid "Default Indexer Language"
 msgstr "Alapértelmezett indexelő nyelv"
 
-#: sickrage/core/webserver/views/config/general.mako:153
+#: sickrage/core/webserver/views/config/general.mako:166
 msgid "for adding shows and metadata providers"
 msgstr "a műsorok és a metaadatok szolgáltatók hozzáadásával"
 
-#: sickrage/core/webserver/views/config/general.mako:161
+#: sickrage/core/webserver/views/config/general.mako:174
 msgid "Launch browser"
 msgstr "Indítsa el a böngésző"
 
-#: sickrage/core/webserver/views/config/general.mako:166
+#: sickrage/core/webserver/views/config/general.mako:179
 msgid "open the SickRage home page on startup"
 msgstr "a SickRage Kezdőoldal megnyitása indításkor"
 
-#: sickrage/core/webserver/views/config/general.mako:171
+#: sickrage/core/webserver/views/config/general.mako:184
 msgid "Initial page"
 msgstr "Kezdő oldal"
 
-#: sickrage/core/webserver/views/config/general.mako:179
+#: sickrage/core/webserver/views/config/general.mako:192
 msgid "when launching SickRage interface"
 msgstr "Mikor dob SickRage felület"
 
-#: sickrage/core/webserver/views/config/general.mako:181
+#: sickrage/core/webserver/views/config/general.mako:194
 #: sickrage/core/webserver/views/layouts/main.mako:98
-#: sickrage/core/webserver/views/layouts/main.mako:445
+#: sickrage/core/webserver/views/layouts/main.mako:441
 msgid "Shows"
 msgstr "Műsorok"
 
 #: sickrage/core/webserver/views.py:524 sickrage/core/webserver/views.py:525
-#: sickrage/core/webserver/views/config/general.mako:184
+#: sickrage/core/webserver/views/config/general.mako:197
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Menetrend"
 
 #: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3665
-#: sickrage/core/webserver/views/config/general.mako:187
+#: sickrage/core/webserver/views/config/general.mako:200
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
 msgstr "Történelem"
 
-#: sickrage/core/webserver/views/config/general.mako:190
+#: sickrage/core/webserver/views/config/general.mako:203
 #: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "IRC"
 msgstr "IRC"
 
-#: sickrage/core/webserver/views/config/general.mako:199
+#: sickrage/core/webserver/views/config/general.mako:212
 msgid "Daily show updates start time"
 msgstr "Napi Térkép frissítéseket kezdetének időpontja"
 
-#: sickrage/core/webserver/views/config/general.mako:214
+#: sickrage/core/webserver/views/config/general.mako:227
 msgid "with information such as next air dates, show ended, etc."
 msgstr "információt, például a következő levegő dátumok show véget ért, stb."
 
-#: sickrage/core/webserver/views/config/general.mako:215
+#: sickrage/core/webserver/views/config/general.mako:228
 msgid "Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)"
 msgstr "Használata 15 15: 00, 04: 00 4 stb. Bármi 23 felett vagy alatt 0 lesz készlet-hoz 0 (0: 00)"
 
-#: sickrage/core/webserver/views/config/general.mako:222
+#: sickrage/core/webserver/views/config/general.mako:235
 msgid "Daily show updates stale shows"
 msgstr "Napi Térkép frissíti az elavult mutatja"
 
-#: sickrage/core/webserver/views/config/general.mako:228
+#: sickrage/core/webserver/views/config/general.mako:241
 msgid "should ended shows last updated less then 90 days get updated and refreshed automatically ?"
 msgstr "utolsó frissítés kevesebb mint 90 napon véget ért műsorok kap korszerűsített és automatikusan frissüljön?"
 
-#: sickrage/core/webserver/views/config/general.mako:235
+#: sickrage/core/webserver/views/config/general.mako:248
 msgid "Send to trash for actions"
 msgstr "A műveletek a Lomtárba"
 
-#: sickrage/core/webserver/views/config/general.mako:240
+#: sickrage/core/webserver/views/config/general.mako:253
 msgid "when using show \"Remove\" and delete files"
 msgstr "Mikor használ Térkép \"Eltávolít\", és törölje a fájlokat"
 
-#: sickrage/core/webserver/views/config/general.mako:245
+#: sickrage/core/webserver/views/config/general.mako:258
 msgid "on scheduled deletes of the oldest log files"
 msgstr "a tervezett törli a legrégebbi naplófájlok"
 
-#: sickrage/core/webserver/views/config/general.mako:248
+#: sickrage/core/webserver/views/config/general.mako:262
 msgid "selected actions use trash (recycle bin) instead of the default permanent delete"
 msgstr "kiválasztott műveletek szemetet (recycle bin) használata helyett az alapértelmezett állandó törlés"
 
-#: sickrage/core/webserver/views/config/general.mako:256
+#: sickrage/core/webserver/views/config/general.mako:270
 msgid "Number of Log files saved"
 msgstr "Elmentett naplófájlok száma"
 
-#: sickrage/core/webserver/views/config/general.mako:265
+#: sickrage/core/webserver/views/config/general.mako:279
 msgid "default = 5"
 msgstr "alapértelmezett = 5"
 
-#: sickrage/core/webserver/views/config/general.mako:276
+#: sickrage/core/webserver/views/config/general.mako:290
 msgid "Size of Log files saved"
 msgstr "A mentett naplófájlok mérete"
 
-#: sickrage/core/webserver/views/config/general.mako:285
+#: sickrage/core/webserver/views/config/general.mako:299
 msgid "default = 1048576 (1MB)"
 msgstr "alapértelmezett = 1048576 (1MB)"
 
-#: sickrage/core/webserver/views/config/general.mako:296
+#: sickrage/core/webserver/views/config/general.mako:310
 msgid "Default indexer for adding shows"
 msgstr "Alapértelmezett tartalomjegyzékbe vett részére összeadás mutatja"
 
-#: sickrage/core/webserver/views/config/general.mako:307
+#: sickrage/core/webserver/views/config/general.mako:321
 msgid "All Indexers"
 msgstr "Összes indexelő"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:335
 msgid "Show indexer timeout"
 msgstr "Show indexer időtúllépés"
 
-#: sickrage/core/webserver/views/config/general.mako:330
+#: sickrage/core/webserver/views/config/general.mako:344
 msgid "default = 10"
 msgstr "alapértelmezett = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:343
+#: sickrage/core/webserver/views/config/general.mako:357
 msgid "Show root directories"
 msgstr "Térkép-gyökér címtárak"
 
-#: sickrage/core/webserver/views/config/general.mako:360
+#: sickrage/core/webserver/views/config/general.mako:374
 msgid "Updates"
 msgstr "Frissítések"
 
-#: sickrage/core/webserver/views/config/general.mako:361
+#: sickrage/core/webserver/views/config/general.mako:375
 msgid "Options for software updates."
 msgstr "Választások részére szoftver korszerűsít."
 
-#: sickrage/core/webserver/views/config/general.mako:368
+#: sickrage/core/webserver/views/config/general.mako:382
 msgid "Check software updates"
 msgstr "Szoftverfrissítések ellenőrzése"
 
-#: sickrage/core/webserver/views/config/general.mako:374
+#: sickrage/core/webserver/views/config/general.mako:388
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:383
+#: sickrage/core/webserver/views/config/general.mako:397
 msgid "Automatically update"
 msgstr "Automatikus frissítése"
 
-#: sickrage/core/webserver/views/config/general.mako:389
+#: sickrage/core/webserver/views/config/general.mako:403
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:397
+#: sickrage/core/webserver/views/config/general.mako:411
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:406
+#: sickrage/core/webserver/views/config/general.mako:420
 msgid "default = 12 (hours)"
 msgstr "alapértelmezett = 12 (óra)"
 
-#: sickrage/core/webserver/views/config/general.mako:418
+#: sickrage/core/webserver/views/config/general.mako:432
 msgid "Notify on software update"
 msgstr "Értesíti a szoftverfrissítés"
 
-#: sickrage/core/webserver/views/config/general.mako:424
+#: sickrage/core/webserver/views/config/general.mako:438
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "üzenet küldése minden engedélyezett bejelentők, amikor SickRage frissült."
 
-#: sickrage/core/webserver/views/config/general.mako:443
+#: sickrage/core/webserver/views/config/general.mako:457
 msgid "Options for visual appearance."
 msgstr "Vizuális megjelenés lehetőségei."
 
-#: sickrage/core/webserver/views/config/general.mako:449
+#: sickrage/core/webserver/views/config/general.mako:463
 msgid "Interface Language"
 msgstr "Kezelőfelület nyelve"
 
-#: sickrage/core/webserver/views/config/general.mako:460
+#: sickrage/core/webserver/views/config/general.mako:474
 msgid "System Language"
 msgstr "Rendszer nyelv"
 
-#: sickrage/core/webserver/views/config/general.mako:472
+#: sickrage/core/webserver/views/config/general.mako:486
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "megjelenés hatás, hogy mentse, majd a böngésző frissítése"
 
-#: sickrage/core/webserver/views/config/general.mako:481
+#: sickrage/core/webserver/views/config/general.mako:495
 msgid "Display theme"
 msgstr "Megjelenítési téma"
 
-#: sickrage/core/webserver/views/config/general.mako:491
+#: sickrage/core/webserver/views/config/general.mako:505
 msgid "Dark"
 msgstr "Sötét"
 
-#: sickrage/core/webserver/views/config/general.mako:494
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid "Light"
 msgstr "Fény"
 
-#: sickrage/core/webserver/views/config/general.mako:503
+#: sickrage/core/webserver/views/config/general.mako:517
 msgid "Show all seasons"
 msgstr "Show minden évszakban"
 
-#: sickrage/core/webserver/views/config/general.mako:509
-#: sickrage/core/webserver/views/config/general.mako:685
+#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:699
 msgid "on the show summary page"
 msgstr "a Térkép az összefoglaló lap"
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:531
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Rendezés az \"A\", \"A\", \"Az\""
 
-#: sickrage/core/webserver/views/config/general.mako:523
+#: sickrage/core/webserver/views/config/general.mako:537
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "közé tartozik cikkek (\"A\", \"A\", \"Az\") amikor válogatás show listák"
 
-#: sickrage/core/webserver/views/config/general.mako:531
+#: sickrage/core/webserver/views/config/general.mako:545
 msgid "Filter Row"
 msgstr "Szűrősor"
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:551
 msgid "Add a filter row to the show display on the home page"
 msgstr "Hozzáad egy szűrőt a kezdőlapon a Térkép megjelenítése"
 
-#: sickrage/core/webserver/views/config/general.mako:544
+#: sickrage/core/webserver/views/config/general.mako:558
 msgid "Missed episodes range"
 msgstr "Számos kihagyott epizódok"
 
-#: sickrage/core/webserver/views/config/general.mako:554
+#: sickrage/core/webserver/views/config/general.mako:568
 msgid "# of days"
 msgstr "a napokban #"
 
-#: sickrage/core/webserver/views/config/general.mako:563
+#: sickrage/core/webserver/views/config/general.mako:577
 msgid "Display fuzzy dates"
 msgstr "Fuzzy dátumok megjelenítése"
 
-#: sickrage/core/webserver/views/config/general.mako:570
+#: sickrage/core/webserver/views/config/general.mako:584
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "abszolút dátumok beköltözik tippek és pl. \"utolsó csütörtök\", \"Kedd\" megjelenítése"
 
-#: sickrage/core/webserver/views/config/general.mako:577
+#: sickrage/core/webserver/views/config/general.mako:591
 msgid "Trim zero padding"
 msgstr "Trim nulla párnázat"
 
-#: sickrage/core/webserver/views/config/general.mako:583
+#: sickrage/core/webserver/views/config/general.mako:597
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "távolítsa el a vezető, a \"0\" mutatja, óra, nap, és a dátum, hónap sorszám"
 
-#: sickrage/core/webserver/views/config/general.mako:590
+#: sickrage/core/webserver/views/config/general.mako:604
 msgid "Date style"
 msgstr "Stílus dátumot"
 
-#: sickrage/core/webserver/views/config/general.mako:608
+#: sickrage/core/webserver/views/config/general.mako:622
 msgid "Use System Default"
 msgstr "Használja az alapértelmezett rendszer"
 
-#: sickrage/core/webserver/views/config/general.mako:620
+#: sickrage/core/webserver/views/config/general.mako:634
 msgid "Time style"
 msgstr "Idő"
 
-#: sickrage/core/webserver/views/config/general.mako:639
+#: sickrage/core/webserver/views/config/general.mako:653
 msgid "Timezone"
 msgstr "Időzóna"
 
-#: sickrage/core/webserver/views/config/general.mako:644
+#: sickrage/core/webserver/views/config/general.mako:658
 msgid "Local"
 msgstr "Helyi"
 
-#: sickrage/core/webserver/views/config/general.mako:648
+#: sickrage/core/webserver/views/config/general.mako:662
 #: sickrage/core/webserver/views/home/index.mako:43
 #: sickrage/core/webserver/views/home/index.mako:267
 msgid "Network"
 msgstr "Hálózati"
 
-#: sickrage/core/webserver/views/config/general.mako:651
+#: sickrage/core/webserver/views/config/general.mako:665
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "dátumok és időpontok megjelenítésére, az időzóna vagy a mutat hálózat időzóna"
 
-#: sickrage/core/webserver/views/config/general.mako:653
-#: sickrage/core/webserver/views/config/general.mako:1124
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:667
+#: sickrage/core/webserver/views/config/general.mako:1189
+#: sickrage/core/webserver/views/config/general.mako:1231
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1093,60 +1101,76 @@ msgstr "dátumok és időpontok megjelenítésére, az időzóna vagy a mutat h�
 msgid "NOTE:"
 msgstr "MEGJEGYZÉS:"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:667
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Használata helyi időzóna-hoz elkezd keres epizódok perc után a show véget ér (függ a dailysearch gyakorisága)"
 
-#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:675
 msgid "Download url"
 msgstr "Letöltés url"
 
-#: sickrage/core/webserver/views/config/general.mako:678
+#: sickrage/core/webserver/views/config/general.mako:692
 msgid "Show fanart in the background"
 msgstr "A háttérben Térkép-fanart"
 
-#: sickrage/core/webserver/views/config/general.mako:692
+#: sickrage/core/webserver/views/config/general.mako:706
 msgid "Fanart transparency"
 msgstr "Fanart átláthatóság"
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:731
 msgid "Web Interface"
 msgstr "Webes felületen"
 
-#: sickrage/core/webserver/views/config/general.mako:718
+#: sickrage/core/webserver/views/config/general.mako:732
 msgid "It is recommended that you enable a username and password to secure SickRage from being tampered with remotely."
 msgstr "Ajánlatos, hogy engedélyezi-e egy username és jelszó-hoz biztosít SickRage az illetéktelen módosítástól távolról."
 
-#: sickrage/core/webserver/views/config/general.mako:719
+#: sickrage/core/webserver/views/config/general.mako:733
 msgid "These options require a manual restart to take effect."
 msgstr "Ezeket a beállításokat érvénybe kézi újraindítás szükséges."
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:739
+msgid "Enable UPnP"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:745
+msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:753
+msgid "HTTP public port"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:772
+msgid "used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:782
 msgid "API key"
 msgstr "API-kulcs"
 
-#: sickrage/core/webserver/views/config/general.mako:747
+#: sickrage/core/webserver/views/config/general.mako:804
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "használt, hogy a 3. fél programok korlátozott hozzáférés SiCKRAGE, tudod megpróbál minden a jellegét meghatározza-ból API"
 
-#: sickrage/core/webserver/views/config/general.mako:748
+#: sickrage/core/webserver/views/config/general.mako:805
 msgid "here"
 msgstr "itt"
 
-#: sickrage/core/webserver/views/config/general.mako:758
+#: sickrage/core/webserver/views/config/general.mako:815
 msgid "HTTP logs"
 msgstr "HTTP-naplók"
 
-#: sickrage/core/webserver/views/config/general.mako:763
+#: sickrage/core/webserver/views/config/general.mako:820
 msgid "enable logs from the internal Tornado web server"
 msgstr "engedélyezi a belső tornádó web szerver naplók"
 
-#: sickrage/core/webserver/views/config/general.mako:769
+#: sickrage/core/webserver/views/config/general.mako:826
 msgid "HTTP username"
 msgstr "HTTP username"
 
-#: sickrage/core/webserver/views/config/general.mako:779
-#: sickrage/core/webserver/views/config/general.mako:798
+#: sickrage/core/webserver/views/config/general.mako:836
+#: sickrage/core/webserver/views/config/general.mako:855
 #: sickrage/core/webserver/views/config/notifications.mako:154
 #: sickrage/core/webserver/views/config/notifications.mako:171
 #: sickrage/core/webserver/views/config/notifications.mako:262
@@ -1161,240 +1185,244 @@ msgstr "HTTP username"
 msgid "blank = no authentication"
 msgstr "üres = nincs hitelesítés"
 
-#: sickrage/core/webserver/views/config/general.mako:788
+#: sickrage/core/webserver/views/config/general.mako:845
 msgid "HTTP password"
 msgstr "HTTP jelszó"
 
-#: sickrage/core/webserver/views/config/general.mako:807
-msgid "HTTP port"
-msgstr "HTTP-port"
+#: sickrage/core/webserver/views/config/general.mako:864
+msgid "HTTP private port"
+msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:816
+#: sickrage/core/webserver/views/config/general.mako:875
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:826
+#: sickrage/core/webserver/views/config/general.mako:884
+msgid "used to access SiCKRAGE over a private internal IP address"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:893
 msgid "Listen on IPv6"
 msgstr "Figyelni az IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:831
+#: sickrage/core/webserver/views/config/general.mako:898
 msgid "attempt binding to any available IPv6 address"
 msgstr "próbálja meg a kötelező, hogy minden elérhető IPv6-cím"
 
-#: sickrage/core/webserver/views/config/general.mako:839
+#: sickrage/core/webserver/views/config/general.mako:904
 msgid "Enable HTTPS"
 msgstr "Engedélyezi a HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:845
+#: sickrage/core/webserver/views/config/general.mako:910
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "engedélyezi a hozzáférést a webes felületet használja a HTTPS-címet"
 
-#: sickrage/core/webserver/views/config/general.mako:854
+#: sickrage/core/webserver/views/config/general.mako:919
 msgid "HTTPS certificate"
 msgstr "HTTPS-tanúsítványon"
 
-#: sickrage/core/webserver/views/config/general.mako:868
+#: sickrage/core/webserver/views/config/general.mako:933
 msgid "file name or path to HTTPS certificate"
 msgstr "fájl neve vagy elérési útja, a HTTPS-tanúsítványon"
 
-#: sickrage/core/webserver/views/config/general.mako:878
+#: sickrage/core/webserver/views/config/general.mako:943
 msgid "HTTPS key"
 msgstr "HTTPS-kulcs"
 
-#: sickrage/core/webserver/views/config/general.mako:890
+#: sickrage/core/webserver/views/config/general.mako:955
 msgid "file name or path to HTTPS key"
 msgstr "fájl neve vagy útneve HTTPS kulcs"
 
-#: sickrage/core/webserver/views/config/general.mako:900
+#: sickrage/core/webserver/views/config/general.mako:965
 msgid "Reverse proxy headers"
 msgstr "Fordított proxy fejléc"
 
-#: sickrage/core/webserver/views/config/general.mako:906
+#: sickrage/core/webserver/views/config/general.mako:971
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "fogadja el a következő fordított proxy fejlécek (speciális)..."
 
-#: sickrage/core/webserver/views/config/general.mako:907
+#: sickrage/core/webserver/views/config/general.mako:972
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X-Forwarded-For X továbbított fogadó és X továbbított Proto)"
 
-#: sickrage/core/webserver/views/config/general.mako:914
+#: sickrage/core/webserver/views/config/general.mako:979
 msgid "Notify on login"
 msgstr "Belépés a értesítést"
 
-#: sickrage/core/webserver/views/config/general.mako:920
+#: sickrage/core/webserver/views/config/general.mako:985
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "üzenet küldése minden engedélyezett bejelentők, mikor valaki tuskók-ba SiCKRAGE-egy nyilvános IP-címről"
 
-#: sickrage/core/webserver/views/config/general.mako:945
+#: sickrage/core/webserver/views/config/general.mako:1010
 msgid "CPU throttling"
 msgstr "CPU-szabályozás"
 
-#: sickrage/core/webserver/views/config/general.mako:964
+#: sickrage/core/webserver/views/config/general.mako:1029
 msgid "Anonymous redirect"
 msgstr "Névtelen átirányítás"
 
-#: sickrage/core/webserver/views/config/general.mako:982
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "Enable debug"
 msgstr "Engedélyezi a hibakeresési"
 
-#: sickrage/core/webserver/views/config/general.mako:988
+#: sickrage/core/webserver/views/config/general.mako:1053
 msgid "Enable debug logs"
 msgstr "A hibakereső naplók engedélyezése"
 
-#: sickrage/core/webserver/views/config/general.mako:995
+#: sickrage/core/webserver/views/config/general.mako:1060
 msgid "Verify SSL Certs"
 msgstr "SSL tanúsítványok ellenőrzése"
 
-#: sickrage/core/webserver/views/config/general.mako:1001
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Ellenőrizze az SSL-tanúsítványok (megbénít ez törött SSL telepíti (mint a QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1010
+#: sickrage/core/webserver/views/config/general.mako:1075
 msgid "No Restart"
 msgstr "Nem újból kifejt"
 
-#: sickrage/core/webserver/views/config/general.mako:1017
+#: sickrage/core/webserver/views/config/general.mako:1082
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "Shutdown SiCKRAGE a újraindul (külszolgálat kell újraindítása SiCKRAGE saját)."
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1092
 msgid "Encrypt settings"
 msgstr "Beavatkozik a beállítások"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "in the"
 msgstr "a a"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "file."
 msgstr "fájl."
 
-#: sickrage/core/webserver/views/config/general.mako:1042
+#: sickrage/core/webserver/views/config/general.mako:1107
 msgid "Unprotected calendar"
 msgstr "Védtelen naptár"
 
-#: sickrage/core/webserver/views/config/general.mako:1048
+#: sickrage/core/webserver/views/config/general.mako:1113
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "lehetővé teszi a felhasználó és jelszó nélkül a naptár-előfizetés. Egyes szolgáltatások, mint a Google Naptár csak így működik"
 
-#: sickrage/core/webserver/views/config/general.mako:1058
+#: sickrage/core/webserver/views/config/general.mako:1123
 msgid "Google Calendar Icons"
 msgstr "Google Naptár ikonok"
 
-#: sickrage/core/webserver/views/config/general.mako:1064
+#: sickrage/core/webserver/views/config/general.mako:1129
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "Google Naptár mellett exportált naptáresemények ikon megjelenítése."
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1138
 msgid "Link Google Account"
 msgstr "Google-fiókomat"
 
-#: sickrage/core/webserver/views/config/general.mako:1076
+#: sickrage/core/webserver/views/config/general.mako:1141
 msgid "Link"
 msgstr "Link"
 
-#: sickrage/core/webserver/views/config/general.mako:1078
+#: sickrage/core/webserver/views/config/general.mako:1143
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "a google fiók csatolása SiCKRAGE speciális szolgáltatás használata, mint a beállítások/adatbázis-tároló"
 
-#: sickrage/core/webserver/views/config/general.mako:1086
+#: sickrage/core/webserver/views/config/general.mako:1151
 msgid "Proxy host"
 msgstr "Proxy fogadó"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1168
 msgid "Use proxy for indexers"
 msgstr "Proxy használata az Indexelő"
 
-#: sickrage/core/webserver/views/config/general.mako:1109
+#: sickrage/core/webserver/views/config/general.mako:1174
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "használ proxy fogadó csatlakozáshoz indexers (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1117
+#: sickrage/core/webserver/views/config/general.mako:1182
 msgid "Skip Remove Detection"
 msgstr "Ugrás eltávolítása észlelése"
 
-#: sickrage/core/webserver/views/config/general.mako:1123
+#: sickrage/core/webserver/views/config/general.mako:1188
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Kimutatása eltávolított fájlok kihagyása. Megbénít ez akarat készlet a hiba állapot törlése"
 
-#: sickrage/core/webserver/views/config/general.mako:1124
+#: sickrage/core/webserver/views/config/general.mako:1189
 msgid "This may mean SickRage misses renames as well"
 msgstr "Ez azt jelenti, hogy hiányzik SickRage átnevezése, valamint"
 
-#: sickrage/core/webserver/views/config/general.mako:1132
+#: sickrage/core/webserver/views/config/general.mako:1197
 msgid "Default deleted episode status"
 msgstr "Alapértelmezett állapota törölt epizód"
 
-#: sickrage/core/webserver/views/config/general.mako:1164
+#: sickrage/core/webserver/views/config/general.mako:1229
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Határozza meg az állapot beállításához media-fájl törölve lett."
 
-#: sickrage/core/webserver/views/config/general.mako:1166
+#: sickrage/core/webserver/views/config/general.mako:1231
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Archivált menüpont megőrzi a korábbi letöltött minőségi"
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1233
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Példa: Letöltött (1080p WEB-DL) archivált (1080p WEB-DL) ==>"
 
-#: sickrage/core/webserver/views/config/general.mako:1186
+#: sickrage/core/webserver/views/config/general.mako:1251
 msgid "PIP Settings"
 msgstr "PIP-beállítások"
 
-#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1256
 msgid "PIP executable path"
 msgstr "PIP programfájl elérési útja"
 
-#: sickrage/core/webserver/views/config/general.mako:1202
+#: sickrage/core/webserver/views/config/general.mako:1267
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1215
-#: sickrage/core/webserver/views/config/general.mako:1312
+#: sickrage/core/webserver/views/config/general.mako:1280
+#: sickrage/core/webserver/views/config/general.mako:1377
 msgid "Click vefify path to test."
 msgstr "Kattintson a vefify kerti ösvény-hoz teszt."
 
-#: sickrage/core/webserver/views/config/general.mako:1240
+#: sickrage/core/webserver/views/config/general.mako:1305
 msgid "GIT Settings"
 msgstr "GIT beállítások"
 
-#: sickrage/core/webserver/views/config/general.mako:1245
+#: sickrage/core/webserver/views/config/general.mako:1310
 msgid "Git Branches"
 msgstr "Git Branch"
 
-#: sickrage/core/webserver/views/config/general.mako:1255
+#: sickrage/core/webserver/views/config/general.mako:1320
 msgid "GIT Branch Version"
 msgstr "GIT Branch változat"
 
-#: sickrage/core/webserver/views/config/general.mako:1275
+#: sickrage/core/webserver/views/config/general.mako:1340
 msgid "Error: No branches found."
 msgstr "Hiba: Nem található ágak."
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1344
 msgid "select branch to use (restart required)"
 msgstr "Válassza ki a fióktelep használ (újraindítás szükséges)"
 
-#: sickrage/core/webserver/views/config/general.mako:1288
+#: sickrage/core/webserver/views/config/general.mako:1353
 msgid "GIT executable path"
 msgstr "GIT programfájl elérési útja"
 
-#: sickrage/core/webserver/views/config/general.mako:1299
+#: sickrage/core/webserver/views/config/general.mako:1364
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1321
+#: sickrage/core/webserver/views/config/general.mako:1386
 msgid "Git reset"
 msgstr "Git reset"
 
-#: sickrage/core/webserver/views/config/general.mako:1327
+#: sickrage/core/webserver/views/config/general.mako:1392
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "eltávolítja a nem követett fájlokat és előad egy kemény orrgazdaság a git branch automatikusan, hogy segítsen megoldani a problémákat a frissítés"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1400
 msgid "Git auto-issues submit"
 msgstr "Git auto-kérdések küldés"
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1407
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "automatikusan jelentést bug, a probléma a mi helpdesk hibák naplózásakor"
 
@@ -3470,7 +3498,7 @@ msgstr "Szükség legalább egy, de két ajánlott."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent szolgáltatók lehet toggled a"
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3970
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Search Clients"
@@ -4692,7 +4720,7 @@ msgstr "Soha nem"
 msgid "Retry Download"
 msgstr "Újra megpróbál letölt"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4967
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4820,7 +4848,7 @@ msgstr "helyett a légi sorrendben használja a DVD rendelés"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "A \"teljes frissítésének kikényszerítése\", és ha már meglévő epizódok kell rendezni őket manuálisan."
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4842
+#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4846
 #: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5052,7 +5080,7 @@ msgstr "Letöltések"
 
 #: sickrage/core/webserver/views/home/index.mako:271
 #: sickrage/core/webserver/views/home/status.mako:44
-#: sickrage/core/webserver/views/layouts/main.mako:446
+#: sickrage/core/webserver/views/layouts/main.mako:442
 msgid "Active"
 msgstr "Aktív"
 
@@ -5148,7 +5176,7 @@ msgstr "Rendszerindításának végrehajtása"
 msgid "Daily Search"
 msgstr "Napi keresés"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4954
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Lemaradás"
@@ -5173,7 +5201,7 @@ msgstr "Post eljárás"
 msgid "Subtitles Finder"
 msgstr "Feliratok kereső"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4962
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt jelenléti ellenőr"
@@ -5206,7 +5234,7 @@ msgstr "nem"
 msgid "True"
 msgstr "Igaz"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4957
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Térkép-várólista"
@@ -5576,28 +5604,28 @@ msgstr "Általános"
 msgid "Backup and Restore"
 msgstr "Biztonsági mentés és visszaállítás"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4274
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Providers"
 msgstr "Keresésszolgáltatók"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4765
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Subtitles Settings"
 msgstr "Felirat beállítás"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4885
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Quality Settings"
 msgstr "Minőségi beállítások"
 
 #: sickrage/core/webserver/views.py:2276 sickrage/core/webserver/views.py:2277
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4079
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Utómunka"
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4427
+#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4431
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Notifications"
 msgstr "Értesítések"
@@ -5638,33 +5666,33 @@ msgstr "Kijelentkezés"
 msgid "Server Status"
 msgstr "Kiszolgáló állapota"
 
-#: sickrage/core/webserver/views/layouts/main.mako:456
+#: sickrage/core/webserver/views/layouts/main.mako:452
 msgid "Episodes Downloaded"
 msgstr "Letöltött epizód"
 
-#: sickrage/core/webserver/views/layouts/main.mako:457
+#: sickrage/core/webserver/views/layouts/main.mako:453
 msgid "Overall Downloaded"
 msgstr "Összességében letöltött"
 
-#: sickrage/core/webserver/views/layouts/main.mako:462
+#: sickrage/core/webserver/views/layouts/main.mako:458
 #: sickrage/core/webserver/views/manage/queues.mako:31
 msgid "Daily Search:"
 msgstr "Napi keresés:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:465
+#: sickrage/core/webserver/views/layouts/main.mako:461
 #: sickrage/core/webserver/views/manage/queues.mako:15
 msgid "Backlog Search:"
 msgstr "Lemaradás keresés:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:468
+#: sickrage/core/webserver/views/layouts/main.mako:464
 msgid "Memory used:"
 msgstr "Használt memória:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:472
+#: sickrage/core/webserver/views/layouts/main.mako:468
 msgid "Load time:"
 msgstr "Betöltési idő:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:479
+#: sickrage/core/webserver/views/layouts/main.mako:475
 msgid "Now:"
 msgstr "Most:"
 
@@ -6482,7 +6510,7 @@ msgstr "Már a kirendeltség: "
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1918
 #: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1964
 #: sickrage/core/webserver/views.py:1970 sickrage/core/webserver/views.py:1973
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4964
 msgid "Error"
 msgstr "Hiba"
 
@@ -6846,7 +6874,7 @@ msgstr "Törölve története"
 msgid "Removed history entries older than 30 days"
 msgstr "Eltávolított történelem tételek 30 napnál régebbi"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3913
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3917
 msgid "Backup/Restore"
 msgstr "Biztonsági mentés és visszaállítás"
 
@@ -6866,198 +6894,198 @@ msgstr "Config - általános"
 msgid "General Configuration"
 msgstr "Általános beállítások"
 
-#: sickrage/core/webserver/views.py:3895 sickrage/core/webserver/views.py:4057
-#: sickrage/core/webserver/views.py:4188 sickrage/core/webserver/views.py:4409
-#: sickrage/core/webserver/views.py:4743 sickrage/core/webserver/views.py:4824
-#: sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:3899 sickrage/core/webserver/views.py:4061
+#: sickrage/core/webserver/views.py:4192 sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:4747 sickrage/core/webserver/views.py:4828
+#: sickrage/core/webserver/views.py:4867
 msgid "Error(s) Saving Configuration"
 msgstr "Mentése konfigurációs hiba"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3901
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3916
 msgid "Config - Backup/Restore"
 msgstr "Config - biztonsági mentés és visszaállítás"
 
-#: sickrage/core/webserver/views.py:3925
+#: sickrage/core/webserver/views.py:3929
 msgid "Backup SUCCESSFUL"
 msgstr "Biztonsági mentés sikeres"
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3931
 msgid "Backup FAILED!"
 msgstr "Hát nem sikerült!"
 
-#: sickrage/core/webserver/views.py:3929
+#: sickrage/core/webserver/views.py:3933
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Ki kell választani egy mappába, hogy a biztonsági mentés az első!"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3952
 msgid "Successfully extracted restore files to "
 msgstr "Sikeresen kibontott visszaad fájlokat "
 
-#: sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3953
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage a visszaállítás befejezéséhez."
 
-#: sickrage/core/webserver/views.py:3951
+#: sickrage/core/webserver/views.py:3955
 msgid "Restore FAILED"
 msgstr "SIKERTELEN visszaállítás"
 
-#: sickrage/core/webserver/views.py:3953
+#: sickrage/core/webserver/views.py:3957
 msgid "You need to select a backup file to restore!"
 msgstr "Ki kell választania egy biztonságimásolat-fájl visszaállítása!"
 
-#: sickrage/core/webserver/views.py:3969
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr "Beállítás - Kereső szolgáltatók"
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid "Unable to create directory "
 msgstr "Nem lehet létrehozni a könyvtárat "
 
-#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid ", dir not changed."
 msgstr ", dir, nem változott."
 
-#: sickrage/core/webserver/views.py:4059
+#: sickrage/core/webserver/views.py:4063
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4074
+#: sickrage/core/webserver/views.py:4078
 msgid "Config - Post Processing"
 msgstr "Config - utómunka"
 
-#: sickrage/core/webserver/views.py:4114
+#: sickrage/core/webserver/views.py:4118
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Nem támogatja a kicsomagolás, kicsomagolni letiltása beállítást"
 
-#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4164
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Ön próbált, megtakarítás egy érvénytelen anime config elnevezés, nem a névadási beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4151 sickrage/core/webserver/views.py:4162
+#: sickrage/core/webserver/views.py:4155 sickrage/core/webserver/views.py:4166
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Próbált egy érvénytelen elnevezési config mentése nem a névadási beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4168
+#: sickrage/core/webserver/views.py:4172
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Próbálta mentése egy érvénytelen levegő határidő elnevezési config, nem az a levegő határidő-beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4178
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Próbált egy érvénytelen sport elnevezési config, nem menti a sport beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4190
+#: sickrage/core/webserver/views.py:4194
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:4273
 msgid "Config - Search Providers"
 msgstr "Beállítás - Kereső szolgáltatók"
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4314
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nincs a megadott szolgáltatónév"
 
-#: sickrage/core/webserver/views.py:4312
+#: sickrage/core/webserver/views.py:4316
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Nincs megadva szolgáltató URL-címe"
 
-#: sickrage/core/webserver/views.py:4314
+#: sickrage/core/webserver/views.py:4318
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Nincs megadva szolgáltató Api-kulcs"
 
-#: sickrage/core/webserver/views.py:4411
+#: sickrage/core/webserver/views.py:4415
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4426
+#: sickrage/core/webserver/views.py:4430
 msgid "Config - Notifications"
 msgstr "Config - értesítések"
 
-#: sickrage/core/webserver/views.py:4745
+#: sickrage/core/webserver/views.py:4749
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4760
+#: sickrage/core/webserver/views.py:4764
 msgid "Config - Subtitles Settings"
 msgstr "Beállítás - Felírat Beállítás"
 
-#: sickrage/core/webserver/views.py:4826
+#: sickrage/core/webserver/views.py:4830
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4845
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:4869
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4884
 msgid "Config - Quality Settings"
 msgstr "Config - minőségi beállítások"
 
-#: sickrage/core/webserver/views.py:4892
+#: sickrage/core/webserver/views.py:4896
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[MINŐSÉGI BEÁLLÍTÁSOK] Beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4909
 msgid "Clear Errors"
 msgstr "Nyilvánvaló hibák"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4912
 msgid "Clear Warnings"
 msgstr "Egyértelmű figyelmeztetéseket"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4953
 msgid "Daily Searcher"
 msgstr "Napi kereső"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4955
 msgid "Show Updater"
 msgstr "Térkép-Updater"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4956
 msgid "Check Version"
 msgstr "Ellenőriz változat"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4958
 msgid "Search Queue"
 msgstr "Várólista keresése"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4959
 msgid "Find Propers"
 msgstr "Még Propers"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4960
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4961
 msgid "Find Subtitles"
 msgstr "Meg a feliratok"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4963
 msgid "Event"
 msgstr "Esemény"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4965
 msgid "Tornado"
 msgstr "Tornádó"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4966
 msgid "Thread"
 msgstr "Szál"
 
