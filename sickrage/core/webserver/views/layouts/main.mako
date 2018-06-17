@@ -383,7 +383,7 @@
 
     % if current_user and sickrage.app.newest_version_string:
         <div class="row">
-            <span class="alert alert-success upgrade-notification center-block">
+            <span class="alert alert-success center-block">
                 ${sickrage.app.newest_version_string}
             </span>
         </div>

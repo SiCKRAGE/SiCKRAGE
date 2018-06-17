@@ -111,7 +111,7 @@
                                         <span class="label label-success">CONNECTED</span>
                                     </div>
                                 </div>
-                                    <br/>
+                                <br/>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <input class="btn" type="button" value="${_('Sync To Google Drive')}"
@@ -736,6 +736,49 @@
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Enable UPnP')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="enable_upnp" class="enabler"
+                               id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
+                        <label for="enable_upnp">
+                            ${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}
+                        </label>
+                    </div>
+                </div>
+
+                <div id="content_enable_upnp">
+                    <div class="row field-pair">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('HTTP public port')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="input-group input350">
+                                        <div class="input-group-addon">
+                                            <span class="glyphicon glyphicon-globe"></span>
+                                        </div>
+                                        <input name="web_external_port" id="web_external_port"
+                                               value="${sickrage.app.config.web_external_port}"
+                                               title="external web port to remotely access SiCKRAGE"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="web_external_port">
+                                        ${_('used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address')}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('API key')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
@@ -818,30 +861,30 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('HTTP port')}</label>
+                        <label class="component-title">${_('HTTP private port')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-globe"></span>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-globe"></span>
+                                    </div>
+                                    <input name="web_port" id="web_port"
+                                           value="${sickrage.app.config.web_port}"
+                                           placeholder="${_('8081')}"
+                                           title="web port to browse and access WebUI"
+                                           class="form-control"/>
+                                </div>
                             </div>
-                            <input name="web_port" id="web_port"
-                                   value="${sickrage.app.config.web_port}"
-                                   placeholder="${_('8081')}"
-                                   title="web port to browse and access WebUI"
-                                   class="form-control"/>
                         </div>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Enable UPnP')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="enable_upnp"
-                               id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
-                        <label for="enable_upnp">${_('automatically sets up port-forwarding from external IP to SiCKRAGE')}</label>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="web_port">
+                                    ${_('used to access SiCKRAGE over a private internal IP address')}
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -857,7 +900,6 @@
                 </div>
 
                 <div class="row field-pair">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable HTTPS')}</label>
                     </div>

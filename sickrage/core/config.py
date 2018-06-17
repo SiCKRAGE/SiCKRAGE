@@ -24,6 +24,7 @@ import datetime
 import gettext
 import os
 import os.path
+import random
 import re
 import sys
 import uuid
@@ -80,6 +81,7 @@ class Config(object):
         self.socket_timeout = 30
         self.web_host = ""
         self.web_port = 8081
+        self.web_external_port = random.randint(49152, 65536)
         self.web_log = False
         self.web_root = ""
         self.web_username = ""
@@ -769,6 +771,7 @@ class Config(object):
                 'git_path': 'git',
                 'sync_files': '!sync,lftp-pget-status,part,bts,!qb',
                 'web_port': 8081,
+                'web_external_port': random.randint(49152, 65536),
                 'launch_browser': False,
                 'unpack': False,
                 'unpack_dir': "",
@@ -1234,6 +1237,17 @@ class Config(object):
         if not self.version_notify:
             sickrage.app.newest_version_string = None
 
+    def change_web_external_port(self, web_external_port):
+        """
+        Change web external port number
+
+        :param web_external_port: New web external port number
+        """
+        if self.enable_upnp:
+            sickrage.app.upnp_client.delete_nat_portmap()
+            self.web_external_port = int(web_external_port)
+            sickrage.app.upnp_client.add_nat_portmap()
+
     ################################################################################
     # check_setting_int                                                            #
     ################################################################################
@@ -1373,6 +1387,7 @@ class Config(object):
         self.git_newver = self.check_setting_bool('General', 'git_newver')
         self.git_reset = self.check_setting_bool('General', 'git_reset')
         self.web_port = sickrage.app.web_port or self.check_setting_int('General', 'web_port')
+        self.web_external_port = self.check_setting_int('General', 'web_external_port')
         self.web_host = self.check_setting_str('General', 'web_host')
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
         self.web_root = self.check_setting_str('General', 'web_root').rstrip("/")
@@ -1865,6 +1880,7 @@ class Config(object):
                 'log_size': int(self.log_size),
                 'socket_timeout': self.socket_timeout,
                 'web_port': self.web_port,
+                'web_external_port': self.web_external_port,
                 'web_host': self.web_host,
                 'web_ipv6': int(self.web_ipv6),
                 'web_log': int(self.web_log),

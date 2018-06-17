@@ -3790,7 +3790,8 @@ class ConfigGeneral(Config):
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, api_username=None,
-                    api_password=None, use_api=None, enable_api_providers_cache=None, enable_upnp=None, **kwargs):
+                    api_password=None, use_api=None, enable_api_providers_cache=None, enable_upnp=None,
+                    web_external_port=None, **kwargs):
 
         results = []
 
@@ -3808,6 +3809,7 @@ class ConfigGeneral(Config):
         sickrage.app.log.set_level()
 
         # Misc
+        sickrage.app.config.enable_upnp = checkbox_to_value(enable_upnp)
         sickrage.app.config.download_url = download_url
         sickrage.app.config.indexer_default_language = indexerDefaultLang
         sickrage.app.config.ep_default_deleted_status = ep_default_deleted_status
@@ -3847,7 +3849,6 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
-        sickrage.app.config.enable_upnp = checkbox_to_value(enable_upnp)
         sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
         sickrage.app.config.web_username = web_username
         sickrage.app.config.web_password = web_password
@@ -3855,6 +3856,8 @@ class ConfigGeneral(Config):
         sickrage.app.config.filter_row = checkbox_to_value(filter_row)
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
+
+        sickrage.app.config.change_web_external_port(web_external_port)
 
         if date_preset:
             sickrage.app.config.date_preset = date_preset

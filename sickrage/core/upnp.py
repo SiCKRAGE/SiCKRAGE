@@ -25,8 +25,6 @@ class UPNPClient(threading.Thread):
 
     def shutdown(self):
         self.stop.set()
-        self.delete_nat_portmap()
-
         try:
             self.join(1)
         except:
@@ -42,7 +40,7 @@ class UPNPClient(threading.Thread):
             self.add_nat_portmap()
 
     def add_nat_portmap(self):
-        sickrage.app.log.debug("Setting up UPNP portmap...")
+        sickrage.app.log.debug("Adding SiCKRAGE UPNP portmap...")
 
         try:
             upnp_dev = self._discover_upnp_device()
@@ -57,20 +55,20 @@ class UPNPClient(threading.Thread):
                 # https://tools.ietf.org/id/draft-ietf-pcp-upnp-igd-interworking-07.html#errors
                 sickrage.app.log.debug("UPnP port mapping already configured, not overriding it")
             else:
-                sickrage.app.log.exception("Failed to setup UPnP portmap")
+                sickrage.app.log.exception("Failed to add UPnP portmap")
         except Exception:
-            sickrage.app.log.exception("Failed to setup UPnP portmap")
+            sickrage.app.log.exception("Failed to add UPnP portmap")
 
     def _add_nat_portmap(self, upnp_dev):
         internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
         if internal_ip is None:
-            sickrage.app.log.warn("Unable to detect internal IP address in order to setup UPnP portmap")
+            sickrage.app.log.warn("Unable to detect internal IP address in order to add UPnP portmap")
             return
 
         for protocol, description in [('TCP', 'SiCKRAGE')]:
             upnp_dev.WANIPConn1.AddPortMapping(
-                NewRemoteHost='0.0.0.0',
-                NewExternalPort=sickrage.app.config.web_port,
+                NewRemoteHost='',
+                NewExternalPort=sickrage.app.config.web_external_port,
                 NewProtocol=protocol,
                 NewInternalPort=sickrage.app.config.web_port,
                 NewInternalClient=internal_ip,
@@ -79,13 +77,15 @@ class UPNPClient(threading.Thread):
                 NewLeaseDuration=self._nat_portmap_lifetime,
             )
 
-        sickrage.app.log.debug("UPnP port forwarding successfully setup")
+        sickrage.app.log.debug("UPnP port forwarding successfully added")
 
     def delete_nat_portmap(self):
+        sickrage.app.log.debug("Deleting SiCKRAGE UPNP portmap...")
+
         upnp_dev = self._discover_upnp_device()
         if upnp_dev is None:
             return
-        self._add_nat_portmap(upnp_dev)
+        self._delete_nat_portmap(upnp_dev)
 
     def _delete_nat_portmap(self, upnp_dev):
         internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
@@ -95,8 +95,8 @@ class UPNPClient(threading.Thread):
 
         for protocol, description in [('TCP', 'SiCKRAGE')]:
             upnp_dev.WANIPConn1.DeletePortMapping(
-                NewRemoteHost='0.0.0.0',
-                NewExternalPort=sickrage.app.config.web_port,
+                NewRemoteHost='',
+                NewExternalPort=sickrage.app.config.web_external_port,
                 NewProtocol=protocol,
             )
 
