@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-16 16:01-0700\n"
-"PO-Revision-Date: 2018-06-16 19:02-0400\n"
+"POT-Creation-Date: 2018-06-16 22:20-0700\n"
+"PO-Revision-Date: 2018-06-17 01:24-0400\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -595,10 +595,10 @@ msgstr "Doriţi să adăugaţi PostProcessed episoade la MyList?"
 #: sickrage/core/webserver/views/config/general.mako:365
 #: sickrage/core/webserver/views/config/general.mako:445
 #: sickrage/core/webserver/views/config/general.mako:723
-#: sickrage/core/webserver/views/config/general.mako:950
-#: sickrage/core/webserver/views/config/general.mako:1200
-#: sickrage/core/webserver/views/config/general.mako:1250
-#: sickrage/core/webserver/views/config/general.mako:1373
+#: sickrage/core/webserver/views/config/general.mako:992
+#: sickrage/core/webserver/views/config/general.mako:1242
+#: sickrage/core/webserver/views/config/general.mako:1292
+#: sickrage/core/webserver/views/config/general.mako:1415
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -702,7 +702,7 @@ msgid "Interface"
 msgstr "Interfata"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:962
+#: sickrage/core/webserver/views/config/general.mako:1004
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Setări avansate"
@@ -1078,8 +1078,8 @@ msgid "display dates and times in either your timezone or the shows network time
 msgstr "afişează datele şi orele în fusul orar sau spectacole de reţea fus orar"
 
 #: sickrage/core/webserver/views/config/general.mako:667
-#: sickrage/core/webserver/views/config/general.mako:1147
 #: sickrage/core/webserver/views/config/general.mako:1189
+#: sickrage/core/webserver/views/config/general.mako:1231
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1130,31 +1130,47 @@ msgid "These options require a manual restart to take effect."
 msgstr "Aceste opţiuni necesită o repornire manuală să aibă efect."
 
 #: sickrage/core/webserver/views/config/general.mako:739
+msgid "Enable UPnP"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:745
+msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:753
+msgid "HTTP public port"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:772
+msgid "used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:782
 msgid "API key"
 msgstr "API-cheie"
 
-#: sickrage/core/webserver/views/config/general.mako:761
+#: sickrage/core/webserver/views/config/general.mako:804
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "folosit pentru a da 3rd petrecere program de acces limitat la SiCKRAGE puteţi încerca toate caracteristicile de API"
 
-#: sickrage/core/webserver/views/config/general.mako:762
+#: sickrage/core/webserver/views/config/general.mako:805
 msgid "here"
 msgstr "aici"
 
-#: sickrage/core/webserver/views/config/general.mako:772
+#: sickrage/core/webserver/views/config/general.mako:815
 msgid "HTTP logs"
 msgstr "HTTP busteni"
 
-#: sickrage/core/webserver/views/config/general.mako:777
+#: sickrage/core/webserver/views/config/general.mako:820
 msgid "enable logs from the internal Tornado web server"
 msgstr "permite jurnalele de pe serverul de web interne Tornado"
 
-#: sickrage/core/webserver/views/config/general.mako:783
+#: sickrage/core/webserver/views/config/general.mako:826
 msgid "HTTP username"
 msgstr "HTTP username"
 
-#: sickrage/core/webserver/views/config/general.mako:793
-#: sickrage/core/webserver/views/config/general.mako:812
+#: sickrage/core/webserver/views/config/general.mako:836
+#: sickrage/core/webserver/views/config/general.mako:855
 #: sickrage/core/webserver/views/config/notifications.mako:154
 #: sickrage/core/webserver/views/config/notifications.mako:171
 #: sickrage/core/webserver/views/config/notifications.mako:262
@@ -1169,248 +1185,244 @@ msgstr "HTTP username"
 msgid "blank = no authentication"
 msgstr "gol = nicio autentificare"
 
-#: sickrage/core/webserver/views/config/general.mako:802
+#: sickrage/core/webserver/views/config/general.mako:845
 msgid "HTTP password"
 msgstr "HTTP parola"
 
-#: sickrage/core/webserver/views/config/general.mako:821
-msgid "HTTP port"
-msgstr "Portul HTTP"
+#: sickrage/core/webserver/views/config/general.mako:864
+msgid "HTTP private port"
+msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:830
+#: sickrage/core/webserver/views/config/general.mako:875
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:839
-msgid "Enable UPnP"
+#: sickrage/core/webserver/views/config/general.mako:884
+msgid "used to access SiCKRAGE over a private internal IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:844
-msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
-msgstr ""
-
-#: sickrage/core/webserver/views/config/general.mako:850
+#: sickrage/core/webserver/views/config/general.mako:893
 msgid "Listen on IPv6"
 msgstr "Asculta pe IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:855
+#: sickrage/core/webserver/views/config/general.mako:898
 msgid "attempt binding to any available IPv6 address"
 msgstr "încercarea de legare la orice adresă IPv6 disponibile"
 
-#: sickrage/core/webserver/views/config/general.mako:862
+#: sickrage/core/webserver/views/config/general.mako:904
 msgid "Enable HTTPS"
 msgstr "Activarea HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:868
+#: sickrage/core/webserver/views/config/general.mako:910
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "permite accesul la interfaţa web utilizând o adresă HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:877
+#: sickrage/core/webserver/views/config/general.mako:919
 msgid "HTTPS certificate"
 msgstr "Certificat de HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:891
+#: sickrage/core/webserver/views/config/general.mako:933
 msgid "file name or path to HTTPS certificate"
 msgstr "numele fişierului sau calea HTTPS certificat"
 
-#: sickrage/core/webserver/views/config/general.mako:901
+#: sickrage/core/webserver/views/config/general.mako:943
 msgid "HTTPS key"
 msgstr "HTTPS cheie"
 
-#: sickrage/core/webserver/views/config/general.mako:913
+#: sickrage/core/webserver/views/config/general.mako:955
 msgid "file name or path to HTTPS key"
 msgstr "numele fişierului sau calea HTTPS cheie"
 
-#: sickrage/core/webserver/views/config/general.mako:923
+#: sickrage/core/webserver/views/config/general.mako:965
 msgid "Reverse proxy headers"
 msgstr "Proxy inversă anteturi"
 
-#: sickrage/core/webserver/views/config/general.mako:929
+#: sickrage/core/webserver/views/config/general.mako:971
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "acceptă următoarele antete de proxy inversă (avansat)..."
 
-#: sickrage/core/webserver/views/config/general.mako:930
+#: sickrage/core/webserver/views/config/general.mako:972
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X-Forwarded-For, transmis de X-gazdă şi transmis de X-Proto)"
 
-#: sickrage/core/webserver/views/config/general.mako:937
+#: sickrage/core/webserver/views/config/general.mako:979
 msgid "Notify on login"
 msgstr "Anunta pe login"
 
-#: sickrage/core/webserver/views/config/general.mako:943
+#: sickrage/core/webserver/views/config/general.mako:985
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "Trimite un mesaj pentru toți notificatorii activat atunci când cineva busteni în SiCKRAGE de la o adresă IP publică"
 
-#: sickrage/core/webserver/views/config/general.mako:968
+#: sickrage/core/webserver/views/config/general.mako:1010
 msgid "CPU throttling"
 msgstr "CPU de reglare"
 
-#: sickrage/core/webserver/views/config/general.mako:987
+#: sickrage/core/webserver/views/config/general.mako:1029
 msgid "Anonymous redirect"
 msgstr "Anonim redirecţionare"
 
-#: sickrage/core/webserver/views/config/general.mako:1005
+#: sickrage/core/webserver/views/config/general.mako:1047
 msgid "Enable debug"
 msgstr "Activare depanare"
 
-#: sickrage/core/webserver/views/config/general.mako:1011
+#: sickrage/core/webserver/views/config/general.mako:1053
 msgid "Enable debug logs"
 msgstr "Activare depanare busteni"
 
-#: sickrage/core/webserver/views/config/general.mako:1018
+#: sickrage/core/webserver/views/config/general.mako:1060
 msgid "Verify SSL Certs"
 msgstr "Verificaţi dacă SSL Certs"
 
-#: sickrage/core/webserver/views/config/general.mako:1024
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Verifică certificatele SSL (Disable this pentru spart SSL instalează (cum ar fi QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1033
+#: sickrage/core/webserver/views/config/general.mako:1075
 msgid "No Restart"
 msgstr "Fără repornire"
 
-#: sickrage/core/webserver/views/config/general.mako:1040
+#: sickrage/core/webserver/views/config/general.mako:1082
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "SiCKRAGE de închidere pe reporneşte (serviciul extern trebuie să reporniţi SiCKRAGE pe cont propriu)."
 
-#: sickrage/core/webserver/views/config/general.mako:1050
+#: sickrage/core/webserver/views/config/general.mako:1092
 msgid "Encrypt settings"
 msgstr "Setările de criptare"
 
-#: sickrage/core/webserver/views/config/general.mako:1056
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "in the"
 msgstr "în"
 
-#: sickrage/core/webserver/views/config/general.mako:1056
+#: sickrage/core/webserver/views/config/general.mako:1098
 msgid "file."
 msgstr "fişier."
 
-#: sickrage/core/webserver/views/config/general.mako:1065
+#: sickrage/core/webserver/views/config/general.mako:1107
 msgid "Unprotected calendar"
 msgstr "Calendarul neprotejat"
 
-#: sickrage/core/webserver/views/config/general.mako:1071
+#: sickrage/core/webserver/views/config/general.mako:1113
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "permite abonarea la calendar fără utilizator şi parolă. Unele servicii cum ar fi Google Calendar funcţionează numai în acest fel"
 
-#: sickrage/core/webserver/views/config/general.mako:1081
+#: sickrage/core/webserver/views/config/general.mako:1123
 msgid "Google Calendar Icons"
 msgstr "Google Calendar icoane"
 
-#: sickrage/core/webserver/views/config/general.mako:1087
+#: sickrage/core/webserver/views/config/general.mako:1129
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "afişează o pictogramă de lângă exportate calendar evenimente din Google Calendar."
 
-#: sickrage/core/webserver/views/config/general.mako:1096
+#: sickrage/core/webserver/views/config/general.mako:1138
 msgid "Link Google Account"
 msgstr "Link-ul Google Socoteală"
 
-#: sickrage/core/webserver/views/config/general.mako:1099
+#: sickrage/core/webserver/views/config/general.mako:1141
 msgid "Link"
 msgstr "Link-ul"
 
-#: sickrage/core/webserver/views/config/general.mako:1101
+#: sickrage/core/webserver/views/config/general.mako:1143
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "conectaţi contul google la SiCKRAGE pentru facilitatea avansată de utilizare, cum ar fi setările de date/stocare"
 
-#: sickrage/core/webserver/views/config/general.mako:1109
+#: sickrage/core/webserver/views/config/general.mako:1151
 msgid "Proxy host"
 msgstr "Proxy-ul gazdă"
 
-#: sickrage/core/webserver/views/config/general.mako:1126
+#: sickrage/core/webserver/views/config/general.mako:1168
 msgid "Use proxy for indexers"
 msgstr "Utilizare proxy pentru indexers"
 
-#: sickrage/core/webserver/views/config/general.mako:1132
+#: sickrage/core/webserver/views/config/general.mako:1174
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "utilizeze proxy-ul gazdă pentru conectarea la indexers (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1140
+#: sickrage/core/webserver/views/config/general.mako:1182
 msgid "Skip Remove Detection"
 msgstr "Skip Remove detectare"
 
-#: sickrage/core/webserver/views/config/general.mako:1146
+#: sickrage/core/webserver/views/config/general.mako:1188
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Treci de detectare de eliminat fișiere. Dacă dezactivaţi va stabili implicit elimină starea"
 
-#: sickrage/core/webserver/views/config/general.mako:1147
+#: sickrage/core/webserver/views/config/general.mako:1189
 msgid "This may mean SickRage misses renames as well"
 msgstr "Acest lucru poate însemna SickRage ratează Redenumeşte, precum şi"
 
-#: sickrage/core/webserver/views/config/general.mako:1155
+#: sickrage/core/webserver/views/config/general.mako:1197
 msgid "Default deleted episode status"
 msgstr "Statutul de episod implicit şters"
 
-#: sickrage/core/webserver/views/config/general.mako:1187
+#: sickrage/core/webserver/views/config/general.mako:1229
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Definesc statutul să fie stabilite pentru mass-media fişier care a fost şters."
 
-#: sickrage/core/webserver/views/config/general.mako:1189
+#: sickrage/core/webserver/views/config/general.mako:1231
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Arhivate opţiune va păstra calitatea descărcat anterior"
 
-#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1233
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Exemplu: Descarcat (1080p WEB-DL) ==> arhivate (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1209
+#: sickrage/core/webserver/views/config/general.mako:1251
 msgid "PIP Settings"
 msgstr "Setările de PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1214
+#: sickrage/core/webserver/views/config/general.mako:1256
 msgid "PIP executable path"
 msgstr "Calea executabilă PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1225
+#: sickrage/core/webserver/views/config/general.mako:1267
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1238
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1280
+#: sickrage/core/webserver/views/config/general.mako:1377
 msgid "Click vefify path to test."
 msgstr "Faceţi clic pe cale vefify pentru a testa."
 
-#: sickrage/core/webserver/views/config/general.mako:1263
+#: sickrage/core/webserver/views/config/general.mako:1305
 msgid "GIT Settings"
 msgstr "Setările de GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1268
+#: sickrage/core/webserver/views/config/general.mako:1310
 msgid "Git Branches"
 msgstr "Ramuri de git"
 
-#: sickrage/core/webserver/views/config/general.mako:1278
+#: sickrage/core/webserver/views/config/general.mako:1320
 msgid "GIT Branch Version"
 msgstr "Versiunea de filiala GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1298
+#: sickrage/core/webserver/views/config/general.mako:1340
 msgid "Error: No branches found."
 msgstr "Eroare: Nu ramuri găsite."
 
-#: sickrage/core/webserver/views/config/general.mako:1302
+#: sickrage/core/webserver/views/config/general.mako:1344
 msgid "select branch to use (restart required)"
 msgstr "Selectează filiala a utiliza (repornire necesară)"
 
-#: sickrage/core/webserver/views/config/general.mako:1311
+#: sickrage/core/webserver/views/config/general.mako:1353
 msgid "GIT executable path"
 msgstr "Calea executabilă GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1322
+#: sickrage/core/webserver/views/config/general.mako:1364
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1344
+#: sickrage/core/webserver/views/config/general.mako:1386
 msgid "Git reset"
 msgstr "Git resetare"
 
-#: sickrage/core/webserver/views/config/general.mako:1350
+#: sickrage/core/webserver/views/config/general.mako:1392
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "elimină fişierele neurmărită şi efectuează o resetare hard pe git filiala automat pentru a ajuta la rezolvarea problemelor de actualizare"
 
-#: sickrage/core/webserver/views/config/general.mako:1358
+#: sickrage/core/webserver/views/config/general.mako:1400
 msgid "Git auto-issues submit"
 msgstr "Remitere de auto-publicare git"
 
-#: sickrage/core/webserver/views/config/general.mako:1365
+#: sickrage/core/webserver/views/config/general.mako:1407
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "automat prezintă rapoarte bug/problema noastră problemă tracker atunci când erorile sunt înregistrate"
 
@@ -3486,7 +3498,7 @@ msgstr "Cel puţin un furnizor este necesară, dar două sunt recomandate."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "Furnizorii de NZB/Torrent poate fi toggled în"
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3971
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Search Clients"
@@ -4708,7 +4720,7 @@ msgstr "Niciodată"
 msgid "Retry Download"
 msgstr "Reîncercaţi Descărcare"
 
-#: sickrage/core/webserver/views.py:4964
+#: sickrage/core/webserver/views.py:4967
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4836,7 +4848,7 @@ msgstr "utilizaţi comanda DVD în loc de a comanda de aer"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "O \"forţă complet Update\" este necesar, şi în cazul în care aveţi episoade existente trebuie să sortaţi-le manual."
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4843
+#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4846
 #: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5164,7 +5176,7 @@ msgstr "Efectuarea Restart"
 msgid "Daily Search"
 msgstr "Căutaţi zilnic"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4954
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Restante"
@@ -5189,7 +5201,7 @@ msgstr "Procesul de post"
 msgid "Subtitles Finder"
 msgstr "Subtitrari Finder"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4962
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "TRakt Checker"
@@ -5222,7 +5234,7 @@ msgstr "nu"
 msgid "True"
 msgstr "Adevărat"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4957
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Arată coada"
@@ -5592,28 +5604,28 @@ msgstr "Generale"
 msgid "Backup and Restore"
 msgstr "Backup şi restaurare"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4271
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4274
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Providers"
 msgstr "Furnizorii de căutare"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4762
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4765
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Subtitles Settings"
 msgstr "Setările de subtitrari"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4882
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4885
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Quality Settings"
 msgstr "Setările de calitate"
 
 #: sickrage/core/webserver/views.py:2276 sickrage/core/webserver/views.py:2277
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4076
+#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4079
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Post-procesare"
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4428
+#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4431
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Notifications"
 msgstr "Notificări"
@@ -6498,7 +6510,7 @@ msgstr "Deja pe ramură: "
 #: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1918
 #: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1964
 #: sickrage/core/webserver/views.py:1970 sickrage/core/webserver/views.py:1973
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4964
 msgid "Error"
 msgstr "Eroare"
 
@@ -6862,7 +6874,7 @@ msgstr "Istoria eliminate"
 msgid "Removed history entries older than 30 days"
 msgstr "Eliminat Istoricul intrări mai vechi de 30 zile"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3914
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3917
 msgid "Backup/Restore"
 msgstr "Copiere de rezervă/restaurare"
 
@@ -6882,198 +6894,198 @@ msgstr "Config - General"
 msgid "General Configuration"
 msgstr "Configurare generala"
 
-#: sickrage/core/webserver/views.py:3896 sickrage/core/webserver/views.py:4058
-#: sickrage/core/webserver/views.py:4189 sickrage/core/webserver/views.py:4410
-#: sickrage/core/webserver/views.py:4744 sickrage/core/webserver/views.py:4825
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:3899 sickrage/core/webserver/views.py:4061
+#: sickrage/core/webserver/views.py:4192 sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:4747 sickrage/core/webserver/views.py:4828
+#: sickrage/core/webserver/views.py:4867
 msgid "Error(s) Saving Configuration"
 msgstr "Erori de configurare de economisire"
 
-#: sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3901
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:3913
+#: sickrage/core/webserver/views.py:3916
 msgid "Config - Backup/Restore"
 msgstr "Config - copiere de rezervă/restaurare"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3929
 msgid "Backup SUCCESSFUL"
 msgstr "Backup succes"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3931
 msgid "Backup FAILED!"
 msgstr "Copie de rezervă a EŞUAT!"
 
-#: sickrage/core/webserver/views.py:3930
+#: sickrage/core/webserver/views.py:3933
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Trebuie să alegeţi un folder pentru a salva al tău copie de rezervă la prima!"
 
-#: sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3952
 msgid "Successfully extracted restore files to "
 msgstr "Fişierele de restaurare cu succes extrase "
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3953
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage pentru a finaliza procesul de restaurare."
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3955
 msgid "Restore FAILED"
 msgstr "Pauză nu a reuşit"
 
-#: sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:3957
 msgid "You need to select a backup file to restore!"
 msgstr "Trebuie să selectaţi un fişier copie de rezervă pentru a restabili!"
 
-#: sickrage/core/webserver/views.py:3970
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3996 sickrage/core/webserver/views.py:3999
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid "Unable to create directory "
 msgstr "Imposibil de creat Director "
 
-#: sickrage/core/webserver/views.py:3996 sickrage/core/webserver/views.py:3999
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4107
 msgid ", dir not changed."
 msgstr ", dir nu s-a schimbat."
 
-#: sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4063
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:4078
 msgid "Config - Post Processing"
 msgstr "Config - Post procesare"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4118
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Despachetarea neacceptată, dezactivarea despacheta setare"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4164
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Aţi încercat un anime nevalidă numirea config, nu salvarea setărilor denumire de economisire"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4155 sickrage/core/webserver/views.py:4166
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Ai incercat salvarea o configurare nevalidă denumire, nu salvarea setărilor denumire"
 
-#: sickrage/core/webserver/views.py:4169
+#: sickrage/core/webserver/views.py:4172
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Aţi încercat un config nevalidă aer de data denumire, de economisire nu salva setările de aer de la data"
 
-#: sickrage/core/webserver/views.py:4175
+#: sickrage/core/webserver/views.py:4178
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Aţi încercat un sport nevalidă numirea config, nu salvarea setărilor de sport de economisire"
 
-#: sickrage/core/webserver/views.py:4191
+#: sickrage/core/webserver/views.py:4194
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:4273
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4314
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nici un nume de furnizor"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4316
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Nici un furnizor de URL-ul specificat"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4318
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Nici un furnizor de Api-cheie specificat"
 
-#: sickrage/core/webserver/views.py:4412
+#: sickrage/core/webserver/views.py:4415
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4427
+#: sickrage/core/webserver/views.py:4430
 msgid "Config - Notifications"
 msgstr "Config - notificări"
 
-#: sickrage/core/webserver/views.py:4746
+#: sickrage/core/webserver/views.py:4749
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:4764
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4827
+#: sickrage/core/webserver/views.py:4830
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4842
+#: sickrage/core/webserver/views.py:4845
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4866
+#: sickrage/core/webserver/views.py:4869
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4884
 msgid "Config - Quality Settings"
 msgstr "Config - setările de calitate"
 
-#: sickrage/core/webserver/views.py:4893
+#: sickrage/core/webserver/views.py:4896
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[SETĂRI DE CALITATE] Configurare salvat"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4909
 msgid "Clear Errors"
 msgstr "Clar erori"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4912
 msgid "Clear Warnings"
 msgstr "Avertismente clare"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4953
 msgid "Daily Searcher"
 msgstr "Căutarea de zi cu zi"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4955
 msgid "Show Updater"
 msgstr "Arată Updater"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4956
 msgid "Check Version"
 msgstr "Verificaţi versiunea"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4958
 msgid "Search Queue"
 msgstr "Coada de căutare"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4959
 msgid "Find Propers"
 msgstr "Găsi Propers"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4960
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4961
 msgid "Find Subtitles"
 msgstr "Găseşte subtitrari"
 
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4963
 msgid "Event"
 msgstr "Eveniment"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4965
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4966
 msgid "Thread"
 msgstr "Fir"
 

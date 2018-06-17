@@ -1,6 +1,7 @@
 # Changelog
 
-- * 37995f9 - 2018-06-16: Added function to randomize external upnp port number Added ability to manually set external upnp port number 
+- * 9199b10 - 2018-06-16: Release v9.3.35 
+- * 2e05d78 - 2018-06-16: Added function to randomize external upnp port number Added ability to manually set external upnp port number 
 - * 8ee962a - 2018-06-16: Pre-Release v9.3.35.dev2 
 - * bcdcce3 - 2018-06-16: Pre-Release v9.3.35.dev1 
 - * 8f7a4e2 - 2018-06-16: Added UPNP functionality to app 
