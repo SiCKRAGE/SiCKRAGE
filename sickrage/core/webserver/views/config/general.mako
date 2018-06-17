@@ -30,116 +30,54 @@
         <div class="row tab-pane">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>${_('SiCKRAGE API')}</h3>
-                <p>${_('Credentials and options for api.sickrage.ca')}</p>
+                <p>${_('Options for api.sickrage.ca')}</p>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Enable')}</label>
+                        <label class="component-title">${_('API Provider Cache')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_api"
-                               id="use_api" ${('', 'checked')[bool(sickrage.app.config.enable_api)]}/>
-                        <label for="use_api">${_('Enable API access ?')}</label>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <a href="${anon_url('https://api.sickrage.ca/')}" rel="noreferrer"
-                                   onclick="window.open(this.href, '_blank'); return false;">${_('Register for API access')}</a></h3>
-                            </div>
-                        </div>
+                        <input type="checkbox" class="enabler" name="enable_api_providers_cache"
+                               id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
+                        <label for="enable_api_providers_cache">${_('Enable provider cache ?')}</label>
                     </div>
                 </div>
 
-                <div id="content_use_api">
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('API Provider Cache')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" class="enabler" name="enable_api_providers_cache"
-                                   id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
-                            <label for="enable_api_providers_cache">${_('Enable provider cache ?')}</label>
-                        </div>
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Google Drive')}</label>
                     </div>
-
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('API Username')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-user"></span>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    % try:
+                        % if GoogleDriveAPI().is_connected()['success']:
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <span class="label label-success">CONNECTED</span>
                                 </div>
-                                <input name="api_username" id="api_username"
-                                       value="${sickrage.app.config.api_username}"
-                                       title="API Username"
-                                       class="form-control"
-                                       autocapitalize="off"/>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('API Password')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
+                                           id="syncRemote"/>
+                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
+                                           id="syncLocal"/>
                                 </div>
-                                <input type="password" name="api_password" id="api_password"
-                                       value="${sickrage.app.config.api_password}"
-                                       title="API Password"
-                                       class="form-control"
-                                       autocapitalize="off"/>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row field-pair">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Google Drive')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        % try:
-                            % if GoogleDriveAPI().is_connected()['success']:
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <span class="label label-success">CONNECTED</span>
-                                    </div>
-                                </div>
-                                <br/>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <input class="btn" type="button" value="${_('Sync To Google Drive')}"
-                                               id="syncRemote"/>
-                                        <input class="btn" type="button" value="${_('Sync To Local Drive')}"
-                                               id="syncLocal"/>
-                                    </div>
-                                </div>
-                            % else:
-                                <span class="label label-danger">DISCONNECTED</span>
-                            % endif
-                        % except Exception:
+                        % else:
                             <span class="label label-danger">DISCONNECTED</span>
-                        % endtry:
-                        </div>
+                        % endif
+                    % except Exception:
+                        <span class="label label-danger">DISCONNECTED</span>
+                    % endtry:
                     </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="testNotification" id="testAPI-result">${_('Click below to test.')}</div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test API')}" id="testAPI"/>
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
-                        </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -779,7 +717,47 @@
 
                 <div class="row field-pair">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('API key')}</label>
+                        <label class="component-title">${_('HTTP private port')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group input350">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-globe"></span>
+                                    </div>
+                                    <input name="web_port" id="web_port"
+                                           value="${sickrage.app.config.web_port}"
+                                           placeholder="${_('8081')}"
+                                           title="web port to browse and access WebUI"
+                                           class="form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="web_port">
+                                    ${_('used to access SiCKRAGE over a private internal IP address')}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('HTTP logs')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <input type="checkbox" name="web_log"
+                               id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
+                        <label for="web_log">${_('enable logs from the internal Tornado web server')}</label>
+                    </div>
+                </div>
+
+                <div class="row field-pair">
+                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <label class="component-title">${_('Application API key')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="row">
@@ -803,85 +781,6 @@
                                 <label for="api_key">
                                     ${_('used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API')}
                                     <a href="${srWebRoot}/apibuilder/">${_('here')}</a>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('HTTP logs')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="web_log"
-                               id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
-                        <label for="web_log">${_('enable logs from the internal Tornado web server')}</label>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('HTTP username')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-user"></span>
-                            </div>
-                            <input name="web_username" id="web_username"
-                                   value="${sickrage.app.config.web_username}"
-                                   title="WebUI username"
-                                   placeholder="${_('blank = no authentication')}"
-                                   class="form-control"
-                                   autocapitalize="off"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('HTTP password')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-lock"></span>
-                            </div>
-                            <input type="password" name="web_password" id="web_password"
-                                   value="${sickrage.app.config.web_password}"
-                                   title="WebUI password"
-                                   placeholder="${_('blank = no authentication')}"
-                                   class="form-control"
-                                   autocapitalize="off"/>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row field-pair">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('HTTP private port')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-globe"></span>
-                                    </div>
-                                    <input name="web_port" id="web_port"
-                                           value="${sickrage.app.config.web_port}"
-                                           placeholder="${_('8081')}"
-                                           title="web port to browse and access WebUI"
-                                           class="form-control"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <label for="web_port">
-                                    ${_('used to access SiCKRAGE over a private internal IP address')}
                                 </label>
                             </div>
                         </div>

@@ -41,7 +41,15 @@
                                 <label class="remember_me pull-left" title="${_('for 30 days')}">
                                     <input class="inlay" id="remember_me" name="remember_me" type="checkbox" value="1" checked="checked"/>&nbsp;Remember me
                                 </label>
-                                <input class="btn btn-default pull-right" name="submit" type="submit" value="${_('Login')}"/>
+                                <input class="btn btn-default pull-right"
+                                       name="register"
+                                       type="button"
+                                       onclick="window.open('https://api.sickrage.ca/register', '_blank'); return false;"
+                                       value="${_('Register')}"/>
+                                <input class="btn btn-default pull-right"
+                                       name="submit"
+                                       type="submit"
+                                       value="${_('Login')}"/>
                             </div>
                         </div>
                     </div>

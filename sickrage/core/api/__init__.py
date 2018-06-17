@@ -1,11 +1,8 @@
 from __future__ import unicode_literals
 
-import datetime
 import json
 import os
-import sys
 import time
-from time import sleep
 from urlparse import urljoin
 
 from oauthlib.oauth2 import LegacyApplicationClient, MissingTokenError, InvalidClientIdError
@@ -30,8 +27,8 @@ class API(object):
         return {
             'client_id': 2,
             'client_secret': '7kEyr9jKuqOV4FFy2bOxOwA2RiB4WSHsEUU2P3BJ',
-            'username': self._username or sickrage.app.config.api_username,
-            'password': self._password or sickrage.app.config.api_password
+            'username': self._username or sickrage.app.config.app_username,
+            'password': self._password or sickrage.app.config.app_password,
         }
 
     @property
@@ -53,9 +50,11 @@ class API(object):
 
             if not os.path.exists(self.token_file):
                 oauth = OAuth2Session(client=LegacyApplicationClient(client_id=self.credentials['client_id']))
-                self._token = oauth.fetch_token(token_url=self.token_url,
-                                                timeout=30,
-                                                **self.credentials)
+
+                try:
+                    self._token = oauth.fetch_token(token_url=self.token_url, timeout=30, **self.credentials)
+                except MissingTokenError:
+                    self._token = None
 
                 self._token_updater(self._token)
             else:
@@ -69,9 +68,6 @@ class API(object):
             json.dump(token, outfile)
 
     def _request(self, method, url, **kwargs):
-        if not sickrage.app.config.enable_api:
-            return
-
         try:
             resp = self.session.request(method, urljoin(self.api_url, url), timeout=30,
                                         hooks={'response': self.throttle_hook}, **kwargs)
@@ -83,8 +79,7 @@ class API(object):
 
             return resp.json()
         except (InvalidClientIdError, MissingTokenError) as e:
-            sickrage.app.log.warning("Token is required for interacting with SiCKRAGE API, check username/password "
-                                     "under General settings.")
+            sickrage.app.log.warning("SiCKRAGE username or password is incorrect, please try again")
 
     @staticmethod
     def throttle_hook(response, **kwargs):

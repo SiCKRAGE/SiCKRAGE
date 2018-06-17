@@ -61,10 +61,7 @@ class Config(object):
         self.log_size = 1048576
         self.log_nr = 5
 
-        self.enable_api = False
         self.enable_api_providers_cache = False
-        self.api_username = ""
-        self.api_password = ""
 
         self.enable_upnp = True
         self.version_notify = True
@@ -84,8 +81,8 @@ class Config(object):
         self.web_external_port = random.randint(49152, 65536)
         self.web_log = False
         self.web_root = ""
-        self.web_username = ""
-        self.web_password = ""
+        self.app_username = ""
+        self.app_password = ""
         self.web_ipv6 = False
         self.web_cookie_secret = ""
         self.web_use_gzip = True
@@ -693,10 +690,7 @@ class Config(object):
             },
             'General': {
                 'app_id': uuid.uuid4(),
-                'enable_api': True,
                 'enable_api_providers_cache': True,
-                'api_username': '',
-                'api_password': '',
                 'log_size': 1048576,
                 'calendar_unprotected': False,
                 'https_key': os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key')),
@@ -742,7 +736,8 @@ class Config(object):
                 'naming_pattern': 'Season %0S/%SN - S%0SE%0E - %EN',
                 'sort_article': False,
                 'handle_reverse_proxy': False,
-                'web_username': '',
+                'app_username': '',
+                'app_password': '',
                 'postpone_if_sync_files': True,
                 'cpu_preset': 'NORMAL',
                 'nfo_rename': True,
@@ -807,7 +802,6 @@ class Config(object):
                 'log_nr': 5,
                 'git_newver': False,
                 'git_reset': True,
-                'web_password': '',
                 'scene_default': False,
                 'skip_removed_files': False,
                 'status_default_after': WANTED,
@@ -1369,10 +1363,7 @@ class Config(object):
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
         self.app_id = self.check_setting_str('General', 'app_id')
-        self.enable_api = self.check_setting_bool('General', 'enable_api')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
-        self.api_username = self.check_setting_str('General', 'api_username', censor=True)
-        self.api_password = self.check_setting_str('General', 'api_password', censor=True)
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
         self.log_nr = self.check_setting_int('General', 'log_nr')
@@ -1392,8 +1383,8 @@ class Config(object):
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
         self.web_root = self.check_setting_str('General', 'web_root').rstrip("/")
         self.web_log = self.check_setting_bool('General', 'web_log')
-        self.web_username = self.check_setting_str('General', 'web_username', censor=True)
-        self.web_password = self.check_setting_str('General', 'web_password', censor=True)
+        self.app_username = self.check_setting_str('General', 'app_username', censor=True)
+        self.app_password = self.check_setting_str('General', 'app_password', censor=True)
         self.web_cookie_secret = self.check_setting_str('General', 'web_cookie_secret')
         self.web_use_gzip = self.check_setting_bool('General', 'web_use_gzip')
         self.ssl_verify = self.check_setting_bool('General', 'ssl_verify')
@@ -1867,10 +1858,7 @@ class Config(object):
                 'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
                 'app_id': self.app_id,
-                'enable_api': int(self.enable_api),
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
-                'api_username': self.api_username,
-                'api_password': self.api_password,
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
                 'git_password': self.git_password,
@@ -1885,8 +1873,8 @@ class Config(object):
                 'web_ipv6': int(self.web_ipv6),
                 'web_log': int(self.web_log),
                 'web_root': self.web_root,
-                'web_username': self.web_username,
-                'web_password': self.web_password,
+                'app_username': self.app_username,
+                'app_password': self.app_password,
                 'web_cookie_secret': self.web_cookie_secret,
                 'web_use_gzip': int(self.web_use_gzip),
                 'ssl_verify': int(self.ssl_verify),

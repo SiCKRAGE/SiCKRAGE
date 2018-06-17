@@ -302,7 +302,7 @@ jQuery(document).ready(function ($) {
 
                 $('a.submiterrors').confirm({
                     title: gt('Submit Errors'),
-                    content: gt('Are you sure you want to submit these errors ?<br><br><span class="red-text">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>')
+                    content: gt('Are you sure you want to submit these errors ?') + '<br><br><span class="red-text">' + gt('Make sure SiCKRAGE is updated and trigger') + '<br>' + gt('this error with debug enabled before submitting') + '</span>'
                 });
 
                 $('#removeW').click(function () {
@@ -2020,7 +2020,7 @@ jQuery(document).ready(function ($) {
 
                     $("a.removeshow").confirm({
                         title: gt("Remove Show"),
-                        content: gt('Are you sure you want to remove <span class="footerhighlight">') + $('#showtitle').data('showname') + gt('</span> from the database?<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">Check to delete files as well. IRREVERSIBLE</label>'),
+                        content: gt('Are you sure you want to remove') + '<span class="footerhighlight">' + $('#showtitle').data('showname') + '</span>' + gt(' from the database?') + '<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">' + gt('Check to delete files as well. IRREVERSIBLE') + '</label>',
                         buttons: {
                             confirm: function () {
                                 var $deleteFiles = this.$content.find('#deleteFiles').prop('checked');
@@ -2245,7 +2245,7 @@ jQuery(document).ready(function ($) {
                         }
                     });
 
-                    $('#tableDiv').html(gt('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" /> loading folders...'));
+                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" />' + gt('loading folders...'));
                     $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
                         $("#addRootDirTable").tablesorter({
@@ -2541,11 +2541,11 @@ jQuery(document).ready(function ($) {
                         },
                         success: function (data) {
                             var firstResult = true;
-                            var resultStr = gt('<legend class="legend">Search Results:</legend>\n');
+                            var resultStr = '<legend class="legend">' + gt('Search Results:') + '</legend>\n';
                             var checked = '';
 
                             if (data.results.length === 0) {
-                                resultStr += gt('<b>No results found, try a different search or language.</b>');
+                                resultStr += '<b>' + gt('No results found, try a different search or language.') + '</b>';
                             } else {
                                 $.each(data.results, function (index, obj) {
                                     if (firstResult) {
@@ -2564,9 +2564,9 @@ jQuery(document).ready(function ($) {
                                         var startDate = new Date(obj[5]);
                                         var today = new Date();
                                         if (startDate > today) {
-                                            resultStr += gt(' (will debut on ' + obj[5] + ')');
+                                            resultStr += gt(' (will debut on ') + obj[5] + ')';
                                         } else {
-                                            resultStr += gt(' (started on ' + obj[5] + ')');
+                                            resultStr += gt(' (started on ') + obj[5] + ')';
                                         }
                                     }
 
@@ -2671,7 +2671,7 @@ jQuery(document).ready(function ($) {
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {
                             $(this).attr("disabled", "disabled");
-                            $(this).after(gt('<span>' + SICKRAGE.loadingHTML + ' Saving...</span>'));
+                            $(this).after('<span>' + SICKRAGE.loadingHTML + gt(' Saving...') + '</span>');
                             $(this).hide();
                         });
                     },
@@ -2777,19 +2777,6 @@ jQuery(document).ready(function ($) {
                                 return;
                             }
                             $('#api_key').val(data);
-                        });
-                });
-
-                $('#testAPI').click(function () {
-                    $('#testAPI-result').html(SICKRAGE.loadingHTML);
-                    var api_username = $.trim($('#api_username').val());
-                    var api_password = $.trim($('#api_password').val());
-                    $.get(SICKRAGE.srWebRoot + '/home/testAPI', {
-                            'username': api_username,
-                            'password': api_password
-                        },
-                        function (data) {
-                            $('#testAPI-result').html(data);
                         });
                 });
 
@@ -3137,7 +3124,7 @@ jQuery(document).ready(function ($) {
                         } else if (selectedProvider.toLowerCase() === 'rtorrent') {
                             client = 'rTorrent';
                             $('#torrent_paused_option').hide();
-                            $('#host_desc_torrent').html(gt('URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)'));
+                            $('#host_desc_torrent').html(gt('URL to your rTorrent client (e.g. scgi://localhost:5000') + '<br>' + gt(' or https://localhost/rutorrent/plugins/httprpc/action.php)'));
                             $('#torrent_verify_cert_option').show();
                             $('#torrent_verify_deluge').hide();
                             $('#torrent_verify_rtorrent').show();
@@ -4207,12 +4194,12 @@ jQuery(document).ready(function ($) {
                         pwd = $('#email_password').val();
                         err = '';
                         if (host === null) {
-                            err += gt('<li style="color: red;">You must specify an SMTP hostname!</li>');
+                            err += '<li style="color: red;">' + gt('You must specify an SMTP hostname!') + '</li>';
                         }
                         if (port === null) {
-                            err += gt('<li style="color: red;">You must specify an SMTP port!</li>');
+                            err += '<li style="color: red;">' + gt('You must specify an SMTP port!') + '</li>';
                         } else if (port.match(/^\d+$/) === null || parseInt(port, 10) > 65535) {
-                            err += gt('<li style="color: red;">SMTP port must be between 0 and 65535!</li>');
+                            err += '<li style="color: red;">' + gt('SMTP port must be between 0 and 65535!') + '</li>';
                         }
                         if (err.length > 0) {
                             err = '<ol>' + err + '</ol>';
@@ -4220,7 +4207,7 @@ jQuery(document).ready(function ($) {
                         } else {
                             to = prompt(gt('Enter an email address to send the test to:'), null);
                             if (to === null || to.length === 0 || to.match(/.*@.*/) === null) {
-                                status.html(gt('<p style="color: red;">You must provide a recipient email address!</p>'));
+                                status.html('<p style="color: red;">' + gt('You must provide a recipient email address!') + '</p>');
                             } else {
                                 $.get(SICKRAGE.srWebRoot + '/home/testEmail', {
                                     host: host,
@@ -5265,7 +5252,7 @@ jQuery(document).ready(function ($) {
                     $('.delete_root_dir').click(function () {
                         var curIndex = SICKRAGE.manage.mass_edit.findDirIndex($(this).attr('id'));
                         $('#new_root_dir_' + curIndex).val(null);
-                        $('#display_new_root_dir_' + curIndex).html(gt('<b>DELETED</b>'));
+                        $('#display_new_root_dir_' + curIndex).html('<b>' + gt('DELETED') + '</b>');
                     });
                 },
 
