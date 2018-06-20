@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-16 22:20-0700\n"
-"PO-Revision-Date: 2018-06-17 01:23-0400\n"
+"POT-Creation-Date: 2018-06-19 23:27-0700\n"
+
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Catalan\n"
 "MIME-Version: 1.0\n"
@@ -38,8 +38,16 @@ msgid "Submit Errors"
 msgstr "Presentar Errors"
 
 #: dist/js/core.js:311
-msgid "Are you sure you want to submit these errors ?<br><br><span class=\"red-text\">Make sure SiCKRAGE is updated and trigger<br> this error with debug enabled before submitting</span>"
-msgstr "Esteu segur que voleu enviar aquests errors? s'actualitza SiCKRAGE segur de<br><br><span class=\"red-text\">Make i trigger<br> aquest error amb la depuració habilitada abans submitting</span>"
+msgid "Are you sure you want to submit these errors ?"
+msgstr ""
+
+#: dist/js/core.js:311
+msgid "Make sure SiCKRAGE is updated and trigger"
+msgstr ""
+
+#: dist/js/core.js:311
+msgid "this error with debug enabled before submitting"
+msgstr ""
 
 #: dist/js/core.js:466 dist/js/core.js:487 dist/js/core.js:508
 msgid "Searching"
@@ -73,7 +81,7 @@ msgstr "Correcte"
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3652
+#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3647
 msgid "Clear History"
 msgstr "Esborra l'Historial"
 
@@ -81,7 +89,7 @@ msgstr "Esborra l'Historial"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Són vostè segur que vol esborrar tot descarregar història?"
 
-#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3654
+#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3649
 msgid "Trim History"
 msgstr "Retallar la història"
 
@@ -94,12 +102,16 @@ msgid "Remove Show"
 msgstr "Treure Mostra el"
 
 #: dist/js/core.js:2115
-msgid "Are you sure you want to remove <span class=\"footerhighlight\">"
-msgstr "Esteu segur que voleu suprimir <span class=\"footerhighlight\">"
+msgid "Are you sure you want to remove"
+msgstr ""
 
 #: dist/js/core.js:2115
-msgid "</span> from the database?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check to delete files as well. IRREVERSIBLE</label>"
-msgstr "</span> de la base de dades?<br><br><input type=\"checkbox\" id=\"deleteFiles\" name=\"deleteFiles\"/>&nbsp;<label for=\"deleteFiles\" class=\"red-text\">Check per suprimir arxius així. IRREVERSIBLE</label>"
+msgid " from the database?"
+msgstr ""
+
+#: dist/js/core.js:2115
+msgid "Check to delete files as well. IRREVERSIBLE"
+msgstr ""
 
 #: dist/js/core.js:2159 dist/js/core.js:2191
 msgid "Update failed."
@@ -110,8 +122,8 @@ msgid "Select Show Location"
 msgstr "Seleccioneu la ubicació de la Mostra el"
 
 #: dist/js/core.js:2342
-msgid "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> loading folders..."
-msgstr "<img id=\"searchingAnim\" src=\"/images/loading32.gif\" height=\"32\" width=\"32\" /> càrrega carpetes..."
+msgid "loading folders..."
+msgstr ""
 
 #: dist/js/core.js:2412
 msgid "Select Unprocessed Episode Folder"
@@ -122,20 +134,20 @@ msgid "search timed out, try increasing timeout for indexer"
 msgstr "Cerca exhaurit, tractar d'augment temps d'espera per a l'indexador"
 
 #: dist/js/core.js:2642
-msgid "<legend class=\"legend\">Search Results:</legend>\n"
-msgstr "<legend class=\"legend\">Search resultats:</legend>\n"
+msgid "Search Results:"
+msgstr ""
 
 #: dist/js/core.js:2646
-msgid "<b>No results found, try a different search or language.</b>"
-msgstr "<b>No resultats trobats, provar una altra cerca o language.</b>"
+msgid "No results found, try a different search or language."
+msgstr ""
 
 #: dist/js/core.js:2665
-msgid " (will debut on )"
-msgstr " (s'estrenarà el)"
+msgid " (will debut on "
+msgstr ""
 
 #: dist/js/core.js:2667
-msgid " (started on )"
-msgstr " (començar)"
+msgid " (started on "
+msgstr ""
 
 #: dist/js/core.js:2712
 msgid "Saved Defaults"
@@ -146,8 +158,8 @@ msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Els \"afegir Mostra el\" valors per defecte s'han posat a les actuals seleccions."
 
 #: dist/js/core.js:2772
-msgid "<span> Saving...</span>"
-msgstr "<span> d'estalvi...</span>"
+msgid " Saving..."
+msgstr ""
 
 #: dist/js/core.js:2815
 msgid "Reset Config to Defaults"
@@ -157,174 +169,178 @@ msgstr "Configuració de reinicialització a omissions"
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Esteu segur que voleu restaurar la configuració a omissions?"
 
-#: dist/js/core.js:2921
+#: dist/js/core.js:2908
 msgid "Select path to pip"
 msgstr "Seleccioneu la ruta al pip"
 
-#: dist/js/core.js:2927
+#: dist/js/core.js:2914
 msgid "Select path to git"
 msgstr "Seleccioneu la ruta al git"
 
-#: dist/js/core.js:2935 dist/js/core.js:2953 dist/js/core.js:3834
-#: dist/js/core.js:3852 dist/js/core.js:3873 dist/js/core.js:3895
-#: dist/js/core.js:3918 dist/js/core.js:3940 dist/js/core.js:3968
-#: dist/js/core.js:3985 dist/js/core.js:4029 dist/js/core.js:4114
-#: dist/js/core.js:4172 dist/js/core.js:4189 dist/js/core.js:4219
-#: dist/js/core.js:4276 dist/js/core.js:4352 dist/js/core.js:4371
-#: dist/js/core.js:4387
+#: dist/js/core.js:2922 dist/js/core.js:2940 dist/js/core.js:3821
+#: dist/js/core.js:3839 dist/js/core.js:3860 dist/js/core.js:3882
+#: dist/js/core.js:3905 dist/js/core.js:3927 dist/js/core.js:3955
+#: dist/js/core.js:3972 dist/js/core.js:4016 dist/js/core.js:4101
+#: dist/js/core.js:4159 dist/js/core.js:4176 dist/js/core.js:4206
+#: dist/js/core.js:4263 dist/js/core.js:4339 dist/js/core.js:4358
+#: dist/js/core.js:4374
 msgid "Please fill out the necessary fields above."
 msgstr "Ompliu els camps necessaris per sobre."
 
-#: dist/js/core.js:3014
+#: dist/js/core.js:3001
 msgid "Select Subtitles Download Directory"
 msgstr "Directori de descarregar subtítols seleccioni"
 
-#: dist/js/core.js:3130
+#: dist/js/core.js:3117
 msgid "Select .nzb blackhole/watch location"
 msgstr "Seleccioneu la ubicació de blackhole/rellotge .nzb"
 
-#: dist/js/core.js:3131
+#: dist/js/core.js:3118
 msgid "Select .torrent blackhole/watch location"
 msgstr "Seleccioni la localització. torrent blackhole/veure"
 
-#: dist/js/core.js:3132
+#: dist/js/core.js:3119
 msgid "Select .torrent download location"
 msgstr "Seleccioneu. torrent descarregar localització"
 
-#: dist/js/core.js:3199 sickrage/core/webserver/views/config/search.mako:947
+#: dist/js/core.js:3186 sickrage/core/webserver/views/config/search.mako:947
 msgid "Minimum seeding time is"
 msgstr "Mínim temps de sembra és"
 
-#: dist/js/core.js:3201
+#: dist/js/core.js:3188
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL al teu client d'uTorrent (p. ex. http://localhost:8000)"
 
-#: dist/js/core.js:3204
+#: dist/js/core.js:3191
 msgid "Stop seeding when inactive for"
 msgstr "Deixar de sembra quan inactiu durant"
 
-#: dist/js/core.js:3210
+#: dist/js/core.js:3197
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL al teu client de transmissió (p. ex. http://localhost:9091)"
 
-#: dist/js/core.js:3220
+#: dist/js/core.js:3207
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL al teu client diluvi (p. ex. http://localhost:8112)"
 
-#: dist/js/core.js:3229
+#: dist/js/core.js:3216
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP o nom d'amfitrió del dimoni diluvi (p. ex. scgi://localhost:58846)"
 
-#: dist/js/core.js:3236
+#: dist/js/core.js:3223
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL al teu client Synology DS (p. ex. http://localhost:5000)"
 
-#: dist/js/core.js:3241
-msgid "URL to your rTorrent client (e.g. scgi://localhost:5000 <br> or https://localhost/rutorrent/plugins/httprpc/action.php)"
-msgstr "URL al teu client rTorrent (per exemple scgi://localhost:5000 <br> o https://localhost/rutorrent/plugins/httprpc/action.php)"
+#: dist/js/core.js:3228
+msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
+msgstr ""
 
-#: dist/js/core.js:3251
+#: dist/js/core.js:3228
+msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
+msgstr ""
+
+#: dist/js/core.js:3238
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL al teu client de qbittorrent (p. ex. http://localhost:8080)"
 
-#: dist/js/core.js:3261
+#: dist/js/core.js:3248
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL per seu MLDonkey (p. ex. http://localhost:4080)"
 
-#: dist/js/core.js:3272
+#: dist/js/core.js:3259
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL al teu client de putio (p. ex. http://localhost:8080)"
 
-#: dist/js/core.js:3472
+#: dist/js/core.js:3459
 msgid "Select TV Download Directory"
 msgstr "Seleccioneu el directori TV"
 
-#: dist/js/core.js:3473
+#: dist/js/core.js:3460
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: dist/js/core.js:3488
+#: dist/js/core.js:3475
 msgid "Unrar Executable not found."
 msgstr "Unrar Executable no trobat."
 
-#: dist/js/core.js:3534 dist/js/core.js:3578 dist/js/core.js:3622
-#: dist/js/core.js:3682
+#: dist/js/core.js:3521 dist/js/core.js:3565 dist/js/core.js:3609
+#: dist/js/core.js:3669
 msgid "This pattern is invalid."
 msgstr "Aquest patró no és vàlid."
 
-#: dist/js/core.js:3541 dist/js/core.js:3585 dist/js/core.js:3629
-#: dist/js/core.js:3689
+#: dist/js/core.js:3528 dist/js/core.js:3572 dist/js/core.js:3616
+#: dist/js/core.js:3676
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Aquest patró no seria vàlid sense les carpetes, utilitzant obligarà \"Flatten\" de tots els espectacles."
 
-#: dist/js/core.js:3548 dist/js/core.js:3592 dist/js/core.js:3636
-#: dist/js/core.js:3696
+#: dist/js/core.js:3535 dist/js/core.js:3579 dist/js/core.js:3623
+#: dist/js/core.js:3683
 msgid "This pattern is valid."
 msgstr "Aquest patró és vàlid."
 
-#: dist/js/core.js:4022
+#: dist/js/core.js:4009
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmar autorització"
 
-#: dist/js/core.js:4079 dist/js/core.js:4133
+#: dist/js/core.js:4066 dist/js/core.js:4120
 msgid "Please fill in the Popcorn IP address"
 msgstr "Si us plau ompli l'adreça IP de crispetes"
 
-#: dist/js/core.js:4286
+#: dist/js/core.js:4273
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Nom de llista negra d'entrada; el valor ha de ser un slug trakt"
 
-#: dist/js/core.js:4318
-msgid "<li style=\"color: red;\">You must specify an SMTP hostname!</li>"
-msgstr "<li style=\"color: red;\">You d'especificar un nom d'amfitrió SMTP!</li>"
+#: dist/js/core.js:4305
+msgid "You must specify an SMTP hostname!"
+msgstr ""
 
-#: dist/js/core.js:4321
-msgid "<li style=\"color: red;\">You must specify an SMTP port!</li>"
-msgstr "<li style=\"color: red;\">You d'especificar un port de SMTP!</li>"
+#: dist/js/core.js:4308
+msgid "You must specify an SMTP port!"
+msgstr ""
 
-#: dist/js/core.js:4323
-msgid "<li style=\"color: red;\">SMTP port must be between 0 and 65535!</li>"
-msgstr "<li style=\"color: red;\">SMTP portuària ha de ser entre 0 i 65535!</li>"
+#: dist/js/core.js:4310
+msgid "SMTP port must be between 0 and 65535!"
+msgstr ""
 
-#: dist/js/core.js:4329
+#: dist/js/core.js:4316
 msgid "Enter an email address to send the test to:"
 msgstr "Introduïu una adreça de correu electrònic per enviar la prova per:"
 
-#: dist/js/core.js:4331
-msgid "<p style=\"color: red;\">You must provide a recipient email address!</p>"
-msgstr "<p style=\"color: red;\">You ha de proporcionar una adreça d'e-mail de receptor!</p>"
+#: dist/js/core.js:4318
+msgid "You must provide a recipient email address!"
+msgstr ""
 
-#: dist/js/core.js:4401
+#: dist/js/core.js:4388
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Llista de dispositius actualitzat. Trieu un dispositiu per empènyer."
 
-#: dist/js/core.js:4462
+#: dist/js/core.js:4449
 msgid "You didn't supply a Pushbullet api key"
 msgstr "No vas proporcionar una clau de Pushbullet api"
 
-#: dist/js/core.js:4492
+#: dist/js/core.js:4479
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "No us oblideu de desar els nous paràmetres pushbullet."
 
-#: dist/js/core.js:4564
+#: dist/js/core.js:4551
 msgid "Select backup folder to save to"
 msgstr "Seleccioneu la carpeta de reserva per salvar a"
 
-#: dist/js/core.js:4569
+#: dist/js/core.js:4556
 msgid "Select backup files to restore"
 msgstr "Seleccioneu els fitxers de còpia de seguretat per restaurar"
 
-#: dist/js/core.js:5115
+#: dist/js/core.js:5102
 msgid "No providers available to configure."
 msgstr "No disponible configurar proveïdors."
 
-#: dist/js/core.js:5326
+#: dist/js/core.js:5313
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Heu seleccionat per suprimir show(s).  Esteu segur que voleu continuar? Se suprimiran tots els fitxers del seu sistema."
 
-#: dist/js/core.js:5396
-msgid "<b>DELETED</b>"
-msgstr "<b>DELETED</b>"
+#: dist/js/core.js:5383
+msgid "DELETED"
+msgstr ""
 
 #: sickrage/core/webserver/views/api_builder.mako:24
 msgid "Profile"
@@ -532,7 +548,11 @@ msgstr "Contrasenya"
 msgid "for 30 days"
 msgstr "durant 30 dies"
 
-#: sickrage/core/webserver/views/login.mako:44
+#: sickrage/core/webserver/views/login.mako:48
+msgid "Register"
+msgstr ""
+
+#: sickrage/core/webserver/views/login.mako:52
 msgid "Login"
 msgstr "Connecti's"
 
@@ -546,7 +566,7 @@ msgstr "Configuració AnimeDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:98
-#: sickrage/core/webserver/views/config/general.mako:456
+#: sickrage/core/webserver/views/config/general.mako:394
 msgid "User Interface"
 msgstr "Interfície d'usuari"
 
@@ -591,14 +611,14 @@ msgstr "Voleu afegir els episodis de PostProcessed a la MyList?"
 
 #: sickrage/core/webserver/views/config/anime.mako:88
 #: sickrage/core/webserver/views/config/anime.mako:115
-#: sickrage/core/webserver/views/config/general.mako:141
-#: sickrage/core/webserver/views/config/general.mako:365
-#: sickrage/core/webserver/views/config/general.mako:445
-#: sickrage/core/webserver/views/config/general.mako:723
-#: sickrage/core/webserver/views/config/general.mako:992
-#: sickrage/core/webserver/views/config/general.mako:1242
-#: sickrage/core/webserver/views/config/general.mako:1292
-#: sickrage/core/webserver/views/config/general.mako:1415
+#: sickrage/core/webserver/views/config/general.mako:80
+#: sickrage/core/webserver/views/config/general.mako:303
+#: sickrage/core/webserver/views/config/general.mako:383
+#: sickrage/core/webserver/views/config/general.mako:661
+#: sickrage/core/webserver/views/config/general.mako:891
+#: sickrage/core/webserver/views/config/general.mako:1141
+#: sickrage/core/webserver/views/config/general.mako:1191
+#: sickrage/core/webserver/views/config/general.mako:1314
 #: sickrage/core/webserver/views/config/notifications.mako:185
 #: sickrage/core/webserver/views/config/notifications.mako:329
 #: sickrage/core/webserver/views/config/notifications.mako:457
@@ -693,7 +713,7 @@ msgid "Restore cache files"
 msgstr "Restaurar arxius de memòria cau"
 
 #: sickrage/core/webserver/views/config/general.mako:20
-#: sickrage/core/webserver/views/config/general.mako:149
+#: sickrage/core/webserver/views/config/general.mako:87
 msgid "Misc"
 msgstr "Misc"
 
@@ -702,7 +722,7 @@ msgid "Interface"
 msgstr "Interfície"
 
 #: sickrage/core/webserver/views/config/general.mako:22
-#: sickrage/core/webserver/views/config/general.mako:1004
+#: sickrage/core/webserver/views/config/general.mako:903
 #: sickrage/core/webserver/views/home/edit_show.mako:280
 msgid "Advanced Settings"
 msgstr "Configuració avançada"
@@ -712,374 +732,306 @@ msgid "SiCKRAGE API"
 msgstr "SiCKRAGE API"
 
 #: sickrage/core/webserver/views/config/general.mako:33
-msgid "Credentials and options for api.sickrage.ca"
+msgid "Options for api.sickrage.ca"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/general.mako:39
-#: sickrage/core/webserver/views/config/notifications.mako:31
-#: sickrage/core/webserver/views/config/notifications.mako:207
-#: sickrage/core/webserver/views/config/notifications.mako:348
-#: sickrage/core/webserver/views/config/notifications.mako:477
-#: sickrage/core/webserver/views/config/notifications.mako:589
-#: sickrage/core/webserver/views/config/notifications.mako:690
-#: sickrage/core/webserver/views/config/notifications.mako:826
-#: sickrage/core/webserver/views/config/notifications.mako:861
-#: sickrage/core/webserver/views/config/notifications.mako:931
-#: sickrage/core/webserver/views/config/notifications.mako:1022
-#: sickrage/core/webserver/views/config/notifications.mako:1135
-#: sickrage/core/webserver/views/config/notifications.mako:1268
-#: sickrage/core/webserver/views/config/notifications.mako:1343
-#: sickrage/core/webserver/views/config/notifications.mako:1552
-#: sickrage/core/webserver/views/config/notifications.mako:1644
-#: sickrage/core/webserver/views/config/notifications.mako:1769
-#: sickrage/core/webserver/views/config/notifications.mako:1863
-#: sickrage/core/webserver/views/config/notifications.mako:1984
-#: sickrage/core/webserver/views/config/notifications.mako:2095
-#: sickrage/core/webserver/views/config/notifications.mako:2239
-#: sickrage/core/webserver/views/config/notifications.mako:2424
-#: sickrage/core/webserver/views/config/notifications.mako:2570
-#: sickrage/core/webserver/views/config/notifications.mako:2825
-#: sickrage/core/webserver/views/config/notifications.mako:3057
-#: sickrage/core/webserver/views/config/notifications.mako:3152
-msgid "Enable"
-msgstr "Permetre"
-
-#: sickrage/core/webserver/views/config/general.mako:44
-msgid "Enable API access ?"
-msgstr "Permetre accés d'API?"
-
-#: sickrage/core/webserver/views/config/general.mako:48
-msgid "Register for API access"
-msgstr ""
-
-#: sickrage/core/webserver/views/config/general.mako:57
 msgid "API Provider Cache"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:62
+#: sickrage/core/webserver/views/config/general.mako:44
 msgid "Enable provider cache ?"
 msgstr "Habilitar la memòria cau del proveïdor?"
 
-#: sickrage/core/webserver/views/config/general.mako:68
-msgid "API Username"
-msgstr ""
-
-#: sickrage/core/webserver/views/config/general.mako:86
-msgid "API Password"
-msgstr ""
-
-#: sickrage/core/webserver/views/config/general.mako:104
+#: sickrage/core/webserver/views/config/general.mako:50
 msgid "Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:117
+#: sickrage/core/webserver/views/config/general.mako:63
 msgid "Sync To Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:119
+#: sickrage/core/webserver/views/config/general.mako:65
 msgid "Sync To Local Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:134
-#: sickrage/core/webserver/views/config/notifications.mako:178
-#: sickrage/core/webserver/views/config/notifications.mako:562
-#: sickrage/core/webserver/views/config/notifications.mako:665
-#: sickrage/core/webserver/views/config/notifications.mako:799
-#: sickrage/core/webserver/views/config/notifications.mako:1237
-#: sickrage/core/webserver/views/config/notifications.mako:1318
-#: sickrage/core/webserver/views/config/notifications.mako:1618
-#: sickrage/core/webserver/views/config/notifications.mako:1742
-#: sickrage/core/webserver/views/config/notifications.mako:1836
-#: sickrage/core/webserver/views/config/notifications.mako:1958
-#: sickrage/core/webserver/views/config/notifications.mako:2542
-#: sickrage/core/webserver/views/config/notifications.mako:2798
-#: sickrage/core/webserver/views/config/notifications.mako:3029
-#: sickrage/core/webserver/views/config/notifications.mako:3124
-#: sickrage/core/webserver/views/config/notifications.mako:3289
-msgid "Click below to test."
-msgstr "Feu clic a baix per provar."
-
-#: sickrage/core/webserver/views/config/general.mako:140
-msgid "Test API"
-msgstr "Prova d'API"
-
-#: sickrage/core/webserver/views/config/general.mako:150
+#: sickrage/core/webserver/views/config/general.mako:88
 msgid "Startup options. Indexer options. Log and show file locations."
 msgstr "Opcions d'inicialització. Opcions de l'indexador. Connecti's i mostren localitzacions d'arxiu."
 
-#: sickrage/core/webserver/views/config/general.mako:151
+#: sickrage/core/webserver/views/config/general.mako:89
 msgid "Some options may require a manual restart to take effect."
 msgstr "Algunes opcions pot requerir un manual reprendre prengui efecte."
 
-#: sickrage/core/webserver/views/config/general.mako:157
+#: sickrage/core/webserver/views/config/general.mako:95
 msgid "Default Indexer Language"
 msgstr "L'idioma predeterminat Indexer"
 
-#: sickrage/core/webserver/views/config/general.mako:166
+#: sickrage/core/webserver/views/config/general.mako:104
 msgid "for adding shows and metadata providers"
 msgstr "per afegir programes i proveïdors de metadades"
 
-#: sickrage/core/webserver/views/config/general.mako:174
+#: sickrage/core/webserver/views/config/general.mako:112
 msgid "Launch browser"
 msgstr "Llançar navegador"
 
-#: sickrage/core/webserver/views/config/general.mako:179
+#: sickrage/core/webserver/views/config/general.mako:117
 msgid "open the SickRage home page on startup"
 msgstr "Obriu la pàgina principal de SickRage a l'inici"
 
-#: sickrage/core/webserver/views/config/general.mako:184
+#: sickrage/core/webserver/views/config/general.mako:122
 msgid "Initial page"
 msgstr "Pàgina inicial"
 
-#: sickrage/core/webserver/views/config/general.mako:192
+#: sickrage/core/webserver/views/config/general.mako:130
 msgid "when launching SickRage interface"
 msgstr "Quan s'iniciï la interfície SickRage"
 
-#: sickrage/core/webserver/views/config/general.mako:194
+#: sickrage/core/webserver/views/config/general.mako:132
 #: sickrage/core/webserver/views/layouts/main.mako:98
 #: sickrage/core/webserver/views/layouts/main.mako:441
 msgid "Shows"
 msgstr "Espectacles"
 
-#: sickrage/core/webserver/views.py:524 sickrage/core/webserver/views.py:525
-#: sickrage/core/webserver/views/config/general.mako:197
+#: sickrage/core/webserver/views.py:529 sickrage/core/webserver/views.py:530
+#: sickrage/core/webserver/views/config/general.mako:135
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Horari"
 
-#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3665
-#: sickrage/core/webserver/views/config/general.mako:200
+#: sickrage/core/webserver/views.py:3659 sickrage/core/webserver/views.py:3660
+#: sickrage/core/webserver/views/config/general.mako:138
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
 msgstr "Història"
 
-#: sickrage/core/webserver/views/config/general.mako:203
+#: sickrage/core/webserver/views/config/general.mako:141
 #: sickrage/core/webserver/views/layouts/main.mako:302
 msgid "IRC"
 msgstr "IRC"
 
-#: sickrage/core/webserver/views/config/general.mako:212
+#: sickrage/core/webserver/views/config/general.mako:150
 msgid "Daily show updates start time"
 msgstr "Cada dia Mostra l'hora d'inici d'actualitzacions"
 
-#: sickrage/core/webserver/views/config/general.mako:227
+#: sickrage/core/webserver/views/config/general.mako:165
 msgid "with information such as next air dates, show ended, etc."
 msgstr "amb informació com pròximes cites d'aire, mostrar acabats, etc."
 
-#: sickrage/core/webserver/views/config/general.mako:228
+#: sickrage/core/webserver/views/config/general.mako:166
 msgid "Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)"
 msgstr "15 d'ús per a 3pm, 4 per a les 4 hores etc.. Res sobre 23 o sota 0 s'establirà a 0 (12 hores)"
 
-#: sickrage/core/webserver/views/config/general.mako:235
+#: sickrage/core/webserver/views/config/general.mako:173
 msgid "Daily show updates stale shows"
 msgstr "Mostrar diàriament actualitzacions rància espectacles"
 
-#: sickrage/core/webserver/views/config/general.mako:241
+#: sickrage/core/webserver/views/config/general.mako:179
 msgid "should ended shows last updated less then 90 days get updated and refreshed automatically ?"
 msgstr "ha acabats espectacles darrera actualitzats menys 90 dies després aconseguir actualitzat i automàticament refrescada?"
 
-#: sickrage/core/webserver/views/config/general.mako:248
+#: sickrage/core/webserver/views/config/general.mako:186
 msgid "Send to trash for actions"
 msgstr "Enviar a la paperera per accions"
 
-#: sickrage/core/webserver/views/config/general.mako:253
+#: sickrage/core/webserver/views/config/general.mako:191
 msgid "when using show \"Remove\" and delete files"
 msgstr "Quan utilitzant Mostra el \"Treure\" i suprimir arxius"
 
-#: sickrage/core/webserver/views/config/general.mako:258
+#: sickrage/core/webserver/views/config/general.mako:196
 msgid "on scheduled deletes of the oldest log files"
 msgstr "el planificat Suprimeix els arxius de registre més antic"
 
-#: sickrage/core/webserver/views/config/general.mako:262
+#: sickrage/core/webserver/views/config/general.mako:200
 msgid "selected actions use trash (recycle bin) instead of the default permanent delete"
 msgstr "accions seleccionades utilitzar escombraries (Paperera de reciclatge) en comptes del suprimir permanents per defecte"
 
-#: sickrage/core/webserver/views/config/general.mako:270
+#: sickrage/core/webserver/views/config/general.mako:208
 msgid "Number of Log files saved"
 msgstr "Nombre d'arxius de registre guardats"
 
-#: sickrage/core/webserver/views/config/general.mako:279
+#: sickrage/core/webserver/views/config/general.mako:217
 msgid "default = 5"
 msgstr "defecte = 5"
 
-#: sickrage/core/webserver/views/config/general.mako:290
+#: sickrage/core/webserver/views/config/general.mako:228
 msgid "Size of Log files saved"
 msgstr "Mida d'arxius de registre guardats"
 
-#: sickrage/core/webserver/views/config/general.mako:299
+#: sickrage/core/webserver/views/config/general.mako:237
 msgid "default = 1048576 (1MB)"
 msgstr "defecte = 1048576 (1MB)"
 
-#: sickrage/core/webserver/views/config/general.mako:310
+#: sickrage/core/webserver/views/config/general.mako:248
 msgid "Default indexer for adding shows"
 msgstr "Defecte indexador per afegir espectacles"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:259
 msgid "All Indexers"
 msgstr "Tots els Indexers"
 
-#: sickrage/core/webserver/views/config/general.mako:335
+#: sickrage/core/webserver/views/config/general.mako:273
 msgid "Show indexer timeout"
 msgstr "Mostra el temps d'indexador"
 
-#: sickrage/core/webserver/views/config/general.mako:344
+#: sickrage/core/webserver/views/config/general.mako:282
 msgid "default = 10"
 msgstr "defecte = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:357
+#: sickrage/core/webserver/views/config/general.mako:295
 msgid "Show root directories"
 msgstr "Mostren directoris arrel"
 
-#: sickrage/core/webserver/views/config/general.mako:374
+#: sickrage/core/webserver/views/config/general.mako:312
 msgid "Updates"
 msgstr "Actualitzacions"
 
-#: sickrage/core/webserver/views/config/general.mako:375
+#: sickrage/core/webserver/views/config/general.mako:313
 msgid "Options for software updates."
 msgstr "Opcions per a actualitzacions de programari."
 
-#: sickrage/core/webserver/views/config/general.mako:382
+#: sickrage/core/webserver/views/config/general.mako:320
 msgid "Check software updates"
 msgstr "Comprovació d'actualitzacions de programari"
 
-#: sickrage/core/webserver/views/config/general.mako:388
+#: sickrage/core/webserver/views/config/general.mako:326
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:397
+#: sickrage/core/webserver/views/config/general.mako:335
 msgid "Automatically update"
 msgstr "Actualitzar automàticament"
 
-#: sickrage/core/webserver/views/config/general.mako:403
+#: sickrage/core/webserver/views/config/general.mako:341
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:411
+#: sickrage/core/webserver/views/config/general.mako:349
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:420
+#: sickrage/core/webserver/views/config/general.mako:358
 msgid "default = 12 (hours)"
 msgstr "defecte = 12 (hores)"
 
-#: sickrage/core/webserver/views/config/general.mako:432
+#: sickrage/core/webserver/views/config/general.mako:370
 msgid "Notify on software update"
 msgstr "Notificar a l'actualització de programari"
 
-#: sickrage/core/webserver/views/config/general.mako:438
+#: sickrage/core/webserver/views/config/general.mako:376
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "enviar un missatge a tots els permetia notificadors quan SickRage s'ha actualitzat"
 
-#: sickrage/core/webserver/views/config/general.mako:457
+#: sickrage/core/webserver/views/config/general.mako:395
 msgid "Options for visual appearance."
 msgstr "Opcions per a l'aparença visual."
 
-#: sickrage/core/webserver/views/config/general.mako:463
+#: sickrage/core/webserver/views/config/general.mako:401
 msgid "Interface Language"
 msgstr "Idioma de la interfície"
 
-#: sickrage/core/webserver/views/config/general.mako:474
+#: sickrage/core/webserver/views/config/general.mako:412
 msgid "System Language"
 msgstr "Llengua de sistema"
 
-#: sickrage/core/webserver/views/config/general.mako:486
+#: sickrage/core/webserver/views/config/general.mako:424
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "d'aspecte tingui efecte, estalviar llavors actualitzar el seu navegador"
 
-#: sickrage/core/webserver/views/config/general.mako:495
+#: sickrage/core/webserver/views/config/general.mako:433
 msgid "Display theme"
 msgstr "Tema d'exhibició"
 
-#: sickrage/core/webserver/views/config/general.mako:505
+#: sickrage/core/webserver/views/config/general.mako:443
 msgid "Dark"
 msgstr "Fosc"
 
-#: sickrage/core/webserver/views/config/general.mako:508
+#: sickrage/core/webserver/views/config/general.mako:446
 msgid "Light"
 msgstr "Llum"
 
-#: sickrage/core/webserver/views/config/general.mako:517
+#: sickrage/core/webserver/views/config/general.mako:455
 msgid "Show all seasons"
 msgstr "Mostra totes les estacions"
 
-#: sickrage/core/webserver/views/config/general.mako:523
-#: sickrage/core/webserver/views/config/general.mako:699
+#: sickrage/core/webserver/views/config/general.mako:461
+#: sickrage/core/webserver/views/config/general.mako:637
 msgid "on the show summary page"
 msgstr "a la pàgina de resum Mostra el"
 
-#: sickrage/core/webserver/views/config/general.mako:531
+#: sickrage/core/webserver/views/config/general.mako:469
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Mena amb \"El\", \"A\", \"Un\""
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:475
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "inclouen articles (\"El\", \"\", \"Un\") quan classificació mostrar llistes"
 
-#: sickrage/core/webserver/views/config/general.mako:545
+#: sickrage/core/webserver/views/config/general.mako:483
 msgid "Filter Row"
 msgstr "Filtre fila"
 
-#: sickrage/core/webserver/views/config/general.mako:551
+#: sickrage/core/webserver/views/config/general.mako:489
 msgid "Add a filter row to the show display on the home page"
 msgstr "Afegir una fila de filtre a l'exhibició Mostra a la pàgina principal"
 
-#: sickrage/core/webserver/views/config/general.mako:558
+#: sickrage/core/webserver/views/config/general.mako:496
 msgid "Missed episodes range"
 msgstr "Episodis perduts gamma"
 
-#: sickrage/core/webserver/views/config/general.mako:568
+#: sickrage/core/webserver/views/config/general.mako:506
 msgid "# of days"
 msgstr "# de dies"
 
-#: sickrage/core/webserver/views/config/general.mako:577
+#: sickrage/core/webserver/views/config/general.mako:515
 msgid "Display fuzzy dates"
 msgstr "Visualitzar dates difuses"
 
-#: sickrage/core/webserver/views/config/general.mako:584
+#: sickrage/core/webserver/views/config/general.mako:522
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "moure dates absolutes en els consells i mostrar, per exemple \"últim DJ\", \"En DM\""
 
-#: sickrage/core/webserver/views/config/general.mako:591
+#: sickrage/core/webserver/views/config/general.mako:529
 msgid "Trim zero padding"
 msgstr "Retallar zero farciment"
 
-#: sickrage/core/webserver/views/config/general.mako:597
+#: sickrage/core/webserver/views/config/general.mako:535
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "eliminar el principal nombre \"0\" a l'hora del dia i data del mes"
 
-#: sickrage/core/webserver/views/config/general.mako:604
+#: sickrage/core/webserver/views/config/general.mako:542
 msgid "Date style"
 msgstr "Estil de data"
 
-#: sickrage/core/webserver/views/config/general.mako:622
+#: sickrage/core/webserver/views/config/general.mako:560
 msgid "Use System Default"
 msgstr "Utilitza per defecte del sistema"
 
-#: sickrage/core/webserver/views/config/general.mako:634
+#: sickrage/core/webserver/views/config/general.mako:572
 msgid "Time style"
 msgstr "Format d'hora"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:591
 msgid "Timezone"
 msgstr "Fus horari"
 
-#: sickrage/core/webserver/views/config/general.mako:658
+#: sickrage/core/webserver/views/config/general.mako:596
 msgid "Local"
 msgstr "Local"
 
-#: sickrage/core/webserver/views/config/general.mako:662
+#: sickrage/core/webserver/views/config/general.mako:600
 #: sickrage/core/webserver/views/home/index.mako:43
 #: sickrage/core/webserver/views/home/index.mako:267
 msgid "Network"
 msgstr "Xarxa"
 
-#: sickrage/core/webserver/views/config/general.mako:665
+#: sickrage/core/webserver/views/config/general.mako:603
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "exhibició de dates i horaris a la vostra zona horària o la xarxa Mostra el fus horari"
 
-#: sickrage/core/webserver/views/config/general.mako:667
-#: sickrage/core/webserver/views/config/general.mako:1189
-#: sickrage/core/webserver/views/config/general.mako:1231
+#: sickrage/core/webserver/views/config/general.mako:605
+#: sickrage/core/webserver/views/config/general.mako:1088
+#: sickrage/core/webserver/views/config/general.mako:1130
 #: sickrage/core/webserver/views/config/notifications.mako:833
 #: sickrage/core/webserver/views/config/notifications.mako:868
 #: sickrage/core/webserver/views/config/notifications.mako:938
@@ -1101,328 +1053,304 @@ msgstr "exhibició de dates i horaris a la vostra zona horària o la xarxa Mostr
 msgid "NOTE:"
 msgstr "NOTA:"
 
-#: sickrage/core/webserver/views/config/general.mako:667
+#: sickrage/core/webserver/views/config/general.mako:605
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Ús local el fus horari per iniciar la recerca de episodis minuts després el show acaba (depèn de la freqüència de dailysearch)"
 
-#: sickrage/core/webserver/views/config/general.mako:675
+#: sickrage/core/webserver/views/config/general.mako:613
 msgid "Download url"
 msgstr "Descarregar url"
 
-#: sickrage/core/webserver/views/config/general.mako:692
+#: sickrage/core/webserver/views/config/general.mako:630
 msgid "Show fanart in the background"
 msgstr "Mostra el fanart en el fons"
 
-#: sickrage/core/webserver/views/config/general.mako:706
+#: sickrage/core/webserver/views/config/general.mako:644
 msgid "Fanart transparency"
 msgstr "FanArt transparència"
 
-#: sickrage/core/webserver/views/config/general.mako:731
+#: sickrage/core/webserver/views/config/general.mako:669
 msgid "Web Interface"
 msgstr "Interfície de webs"
 
-#: sickrage/core/webserver/views/config/general.mako:732
+#: sickrage/core/webserver/views/config/general.mako:670
 msgid "It is recommended that you enable a username and password to secure SickRage from being tampered with remotely."
 msgstr "Es recomana que tens un usuari i contrasenya per protegir SickRage de ser manipulat de forma remota."
 
-#: sickrage/core/webserver/views/config/general.mako:733
+#: sickrage/core/webserver/views/config/general.mako:671
 msgid "These options require a manual restart to take effect."
 msgstr "Aquestes opcions requereixen un manual reprendre prengui efecte."
 
-#: sickrage/core/webserver/views/config/general.mako:739
+#: sickrage/core/webserver/views/config/general.mako:677
 msgid "Enable UPnP"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:745
+#: sickrage/core/webserver/views/config/general.mako:683
 msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:753
+#: sickrage/core/webserver/views/config/general.mako:691
 msgid "HTTP public port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:772
+#: sickrage/core/webserver/views/config/general.mako:710
 msgid "used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:782
-msgid "API key"
-msgstr "Clau d'API"
-
-#: sickrage/core/webserver/views/config/general.mako:804
-msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
-msgstr "solia donar 3 programes de limitat accés a SiCKRAGE pot intentar totes les característiques de l'API"
-
-#: sickrage/core/webserver/views/config/general.mako:805
-msgid "here"
-msgstr "aquí"
-
-#: sickrage/core/webserver/views/config/general.mako:815
-msgid "HTTP logs"
-msgstr "Registres d'HTTP"
-
-#: sickrage/core/webserver/views/config/general.mako:820
-msgid "enable logs from the internal Tornado web server"
-msgstr "Habiliteu els registres del servidor web intern Tornado"
-
-#: sickrage/core/webserver/views/config/general.mako:826
-msgid "HTTP username"
-msgstr "Nom d'usuari HTTP"
-
-#: sickrage/core/webserver/views/config/general.mako:836
-#: sickrage/core/webserver/views/config/general.mako:855
-#: sickrage/core/webserver/views/config/notifications.mako:154
-#: sickrage/core/webserver/views/config/notifications.mako:171
-#: sickrage/core/webserver/views/config/notifications.mako:262
-#: sickrage/core/webserver/views/config/notifications.mako:278
-#: sickrage/core/webserver/views/config/notifications.mako:426
-#: sickrage/core/webserver/views/config/notifications.mako:442
-#: sickrage/core/webserver/views/config/notifications.mako:1098
-#: sickrage/core/webserver/views/config/search.mako:382
-#: sickrage/core/webserver/views/config/search.mako:400
-#: sickrage/core/webserver/views/config/search.mako:866
-#: sickrage/core/webserver/views/config/search.mako:883
-msgid "blank = no authentication"
-msgstr "en blanc = sense autenticació"
-
-#: sickrage/core/webserver/views/config/general.mako:845
-msgid "HTTP password"
-msgstr "Contrasenya d'HTTP"
-
-#: sickrage/core/webserver/views/config/general.mako:864
+#: sickrage/core/webserver/views/config/general.mako:720
 msgid "HTTP private port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:875
+#: sickrage/core/webserver/views/config/general.mako:731
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:884
+#: sickrage/core/webserver/views/config/general.mako:740
 msgid "used to access SiCKRAGE over a private internal IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:893
+#: sickrage/core/webserver/views/config/general.mako:749
+msgid "HTTP logs"
+msgstr "Registres d'HTTP"
+
+#: sickrage/core/webserver/views/config/general.mako:754
+msgid "enable logs from the internal Tornado web server"
+msgstr "Habiliteu els registres del servidor web intern Tornado"
+
+#: sickrage/core/webserver/views/config/general.mako:760
+msgid "Application API key"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/general.mako:782
+msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
+msgstr "solia donar 3 programes de limitat accés a SiCKRAGE pot intentar totes les característiques de l'API"
+
+#: sickrage/core/webserver/views/config/general.mako:783
+msgid "here"
+msgstr "aquí"
+
+#: sickrage/core/webserver/views/config/general.mako:792
 msgid "Listen on IPv6"
 msgstr "Escolta a IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:898
+#: sickrage/core/webserver/views/config/general.mako:797
 msgid "attempt binding to any available IPv6 address"
 msgstr "intent d'enquadernació a qualsevol adreça IPv6 disponible"
 
-#: sickrage/core/webserver/views/config/general.mako:904
+#: sickrage/core/webserver/views/config/general.mako:803
 msgid "Enable HTTPS"
 msgstr "Permetre HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:910
+#: sickrage/core/webserver/views/config/general.mako:809
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "permetre l'accés a la interfície web utilitzant una adreça HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:919
+#: sickrage/core/webserver/views/config/general.mako:818
 msgid "HTTPS certificate"
 msgstr "Certificat d'HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:933
+#: sickrage/core/webserver/views/config/general.mako:832
 msgid "file name or path to HTTPS certificate"
 msgstr "nom del fitxer o ruta certificat HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:943
+#: sickrage/core/webserver/views/config/general.mako:842
 msgid "HTTPS key"
 msgstr "Clau de HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:955
+#: sickrage/core/webserver/views/config/general.mako:854
 msgid "file name or path to HTTPS key"
 msgstr "nom del fitxer o el camí a la clau de HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:965
+#: sickrage/core/webserver/views/config/general.mako:864
 msgid "Reverse proxy headers"
 msgstr "Capçaleres d'apoderat invers"
 
-#: sickrage/core/webserver/views/config/general.mako:971
+#: sickrage/core/webserver/views/config/general.mako:870
 msgid "accept the following reverse proxy headers (advanced)..."
 msgstr "acceptar les capçaleres d'apoderat invers següents (avançats)..."
 
-#: sickrage/core/webserver/views/config/general.mako:972
+#: sickrage/core/webserver/views/config/general.mako:871
 msgid "(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr "(X-Forwarded-For, X-enviat-amfitrió i X-enviat-Proto)"
 
-#: sickrage/core/webserver/views/config/general.mako:979
+#: sickrage/core/webserver/views/config/general.mako:878
 msgid "Notify on login"
 msgstr "Notificar en connexió"
 
-#: sickrage/core/webserver/views/config/general.mako:985
+#: sickrage/core/webserver/views/config/general.mako:884
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "enviar un missatge a tots els permetia notificadors quan algú es connecta en SiCKRAGE d'una adreça IP pública"
 
-#: sickrage/core/webserver/views/config/general.mako:1010
+#: sickrage/core/webserver/views/config/general.mako:909
 msgid "CPU throttling"
 msgstr "Limitació de CPU"
 
-#: sickrage/core/webserver/views/config/general.mako:1029
+#: sickrage/core/webserver/views/config/general.mako:928
 msgid "Anonymous redirect"
 msgstr "Redirecció anònim"
 
-#: sickrage/core/webserver/views/config/general.mako:1047
+#: sickrage/core/webserver/views/config/general.mako:946
 msgid "Enable debug"
 msgstr "Permetre depuració"
 
-#: sickrage/core/webserver/views/config/general.mako:1053
+#: sickrage/core/webserver/views/config/general.mako:952
 msgid "Enable debug logs"
 msgstr "Habiliteu els registres de depuració"
 
-#: sickrage/core/webserver/views/config/general.mako:1060
+#: sickrage/core/webserver/views/config/general.mako:959
 msgid "Verify SSL Certs"
 msgstr "Verificar cert SSL"
 
-#: sickrage/core/webserver/views/config/general.mako:1066
+#: sickrage/core/webserver/views/config/general.mako:965
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Verificar els certificats SSL (Impossibiliti això per SSL trencat instal·la (com QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1075
+#: sickrage/core/webserver/views/config/general.mako:974
 msgid "No Restart"
 msgstr "Sense reinici"
 
-#: sickrage/core/webserver/views/config/general.mako:1082
+#: sickrage/core/webserver/views/config/general.mako:981
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "SiCKRAGE tancament damunt reprèn (servei extern de reiniciar SiCKRAGE en el seu propi)."
 
-#: sickrage/core/webserver/views/config/general.mako:1092
+#: sickrage/core/webserver/views/config/general.mako:991
 msgid "Encrypt settings"
 msgstr "Xifrar escenes"
 
-#: sickrage/core/webserver/views/config/general.mako:1098
+#: sickrage/core/webserver/views/config/general.mako:997
 msgid "in the"
 msgstr "en la"
 
-#: sickrage/core/webserver/views/config/general.mako:1098
+#: sickrage/core/webserver/views/config/general.mako:997
 msgid "file."
 msgstr "l'arxiu."
 
-#: sickrage/core/webserver/views/config/general.mako:1107
+#: sickrage/core/webserver/views/config/general.mako:1006
 msgid "Unprotected calendar"
 msgstr "Calendari desprotegit"
 
-#: sickrage/core/webserver/views/config/general.mako:1113
+#: sickrage/core/webserver/views/config/general.mako:1012
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "permet la subscripció al calendari sense l'usuari i contrasenya. Alguns serveis com Google Calendar només treballar d'aquesta manera"
 
-#: sickrage/core/webserver/views/config/general.mako:1123
+#: sickrage/core/webserver/views/config/general.mako:1022
 msgid "Google Calendar Icons"
 msgstr "Icones de Google Calendar"
 
-#: sickrage/core/webserver/views/config/general.mako:1129
+#: sickrage/core/webserver/views/config/general.mako:1028
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "mostrar una icona al costat d'esdeveniments de calendari exportats a Google Calendar."
 
-#: sickrage/core/webserver/views/config/general.mako:1138
+#: sickrage/core/webserver/views/config/general.mako:1037
 msgid "Link Google Account"
 msgstr "Enllaç Google compte"
 
-#: sickrage/core/webserver/views/config/general.mako:1141
+#: sickrage/core/webserver/views/config/general.mako:1040
 msgid "Link"
 msgstr "Enllaç"
 
-#: sickrage/core/webserver/views/config/general.mako:1143
+#: sickrage/core/webserver/views/config/general.mako:1042
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "enllaçar el teu compte de google a SiCKRAGE per a ús de tret avançat com emmagatzematge d'escenes i bases de dades"
 
-#: sickrage/core/webserver/views/config/general.mako:1151
+#: sickrage/core/webserver/views/config/general.mako:1050
 msgid "Proxy host"
 msgstr "Hoste intermediari"
 
-#: sickrage/core/webserver/views/config/general.mako:1168
+#: sickrage/core/webserver/views/config/general.mako:1067
 msgid "Use proxy for indexers"
 msgstr "Ús de proxy per a indexers"
 
-#: sickrage/core/webserver/views/config/general.mako:1174
+#: sickrage/core/webserver/views/config/general.mako:1073
 msgid "use proxy host for connecting to indexers (thetvdb)"
 msgstr "utilitzar l'amfitrió de servidor intermediari per a connectar-se a indexers (thetvdb)"
 
-#: sickrage/core/webserver/views/config/general.mako:1182
+#: sickrage/core/webserver/views/config/general.mako:1081
 msgid "Skip Remove Detection"
 msgstr "Omet treure detecció"
 
-#: sickrage/core/webserver/views/config/general.mako:1188
+#: sickrage/core/webserver/views/config/general.mako:1087
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Saltar la detecció d'arxius suprimides. Si impossibilitar s'estableix per defecte se suprimeix de l'estat"
 
-#: sickrage/core/webserver/views/config/general.mako:1189
+#: sickrage/core/webserver/views/config/general.mako:1088
 msgid "This may mean SickRage misses renames as well"
 msgstr "Això podria significar que enyora SickRage canvia el nom, així"
 
-#: sickrage/core/webserver/views/config/general.mako:1197
+#: sickrage/core/webserver/views/config/general.mako:1096
 msgid "Default deleted episode status"
 msgstr "L'estat per defecte suprimit episodi"
 
-#: sickrage/core/webserver/views/config/general.mako:1229
+#: sickrage/core/webserver/views/config/general.mako:1128
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Definir l'estat establirà per a arxiu de mitjans de comunicació que s'ha suprimit."
 
-#: sickrage/core/webserver/views/config/general.mako:1231
+#: sickrage/core/webserver/views/config/general.mako:1130
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Opció arxivat mantindrà qualitat anterior descarregat"
 
-#: sickrage/core/webserver/views/config/general.mako:1233
+#: sickrage/core/webserver/views/config/general.mako:1132
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Exemple: Descarregat (1080p WEB-DL) ==> arxivats (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1251
+#: sickrage/core/webserver/views/config/general.mako:1150
 msgid "PIP Settings"
 msgstr "Configuració de PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1256
+#: sickrage/core/webserver/views/config/general.mako:1155
 msgid "PIP executable path"
 msgstr "Camí executable PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1267
+#: sickrage/core/webserver/views/config/general.mako:1166
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1280
-#: sickrage/core/webserver/views/config/general.mako:1377
+#: sickrage/core/webserver/views/config/general.mako:1179
+#: sickrage/core/webserver/views/config/general.mako:1276
 msgid "Click vefify path to test."
 msgstr "Feu clic a camí vefify provar."
 
-#: sickrage/core/webserver/views/config/general.mako:1305
+#: sickrage/core/webserver/views/config/general.mako:1204
 msgid "GIT Settings"
 msgstr "GIT escenes"
 
-#: sickrage/core/webserver/views/config/general.mako:1310
+#: sickrage/core/webserver/views/config/general.mako:1209
 msgid "Git Branches"
 msgstr "Git branques"
 
-#: sickrage/core/webserver/views/config/general.mako:1320
+#: sickrage/core/webserver/views/config/general.mako:1219
 msgid "GIT Branch Version"
 msgstr "GIT versió"
 
-#: sickrage/core/webserver/views/config/general.mako:1340
+#: sickrage/core/webserver/views/config/general.mako:1239
 msgid "Error: No branches found."
 msgstr "Error: No hi ha branques trobats."
 
-#: sickrage/core/webserver/views/config/general.mako:1344
+#: sickrage/core/webserver/views/config/general.mako:1243
 msgid "select branch to use (restart required)"
 msgstr "Seleccioni branca utilitzar (cal reiniciar)"
 
-#: sickrage/core/webserver/views/config/general.mako:1353
+#: sickrage/core/webserver/views/config/general.mako:1252
 msgid "GIT executable path"
 msgstr "Camí executable GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1364
+#: sickrage/core/webserver/views/config/general.mako:1263
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1386
+#: sickrage/core/webserver/views/config/general.mako:1285
 msgid "Git reset"
 msgstr "Git reinicialització"
 
-#: sickrage/core/webserver/views/config/general.mako:1392
+#: sickrage/core/webserver/views/config/general.mako:1291
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "treu una arxius i realitza una reinicialització dura en git branca automàticament per ajudar a resoldre problemes d'actualització"
 
-#: sickrage/core/webserver/views/config/general.mako:1400
+#: sickrage/core/webserver/views/config/general.mako:1299
 msgid "Git auto-issues submit"
 msgstr "Envia auto-qüestions de git"
 
-#: sickrage/core/webserver/views/config/general.mako:1407
+#: sickrage/core/webserver/views/config/general.mako:1306
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "enviar informes d'error/assumpte per nostres incidències automàticament quan es registren errors de"
 
@@ -1517,6 +1445,34 @@ msgstr "Social"
 #: sickrage/core/webserver/views/config/notifications.mako:26
 msgid "A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV."
 msgstr "Un codi lliure i obert mitjans de comunicació multiplataforma Centre Casa entreteniment sistema programari i amb una interfície de 10 peus d'usuari dissenyada per a la sala TV."
+
+#: sickrage/core/webserver/views/config/notifications.mako:31
+#: sickrage/core/webserver/views/config/notifications.mako:207
+#: sickrage/core/webserver/views/config/notifications.mako:348
+#: sickrage/core/webserver/views/config/notifications.mako:477
+#: sickrage/core/webserver/views/config/notifications.mako:589
+#: sickrage/core/webserver/views/config/notifications.mako:690
+#: sickrage/core/webserver/views/config/notifications.mako:826
+#: sickrage/core/webserver/views/config/notifications.mako:861
+#: sickrage/core/webserver/views/config/notifications.mako:931
+#: sickrage/core/webserver/views/config/notifications.mako:1022
+#: sickrage/core/webserver/views/config/notifications.mako:1135
+#: sickrage/core/webserver/views/config/notifications.mako:1268
+#: sickrage/core/webserver/views/config/notifications.mako:1343
+#: sickrage/core/webserver/views/config/notifications.mako:1552
+#: sickrage/core/webserver/views/config/notifications.mako:1644
+#: sickrage/core/webserver/views/config/notifications.mako:1769
+#: sickrage/core/webserver/views/config/notifications.mako:1863
+#: sickrage/core/webserver/views/config/notifications.mako:1984
+#: sickrage/core/webserver/views/config/notifications.mako:2095
+#: sickrage/core/webserver/views/config/notifications.mako:2239
+#: sickrage/core/webserver/views/config/notifications.mako:2424
+#: sickrage/core/webserver/views/config/notifications.mako:2570
+#: sickrage/core/webserver/views/config/notifications.mako:2825
+#: sickrage/core/webserver/views/config/notifications.mako:3057
+#: sickrage/core/webserver/views/config/notifications.mako:3152
+msgid "Enable"
+msgstr "Permetre"
 
 #: sickrage/core/webserver/views/config/notifications.mako:36
 msgid "send KODI commands?"
@@ -1689,9 +1645,41 @@ msgstr "ex. 192.168.1.100:8080, 192.168.1.101:8080"
 msgid "KODI username"
 msgstr "Nom d'usuari KODI"
 
+#: sickrage/core/webserver/views/config/notifications.mako:154
+#: sickrage/core/webserver/views/config/notifications.mako:171
+#: sickrage/core/webserver/views/config/notifications.mako:262
+#: sickrage/core/webserver/views/config/notifications.mako:278
+#: sickrage/core/webserver/views/config/notifications.mako:426
+#: sickrage/core/webserver/views/config/notifications.mako:442
+#: sickrage/core/webserver/views/config/notifications.mako:1098
+#: sickrage/core/webserver/views/config/search.mako:382
+#: sickrage/core/webserver/views/config/search.mako:400
+#: sickrage/core/webserver/views/config/search.mako:866
+#: sickrage/core/webserver/views/config/search.mako:883
+msgid "blank = no authentication"
+msgstr "en blanc = sense autenticació"
+
 #: sickrage/core/webserver/views/config/notifications.mako:161
 msgid "KODI password"
 msgstr "Contrasenya KODI"
+
+#: sickrage/core/webserver/views/config/notifications.mako:178
+#: sickrage/core/webserver/views/config/notifications.mako:562
+#: sickrage/core/webserver/views/config/notifications.mako:665
+#: sickrage/core/webserver/views/config/notifications.mako:799
+#: sickrage/core/webserver/views/config/notifications.mako:1237
+#: sickrage/core/webserver/views/config/notifications.mako:1318
+#: sickrage/core/webserver/views/config/notifications.mako:1618
+#: sickrage/core/webserver/views/config/notifications.mako:1742
+#: sickrage/core/webserver/views/config/notifications.mako:1836
+#: sickrage/core/webserver/views/config/notifications.mako:1958
+#: sickrage/core/webserver/views/config/notifications.mako:2542
+#: sickrage/core/webserver/views/config/notifications.mako:2798
+#: sickrage/core/webserver/views/config/notifications.mako:3029
+#: sickrage/core/webserver/views/config/notifications.mako:3124
+#: sickrage/core/webserver/views/config/notifications.mako:3289
+msgid "Click below to test."
+msgstr "Feu clic a baix per provar."
 
 #: sickrage/core/webserver/views/config/notifications.mako:184
 msgid "Test KODI"
@@ -3498,7 +3486,7 @@ msgstr "Almenys un proveïdor és necessari però dos són recomanables."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "Proveïdors NZB/Torrent pot activar en"
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:3974
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3963
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Search Clients"
@@ -3583,7 +3571,15 @@ msgid "episodes only."
 msgstr "episodis només."
 
 #: sickrage/core/webserver/views/config/providers.mako:265
-msgid "when searching for complete seasons you can choose to have it look for <br/>season packs only, or choose to have it build a complete season from just <br/>single episodes."
+msgid "when searching for complete seasons you can choose to have it look for"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:266
+msgid "season packs only, or choose to have it build a complete season from just"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:267
+msgid "single episodes."
 msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:281
@@ -3638,17 +3634,33 @@ msgstr "aquest proveïdor requereix les galetes següents: "
 msgid "Pin:"
 msgstr "PIN:"
 
+#: sickrage/core/webserver/views/config/providers.mako:591
+msgid "Provider PIN#"
+msgstr ""
+
 #: sickrage/core/webserver/views/config/providers.mako:602
 msgid "Seed ratio:"
 msgstr "Proporció de llavor:"
+
+#: sickrage/core/webserver/views/config/providers.mako:612
+msgid "stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:622
 msgid "Minimum seeders:"
 msgstr "Sembradores mínims:"
 
+#: sickrage/core/webserver/views/config/providers.mako:632
+msgid "Minimum allowed seeders"
+msgstr ""
+
 #: sickrage/core/webserver/views/config/providers.mako:642
 msgid "Minimum leechers:"
 msgstr "Mínims posts:"
+
+#: sickrage/core/webserver/views/config/providers.mako:652
+msgid "Minimum allowed leechers"
+msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:662
 msgid "Confirmed download"
@@ -4236,7 +4248,7 @@ msgstr "Utilitzeu Alt amplada de banda assignació si prioritat és alt"
 msgid "Test Connection"
 msgstr "Connexió de prova"
 
-#: sickrage/core/webserver/api.py:966
+#: sickrage/core/webserver/api.py:967
 #: sickrage/core/webserver/views/config/subtitles.mako:9
 #: sickrage/core/webserver/views/config/subtitles.mako:23
 msgid "Subtitles Search"
@@ -4699,7 +4711,7 @@ msgstr "Data d'emissió"
 msgid "Download"
 msgstr "Descarregar"
 
-#: sickrage/core/webserver/views.py:1072 sickrage/core/webserver/views.py:1073
+#: sickrage/core/webserver/views.py:1067 sickrage/core/webserver/views.py:1068
 #: sickrage/core/webserver/views/home/display_show.mako:569
 #: sickrage/core/webserver/views/home/index.mako:272
 #: sickrage/core/webserver/views/manage/mass_update.mako:58
@@ -4720,7 +4732,7 @@ msgstr "Mai"
 msgid "Retry Download"
 msgstr "Torni a intentar descarregar"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4956
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4848,7 +4860,7 @@ msgstr "utilitzar l'ordre de DVD en comptes de l'ordre d'aire"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Una \"Actualització ple de força\" és necessari, i si teniu episodis existents cal ordenar-los manualment."
 
-#: sickrage/core/webserver/views.py:3703 sickrage/core/webserver/views.py:4846
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4835
 #: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5176,7 +5188,7 @@ msgstr "Actuant reprendre"
 msgid "Daily Search"
 msgstr "Cerca diària"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4943
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Acumulació"
@@ -5201,7 +5213,7 @@ msgstr "Post-procés"
 msgid "Subtitles Finder"
 msgstr "Cercador de subtítols"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4951
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5234,7 +5246,7 @@ msgstr "NO"
 msgid "True"
 msgstr "Veritable"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4946
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Cua Mostra el"
@@ -5407,7 +5419,7 @@ msgstr "<p>Select el seu preferit fansub grups des de la Groups</b> <b>Available
 msgid "Whitelist"
 msgstr "Whitelist"
 
-#: sickrage/core/webserver/views.py:1207
+#: sickrage/core/webserver/views.py:1202
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:36
@@ -5492,7 +5504,7 @@ msgstr "Directoris arrel"
 msgid "New"
 msgstr "Nou"
 
-#: sickrage/core/webserver/views.py:1170 sickrage/core/webserver/views.py:1947
+#: sickrage/core/webserver/views.py:1165 sickrage/core/webserver/views.py:1942
 #: sickrage/core/webserver/views/includes/root_dirs.mako:36
 #: sickrage/core/webserver/views/manage/mass_edit.mako:69
 msgid "Edit"
@@ -5522,7 +5534,7 @@ msgstr "Tanca de navegació"
 msgid "Show List"
 msgstr "Mostra la llista"
 
-#: sickrage/core/webserver/views.py:2312 sickrage/core/webserver/views.py:2313
+#: sickrage/core/webserver/views.py:2307 sickrage/core/webserver/views.py:2308
 #: sickrage/core/webserver/views/layouts/main.mako:108
 msgid "Add Shows"
 msgstr "Afegir espectacles"
@@ -5537,18 +5549,18 @@ msgstr "Manual post-processament"
 msgid "Manage"
 msgstr "Gestionar"
 
-#: sickrage/core/webserver/views.py:3483 sickrage/core/webserver/views.py:3484
+#: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:139
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "Actualització massiu"
 
-#: sickrage/core/webserver/views.py:3091 sickrage/core/webserver/views.py:3092
+#: sickrage/core/webserver/views.py:3086 sickrage/core/webserver/views.py:3087
 #: sickrage/core/webserver/views/layouts/main.mako:144
 msgid "Backlog Overview"
 msgstr "Resum de l'acumulació"
 
-#: sickrage/core/webserver/views.py:3536 sickrage/core/webserver/views.py:3537
+#: sickrage/core/webserver/views.py:3531 sickrage/core/webserver/views.py:3532
 #: sickrage/core/webserver/views/layouts/main.mako:149
 msgid "Manage Queues"
 msgstr "Gestionar cues"
@@ -5577,7 +5589,7 @@ msgstr "Emby actualització"
 msgid "Manage Torrents"
 msgstr "Gestionar els Torrents"
 
-#: sickrage/core/webserver/views.py:3511 sickrage/core/webserver/views.py:3512
+#: sickrage/core/webserver/views.py:3506 sickrage/core/webserver/views.py:3507
 #: sickrage/core/webserver/views/layouts/main.mako:194
 msgid "Failed Downloads"
 msgstr "Fracassat descarrega"
@@ -5590,12 +5602,12 @@ msgstr "Gestió de subtitular perduda"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3694
+#: sickrage/core/webserver/views.py:3689
 #: sickrage/core/webserver/views/layouts/main.mako:225
 msgid "Help and Info"
 msgstr "Ajuda i informació"
 
-#: sickrage/core/webserver/views.py:3695
+#: sickrage/core/webserver/views.py:3690
 #: sickrage/core/webserver/views/layouts/main.mako:230
 msgid "General"
 msgstr "General"
@@ -5604,28 +5616,28 @@ msgstr "General"
 msgid "Backup and Restore"
 msgstr "Reserva i restaura"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4274
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4263
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Providers"
 msgstr "Proveïdors de cerca"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4765
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4754
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Subtitles Settings"
 msgstr "Configuració de subtítols"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:4885
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4874
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Quality Settings"
 msgstr "Escenes de qualitat"
 
-#: sickrage/core/webserver/views.py:2276 sickrage/core/webserver/views.py:2277
-#: sickrage/core/webserver/views.py:3701 sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:2271 sickrage/core/webserver/views.py:2272
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4068
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Processament posterior"
 
-#: sickrage/core/webserver/views.py:3702 sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4420
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Notifications"
 msgstr "Notificacions"
@@ -5838,7 +5850,7 @@ msgstr "Conjunt si aquests espectacles s'alliberen com Show.03.02.2010 en lloc d
 msgid "Search for subtitles."
 msgstr "Recerca per subtitula."
 
-#: sickrage/core/webserver/views.py:3241 sickrage/core/webserver/views.py:3242
+#: sickrage/core/webserver/views.py:3236 sickrage/core/webserver/views.py:3237
 #: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Edit"
 msgstr "Edició massiva"
@@ -5886,7 +5898,7 @@ msgstr "Ep per defecte"
 msgid "Not in progress"
 msgstr "No en curs"
 
-#: sickrage/core/webserver/views.py:1204
+#: sickrage/core/webserver/views.py:1199
 #: sickrage/core/webserver/views/manage/queues.mako:23
 #: sickrage/core/webserver/views/manage/queues.mako:39
 #: sickrage/core/webserver/views/manage/queues.mako:71
@@ -6106,8 +6118,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "No podria trobar un descarregar per a <i>%s</i>"
 
 #: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2681
-#: sickrage/core/webserver/views.py:2693
+#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2676
+#: sickrage/core/webserver/views.py:2688
 msgid "Unable to add show"
 msgstr "No es pot afegir Mostra el"
 
@@ -6155,937 +6167,929 @@ msgstr "L'espectacle en "
 msgid " is already in your show list"
 msgstr " ja està a la llista Mostra el"
 
-#: sickrage/core/webserver/views.py:125 sickrage/core/webserver/views.py:126
+#: sickrage/core/webserver/views.py:124 sickrage/core/webserver/views.py:125
 msgid "HTTP Error 404"
 msgstr "HTTP Error 404"
 
-#: sickrage/core/webserver/views.py:200 sickrage/core/webserver/views.py:201
+#: sickrage/core/webserver/views.py:205 sickrage/core/webserver/views.py:206
 msgid "HTTP Error 500"
 msgstr "Error de HTTP 500"
 
-#: sickrage/core/webserver/views.py:422
+#: sickrage/core/webserver/views.py:427
 msgid "API Key not generated"
 msgstr "Clau d'API no genera"
 
-#: sickrage/core/webserver/views.py:426 sickrage/core/webserver/views.py:427
+#: sickrage/core/webserver/views.py:431 sickrage/core/webserver/views.py:432
 msgid "API Builder"
 msgstr "Constructor d'API"
 
-#: sickrage/core/webserver/views.py:588
+#: sickrage/core/webserver/views.py:593
 msgid "Invalid show parameters"
 msgstr "Paràmetres no vàlids Mostra el"
 
-#: sickrage/core/webserver/views.py:593
+#: sickrage/core/webserver/views.py:598
 msgid "Invalid show paramaters"
 msgstr "Vàlid Mostra el paramaters"
 
-#: sickrage/core/webserver/views.py:600
+#: sickrage/core/webserver/views.py:605
 msgid "Invalid paramaters"
 msgstr "Paramaters no és vàlid"
 
-#: sickrage/core/webserver/views.py:603 sickrage/core/webserver/views.py:1750
-#: sickrage/core/webserver/views.py:1812
+#: sickrage/core/webserver/views.py:608 sickrage/core/webserver/views.py:1745
+#: sickrage/core/webserver/views.py:1807
 msgid "Episode couldn't be retrieved"
 msgstr "Episodi no es pot recuperar"
 
-#: sickrage/core/webserver/views.py:685
+#: sickrage/core/webserver/views.py:690
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Error: Sol·licitud no admès. Enviar petició jsonp amb 'srcallback' variable en la cadena de consulta."
 
-#: sickrage/core/webserver/views.py:717
-msgid "API access successful"
-msgstr "Accés d'API amb èxit"
-
-#: sickrage/core/webserver/views.py:721
-msgid "API access failed"
-msgstr "Ha fallat l'accés d'API"
-
-#: sickrage/core/webserver/views.py:731
+#: sickrage/core/webserver/views.py:726
 msgid "Success. Connected and authenticated"
 msgstr "L'èxit. Connectat i autenticats"
 
-#: sickrage/core/webserver/views.py:733
+#: sickrage/core/webserver/views.py:728
 msgid "Authentication failed. SABnzbd expects "
 msgstr "L'autenticació ha fallat. SABnzbd espera "
 
-#: sickrage/core/webserver/views.py:733
+#: sickrage/core/webserver/views.py:728
 msgid " as authentication method, "
 msgstr " com a mètode d'autenticació, "
 
-#: sickrage/core/webserver/views.py:736
+#: sickrage/core/webserver/views.py:731
 msgid "Unable to connect to host"
 msgstr "Incapaç de connectar a amfitrió"
 
-#: sickrage/core/webserver/views.py:754
+#: sickrage/core/webserver/views.py:749
 msgid "SMS sent successfully"
 msgstr "SMS enviat correctament"
 
-#: sickrage/core/webserver/views.py:756
+#: sickrage/core/webserver/views.py:751
 msgid "Problem sending SMS: "
 msgstr "Problema enviant SMS: "
 
-#: sickrage/core/webserver/views.py:763
+#: sickrage/core/webserver/views.py:758
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Notificació de telegrama va succeir. Comprovar els seus clients telegrama per assegurar-se que treballava"
 
-#: sickrage/core/webserver/views.py:765
+#: sickrage/core/webserver/views.py:760
 msgid "Error sending Telegram notification: {message}"
 msgstr "Telegrama de notificació d'error: {message}"
 
-#: sickrage/core/webserver/views.py:775
+#: sickrage/core/webserver/views.py:770
 msgid " with password: "
 msgstr " amb la contrasenya: "
 
-#: sickrage/core/webserver/views.py:778
+#: sickrage/core/webserver/views.py:773
 msgid "Registered and Tested growl successfully "
 msgstr "Registrat i provat amb èxit grunyir "
 
-#: sickrage/core/webserver/views.py:780
+#: sickrage/core/webserver/views.py:775
 msgid "Registration and Testing of growl failed "
 msgstr "Matriculació i proves de Remugar ha fallat "
 
-#: sickrage/core/webserver/views.py:787
+#: sickrage/core/webserver/views.py:782
 msgid "Test prowl notice sent successfully"
 msgstr "Avís de rondar prova enviat correctament"
 
-#: sickrage/core/webserver/views.py:789
+#: sickrage/core/webserver/views.py:784
 msgid "Test prowl notice failed"
 msgstr "Avís de rondar prova ha fallat"
 
-#: sickrage/core/webserver/views.py:796
+#: sickrage/core/webserver/views.py:791
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Notificació de Boxcar2 va succeir. Comprovar els seus clients de Boxcar2 per assegurar-se que treballava"
 
-#: sickrage/core/webserver/views.py:798
+#: sickrage/core/webserver/views.py:793
 msgid "Error sending Boxcar2 notification"
 msgstr "Error enviar Boxcar2 notificació"
 
-#: sickrage/core/webserver/views.py:805
+#: sickrage/core/webserver/views.py:800
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Notificació pushover succeir. Comprovar els seus clients Pushover per assegurar-se que treballava"
 
-#: sickrage/core/webserver/views.py:807
+#: sickrage/core/webserver/views.py:802
 msgid "Error sending Pushover notification"
 msgstr "Notificació de Pushover enviament d'error"
 
-#: sickrage/core/webserver/views.py:819
+#: sickrage/core/webserver/views.py:814
 msgid "Key verification successful"
 msgstr "Èxit clau verificació"
 
-#: sickrage/core/webserver/views.py:821
+#: sickrage/core/webserver/views.py:816
 msgid "Unable to verify key"
 msgstr "No podeu verificar clau"
 
-#: sickrage/core/webserver/views.py:828
+#: sickrage/core/webserver/views.py:823
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Tweeter èxit, comprova el seu twitter per assegurar que funcionava"
 
-#: sickrage/core/webserver/views.py:830
+#: sickrage/core/webserver/views.py:825
 msgid "Error sending tweet"
 msgstr "Tweeter enviament d'error"
 
-#: sickrage/core/webserver/views.py:835
+#: sickrage/core/webserver/views.py:830
 msgid "Please enter a valid account sid"
 msgstr "Si us plau, introduïu un vàlid compte sid"
 
-#: sickrage/core/webserver/views.py:838
+#: sickrage/core/webserver/views.py:833
 msgid "Please enter a valid auth token"
 msgstr "Introduïu un testimoni auth vàlid"
 
-#: sickrage/core/webserver/views.py:841
+#: sickrage/core/webserver/views.py:836
 msgid "Please enter a valid phone sid"
 msgstr "Si us plau, introduïu un vàlid telèfon sid"
 
-#: sickrage/core/webserver/views.py:844
+#: sickrage/core/webserver/views.py:839
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Si us plau, Formata el número de telèfon com \"+ 1-# # #-# # #-# # #\""
 
-#: sickrage/core/webserver/views.py:848
+#: sickrage/core/webserver/views.py:843
 msgid "Authorization successful and number ownership verified"
 msgstr "Autorització reeixida i número propietat verificat"
 
-#: sickrage/core/webserver/views.py:850
+#: sickrage/core/webserver/views.py:845
 msgid "Error sending sms"
 msgstr "Sms d'enviament d'error"
 
-#: sickrage/core/webserver/views.py:856
+#: sickrage/core/webserver/views.py:851
 msgid "Slack message successful"
 msgstr "Folgança missatge reeixit"
 
-#: sickrage/core/webserver/views.py:858
+#: sickrage/core/webserver/views.py:853
 msgid "Slack message failed"
 msgstr "Folgança missatge ha fallat"
 
-#: sickrage/core/webserver/views.py:864
+#: sickrage/core/webserver/views.py:859
 msgid "Discord message successful"
 msgstr "Missatge de discòrdia èxit"
 
-#: sickrage/core/webserver/views.py:866
+#: sickrage/core/webserver/views.py:861
 msgid "Discord message failed"
 msgstr "Missatge de discòrdia ha fallat"
 
-#: sickrage/core/webserver/views.py:877
+#: sickrage/core/webserver/views.py:872
 msgid "Test KODI notice sent successfully to "
 msgstr "Prova KODI avís enviat amb èxit a "
 
-#: sickrage/core/webserver/views.py:879
+#: sickrage/core/webserver/views.py:874
 msgid "Test KODI notice failed to "
 msgstr "Prova KODI avís no ha pogut "
 
-#: sickrage/core/webserver/views.py:894
+#: sickrage/core/webserver/views.py:889
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Prova reeixida avís enviat al Plex client... "
 
-#: sickrage/core/webserver/views.py:896
+#: sickrage/core/webserver/views.py:891
 msgid "Test failed for Plex client ... "
 msgstr "Prova no ha funcionat per Plex client... "
 
-#: sickrage/core/webserver/views.py:899
+#: sickrage/core/webserver/views.py:894
 msgid "Tested Plex client(s): "
 msgstr "Provat Plex de versió: "
 
-#: sickrage/core/webserver/views.py:914
+#: sickrage/core/webserver/views.py:909
 msgid "Successful test of Plex server(s) ... "
 msgstr "Prova reeixida de Plex servidors... "
 
-#: sickrage/core/webserver/views.py:917
+#: sickrage/core/webserver/views.py:912
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Prova no ha funcionat, amfitrió de servidor de mitjans de comunicació de Plex No especificat"
 
-#: sickrage/core/webserver/views.py:919
+#: sickrage/core/webserver/views.py:914
 msgid "Test failed for Plex server(s) ... "
 msgstr "Prova ha fallat per Plex servidors... "
 
-#: sickrage/core/webserver/views.py:923
+#: sickrage/core/webserver/views.py:918
 msgid "Tested Plex Media Server host(s): "
 msgstr "Host(s) de servidor de medis Plex provats: "
 
-#: sickrage/core/webserver/views.py:931
+#: sickrage/core/webserver/views.py:926
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Provat la notificació escriptori mitjançant libnotify"
 
-#: sickrage/core/webserver/views.py:940 sickrage/core/webserver/views.py:973
+#: sickrage/core/webserver/views.py:935 sickrage/core/webserver/views.py:968
 msgid "Test notice sent successfully to "
 msgstr "Prova avís enviat amb èxit a "
 
-#: sickrage/core/webserver/views.py:942 sickrage/core/webserver/views.py:975
+#: sickrage/core/webserver/views.py:937 sickrage/core/webserver/views.py:970
 msgid "Test notice failed to "
 msgstr "Avís de prova no ha pogut "
 
-#: sickrage/core/webserver/views.py:949
+#: sickrage/core/webserver/views.py:944
 msgid "Successfully started the scan update"
 msgstr "Reeixidament començava l'actualització d'escannejar"
 
-#: sickrage/core/webserver/views.py:951
+#: sickrage/core/webserver/views.py:946
 msgid "Test failed to start the scan update"
 msgstr "Prova fracassava a començar l'actualització d'escannejar"
 
-#: sickrage/core/webserver/views.py:959
+#: sickrage/core/webserver/views.py:954
 msgid "Got settings from"
 msgstr "Té escenes de"
 
-#: sickrage/core/webserver/views.py:964
+#: sickrage/core/webserver/views.py:959
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Ha fallat! Assegureu-vos que és el seu Popcorn i NMJ s'està executant. (consulteu Registre Errors 59-> depuració informació detallada)"
 
-#: sickrage/core/webserver/views.py:992
+#: sickrage/core/webserver/views.py:987
 msgid "Trakt Authorized"
 msgstr "Trakt autoritzat"
 
-#: sickrage/core/webserver/views.py:993
+#: sickrage/core/webserver/views.py:988
 msgid "Trakt Not Authorized!"
 msgstr "Trakt no autoritzat!"
 
-#: sickrage/core/webserver/views.py:1020
+#: sickrage/core/webserver/views.py:1015
 msgid "Test email sent successfully! Check inbox."
 msgstr "Prova d'e-mail enviat correctament! Comprovar safata d'entrada."
 
-#: sickrage/core/webserver/views.py:1022
+#: sickrage/core/webserver/views.py:1017
 #, python-format
 msgid "ERROR: %s"
 msgstr "ERROR: %s"
 
-#: sickrage/core/webserver/views.py:1029
+#: sickrage/core/webserver/views.py:1024
 msgid "Test NMA notice sent successfully"
 msgstr "Avís NMA prova enviat correctament"
 
-#: sickrage/core/webserver/views.py:1031
+#: sickrage/core/webserver/views.py:1026
 msgid "Test NMA notice failed"
 msgstr "Avís NMA de prova ha fallat"
 
-#: sickrage/core/webserver/views.py:1037
+#: sickrage/core/webserver/views.py:1032
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Notificació de Pushalot va succeir. Comprovar els seus clients de Pushalot per assegurar-se que treballava"
 
-#: sickrage/core/webserver/views.py:1039
+#: sickrage/core/webserver/views.py:1034
 msgid "Error sending Pushalot notification"
 msgstr "Error enviar Pushalot notificació"
 
-#: sickrage/core/webserver/views.py:1045
+#: sickrage/core/webserver/views.py:1040
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Notificació de Pushbullet va succeir. Comprovar el seu mecanisme per assegurar-se que treballava"
 
-#: sickrage/core/webserver/views.py:1047
+#: sickrage/core/webserver/views.py:1042
 msgid "Error sending Pushbullet notification"
 msgstr "Error enviar Pushbullet notificació"
 
-#: sickrage/core/webserver/views.py:1055
+#: sickrage/core/webserver/views.py:1050
 msgid "Error getting Pushbullet devices"
 msgstr "Error en obtenir Pushbullet dispositius"
 
-#: sickrage/core/webserver/views.py:1085
+#: sickrage/core/webserver/views.py:1080
 msgid "Shutting down"
 msgstr "Tancant"
 
-#: sickrage/core/webserver/views.py:1085
+#: sickrage/core/webserver/views.py:1080
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE s'està tancant"
 
-#: sickrage/core/webserver/views.py:1095
+#: sickrage/core/webserver/views.py:1090
 msgid "Restarting"
 msgstr "Reprenent-se"
 
-#: sickrage/core/webserver/views.py:1095
+#: sickrage/core/webserver/views.py:1090
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE s'està reprenent"
 
-#: sickrage/core/webserver/views.py:1113
+#: sickrage/core/webserver/views.py:1108
 msgid "No new updates!"
 msgstr "No hi ha noves actualitzacions!"
 
-#: sickrage/core/webserver/views.py:1125
+#: sickrage/core/webserver/views.py:1120
 msgid "Update Failed"
 msgstr "Actualització ha fallat"
 
-#: sickrage/core/webserver/views.py:1126
+#: sickrage/core/webserver/views.py:1121
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Actualització no va ser reeixit, no reprendre's. Comproveu el registre per a més informació."
 
-#: sickrage/core/webserver/views.py:1131
+#: sickrage/core/webserver/views.py:1126
 msgid "Successfully found {path}"
 msgstr "Reeixidament trobava {path}"
 
-#: sickrage/core/webserver/views.py:1133
+#: sickrage/core/webserver/views.py:1128
 msgid "Failed to find {path}"
 msgstr "No ha pogut trobar {path}"
 
-#: sickrage/core/webserver/views.py:1136
+#: sickrage/core/webserver/views.py:1131
 msgid "Installing SiCKRAGE requirements"
 msgstr "Instal·lant SiCKRAGE requisits"
 
-#: sickrage/core/webserver/views.py:1138
+#: sickrage/core/webserver/views.py:1133
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "No ha pogut instal·lar els requisits SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1140
+#: sickrage/core/webserver/views.py:1135
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "Instal·la requisits SiCKRAGE amb èxit!"
 
-#: sickrage/core/webserver/views.py:1146
+#: sickrage/core/webserver/views.py:1141
 msgid "Checking out branch: "
 msgstr "Comprovar la branca: "
 
-#: sickrage/core/webserver/views.py:1148
+#: sickrage/core/webserver/views.py:1143
 msgid "Branch checkout successful, restarting: "
 msgstr "Caixa de branca reeixida, reprenent-se: "
 
-#: sickrage/core/webserver/views.py:1151
+#: sickrage/core/webserver/views.py:1146
 msgid "Already on branch: "
 msgstr "Ja en branca: "
 
-#: sickrage/core/webserver/views.py:1157 sickrage/core/webserver/views.py:1162
-#: sickrage/core/webserver/views.py:1343 sickrage/core/webserver/views.py:1352
-#: sickrage/core/webserver/views.py:1557 sickrage/core/webserver/views.py:1562
-#: sickrage/core/webserver/views.py:1575 sickrage/core/webserver/views.py:1580
-#: sickrage/core/webserver/views.py:1602 sickrage/core/webserver/views.py:1607
-#: sickrage/core/webserver/views.py:1620 sickrage/core/webserver/views.py:1625
-#: sickrage/core/webserver/views.py:1641 sickrage/core/webserver/views.py:1646
-#: sickrage/core/webserver/views.py:1719 sickrage/core/webserver/views.py:1722
-#: sickrage/core/webserver/views.py:1726 sickrage/core/webserver/views.py:1728
-#: sickrage/core/webserver/views.py:1731 sickrage/core/webserver/views.py:1750
-#: sickrage/core/webserver/views.py:1768 sickrage/core/webserver/views.py:1771
-#: sickrage/core/webserver/views.py:1776 sickrage/core/webserver/views.py:1779
-#: sickrage/core/webserver/views.py:1784 sickrage/core/webserver/views.py:1786
-#: sickrage/core/webserver/views.py:1789 sickrage/core/webserver/views.py:1812
-#: sickrage/core/webserver/views.py:1913 sickrage/core/webserver/views.py:1918
-#: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1964
-#: sickrage/core/webserver/views.py:1970 sickrage/core/webserver/views.py:1973
-#: sickrage/core/webserver/views.py:4964
+#: sickrage/core/webserver/views.py:1152 sickrage/core/webserver/views.py:1157
+#: sickrage/core/webserver/views.py:1338 sickrage/core/webserver/views.py:1347
+#: sickrage/core/webserver/views.py:1552 sickrage/core/webserver/views.py:1557
+#: sickrage/core/webserver/views.py:1570 sickrage/core/webserver/views.py:1575
+#: sickrage/core/webserver/views.py:1597 sickrage/core/webserver/views.py:1602
+#: sickrage/core/webserver/views.py:1615 sickrage/core/webserver/views.py:1620
+#: sickrage/core/webserver/views.py:1636 sickrage/core/webserver/views.py:1641
+#: sickrage/core/webserver/views.py:1714 sickrage/core/webserver/views.py:1717
+#: sickrage/core/webserver/views.py:1721 sickrage/core/webserver/views.py:1723
+#: sickrage/core/webserver/views.py:1726 sickrage/core/webserver/views.py:1745
+#: sickrage/core/webserver/views.py:1763 sickrage/core/webserver/views.py:1766
+#: sickrage/core/webserver/views.py:1771 sickrage/core/webserver/views.py:1774
+#: sickrage/core/webserver/views.py:1779 sickrage/core/webserver/views.py:1781
+#: sickrage/core/webserver/views.py:1784 sickrage/core/webserver/views.py:1807
+#: sickrage/core/webserver/views.py:1908 sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1959
+#: sickrage/core/webserver/views.py:1965 sickrage/core/webserver/views.py:1968
+#: sickrage/core/webserver/views.py:4953
 msgid "Error"
 msgstr "Error"
 
-#: sickrage/core/webserver/views.py:1157 sickrage/core/webserver/views.py:1557
-#: sickrage/core/webserver/views.py:1575 sickrage/core/webserver/views.py:1602
-#: sickrage/core/webserver/views.py:1620 sickrage/core/webserver/views.py:1641
+#: sickrage/core/webserver/views.py:1152 sickrage/core/webserver/views.py:1552
+#: sickrage/core/webserver/views.py:1570 sickrage/core/webserver/views.py:1597
+#: sickrage/core/webserver/views.py:1615 sickrage/core/webserver/views.py:1636
 msgid "Invalid show ID"
 msgstr "ID Mostra el vàlid"
 
-#: sickrage/core/webserver/views.py:1162 sickrage/core/webserver/views.py:1918
-#: sickrage/core/webserver/views.py:1969
+#: sickrage/core/webserver/views.py:1157 sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:1964
 msgid "Show not in show list"
 msgstr "Mostra no en Mostra el llistat"
 
-#: sickrage/core/webserver/views.py:1178
+#: sickrage/core/webserver/views.py:1173
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Aquest espectacle està en procés de ser descarregat - la informació següent és incompleta."
 
-#: sickrage/core/webserver/views.py:1181
+#: sickrage/core/webserver/views.py:1176
 msgid "The information on this page is in the process of being updated."
 msgstr "La informació en aquesta pàgina es troba en procés de ser actualitzat."
 
-#: sickrage/core/webserver/views.py:1184
+#: sickrage/core/webserver/views.py:1179
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Els episodis següents actualment són estan actualitzant des del disc"
 
-#: sickrage/core/webserver/views.py:1187
+#: sickrage/core/webserver/views.py:1182
 msgid "Currently downloading subtitles for this show"
 msgstr "Actualment descarregant subtitula per a aquest espectacle"
 
-#: sickrage/core/webserver/views.py:1190
+#: sickrage/core/webserver/views.py:1185
 msgid "This show is queued to be refreshed."
 msgstr "Aquest espectacle és posat a la cua per ser refrescat."
 
-#: sickrage/core/webserver/views.py:1193
+#: sickrage/core/webserver/views.py:1188
 msgid "This show is queued and awaiting an update."
 msgstr "Aquest espectacle és posat a la cua i esperant una actualització."
 
-#: sickrage/core/webserver/views.py:1196
+#: sickrage/core/webserver/views.py:1191
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Aquest espectacle és posat a la cua i descarregar subtitula l'espera."
 
-#: sickrage/core/webserver/views.py:1201
+#: sickrage/core/webserver/views.py:1196
 msgid "Resume"
 msgstr "Currículum vitae"
 
-#: sickrage/core/webserver/views.py:1209
+#: sickrage/core/webserver/views.py:1204
 msgid "Re-scan files"
 msgstr "Tornar a escannejar arxius"
 
-#: sickrage/core/webserver/views.py:1211
+#: sickrage/core/webserver/views.py:1206
 msgid "Full Update"
 msgstr "Actualització completa"
 
-#: sickrage/core/webserver/views.py:1215
+#: sickrage/core/webserver/views.py:1210
 msgid "Update show in KODI"
 msgstr "Espectacle d'actualització en KODI"
 
-#: sickrage/core/webserver/views.py:1218
+#: sickrage/core/webserver/views.py:1213
 msgid "Update show in Emby"
 msgstr "Espectacle d'actualització en Emby"
 
-#: sickrage/core/webserver/views.py:1220 sickrage/core/webserver/views.py:1955
-#: sickrage/core/webserver/views.py:1956
+#: sickrage/core/webserver/views.py:1215 sickrage/core/webserver/views.py:1950
+#: sickrage/core/webserver/views.py:1951
 msgid "Preview Rename"
 msgstr "Canvia el nom de visualització prèvia"
 
-#: sickrage/core/webserver/views.py:1226
+#: sickrage/core/webserver/views.py:1221
 msgid "Download Subtitles"
 msgstr "Descarregar subtítols"
 
-#: sickrage/core/webserver/views.py:1339
+#: sickrage/core/webserver/views.py:1334
 msgid "Invalid show ID: "
 msgstr "ID Mostra el vàlid: "
 
-#: sickrage/core/webserver/views.py:1348
+#: sickrage/core/webserver/views.py:1343
 msgid "Unable to find the specified show: "
 msgstr "Incapaç de trobar l'espectacle especificat: "
 
-#: sickrage/core/webserver/views.py:1368
+#: sickrage/core/webserver/views.py:1363
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "Incapaç de recuperar Fansub grups de AniDB."
 
-#: sickrage/core/webserver/views.py:1384 sickrage/core/webserver/views.py:1385
-#: sickrage/core/webserver/views.py:1395 sickrage/core/webserver/views.py:1396
+#: sickrage/core/webserver/views.py:1379 sickrage/core/webserver/views.py:1380
+#: sickrage/core/webserver/views.py:1390 sickrage/core/webserver/views.py:1391
 msgid "Edit Show"
 msgstr "Editar Mostra el"
 
-#: sickrage/core/webserver/views.py:1478
+#: sickrage/core/webserver/views.py:1473
 msgid "Unable to refresh this show: {}"
 msgstr "Incapaç d'actualitzar aquest espectacle: {}"
 
-#: sickrage/core/webserver/views.py:1510
+#: sickrage/core/webserver/views.py:1505
 msgid "Unable to refresh this show:{}"
 msgstr "Incapaç d'actualitzar aquest espectacle :{}"
 
-#: sickrage/core/webserver/views.py:1516
+#: sickrage/core/webserver/views.py:1511
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "La carpeta al %s no conté un tvshow.nfo - copiar fitxers a aquesta carpeta abans de canviar el directori a SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1528 sickrage/core/webserver/views.py:3433
+#: sickrage/core/webserver/views.py:1523 sickrage/core/webserver/views.py:3428
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1535
+#: sickrage/core/webserver/views.py:1530
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "No es pot forçar una actualització a excepcions d'escena de l'espectacle."
 
-#: sickrage/core/webserver/views.py:1542
+#: sickrage/core/webserver/views.py:1537
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "No es pot forçar una actualització en escena numeració de l'espectacle."
 
-#: sickrage/core/webserver/views.py:1549 sickrage/core/webserver/views.py:3358
+#: sickrage/core/webserver/views.py:1544 sickrage/core/webserver/views.py:3353
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} desant els canvis:"
 
-#: sickrage/core/webserver/views.py:1562 sickrage/core/webserver/views.py:1580
-#: sickrage/core/webserver/views.py:1607 sickrage/core/webserver/views.py:1625
-#: sickrage/core/webserver/views.py:1646
+#: sickrage/core/webserver/views.py:1557 sickrage/core/webserver/views.py:1575
+#: sickrage/core/webserver/views.py:1602 sickrage/core/webserver/views.py:1620
+#: sickrage/core/webserver/views.py:1641
 msgid "Unable to find the specified show"
 msgstr "Incapaç de trobar l'espectacle especificat"
 
-#: sickrage/core/webserver/views.py:1569
+#: sickrage/core/webserver/views.py:1564
 #, python-format
 msgid "%s has been %s"
 msgstr "%s ha estat %s"
 
-#: sickrage/core/webserver/views.py:1569
+#: sickrage/core/webserver/views.py:1564
 msgid "resumed"
 msgstr "va reprendre"
 
-#: sickrage/core/webserver/views.py:1569
+#: sickrage/core/webserver/views.py:1564
 msgid "paused"
 msgstr "en pausa"
 
-#: sickrage/core/webserver/views.py:1585
+#: sickrage/core/webserver/views.py:1580
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s ha estat %s %s"
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1583
 msgid "deleted"
 msgstr "suprimit"
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1583
 msgid "trashed"
 msgstr "Paperera"
 
-#: sickrage/core/webserver/views.py:1589
+#: sickrage/core/webserver/views.py:1584
 msgid "(media untouched)"
 msgstr "(mitjans de comunicació tocat)"
 
-#: sickrage/core/webserver/views.py:1589
+#: sickrage/core/webserver/views.py:1584
 msgid "(with all related media)"
 msgstr "(amb tots els mitjans)"
 
-#: sickrage/core/webserver/views.py:1593
+#: sickrage/core/webserver/views.py:1588
 msgid "Unable to delete this show."
 msgstr "Incapaç de suprimir aquest espectacle."
 
-#: sickrage/core/webserver/views.py:1612
+#: sickrage/core/webserver/views.py:1607
 msgid "Unable to refresh this show."
 msgstr "No es pot actualitzar aquest espectacle."
 
-#: sickrage/core/webserver/views.py:1631
+#: sickrage/core/webserver/views.py:1626
 msgid "Unable to update this show."
 msgstr "Incapaces d'actualitzar aquest espectacle."
 
-#: sickrage/core/webserver/views.py:1670
+#: sickrage/core/webserver/views.py:1665
 msgid "Library update command sent to KODI host(s): "
 msgstr "Comanda d'actualització de Biblioteca enviat a KODI host(s): "
 
-#: sickrage/core/webserver/views.py:1672
+#: sickrage/core/webserver/views.py:1667
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Incapaç de contactar amb un o més host(s) KODI: "
 
-#: sickrage/core/webserver/views.py:1682
+#: sickrage/core/webserver/views.py:1677
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Comanda d'actualització de Biblioteca enviat a l'amfitrió de servidor de medis Plex: "
 
-#: sickrage/core/webserver/views.py:1686
+#: sickrage/core/webserver/views.py:1681
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Incapaç d'amfitrió de servidor de mitjans de comunicació Plex de contacte: "
 
-#: sickrage/core/webserver/views.py:1698
+#: sickrage/core/webserver/views.py:1693
 msgid "Library update command sent to Emby host: "
 msgstr "Comanda d'actualització de Biblioteca enviat a l'amfitrió de Emby: "
 
-#: sickrage/core/webserver/views.py:1701
+#: sickrage/core/webserver/views.py:1696
 msgid "Unable to contact Emby host: "
 msgstr "Incapaç de contactar amb l'amfitrió de Emby: "
 
-#: sickrage/core/webserver/views.py:1711
+#: sickrage/core/webserver/views.py:1706
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Sincronització Trakt amb SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1717 sickrage/core/webserver/views.py:1766
-#: sickrage/core/webserver/views.py:1963
+#: sickrage/core/webserver/views.py:1712 sickrage/core/webserver/views.py:1761
+#: sickrage/core/webserver/views.py:1958
 msgid "You must specify a show and at least one episode"
 msgstr "Heu d'especificar un espectacle i almenys un episodi"
 
-#: sickrage/core/webserver/views.py:1774
+#: sickrage/core/webserver/views.py:1769
 msgid "Invalid status"
 msgstr "L'estat no vàlid"
 
-#: sickrage/core/webserver/views.py:1869
+#: sickrage/core/webserver/views.py:1864
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Acumulació automàticament va començar per les següents temporades de "
 
-#: sickrage/core/webserver/views.py:1876 sickrage/core/webserver/views.py:1896
+#: sickrage/core/webserver/views.py:1871 sickrage/core/webserver/views.py:1891
 msgid "Season "
 msgstr "Temporada "
 
-#: sickrage/core/webserver/views.py:1883
+#: sickrage/core/webserver/views.py:1878
 msgid "Backlog started"
 msgstr "Acumulació de començar"
 
-#: sickrage/core/webserver/views.py:1889
+#: sickrage/core/webserver/views.py:1884
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "S'està reintentant cerca automàticament es va iniciar durant la temporada següent del "
 
-#: sickrage/core/webserver/views.py:1903
+#: sickrage/core/webserver/views.py:1898
 msgid "Retry Search started"
 msgstr "Cerca de reintent va començar"
 
-#: sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:1908
 msgid "You must specify a show"
 msgstr "Heu d'especificar un espectacle"
 
-#: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1973
+#: sickrage/core/webserver/views.py:1916 sickrage/core/webserver/views.py:1968
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "No es pot rebatejar episodis quan la Mostra el dir és que falten."
 
-#: sickrage/core/webserver/views.py:2108
+#: sickrage/core/webserver/views.py:2103
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Subtítols de nous descarregats: %s"
 
-#: sickrage/core/webserver/views.py:2110
+#: sickrage/core/webserver/views.py:2105
 msgid "No subtitles downloaded"
 msgstr "Sense subtítols descarregats"
 
-#: sickrage/core/webserver/views.py:2232 sickrage/core/webserver/views.py:2236
+#: sickrage/core/webserver/views.py:2227 sickrage/core/webserver/views.py:2231
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2232
+#: sickrage/core/webserver/views.py:2227
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2236
+#: sickrage/core/webserver/views.py:2231
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2301
+#: sickrage/core/webserver/views.py:2296
 msgid "Postprocessing results"
 msgstr "Resultats postprocessing"
 
-#: sickrage/core/webserver/views.py:2361
+#: sickrage/core/webserver/views.py:2356
 msgid "No folders selected."
 msgstr "No hi ha carpetes seleccionades."
 
-#: sickrage/core/webserver/views.py:2497 sickrage/core/webserver/views.py:2498
+#: sickrage/core/webserver/views.py:2492 sickrage/core/webserver/views.py:2493
 msgid "New Show"
 msgstr "Nou espectacle"
 
-#: sickrage/core/webserver/views.py:2562 sickrage/core/webserver/views.py:2563
+#: sickrage/core/webserver/views.py:2557 sickrage/core/webserver/views.py:2558
 msgid "Existing Show"
 msgstr "Mostra el existent"
 
-#: sickrage/core/webserver/views.py:2604 sickrage/core/webserver/views.py:2746
+#: sickrage/core/webserver/views.py:2599 sickrage/core/webserver/views.py:2741
 msgid "Adding Show"
 msgstr "Afegint Mostra el"
 
-#: sickrage/core/webserver/views.py:2604 sickrage/core/webserver/views.py:2746
+#: sickrage/core/webserver/views.py:2599 sickrage/core/webserver/views.py:2741
 msgid "Adding the specified show into "
 msgstr "Afegir l'espectacle especificada en "
 
-#: sickrage/core/webserver/views.py:2607
+#: sickrage/core/webserver/views.py:2602
 msgid "No root directories setup, please go back and add one."
 msgstr "Cap directoris arrel d'organització, si us plau tornar enrere i afegir-ne una."
 
-#: sickrage/core/webserver/views.py:2658
+#: sickrage/core/webserver/views.py:2653
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Error desconegut. No es pot afegir l'espectacle problema amb la selecció de la Mostra."
 
-#: sickrage/core/webserver/views.py:2682
+#: sickrage/core/webserver/views.py:2677
 msgid "Folder "
 msgstr "Carpeta "
 
-#: sickrage/core/webserver/views.py:2682
+#: sickrage/core/webserver/views.py:2677
 msgid " exists already"
 msgstr " ja existeix"
 
-#: sickrage/core/webserver/views.py:2694
+#: sickrage/core/webserver/views.py:2689
 msgid "Unable to create the folder , can't add the show"
 msgstr "No es pot crear la carpeta, no es pot afegir l'espectacle"
 
-#: sickrage/core/webserver/views.py:2821
+#: sickrage/core/webserver/views.py:2816
 msgid "Shows Added"
 msgstr "Mostra afegit"
 
-#: sickrage/core/webserver/views.py:2822
+#: sickrage/core/webserver/views.py:2817
 msgid "Automatically added "
 msgstr "Afegeix automàticament "
 
-#: sickrage/core/webserver/views.py:2823
+#: sickrage/core/webserver/views.py:2818
 msgid " from their existing metadata files"
 msgstr " partir dels seus fitxers existents de metadades"
 
-#: sickrage/core/webserver/views.py:3005 sickrage/core/webserver/views.py:3006
+#: sickrage/core/webserver/views.py:3000 sickrage/core/webserver/views.py:3001
 msgid "Missing Subtitles"
 msgstr "Falten subtítols"
 
-#: sickrage/core/webserver/views.py:3441
+#: sickrage/core/webserver/views.py:3436
 msgid "Unable to refresh show "
 msgstr "Incapaç d'actualitzar Mostra el "
 
-#: sickrage/core/webserver/views.py:3452
+#: sickrage/core/webserver/views.py:3447
 msgid "Errors encountered"
 msgstr "Errors trobats"
 
-#: sickrage/core/webserver/views.py:3458
+#: sickrage/core/webserver/views.py:3453
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3463
+#: sickrage/core/webserver/views.py:3458
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3468
+#: sickrage/core/webserver/views.py:3463
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3473
+#: sickrage/core/webserver/views.py:3468
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3478
+#: sickrage/core/webserver/views.py:3473
 msgid "The following actions were queued:"
 msgstr "Estaven en cua a les accions següents:"
 
-#: sickrage/core/webserver/views.py:3547
+#: sickrage/core/webserver/views.py:3542
 msgid "Backlog search started"
 msgstr "Cerca de retard va començar"
 
-#: sickrage/core/webserver/views.py:3555
+#: sickrage/core/webserver/views.py:3550
 msgid "Daily search started"
 msgstr "Recerca diari començar"
 
-#: sickrage/core/webserver/views.py:3563
+#: sickrage/core/webserver/views.py:3558
 msgid "Find propers search started"
 msgstr "Trobar recerca devoció va començar"
 
-#: sickrage/core/webserver/views.py:3674
+#: sickrage/core/webserver/views.py:3669
 msgid "History cleared"
 msgstr "Història aclarit"
 
-#: sickrage/core/webserver/views.py:3681
+#: sickrage/core/webserver/views.py:3676
 msgid "Removed history entries older than 30 days"
 msgstr "Entrades d'història eliminat més de 30 dies"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:3917
+#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:3906
 msgid "Backup/Restore"
 msgstr "Còpia de seguretat/restauració"
 
-#: sickrage/core/webserver/views.py:3712 sickrage/core/webserver/views.py:3713
+#: sickrage/core/webserver/views.py:3707 sickrage/core/webserver/views.py:3708
 msgid "Configuration"
 msgstr "Configuració"
 
-#: sickrage/core/webserver/views.py:3721
+#: sickrage/core/webserver/views.py:3716
 msgid "Configuration Reset to Defaults"
 msgstr "Reinicialització de la configuració per defecte"
 
-#: sickrage/core/webserver/views.py:3734
+#: sickrage/core/webserver/views.py:3729
 msgid "Config - General"
 msgstr "Config - General"
 
-#: sickrage/core/webserver/views.py:3735
+#: sickrage/core/webserver/views.py:3730
 msgid "General Configuration"
 msgstr "Configuració general"
 
-#: sickrage/core/webserver/views.py:3899 sickrage/core/webserver/views.py:4061
-#: sickrage/core/webserver/views.py:4192 sickrage/core/webserver/views.py:4413
-#: sickrage/core/webserver/views.py:4747 sickrage/core/webserver/views.py:4828
-#: sickrage/core/webserver/views.py:4867
+#: sickrage/core/webserver/views.py:3888 sickrage/core/webserver/views.py:4050
+#: sickrage/core/webserver/views.py:4181 sickrage/core/webserver/views.py:4402
+#: sickrage/core/webserver/views.py:4736 sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4856
 msgid "Error(s) Saving Configuration"
 msgstr "Configuració d'estalvi han"
 
-#: sickrage/core/webserver/views.py:3901
+#: sickrage/core/webserver/views.py:3890
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] configuració salvat"
 
-#: sickrage/core/webserver/views.py:3916
+#: sickrage/core/webserver/views.py:3905
 msgid "Config - Backup/Restore"
 msgstr "Config - còpia de seguretat/restauració"
 
-#: sickrage/core/webserver/views.py:3929
+#: sickrage/core/webserver/views.py:3918
 msgid "Backup SUCCESSFUL"
 msgstr "Reserva d'èxit"
 
-#: sickrage/core/webserver/views.py:3931
+#: sickrage/core/webserver/views.py:3920
 msgid "Backup FAILED!"
 msgstr "Reserva FRACASSADA!"
 
-#: sickrage/core/webserver/views.py:3933
+#: sickrage/core/webserver/views.py:3922
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Heu de triar la carpeta on voleu desar la còpia de seguretat primer!"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3941
 msgid "Successfully extracted restore files to "
 msgstr "Extret amb èxit restaurar arxius a "
 
-#: sickrage/core/webserver/views.py:3953
+#: sickrage/core/webserver/views.py:3942
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage per completar la restauració."
 
-#: sickrage/core/webserver/views.py:3955
+#: sickrage/core/webserver/views.py:3944
 msgid "Restore FAILED"
 msgstr "Restauració ha fallat"
 
-#: sickrage/core/webserver/views.py:3957
+#: sickrage/core/webserver/views.py:3946
 msgid "You need to select a backup file to restore!"
 msgstr "Heu de seleccionar un arxiu de còpia de seguretat per restaurar!"
 
-#: sickrage/core/webserver/views.py:3973
+#: sickrage/core/webserver/views.py:3962
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
-#: sickrage/core/webserver/views.py:4107
+#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:4096
 msgid "Unable to create directory "
 msgstr "No es pot crear el directori "
 
-#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
-#: sickrage/core/webserver/views.py:4107
+#: sickrage/core/webserver/views.py:3988 sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:4096
 msgid ", dir not changed."
 msgstr ", dir que no ha canviat."
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4052
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4078
+#: sickrage/core/webserver/views.py:4067
 msgid "Config - Post Processing"
 msgstr "Config - processament de correu"
 
-#: sickrage/core/webserver/views.py:4118
+#: sickrage/core/webserver/views.py:4107
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Desempaquetant no admet, impossibilitant descomprimir entorn"
 
-#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4164
+#: sickrage/core/webserver/views.py:4142 sickrage/core/webserver/views.py:4153
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Provat un anime invàlid nomenar config, no desar la configuració de nomenclatura d'estalvi"
 
-#: sickrage/core/webserver/views.py:4155 sickrage/core/webserver/views.py:4166
+#: sickrage/core/webserver/views.py:4144 sickrage/core/webserver/views.py:4155
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Heu intentat desar una configuració nomenclatura no és vàlid, no desar la configuració de nomenclatura"
 
-#: sickrage/core/webserver/views.py:4172
+#: sickrage/core/webserver/views.py:4161
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Heu intentat desar un invàlid aire per data nomenclatura config, no desar la configuració de l'aire per data"
 
-#: sickrage/core/webserver/views.py:4178
+#: sickrage/core/webserver/views.py:4167
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Heu intentat desar un invàlid esportiu nomenar config, no desar la configuració d'esports"
 
-#: sickrage/core/webserver/views.py:4194
+#: sickrage/core/webserver/views.py:4183
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4273
+#: sickrage/core/webserver/views.py:4262
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4314
+#: sickrage/core/webserver/views.py:4303
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "No especifica el nom del proveïdor"
 
-#: sickrage/core/webserver/views.py:4316
+#: sickrage/core/webserver/views.py:4305
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Cap proveïdor de l'adreça Url especificada"
 
-#: sickrage/core/webserver/views.py:4318
+#: sickrage/core/webserver/views.py:4307
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Cap clau de proveïdor Api especificat"
 
-#: sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4404
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4430
+#: sickrage/core/webserver/views.py:4419
 msgid "Config - Notifications"
 msgstr "Config - notificacions"
 
-#: sickrage/core/webserver/views.py:4749
+#: sickrage/core/webserver/views.py:4738
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4764
+#: sickrage/core/webserver/views.py:4753
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4830
+#: sickrage/core/webserver/views.py:4819
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4845
+#: sickrage/core/webserver/views.py:4834
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4858
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] configuració salvat"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4873
 msgid "Config - Quality Settings"
 msgstr "Config - escenes de qualitat"
 
-#: sickrage/core/webserver/views.py:4896
+#: sickrage/core/webserver/views.py:4885
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CONFIGURACIÓ DE QUALITAT] Configuració salvat"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4898
 msgid "Clear Errors"
 msgstr "Eliminar Errors"
 
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4901
 msgid "Clear Warnings"
 msgstr "Clares advertències"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4942
 msgid "Daily Searcher"
 msgstr "Cercador diària"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4944
 msgid "Show Updater"
 msgstr "Updater Mostra el"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4945
 msgid "Check Version"
 msgstr "Comprovar la versió"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4947
 msgid "Search Queue"
 msgstr "Cua de cerca"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4948
 msgid "Find Propers"
 msgstr "Trobar la devoció"
 
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4949
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4950
 msgid "Find Subtitles"
 msgstr "Trobar subtitula"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4952
 msgid "Event"
 msgstr "Esdeveniment"
 
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:4954
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4955
 msgid "Thread"
 msgstr "Fil"
 

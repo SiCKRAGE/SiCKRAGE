@@ -262,9 +262,9 @@
                                                 ${_('episodes only.')}
                                             </label>
                                             <p></p>
-                                            ${_('when searching for complete seasons you can choose to have it look for <br/>'
-                                            'season packs only, or choose to have it build a complete season from just <br/>'
-                                            'single episodes.')}
+                                            ${_('when searching for complete seasons you can choose to have it look for')} <br/>
+                                            ${_('season packs only, or choose to have it build a complete season from just')} <br/>
+                                            ${_('single episodes.')}
                                         </div>
                                     </div>
                                 </div>
@@ -588,7 +588,7 @@
                                         <input type="password" name="${providerID}_pin"
                                                id="${providerID}_pin"
                                                value="${providerObj.pin}"
-                                               title="Provider PIN#"
+                                               title=${_('Provider PIN#')}
                                                class="form-control"
                                                autocapitalize="off"/>
                                     </div>
@@ -609,7 +609,7 @@
                                         <input type="number" step="0.1" name="${providerID}_ratio"
                                                id="${providerID}_ratio"
                                                value="${providerObj.ratio}"
-                                               title="stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
+                                               title=${_('stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)')}
                                                class="form-control"/>
                                     </div>
                                 </div>
@@ -629,7 +629,7 @@
                                         <input type="number" name="${providerID}_minseed"
                                                id="${providerID}_minseed"
                                                value="${providerObj.minseed}"
-                                               title="Minimum allowed seeders"
+                                               title=${_('Minimum allowed seeders')}
                                                class="form-control"/>
                                     </div>
                                 </div>
@@ -649,7 +649,7 @@
                                         <input type="number" name="${providerID}_minleech"
                                                id="${providerID}_minleech"
                                                value="${providerObj.minleech}"
-                                               title="Minimum allowed leechers"
+                                               title=${_('Minimum allowed leechers')}
                                                class="form-control"/>
                                     </div>
                                 </div>
