@@ -30,14 +30,15 @@ from collections import OrderedDict
 
 import dateutil.tz
 import markdown2
+import requests
 import tornado.locale
 from CodernityDB.database import RecordNotFound
 from concurrent.futures import ThreadPoolExecutor
+from keycloak.realm import KeycloakRealm
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
-from oauthlib.oauth2 import MissingTokenError
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode
+from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
@@ -160,8 +161,14 @@ class BaseHandler(RequestHandler):
 
         super(BaseHandler, self).redirect(url, permanent, status)
 
+    def set_current_user(self, user, remember_me=False):
+        self.set_secure_cookie('sickrage_token', user, expires_days=30 if remember_me else None)
+
     def get_current_user(self):
-        return self.get_secure_cookie('sickrage_user')
+        return self.get_secure_cookie('sickrage_token')
+
+    def clear_current_user(self):
+        self.clear_cookie('sickrage_token')
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -250,49 +257,23 @@ class WebHandler(BaseHandler):
             action='genericmessage'
         )
 
+
 class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
-    def prepare(self, *args, **kwargs):
-        self.finish(self.auth())
+    def get(self, *args, **kwargs):
+        redirect_uri = "{}://{}/login".format(self.request.protocol, self.request.host)
 
-    def auth(self):
-        if sickrage.app.developer:
-            self.set_secure_cookie('sickrage_user', json_encode(sickrage.app.config.api_key))
-
-        if self.get_current_user():
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
-
-        username = self.get_argument('username', '')
-        password = self.get_argument('password', '')
-
-        if username == sickrage.app.config.web_username and password == sickrage.app.config.web_password:
-            Notifiers.mass_notify_login(self.request.remote_ip)
-
-            remember_me = int(self.get_argument('remember_me', default=0))
-
-            self.set_secure_cookie('sickrage_user', json_encode(sickrage.app.config.api_key),
-                                   expires_days=30 if remember_me else None)
-
-            sickrage.app.log.info('User logged into the SiCKRAGE web interface')
-
+        code = self.get_argument('code', False)
+        if code:
+            API().token = access_token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
+            self.set_current_user(json_encode(access_token), True)
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_page))
-        elif username and password:
-            sickrage.app.log.warning(
-                'User attempted a failed login to the SiCKRAGE web interface from IP: {}'.format(
-                    self.request.remote_ip)
-            )
-
-        return self.render(
-            "/login.mako",
-            title="Login",
-            header="Login",
-            topmenu="login",
-            controller='root',
-            action='login'
-        )
+        else:
+            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
+            self.redirect(authorization_url)
 
 
 class LogoutHandler(BaseHandler):
@@ -300,7 +281,10 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        self.clear_cookie("sickrage_user")
+        access_token = json_decode(self.get_current_user())
+        sickrage.app.oidc_client.logout(access_token['refresh_token'])
+
+        self.clear_current_user()
         return self.redirect('/login/')
 
 
@@ -709,16 +693,6 @@ class Home(WebHandler):
             return True
         else:
             return False
-
-    @staticmethod
-    def testAPI(username=None, password=None):
-        try:
-            if API(username, password).token:
-                return _('API access successful')
-        except MissingTokenError:
-            pass
-
-        return _('API access failed')
 
     @staticmethod
     def testSABnzbd(host=None, username=None, password=None, apikey=None):
@@ -3780,8 +3754,8 @@ class ConfigGeneral(Config):
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
                     encryption_version=None, web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
                     update_frequency=None, skip_removed_files=None, indexerDefaultLang='en',
-                    ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3, web_username=None,
-                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL', web_password=None,
+                    ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3,
+                    api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
                     version_notify=None, enable_https=None, https_cert=None, https_key=None, handle_reverse_proxy=None,
                     sort_article=None, auto_update=None, notify_on_update=None, proxy_setting=None, proxy_indexers=None,
                     anon_redirect=None, git_path=None, pip_path=None, calendar_unprotected=None, calendar_icons=None,
@@ -3789,17 +3763,13 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
-                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, api_username=None,
-                    api_password=None, use_api=None, enable_api_providers_cache=None, enable_upnp=None,
-                    web_external_port=None, **kwargs):
+                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None,
+                    enable_api_providers_cache=None, enable_upnp=None, web_external_port=None, **kwargs):
 
         results = []
 
         # API
-        sickrage.app.config.enable_api = checkbox_to_value(use_api)
         sickrage.app.config.enable_api_providers_cache = checkbox_to_value(enable_api_providers_cache)
-        sickrage.app.config.api_username = api_username
-        sickrage.app.config.api_password = api_password
 
         # Language
         sickrage.app.config.change_gui_lang(gui_language)
@@ -3850,8 +3820,6 @@ class ConfigGeneral(Config):
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
         sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
-        sickrage.app.config.web_username = web_username
-        sickrage.app.config.web_password = web_password
 
         sickrage.app.config.filter_row = checkbox_to_value(filter_row)
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)

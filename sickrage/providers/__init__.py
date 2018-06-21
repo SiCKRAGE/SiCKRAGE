@@ -657,14 +657,12 @@ class TorrentProvider(GenericProvider):
                 torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
                 result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
 
-                # try api
-                if not result and sickrage.app.config.enable_api:
-                    try:
-                        # add to external database
-                        TorrentCacheAPI().add(url)
-                        result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
-                    except Exception:
-                        pass
+                try:
+                    # add to external api database
+                    TorrentCacheAPI().add(url)
+                    result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
+                except Exception:
+                    pass
 
         if not result:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))

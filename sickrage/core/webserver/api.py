@@ -32,6 +32,7 @@ from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage.subtitles
+from sickrage.core import API
 
 try:
     from futures import ThreadPoolExecutor
@@ -87,11 +88,11 @@ class KeyHandler(RequestHandler):
         api_key = None
 
         try:
-            username = sickrage.app.config.web_username
-            password = sickrage.app.config.web_password
+            username = self.get_argument('u', None)
+            password = self.get_argument('p', None)
+            api_token = API(username, password).token
 
-            if (self.get_argument('u', None) == username or not username) and \
-                    (self.get_argument('p', None) == password or not password):
+            if api_token:
                 api_key = sickrage.app.config.api_key
 
             self.finish({'success': api_key is not None, 'api_key': api_key})

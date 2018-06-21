@@ -36,6 +36,7 @@ from apscheduler.schedulers.tornado import TornadoScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from dateutil import tz
 from fake_useragent import UserAgent
+from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import adba
@@ -141,6 +142,7 @@ class Core(object):
         self.subtitle_searcher = None
         self.auto_postprocessor = None
         self.upnp_client = None
+        self.oidc_client = None
 
     def start(self):
         self.started = True
@@ -176,6 +178,11 @@ class Core(object):
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
+
+        # setup oidc client
+        realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
+        self.oidc_client = realm.open_id_connect(client_id='sickrage-app',
+                                                 client_secret='5d4710b2-ca70-4d39-b5a3-0705e2c5e703')
 
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):

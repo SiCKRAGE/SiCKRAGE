@@ -2,6 +2,21 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
+        'string-replace': {
+          inline: {
+            files: {
+              './': 'sickrage/locale/**/LC_MESSAGES/*.po'
+            },
+            options: {
+              replacements: [
+                {
+                  pattern: /("PO-Revision-Date.*")/ig,
+                  replacement: ''
+                }
+              ]
+            }
+          }
+        },
         clean: {
             bower_components: 'bower_components',
             //sass: [
@@ -431,6 +446,7 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:crowdin_download_translations',
+            'string-replace',
             'exec:babel_compile',
             'po2json'
         ];
