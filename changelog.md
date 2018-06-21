@@ -1,6 +1,7 @@
 # Changelog
 
-- * b211d04 - 2018-06-19: Pre-Release v9.3.36.dev1 
+- * 2e7b758 - 2018-06-20: Release v9.3.36 
+- * e6f02d4 - 2018-06-19: Pre-Release v9.3.36.dev1 
 - * 977b971 - 2018-06-17: Switched WebUI to use API for login credentials 
 - * c800afc - 2018-06-16: Release v9.3.35 
 - * 2e05d78 - 2018-06-16: Added function to randomize external upnp port number Added ability to manually set external upnp port number 
