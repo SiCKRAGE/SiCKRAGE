@@ -16,8 +16,8 @@ class API(object):
     def __init__(self):
         self.api_url = 'https://api.sickrage.ca/api/v1/'
         self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
+        self._token = {}
         self._session = None
-        self._token = None
 
     @property
     def session(self):
@@ -36,6 +36,14 @@ class API(object):
     def token(self, value):
         with open(self.token_file, 'w') as outfile:
             json.dump(value, outfile)
+
+    @property
+    def userinfo(self):
+        if self.token:
+            return sickrage.app.oidc_client.userinfo(self.token['access_token'])
+
+    def register_appid(self, appid):
+        self._request('POST', 'register-appid', json={'appid': appid})
 
     def _request(self, method, url, **kwargs):
         try:

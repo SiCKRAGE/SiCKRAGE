@@ -1,6 +1,7 @@
 # Changelog
 
-- * 028a7d1 - 2018-06-20: Release v9.3.37 
+- * b833c7e - 2018-06-21: Added AppID registration to account profiles 
+- * 08580c9 - 2018-06-20: Release v9.3.37 
 - * 5e91170 - 2018-06-20: Release v9.3.36 
 - * e6f02d4 - 2018-06-19: Pre-Release v9.3.36.dev1 
 - * 977b971 - 2018-06-17: Switched WebUI to use API for login credentials 
