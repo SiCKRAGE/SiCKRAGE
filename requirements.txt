@@ -46,3 +46,4 @@ tzlocal == 1.5.1
 psutil == 5.0.0 ; python_full_version < '2.7.14'
 psutil == 5.4.3 ; python_full_version >= '2.7.14'
 raven == 6.7.0
+python-keycloak-client == 0.1.3
