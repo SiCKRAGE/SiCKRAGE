@@ -15,13 +15,23 @@ from sickrage.core.api.exceptions import unauthorized, error
 class API(object):
     def __init__(self):
         self.api_url = 'https://api.sickrage.ca/api/v1/'
+        self.client_id = sickrage.app.oidc_client._client_id
+        self.client_secret = sickrage.app.oidc_client._client_secret
+        self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
         self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
+        self._session = None
         self._token = {}
-        self._refreshed = False
 
     @property
     def session(self):
-        return OAuth2Session(token=self.token)
+        if self._session is None:
+            self._session = OAuth2Session(self.client_id,
+                                          token=self.token,
+                                          auto_refresh_url=self.token_url,
+                                          auto_refresh_kwargs={'client_id': self.client_id,
+                                                               'client_secret': self.client_secret},
+                                          token_updater=self.token)
+        return self._session
 
     @property
     def token(self):
@@ -49,25 +59,11 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                msg = resp.json()['message']
-                raise unauthorized(msg)
+                raise unauthorized(resp.json()['message'])
             elif resp.status_code >= 400:
-                msg = resp.json()['message']
-                if resp.status_code == 500 and msg == 'Token is expired':
-                    if not self._refreshed:
-                        raise TokenExpiredError
-                raise error(msg)
+                raise error(resp.json()['message'])
 
             return resp.json()
-        except TokenExpiredError as e:
-            try:
-                self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
-            except Exception:
-                if os.path.exists(self.token_file):
-                    os.remove(self.token_file)
-
-            self._refreshed = True
-            return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("SiCKRAGE username or password is incorrect, please try again")
 
