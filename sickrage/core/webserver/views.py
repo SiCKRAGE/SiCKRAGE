@@ -30,15 +30,13 @@ from collections import OrderedDict
 
 import dateutil.tz
 import markdown2
-import requests
 import tornado.locale
 from CodernityDB.database import RecordNotFound
 from concurrent.futures import ThreadPoolExecutor
-from keycloak.realm import KeycloakRealm
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode, json_decode
+from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
@@ -84,7 +82,6 @@ from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import IndexerApi
-from sickrage.notifiers import Notifiers
 from sickrage.providers import NewznabProvider, TorrentRssProvider
 
 
@@ -162,13 +159,13 @@ class BaseHandler(RequestHandler):
         super(BaseHandler, self).redirect(url, permanent, status)
 
     def set_current_user(self, user, remember_me=False):
-        self.set_secure_cookie('sickrage_token', user, expires_days=30 if remember_me else None)
+        self.set_secure_cookie('sickrage_user', user, expires_days=30 if remember_me else None)
 
     def get_current_user(self):
-        return self.get_secure_cookie('sickrage_token')
+        return self.get_secure_cookie('sickrage_user')
 
     def clear_current_user(self):
-        self.clear_cookie('sickrage_token')
+        self.clear_cookie('sickrage_user')
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -267,8 +264,14 @@ class LoginHandler(BaseHandler):
 
         code = self.get_argument('code', False)
         if code:
-            API().token = access_token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-            self.set_current_user(json_encode(access_token), True)
+            API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
+
+            try:
+                API().register_appid(sickrage.app.config.app_id)
+                self.set_current_user(json_encode(API().userinfo), True)
+            except Exception:
+                return self.redirect('/logout')
+
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_page))
         else:
@@ -281,8 +284,8 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        access_token = json_decode(self.get_current_user())
-        sickrage.app.oidc_client.logout(access_token['refresh_token'])
+        if API().token:
+            sickrage.app.oidc_client.logout(API().token['refresh_token'])
 
         self.clear_current_user()
         return self.redirect('/login/')

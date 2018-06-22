@@ -508,9 +508,8 @@ def _responds(result_type, data=None, msg=""):
     """
     if data is None:
         data = {}
-    return {"result": result_type_map[result_type],
-            "message": msg,
-            "data": data}
+
+    return {"result": result_type_map[result_type], "message": msg, "data": data}
 
 
 def _get_status_Strings(s):
@@ -639,7 +638,7 @@ class CMD_Help(ApiCall):
         """ Get help about a given command """
         if self.subject in self.api_calls:
             api_func = self.api_calls.get(self.subject)
-            out = _responds(RESULT_SUCCESS, api_func(self.application, self.request, **{"help": 1}).run())
+            out = api_func(self.application, self.request, **{"help": 1}).run()
         else:
             out = _responds(RESULT_FAILURE, msg="No such cmd")
         return out
