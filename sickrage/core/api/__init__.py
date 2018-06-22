@@ -17,13 +17,10 @@ class API(object):
         self.api_url = 'https://api.sickrage.ca/api/v1/'
         self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
         self._token = {}
-        self._session = None
 
     @property
     def session(self):
-        if self._session is None:
-            self._session = OAuth2Session(token=self.token)
-        return self._session
+        return OAuth2Session(token=self.token)
 
     @property
     def token(self):
