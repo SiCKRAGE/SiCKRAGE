@@ -1,6 +1,7 @@
 # Changelog
 
-- * 416425d - 2018-06-21: Release v9.3.40 
+- * 0412b53 - 2018-06-21: Release v9.3.41 
+- * 8bd7022 - 2018-06-21: Release v9.3.40 
 - * 36ce10b - 2018-06-21: Release v9.3.39 
 - * c2a903e - 2018-06-21: Release v9.3.38 
 - * 4ee3db6 - 2018-06-21: Fixed issue with how data is formatted on return for app api 
