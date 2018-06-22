@@ -51,13 +51,21 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                raise unauthorized(resp.json()['message'])
+                msg = resp.json()['message']
+                raise unauthorized(msg)
             elif resp.status_code >= 400:
-                raise error(resp.json()['message'])
+                msg = resp.json()['message']
+                if resp.status_code == 500 and msg == 'Token is expired':
+                    raise TokenExpiredError
+                raise error(msg)
 
             return resp.json()
         except TokenExpiredError as e:
-            self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
+            try:
+                self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
+            except Exception:
+                if os.path.exists(self.token_file):
+                    os.remove(self.token_file)
             return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("SiCKRAGE username or password is incorrect, please try again")
