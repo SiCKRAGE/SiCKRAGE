@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4f36192 - 2018-06-22: Release v9.3.42 
+- * 2a65fdc - 2018-06-22: Release v9.3.43 
+- * 42893d0 - 2018-06-22: Release v9.3.42 
 - * abf1b98 - 2018-06-21: Release v9.3.41 
 - * 8bd7022 - 2018-06-21: Release v9.3.40 
 - * 36ce10b - 2018-06-21: Release v9.3.39 

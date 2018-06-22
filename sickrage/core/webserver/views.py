@@ -275,7 +275,8 @@ class LoginHandler(BaseHandler):
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_page))
         else:
-            authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
+            authorization_url = sickrage.app.oidc_client.authorization_url(scope='offline_access',
+                                                                           redirect_uri=redirect_uri)
             self.redirect(authorization_url)
 
 
