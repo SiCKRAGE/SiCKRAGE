@@ -17,6 +17,7 @@ class API(object):
         self.api_url = 'https://api.sickrage.ca/api/v1/'
         self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
         self._token = {}
+        self._refreshed = False
 
     @property
     def session(self):
@@ -53,7 +54,8 @@ class API(object):
             elif resp.status_code >= 400:
                 msg = resp.json()['message']
                 if resp.status_code == 500 and msg == 'Token is expired':
-                    raise TokenExpiredError
+                    if not self._refreshed:
+                        raise TokenExpiredError
                 raise error(msg)
 
             return resp.json()
@@ -63,6 +65,8 @@ class API(object):
             except Exception:
                 if os.path.exists(self.token_file):
                     os.remove(self.token_file)
+
+            self._refreshed = True
             return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("SiCKRAGE username or password is incorrect, please try again")
