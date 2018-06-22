@@ -1,6 +1,7 @@
 # Changelog
 
-- * c8b89fe - 2018-06-21: Fixed issue with how data is formatted on return for app api 
+- * dbfb716 - 2018-06-21: Release v9.3.38 
+- * 4ee3db6 - 2018-06-21: Fixed issue with how data is formatted on return for app api 
 - * c63362a - 2018-06-21: Added AppID registration to account profiles 
 - * 08580c9 - 2018-06-20: Release v9.3.37 
 - * 5e91170 - 2018-06-20: Release v9.3.36 
