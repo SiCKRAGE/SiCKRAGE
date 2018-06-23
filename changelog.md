@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2a65fdc - 2018-06-22: Release v9.3.43 
+- * 78487cf - 2018-06-22: Added app id to info page Updated some info page icons 
+- * 21d03f9 - 2018-06-22: Release v9.3.43 
 - * 42893d0 - 2018-06-22: Release v9.3.42 
 - * abf1b98 - 2018-06-21: Release v9.3.41 
 - * 8bd7022 - 2018-06-21: Release v9.3.40 

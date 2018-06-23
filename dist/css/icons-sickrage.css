@@ -13,85 +13,97 @@
 }
 .icons-sickrage-cfg {
     @extend .icons-sickrage;
-    background-position: -18px -36px;
+    background-position: -36px -36px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-console {
+.icons-sickrage-commit {
     @extend .icons-sickrage;
     background-position: 0px -18px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-forums {
+.icons-sickrage-console {
     @extend .icons-sickrage;
     background-position: -18px -18px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-git {
+.icons-sickrage-forums {
     @extend .icons-sickrage;
     background-position: -36px 0px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-irc {
+.icons-sickrage-git {
     @extend .icons-sickrage;
     background-position: -36px -18px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-locale {
+.icons-sickrage-irc {
     @extend .icons-sickrage;
     background-position: 0px -36px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-log {
+.icons-sickrage-keys {
+    @extend .icons-sickrage;
+    background-position: -18px -36px;
+    width: 16px;
+    height: 16px;
+}
+.icons-sickrage-locale {
     @extend .icons-sickrage;
     background-position: 0px 0px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-logo {
-    @extend .icons-sickrage;
-    background-position: -36px -36px;
-    width: 16px;
-    height: 16px;
-}
-.icons-sickrage-python {
+.icons-sickrage-log {
     @extend .icons-sickrage;
     background-position: -54px 0px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-tornado {
+.icons-sickrage-logo {
     @extend .icons-sickrage;
     background-position: -54px -18px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-type {
+.icons-sickrage-python {
     @extend .icons-sickrage;
     background-position: -54px -36px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-user {
+.icons-sickrage-tornado {
     @extend .icons-sickrage;
     background-position: 0px -54px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-version {
+.icons-sickrage-type {
     @extend .icons-sickrage;
     background-position: -18px -54px;
     width: 16px;
     height: 16px;
 }
-.icons-sickrage-wiki {
+.icons-sickrage-user {
     @extend .icons-sickrage;
     background-position: -36px -54px;
+    width: 16px;
+    height: 16px;
+}
+.icons-sickrage-version {
+    @extend .icons-sickrage;
+    background-position: -54px -54px;
+    width: 16px;
+    height: 16px;
+}
+.icons-sickrage-wiki {
+    @extend .icons-sickrage;
+    background-position: -72px 0px;
     width: 16px;
     height: 16px;
 }
