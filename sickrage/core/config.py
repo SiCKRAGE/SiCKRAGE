@@ -1381,7 +1381,7 @@ class Config(object):
         self.web_external_port = self.check_setting_int('General', 'web_external_port')
         self.web_host = self.check_setting_str('General', 'web_host')
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
-        self.web_root = self.check_setting_str('General', 'web_root').rstrip("/")
+        self.web_root = self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
         self.web_log = self.check_setting_bool('General', 'web_log')
         self.app_username = self.check_setting_str('General', 'app_username', censor=True)
         self.app_password = self.check_setting_str('General', 'app_password', censor=True)
