@@ -1,6 +1,7 @@
 # Changelog
 
-- * a42448f - 2018-06-24: Added app id to info page Updated some info page icons Fixed API builder to incorporate web root Fixed redirect issues when using a custom web root 
+- * e3b920d - 2018-06-24: Fixed issues with UPnP client and Synology devices 
+- * f596b19 - 2018-06-24: Added app id to info page Updated some info page icons Fixed API builder to incorporate web root Fixed redirect issues when using a custom web root 
 - * 7fd4ff2 - 2018-06-22: Added app id to info page Updated some info page icons 
 - * 21d03f9 - 2018-06-22: Release v9.3.43 
 - * 42893d0 - 2018-06-22: Release v9.3.42 

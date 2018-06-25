@@ -1,12 +1,31 @@
-import netifaces
+# Author: echel0n <echel0n@sickrage.ca>
+# URL: https://sickrage.ca
+#
+# This file is part of SickRage.
+#
+# SickRage is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# SickRage is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function, unicode_literals, with_statement
+
 import threading
 import time
 from urlparse import urlparse
 
 import ipaddress
-import upnpclient
 
 import sickrage
+import upnpclient
 
 
 class UPNPClient(threading.Thread):
@@ -19,7 +38,7 @@ class UPNPClient(threading.Thread):
     def run(self):
         upnp_dev = self._discover_upnp_device()
         if upnp_dev is not None:
-            self._add_nat_portmap(upnp_dev)
+            self.add_nat_portmap()
 
         self.refresh_nat_portmap()
 
@@ -117,11 +136,6 @@ class UPNPClient(threading.Thread):
         parsed_url = urlparse(upnp_dev.location)
         upnp_dev_net = ipaddress.ip_network(parsed_url.hostname + '/24', strict=False)
 
-        for iface in netifaces.interfaces():
-            for family, addresses in netifaces.ifaddresses(iface).items():
-                if family != netifaces.AF_INET:
-                    continue
-                for item in addresses:
-                    if ipaddress.ip_address(item['addr']) in upnp_dev_net:
-                        return item['addr']
+        if ipaddress.ip_address(sickrage.app.config.web_host) in upnp_dev_net:
+            return sickrage.app.config.web_host
         return None
