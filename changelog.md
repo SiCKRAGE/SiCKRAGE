@@ -1,6 +1,7 @@
 # Changelog
 
-- * 204be13 - 2018-06-25: Release v9.3.46 
+- * bdf160f - 2018-06-25: Updated requirements.txt to resolve Synology issues 
+- * 40ffc7a - 2018-06-25: Release v9.3.46 
 - * d272697 - 2018-06-25: Fixed token refresh issues for API 
 - * 05e41d5 - 2018-06-24: Release v9.3.45 
 - * dcaff48 - 2018-06-24: Fixed issue with UPnP getting incorrect internal IP address 
