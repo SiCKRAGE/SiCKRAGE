@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-22 03:37-0700\n"
+"POT-Creation-Date: 2018-06-24 19:11-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
@@ -81,7 +81,7 @@ msgstr "Okei"
 msgid "Cancel"
 msgstr "Peruuta"
 
-#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3630
+#: dist/js/core.js:1397 sickrage/core/webserver/views.py:3619
 msgid "Clear History"
 msgstr "Tyhjennä historia"
 
@@ -89,7 +89,7 @@ msgstr "Tyhjennä historia"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Ovat varmasti poistaa kaikki lataushistorian?"
 
-#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3632
+#: dist/js/core.js:1402 sickrage/core/webserver/views.py:3621
 msgid "Trim History"
 msgstr "Trim historia"
 
@@ -793,13 +793,13 @@ msgstr "käynnistettäessä SickRage liitäntä"
 msgid "Shows"
 msgstr "Näyttää"
 
-#: sickrage/core/webserver/views.py:512 sickrage/core/webserver/views.py:513
+#: sickrage/core/webserver/views.py:501 sickrage/core/webserver/views.py:502
 #: sickrage/core/webserver/views/config/general.mako:135
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Schedule"
 msgstr "Aikataulu"
 
-#: sickrage/core/webserver/views.py:3642 sickrage/core/webserver/views.py:3643
+#: sickrage/core/webserver/views.py:3631 sickrage/core/webserver/views.py:3632
 #: sickrage/core/webserver/views/config/general.mako:138
 #: sickrage/core/webserver/views/layouts/main.mako:213
 msgid "History"
@@ -1355,74 +1355,78 @@ msgid "automatically submit bug/issue reports to our issue tracker when errors a
 msgstr "automaattisesti raportoi bugi/kysymys kysymys tracker virheitä kirjautuneena"
 
 #: sickrage/core/webserver/views/config/index.mako:24
+msgid "SR App ID:"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/index.mako:33
 msgid "SR Version:"
 msgstr "SR-versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:34
+#: sickrage/core/webserver/views/config/index.mako:43
 msgid "SR Commit:"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/index.mako:44
+#: sickrage/core/webserver/views/config/index.mako:53
 msgid "SR Type:"
 msgstr "SR tyyppi:"
 
-#: sickrage/core/webserver/views/config/index.mako:54
+#: sickrage/core/webserver/views/config/index.mako:63
 msgid "SR User:"
 msgstr "SR käyttäjä:"
 
-#: sickrage/core/webserver/views/config/index.mako:64
+#: sickrage/core/webserver/views/config/index.mako:73
 msgid "SR Locale:"
 msgstr "SR Locale:"
 
-#: sickrage/core/webserver/views/config/index.mako:71
+#: sickrage/core/webserver/views/config/index.mako:80
 msgid "SR Config:"
 msgstr "SR Config:"
 
-#: sickrage/core/webserver/views/config/index.mako:80
+#: sickrage/core/webserver/views/config/index.mako:89
 msgid "SR Cache Dir:"
 msgstr "SR välimuisti Dir:"
 
-#: sickrage/core/webserver/views/config/index.mako:89
+#: sickrage/core/webserver/views/config/index.mako:98
 msgid "SR Log File:"
 msgstr "SR lokitiedosto:"
 
-#: sickrage/core/webserver/views/config/index.mako:98
+#: sickrage/core/webserver/views/config/index.mako:107
 msgid "SR Arguments:"
 msgstr "SR argumentit:"
 
-#: sickrage/core/webserver/views/config/index.mako:108
+#: sickrage/core/webserver/views/config/index.mako:117
 msgid "SR Web Root:"
 msgstr "SR Web Root:"
 
-#: sickrage/core/webserver/views/config/index.mako:118
+#: sickrage/core/webserver/views/config/index.mako:127
 msgid "Tornado Version:"
 msgstr "Tornado versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:127
+#: sickrage/core/webserver/views/config/index.mako:136
 msgid "Python Version:"
 msgstr "Python-versio:"
 
-#: sickrage/core/webserver/views/config/index.mako:136
+#: sickrage/core/webserver/views/config/index.mako:145
 msgid "Homepage"
 msgstr "Kotisivu"
 
-#: sickrage/core/webserver/views/config/index.mako:147
+#: sickrage/core/webserver/views/config/index.mako:156
 msgid "WiKi"
 msgstr "WiKi"
 
-#: sickrage/core/webserver/views/config/index.mako:157
+#: sickrage/core/webserver/views/config/index.mako:166
 msgid "Forums"
 msgstr "Foorumit"
 
-#: sickrage/core/webserver/views/config/index.mako:168
+#: sickrage/core/webserver/views/config/index.mako:177
 msgid "Source"
 msgstr "Lähde"
 
-#: sickrage/core/webserver/views/config/index.mako:179
+#: sickrage/core/webserver/views/config/index.mako:188
 msgid "IRChat"
 msgstr "IRChat"
 
-#: sickrage/core/webserver/views/config/index.mako:183
+#: sickrage/core/webserver/views/config/index.mako:192
 msgid "on"
 msgstr "jäsenen"
 
@@ -3486,7 +3490,7 @@ msgstr "Vähintään yksi toimittaja ei tarvita, mutta kahta suositetaan."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent tarjoajien kanisteri olla toggled"
 
-#: sickrage/core/webserver/views.py:3675 sickrage/core/webserver/views.py:3946
+#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:3935
 #: sickrage/core/webserver/views/config/providers.mako:71
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Search Clients"
@@ -4711,7 +4715,7 @@ msgstr "AIRDATE"
 msgid "Download"
 msgstr "Lataa"
 
-#: sickrage/core/webserver/views.py:1050 sickrage/core/webserver/views.py:1051
+#: sickrage/core/webserver/views.py:1039 sickrage/core/webserver/views.py:1040
 #: sickrage/core/webserver/views/home/display_show.mako:569
 #: sickrage/core/webserver/views/home/index.mako:272
 #: sickrage/core/webserver/views/manage/mass_update.mako:58
@@ -4732,7 +4736,7 @@ msgstr "Koskaan"
 msgid "Retry Download"
 msgstr "Yritä lataamista uudelleen"
 
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4928
 #: sickrage/core/webserver/views/home/edit_show.mako:27
 #: sickrage/core/webserver/views/manage/mass_edit.mako:27
 msgid "Main"
@@ -4860,7 +4864,7 @@ msgstr "Käytä DVD jotta Ilmastointi-tilaus"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "”Voimassa koko Update” on tarpeen, ja jos sinulla on olemassa olevat jaksot haluat lajitella ne manuaalisesti."
 
-#: sickrage/core/webserver/views.py:3681 sickrage/core/webserver/views.py:4818
+#: sickrage/core/webserver/views.py:3670 sickrage/core/webserver/views.py:4807
 #: sickrage/core/webserver/views/home/edit_show.mako:232
 #: sickrage/core/webserver/views/home/index.mako:279
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
@@ -5188,7 +5192,7 @@ msgstr "Suorittaa uudelleen"
 msgid "Daily Search"
 msgstr "Päivittäinen Etsi"
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4915
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Tilauskanta"
@@ -5213,7 +5217,7 @@ msgstr "Post prosessi"
 msgid "Subtitles Finder"
 msgstr "Tekstitys Finder"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4923
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt tarkistaminen"
@@ -5246,7 +5250,7 @@ msgstr "Ei"
 msgid "True"
 msgstr "Totta"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4918
 #: sickrage/core/webserver/views/home/status.mako:108
 msgid "Show Queue"
 msgstr "Näytä jono"
@@ -5419,7 +5423,7 @@ msgstr "<p>Select ensisijainen fansub ryhmiä <b>Available Groups</b> ja lisää
 msgid "Whitelist"
 msgstr "Whitelist"
 
-#: sickrage/core/webserver/views.py:1185
+#: sickrage/core/webserver/views.py:1174
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:36
@@ -5504,7 +5508,7 @@ msgstr "Päähakemistot"
 msgid "New"
 msgstr "Uusi"
 
-#: sickrage/core/webserver/views.py:1148 sickrage/core/webserver/views.py:1925
+#: sickrage/core/webserver/views.py:1137 sickrage/core/webserver/views.py:1914
 #: sickrage/core/webserver/views/includes/root_dirs.mako:36
 #: sickrage/core/webserver/views/manage/mass_edit.mako:69
 msgid "Edit"
@@ -5534,7 +5538,7 @@ msgstr "Vaihda navigointi"
 msgid "Show List"
 msgstr "Näytä luettelo"
 
-#: sickrage/core/webserver/views.py:2290 sickrage/core/webserver/views.py:2291
+#: sickrage/core/webserver/views.py:2279 sickrage/core/webserver/views.py:2280
 #: sickrage/core/webserver/views/layouts/main.mako:108
 msgid "Add Shows"
 msgstr "Lisää ohjelmia"
@@ -5549,18 +5553,18 @@ msgstr "Manuaalinen jälkikäsittelyä"
 msgid "Manage"
 msgstr "Hallinta"
 
-#: sickrage/core/webserver/views.py:3461 sickrage/core/webserver/views.py:3462
+#: sickrage/core/webserver/views.py:3450 sickrage/core/webserver/views.py:3451
 #: sickrage/core/webserver/views/layouts/main.mako:139
 #: sickrage/core/webserver/views/manage/mass_update.mako:18
 msgid "Mass Update"
 msgstr "Laajamittainen päivitys"
 
-#: sickrage/core/webserver/views.py:3069 sickrage/core/webserver/views.py:3070
+#: sickrage/core/webserver/views.py:3058 sickrage/core/webserver/views.py:3059
 #: sickrage/core/webserver/views/layouts/main.mako:144
 msgid "Backlog Overview"
 msgstr "Ruuhkan yleiskatsaus"
 
-#: sickrage/core/webserver/views.py:3514 sickrage/core/webserver/views.py:3515
+#: sickrage/core/webserver/views.py:3503 sickrage/core/webserver/views.py:3504
 #: sickrage/core/webserver/views/layouts/main.mako:149
 msgid "Manage Queues"
 msgstr "Jonojen hallinta"
@@ -5589,7 +5593,7 @@ msgstr "Päivitä Emby"
 msgid "Manage Torrents"
 msgstr "Hallita ryöppy"
 
-#: sickrage/core/webserver/views.py:3489 sickrage/core/webserver/views.py:3490
+#: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:194
 msgid "Failed Downloads"
 msgstr "Epäonnistuneen"
@@ -5602,12 +5606,12 @@ msgstr "Jääneiden alaotsikko hallinta"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3672
+#: sickrage/core/webserver/views.py:3661
 #: sickrage/core/webserver/views/layouts/main.mako:225
 msgid "Help and Info"
 msgstr "Auttaa ja Info"
 
-#: sickrage/core/webserver/views.py:3673
+#: sickrage/core/webserver/views.py:3662
 #: sickrage/core/webserver/views/layouts/main.mako:230
 msgid "General"
 msgstr "Ehdot"
@@ -5616,28 +5620,28 @@ msgstr "Ehdot"
 msgid "Backup and Restore"
 msgstr "Varmuuskopiointi ja palautus"
 
-#: sickrage/core/webserver/views.py:3676 sickrage/core/webserver/views.py:4246
+#: sickrage/core/webserver/views.py:3665 sickrage/core/webserver/views.py:4235
 #: sickrage/core/webserver/views/layouts/main.mako:245
 msgid "Search Providers"
 msgstr "Visuaalinen haku"
 
-#: sickrage/core/webserver/views.py:3677 sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4726
 #: sickrage/core/webserver/views/layouts/main.mako:250
 msgid "Subtitles Settings"
 msgstr "Tekstityksen asetukset"
 
-#: sickrage/core/webserver/views.py:3678 sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4846
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Quality Settings"
 msgstr "Laatuasetuksia"
 
-#: sickrage/core/webserver/views.py:2254 sickrage/core/webserver/views.py:2255
-#: sickrage/core/webserver/views.py:3679 sickrage/core/webserver/views.py:4051
+#: sickrage/core/webserver/views.py:2243 sickrage/core/webserver/views.py:2244
+#: sickrage/core/webserver/views.py:3668 sickrage/core/webserver/views.py:4040
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Jälkikäsittelyssä"
 
-#: sickrage/core/webserver/views.py:3680 sickrage/core/webserver/views.py:4403
+#: sickrage/core/webserver/views.py:3669 sickrage/core/webserver/views.py:4392
 #: sickrage/core/webserver/views/layouts/main.mako:265
 msgid "Notifications"
 msgstr "Ilmoitukset"
@@ -5850,7 +5854,7 @@ msgstr "Aseta joutuessa näistä osoittaa pikemminkin Show.03.02.2010 kuin Show.
 msgid "Search for subtitles."
 msgstr "Hae tekstityksiä."
 
-#: sickrage/core/webserver/views.py:3219 sickrage/core/webserver/views.py:3220
+#: sickrage/core/webserver/views.py:3208 sickrage/core/webserver/views.py:3209
 #: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Edit"
 msgstr "Massasta Edit"
@@ -5898,7 +5902,7 @@ msgstr "Oletus Ep"
 msgid "Not in progress"
 msgstr "Ole meneillään"
 
-#: sickrage/core/webserver/views.py:1182
+#: sickrage/core/webserver/views.py:1171
 #: sickrage/core/webserver/views/manage/queues.mako:23
 #: sickrage/core/webserver/views/manage/queues.mako:39
 #: sickrage/core/webserver/views/manage/queues.mako:71
@@ -6118,8 +6122,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Löytänyt ladata <i>%s</i>"
 
 #: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2659
-#: sickrage/core/webserver/views.py:2671
+#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2648
+#: sickrage/core/webserver/views.py:2660
 msgid "Unable to add show"
 msgstr "Ei voi lisätä Näytä"
 
@@ -6167,929 +6171,929 @@ msgstr "Näytä "
 msgid " is already in your show list"
 msgstr " on jo Näytä-luettelosta"
 
-#: sickrage/core/webserver/views.py:123 sickrage/core/webserver/views.py:124
+#: sickrage/core/webserver/views.py:119 sickrage/core/webserver/views.py:120
 msgid "HTTP Error 404"
 msgstr "HTTP-virhe 404"
 
-#: sickrage/core/webserver/views.py:204 sickrage/core/webserver/views.py:205
+#: sickrage/core/webserver/views.py:193 sickrage/core/webserver/views.py:194
 msgid "HTTP Error 500"
 msgstr "HTTP-virhe 500"
 
-#: sickrage/core/webserver/views.py:410
+#: sickrage/core/webserver/views.py:399
 msgid "API Key not generated"
 msgstr "API-avain ei luoda"
 
-#: sickrage/core/webserver/views.py:414 sickrage/core/webserver/views.py:415
+#: sickrage/core/webserver/views.py:403 sickrage/core/webserver/views.py:404
 msgid "API Builder"
 msgstr "API rakentaja"
 
-#: sickrage/core/webserver/views.py:576
+#: sickrage/core/webserver/views.py:565
 msgid "Invalid show parameters"
 msgstr "Virheellinen Näytä parametrit"
 
-#: sickrage/core/webserver/views.py:581
+#: sickrage/core/webserver/views.py:570
 msgid "Invalid show paramaters"
 msgstr "Virheellinen Näytä parametreja"
 
-#: sickrage/core/webserver/views.py:588
+#: sickrage/core/webserver/views.py:577
 msgid "Invalid paramaters"
 msgstr "Virheellisiä parametreja"
 
-#: sickrage/core/webserver/views.py:591 sickrage/core/webserver/views.py:1728
-#: sickrage/core/webserver/views.py:1790
+#: sickrage/core/webserver/views.py:580 sickrage/core/webserver/views.py:1717
+#: sickrage/core/webserver/views.py:1779
 msgid "Episode couldn't be retrieved"
 msgstr "Episodi ei voitu noutaa"
 
-#: sickrage/core/webserver/views.py:673
+#: sickrage/core/webserver/views.py:662
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Virhe: Pyyntöä ei tueta. Lähetä jsonp pyytää ”srcallback”-muuttujan kyselyn merkkijonosta."
 
-#: sickrage/core/webserver/views.py:709
+#: sickrage/core/webserver/views.py:698
 msgid "Success. Connected and authenticated"
 msgstr "Menestys. Kytketty ja todennettu"
 
-#: sickrage/core/webserver/views.py:711
+#: sickrage/core/webserver/views.py:700
 msgid "Authentication failed. SABnzbd expects "
 msgstr "Todennus epäonnistui. SABnzbd odottaa "
 
-#: sickrage/core/webserver/views.py:711
+#: sickrage/core/webserver/views.py:700
 msgid " as authentication method, "
 msgstr " todennusmenetelmänä, "
 
-#: sickrage/core/webserver/views.py:714
+#: sickrage/core/webserver/views.py:703
 msgid "Unable to connect to host"
 msgstr "Estynyt jotta kytkeytyä jotta isäntä"
 
-#: sickrage/core/webserver/views.py:732
+#: sickrage/core/webserver/views.py:721
 msgid "SMS sent successfully"
 msgstr "Lähetetty SMS"
 
-#: sickrage/core/webserver/views.py:734
+#: sickrage/core/webserver/views.py:723
 msgid "Problem sending SMS: "
 msgstr "Ongelma lähettämällä Tekstiviesti: "
 
-#: sickrage/core/webserver/views.py:741
+#: sickrage/core/webserver/views.py:730
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Sanoman ilmoituksen onnistui. Tarkistaa sanoman asiakkaasi varmistaa se toimi"
 
-#: sickrage/core/webserver/views.py:743
+#: sickrage/core/webserver/views.py:732
 msgid "Error sending Telegram notification: {message}"
 msgstr "Virhe lähetettäessä sanoman ilmoitus: {message}"
 
-#: sickrage/core/webserver/views.py:753
+#: sickrage/core/webserver/views.py:742
 msgid " with password: "
 msgstr " salasana: "
 
-#: sickrage/core/webserver/views.py:756
+#: sickrage/core/webserver/views.py:745
 msgid "Registered and Tested growl successfully "
 msgstr "Rekisteröity ja testattu murina onnistuneesti "
 
-#: sickrage/core/webserver/views.py:758
+#: sickrage/core/webserver/views.py:747
 msgid "Registration and Testing of growl failed "
 msgstr "Rekisteröinti ja murina testaus epäonnistui "
 
-#: sickrage/core/webserver/views.py:765
+#: sickrage/core/webserver/views.py:754
 msgid "Test prowl notice sent successfully"
 msgstr "Testi vaania ilmoitus lähetetty onnistuneesti"
 
-#: sickrage/core/webserver/views.py:767
+#: sickrage/core/webserver/views.py:756
 msgid "Test prowl notice failed"
 msgstr "Testi vaania ilmoitus epäonnistui"
 
-#: sickrage/core/webserver/views.py:774
+#: sickrage/core/webserver/views.py:763
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 ilmoitus onnistui. Tarkista Boxcar2 asiakkaasi varmistaa se toimi"
 
-#: sickrage/core/webserver/views.py:776
+#: sickrage/core/webserver/views.py:765
 msgid "Error sending Boxcar2 notification"
 msgstr "Virhe lähetettäessä Boxcar2 ilmoitus"
 
-#: sickrage/core/webserver/views.py:783
+#: sickrage/core/webserver/views.py:772
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Pikkujuttu ilmoituksen onnistui. Tarkista pikkujuttu asiakkaasi varmistaa se toimi"
 
-#: sickrage/core/webserver/views.py:785
+#: sickrage/core/webserver/views.py:774
 msgid "Error sending Pushover notification"
 msgstr "Lähettävä pikkujuttu virheilmoituksen"
 
-#: sickrage/core/webserver/views.py:797
+#: sickrage/core/webserver/views.py:786
 msgid "Key verification successful"
 msgstr "Tarkistaminen onnistui"
 
-#: sickrage/core/webserver/views.py:799
+#: sickrage/core/webserver/views.py:788
 msgid "Unable to verify key"
 msgstr "Voi tarkistaa avain"
 
-#: sickrage/core/webserver/views.py:806
+#: sickrage/core/webserver/views.py:795
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Tweet onnistunut, tarkistaa hermona Varmista, että se toimi"
 
-#: sickrage/core/webserver/views.py:808
+#: sickrage/core/webserver/views.py:797
 msgid "Error sending tweet"
 msgstr "Virhe lähettää tweet"
 
-#: sickrage/core/webserver/views.py:813
+#: sickrage/core/webserver/views.py:802
 msgid "Please enter a valid account sid"
 msgstr "Kirjoita kelvollinen tilin sid"
 
-#: sickrage/core/webserver/views.py:816
+#: sickrage/core/webserver/views.py:805
 msgid "Please enter a valid auth token"
 msgstr "Kirjoita kelvollinen auth tunnus"
 
-#: sickrage/core/webserver/views.py:819
+#: sickrage/core/webserver/views.py:808
 msgid "Please enter a valid phone sid"
 msgstr "Kirjoita kelvollinen puhelinnumero sid"
 
-#: sickrage/core/webserver/views.py:822
+#: sickrage/core/webserver/views.py:811
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Ota muotoilla puhelinnumero kuin ”+ 1-###-###-###”"
 
-#: sickrage/core/webserver/views.py:826
+#: sickrage/core/webserver/views.py:815
 msgid "Authorization successful and number ownership verified"
 msgstr "Luvan onnistunut ja numero omistus tarkistaa"
 
-#: sickrage/core/webserver/views.py:828
+#: sickrage/core/webserver/views.py:817
 msgid "Error sending sms"
 msgstr "Virhe lähetettäessä tekstiviesti"
 
-#: sickrage/core/webserver/views.py:834
+#: sickrage/core/webserver/views.py:823
 msgid "Slack message successful"
 msgstr "Löysä viesti onnistunut"
 
-#: sickrage/core/webserver/views.py:836
+#: sickrage/core/webserver/views.py:825
 msgid "Slack message failed"
 msgstr "Löysä asia epäonnistua"
 
-#: sickrage/core/webserver/views.py:842
+#: sickrage/core/webserver/views.py:831
 msgid "Discord message successful"
 msgstr "Epäsopua viesti onnistunut"
 
-#: sickrage/core/webserver/views.py:844
+#: sickrage/core/webserver/views.py:833
 msgid "Discord message failed"
 msgstr "Epäsopua asia epäonnistua"
 
-#: sickrage/core/webserver/views.py:855
+#: sickrage/core/webserver/views.py:844
 msgid "Test KODI notice sent successfully to "
 msgstr "Testi KODI ilmoitus lähetetään onnistuneesti "
 
-#: sickrage/core/webserver/views.py:857
+#: sickrage/core/webserver/views.py:846
 msgid "Test KODI notice failed to "
 msgstr "Testi KODI ilmoitus epäonnistui "
 
-#: sickrage/core/webserver/views.py:872
+#: sickrage/core/webserver/views.py:861
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Onnistuneen testin ilmoitus lähetetään Plex asiakas... "
 
-#: sickrage/core/webserver/views.py:874
+#: sickrage/core/webserver/views.py:863
 msgid "Test failed for Plex client ... "
 msgstr "Testi epäonnistui Plex asiakkaan... "
 
-#: sickrage/core/webserver/views.py:877
+#: sickrage/core/webserver/views.py:866
 msgid "Tested Plex client(s): "
 msgstr "Testattu Plex client(s): "
 
-#: sickrage/core/webserver/views.py:892
+#: sickrage/core/webserver/views.py:881
 msgid "Successful test of Plex server(s) ... "
 msgstr "Onnistuneen testin Plex palvelimet... "
 
-#: sickrage/core/webserver/views.py:895
+#: sickrage/core/webserver/views.py:884
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Testi epäonnistui: N Plex Media-palvelimen määritetty"
 
-#: sickrage/core/webserver/views.py:897
+#: sickrage/core/webserver/views.py:886
 msgid "Test failed for Plex server(s) ... "
 msgstr "Testi epäonnistui Plex palvelimet... "
 
-#: sickrage/core/webserver/views.py:901
+#: sickrage/core/webserver/views.py:890
 msgid "Tested Plex Media Server host(s): "
 msgstr "Testattu Plex mediapalvelin isäntien: "
 
-#: sickrage/core/webserver/views.py:909
+#: sickrage/core/webserver/views.py:898
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Tried lennättää kassa ilmoitus kautta libnotify"
 
-#: sickrage/core/webserver/views.py:918 sickrage/core/webserver/views.py:951
+#: sickrage/core/webserver/views.py:907 sickrage/core/webserver/views.py:940
 msgid "Test notice sent successfully to "
 msgstr "Testi ilmoitus lähetettiin onnistuneesti "
 
-#: sickrage/core/webserver/views.py:920 sickrage/core/webserver/views.py:953
+#: sickrage/core/webserver/views.py:909 sickrage/core/webserver/views.py:942
 msgid "Test notice failed to "
 msgstr "Testi ilmoitus epäonnistui "
 
-#: sickrage/core/webserver/views.py:927
+#: sickrage/core/webserver/views.py:916
 msgid "Successfully started the scan update"
 msgstr "Käynnistetty scan-päivitys"
 
-#: sickrage/core/webserver/views.py:929
+#: sickrage/core/webserver/views.py:918
 msgid "Test failed to start the scan update"
 msgstr "Aloita skannaus päivitys epäonnistui"
 
-#: sickrage/core/webserver/views.py:937
+#: sickrage/core/webserver/views.py:926
 msgid "Got settings from"
 msgstr "Sai asetukset"
 
-#: sickrage/core/webserver/views.py:942
+#: sickrage/core/webserver/views.py:931
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Epäonnistui! Varmista, että Popcorn NMJ on palvelimessa ja. (ks. yksityiskohtaiset tiedot kirjaa & virheet-> Debug)"
 
-#: sickrage/core/webserver/views.py:970
+#: sickrage/core/webserver/views.py:959
 msgid "Trakt Authorized"
 msgstr "Trakt lupa"
 
-#: sickrage/core/webserver/views.py:971
+#: sickrage/core/webserver/views.py:960
 msgid "Trakt Not Authorized!"
 msgstr "Trakt saa!"
 
-#: sickrage/core/webserver/views.py:998
+#: sickrage/core/webserver/views.py:987
 msgid "Test email sent successfully! Check inbox."
 msgstr "Testaa sähköpostiviesti lähetettiin onnistuneesti! Ruudullinen luontainen."
 
-#: sickrage/core/webserver/views.py:1000
+#: sickrage/core/webserver/views.py:989
 #, python-format
 msgid "ERROR: %s"
 msgstr "VIRHE: %s"
 
-#: sickrage/core/webserver/views.py:1007
+#: sickrage/core/webserver/views.py:996
 msgid "Test NMA notice sent successfully"
 msgstr "Testi NMA ilmoitus lähetetty onnistuneesti"
 
-#: sickrage/core/webserver/views.py:1009
+#: sickrage/core/webserver/views.py:998
 msgid "Test NMA notice failed"
 msgstr "Testi NMA ilmoitus epäonnistui"
 
-#: sickrage/core/webserver/views.py:1015
+#: sickrage/core/webserver/views.py:1004
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot ilmoitus onnistui. Tarkista Pushalot asiakkaasi varmistaa se toimi"
 
-#: sickrage/core/webserver/views.py:1017
+#: sickrage/core/webserver/views.py:1006
 msgid "Error sending Pushalot notification"
 msgstr "Virhe lähetettäessä Pushalot ilmoitus"
 
-#: sickrage/core/webserver/views.py:1023
+#: sickrage/core/webserver/views.py:1012
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet ilmoitus onnistui. Tarkista laitteen varmistaa se toimi"
 
-#: sickrage/core/webserver/views.py:1025
+#: sickrage/core/webserver/views.py:1014
 msgid "Error sending Pushbullet notification"
 msgstr "Virhe lähetettäessä Pushbullet ilmoitus"
 
-#: sickrage/core/webserver/views.py:1033
+#: sickrage/core/webserver/views.py:1022
 msgid "Error getting Pushbullet devices"
 msgstr "Virhe haettaessa Pushbullet laitteet"
 
-#: sickrage/core/webserver/views.py:1063
+#: sickrage/core/webserver/views.py:1052
 msgid "Shutting down"
 msgstr "Sammuttaminen"
 
-#: sickrage/core/webserver/views.py:1063
+#: sickrage/core/webserver/views.py:1052
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE suljetaan"
 
-#: sickrage/core/webserver/views.py:1073
+#: sickrage/core/webserver/views.py:1062
 msgid "Restarting"
 msgstr "Käynnistäminen uudelleen"
 
-#: sickrage/core/webserver/views.py:1073
+#: sickrage/core/webserver/views.py:1062
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE käynnistetään"
 
-#: sickrage/core/webserver/views.py:1091
+#: sickrage/core/webserver/views.py:1080
 msgid "No new updates!"
 msgstr "Ei uusia päivityksiä!"
 
-#: sickrage/core/webserver/views.py:1103
+#: sickrage/core/webserver/views.py:1092
 msgid "Update Failed"
 msgstr "Päivitys epäonnistui"
 
-#: sickrage/core/webserver/views.py:1104
+#: sickrage/core/webserver/views.py:1093
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Päivitys ei onnistunut, ei uudelleenkäynnistyksen. Saat lisätietoja lokista."
 
-#: sickrage/core/webserver/views.py:1109
+#: sickrage/core/webserver/views.py:1098
 msgid "Successfully found {path}"
 msgstr "Onnistuneesti löytyi {path}"
 
-#: sickrage/core/webserver/views.py:1111
+#: sickrage/core/webserver/views.py:1100
 msgid "Failed to find {path}"
 msgstr "Ei löytynyt {path}"
 
-#: sickrage/core/webserver/views.py:1114
+#: sickrage/core/webserver/views.py:1103
 msgid "Installing SiCKRAGE requirements"
 msgstr "Asentaminen SiCKRAGE vaatimukset"
 
-#: sickrage/core/webserver/views.py:1116
+#: sickrage/core/webserver/views.py:1105
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "Ei voitu asentaa SiCKRAGE vaatimukset"
 
-#: sickrage/core/webserver/views.py:1118
+#: sickrage/core/webserver/views.py:1107
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "Asennettu SiCKRAGE vaatimukset!"
 
-#: sickrage/core/webserver/views.py:1124
+#: sickrage/core/webserver/views.py:1113
 msgid "Checking out branch: "
 msgstr "Tarkkailun haara: "
 
-#: sickrage/core/webserver/views.py:1126
+#: sickrage/core/webserver/views.py:1115
 msgid "Branch checkout successful, restarting: "
 msgstr "Haara kassalle onnistunut käynnistäminen uudelleen: "
 
-#: sickrage/core/webserver/views.py:1129
+#: sickrage/core/webserver/views.py:1118
 msgid "Already on branch: "
 msgstr "Jo olevien haara: "
 
-#: sickrage/core/webserver/views.py:1135 sickrage/core/webserver/views.py:1140
-#: sickrage/core/webserver/views.py:1321 sickrage/core/webserver/views.py:1330
-#: sickrage/core/webserver/views.py:1535 sickrage/core/webserver/views.py:1540
-#: sickrage/core/webserver/views.py:1553 sickrage/core/webserver/views.py:1558
-#: sickrage/core/webserver/views.py:1580 sickrage/core/webserver/views.py:1585
-#: sickrage/core/webserver/views.py:1598 sickrage/core/webserver/views.py:1603
-#: sickrage/core/webserver/views.py:1619 sickrage/core/webserver/views.py:1624
-#: sickrage/core/webserver/views.py:1697 sickrage/core/webserver/views.py:1700
-#: sickrage/core/webserver/views.py:1704 sickrage/core/webserver/views.py:1706
-#: sickrage/core/webserver/views.py:1709 sickrage/core/webserver/views.py:1728
-#: sickrage/core/webserver/views.py:1746 sickrage/core/webserver/views.py:1749
-#: sickrage/core/webserver/views.py:1754 sickrage/core/webserver/views.py:1757
-#: sickrage/core/webserver/views.py:1762 sickrage/core/webserver/views.py:1764
-#: sickrage/core/webserver/views.py:1767 sickrage/core/webserver/views.py:1790
-#: sickrage/core/webserver/views.py:1891 sickrage/core/webserver/views.py:1896
-#: sickrage/core/webserver/views.py:1899 sickrage/core/webserver/views.py:1942
-#: sickrage/core/webserver/views.py:1948 sickrage/core/webserver/views.py:1951
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:1124 sickrage/core/webserver/views.py:1129
+#: sickrage/core/webserver/views.py:1310 sickrage/core/webserver/views.py:1319
+#: sickrage/core/webserver/views.py:1524 sickrage/core/webserver/views.py:1529
+#: sickrage/core/webserver/views.py:1542 sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1569 sickrage/core/webserver/views.py:1574
+#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1592
+#: sickrage/core/webserver/views.py:1608 sickrage/core/webserver/views.py:1613
+#: sickrage/core/webserver/views.py:1686 sickrage/core/webserver/views.py:1689
+#: sickrage/core/webserver/views.py:1693 sickrage/core/webserver/views.py:1695
+#: sickrage/core/webserver/views.py:1698 sickrage/core/webserver/views.py:1717
+#: sickrage/core/webserver/views.py:1735 sickrage/core/webserver/views.py:1738
+#: sickrage/core/webserver/views.py:1743 sickrage/core/webserver/views.py:1746
+#: sickrage/core/webserver/views.py:1751 sickrage/core/webserver/views.py:1753
+#: sickrage/core/webserver/views.py:1756 sickrage/core/webserver/views.py:1779
+#: sickrage/core/webserver/views.py:1880 sickrage/core/webserver/views.py:1885
+#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1931
+#: sickrage/core/webserver/views.py:1937 sickrage/core/webserver/views.py:1940
+#: sickrage/core/webserver/views.py:4925
 msgid "Error"
 msgstr "Virhe"
 
-#: sickrage/core/webserver/views.py:1135 sickrage/core/webserver/views.py:1535
-#: sickrage/core/webserver/views.py:1553 sickrage/core/webserver/views.py:1580
-#: sickrage/core/webserver/views.py:1598 sickrage/core/webserver/views.py:1619
+#: sickrage/core/webserver/views.py:1124 sickrage/core/webserver/views.py:1524
+#: sickrage/core/webserver/views.py:1542 sickrage/core/webserver/views.py:1569
+#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1608
 msgid "Invalid show ID"
 msgstr "Virheellinen osoittaa tunnus"
 
-#: sickrage/core/webserver/views.py:1140 sickrage/core/webserver/views.py:1896
-#: sickrage/core/webserver/views.py:1947
+#: sickrage/core/webserver/views.py:1129 sickrage/core/webserver/views.py:1885
+#: sickrage/core/webserver/views.py:1936
 msgid "Show not in show list"
 msgstr "Näytä ei näytä luettelossa"
 
-#: sickrage/core/webserver/views.py:1156
+#: sickrage/core/webserver/views.py:1145
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Tämä show on parhaillaan ladataan - tiedot alla on epätäydellinen."
 
-#: sickrage/core/webserver/views.py:1159
+#: sickrage/core/webserver/views.py:1148
 msgid "The information on this page is in the process of being updated."
 msgstr "Tieto tällä sivulla parhaillaan päivitetään."
 
-#: sickrage/core/webserver/views.py:1162
+#: sickrage/core/webserver/views.py:1151
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Alla jaksot ovat tällä hetkellä päivittämisen levyltä"
 
-#: sickrage/core/webserver/views.py:1165
+#: sickrage/core/webserver/views.py:1154
 msgid "Currently downloading subtitles for this show"
 msgstr "Tällä hetkellä ladata tekstityksiä tähän näyttelyyn"
 
-#: sickrage/core/webserver/views.py:1168
+#: sickrage/core/webserver/views.py:1157
 msgid "This show is queued to be refreshed."
 msgstr "Tämä show on jonossa päivitetään."
 
-#: sickrage/core/webserver/views.py:1171
+#: sickrage/core/webserver/views.py:1160
 msgid "This show is queued and awaiting an update."
 msgstr "Tämä show on jonossa ja odottaa päivitystä."
 
-#: sickrage/core/webserver/views.py:1174
+#: sickrage/core/webserver/views.py:1163
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Tämä show on jonossa ja odottaa tekstitys Lataa."
 
-#: sickrage/core/webserver/views.py:1179
+#: sickrage/core/webserver/views.py:1168
 msgid "Resume"
 msgstr "Jatka"
 
-#: sickrage/core/webserver/views.py:1187
+#: sickrage/core/webserver/views.py:1176
 msgid "Re-scan files"
 msgstr "Uudelleen scan tiedostot"
 
-#: sickrage/core/webserver/views.py:1189
+#: sickrage/core/webserver/views.py:1178
 msgid "Full Update"
 msgstr "Täysi päivitys"
 
-#: sickrage/core/webserver/views.py:1193
+#: sickrage/core/webserver/views.py:1182
 msgid "Update show in KODI"
 msgstr "Päivitys Näytä KODI"
 
-#: sickrage/core/webserver/views.py:1196
+#: sickrage/core/webserver/views.py:1185
 msgid "Update show in Emby"
 msgstr "Päivitys Näytä Emby"
 
-#: sickrage/core/webserver/views.py:1198 sickrage/core/webserver/views.py:1933
-#: sickrage/core/webserver/views.py:1934
+#: sickrage/core/webserver/views.py:1187 sickrage/core/webserver/views.py:1922
+#: sickrage/core/webserver/views.py:1923
 msgid "Preview Rename"
 msgstr "Esikatselu nimeä"
 
-#: sickrage/core/webserver/views.py:1204
+#: sickrage/core/webserver/views.py:1193
 msgid "Download Subtitles"
 msgstr "Lataa tekstitykset"
 
-#: sickrage/core/webserver/views.py:1317
+#: sickrage/core/webserver/views.py:1306
 msgid "Invalid show ID: "
 msgstr "Virheellinen Näytä tunnus: "
 
-#: sickrage/core/webserver/views.py:1326
+#: sickrage/core/webserver/views.py:1315
 msgid "Unable to find the specified show: "
 msgstr "Ei löydy määritelty: "
 
-#: sickrage/core/webserver/views.py:1346
+#: sickrage/core/webserver/views.py:1335
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "Pääse hiljentymiskokous Fansub ryhmien AniDB."
 
+#: sickrage/core/webserver/views.py:1351 sickrage/core/webserver/views.py:1352
 #: sickrage/core/webserver/views.py:1362 sickrage/core/webserver/views.py:1363
-#: sickrage/core/webserver/views.py:1373 sickrage/core/webserver/views.py:1374
 msgid "Edit Show"
 msgstr "Muokkaa Näytä"
 
-#: sickrage/core/webserver/views.py:1456
+#: sickrage/core/webserver/views.py:1445
 msgid "Unable to refresh this show: {}"
 msgstr "Ei voi päivittää tämän Näytä: {}"
 
-#: sickrage/core/webserver/views.py:1488
+#: sickrage/core/webserver/views.py:1477
 msgid "Unable to refresh this show:{}"
 msgstr "Ei voi päivittää tämän osoittavat :{}"
 
-#: sickrage/core/webserver/views.py:1494
+#: sickrage/core/webserver/views.py:1483
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Kansion %s ei sisällä tvshow.nfo - kopioida tiedostot tähän kansioon, ennen kuin muutat SiCKRAGE hakemistoon."
 
-#: sickrage/core/webserver/views.py:1506 sickrage/core/webserver/views.py:3411
+#: sickrage/core/webserver/views.py:1495 sickrage/core/webserver/views.py:3400
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1513
+#: sickrage/core/webserver/views.py:1502
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Kykenisi pakottamaan päivityksen kohtaus poikkeuksia Show."
 
-#: sickrage/core/webserver/views.py:1520
+#: sickrage/core/webserver/views.py:1509
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "Kykenisi pakottamaan päivityksen kohtaus numerointia show."
 
-#: sickrage/core/webserver/views.py:1527 sickrage/core/webserver/views.py:3336
+#: sickrage/core/webserver/views.py:1516 sickrage/core/webserver/views.py:3325
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} tallennettaessa muutoksia:"
 
-#: sickrage/core/webserver/views.py:1540 sickrage/core/webserver/views.py:1558
-#: sickrage/core/webserver/views.py:1585 sickrage/core/webserver/views.py:1603
-#: sickrage/core/webserver/views.py:1624
+#: sickrage/core/webserver/views.py:1529 sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1574 sickrage/core/webserver/views.py:1592
+#: sickrage/core/webserver/views.py:1613
 msgid "Unable to find the specified show"
 msgstr "Ei löydy määritelty"
 
-#: sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1536
 #, python-format
 msgid "%s has been %s"
 msgstr "%s on ollut %s"
 
-#: sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1536
 msgid "resumed"
 msgstr "jatkettiin"
 
-#: sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1536
 msgid "paused"
 msgstr "keskeytetty"
 
-#: sickrage/core/webserver/views.py:1563
+#: sickrage/core/webserver/views.py:1552
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s on ollut %s %s"
 
-#: sickrage/core/webserver/views.py:1566
+#: sickrage/core/webserver/views.py:1555
 msgid "deleted"
 msgstr "poistettu"
 
-#: sickrage/core/webserver/views.py:1566
+#: sickrage/core/webserver/views.py:1555
 msgid "trashed"
 msgstr "roskakoriin"
 
-#: sickrage/core/webserver/views.py:1567
+#: sickrage/core/webserver/views.py:1556
 msgid "(media untouched)"
 msgstr "(media koskematon)"
 
-#: sickrage/core/webserver/views.py:1567
+#: sickrage/core/webserver/views.py:1556
 msgid "(with all related media)"
 msgstr "(ja kaikki siihen liittyvät media)"
 
-#: sickrage/core/webserver/views.py:1571
+#: sickrage/core/webserver/views.py:1560
 msgid "Unable to delete this show."
 msgstr "Ei voi poistaa tämä show."
 
-#: sickrage/core/webserver/views.py:1590
+#: sickrage/core/webserver/views.py:1579
 msgid "Unable to refresh this show."
 msgstr "Ei voi päivittää tämän osoittavat."
 
-#: sickrage/core/webserver/views.py:1609
+#: sickrage/core/webserver/views.py:1598
 msgid "Unable to update this show."
 msgstr "Ei voi päivittää tämän osoittavat."
 
-#: sickrage/core/webserver/views.py:1648
+#: sickrage/core/webserver/views.py:1637
 msgid "Library update command sent to KODI host(s): "
 msgstr "Kirjasto update-komennolla lähetetään KODI isäntä (t): "
 
-#: sickrage/core/webserver/views.py:1650
+#: sickrage/core/webserver/views.py:1639
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Voi ottaa yhteyttä KODI-isäntien: "
 
-#: sickrage/core/webserver/views.py:1660
+#: sickrage/core/webserver/views.py:1649
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Kirjasto update-komennolla lähetetään Plex joukkoviestimet tarjoilija isäntä: "
 
-#: sickrage/core/webserver/views.py:1664
+#: sickrage/core/webserver/views.py:1653
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Voi ottaa yhteyttä Plex joukkoviestimet tarjoilija isäntä: "
 
-#: sickrage/core/webserver/views.py:1676
+#: sickrage/core/webserver/views.py:1665
 msgid "Library update command sent to Emby host: "
 msgstr "Kirjasto päivityskomennolla lähetti Emby isäntä: "
 
-#: sickrage/core/webserver/views.py:1679
+#: sickrage/core/webserver/views.py:1668
 msgid "Unable to contact Emby host: "
 msgstr "Voi ottaa yhteyttä Emby isäntä: "
 
-#: sickrage/core/webserver/views.py:1689
+#: sickrage/core/webserver/views.py:1678
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Synkronointi Trakt SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1695 sickrage/core/webserver/views.py:1744
-#: sickrage/core/webserver/views.py:1941
+#: sickrage/core/webserver/views.py:1684 sickrage/core/webserver/views.py:1733
+#: sickrage/core/webserver/views.py:1930
 msgid "You must specify a show and at least one episode"
 msgstr "Määritä Näytä ja vähintään yksi episodi"
 
-#: sickrage/core/webserver/views.py:1752
+#: sickrage/core/webserver/views.py:1741
 msgid "Invalid status"
 msgstr "Virheellisen tilan"
 
-#: sickrage/core/webserver/views.py:1847
+#: sickrage/core/webserver/views.py:1836
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Ruuhkan automaattisesti alku seuraavat vuodenaikaa "
 
-#: sickrage/core/webserver/views.py:1854 sickrage/core/webserver/views.py:1874
+#: sickrage/core/webserver/views.py:1843 sickrage/core/webserver/views.py:1863
 msgid "Season "
 msgstr "Kausi "
 
-#: sickrage/core/webserver/views.py:1861
+#: sickrage/core/webserver/views.py:1850
 msgid "Backlog started"
 msgstr "Tilauskanta alkoi"
 
-#: sickrage/core/webserver/views.py:1867
+#: sickrage/core/webserver/views.py:1856
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "Yritetään uudelleen Etsi aloitettiin automaattisesti seuraavan kauden "
 
-#: sickrage/core/webserver/views.py:1881
+#: sickrage/core/webserver/views.py:1870
 msgid "Retry Search started"
 msgstr "Yritä uudelleen haku alkoi"
 
-#: sickrage/core/webserver/views.py:1891
+#: sickrage/core/webserver/views.py:1880
 msgid "You must specify a show"
 msgstr "Määritä Näytä"
 
-#: sickrage/core/webserver/views.py:1899 sickrage/core/webserver/views.py:1951
+#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1940
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "Jaksoa ei voi nimetä uudelleen, kun Näytä dir puuttuu."
 
-#: sickrage/core/webserver/views.py:2086
+#: sickrage/core/webserver/views.py:2075
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Uusi otsikko ladata: %s"
 
-#: sickrage/core/webserver/views.py:2088
+#: sickrage/core/webserver/views.py:2077
 msgid "No subtitles downloaded"
 msgstr "Ei tekstitystä ladata"
 
-#: sickrage/core/webserver/views.py:2210 sickrage/core/webserver/views.py:2214
+#: sickrage/core/webserver/views.py:2199 sickrage/core/webserver/views.py:2203
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2210
+#: sickrage/core/webserver/views.py:2199
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2214
+#: sickrage/core/webserver/views.py:2203
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2279
+#: sickrage/core/webserver/views.py:2268
 msgid "Postprocessing results"
 msgstr "Jälkikäsittely tulokset"
 
-#: sickrage/core/webserver/views.py:2339
+#: sickrage/core/webserver/views.py:2328
 msgid "No folders selected."
 msgstr "Yhtään kansiota ei ole valittu."
 
-#: sickrage/core/webserver/views.py:2475 sickrage/core/webserver/views.py:2476
+#: sickrage/core/webserver/views.py:2464 sickrage/core/webserver/views.py:2465
 msgid "New Show"
 msgstr "Uusi Show"
 
-#: sickrage/core/webserver/views.py:2540 sickrage/core/webserver/views.py:2541
+#: sickrage/core/webserver/views.py:2529 sickrage/core/webserver/views.py:2530
 msgid "Existing Show"
 msgstr "Nykyisten Näytä"
 
-#: sickrage/core/webserver/views.py:2582 sickrage/core/webserver/views.py:2724
+#: sickrage/core/webserver/views.py:2571 sickrage/core/webserver/views.py:2713
 msgid "Adding Show"
 msgstr "Lisäämällä Näytä"
 
-#: sickrage/core/webserver/views.py:2582 sickrage/core/webserver/views.py:2724
+#: sickrage/core/webserver/views.py:2571 sickrage/core/webserver/views.py:2713
 msgid "Adding the specified show into "
 msgstr "Lisäämällä määritetty Näytä osaksi "
 
-#: sickrage/core/webserver/views.py:2585
+#: sickrage/core/webserver/views.py:2574
 msgid "No root directories setup, please go back and add one."
 msgstr "Ei ole päähakemistot asetukset, palaa takaisin ja lisää."
 
-#: sickrage/core/webserver/views.py:2636
+#: sickrage/core/webserver/views.py:2625
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Tuntematon virhe. Ei voi lisätä Näytä koska ongelma Näytä valinta."
 
-#: sickrage/core/webserver/views.py:2660
+#: sickrage/core/webserver/views.py:2649
 msgid "Folder "
 msgstr "Kansio "
 
-#: sickrage/core/webserver/views.py:2660
+#: sickrage/core/webserver/views.py:2649
 msgid " exists already"
 msgstr " on jo olemassa"
 
-#: sickrage/core/webserver/views.py:2672
+#: sickrage/core/webserver/views.py:2661
 msgid "Unable to create the folder , can't add the show"
 msgstr "Ei voi luoda kansiota, ei voi lisätä show"
 
-#: sickrage/core/webserver/views.py:2799
+#: sickrage/core/webserver/views.py:2788
 msgid "Shows Added"
 msgstr "Näyttää lisätty"
 
-#: sickrage/core/webserver/views.py:2800
+#: sickrage/core/webserver/views.py:2789
 msgid "Automatically added "
 msgstr "Lisätään automaattisesti "
 
-#: sickrage/core/webserver/views.py:2801
+#: sickrage/core/webserver/views.py:2790
 msgid " from their existing metadata files"
 msgstr " olevista metatieto-tiedostoista"
 
-#: sickrage/core/webserver/views.py:2983 sickrage/core/webserver/views.py:2984
+#: sickrage/core/webserver/views.py:2972 sickrage/core/webserver/views.py:2973
 msgid "Missing Subtitles"
 msgstr "Puuttuu tekstitykset"
 
-#: sickrage/core/webserver/views.py:3419
+#: sickrage/core/webserver/views.py:3408
 msgid "Unable to refresh show "
 msgstr "Ei voi päivittää Näytä "
 
-#: sickrage/core/webserver/views.py:3430
+#: sickrage/core/webserver/views.py:3419
 msgid "Errors encountered"
 msgstr "Virheet"
 
-#: sickrage/core/webserver/views.py:3436
+#: sickrage/core/webserver/views.py:3425
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3441
+#: sickrage/core/webserver/views.py:3430
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3446
+#: sickrage/core/webserver/views.py:3435
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3451
+#: sickrage/core/webserver/views.py:3440
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3456
+#: sickrage/core/webserver/views.py:3445
 msgid "The following actions were queued:"
 msgstr "Seuraavat toimet jonossa:"
 
-#: sickrage/core/webserver/views.py:3525
+#: sickrage/core/webserver/views.py:3514
 msgid "Backlog search started"
 msgstr "Ruuhkan haku alkoi"
 
-#: sickrage/core/webserver/views.py:3533
+#: sickrage/core/webserver/views.py:3522
 msgid "Daily search started"
 msgstr "Päivittäin haku alkoi"
 
-#: sickrage/core/webserver/views.py:3541
+#: sickrage/core/webserver/views.py:3530
 msgid "Find propers search started"
 msgstr "Etsi propers haku alkoi"
 
-#: sickrage/core/webserver/views.py:3652
+#: sickrage/core/webserver/views.py:3641
 msgid "History cleared"
 msgstr "Historiatiedot tyhjennettyä"
 
-#: sickrage/core/webserver/views.py:3659
+#: sickrage/core/webserver/views.py:3648
 msgid "Removed history entries older than 30 days"
 msgstr "Poistaa sivuhistorian yli 30 päivää vanhat"
 
-#: sickrage/core/webserver/views.py:3674 sickrage/core/webserver/views.py:3889
+#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:3878
 msgid "Backup/Restore"
 msgstr "Backup/Restore"
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:3691
+#: sickrage/core/webserver/views.py:3679 sickrage/core/webserver/views.py:3680
 msgid "Configuration"
 msgstr "Kokoonpano"
 
-#: sickrage/core/webserver/views.py:3699
+#: sickrage/core/webserver/views.py:3688
 msgid "Configuration Reset to Defaults"
 msgstr "Kokoonpano Palauta oletukset"
 
-#: sickrage/core/webserver/views.py:3712
+#: sickrage/core/webserver/views.py:3701
 msgid "Config - General"
 msgstr "Config - General"
 
-#: sickrage/core/webserver/views.py:3713
+#: sickrage/core/webserver/views.py:3702
 msgid "General Configuration"
 msgstr "Yleiset asetukset"
 
-#: sickrage/core/webserver/views.py:3871 sickrage/core/webserver/views.py:4033
-#: sickrage/core/webserver/views.py:4164 sickrage/core/webserver/views.py:4385
-#: sickrage/core/webserver/views.py:4719 sickrage/core/webserver/views.py:4800
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:3860 sickrage/core/webserver/views.py:4022
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4374
+#: sickrage/core/webserver/views.py:4708 sickrage/core/webserver/views.py:4789
+#: sickrage/core/webserver/views.py:4828
 msgid "Error(s) Saving Configuration"
 msgstr "Virheet tallennetaan kokoonpano"
 
-#: sickrage/core/webserver/views.py:3873
+#: sickrage/core/webserver/views.py:3862
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:3888
+#: sickrage/core/webserver/views.py:3877
 msgid "Config - Backup/Restore"
 msgstr "Config - Backup/Restore"
 
-#: sickrage/core/webserver/views.py:3901
+#: sickrage/core/webserver/views.py:3890
 msgid "Backup SUCCESSFUL"
 msgstr "Varmuuskopiointi onnistui"
 
-#: sickrage/core/webserver/views.py:3903
+#: sickrage/core/webserver/views.py:3892
 msgid "Backup FAILED!"
 msgstr "Varmuuskopiointi epäonnistui!"
 
-#: sickrage/core/webserver/views.py:3905
+#: sickrage/core/webserver/views.py:3894
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Sinun täytyy valita kansion varmuuskopion ensin!"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3913
 msgid "Successfully extracted restore files to "
 msgstr "Onnistuneesti puretut palauttaa tiedostot "
 
-#: sickrage/core/webserver/views.py:3925
+#: sickrage/core/webserver/views.py:3914
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage palauttaminen loppuun."
 
-#: sickrage/core/webserver/views.py:3927
+#: sickrage/core/webserver/views.py:3916
 msgid "Restore FAILED"
 msgstr "Palautus epäonnistui"
 
-#: sickrage/core/webserver/views.py:3929
+#: sickrage/core/webserver/views.py:3918
 msgid "You need to select a backup file to restore!"
 msgstr "Sinun täytyy valita varmuuskopiotiedoston palauttaminen!"
 
-#: sickrage/core/webserver/views.py:3945
+#: sickrage/core/webserver/views.py:3934
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3971 sickrage/core/webserver/views.py:3974
-#: sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:3960 sickrage/core/webserver/views.py:3963
+#: sickrage/core/webserver/views.py:4068
 msgid "Unable to create directory "
 msgstr "Hakemistoa ei voi luoda "
 
-#: sickrage/core/webserver/views.py:3971 sickrage/core/webserver/views.py:3974
-#: sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:3960 sickrage/core/webserver/views.py:3963
+#: sickrage/core/webserver/views.py:4068
 msgid ", dir not changed."
 msgstr ", dir ei muuteta."
 
-#: sickrage/core/webserver/views.py:4035
+#: sickrage/core/webserver/views.py:4024
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4050
+#: sickrage/core/webserver/views.py:4039
 msgid "Config - Post Processing"
 msgstr "Config - jälkikäsittelyssä"
 
-#: sickrage/core/webserver/views.py:4090
+#: sickrage/core/webserver/views.py:4079
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Purkaminen ei tueta, tehdä kykenemättömäksi Pura asetus"
 
-#: sickrage/core/webserver/views.py:4125 sickrage/core/webserver/views.py:4136
+#: sickrage/core/webserver/views.py:4114 sickrage/core/webserver/views.py:4125
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Yritit säästää virheellinen anime nimeäminen config, ei nimeäminen asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4127 sickrage/core/webserver/views.py:4138
+#: sickrage/core/webserver/views.py:4116 sickrage/core/webserver/views.py:4127
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Kokeillut säästö virheellinen nimeäminen config ei nimeäminen asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4144
+#: sickrage/core/webserver/views.py:4133
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Yritit säästää ei kelpaa ilman päivämäärä nimeäminen config, ei ilman päivämäärä-asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4150
+#: sickrage/core/webserver/views.py:4139
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Yritit säästää virheellinen urheilu nimeäminen config, ei urheilu-asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4166
+#: sickrage/core/webserver/views.py:4155
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4245
+#: sickrage/core/webserver/views.py:4234
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4286
+#: sickrage/core/webserver/views.py:4275
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Tarjoajan nimeä ei ole määritetty"
 
-#: sickrage/core/webserver/views.py:4288
+#: sickrage/core/webserver/views.py:4277
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ei ole palveluntarjoajan URL-osoite"
 
-#: sickrage/core/webserver/views.py:4290
+#: sickrage/core/webserver/views.py:4279
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Ei ole määritetty toimittaja Api-avain"
 
-#: sickrage/core/webserver/views.py:4387
+#: sickrage/core/webserver/views.py:4376
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4402
+#: sickrage/core/webserver/views.py:4391
 msgid "Config - Notifications"
 msgstr "Config - ilmoitukset"
 
-#: sickrage/core/webserver/views.py:4721
+#: sickrage/core/webserver/views.py:4710
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4736
+#: sickrage/core/webserver/views.py:4725
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4802
+#: sickrage/core/webserver/views.py:4791
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4806
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4841
+#: sickrage/core/webserver/views.py:4830
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4856
+#: sickrage/core/webserver/views.py:4845
 msgid "Config - Quality Settings"
 msgstr "Config - laatuasetuksia"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4857
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[QUALITY SETTINGS] Asetukset tallennettu"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4870
 msgid "Clear Errors"
 msgstr "Tyhjennä virheet"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4873
 msgid "Clear Warnings"
 msgstr "Selkeitä varoituksia"
 
-#: sickrage/core/webserver/views.py:4925
+#: sickrage/core/webserver/views.py:4914
 msgid "Daily Searcher"
 msgstr "Päivittäinen Searcher"
 
-#: sickrage/core/webserver/views.py:4927
+#: sickrage/core/webserver/views.py:4916
 msgid "Show Updater"
 msgstr "Näytä Updater"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4917
 msgid "Check Version"
 msgstr "Tarkista versio"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4919
 msgid "Search Queue"
 msgstr "Etsi jonoon"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4920
 msgid "Find Propers"
 msgstr "Etsi Propers"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4921
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4922
 msgid "Find Subtitles"
 msgstr "Löytää tekstityksen"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4924
 msgid "Event"
 msgstr "Tapahtuma"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4926
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4927
 msgid "Thread"
 msgstr "Thread"
 
