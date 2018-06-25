@@ -57,12 +57,12 @@ class API(object):
             elif resp.status_code >= 400:
                 msg = resp.json()['message']
                 if 'Token is expired' in msg and not self.token_refreshed:
-                    self.token_refreshed = True
                     raise TokenExpiredError
                 raise error(msg)
 
             return resp.json()
         except TokenExpiredError:
+            self.token_refreshed = True
             self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
             return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
