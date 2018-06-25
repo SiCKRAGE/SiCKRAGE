@@ -19,19 +19,12 @@ class API(object):
         self.client_secret = sickrage.app.oidc_client._client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
         self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
-        self._session = None
+        self.token_refreshed = False
         self._token = {}
 
     @property
     def session(self):
-        if self._session is None:
-            self._session = OAuth2Session(self.client_id,
-                                          token=self.token,
-                                          auto_refresh_url=self.token_url,
-                                          auto_refresh_kwargs={'client_id': self.client_id,
-                                                               'client_secret': self.client_secret},
-                                          token_updater=self.token)
-        return self._session
+        return OAuth2Session(token=self.token)
 
     @property
     def token(self):
@@ -59,13 +52,21 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                raise unauthorized(resp.json()['message'])
+                msg = resp.json()['message']
+                raise unauthorized(msg)
             elif resp.status_code >= 400:
-                raise error(resp.json()['message'])
+                msg = resp.json()['message']
+                if 'Token is expired' in msg and not self.token_refreshed:
+                    self.token_refreshed = True
+                    raise TokenExpiredError
+                raise error(msg)
 
             return resp.json()
+        except TokenExpiredError:
+            self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
+            return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
-            sickrage.app.log.warning("SiCKRAGE username or password is incorrect, please try again")
+            sickrage.app.log.warning("SiCKRAGE token issue, please try logging out and back in again to the web-ui")
 
     @staticmethod
     def throttle_hook(response, **kwargs):
