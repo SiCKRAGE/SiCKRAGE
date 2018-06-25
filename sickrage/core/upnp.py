@@ -26,6 +26,7 @@ import ipaddress
 
 import sickrage
 import upnpclient
+from sickrage.core.helpers import get_lan_ip
 
 
 class UPNPClient(threading.Thread):
@@ -133,9 +134,10 @@ class UPNPClient(threading.Thread):
                 return device
 
     def _find_internal_ip_on_device_network(self, upnp_dev):
+        lan_ip = get_lan_ip()
         parsed_url = urlparse(upnp_dev.location)
         upnp_dev_net = ipaddress.ip_network(parsed_url.hostname + '/24', strict=False)
 
-        if ipaddress.ip_address(sickrage.app.config.web_host) in upnp_dev_net:
-            return sickrage.app.config.web_host
+        if ipaddress.ip_address(unicode(lan_ip)) in upnp_dev_net:
+            return lan_ip
         return None
