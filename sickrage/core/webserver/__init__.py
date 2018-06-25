@@ -81,8 +81,7 @@ class WebServer(object):
 
         # web root
         if sickrage.app.config.web_root:
-            sickrage.app.config.web_root = sickrage.app.config.web_root = (
-                    '/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
+            sickrage.app.config.web_root = sickrage.app.config.web_root = ('/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
 
         # api root
         self.api_root = r'%s/api/%s' % (sickrage.app.config.web_root, sickrage.app.config.api_key)
@@ -110,8 +109,12 @@ class WebServer(object):
                 # api
                 (r'%s(/?.*)' % self.api_root, ApiHandler),
 
-                # redirect to web root
-                (r"(?!%s)(.*)" % sickrage.app.config.web_root, RedirectHandler,
+                # redirect to web root to home
+                (r"(%s)" % sickrage.app.config.web_root, RedirectHandler,
+                 {"url": "%s/home" % sickrage.app.config.web_root}),
+
+                # redirect to add in missing web root
+                (r"(?!%s)/(.*)" % sickrage.app.config.web_root, RedirectHandler,
                  {"url": "%s/{0}" % sickrage.app.config.web_root}),
 
                 # api key
@@ -184,9 +187,8 @@ class WebServer(object):
             sickrage.app.log.info(
                 "SiCKRAGE :: DATABASE:[v{}]".format(sickrage.app.main_db.version))
             sickrage.app.log.info(
-                "SiCKRAGE :: URL:[{}://{}:{}/]".format(
-                    ('http', 'https')[sickrage.app.config.enable_https],
-                    sickrage.app.config.web_host, sickrage.app.config.web_port))
+                "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
+                    sickrage.app.config.web_host, sickrage.app.config.web_port, sickrage.app.config.web_root))
 
             # launch browser window
             if all([not sickrage.app.no_launch,

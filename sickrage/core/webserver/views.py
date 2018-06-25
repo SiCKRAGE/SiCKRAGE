@@ -106,10 +106,6 @@ class BaseHandler(RequestHandler):
     def get_user_locale(self):
         return tornado.locale.get(sickrage.app.config.gui_lang)
 
-    def prepare(self):
-        if not self.request.full_url().startswith(sickrage.app.config.web_root):
-            self.redirect("{}{}".format(sickrage.app.config.web_root, self.request.full_url()))
-
     def write_error(self, status_code, **kwargs):
         # handle 404 http errors
         if status_code == 404:
@@ -150,13 +146,6 @@ class BaseHandler(RequestHandler):
                                                  traceback=trace_info,
                                                  request=request_info,
                                                  webroot=sickrage.app.config.web_root))
-
-    def redirect(self, url, permanent=False, status=None):
-        if not url.startswith(sickrage.app.config.web_root):
-            url = sickrage.app.config.web_root + url
-            permanent = True
-
-        super(BaseHandler, self).redirect(url, permanent, status)
 
     def set_current_user(self, user, remember_me=False):
         self.set_secure_cookie('sickrage_user', user, expires_days=30 if remember_me else None)
@@ -259,8 +248,8 @@ class LoginHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LoginHandler, self).__init__(*args, **kwargs)
 
-    def get(self, *args, **kwargs):
-        redirect_uri = "{}://{}/login".format(self.request.protocol, self.request.host)
+    def prepare(self, *args, **kwargs):
+        redirect_uri = "{}://{}{}/login".format(self.request.protocol, self.request.host, sickrage.app.config.web_root)
 
         code = self.get_argument('code', False)
         if code:

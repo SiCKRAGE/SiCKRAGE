@@ -21,6 +21,15 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                            <i class="icons-sickrage icons-sickrage-keys"></i> ${_('SR App ID:')}
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
+                            ${sickrage.app.config.app_id}
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
@@ -31,7 +40,7 @@
                     % if sickrage.app.version_updater.updater.type == 'git':
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Commit:')}
+                                <i class="icons-sickrage icons-sickrage-commit"></i> ${_('SR Commit:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                                 ${sickrage.app.version_updater.version}
