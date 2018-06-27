@@ -353,6 +353,11 @@
                                 </li>
                                 % if current_user != True:
                                     <li>
+                                        <a href="${srWebRoot}/unlink" class="confirm logout">
+                                            <i class="fa fa-unlink"></i>&nbsp;${_('Unlink Account')}
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="${srWebRoot}/logout" class="confirm logout">
                                             <i class="fa fa-sign-out"></i>&nbsp;${_('Logout')}
                                         </a>

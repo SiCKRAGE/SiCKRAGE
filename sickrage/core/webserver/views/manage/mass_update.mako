@@ -75,32 +75,25 @@
                         </td>
                         <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_sports)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.is_sports)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_scene)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.is_scene)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.is_anime)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.is_anime)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[not bool(curShow.flatten_folders)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[not bool(curShow.flatten_folders)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.skip_downloaded)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.skip_downloaded)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.paused)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.paused)]}"></i>
                         </td>
                         <td align="center">
-                            <img src="${srWebRoot}/images/${('no16.png" alt="N"', 'yes16.png" alt="Y"')[bool(curShow.subtitles)]}"
-                                 width="16" height="16"/>
+                            <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(curShow.subtitles)]}"></i>
                         </td>
                         <td align="center">${statusStrings[curShow.default_ep_status]}</td>
                         <td align="center">${curShow.status}</td>

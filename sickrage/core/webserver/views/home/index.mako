@@ -465,8 +465,7 @@
 
                                 <td align="center">
                                     <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
-                                    <img src="${srWebRoot}/images/${('no16.png', 'yes16.png')[bool(paused)]}"
-                                         alt="${(_('No'), _('Yes'))[bool(paused)]}" width="16" height="16"/>
+                                    <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(paused)]}"></i>
                                 </td>
 
                                 <td align="center">

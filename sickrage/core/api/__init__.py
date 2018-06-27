@@ -46,6 +46,9 @@ class API(object):
     def register_appid(self, appid):
         self._request('POST', 'register-appid', json={'appid': appid})
 
+    def unregister_appid(self, appid):
+        self._request('POST', 'unregister-appid', json={'appid': appid})
+
     def _request(self, method, url, **kwargs):
         try:
             resp = self.session.request(method, urljoin(self.api_url, url), timeout=30,

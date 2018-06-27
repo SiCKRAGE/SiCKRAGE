@@ -107,7 +107,7 @@
                             % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
                                 <%
                                     cur_indexer = int(cur_result['indexer'])
-                                    run_time = int(cur_result['runtime'])
+                                    run_time = int(cur_result['runtime'] or 0)
 
                                     cur_ep_airdate = cur_result['localtime'].date()
                                     cur_ep_enddate = cur_result['localtime']
@@ -235,7 +235,7 @@
                     <%
                         cur_indexer = int(cur_result['indexer'])
 
-                        run_time = int(cur_result['runtime'])
+                        run_time = int(cur_result['runtime'] or 0)
                         cur_ep_airdate = cur_result['localtime'].date()
 
                         if run_time:
@@ -441,7 +441,7 @@
                                     % if not int(cur_result['paused']) or sickrage.app.config.coming_eps_display_paused:
 
                                         <% cur_indexer = int(cur_result['indexer']) %>
-                                        <% run_time = int(cur_result['runtime']) %>
+                                        <% run_time = int(cur_result['runtime'] or 0) %>
                                         <% airday = cur_result['localtime'].date() %>
 
                                         % if airday == day:

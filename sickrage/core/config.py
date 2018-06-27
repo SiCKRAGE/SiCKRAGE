@@ -37,7 +37,7 @@ from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
-from sickrage.core.helpers import makeDir, generateCookieSecret, auto_type, get_lan_ip, \
+from sickrage.core.helpers import makeDir, generate_secret, auto_type, get_lan_ip, \
     extract_zipfile, try_int, checkbox_to_value, generateApiKey, backupVersionedFile
 from sickrage.core.websession import WebSession
 
@@ -703,9 +703,9 @@ class Config(object):
                 'api_key': generateApiKey(),
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
-                'web_cookie_secret': generateCookieSecret(),
+                'web_cookie_secret': generate_secret(),
                 'ssl_verify': True,
-                'encryption_secret': generateCookieSecret(),
+                'encryption_secret': generate_secret(),
                 'enable_upnp': True,
                 'version_notify': True,
                 'web_root': '',
