@@ -55,12 +55,12 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                msg = resp.json()['message']
-                raise unauthorized(msg)
-            elif resp.status_code >= 400:
-                msg = resp.json()['message']
-                if 'Token is expired' in msg and not self.token_refreshed:
+                msg = resp.json()['error']['message']
+                if not self.token_refreshed:
                     raise TokenExpiredError
+                raise error(msg)
+            elif resp.status_code >= 400:
+                msg = resp.json()['error']['message']
                 raise error(msg)
 
             return resp.json()
