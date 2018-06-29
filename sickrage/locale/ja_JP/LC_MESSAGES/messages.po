@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-28 18:42-0700\n"
+"POT-Creation-Date: 2018-06-29 15:28-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
@@ -6126,53 +6126,53 @@ msgstr "ダウンロードが見つかりませんでした。"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "<i>%s</i> のダウンロードを見つけることができなかった"
 
-#: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2650
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2650
 #: sickrage/core/webserver/views.py:2662
 msgid "Unable to add show"
 msgstr "ショーを追加できません。"
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "おそらく間違った言語 {} には、{} でショーの名前がありません。.Nfo を削除し、適切な言語で手動で追加"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "ショー"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr "します。"
 
-#: sickrage/core/queues/show.py:308
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr "シーズン ・ エピソード データが、含まない。"
 
-#: sickrage/core/queues/show.py:317
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "ID {}、nfo ファイルを使用していないを使用して {} に {} でショーを見ることができません。.Nfo を削除し、もう一度手動で追加してみてください。"
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "追加できません。"
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr "エラーのため"
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "追加のエラーのため表示できません。"
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "スキップを表示します。"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "ショー"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr "既に表示リストは、します。"
 

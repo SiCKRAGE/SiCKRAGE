@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-28 18:42-0700\n"
+"POT-Creation-Date: 2018-06-29 15:28-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
@@ -6126,53 +6126,53 @@ msgstr "Ei latauksia ei löytynyt"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Löytänyt ladata <i>%s</i>"
 
-#: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2650
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2650
 #: sickrage/core/webserver/views.py:2662
 msgid "Unable to add show"
 msgstr "Ei voi lisätä Näytä"
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Näytä {} ei ole nimeä {}, luultavasti väärällä kielellä. Poista .nfo ja lisätä manuaalisesti oikeaan kieleen"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "Näytä "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " on "
 
-#: sickrage/core/queues/show.py:308
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " mutta ei sisällä kausi/episodi tietoja."
 
-#: sickrage/core/queues/show.py:317
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Ei voi katsoa Näytä jäsenen käyttäen tunnus {} käyttämättä NFO {} {}. Poista .nfo ja yritä lisätä manuaalisesti uudelleen."
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "Ei voi lisätä "
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " olevan virheen takia "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "Ei voi lisätä Näytä olevan virheen takia "
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "Näytä hotelli ohitetaan"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "Näytä "
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " on jo Näytä-luettelosta"
 

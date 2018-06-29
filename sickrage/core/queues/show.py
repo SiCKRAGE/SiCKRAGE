@@ -23,8 +23,6 @@ import os
 import time
 import traceback
 
-from oauthlib.oauth2 import MissingTokenError
-
 import sickrage
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.common import WANTED
@@ -573,9 +571,7 @@ class QueueItemUpdate(ShowQueueItem):
             sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
             self.show.load_imdb_info()
         except Exception as e:
-            sickrage.app.log.error(
-                "Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e))
-            sickrage.app.log.debug(traceback.format_exc())
+            sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e))
 
         # get episode list from DB
         DBEpList = self.show.loadEpisodesFromDB()
