@@ -159,7 +159,7 @@
                                     % if show.network and show.airs:
                                         <tr>
                                             <td class="showLegend">${_('Originally Airs:')}</td>
-                                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font> ", "")[tz_updater.test_timeformat(show.airs)]}
+                                            <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[tz_updater.test_timeformat(show.airs)]}
                                                 on ${show.network}</td>
                                         </tr>
                                     % elif show.network:
@@ -170,7 +170,7 @@
                                     % elif show.airs:
                                         <tr>
                                             <td class="showLegend">${_('Originally Airs:')}</td>
-                                            <td>${show.airs} ${("<font color='#FF0000'><b>(invalid Timeformat)</b></font>", "")[tz_updater.test_timeformat(show.airs)]}</td>
+                                            <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[tz_updater.test_timeformat(show.airs)]}</td>
                                         </tr>
                                     % endif
                                     <tr>
@@ -182,7 +182,13 @@
                                     <tr>
                                         <td class="showLegend">${_('Runtime:')}</td>
                                         <td>
-                                            <span>${show.runtime} ${_('minutes')}</span>
+                                            <span>
+                                                % if show.runtime:
+                                                    ${show.runtime} ${_('minutes')}
+                                                % else:
+                                                    <span style="color: red;"><b>${_('UNKNOWN')}</b></span>
+                                                % endif
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
@@ -247,17 +253,12 @@
                                         <td class="showLegend">${_('Default EP Status:')}</td>
                                         <td>${statusStrings[show.default_ep_status]}</td>
                                     </tr>
+                                <tr>
+                                    <td class="showLegend">${_('Location:')}</td>
                                     % if os.path.isdir(showLoc):
-                                        <tr>
-                                            <td class="showLegend">${_('Location:')}</td>
-                                            <td>${showLoc}</td>
-                                        </tr>
+                                        <td>${showLoc}</td>
                                     % else:
-                                        <tr>
-                                            <td class="showLegend"><span style="color: red;">${_('Location:')} </span>
-                                            </td>
-                                            <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
-                                        </tr>
+                                        <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
                                     % endif
                                     % if os.path.isdir(showLoc):
                                         <tr>
@@ -318,70 +319,44 @@
                                     % if sickrage.app.config.use_subtitles:
                                         <tr>
                                             <td class="showLegend">${_('Subtitles:')}</td>
-                                            <td><img
-                                                    src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles)]}"
-                                                    alt="${("N", "Y")[bool(show.subtitles)]}" width="16" height="16"/>
-                                            </td>
+                                            <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.subtitles)]}"></i></td>
                                         </tr>
                                     % endif
                                     <tr>
                                         <td class="showLegend">${_('Subtitles Metadata:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.subtitles_sr_metadata)]}"
-                                                alt="${("N", "Y")[bool(show.subtitles_sr_metadata)]}" width="16"
-                                                height="16"/>
-                                        </td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.subtitles_sr_metadata)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Season Folders:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"
-                                                alt=="${("N", "Y")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"
-                                                width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Paused:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.paused)]}"
-                                                alt="${("N", "Y")[bool(show.paused)]}" width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.paused)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Air-by-Date:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.air_by_date)]}"
-                                                alt="${("N", "Y")[bool(show.air_by_date)]}" width="16" height="16"/>
-                                        </td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.air_by_date)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Sports:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_sports)]}"
-                                                alt="${("N", "Y")[bool(show.is_sports)]}" width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.is_sports)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Anime:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.is_anime)]}"
-                                                alt="${("N", "Y")[bool(show.is_anime)]}" width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.is_anime)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('DVD Order:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.dvdorder)]}"
-                                                alt="${("N", "Y")[bool(show.dvdorder)]}" width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.dvdorder)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Scene Numbering:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.scene)]}"
-                                                alt="${("N", "Y")[bool(show.scene)]}" width="16" height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.scene)]}"></i></td>
                                     </tr>
                                     <tr>
                                         <td class="showLegend">${_('Skip Downloaded:')}</td>
-                                        <td><img
-                                                src="${srWebRoot}/images/${("no16.png", "yes16.png")[bool(show.skip_downloaded)]}"
-                                                alt="${("N", "Y")[bool(show.skip_downloaded)]}" width="16"
-                                                height="16"/></td>
+                                        <td><i class="fa ${("fa-times red-text", "fa-check green-text")[bool(show.skip_downloaded)]}"></i></td>
                                     </tr>
                                 </table>
                             </div>

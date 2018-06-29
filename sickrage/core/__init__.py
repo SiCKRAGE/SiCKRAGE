@@ -47,7 +47,7 @@ from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
-from sickrage.core.helpers import findCertainShow, generateCookieSecret, makeDir, get_lan_ip, restoreSR, \
+from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
     getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.logger import Logger
@@ -295,7 +295,7 @@ class Core(object):
             self.config.web_port = 8081
 
         if not self.config.web_cookie_secret:
-            self.config.web_cookie_secret = generateCookieSecret()
+            self.config.web_cookie_secret = generate_secret()
 
         # attempt to help prevent users from breaking links by using a bad url
         if not self.config.anon_redirect.endswith('?'):

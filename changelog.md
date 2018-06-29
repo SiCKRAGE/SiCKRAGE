@@ -1,6 +1,8 @@
 # Changelog
 
-- * 9f445ab - 2018-06-25: Release v9.3.47 
+- * ce61e99 - 2018-06-28: Release v9.3.48 
+- * b3ca706 - 2018-06-26: Minor updates to login handler Added ability to unlink account from app Fixed issue with scheduler view and empty show runtime Replaced all no16 and yes16 with font awesome equivalents 
+- * ecf829f - 2018-06-25: Release v9.3.47 
 - * 713cec3 - 2018-06-25: Updated requirements.txt to resolve Synology issues 
 - * 40ffc7a - 2018-06-25: Release v9.3.46 
 - * d272697 - 2018-06-25: Fixed token refresh issues for API 

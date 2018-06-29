@@ -36,7 +36,7 @@ from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode
+from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
@@ -147,14 +147,10 @@ class BaseHandler(RequestHandler):
                                                  request=request_info,
                                                  webroot=sickrage.app.config.web_root))
 
-    def set_current_user(self, user, remember_me=False):
-        self.set_secure_cookie('sickrage_user', user, expires_days=30 if remember_me else None)
-
     def get_current_user(self):
-        return self.get_secure_cookie('sickrage_user')
-
-    def clear_current_user(self):
-        self.clear_cookie('sickrage_user')
+        user = self.get_secure_cookie('sr_user')
+        if user:
+            return json_decode(user)
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -256,9 +252,11 @@ class LoginHandler(BaseHandler):
             API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
 
             try:
+                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
                 API().register_appid(sickrage.app.config.app_id)
-                self.set_current_user(json_encode(API().userinfo), True)
-            except Exception:
+                self.set_secure_cookie('sr_user', json_encode(user))
+                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+            except Exception as e:
                 return self.redirect('/logout')
 
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
@@ -274,10 +272,10 @@ class LogoutHandler(BaseHandler):
         super(LogoutHandler, self).__init__(*args, **kwargs)
 
     def prepare(self, *args, **kwargs):
-        if API().token:
-            sickrage.app.oidc_client.logout(API().token['refresh_token'])
+        if self.get_secure_cookie('sr_refresh_token'):
+            sickrage.app.oidc_client.logout(self.get_secure_cookie('sr_refresh_token'))
 
-        self.clear_current_user()
+        self.clear_all_cookies()
         return self.redirect('/login/')
 
 
@@ -507,6 +505,10 @@ class WebRoot(WebHandler):
 
     def getIndexerImage(self, indexerid):
         return indexerImage(id=indexerid, which="poster_thumb")
+
+    def unlink(self):
+        API().unregister_appid(sickrage.app.config.app_id)
+        return self.redirect('/logout/')
 
 
 @Route('/ui(/?.*)')
