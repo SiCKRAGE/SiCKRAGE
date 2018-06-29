@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-28 18:42-0700\n"
+"POT-Creation-Date: 2018-06-29 15:28-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hebrew\n"
@@ -6126,53 +6126,53 @@ msgstr "ללא הורדות נמצאו"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "לא יכולתי למצוא הורדה של <i>%s</i>"
 
-#: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2650
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2650
 #: sickrage/core/webserver/views.py:2662
 msgid "Unable to add show"
 msgstr "לא ניתן להוסיף הצג"
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "הצג ב- {} יש אין שם {}, כנראה בשפה הלא. למחוק. nfo ולהוסיף ידנית בשפה הנכונה"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "הצג "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " הוא על "
 
-#: sickrage/core/queues/show.py:308
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " אבל מכיל נתונים לא עונה, פרק."
 
-#: sickrage/core/queues/show.py:317
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "אין אפשרות לחפש את המופע ב- {} ב {} באמצעות מזהה {}, לא משתמש של NFO. למחוק. nfo, נסה להוסיף באופן ידני שוב."
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "לא ניתן להוסיף "
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " עקב שגיאה עם "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "לא ניתן להוסיף הצג עקב שגיאה עם "
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "הצג שהמערכת דילגה עליהם"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "בניו-יורק "
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " כבר נמצאת ברשימה הצג שלך"
 

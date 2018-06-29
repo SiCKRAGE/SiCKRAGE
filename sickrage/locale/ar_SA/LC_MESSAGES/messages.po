@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-28 18:42-0700\n"
+"POT-Creation-Date: 2018-06-29 15:28-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
@@ -6126,53 +6126,53 @@ msgstr "تم العثور على أية تنزيلات"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "لم أتمكن من العثور تحميل ل <i>%s</i>"
 
-#: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2650
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2650
 #: sickrage/core/webserver/views.py:2662
 msgid "Unable to add show"
 msgstr "غير قادر على إضافة عرض"
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "وتظهر في {} ليس له اسم في {}، ربما لغة خاطئة. حذف.nfo وإضافة يدوياً في اللغة الصحيحة"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "إظهار "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " على "
 
-#: sickrage/core/queues/show.py:308
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " لكنه يحتوي على أية بيانات الموسم/الحلقة."
 
-#: sickrage/core/queues/show.py:317
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "غير قادر على البحث عن المعرض في {} في {} باستخدام معرف {}، لا تستخدم NFO. حذف.nfo وحاول إضافة يدوياً مرة أخرى."
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "غير قادر على إضافة "
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " بسبب خطأ في "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "غير قادر على إضافة إظهار سبب خطأ مع "
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "إظهار تم تخطيها"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "تظهر في "
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " هو بالفعل في قائمة العرض الخاصة بك"
 

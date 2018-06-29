@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-06-28 18:42-0700\n"
+"POT-Creation-Date: 2018-06-29 15:28-0700\n"
 
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
@@ -6126,53 +6126,53 @@ msgstr "Không tải được tìm thấy"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Không thể tìm thấy một tải cho <i>%s</i>"
 
-#: sickrage/core/queues/show.py:295 sickrage/core/queues/show.py:305
-#: sickrage/core/queues/show.py:316 sickrage/core/webserver/views.py:2650
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2650
 #: sickrage/core/webserver/views.py:2662
 msgid "Unable to add show"
 msgstr "Không thể thêm Hiển thị"
 
-#: sickrage/core/queues/show.py:296
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Hiển thị trong {không có tên trên {}, ngôn ngữ có thể sai. Xóa .nfo và thêm bằng tay trong các ngôn ngữ chính xác"
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "Hiển thị "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " trên "
 
-#: sickrage/core/queues/show.py:308
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " nhưng có không có dữ liệu/tập phim."
 
-#: sickrage/core/queues/show.py:317
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Không thể để tìm kiếm các hiển thị trong {} trên bằng cách sử dụng ID {}, không sử dụng NFO {}. Xóa .nfo và cố gắng thêm một lần nữa bằng tay."
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "Không thể thêm "
 
-#: sickrage/core/queues/show.py:380
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " do một lỗi với "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "Không thể thêm Hiển thị do một lỗi với "
 
-#: sickrage/core/queues/show.py:389
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "Hiển thị bị bỏ qua"
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "Các hiển thị trong "
 
-#: sickrage/core/queues/show.py:390
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " là đã có trong danh sách hiển thị của bạn"
 
