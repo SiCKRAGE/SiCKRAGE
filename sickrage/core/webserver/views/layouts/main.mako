@@ -1,7 +1,7 @@
 <%!
     import datetime
     import re
-
+    from hashlib import md5
     from time import time
 
     import sickrage
@@ -69,308 +69,244 @@
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/themes/${srThemeName}.min.css"/>
     <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
     % if current_user:
-        <nav class="navbar navbar-default navbar-fixed-top">
+        <%
+            numCombined = numErrors + numWarnings
+            if numCombined:
+                toolsBadgeClass = ''
+                if numErrors:
+                    toolsBadgeClass = ' btn-danger'
+                elif numWarnings:
+                    toolsBadgeClass = ' btn-warning'
+
+                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
+            else:
+                toolsBadge = ''
+        %>
+
+        <nav class="navbar navbar-expand-md navbar-dark navbar-default py-0">
             <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">${_('Toggle navigation')}</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="${srWebRoot}/home/">
-                        <img alt="SiCKRAGE"
-                             src="${srWebRoot}/images/logo.png"
-                             style="width: 400px;height: 50px;"
-                             class="img-responsive pull-left"/>
-                    </a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li id="NAVhome" class="navbar-split dropdown${('', ' active')[topmenu == 'home']}">
-                            <a href="${srWebRoot}/home/" class="dropdown-toggle" aria-haspopup="true"
-                               data-toggle="dropdown" data-hover="dropdown"><span>${_('Shows')}</span>
+                <a class="navbar-brand" href="${srWebRoot}/home/">
+                    <img alt="SiCKRAGE"
+                         src="${srWebRoot}/images/logo.png"
+                         style="width: 400px;height: 50px;"
+                         class="img-responsive pull-left"/>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false"
+                        aria-label="{{ __('Toggle navigation') }}">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="navbar-nav mr-auto">
+
+                    </ul>
+
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav align-items-center ml-auto">
+                        <li class="nav-item dropdown${('', ' active')[topmenu == 'home']}">
+                            <a id="navbarHome" class="nav-link dropdown-toggle" href="${srWebRoot}/home/" role="button"
+                               aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                            <span>
+                                ${_('Shows')}
+                            </span>
                             </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="${srWebRoot}/home/">
-                                        <i class="menu-icon-home"></i>&nbsp;${_('Show List')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/home/addShows/">
-                                        <i class="menu-icon-addshow"></i>&nbsp;${_('Add Shows')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/home/postprocess/">
-                                        <i class="menu-icon-postprocess"></i>&nbsp;${_('Manual Post-Processing')}
-                                    </a>
-                                </li>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHome">
+                                <a class="dropdown-item" href="${srWebRoot}/home/">
+                                    <i class="menu-icon-home"></i>&nbsp;${_('Show List')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/home/addShows/">
+                                    <i class="menu-icon-addshow"></i>&nbsp;${_('Add Shows')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/home/postprocess/">
+                                    <i class="menu-icon-postprocess"></i>&nbsp;${_('Manual Post-Processing')}
+                                </a>
                                 % if sickrage.app.config.shows_recent:
-                                    <li class="divider"></li>
+                                    <div class="dropdown-divider"></div>
                                 % for recentShow in sickrage.app.config.shows_recent:
-                                    <li>
-                                        <a href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
-                                            <i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item"
+                                       href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
+                                        <i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}
+                                    </a>
                                 % endfor
                                 % endif
-                            </ul>
-                            <div style="clear:both;"></div>
+                            </div>
                         </li>
 
-                        <li id="NAVmanage" class="navbar-split dropdown${('', ' active')[topmenu == 'manage']}">
-                            <a href="${srWebRoot}/manage/episodeStatuses/" class="dropdown-toggle"
-                               aria-haspopup="true"
-                               data-toggle="dropdown" data-hover="dropdown">
-                                <span>${_('Manage')}</span>
+                        <li class="nav-item dropdown${('', ' active')[topmenu == 'manage']}">
+                            <a id="navbarManage" class="nav-link dropdown-toggle" href="#" role="button"
+                               aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                            <span>
+                                ${_('Manage')}
+                            </span>
                             </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="${srWebRoot}/manage/">
-                                        <i class="menu-icon-manage"></i>&nbsp;${_('Mass Update')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/manage/backlogOverview/">
-                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Backlog Overview')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/manage/manageQueues/">
-                                        <i class="menu-icon-manage-searches"></i>&nbsp;${_('Manage Queues')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/manage/episodeStatuses/">
-                                        <i class="menu-icon-backlog"></i>&nbsp;${_('Episode Status Management')}
-                                    </a>
-                                </li>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
+                                <a class="dropdown-item" href="${srWebRoot}/manage/">
+                                    <i class="menu-icon-manage"></i>&nbsp;${_('Mass Update')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/manage/backlogOverview/">
+                                    <i class="menu-icon-backlog-view"></i>&nbsp;${_('Backlog Overview')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/manage/manageQueues/">
+                                    <i class="menu-icon-manage-searches"></i>&nbsp;${_('Manage Queues')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/manage/episodeStatuses/">
+                                    <i class="menu-icon-backlog"></i>&nbsp;${_('Episode Status Management')}
+                                </a>
                                 % if sickrage.app.config.use_trakt and sickrage.app.config.trakt_oauth_token != "":
-                                    <li>
-                                        <a href="${srWebRoot}/home/syncTrakt/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Sync Trakt')}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/home/syncTrakt/">
+                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Sync Trakt')}
+                                    </a>
                                 % endif
                                 % if sickrage.app.config.use_plex and sickrage.app.config.plex_server_host != "":
-                                    <li>
-                                        <a href="${srWebRoot}/home/updatePLEX/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update PLEX')}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/home/updatePLEX/">
+                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update PLEX')}
+                                    </a>
                                 % endif
                                 % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
-                                    <li>
-                                        <a href="${srWebRoot}/home/updateKODI/">
-                                            <i class="menu-icon-kodi"></i>&nbsp;${_('Update KODI')}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
+                                        <i class="menu-icon-kodi"></i>&nbsp;${_('Update KODI')}
+                                    </a>
                                 % endif
                                 % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
-                                    <li>
-                                        <a href="${srWebRoot}/home/updateEMBY/">
-                                            <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update Emby')}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
+                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update Emby')}
+                                    </a>
                                 % endif
                                 % if torrent_webui_url:
-                                    <li>
-                                        <a href="${torrent_webui_url}" target="_blank">
-                                            <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
-                                        </a>
-                                    </li>
-                                % endif
-                                <li>
-                                    <a href="${srWebRoot}/manage/failedDownloads/">
-                                        <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
+                                    <a class="dropdown-item" href="${torrent_webui_url}" target="_blank">
+                                        <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
                                     </a>
-                                </li>
+                                % endif
+                                <a class="dropdown-item" href="${srWebRoot}/manage/failedDownloads/">
+                                    <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
+                                </a>
                                 % if sickrage.app.config.use_subtitles:
-                                    <li>
-                                        <a href="${srWebRoot}/manage/subtitleMissed/">
-                                            <i class="menu-icon-backlog"></i>&nbsp;${_('Missed Subtitle Management')}
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/manage/subtitleMissed/">
+                                        <i class="menu-icon-backlog"></i>&nbsp;${_('Missed Subtitle Management')}
+                                    </a>
                                 % endif
-                            </ul>
-                            <div style="clear:both;"></div>
+                            </div>
                         </li>
 
-                        <li id="NAVschedule"${('', ' class="active"')[topmenu == 'schedule']}>
-                            <a href="${srWebRoot}/schedule/">${_('Schedule')}</a>
+                        <li id="navbarSchedule" class="nav-item ${('', ' active')[topmenu == 'schedule']}">
+                            <a class="nav-link" href="${srWebRoot}/schedule/">${_('Schedule')}</a>
                         </li>
 
-                        <li id="NAVhistory"${('', ' class="active"')[topmenu == 'history']}>
-                            <a href="${srWebRoot}/history/">${_('History')}</a>
+                        <li id="navbarHistory" class="nav-item ${('', ' active')[topmenu == 'history']}">
+                            <a class="nav-link" href="${srWebRoot}/history/">${_('History')}</a>
                         </li>
 
-                        <li id="NAVconfig" class="navbar-split dropdown${('', ' active')[topmenu == 'config']}">
-                            <a href="${srWebRoot}/config/" class="dropdown-toggle" aria-haspopup="true"
-                               data-toggle="dropdown"
-                               data-hover="dropdown"><span class="visible-xs">${_('Config')}</span><img
-                                    src="${srWebRoot}/images/menu/system18.png" class="navbaricon hidden-xs"/>
+                        <li class="nav-item dropdown${('', ' active')[topmenu == 'config']}">
+                            <a id="navbarConfig" class="nav-link" href="${srWebRoot}/config/" role="button"
+                               aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                            <span class="d-block d-sm-none">
+                                ${_('Config')}
+                            </span>
+                                <i class="fa fa-2x fa-gears"></i>
                             </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="${srWebRoot}/config/">
-                                        <i class="fa fa-info"></i>&nbsp;${_('Help and Info')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/general/">
-                                        <i class="fa fa-cogs"></i>&nbsp;${_('General')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/backuprestore/">
-                                        <i class="fa fa-upload"></i>&nbsp;${_('Backup and Restore')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/search/">
-                                        <i class="fa fa-binoculars"></i>&nbsp;${_('Search Clients')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/providers/">
-                                        <i class="fa fa-share-alt"></i>&nbsp;${_('Search Providers')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/subtitles/">
-                                        <i class="fa fa-cc"></i>&nbsp;${_('Subtitles Settings')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/qualitySettings/">
-                                        <i class="fa fa-wrench"></i>&nbsp;${_('Quality Settings')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/postProcessing/">
-                                        <i class="fa fa-refresh"></i>&nbsp;${_('Post Processing')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/notifications/">
-                                        <i class="fa fa-bell"></i>&nbsp;${_('Notifications')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/config/anime/">
-                                        <i class="fa fa-eye"></i>&nbsp;${_('Anime')}
-                                    </a>
-                                </li>
-                            </ul>
-                            <div style="clear:both;"></div>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarConfig">
+                                <a class="dropdown-item" href="${srWebRoot}/config/">
+                                    <i class="fa fa-info"></i>&nbsp;${_('Help and Info')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/general/">
+                                    <i class="fa fa-cogs"></i>&nbsp;${_('General')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/backuprestore/">
+                                    <i class="fa fa-upload"></i>&nbsp;${_('Backup and Restore')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/search/">
+                                    <i class="fa fa-binoculars"></i>&nbsp;${_('Search Clients')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/providers/">
+                                    <i class="fa fa-share-alt"></i>&nbsp;${_('Search Providers')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/subtitles/">
+                                    <i class="fa fa-cc"></i>&nbsp;${_('Subtitles Settings')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/qualitySettings/">
+                                    <i class="fa fa-wrench"></i>&nbsp;${_('Quality Settings')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/postProcessing/">
+                                    <i class="fa fa-refresh"></i>&nbsp;${_('Post Processing')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/notifications/">
+                                    <i class="fa fa-bell"></i>&nbsp;${_('Notifications')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/config/anime/">
+                                    <i class="fa fa-eye"></i>&nbsp;${_('Anime')}
+                                </a>
+                            </div>
                         </li>
 
-                        <%
-                            numCombined = numErrors + numWarnings
-                            if numCombined:
-                                if numErrors:
-                                    toolsBadgeClass = ' btn-danger'
-                                elif numWarnings:
-                                    toolsBadgeClass = ' btn-warning'
-                                else:
-                                    toolsBadgeClass = ''
-
-                                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
-                            else:
-                                toolsBadge = ''
-                        %>
-
-                        <li id="NAVsystem" class="navbar-split dropdown${('', ' active')[topmenu == 'system']}">
-                            <a href="${srWebRoot}/home/status/" class="dropdown-toggle" aria-haspopup="true"
-                               data-toggle="dropdown"
-                               data-hover="dropdown"><span class="visible-xs">${_('Tools')}</span><img
-                                    src="${srWebRoot}/images/menu/system18-2.png"
-                                    class="navbaricon hidden-xs"/>${toolsBadge}
+                        <li class="nav-item dropdown${('', ' active')[topmenu == 'system']}">
+                            <a id="navbarSystem" class="nav-link dropdown-toggle" href="#" role="button"
+                               aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
+                            <span class="d-block d-sm-none">
+                                ${_('Tools')}
+                            </span>
+                                <img class="rounded-circle" style="width: 40px;height: 40px;"
+                                     src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
+                                ${toolsBadge}
                             </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="${srWebRoot}/IRC/">
-                                        <i class="fa fa-hashtag"></i>&nbsp;${_('IRC')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" id="changelog">
-                                        <i class="fa fa-globe"></i>&nbsp;${_('Changelog')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
-                                       onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
-                                        <i class="fa fa-money"></i>&nbsp;${_('Donate')}
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
+                                <a class="dropdown-item" href="${srWebRoot}/IRC/">
+                                    <i class="fa fa-hashtag"></i>&nbsp;${_('IRC')}
+                                </a>
+                                <a class="dropdown-item" href="#" id="changelog">
+                                    <i class="fa fa-globe"></i>&nbsp;${_('Changelog')}
+                                </a>
+                                <a class="dropdown-item" href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
+                                   onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
+                                    <i class="fa fa-money"></i>&nbsp;${_('Donate')}
+                                </a>
+                                <div class="dropdown-divider"></div>
                                 %if numErrors:
-                                    <li>
-                                        <a href="${srWebRoot}/logs/">
-                                            <i class="fa fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
-                                            <span class="badge btn-danger">${numErrors}</span>
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item" href="${srWebRoot}/logs/">
+                                        <i class="fa fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
+                                        <span class="badge btn-danger">${numErrors}</span>
+                                    </a>
                                 %endif
                                 %if numWarnings:
-                                    <li>
-                                        <a href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
-                                            <i class="fa fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
-                                            <span class="badge btn-warning">${numWarnings}</span>
-                                        </a>
-                                    </li>
+                                    <a class="dropdown-item"
+                                       href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
+                                        <i class="fa fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
+                                        <span class="badge btn-warning">${numWarnings}</span>
+                                    </a>
                                 %endif
-                                <li>
-                                    <a href="${srWebRoot}/logs/viewlog/">
-                                        <i class="fa fa-file-text-o"></i>&nbsp;${_('View Log')}
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                        <i class="fa fa-check-square"></i>&nbsp;${_('Check For Updates')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/home/restart/?pid=${srPID}" class="confirm restart">
-                                        <i class="fa fa-repeat"></i>&nbsp;${_('Restart')}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="${srWebRoot}/home/shutdown/?pid=${srPID}" class="confirm shutdown">
-                                        <i class="fa fa-power-off"></i>&nbsp;${_('Shutdown')}
-                                    </a>
-                                </li>
-                                % if current_user != True:
-                                    <li>
-                                        <a href="${srWebRoot}/unlink" class="confirm logout">
-                                            <i class="fa fa-unlink"></i>&nbsp;${_('Unlink Account')}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="${srWebRoot}/logout" class="confirm logout">
-                                            <i class="fa fa-sign-out"></i>&nbsp;${_('Logout')}
-                                        </a>
-                                    </li>
-                                % endif
-                                <li class="divider"></li>
-                                <li>
-                                    <a href="${srWebRoot}/home/status/">
-                                        <i class="fa fa-server"></i>&nbsp;${_('Server Status')}
-                                    </a>
-                                </li>
-                            </ul>
-                            <div style="clear:both;"></div>
+                                <a class="dropdown-item" href="${srWebRoot}/logs/viewlog/">
+                                    <i class="fa fa-file-text-o"></i>&nbsp;${_('View Log')}
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
+                                    <i class="fa fa-check-square"></i>&nbsp;${_('Check For Updates')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/home/restart/?pid=${srPID}"
+                                   class="confirm restart">
+                                    <i class="fa fa-repeat"></i>&nbsp;${_('Restart')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/home/shutdown/?pid=${srPID}"
+                                   class="confirm shutdown">
+                                    <i class="fa fa-power-off"></i>&nbsp;${_('Shutdown')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
+                                    <i class="fa fa-unlink"></i>&nbsp;${_('Unlink Account')}
+                                </a>
+                                <a class="dropdown-item" href="${srWebRoot}/logout" class="confirm logout">
+                                    <i class="fa fa-sign-out"></i>&nbsp;${_('Logout')}
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="${srWebRoot}/home/status/">
+                                    <i class="fa fa-server"></i>&nbsp;${_('Server Status')}
+                                </a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -378,21 +314,23 @@
         </nav>
     % endif
 
+<div class="container-fluid">
     % if current_user and sickrage.app.developer:
-        <div class="row">
-            <span class="alert alert-danger center-block">
+        <div class="row py-2">
+            <div class="alert alert-danger text-center w-100">
                 <b>!!! DEVELOPER MODE !!!</b>
-            </span>
+            </div>
         </div>
     % endif
 
     % if current_user and sickrage.app.newest_version_string:
-        <div class="row">
-            <span class="alert alert-success center-block">
+        <div class="row py-2">
+            <div class="alert alert-success text-center w-100">
                 ${sickrage.app.newest_version_string}
-            </span>
+            </div>
         </div>
     % endif
+</div>
 
 <div class="container-fluid">
     <div id="sub-menu-container" class="row">
@@ -424,66 +362,64 @@
             </div>
         % endif
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <%block name="content" />
-        </div>
-    </div>
+<div class="container-fluid">
+        <%block name="content" />
+</div>
 
+<div class="container-fluid">
     % if current_user:
-        <div class="row">
-            <div class="footer text-center clearfix col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                <div>
-                    % if overall_stats:
-                    <%
-                        total_size = pretty_filesize(overall_stats['total_size'])
-                        ep_downloaded = overall_stats['episodes']['downloaded']
-                        ep_snatched = overall_stats['episodes']['snatched']
-                        ep_total = overall_stats['episodes']['total']
-                        ep_percentage = '' if ep_total == 0 else '(<span class="footer-highlight">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
-                    %>
-                        <span class="footer-highlight">${overall_stats['shows']['total']}</span> ${_('Shows')} (<span
-                            class="footer-highlight">${overall_stats['shows']['active']}</span> ${_('Active')})
-                        | <span class="footer-highlight">${ep_downloaded}</span>
+        <footer class="text-center">
+            <div>
+                % if overall_stats:
+                <%
+                    total_size = pretty_filesize(overall_stats['total_size'])
+                    ep_downloaded = overall_stats['episodes']['downloaded']
+                    ep_snatched = overall_stats['episodes']['snatched']
+                    ep_total = overall_stats['episodes']['total']
+                    ep_percentage = '' if ep_total == 0 else '(<span class="text-primary">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
+                %>
+                    <span class="text-primary">${overall_stats['shows']['total']}</span> ${_('Shows')} (<span
+                        class="text-primary">${overall_stats['shows']['active']}</span> ${_('Active')})
+                    | <span class="text-primary">${ep_downloaded}</span>
 
-                    % if ep_snatched:
-                        <span class="footer-highlight">
+                % if ep_snatched:
+                    <span class="text-primary">
                                     <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
-                                </span>
-                    ${_('Snatched')}
-                    % endif
-                        &nbsp;/&nbsp;<span
-                            class="footer-highlight">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
-                        &nbsp;/&nbsp;<span class="footer-highlight">${total_size}</span> ${_('Overall Downloaded')}
-                    % endif
-                </div>
-
-                <div>
-                    ${_('Daily Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
-                    |
-                    ${_('Backlog Search:')} <span
-                        class="footer-highlight">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
-                    |
-                    ${_('Memory used:')}
-                    <span class="footer-highlight">
-                        ${memory_usage()}
-                    </span> |
-                    ${_('Load time:')}
-                    <span class="footer-highlight">
-                        ${"{:10.4f}".format(time() - srStartTime)}s
-                    </span> / Mako:
-                    <span class="footer-highlight">
-                        ${"{:10.4f}".format(time() - makoStartTime)}s
-                    </span> |
-                    ${_('Now:')}
-                    <span class="footer-highlight">
-                        ${str(datetime.datetime.now(sickrage.app.tz)).split('.')[0]}
                     </span>
-                </div>
+                ${_('Snatched')}
+                % endif
+                    &nbsp;/&nbsp;<span
+                        class="text-primary">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
+                    &nbsp;/&nbsp;<span class="text-primary">${total_size}</span> ${_('Overall Downloaded')}
+                % endif
             </div>
-        </div>
+
+            <div>
+                ${_('Daily Search:')} <span
+                    class="text-primary">${str(sickrage.app.scheduler.get_job('DAILYSEARCHER').next_run_time).split('.')[0]}</span>
+                |
+                ${_('Backlog Search:')} <span
+                    class="text-primary">${str(sickrage.app.scheduler.get_job('BACKLOG').next_run_time).split('.')[0]}</span>
+                |
+                ${_('Memory used:')}
+                <span class="text-primary">
+                    ${memory_usage()}
+                </span> |
+                ${_('Load time:')}
+                <span class="text-primary">
+                        ${"{:10.4f}".format(time() - srStartTime)}s
+                </span> / Mako:
+                <span class="text-primary">
+                        ${"{:10.4f}".format(time() - makoStartTime)}s
+                </span> |
+                ${_('Now:')}
+                <span class="text-primary">
+                    ${str(datetime.datetime.now(sickrage.app.tz)).split('.')[0]}
+                </span>
+            </div>
+        </footer>
     % endif
 
     <script src="${srWebRoot}/js/bower.min.js"></script>

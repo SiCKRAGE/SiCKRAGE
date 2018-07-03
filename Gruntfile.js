@@ -238,12 +238,6 @@ module.exports = function (grunt) {
                         'dist/css/core.css',
                         'dist/css/fonts.css',
                         'dist/css/icons-sickrage.css'
-                    ],
-                    'sickrage/core/webserver/static/css/themes/dark.min.css': [
-                        'dist/css/themes/dark.css'
-                    ],
-                    'sickrage/core/webserver/static/css/themes/light.min.css': [
-                        'dist/css/themes/light.css'
                     ]
                 }
             }
@@ -421,6 +415,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'css', [
+            'sprite',
             'sass',
             'cssmin'
         ]

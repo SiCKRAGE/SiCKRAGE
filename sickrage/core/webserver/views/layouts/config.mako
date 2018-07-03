@@ -12,12 +12,18 @@
         <div class="col-md-12">
             <div id="config-components">
                 <form id="configForm" action="${self.formaction()}" method="post">
-                    <ul class="nav nav-tabs" id="config-tabs">
-                            <%block name="tabs"/>
-                    </ul>
-                    <div id="config">
-                        <div class="tab-content">
-                                <%block name="pages"/>
+                    <div class="card ">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="config-tabs">
+                                    <%block name="tabs"/>
+                            </ul>
+                            <div id="config">
+                                <div class="card-body">
+                                    <div class="card-text">
+                                        <%block name="pages"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>

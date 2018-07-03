@@ -17,17 +17,17 @@
     from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Misc')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Interface')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane3">${_('Advanced Settings')}</a></li>
+    <li class="nav-item"><a class="nav-link active" href="#core-tab-pane1">${_('Misc')}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#core-tab-pane2">${_('Interface')}</a></li>
+    <li class="nav-item"><a class="nav-link" href="#core-tab-pane3">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
     % if sickrage.app.config.indexer_default:
         <% indexer = sickrage.app.config.indexer_default %>
     % endif
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="row tab-pane">
+    <div id="core-tab-pane1">
+        <div class="row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
                 <h3>${_('SiCKRAGE API')}</h3>
                 <p>${_('Options for api.sickrage.ca')}</p>

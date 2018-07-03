@@ -366,16 +366,6 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.quality_chooser.init();
                 SICKRAGE.check_notifications();
 
-                // auto-resize body to accomodate height of navbar
-                $('body').animate({paddingTop: $('nav').height() + 5});
-                var shiftWindow = function () {
-                    scrollBy(0, -$('nav').height());
-                };
-                if (location.hash) {
-                    shiftWindow();
-                }
-                window.addEventListener("hashchange", shiftWindow);
-
                 $.ajaxSetup({
                     beforeSend: function (jqXHR) {
                         SICKRAGE.xhrPool.push(jqXHR);
