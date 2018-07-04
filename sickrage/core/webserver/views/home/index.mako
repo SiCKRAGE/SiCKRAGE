@@ -13,79 +13,92 @@
 </%block>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div class="row">
-        <div class="col-xs-12 text-center">
-            % if sickrage.app.config.home_layout != 'poster':
-                <label for="popover" class="badge">${_('Select Columns:')}
-                    <button id="popover" type="button" class="form-control form-control-inline input-sm"><b
-                            class="caret"></b></button>
-                </label>
-            % endif
+    <div class="row bg-dark mb-3 py-2 px-4">
+        <div class="col text-left">
+            <div class="form-inline">
+                % if sickrage.app.config.home_layout != 'poster':
+                    <div class="input-group ml-1">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">${_('Select Columns:')}</div>
+                        </div>
+                        <button id="popover" type="button" class="form-control"><b
+                                class="caret"></b></button>
+                    </div>
+                % endif
 
-            % if sickrage.app.config.home_layout == 'poster':
-                <label for="filterShowName" class="badge">${_('Filter By:')}
-                    <input id="filterShowName" class="form-control form-control-inline input-sm" type="search"
-                           placeholder="${_('Filter Show Name')}">
-                </label>
+                % if sickrage.app.config.home_layout == 'poster':
+                    <div class="m-1">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-secondary" style="border: none;">
+                                    <i class="fa fa-search"></i>
+                                </div>
+                            </div>
+                            <input id="filterShowName" class="form-control bg-secondary text-white-50"
+                                   style="border: none;" type="search" placeholder="${_('Filter Show Name')}">
+                        </div>
+                    </div>
 
-                <label for="postersort" class="badge">${_('Sort By:')}
-                    <select id="postersort" class="form-control form-control-inline input-sm">
-                        <option value="name"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
-                            ${_('Name')}
-                        </option>
-                        <option value="date"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=date" ${('', 'selected')[sickrage.app.config.poster_sortby == 'date']}>
-                            ${_('Next Episode')}
-                        </option>
-                        <option value="network"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=network" ${('', 'selected')[sickrage.app.config.poster_sortby == 'network']}>
-                            ${_('Network')}
-                        </option>
-                        <option value="progress"
-                                data-sort="${srWebRoot}/setPosterSortBy/?sort=progress" ${('', 'selected')[sickrage.app.config.poster_sortby == 'progress']}>
-                            ${_('Progress')}
-                        </option>
-                    </select>
-                </label>
+                    <div class="m-1">
+                        <select id="postersort" class="form-control bg-secondary text-white-50" style="border: none;">
+                            <option value="name"
+                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
+                                ${_('Name')}
+                            </option>
+                            <option value="date"
+                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=date" ${('', 'selected')[sickrage.app.config.poster_sortby == 'date']}>
+                                ${_('Next Episode')}
+                            </option>
+                            <option value="network"
+                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=network" ${('', 'selected')[sickrage.app.config.poster_sortby == 'network']}>
+                                ${_('Network')}
+                            </option>
+                            <option value="progress"
+                                    data-sort="${srWebRoot}/setPosterSortBy/?sort=progress" ${('', 'selected')[sickrage.app.config.poster_sortby == 'progress']}>
+                                ${_('Progress')}
+                            </option>
+                        </select>
+                    </div>
 
-                <label for="postersortdirection" class="badge">${_('Sort Order:')}
-                    <select id="postersortdirection" class="form-control form-control-inline input-sm">
-                        <option value="true"
-                                data-sort="${srWebRoot}/setPosterSortDir/?direction=1" ${('', 'selected')[sickrage.app.config.poster_sortdir == 1]}>
-                            ${_('Asc')}
-                        </option>
-                        <option value="false"
-                                data-sort="${srWebRoot}/setPosterSortDir/?direction=0" ${('', 'selected')[sickrage.app.config.poster_sortdir == 0]}>
-                            ${_('Desc')}
-                        </option>
-                    </select>
-                </label>
-            % endif
+                    <div class="m-1">
+                        <select id="postersortdirection" class="form-control bg-secondary text-white-50"
+                                style="border: none;">
+                            <option value="true"
+                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=1" ${('', 'selected')[sickrage.app.config.poster_sortdir == 1]}>
+                                ${_('Asc')}
+                            </option>
+                            <option value="false"
+                                    data-sort="${srWebRoot}/setPosterSortDir/?direction=0" ${('', 'selected')[sickrage.app.config.poster_sortdir == 0]}>
+                                ${_('Desc')}
+                            </option>
+                        </select>
+                    </div>
 
-            <label for="layout" class="badge">${_('Layout:')}
-                <select id="layout" name="layout" class="form-control form-control-inline input-sm"
-                        onchange="location = this.options[this.selectedIndex].value;">
-                    <option value="${srWebRoot}/setHomeLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.home_layout == 'poster']}>
-                        ${_('Poster')}
-                    </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=small" ${('', 'selected')[sickrage.app.config.home_layout == 'small']}>
-                        ${_('Small Poster')}
-                    </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=banner" ${('', 'selected')[sickrage.app.config.home_layout == 'banner']}>
-                        ${_('Banner')}
-                    </option>
-                    <option value="${srWebRoot}/setHomeLayout/?layout=simple" ${('', 'selected')[sickrage.app.config.home_layout == 'simple']}>
-                        ${_('Simple')}
-                    </option>
-                </select>
-            </label>
-
-            % if sickrage.app.config.home_layout == 'poster':
-                <label for="posterSizeSlider" class="badge">${_('Poster Size:')}
-                    <div style="width: 100px; display: inline-block; margin-left: 7px;" id="posterSizeSlider"></div>
-                </label>
-            % endif
+                    <div class="m-1">
+                        <select id="layout" name="layout" class="form-control bg-secondary text-white-50"
+                                style="border: none;"
+                                onchange="location = this.options[this.selectedIndex].value;">
+                            <option value="${srWebRoot}/setHomeLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.home_layout == 'poster']}>
+                                ${_('Poster')}
+                            </option>
+                            <option value="${srWebRoot}/setHomeLayout/?layout=small" ${('', 'selected')[sickrage.app.config.home_layout == 'small']}>
+                                ${_('Small Poster')}
+                            </option>
+                            <option value="${srWebRoot}/setHomeLayout/?layout=banner" ${('', 'selected')[sickrage.app.config.home_layout == 'banner']}>
+                                ${_('Banner')}
+                            </option>
+                            <option value="${srWebRoot}/setHomeLayout/?layout=simple" ${('', 'selected')[sickrage.app.config.home_layout == 'simple']}>
+                                ${_('Simple')}
+                            </option>
+                        </select>
+                    </div>
+                % endif
+            </div>
+        </div>
+        <div class="col text-right">
+            <div class="m-1">
+                <div class="d-inline-block" style="width: 100px" id="posterSizeSlider"></div>
+            </div>
         </div>
     </div>
 
@@ -99,7 +112,7 @@
         % endif
         % if sickrage.app.config.home_layout == 'poster':
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
-                 class="show-grid clearfix">
+                 class="show-grid mx-auto clearfix">
                 <div class="posterview">
                     % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
                         % if not curLoadingShow.show:
@@ -178,78 +191,77 @@
                         <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
                              data-date="${data_date}" data-network="${curShow.network}"
                              data-progress="${progressbar_percent}">
-                            <div class="show-image">
+                            <div class="card card-block text-white bg-dark m-1">
                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                    <img alt="" class="show-image"
+                                    <img alt="" class="card-img-top"
                                          src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
                                 </a>
-                            </div>
+                                <div class="card-header py-0 px-0">
+                                    <div class="progress progress-bar hidden-print" role="progressbar"
+                                         style="width: ${progressbar_percent}%;height: 5px;"
+                                         data-progress-percentage="${progressbar_percent}"
+                                         data-show-id="${curShow.indexerid}"></div>
 
-                            <div class="progressbar hidden-print" style="position:relative;"
-                                 data-show-id="${curShow.indexerid}"
-                                 data-progress-percentage="${progressbar_percent}"></div>
+                                </div>
+                                <div class="card-body text-truncate py-1 px-1 small">
+                                    <div class="show-title">
+                                        ${curShow.name}
+                                    </div>
 
-                            <div class="show-title">
-                                ${curShow.name}
-                            </div>
-
-                            <div class="show-date">
-                                % if cur_airs_next:
-                                    <% ldatetime = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
-                                    <%
-                                        try:
-                                            out = srdatetime.srDateTime(ldatetime).srfdate()
-                                        except ValueError:
-                                            out = _('Invalid date')
-                                    %>
-                                % else:
-                                    <% display_status = curShow.status %>
-                                    <%
-                                        out = ''
-                                        if display_status:
-                                            out = display_status
-                                            if 'nded' not in display_status and 1 == int(curShow.paused):
-                                                out = _('Paused')
-                                    %>
-                                % endif
-                                ${out}
-                            </div>
-
-                            <div class="show-details">
-                                <table class="show-details" width="100%" cellspacing="1" border="0" cellpadding="0">
-                                    <tr>
-                                        <td class="show-table">
-                                            <span class="show-dlstats"
-                                                  title="${download_stat_tip}">${download_stat}</span>
-                                        </td>
-
-                                        <td class="show-table">
+                                    <div class="show-date" style="color: grey">
+                                        % if cur_airs_next:
+                                            <% ldatetime = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                            <%
+                                                try:
+                                                  out = srdatetime.srDateTime(ldatetime).srfdate()
+                                                except ValueError:
+                                                  out = _('Invalid date')
+                                            %>
+                                        % else:
+                                            <% display_status = curShow.status %>
+                                            <%
+                                                out = ''
+                                                if display_status:
+                                                  out = display_status
+                                                  if 'nded' not in display_status and 1 == int(curShow.paused):
+                                                      out = _('Paused')
+                                            %>
+                                        % endif
+                                      ${out}
+                                    </div>
+                                </div>
+                                <div class="card-footer py-1 px-1">
+                                    <div class="row">
+                                        <div class="col text-left small">
+                                          <span class="show-dlstats"
+                                                title="${download_stat_tip}">${download_stat}</span>
+                                        </div>
+                                        <div class="col">
                                             % if sickrage.app.config.home_layout != 'simple':
                                                 % if curShow.network:
                                                     <span>
-                                                        <img class="show-network-image"
-                                                             src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                             alt="${curShow.network}"
-                                                             title="${curShow.network}"/>
-                                                    </span>
+                                                      <img class="show-network-image"
+                                                           src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
+                                                           alt="${curShow.network}"
+                                                           title="${curShow.network}"/>
+                                                  </span>
                                                 % else:
                                                     <span>
-                                                        <img class="show-network-image"
-                                                             src="${srWebRoot}/images/network/nonetwork.png"
-                                                             alt="${_('No Network')}"
-                                                             title="${_('No Network')}"/>
-                                                    </span>
+                                                      <img class="show-network-image"
+                                                           src="${srWebRoot}/images/network/nonetwork.png"
+                                                           alt="${_('No Network')}"
+                                                           title="${_('No Network')}"/>
+                                                  </span>
                                                 % endif
                                             % else:
                                                 <span title="${curShow.network}">${curShow.network}</span>
                                             % endif
-                                        </td>
-
-                                        <td class="show-table">
+                                        </div>
+                                        <div class="col text-right small">
                                             ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
-                                        </td>
-                                    </tr>
-                                </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     % endfor

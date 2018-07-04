@@ -1528,15 +1528,14 @@ jQuery(document).ready(function ($) {
                 resizePosters(parseInt(localStorage.posterSize || 188));
 
                 // This needs to be refined to work a little faster.
-                $('.progressbar').each(function () {
+                $('.progress-bar').each(function () {
                     //var showId = $(this).data('show-id');
                     var percentage = $(this).data('progress-percentage');
                     var classToAdd = percentage === 100 ? 100 : percentage > 80 ? 80 : percentage > 60 ? 60 : percentage > 40 ? 40 : 20;
-                    $(this).progressbar({value: percentage});
                     if ($(this).data('progress-text')) {
                         $(this).append('<div class="progressbarText" title="' + $(this).data('progress-tip') + '">' + $(this).data('progress-text') + '</div>');
                     }
-                    $(this).find('.ui-progressbar-value').addClass('progress-' + classToAdd);
+                    $(this).addClass('progress-' + classToAdd);
                 });
 
                 $("img#network").on('error', function () {

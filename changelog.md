@@ -1,5 +1,6 @@
 # Changelog
 
+- * fb44c04 - 2018-07-04: Fixed responsiveness for add shows template Main shows page posters migrated to bootstrap 4 cards 
 - * 591578b - 2018-07-04: Release v9.3.50 
 - * 88a93b5 - 2018-07-04: Added missing requirements to requirements.txt 
 - * 729f8dc - 2018-07-02: Refactoring WebUI CSS Upgraded to Bootstrap 4.x Merged misc icons into core icon pack 
