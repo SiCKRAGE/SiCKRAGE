@@ -1,6 +1,8 @@
 # Changelog
 
-- * c2086b9 - 2018-06-29: Release v9.3.49 
+- * 18e9b2b - 2018-07-04: Release v9.3.50 
+- * 88a93b5 - 2018-07-04: Added missing requirements to requirements.txt 
+- * 867b799 - 2018-06-29: Release v9.3.49 
 - * 47ac908 - 2018-06-29: Fixed issue with token not being refreshed correctly for API usage 
 - * 3d27b4e - 2018-06-28: Release v9.3.48 
 - * b3ca706 - 2018-06-26: Minor updates to login handler Added ability to unlink account from app Fixed issue with scheduler view and empty show runtime Replaced all no16 and yes16 with font awesome equivalents 
