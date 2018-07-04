@@ -446,7 +446,7 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:crowdin_download_translations',
-            'string-replace',
+            //'string-replace',
             'exec:babel_compile',
             'po2json'
         ];

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 09d66c1 - 2018-07-04: Added missing requirements to requirements.txt 
+- * 18e9b2b - 2018-07-04: Release v9.3.50 
+- * 88a93b5 - 2018-07-04: Added missing requirements to requirements.txt 
 - * 867b799 - 2018-06-29: Release v9.3.49 
 - * 47ac908 - 2018-06-29: Fixed issue with token not being refreshed correctly for API usage 
 - * 3d27b4e - 2018-06-28: Release v9.3.48 
