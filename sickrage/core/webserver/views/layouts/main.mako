@@ -105,6 +105,13 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
 
+                        % if current_user and sickrage.app.newest_version_string:
+                            <div class="row py-2">
+                                <div class="alert alert-success text-center w-100">
+                                    ${sickrage.app.newest_version_string}
+                                </div>
+                            </div>
+                        % endif
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -313,24 +320,6 @@
             </div>
         </nav>
     % endif
-
-<div class="container-fluid">
-    % if current_user and sickrage.app.developer:
-        <div class="row py-2">
-            <div class="alert alert-danger text-center w-100">
-                <b>!!! DEVELOPER MODE !!!</b>
-            </div>
-        </div>
-    % endif
-
-    % if current_user and sickrage.app.newest_version_string:
-        <div class="row py-2">
-            <div class="alert alert-success text-center w-100">
-                ${sickrage.app.newest_version_string}
-            </div>
-        </div>
-    % endif
-</div>
 
 <div class="container-fluid">
     <div id="sub-menu-container" class="row">

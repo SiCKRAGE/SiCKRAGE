@@ -67,7 +67,8 @@ module.exports = function (grunt) {
                         'dist/js/widgets/widget-filter.min.js',
                         'dist/js/widgets/widget-saveSort.min.js',
                         'dist/js/widgets/widget-storage.min.js',
-                        'dist/css/theme.blue.css'
+                        'dist/css/theme.bootstrap_4.min.css',
+                        'dist/css/theme.dark.min.css'
                     ],
                     'isotope': [
                         "dist/isotope.pkgd.min.js"
