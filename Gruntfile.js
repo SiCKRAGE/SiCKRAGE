@@ -48,8 +48,8 @@ module.exports = function (grunt) {
                 },
                 mainFiles: {
                     'bootstrap': [
-                        'dist/css/bootstrap.min.css',
-                        'dist/js/bootstrap.min.js'
+                        'dist/css/bootstrap.css',
+                        'dist/js/bootstrap.bundle.js'
                     ],
                     'bootstrap-formhelpers': [
                         'dist/js/bootstrap-formhelpers.min.js',

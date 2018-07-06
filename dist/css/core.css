@@ -45,3 +45,73 @@ body {
     background-image: -webkit-linear-gradient(#da5945, #b11a10) !important;
     background-image: -o-linear-gradient(#da5945, #b11a10) !important;
 }
+
+span.any-hd {
+    background: #2672b6 repeating-linear-gradient(
+            -45deg,
+            #2672b6,
+            #2672b6 10px,
+            #5b990d 10px,
+            #5b990d 20px
+    );
+}
+
+span.Custom {
+    background-color: #621993;
+}
+
+span.HD {
+    background-color: #2672B6;
+}
+
+span.HDTV {
+    background-color: #2672B6;
+}
+
+span.HD720p {
+    background-color: #5b990d;
+}
+
+span.HD1080p {
+    background-color: #2672B6;
+}
+
+span.UHD-4K {
+    background-color: #7500FF;
+}
+
+span.UHD-8K {
+    background-color: #410077;
+}
+
+span.RawHD {
+    background-color: #cd7300;
+}
+
+span.RawHDTV {
+    background-color: #cd7300;
+}
+
+span.SD {
+    background-color: #BE2625;
+}
+
+span.SDTV {
+    background-color: #BE2625;
+}
+
+span.SDDVD {
+    background-color: #BE2625;
+}
+
+span.Any {
+    background-color: #666;
+}
+
+span.Unknown {
+    background-color: #999;
+}
+
+span.Proper {
+    background-color: #3F7F00;
+}

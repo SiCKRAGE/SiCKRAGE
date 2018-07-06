@@ -38,3 +38,70 @@ body {
   background-image: linear-gradient(#da5945, #b11a10) !important;
   background-image: -webkit-linear-gradient(#da5945, #b11a10) !important;
   background-image: -o-linear-gradient(#da5945, #b11a10) !important; }
+
+span.quality {
+  font: 12px/13px "Open Sans", verdana, sans-serif;
+  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
+  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
+  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
+  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
+  text-shadow: 0 1px rgba(0, 0, 0, 0.8);
+  color: #FFFFFF;
+  display: inline-block;
+  padding: 2px 4px;
+  text-align: center;
+  vertical-align: baseline;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  white-space: nowrap; }
+
+span.any-hd {
+  background: #2672b6 repeating-linear-gradient(-45deg, #2672b6, #2672b6 10px, #5b990d 10px, #5b990d 20px); }
+
+span.Custom {
+  background-color: #621993; }
+
+span.HD {
+  background-color: #2672B6; }
+
+span.HDTV {
+  background-color: #2672B6; }
+
+span.HD720p {
+  background-color: #5b990d; }
+
+span.HD1080p {
+  background-color: #2672B6; }
+
+span.UHD-4K {
+  background-color: #7500FF; }
+
+span.UHD-8K {
+  background-color: #410077; }
+
+span.RawHD {
+  background-color: #cd7300; }
+
+span.RawHDTV {
+  background-color: #cd7300; }
+
+span.SD {
+  background-color: #BE2625; }
+
+span.SDTV {
+  background-color: #BE2625; }
+
+span.SDDVD {
+  background-color: #BE2625; }
+
+span.Any {
+  background-color: #666; }
+
+span.Unknown {
+  background-color: #999; }
+
+span.Proper {
+  background-color: #3F7F00; }

@@ -1544,6 +1544,8 @@ jQuery(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
+                    theme : "bootstrap",
+
                     sortList: [[7, 1], [2, 0]],
                     textExtraction: {
                         0: function (node) {

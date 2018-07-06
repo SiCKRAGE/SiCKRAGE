@@ -1,6 +1,7 @@
 # Changelog
 
-- * 49fe90e - 2018-07-05: Upgraded tablesorter to use bootstrap 4.x 
+- * 36cd2f1 - 2018-07-05: Migrated tablesorter theme to bootstrap 4.x for home view 
+- * fc2ec2b - 2018-07-05: Upgraded tablesorter to use bootstrap 4.x 
 - * e8d562b - 2018-07-04: Fixed responsiveness for add shows template Main shows page posters migrated to bootstrap 4 cards 
 - * 591578b - 2018-07-04: Release v9.3.50 
 - * 88a93b5 - 2018-07-04: Added missing requirements to requirements.txt 

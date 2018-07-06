@@ -17,12 +17,17 @@
         <div class="col text-left">
             <div class="form-inline">
                 % if sickrage.app.config.home_layout != 'poster':
-                    <div class="input-group ml-1">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">${_('Select Columns:')}</div>
+                    <div class="m-1">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text bg-secondary text-white-50" style="border: none;">
+                                    ${_('Select Columns:')}
+                                </div>
+                            </div>
+                            <button id="popover" type="button" class="form-control bg-secondary" style="border: none;">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
                         </div>
-                        <button id="popover" type="button" class="form-control"><b
-                                class="caret"></b></button>
                     </div>
                 % endif
 
@@ -73,31 +78,37 @@
                             </option>
                         </select>
                     </div>
-
-                    <div class="m-1">
-                        <select id="layout" name="layout" class="form-control bg-secondary text-white-50"
-                                style="border: none;"
-                                onchange="location = this.options[this.selectedIndex].value;">
-                            <option value="${srWebRoot}/setHomeLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.home_layout == 'poster']}>
-                                ${_('Poster')}
-                            </option>
-                            <option value="${srWebRoot}/setHomeLayout/?layout=small" ${('', 'selected')[sickrage.app.config.home_layout == 'small']}>
-                                ${_('Small Poster')}
-                            </option>
-                            <option value="${srWebRoot}/setHomeLayout/?layout=banner" ${('', 'selected')[sickrage.app.config.home_layout == 'banner']}>
-                                ${_('Banner')}
-                            </option>
-                            <option value="${srWebRoot}/setHomeLayout/?layout=simple" ${('', 'selected')[sickrage.app.config.home_layout == 'simple']}>
-                                ${_('Simple')}
-                            </option>
-                        </select>
-                    </div>
                 % endif
             </div>
         </div>
         <div class="col text-right">
-            <div class="m-1">
-                <div class="d-inline-block" style="width: 100px" id="posterSizeSlider"></div>
+            <div class="d-inline-flex">
+                % if sickrage.app.config.home_layout == 'poster':
+                    <div class="m-1">
+                        <div class="mt-3" style="width: 100px" id="posterSizeSlider"></div>
+                    </div>
+                % endif
+                <div class="m-1">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                            % if sickrage.app.config.home_layout == 'poster':
+                                <i class="fa fa-2x fa-th-large"></i>
+                            % elif sickrage.app.config.home_layout == 'small':
+                                <i class="fa fa-2x fa-th"></i>
+                            % elif sickrage.app.config.home_layout == 'banner':
+                                <i class="fa fa-2x fa-image"></i>
+                            % elif sickrage.app.config.home_layout == 'simple':
+                                <i class="fa fa-2x fa-th-list"></i>
+                            % endif
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=poster">Poster</a>
+                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=small">Small Poster</a>
+                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=banner">Banner</a>
+                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=simple">Simple</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -258,7 +269,7 @@
                                             % endif
                                         </div>
                                         <div class="col text-right small">
-                                            ${renderQualityPill(curShow.quality, showTitle=True, overrideClass="show-quality")}
+                                            ${renderQualityPill(curShow.quality, showTitle=True)}
                                         </div>
                                     </div>
                                 </div>
@@ -269,8 +280,8 @@
             </div>
         % else:
             <div class="horizontal-scroll">
-                <table id="showListTable${curListType}" class="sickrageTable tablesorter" cellspacing="1" border="0"
-                       cellpadding="0">
+                <table id="showListTable${curListType}" class="table table-bordered table-striped table-dark"
+                       cellspacing="1" border="0" cellpadding="0">
                     <thead>
                     <tr>
                         <th class="nowrap">${_('Next Ep')}</th>
@@ -287,8 +298,10 @@
 
                     <tfoot>
                     <tr>
-                        <th rowspan="1" colspan="1" align="center"><a
-                                href="${srWebRoot}/home/addShows/">${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}</a>
+                        <th rowspan="1" colspan="1" align="center">
+                            <a href="${srWebRoot}/home/addShows/">
+                                ${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}
+                            </a>
                         </th>
                         <th>&nbsp;</th>
                         <th>&nbsp;</th>
@@ -327,7 +340,7 @@
                         </tbody>
                     % endif
 
-                    <tbody>
+                    <tbody class="">
                         % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
                             <%
                                 cur_airs_next = ''
@@ -380,55 +393,51 @@
                                 % if cur_airs_next:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td align="center" class="nowrap">
+                                    <td class="align-middle text-center nowrap">
                                         <time datetime="${airDate.isoformat()}"
                                               class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                     </td>
                                 % except ValueError:
-                                    <td align="center" class="nowrap"></td>
+                                    <td class="align-middle text-center nowrap"></td>
                                 % endtry
                                 % else:
-                                    <td align="center" class="nowrap"></td>
+                                    <td class="align-middle text-center nowrap"></td>
                                 % endif
 
                                 % if cur_airs_prev:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td align="center" class="nowrap">
+                                    <td class="align-middle text-center nowrap">
                                         <time datetime="${airDate.isoformat()}" class="date">
                                             ${srdatetime.srDateTime(airDate).srfdate()}
                                         </time>
                                     </td>
                                 % except ValueError:
-                                    <td align="center" class="nowrap"></td>
+                                    <td class="align-middle text-center nowrap"></td>
                                 % endtry
                                 % else:
-                                    <td align="center" class="nowrap"></td>
+                                    <td class="align-middle text-center nowrap"></td>
                                 % endif
 
                                 % if sickrage.app.config.home_layout == 'small':
                                     <td class="tvShow" align="left">
-                                        <div class="imgsmallposter ${sickrage.app.config.home_layout}">
-                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
-                                               title="${curShow.name}">
-                                                <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                     class="${sickrage.app.config.home_layout}"
-                                                     alt="${curShow.indexerid}"/>
-                                            </a>
-                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
-                                               style="vertical-align: middle;">${curShow.name}</a>
-                                        </div>
+                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
+                                           title="${curShow.name}">
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
+                                                 style="width: auto;height: 20%"
+                                                 alt="${curShow.indexerid}"/>
+                                        </a>
+                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                            ${curShow.name}
+                                        </a>
                                     </td>
                                 % elif sickrage.app.config.home_layout == 'banner':
-                                    <td>
+                                    <td class="align-middle text-center">
                                         <span style="display: none;">${curShow.name}</span>
-                                        <div class="imgbanner ${sickrage.app.config.home_layout}">
-                                            <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                                <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
-                                                     class="${sickrage.app.config.home_layout}"
-                                                     alt="${curShow.indexerid}" title="${curShow.name}"/>
-                                            </a>
-                                        </div>
+                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
+                                                 class="rounded" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                                        </a>
                                     </td>
                                 % elif sickrage.app.config.home_layout == 'simple':
                                     <td class="tvShow"><a
@@ -437,7 +446,7 @@
                                 % endif
 
                                 % if sickrage.app.config.home_layout != 'simple':
-                                    <td align="center">
+                                    <td class="align-middle text-center">
                                         % if curShow.network:
                                             <span>
                                                 <img id="network" width="54" height="27"
@@ -445,7 +454,7 @@
                                                      alt="${curShow.network}"
                                                      title="${curShow.network}"/>
                                             </span>
-                                            <span class="visible-print-inline">${curShow.network}</span>
+                                            <span class="d-none d-print-inline">${curShow.network}</span>
                                         % else:
                                             <span>
                                                 <img id="network" width="54" height="27"
@@ -453,7 +462,7 @@
                                                      alt="${_('No Network')}"
                                                      title="${_('No Network')}"/>
                                             </span>
-                                            <span class="visible-print-inline">No Network</span>
+                                            <span class="d-none d-print-inline">No Network</span>
                                         % endif
                                     </td>
                                 % else:
@@ -462,25 +471,27 @@
                                     </td>
                                 % endif
 
-                                <td align="center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                <td class="align-middle text-center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
 
-                                <td align="center">
+                                <td class="align-middle text-center">
                                     <span style="display: none;">${download_stat}</span>
-                                    <div class="progressbar" style="position:relative"
+                                    <div class="progress-bar" style="width: ${progressbar_percent}%"
                                          data-show-id="${curShow.indexerid}"
                                          data-progress-percentage="${progressbar_percent}"
                                          data-progress-text="${download_stat}"
                                          data-progress-tip="${download_stat_tip}"></div>
                                 </td>
 
-                                <td align="center" data-show-size="${show_size}">${pretty_filesize(show_size)}</td>
-
-                                <td align="center">
-                                    <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
-                                    <i class="fa ${("fa-times red-text", "fa-check green-text")[bool(paused)]}"></i>
+                                <td class="align-middle text-center " data-show-size="${show_size}">
+                                    ${pretty_filesize(show_size)}
                                 </td>
 
-                                <td align="center">
+                                <td class="align-middle text-center ">
+                                    <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
+                                </td>
+
+                                <td class="align-middle text-center">
                                     % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
                                         ${_('Continuing')}
                                     % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):

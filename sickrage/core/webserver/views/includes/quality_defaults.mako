@@ -45,7 +45,7 @@
             qualityString = "Custom"
 
         if overrideClass is None:
-            cssClass = "quality " + cssClass
+            cssClass = "badge " + cssClass
         else:
             cssClass = overrideClass
     %>
