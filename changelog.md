@@ -1,6 +1,7 @@
 # Changelog
 
-- * 80395c7 - 2018-07-07: Refactored display show view to Bootstrap 4.x 
+- * 8732c35 - 2018-07-07: Refactored edit show view to Bootstrap 4.x 
+- * a4fa4da - 2018-07-07: Refactored display show view to Bootstrap 4.x 
 - * f3b315e - 2018-07-06: Release v9.3.52 
 - * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
 - * 9d335cb - 2018-07-06: Release v9.3.51 

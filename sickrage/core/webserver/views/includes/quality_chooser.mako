@@ -25,8 +25,8 @@
                 </select>
             </div>
             <div id="qualityPreset_label">
-                <label for="qualityPreset">
-                    <p>${_('Preferred qualities replace existing downloads till highest quality is met')}</p>
+                <label class="blockquote-footer" for="qualityPreset">
+                    ${_('Preferred qualities replace existing downloads till highest quality is met')}
                 </label>
             </div>
         </div>

@@ -15,33 +15,44 @@
     <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
     <div id="show">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col mx-auto text-center">
                 <h1 class="title">${title}</h1>
+                <hr class="bg-light"/>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
-
+            <div class="col-md-6 mx-auto">
                 <form action="editShow" method="post">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Main')}</a></li>
-                        <li><a data-toggle="tab" href="#core-tab-pane2">${_('Format')}</a></li>
-                        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Advanced')}</a></li>
-                    </ul>
+                    <div class="card bg-dark">
+                        <div class="card-header bg-secondary">
+                            <ul class="nav nav-pills card-header-pills">
+                                <li class="nav-item px-1">
+                                    <a class="nav-link bg-dark active text-white" data-toggle="tab"
+                                       href="#core-tab-pane1">${_('Main')}</a>
+                                </li>
+                                <li class="nav-item px-1">
+                                    <a class="nav-link bg-dark text-white" data-toggle="tab"
+                                       href="#core-tab-pane2">${_('Format')}</a>
+                                </li>
+                                <li class="nav-item px-1">
+                                    <a class="nav-link bg-dark text-white" data-toggle="tab"
+                                       href="#core-tab-pane3">${_('Advanced')}</a>
+                                </li>
+                            </ul>
+                        </div>
 
-                    <div class="tab-content">
-                        <div id="core-tab-pane1" class="tab-pane fade in active">
-                            <div class="row tab-pane">
-                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                        <div class="card-body tab-content">
+                            <div id="core-tab-pane1" class="tab-pane active">
+                                <div class="card-title">
                                     <h3>${_('Main Settings')}</h3>
                                 </div>
 
-                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                <fieldset class="card-text">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Show Location')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
                                             <div class="input-group input350">
                                                 <div class="input-group-addon">
@@ -52,30 +63,30 @@
                                                        class="form-control "
                                                        autocapitalize="off" title="Location" required=""/>
                                             </div>
-                                            <label for="location">
-                                                <p>${_('Location for where your show resides on your device')}</p>
+                                            <label class="blockquote-footer" for="location">
+                                                ${_('Location for where your show resides on your device')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <br/>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Preferred Quality')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             ${QualityChooser(*Quality.splitQuality(int(show.quality)))}
                                         </div>
                                     </div>
 
                                     <br/>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Default Episode Status')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <div class="input-group input350">
                                                 <div class="input-group-addon">
                                                     <span class="glyphicon glyphicon-list"></span>
@@ -88,19 +99,19 @@
                                                     % endfor
                                                 </select>
                                             </div>
-                                            <label for="defaultEpStatusSelect">
-                                                <p>${_('Unaired episodes automatically set to this status when air date reached')}</p>
+                                            <label class="blockquote-footer" for="defaultEpStatusSelect">
+                                                ${_('Unaired episodes automatically set to this status when air date reached')}
                                             </label>
                                         </div>
                                     </div>
 
                                     <br/>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Info Language')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <% languages = IndexerApi().indexer().languages.keys() %>
                                             <div class="input-group input350">
                                                 <div class="input-group-addon">
@@ -112,17 +123,19 @@
                                                         data-language="${show.lang}"
                                                         data-available="${','.join(languages)}"></select>
                                             </div>
-                                            <label for="indexerLangSelect">
-                                                <p>${_('Language of show information is translated into')}</p>
+                                            <label class="blockquote-footer" for="indexerLangSelect">
+                                                ${_('Language of show information is translated into')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <br/>
+
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Skip downloaded')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="skip_downloaded"
                                                    name="skip_downloaded" ${('', 'checked')[show.skip_downloaded == 1]} />
                                             <label for="skip_downloaded">
@@ -131,11 +144,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Subtitles')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="subtitles"
                                                    name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.config.use_subtitles])]}${('disabled="disabled"', '')[bool(sickrage.app.config.use_subtitles)]}/>
                                             <label for="subtitles">
@@ -144,11 +157,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Subtitle metdata')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="subtitles_sr_metadata"
                                                    name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
                                             <label for="subtitles_sr_metadata">
@@ -158,11 +171,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Paused')}</label><br/>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="paused"
                                                    name="paused" ${('', 'checked')[show.paused == 1]} />
                                             <label for="paused">
@@ -172,66 +185,70 @@
                                     </div>
                                 </fieldset>
                             </div>
-                        </div>
-                        <div id="core-tab-pane2" class="tab-pane fade">
-                            <div class="row tab-pane">
-                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+
+                            <div id="core-tab-pane2" class="tab-pane">
+                                <div class="card-title">
                                     <h3>${_('Format Settings')}</h3>
                                 </div>
 
-                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                <fieldset class="card-text">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Air by date')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="airbydate"
                                                    name="air_by_date" ${('', 'checked')[show.air_by_date == 1]} />
-                                            <label for="airbydate">
+                                            <label class="mb-0" for="airbydate">
                                                 ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
-                                                <br>
-                                                <pre>${_('In case of an air date conflict between regular and special '
-                                                'episodes, the later will be ignored.')}</pre>
                                             </label>
+                                            <div class="blockquote-footer">
+                                                ${_('In case of an air date conflict between regular and special '
+                                                'episodes, the later will be ignored.')}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Sports')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="sports"
                                                    name="sports" ${('', 'checked')[show.sports == 1]}/>
-                                            <label for="sports">
+                                            <label class="mb-0" for="sports">
                                                 ${_('check if the show is a sporting or MMA event released as '
-                                                'Show.03.02.2010 rather than Show.S02E03')}<br>
-                                                <pre>${_('In case of an air date conflict between regular and special '
-                                                'episodes, the later will be ignored.')}</pre>
+                                                'Show.03.02.2010 rather than Show.S02E03')}
                                             </label>
+                                            <div class="blockquote-footer">
+                                                ${_('In case of an air date conflict between regular and special '
+                                                'episodes, the later will be ignored.')}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('DVD Order')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="dvdorder"
                                                    name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} />
-                                            <label for="dvdorder">
-                                                ${_('use the DVD order instead of the air order')}<br>
-                                                <pre>${_('A "Force Full Update" is necessary, and if you have existing '
-                                                'episodes you need to sort them manually.')}</pre>
+                                            <label class="mb-0" for="dvdorder">
+                                                ${_('use the DVD order instead of the air order')}
                                             </label>
+                                            <div class="blockquote-footer">
+                                                ${_('A "Force Full Update" is necessary, and if you have existing '
+                                                'episodes you need to sort them manually.')}
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Anime')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="anime"
                                                    name="anime" ${('', 'checked')[show.is_anime == 1]}>
                                             <label for="anime">
@@ -245,11 +262,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Season folders')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="season_folders"
                                                    name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.app.config.naming_force_folders]} ${('', 'disabled="disabled"')[bool(sickrage.app.config.naming_force_folders)]}/>
                                             <label for="season_folders">
@@ -258,11 +275,11 @@
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Scene Numbering')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                                        <div class="col component-desc">
                                             <input type="checkbox" id="scene"
                                                    name="scene" ${('', 'checked')[show.scene == 1]} />
                                             <label for="scene">
@@ -272,73 +289,71 @@
                                     </div>
                                 </fieldset>
                             </div>
-                        </div>
 
-                        <div id="core-tab-pane3" class="tab-pane fade">
-                            <div class="row tab-pane">
-                                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+                            <div id="core-tab-pane3" class="tab-pane">
+                                <div class="card-title">
                                     <h3>${_('Advanced Settings')}</h3>
                                 </div>
-                                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+                                <fieldset class="card-text">
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Ignored Words')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="fa fa-file-word-o"></span>
+                                        <div class="col component-desc">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text fa fa-file-word-o"></span>
                                                 </div>
                                                 <input type="text" id="rls_ignore_words" name="rls_ignore_words"
                                                        value="${show.rls_ignore_words}"
                                                        placeholder="${_('ex. word1,word2,word3')}"
                                                        class="form-control "/>
                                             </div>
-                                            <label for="rls_ignore_words">
-                                                <p>${_('Search results with one or more words from this list will be ignored.')}</p>
+                                            <label class="blockquote-footer" for="rls_ignore_words">
+                                                ${_('Search results with one or more words from this list will be ignored.')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Required Words')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="fa fa-file-word-o"></span>
+                                        <div class="col component-desc">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text fa fa-file-word-o"></span>
                                                 </div>
                                                 <input type="text" id="rls_require_words" name="rls_require_words"
                                                        placeholder="${_('ex. word1,word2,word3')}"
                                                        value="${show.rls_require_words}"
                                                        class="form-control "/>
                                             </div>
-                                            <label for="rls_require_words">
-                                                <p>${_('Search results with no words from this list will be ignored.')}</p>
+                                            <label class="blockquote-footer" for="rls_require_words">
+                                                ${_('Search results with no words from this list will be ignored.')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Scene Exception')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
+                                        <div class="col component-desc">
+                                            <div class="input-group">
                                                 <input type="text" id="SceneName"
                                                        title="Scene exception name for show"
                                                        class="form-control "/>
-                                                <div class="input-group-addon">
-                                                    <a href="#" class="glyphicon glyphicon-plus-sign"
+                                                <div class="input-group-append">
+                                                    <a href="#" class="input-group-text fa fa-plus"
                                                        id="addSceneName"></a>
                                                 </div>
                                             </div>
                                             <br/>
-                                            <div class="row">
+                                            <div class="form-row">
                                                 <div class="col-md-12">
-                                                    <div class="input-group input350">
+                                                    <div class="input-group">
                                                         <select id="exceptions_list" name="exceptions_list"
                                                                 class="form-control"
                                                                 multiple="multiple"
@@ -347,48 +362,48 @@
                                                                 <option value="${cur_exception}">${cur_exception}</option>
                                                             % endfor
                                                         </select>
-                                                        <div class="input-group-addon">
-                                                            <a href="#" class="glyphicon glyphicon-minus-sign"
+                                                        <div class="input-group-append">
+                                                            <a href="#" class="input-group-text fa fa-minus"
                                                                id="removeSceneName"></a>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <label for="exceptions_list">
+                                            <label class="blockquote-footer" for="exceptions_list">
                                                 ${_('This will affect episode search on NZB and torrent providers. '
                                                 'This list overrides the original name it doesn\'t append to it.')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <div class="row field-pair">
-                                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                                    <div class="form-row field-pair">
+                                        <div class="col">
                                             <label class="component-title">${_('Search Delay')}</label>
                                         </div>
-                                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="fa fa-clock-o"></span>
+                                        <div class="col component-desc">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text fa fa-clock-o"></span>
                                                 </div>
                                                 <input type="text" id="search_delay" name="search_delay"
                                                        placeholder="${_('ex. 1')}"
                                                        value="${show.search_delay}"
                                                        class="form-control "/>
                                             </div>
-                                            <label for="search_delay">
-                                                <p>${_('Delays searching for new episodes by X number of days.')}</p>
+                                            <label class="blockquote-footer" for="search_delay">
+                                                ${_('Delays searching for new episodes by X number of days.')}
                                             </label>
                                         </div>
                                     </div>
                                 </fieldset>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <input id="submit" type="submit" value="${_('Save Changes')}"
-                                   class="btn pull-left config_submitter button">
+                        <div class="form-row py-1 px-1">
+                            <div class="col-md-12">
+                                <input id="submit" type="submit" value="${_('Save Changes')}"
+                                       class="btn btn-secondary pull-left config_submitter button">
+                            </div>
                         </div>
                     </div>
                 </form>
