@@ -1,6 +1,10 @@
 # Changelog
 
-- * 36cd2f1 - 2018-07-05: Migrated tablesorter theme to bootstrap 4.x for home view 
+- * f3b315e - 2018-07-06: Release v9.3.52 
+- * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
+- * 9d335cb - 2018-07-06: Release v9.3.51 
+- * 55167ba - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
+- * 9f14867 - 2018-07-05: Migrated tablesorter theme to bootstrap 4.x for home view 
 - * fc2ec2b - 2018-07-05: Upgraded tablesorter to use bootstrap 4.x 
 - * e8d562b - 2018-07-04: Fixed responsiveness for add shows template Main shows page posters migrated to bootstrap 4 cards 
 - * 591578b - 2018-07-04: Release v9.3.50 
