@@ -1820,7 +1820,7 @@ jQuery(document).ready(function ($) {
                         $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
                     });
 
-                    $('.imdbstars').each(function (i, e) {
+                    $('#imdbstars').each(function (i, e) {
                         $(e).html($('<span>').width($(e).text() * 12));
                     });
 

@@ -244,7 +244,7 @@
                                 <div class="card-footer py-1 px-1">
                                     <div class="row">
                                         <div class="col text-left small">
-                                          <span class="show-dlstats"
+                                          <span class="badge badge-info show-dlstats"
                                                 title="${download_stat_tip}">${download_stat}</span>
                                         </div>
                                         <div class="col">

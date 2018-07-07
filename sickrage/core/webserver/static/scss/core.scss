@@ -39,25 +39,6 @@ body {
   background-image: -webkit-linear-gradient(#da5945, #b11a10) !important;
   background-image: -o-linear-gradient(#da5945, #b11a10) !important; }
 
-span.quality {
-  font: 12px/13px "Open Sans", verdana, sans-serif;
-  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
-  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
-  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 50%, transparent 50%, rgba(0, 0, 0, 0.25));
-  -webkit-box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), inset 0 -1px 3px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08), 0 1px 2px rgba(0, 0, 0, 0.15);
-  text-shadow: 0 1px rgba(0, 0, 0, 0.8);
-  color: #FFFFFF;
-  display: inline-block;
-  padding: 2px 4px;
-  text-align: center;
-  vertical-align: baseline;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  white-space: nowrap; }
-
 span.any-hd {
   background: #2672b6 repeating-linear-gradient(-45deg, #2672b6, #2672b6 10px, #5b990d 10px, #5b990d 20px); }
 
@@ -105,3 +86,62 @@ span.Unknown {
 
 span.Proper {
   background-color: #3F7F00; }
+
+.unaired {
+  background-color: #f5f1e4; }
+
+.skipped {
+  background-color: #bedeed; }
+
+.good {
+  background-color: #c3e3c8; }
+
+.qual {
+  background-color: #ffda8a; }
+
+.wanted {
+  background-color: #ffb65e; }
+
+.snatched {
+  background-color: #ebc1ea; }
+
+.missed {
+  background-color: #ffb0b0; }
+
+span.unaired {
+  color: #584b20;
+  border: 1px solid #584b20; }
+
+span.skipped {
+  color: #1d5068;
+  border: 1px solid #1d5068; }
+
+span.good {
+  color: #295730;
+  border: 1px solid #295730; }
+
+span.qual {
+  color: #765100;
+  border: 1px solid #765100; }
+
+span.wanted {
+  color: #894305;
+  border: 1px solid #894305; }
+
+span.snatched {
+  color: #652164;
+  border: 1px solid #652164; }
+
+span.missed {
+  color: #890000;
+  border: 1px solid #890000; }
+
+span.unaired b,
+span.skipped b,
+span.good b,
+span.qual b,
+span.wanted b,
+span.missed b,
+span.snatched b {
+  color: #000000;
+  font-weight: 800; }

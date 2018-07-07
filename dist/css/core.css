@@ -115,3 +115,77 @@ span.Unknown {
 span.Proper {
     background-color: #3F7F00;
 }
+
+.unaired {
+    background-color: #f5f1e4;
+}
+
+.skipped {
+    background-color: #bedeed;
+}
+
+.good {
+    background-color: #c3e3c8;
+}
+
+.qual {
+    background-color: #ffda8a;
+}
+
+.wanted {
+    background-color: #ffb65e;
+}
+
+.snatched {
+    background-color: #ebc1ea;
+}
+
+.missed {
+    background-color: #ffb0b0;
+}
+
+span.unaired {
+    color: #584b20;
+    border: 1px solid #584b20;
+}
+
+span.skipped {
+    color: #1d5068;
+    border: 1px solid #1d5068;
+}
+
+span.good {
+    color: #295730;
+    border: 1px solid #295730;
+}
+
+span.qual {
+    color: #765100;
+    border: 1px solid #765100;
+}
+
+span.wanted {
+    color: #894305;
+    border: 1px solid #894305;
+}
+
+span.snatched {
+    color: #652164;
+    border: 1px solid #652164;
+}
+
+span.missed {
+    color: #890000;
+    border: 1px solid #890000;
+}
+
+span.unaired b,
+span.skipped b,
+span.good b,
+span.qual b,
+span.wanted b,
+span.missed b,
+span.snatched b {
+    color: #000000;
+    font-weight: 800;
+}

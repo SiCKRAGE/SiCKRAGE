@@ -9,7 +9,7 @@
         <div class="row">
             <div class="col-md-12">
                 <h1 class="title">${title}</h1>
-                <hr/>
+                <hr class="bg-dark"/>
             </div>
         </div>
         <div class="row">

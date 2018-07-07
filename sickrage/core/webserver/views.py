@@ -1137,7 +1137,7 @@ class Home(WebHandler):
 
         submenu = [
             {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
-             'icon': 'ui-icon ui-icon-pencil'}]
+             'icon': 'fa fa-edit'}]
 
         showLoc = showObj.location
 
@@ -1168,32 +1168,32 @@ class Home(WebHandler):
             if not sickrage.app.show_queue.isBeingUpdated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'ui-icon ui-icon-play'})
+                                    'icon': 'fa fa-play'})
                 else:
                     submenu.append({'title': _('Pause'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'ui-icon ui-icon-pause'})
+                                    'icon': 'fa fa-pause'})
 
                 submenu.append({'title': _('Remove'), 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
-                                'class': 'removeshow', 'confirm': True, 'icon': 'ui-icon ui-icon-trash'})
+                                'class': 'removeshow', 'confirm': True, 'icon': 'fa fa-trash'})
                 submenu.append({'title': _('Re-scan files'), 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-refresh'})
+                                'icon': 'fa fa-sync'})
                 submenu.append({'title': _('Full Update'),
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-transfer-e-w'})
+                                'icon': 'fa fa-exchange'})
                 submenu.append(
                     {'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
-                     'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
+                     'requires': self.haveKODI(), 'icon': 'fa fa-tv-retro'})
                 submenu.append(
                     {'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
-                     'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
+                     'requires': self.haveEMBY(), 'icon': 'fa fa-tv-retro'})
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-tag'})
+                                'icon': 'fa fa-tag'})
 
                 if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
-                         'icon': 'ui-icon ui-icon-comment'})
+                         'icon': 'fa fa-comment'})
 
         epCats = {}
         epCounts = {
