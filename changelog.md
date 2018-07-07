@@ -1,6 +1,7 @@
 # Changelog
 
-- * 557aa20 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
+- * 1a1dbc6 - 2018-07-06: Release v9.3.52 
+- * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
 - * 9d335cb - 2018-07-06: Release v9.3.51 
 - * 55167ba - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
 - * 591578b - 2018-07-04: Release v9.3.50 
