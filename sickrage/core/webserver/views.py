@@ -60,7 +60,7 @@ from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertai
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
-    clean_hosts, overall_stats
+    clean_hosts, overall_stats, total_seconds
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -249,12 +249,15 @@ class LoginHandler(BaseHandler):
 
         code = self.get_argument('code', False)
         if code:
-            API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-
             try:
+                API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
                 user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
                 API().register_appid(sickrage.app.config.app_id)
-                self.set_secure_cookie('sr_user', json_encode(user))
+
+                expiration = (
+                            float(total_seconds(datetime.timedelta(seconds=API().token['expires_in']))) / float(86400))
+
+                self.set_secure_cookie('sr_user', json_encode(user), expires_days=expiration)
                 self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
             except Exception as e:
                 return self.redirect('/logout')
