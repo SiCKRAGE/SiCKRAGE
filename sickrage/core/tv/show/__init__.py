@@ -503,7 +503,7 @@ class TVShow(object):
     def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, ):
 
         # if we get an anime get the real season and episode
-        if self.is_anime and absolute_number and not season and not episode:
+        if self.is_anime and absolute_number is not None and not season and not episode:
             dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
                       if x['absolute_number'] == absolute_number and x['season'] != 0]
 

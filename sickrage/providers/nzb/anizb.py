@@ -66,7 +66,7 @@ class Anizb(NZBProvider):
                         sickrage.app.log.debug('No data returned from provider')
                         continue
 
-                    if not response.text.startswith('<?xml'):
+                    if not response.startswith('<?xml'):
                         sickrage.app.log.info('Expected xml but got something else, is your mirror failing?')
                         continue
 
