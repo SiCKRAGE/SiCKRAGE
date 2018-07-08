@@ -319,6 +319,7 @@ def is_media_file(filename):
 
     return sepFile[-1].lower() in mediaExtensions
 
+
 def is_rar_file(filename):
     """
     Check if file is a RAR file, or part of a RAR set
@@ -682,7 +683,8 @@ def chmodAsParent(childPath):
 
     try:
         os.chmod(childPath, childMode)
-        sickrage.app.log.debug("Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
+        sickrage.app.log.debug(
+            "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
     except OSError:
         sickrage.app.log.debug("Failed to set permission for %s to %o" % (childPath, childMode))
 
@@ -716,7 +718,8 @@ def fixSetGroupID(childPath):
         user_id = os.geteuid()
 
         if user_id != 0 and user_id != childPath_owner:
-            sickrage.app.log.debug("Not running as root or owner of {}, not trying to set the set-group-ID".format(childPath))
+            sickrage.app.log.debug(
+                "Not running as root or owner of {}, not trying to set the set-group-ID".format(childPath))
             return
 
         try:
@@ -1733,3 +1736,49 @@ def memory_usage():
         pass
 
     return 'unknown'
+
+
+def convert_to_timedelta(time_val):
+    """
+    Given a *time_val* (string) such as '5d', returns a `datetime.timedelta`
+    object representing the given value (e.g. `timedelta(days=5)`).  Accepts the
+    following '<num><char>' formats:
+    =========   ============ =========================
+    Character   Meaning      Example
+    =========   ============ =========================
+    (none)      Milliseconds '500' -> 500 Milliseconds
+    s           Seconds      '60s' -> 60 Seconds
+    m           Minutes      '5m'  -> 5 Minutes
+    h           Hours        '24h' -> 24 Hours
+    d           Days         '7d'  -> 7 Days
+    M           Months       '2M'  -> 2 Months
+    y           Years        '10y' -> 10 Years
+    =========   ============ =========================
+    """
+
+    try:
+        num = int(time_val)
+        return datetime.timedelta(milliseconds=num)
+    except ValueError:
+        pass
+    num = int(time_val[:-1])
+    if time_val.endswith('s'):
+        return datetime.timedelta(seconds=num)
+    elif time_val.endswith('m'):
+        return datetime.timedelta(minutes=num)
+    elif time_val.endswith('h'):
+        return datetime.timedelta(hours=num)
+    elif time_val.endswith('d'):
+        return datetime.timedelta(days=num)
+    elif time_val.endswith('M'):
+        return datetime.timedelta(days=(num * 30))  # Yeah this is approximate
+    elif time_val.endswith('y'):
+        return datetime.timedelta(days=(num * 365))  # Sorry, no leap year support
+
+
+def total_seconds(td):
+    """
+    Given a timedelta (*td*) return an integer representing the equivalent of
+    Python 2.7's :meth:`datetime.timdelta.total_seconds`.
+    """
+    return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10 ** 6) / 10 ** 6

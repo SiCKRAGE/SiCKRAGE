@@ -1,6 +1,8 @@
 # Changelog
 
-- * 1a1dbc6 - 2018-07-06: Release v9.3.52 
+- * c1c77ee - 2018-07-07: Release v9.3.53 
+- * 7b9aac5 - 2018-07-07: Fixed client errors for SSO logins Added timeout for logins to match expire_in of tokens Fixed resetting of app_id when resetting config to defaults 
+- * f3b315e - 2018-07-06: Release v9.3.52 
 - * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
 - * 9d335cb - 2018-07-06: Release v9.3.51 
 - * 55167ba - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
