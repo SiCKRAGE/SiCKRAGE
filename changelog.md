@@ -1,6 +1,8 @@
 # Changelog
 
-- * 1c95840 - 2018-07-08: Changed table text color to dark for display show view 
+- * ae015ef - 2018-07-08: Release v9.3.54 
+- * afa499a - 2018-07-08: Set secure cookie to expire after 30 days 
+- * 443ec81 - 2018-07-08: Changed table text color to dark for display show view 
 - * 2923c07 - 2018-07-08: Pre-Release v9.3.54.dev1 
 - * adba6a8 - 2018-07-08: Fixed logging format error for NyaaTorrents search provider 
 - * e666331 - 2018-07-08: Fixed getEpisode function to handle absolute episode numbers of zero 
