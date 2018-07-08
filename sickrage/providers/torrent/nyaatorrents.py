@@ -73,8 +73,8 @@ class NyaaProvider(TorrentProvider):
                     sickrage.app.log.debug('No data returned from provider')
                     continue
                 if not data.get('entries'):
-                    sickrage.app.log.debug('Data returned from provider does not contain any {0}torrents',
-                                           'confirmed ' if self.confirmed else '')
+                    sickrage.app.log.debug('Data returned from provider does not contain any {}torrents'.format(
+                        'confirmed ' if self.confirmed else ''))
                     continue
 
                 results += self.parse(data['entries'], mode)
