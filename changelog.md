@@ -1,5 +1,6 @@
 # Changelog
 
+- * 91067e5 - 2018-07-08: Fixed progressbar backgrounds and misc margin tweaks 
 - * dc3cc1c - 2018-07-07: Release v9.3.53 
 - * 7b9aac5 - 2018-07-07: Fixed client errors for SSO logins Added timeout for logins to match expire_in of tokens Fixed resetting of app_id when resetting config to defaults 
 - * fd227d5 - 2018-07-07: Refactored edit show view to Bootstrap 4.x 

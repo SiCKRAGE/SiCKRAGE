@@ -13,11 +13,11 @@
 </%block>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div class="row bg-dark mb-4 py-2 px-4">
+    <div class="row bg-dark mb-3 py-2 px-4">
         <div class="col text-left">
-            <div class="form-inline">
+            <div class="form-inline m-2">
                 % if sickrage.app.config.home_layout != 'poster':
-                    <div class="m-1">
+                    <div class="px-1">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-secondary text-white-50" style="border: none;">
@@ -32,10 +32,10 @@
                 % endif
 
                 % if sickrage.app.config.home_layout == 'poster':
-                    <div class="m-1">
+                    <div class="px-1">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <div class="input-group-text bg-secondary" style="border: none;">
+                                <div class="input-group-text bg-secondary" style="border: none">
                                     <i class="fa fa-search"></i>
                                 </div>
                             </div>
@@ -44,7 +44,7 @@
                         </div>
                     </div>
 
-                    <div class="m-1">
+                    <div class="px-1">
                         <select id="postersort" class="form-control bg-secondary text-white-50" style="border: none;">
                             <option value="name"
                                     data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
@@ -65,7 +65,7 @@
                         </select>
                     </div>
 
-                    <div class="m-1">
+                    <div class="px-1">
                         <select id="postersortdirection" class="form-control bg-secondary text-white-50"
                                 style="border: none;">
                             <option value="true"
@@ -82,31 +82,27 @@
             </div>
         </div>
         <div class="col text-right">
-            <div class="d-inline-flex">
+            <div class="form-inline m-1 d-inline-flex">
                 % if sickrage.app.config.home_layout == 'poster':
-                    <div class="m-1">
-                        <div class="mt-3" style="width: 100px" id="posterSizeSlider"></div>
-                    </div>
+                    <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
-                <div class="m-1">
-                    <div class="dropdown">
-                        <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
-                            % if sickrage.app.config.home_layout == 'poster':
-                                <i class="fa fa-2x fa-th-large"></i>
-                            % elif sickrage.app.config.home_layout == 'small':
-                                <i class="fa fa-2x fa-th"></i>
-                            % elif sickrage.app.config.home_layout == 'banner':
-                                <i class="fa fa-2x fa-image"></i>
-                            % elif sickrage.app.config.home_layout == 'simple':
-                                <i class="fa fa-2x fa-th-list"></i>
-                            % endif
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=poster">Poster</a>
-                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=small">Small Poster</a>
-                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=banner">Banner</a>
-                            <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=simple">Simple</a>
-                        </div>
+                <div class="dropdown">
+                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                        % if sickrage.app.config.home_layout == 'poster':
+                            <i class="fa fa-2x fa-th-large"></i>
+                        % elif sickrage.app.config.home_layout == 'small':
+                            <i class="fa fa-2x fa-th"></i>
+                        % elif sickrage.app.config.home_layout == 'banner':
+                            <i class="fa fa-2x fa-image"></i>
+                        % elif sickrage.app.config.home_layout == 'simple':
+                            <i class="fa fa-2x fa-th-list"></i>
+                        % endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=poster">Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=small">Small Poster</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=banner">Banner</a>
+                        <a class="dropdown-item" href="${srWebRoot}/setHomeLayout/?layout=simple">Simple</a>
                     </div>
                 </div>
             </div>
@@ -208,10 +204,13 @@
                                          src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
                                 </a>
                                 <div class="card-header py-0 px-0">
-                                    <div class="progress progress-bar hidden-print" role="progressbar"
-                                         style="width: ${progressbar_percent}%;height: 5px;"
-                                         data-progress-percentage="${progressbar_percent}"
-                                         data-show-id="${curShow.indexerid}"></div>
+                                    <div class="bg-dark rounded">
+                                        <div class="progress progress-bar rounded hidden-print" role="progressbar"
+                                             style="width: ${progressbar_percent}%;height: 5px;"
+                                             data-progress-percentage="${progressbar_percent}"
+                                             data-show-id="${curShow.indexerid}">
+                                        </div>
+                                    </div>
 
                                 </div>
                                 <div class="card-body text-truncate py-1 px-1 small">
@@ -475,11 +474,13 @@
 
                                 <td class="align-middle text-center">
                                     <span style="display: none;">${download_stat}</span>
-                                    <div class="progress-bar" style="width: ${progressbar_percent}%"
-                                         data-show-id="${curShow.indexerid}"
-                                         data-progress-percentage="${progressbar_percent}"
-                                         data-progress-text="${download_stat}"
-                                         data-progress-tip="${download_stat_tip}"></div>
+                                    <div class="bg-dark rounded">
+                                        <div class="progress-bar rounded" style="width: ${progressbar_percent}%"
+                                             data-show-id="${curShow.indexerid}"
+                                             data-progress-percentage="${progressbar_percent}"
+                                             data-progress-text="${download_stat}"
+                                             data-progress-tip="${download_stat_tip}"></div>
+                                    </div>
                                 </td>
 
                                 <td class="align-middle text-center " data-show-size="${show_size}">
