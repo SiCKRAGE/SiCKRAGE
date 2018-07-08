@@ -1,6 +1,7 @@
 # Changelog
 
-- * 46ffef0 - 2018-07-08: Fixed bug in AniDB NZB provider 
+- * 555f5fd - 2018-07-08: Fixed getEpisode function to handle absolute episode numbers of zero 
+- * 00f48ae - 2018-07-08: Fixed bug in AniDB NZB provider 
 - * dc3cc1c - 2018-07-07: Release v9.3.53 
 - * 7b9aac5 - 2018-07-07: Fixed client errors for SSO logins Added timeout for logins to match expire_in of tokens Fixed resetting of app_id when resetting config to defaults 
 - * f3b315e - 2018-07-06: Release v9.3.52 
