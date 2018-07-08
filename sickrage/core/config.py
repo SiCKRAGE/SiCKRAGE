@@ -78,7 +78,7 @@ class Config(object):
         self.socket_timeout = 30
         self.web_host = ""
         self.web_port = 8081
-        self.web_external_port = random.randint(49152, 65536)
+        self.web_external_port = 0
         self.web_log = False
         self.web_root = ""
         self.app_username = ""
@@ -689,7 +689,7 @@ class Config(object):
                 'torrent_dir': ''
             },
             'General': {
-                'app_id': uuid.uuid4(),
+                'app_id': self.app_id or str(uuid.uuid4()),
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -700,12 +700,12 @@ class Config(object):
                 'web_use_gzip': True,
                 'dailysearch_frequency': 40,
                 'ignore_words': 'german,french,core2hd,dutch,swedish,reenc,MrLss',
-                'api_key': generateApiKey(),
+                'api_key': self.api_key or generateApiKey(),
                 'check_propers_interval': 'daily',
                 'nzb_method': 'blackhole',
-                'web_cookie_secret': generate_secret(),
+                'web_cookie_secret': self.web_cookie_secret or generate_secret(),
                 'ssl_verify': True,
-                'encryption_secret': generate_secret(),
+                'encryption_secret': self.encryption_secret or generate_secret(),
                 'enable_upnp': True,
                 'version_notify': True,
                 'web_root': '',
@@ -766,7 +766,7 @@ class Config(object):
                 'git_path': 'git',
                 'sync_files': '!sync,lftp-pget-status,part,bts,!qb',
                 'web_port': 8081,
-                'web_external_port': random.randint(49152, 65536),
+                'web_external_port': self.web_external_port or random.randint(49152, 65536),
                 'launch_browser': False,
                 'unpack': False,
                 'unpack_dir': "",
