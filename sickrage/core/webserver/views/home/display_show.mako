@@ -416,26 +416,26 @@
                         <input type="checkbox" id="missed" checked/>
                         ${_('Missed:')} <b>${epCounts[Overview.MISSED]}</b>
                     </span>
-                    <span class="badge wanted">
+                        <span class="badge wanted">
                         <input type="checkbox" id="wanted" checked/>
-                        ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
+                            ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
                     </span>
-                    <span class="badge qual">
+                        <span class="badge qual">
                         <input type="checkbox" id="qual" checked/>
-                        ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
+                            ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
                     </span>
-                    <span class="badge good">
+                        <span class="badge good">
                         <input type="checkbox" id="good" checked/>
-                        ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
+                            ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
                     </span>
-                    <span class="badge skipped">
+                        <span class="badge skipped">
                         <input type="checkbox" id="skipped" checked/>
-                        ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
+                            ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
                     </span>
-                    <span class="badge snatched">
+                        <span class="badge snatched">
                         <input type="checkbox" id="snatched" checked/>
-                        <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
-                        ${_('Snatched:')} <b>${total_snatched}</b>
+                            <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
+                            ${_('Snatched:')} <b>${total_snatched}</b>
                     </span>
                     </div>
                 </div>
@@ -536,26 +536,26 @@
         <div class="col-md-12">
         <div class="horizontal-scroll">
         <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
-               class="table table-bordered table-hover table-dark display_show"
+               class="table table-bordered table-dark display_show"
                style="opacity: .80" cellspacing="0" border="0" cellpadding="0">
             <thead>
             <tr class="seasoncols">
-                <th data-sorter="false" data-priority="critical" class="col-checkbox">
+                <th data-sorter="false" data-priority="critical" class="table-fit col-checkbox">
                     <input type="checkbox" class="seasonCheck" id="${epResult["season"]}"/>
                 </th>
-                <th data-sorter="false" class="col-metadata">${_('NFO')}</th>
-                <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
-                <th data-sorter="false" class="col-ep episode">${_('Episode')}</th>
-                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
-                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>${_('Scene')}</th>
-                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
+                <th data-sorter="false" class="table-fit col-metadata">${_('NFO')}</th>
+                <th data-sorter="false" class="table-fit col-metadata">${_('TBN')}</th>
+                <th data-sorter="false" class="table-fit col-ep episode">${_('Episode')}</th>
+                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
+                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(scene)]}>${_('Scene')}</th>
+                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
                 <th data-sorter="false" class="col-name">${_('Name')}</th>
-                <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
-                <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
-                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
-                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
-                <th data-sorter="false" class="col-status">${_('Status')}</th>
-                <th data-sorter="false" class="col-search">${_('Search')}</th>
+                <th data-sorter="false" class="table-fit col-ep columnSelector-false size">${_('Size')}</th>
+                <th data-sorter="false" class="table-fit col-airdate">${_('Airdate')}</th>
+                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
+                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
+                <th data-sorter="false" class="table-fit col-status">${_('Status')}</th>
+                <th data-sorter="false" class="table-fit col-search">${_('Search')}</th>
             </tr>
             </thead>
 
@@ -566,7 +566,7 @@
             % endif
         >
         % endif
-        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle font-weight-bold"
+        <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle font-weight-bold text-dark"
             id="S${str(epResult["season"])}E${str(epResult["episode"])}">
 
             <td class="col-checkbox">
@@ -642,7 +642,7 @@
                 ${epResult["name"]}
             </td>
 
-            <td class="col-ep">
+            <td class="text-nowrap col-ep">
                 % if epResult["file_size"]:
                             <% file_size = pretty_filesize(epResult["file_size"]) %>
                 ${file_size}
@@ -657,7 +657,7 @@
                     <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
                 % endif
                     <time datetime="${airDate.isoformat()}"
-                          class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
+                          class="date text-nowrap">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                 % else:
                     ${_('Never')}
                 % endif
@@ -695,12 +695,12 @@
 
             <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult["status"])) %>
             % if curQuality != Quality.NONE:
-                <td class="col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
+                <td class="text-nowrap col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
             % else:
-                <td class="col-status">${statusStrings[curStatus]}</td>
+                <td class="text-nowrap col-status">${statusStrings[curStatus]}</td>
             % endif
 
-            <td class="col-search">
+            <td class="text-center col-search">
                 % if int(epResult["season"]) != 0:
                     % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ):
                         <a class="epRetry"

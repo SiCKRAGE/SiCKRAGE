@@ -219,7 +219,11 @@ module.exports = function (grunt) {
                         'dist/css/core.css',
                         'dist/css/fonts.css',
                         'dist/css/icons-sickrage.css'
+                    ],
+                    'sickrage/core/webserver/static/scss/bower.scss': [
+                        'dist/css/bower.css'
                     ]
+
                 }
             }
         },

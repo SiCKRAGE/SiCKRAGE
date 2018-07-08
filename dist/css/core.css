@@ -189,3 +189,9 @@ span.snatched b {
     color: #000000;
     font-weight: 800;
 }
+
+.table td.table-fit,
+.table th.table-fit {
+    white-space: nowrap;
+    width: 1%;
+}
