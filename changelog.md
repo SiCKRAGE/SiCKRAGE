@@ -1,6 +1,7 @@
 # Changelog
 
-- * 66965c3 - 2018-07-08: Fixed logging format error for NyaaTorrents search provider 
+- * bfc0720 - 2018-07-08: Pre-Release v9.3.54.dev1 
+- * adba6a8 - 2018-07-08: Fixed logging format error for NyaaTorrents search provider 
 - * e666331 - 2018-07-08: Fixed getEpisode function to handle absolute episode numbers of zero 
 - * 00f48ae - 2018-07-08: Fixed bug in AniDB NZB provider 
 - * dc3cc1c - 2018-07-07: Release v9.3.53 
