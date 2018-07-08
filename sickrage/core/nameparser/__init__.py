@@ -576,12 +576,11 @@ class ParseResult(object):
         if self.season_number is not None:
             to_return += ' SEASON:[{}]'.format(str(self.season_number).zfill(2))
         if self.episode_numbers and len(self.episode_numbers):
-            for ep_num in self.episode_numbers:
-                to_return += ' EPISODE:[{}]'.format(str(ep_num).zfill(2))
+            to_return += ' EPISODE:[{}]'.format(','.join(str(x).zfill(2) for x in self.episode_numbers))
         if self.is_air_by_date:
             to_return += ' AIRDATE:[{}]'.format(self.air_date)
         if self.ab_episode_numbers:
-            to_return += ' ABS:[{}]'.format(self.ab_episode_numbers)
+            to_return += ' ABS:[{}]'.format(','.join(str(x).zfill(3) for x in self.ab_episode_numbers))
         if self.version and self.is_anime is True:
             to_return += ' ANIME VER:[{}]'.format(self.version)
         if self.release_group:

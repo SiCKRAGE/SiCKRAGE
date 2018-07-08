@@ -1,6 +1,12 @@
 # Changelog
 
-- * c1c77ee - 2018-07-07: Release v9.3.53 
+- * 0e66278 - 2018-07-08: Release v9.3.54 
+- * afa499a - 2018-07-08: Set secure cookie to expire after 30 days 
+- * 2923c07 - 2018-07-08: Pre-Release v9.3.54.dev1 
+- * adba6a8 - 2018-07-08: Fixed logging format error for NyaaTorrents search provider 
+- * e666331 - 2018-07-08: Fixed getEpisode function to handle absolute episode numbers of zero 
+- * 00f48ae - 2018-07-08: Fixed bug in AniDB NZB provider 
+- * dc3cc1c - 2018-07-07: Release v9.3.53 
 - * 7b9aac5 - 2018-07-07: Fixed client errors for SSO logins Added timeout for logins to match expire_in of tokens Fixed resetting of app_id when resetting config to defaults 
 - * f3b315e - 2018-07-06: Release v9.3.52 
 - * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
