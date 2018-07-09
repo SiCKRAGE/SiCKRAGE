@@ -33,7 +33,7 @@
                     <input type="button" onclick="$('#configForm').submit()"
                            class="btn btn-secondary config_submitter button" value="${_('Save Changes')}"/>
                     <input type="button" href="/config/reset"
-                           class="btn btn-secondary resetConfig button" value="${_('Reset to Defaults')}"/>
+                           class="btn resetConfig button" value="${_('Reset to Defaults')}"/>
                 </div>
                 <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 pull-right">
                     <h6 class="pull-right">

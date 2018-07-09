@@ -3,19 +3,19 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         'string-replace': {
-          inline: {
-            files: {
-              './': 'sickrage/locale/**/LC_MESSAGES/*.po'
-            },
-            options: {
-              replacements: [
-                {
-                  pattern: /("PO-Revision-Date.*")/ig,
-                  replacement: ''
+            inline: {
+                files: {
+                    './': 'sickrage/locale/**/LC_MESSAGES/*.po'
+                },
+                options: {
+                    replacements: [
+                        {
+                            pattern: /("PO-Revision-Date.*")/ig,
+                            replacement: ''
+                        }
+                    ]
                 }
-              ]
             }
-          }
         },
         clean: {
             bower_components: 'bower_components',
@@ -48,7 +48,7 @@ module.exports = function (grunt) {
                 },
                 mainFiles: {
                     'bootstrap': [
-                        'dist/css/bootstrap.css',
+                        //'dist/css/bootstrap.css',
                         'dist/js/bootstrap.bundle.js'
                     ],
                     'bootstrap-formhelpers': [
@@ -212,38 +212,33 @@ module.exports = function (grunt) {
                 }
             }
         },
-        sass: {
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/scss/core.scss': [
-                        'dist/css/core.css',
-                        'dist/css/fonts.css',
-                        'dist/css/icons-sickrage.css'
-                    ],
-                    'sickrage/core/webserver/static/scss/bower.scss': [
-                        'dist/css/bower.css'
-                    ]
-
-                }
-            }
-        },
         cssmin: {
             options: {
                 shorthandCompacting: false,
                 roundingPrecision: -1
             },
-            bower: {
-                files: {
-                    'sickrage/core/webserver/static/css/bower.min.css': ['dist/css/bower.css']
-                }
-            },
             core: {
                 files: {
-                    'sickrage/core/webserver/static/css/core.min.css': [
-                        'dist/css/core.css',
-                        'dist/css/fonts.css',
-                        'dist/css/icons-sickrage.css'
-                    ]
+                    'sickrage/core/webserver/static/css/core.min.css': 'dist/css/core.css'
+                }
+            }
+        },
+        compass: {
+            dist: {
+                options: {
+                    sassDir: 'dist/scss',
+                    cssDir: 'dist/css',
+                    environment: 'production'
+                }
+            }
+        },
+        sass: {
+            core: {
+                options: {
+                    //compass: true
+                },
+                files: {
+                    'dist/css/core.css': 'dist/scss/core.scss'
                 }
             }
         },
@@ -508,7 +503,7 @@ module.exports = function (grunt) {
             'default',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_publish'
         ];

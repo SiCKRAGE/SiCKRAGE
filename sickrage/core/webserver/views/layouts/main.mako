@@ -67,7 +67,6 @@
         <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
     % endif
 
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <%block name="css" />
 </head>
