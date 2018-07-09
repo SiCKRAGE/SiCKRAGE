@@ -33,7 +33,9 @@
         <div class="col-md-12">
             <div class="input-group input350">
                 <div class="input-group-addon">
-                    <span class="fa fa-binoculars"></span>
+                    <span class="input-group-text">
+                        <span class="fas fa-binoculars"></span>
+                    </span>
                 </div>
                 <select id="pickShow" class="form-control form-control-inline input-sm" title="${_('Choose show')}">
                     % for curShow in sorted(sickrage.app.showlist, key=lambda x: x.name):

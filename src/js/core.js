@@ -1,8 +1,34 @@
-jQuery(document).ready(function ($) {
-    var gt = function (msgid) {
-        return new Gettext().gettext(msgid);
-    };
+import 'bootstrap';
+import 'jquery-form';
+import 'jquery-ui/ui/disable-selection';
+import 'jquery-ui/ui/widgets/slider';
+import 'jquery-ui/ui/widgets/sortable';
+import 'tooltipster';
+import 'jquery-backstretch';
+import 'tablesorter';
+import 'bootbox';
+import 'pnotify/dist/es/PNotifyMobile';
+import 'pnotify/dist/es/PNotifyButtons';
+import 'pnotify/dist/es/PNotifyDesktop';
+import {gettext, addLocale, useLocale} from 'ttag';
+import {po} from 'gettext-parser'
+import scrollUp from 'scrollup';
+import jconfirm from 'jquery-confirm';
+import PNotify from 'pnotify/dist/es/PNotify';
+import jQueryBridget from 'jquery-bridget';
+import Isotope from 'isotope-layout';
+import ImagesLoaded from 'imagesloaded';
+import Tokenfield from 'tokenfield';
+import _ from 'underscore';
 
+jQueryBridget('isotope', Isotope, $);
+jQueryBridget('imagesLoaded', ImagesLoaded, $);
+
+var gt = function (msgid) {
+    return gettext(msgid);
+};
+
+$(document).ready(function ($) {
     var SICKRAGE = {
         xhrPool: [],
 
@@ -29,26 +55,32 @@ jQuery(document).ready(function ($) {
         },
 
         notify: function (type, title, message) {
-            var myDesktop = {'desktop': true, 'icon': SICKRAGE.srWebRoot + '/images/favicon.png'};
-            var myStack = {'dir1': 'up', 'dir2': 'left', 'firstpos1': 25, 'firstpos2': 25};
-
-            PNotify.desktop.permission();
+            PNotify.modules.Desktop.permission();
             new PNotify({
-                desktop: myDesktop,
-                stack: myStack,
+                stack: {'dir1': 'up', 'dir2': 'left', 'firstpos1': 25, 'firstpos2': 25},
+                icons: 'fontawesome5',
+                styling: 'bootstrap4',
                 addclass: "stack-bottomright",
                 delay: 5000,
                 hide: true,
                 history: false,
                 shadow: false,
-                styling: 'brighttheme',
                 width: '340px',
-                type: type,
-                title: title,
-                text: message.replace(/<br[\s\/]*(?:\s[^>]*)?>/ig, "\n")
-                    .replace(/<[\/]?b(?:\s[^>]*)?>/ig, '*')
-                    .replace(/<i(?:\s[^>]*)?>/ig, '[').replace(/<[\/]i>/ig, ']')
-                    .replace(/<(?:[\/]?ul|\/li)(?:\s[^>]*)?>/ig, '').replace(/<li(?:\s[^>]*)?>/ig, "\n" + '* ')
+                target: document.body,
+                data: {
+                    modules: {
+                        Desktop: {
+                            desktop: true,
+                            icon: SICKRAGE.srWebRoot + '/images/logo-badge.png'
+                        }
+                    },
+                    type: type,
+                    title: title,
+                    text: message.replace(/<br[\s/]*(?:\s[^>]*)?>/ig, "\n")
+                        .replace(/<[/]?b(?:\s[^>]*)?>/ig, '*')
+                        .replace(/<i(?:\s[^>]*)?>/ig, '[').replace(/<[/]i>/ig, ']')
+                        .replace(/<(?:[/]?ul|\/li)(?:\s[^>]*)?>/ig, '').replace(/<li(?:\s[^>]*)?>/ig, "\n" + '* ')
+                }
             });
         },
 
@@ -64,7 +96,6 @@ jQuery(document).ready(function ($) {
         metaToBool: function (pyVar) {
             var meta = $('meta[data-var="' + pyVar + '"]').data('content');
             if (meta === undefined) {
-                console.log(pyVar + ' is empty, did you forget to add this to main.mako?');
                 return meta;
             } else {
                 meta = (isNaN(meta) ? meta.toLowerCase() : meta.toString());
@@ -119,27 +150,19 @@ jQuery(document).ready(function ($) {
                 SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
-                // tooltips
-                $('[title!=""]').qtip({
-                    position: {
-                        viewport: $(window),
-                        my: 'left center',
-                        adjust: {
-                            y: -10,
-                            x: 2
-                        }
-                    },
-                    style: {
-                        tip: {
-                            corner: true,
-                            method: 'polygon'
-                        },
-                        classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
+                // add locale translation
+                $.get(`${SICKRAGE.srWebRoot}/messages.po`, function (data) {
+                    if (data) {
+                        addLocale(SICKRAGE.getMeta('srLocale'), po.parse(data));
+                        useLocale(SICKRAGE.getMeta('srLocale'));
                     }
                 });
 
+                // tooltips
+                $('[title!=""]').tooltipster();
+
                 // init scrollUp
-                $.scrollUp({
+                scrollUp({
                     animation: 'fade',
                     scrollImg: {
                         active: true,
@@ -394,7 +417,7 @@ jQuery(document).ready(function ($) {
                     $("#changelog").click();
                 }
 
-                $(window).unload(function () {
+                $(window).on("unload", function () {
                     SICKRAGE.xhrAbortAll();
                 });
 
@@ -411,7 +434,7 @@ jQuery(document).ready(function ($) {
             manualSearches: [],
 
             init: function () {
-                PNotify.prototype.options.maxonscreen = 5;
+                //PNotify.prototype.options.maxonscreen = 5;
 
                 SICKRAGE.ajax_search.searchStatusUrl = SICKRAGE.srWebRoot + SICKRAGE.ajax_search.searchStatusUrl;
                 SICKRAGE.ajax_search.ajaxEpSearch({'colorRow': true});
@@ -600,7 +623,6 @@ jQuery(document).ready(function ($) {
                 options = $.extend({}, defaults, options);
 
                 $('.epRetry').click(function (event) {
-                    console.log('Retrying episode search');
                     event.preventDefault();
 
                     // Check if we have disabled the click
@@ -900,6 +922,7 @@ jQuery(document).ready(function ($) {
                 try {
                     ls = !!(localStorage.getItem);
                 } catch (e) {
+                    ls = null;
                 }
                 if (ls && options.key) {
                     path = localStorage['fileBrowser-' + options.key];
@@ -1134,18 +1157,21 @@ jQuery(document).ready(function ($) {
                 $('#defaultRootDir').prop('disabled', doDisable);
                 $('#editRootDir').prop('disabled', doDisable);
 
-                var logString = '';
+                //var logString = '';
                 var dirString = '';
+
                 if ($('#whichDefaultRootDir').val().length >= 4) {
                     dirString = $('#whichDefaultRootDir').val().substr(3);
                 }
+
                 $('#rootDirs option').each(function () {
-                    logString += $(this).val() + '=' + $(this).text() + '->' + $(this).attr('id') + '\n';
+                    //logString += $(this).val() + '=' + $(this).text() + '->' + $(this).attr('id') + '\n';
                     if (dirString.length) {
                         dirString += '|' + $(this).val();
                     }
                 });
-                logString += 'def: ' + $('#whichDefaultRootDir').val();
+
+                //logString += 'def: ' + $('#whichDefaultRootDir').val();
 
                 $('#rootDirText').val(dirString);
                 $('#rootDirText').change();
@@ -1251,9 +1277,9 @@ jQuery(document).ready(function ($) {
                     });
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
-                        $.next('.ep_summary').slideToggle('normal', function () {
+                        $(this).next('.ep_summary').slideToggle('normal', function () {
                             $.prev('.ep_summaryTrigger').attr('src', function (i, src) {
-                                return $.next('.ep_summary').is(':visible') ? src.replace('plus', 'minus') : src.replace('minus', 'plus');
+                                return $(this).next('.ep_summary').is(':visible') ? src.replace('plus', 'minus') : src.replace('minus', 'plus');
                             });
                         });
                     });
@@ -1435,18 +1461,18 @@ jQuery(document).ready(function ($) {
                 });
 
                 // Enable command search
-                $('#command-search').typeahead({
-                    source: SICKRAGE.getMeta('commands')
-                });
+                //$('#command-search').typeahead({
+                //    source: SICKRAGE.getMeta('commands')
+                //});
 
-                $('#command-search').on('change', function () {
-                    var command = $(this).typeahead('getActive');
+                //$('#command-search').on('change', function () {
+                //    var command = $(this).typeahead('getActive');
 
-                    if (command) {
-                        var commandId = command.replace('.', '-');
-                        $('[href=#command-' + commandId + ']').click();
-                    }
-                });
+                //if (command) {
+                //    var commandId = command.replace('.', '-');
+                //    $('[href=#command-' + commandId + ']').click();
+                //}
+                //});
             },
 
             status: function () {
@@ -1544,7 +1570,7 @@ jQuery(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    theme : "bootstrap",
+                    theme: "bootstrap",
 
                     sortList: [[7, 1], [2, 0]],
                     textExtraction: {
@@ -2471,7 +2497,7 @@ jQuery(document).ready(function ($) {
                                 return true;
                             }
                         },
-                        onFinished: function (event, currentIndex) {
+                        onFinished: function () {
                             SICKRAGE.home.generate_bwlist();
                             $(this).submit();
                         }
@@ -2549,7 +2575,7 @@ jQuery(document).ready(function ($) {
                                     var whichSeries = obj.join('|');
 
                                     resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
-                                    resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick=\"window.open(this.href, \'_blank\'); return false;\" ><b>' + obj[4] + '</b></a>';
+                                    resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick="window.open(this.href, \'_blank\'); return false;" ><b>' + obj[4] + '</b></a>';
 
                                     if (obj[5] !== null) {
                                         var startDate = new Date(obj[5]);
@@ -2601,14 +2627,8 @@ jQuery(document).ready(function ($) {
                     });
 
                     $(this).attr('disabled', true);
-                    new PNotify({
-                        title: gt('Saved Defaults'),
-                        text:
-                            gt('Your "add show" defaults have been set to your current selections.'),
-                        shadow:
-                            false
-                    })
-                    ;
+
+                    SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
                 $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #archive').change(function () {
@@ -2671,13 +2691,13 @@ jQuery(document).ready(function ($) {
                             "use strict";
                             $('.config_submitter').each(function () {
                                 $(this).removeAttr("disabled");
-                                $.next().remove();
+                                $(this).next().remove();
                                 $(this).show();
                             });
 
                             $('.config_submitter_refresh').each(function () {
                                 $(this).removeAttr("disabled");
-                                $.next().remove();
+                                $(this).next().remove();
                                 $(this).show();
                                 window.location.reload();
                             });
@@ -2687,20 +2707,19 @@ jQuery(document).ready(function ($) {
                     }
                 });
 
-                $('#config-tabs a').click(function (e) {
+                $('#config-menus a').click(function (e) {
                     e.preventDefault();
                     $(this).tab('show');
                 });
 
                 // store the currently selected tab in the hash value
-                $("ul.nav-tabs > li > a").on("shown.bs.tab", function (e) {
+                $("ul.nav-pills > li > a").on("shown.bs.tab", function (e) {
                     var id = $(e.target).attr("href").substr(1);
                     window.location.hash = id;
                 });
 
                 // on load of the page: switch to the currently selected tab
-                var hash = window.location.hash;
-                $('#config-tabs a[href="' + hash + '"]').tab('show');
+                $('#config-menus a[href="' + window.location.hash + '"]').tab('show');
 
                 $('a.resetConfig').confirm({
                     title: gt('Reset Config to Defaults'),
@@ -2775,7 +2794,7 @@ jQuery(document).ready(function ($) {
                     function updateProgress() {
                         $.getJSON(SICKRAGE.srWebRoot + '/googleDrive/getProgress', function (data) {
                             $('#current_info').html(data.current_info);
-                        }).error(function (data) {
+                        }).error(function () {
                             clearInterval(window.progressInterval);
                             $('#current_info').html('Uh oh, something went wrong');
                         });
@@ -2788,7 +2807,7 @@ jQuery(document).ready(function ($) {
                             window.progressInterval = setInterval(updateProgress, 100);
                             $('#pleaseWaitDialog').modal();
                         },
-                        success: function (result) {
+                        success: function () {
                             clearInterval(window.progressInterval);
                             $('#pleaseWaitDialog').modal('hide');
                         },
@@ -2854,39 +2873,16 @@ jQuery(document).ready(function ($) {
 
             subtitles: {
                 init: function () {
-                    var language = new Bloodhound({
-                        remote: {
-                            url: SICKRAGE.srWebRoot + '/config/subtitles/get_code?q=%QUERY',
-                            wildcard: '%QUERY',
-                            filter: function (response) {
-                                var tagged_lang = $('#subtitles_languages').tokenfield('getTokens');
-                                return $.map(response, function (lang) {
-                                    var exists = false;
-                                    for (var i = 0; i < tagged_lang.length; i++) {
-                                        if (lang.value === tagged_lang[i].value) {
-                                            exists = true;
-                                        }
-                                    }
-                                    if (!exists) {
-                                        return {
-                                            value: lang.value,
-                                            name: lang.name
-                                        };
-                                    }
-                                });
-                            }
-                        },
-                        datumTokenizer: Bloodhound.tokenizers.whitespace('name'),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace
-                    });
-
-                    $("#subtitles_languages").tokenfield({
-                        typeahead: {
-                            name: 'subtitles_languages',
-                            source: language,
-                            display: 'name',
-                            displayKey: 'name'
-                        }
+                    $.getJSON(SICKRAGE.srWebRoot + '/config/subtitles/wanted_languages', function (result) {
+                        new Tokenfield({
+                            el: document.querySelector('#subtitles_languages'),
+                            remote: {
+                                url: SICKRAGE.srWebRoot + '/config/subtitles/get_code'
+                            },
+                            setItems: result,
+                            itemName: 'subtitles_languages',
+                            newitemName: 'subtitles_languages_new'
+                        });
                     });
 
                     $('#subtitles_dir').fileBrowser({title: gt('Select Subtitles Download Directory')});
@@ -3185,7 +3181,7 @@ jQuery(document).ready(function ($) {
                         if ($(this).prop('checked')) {
                             SICKRAGE.config.postprocessing.israr_supported();
                         } else {
-                            $('#unpack').qtip('toggle', false);
+                            $('#unpack').tooltipster('toggle', false);
                         }
                     });
 
@@ -3294,35 +3290,21 @@ jQuery(document).ready(function ($) {
                         SICKRAGE.config.postprocessing.refreshMetadataConfig(false);
                     });
                     SICKRAGE.config.postprocessing.refreshMetadataConfig(true);
-                    $('img[title]').qtip({
+                    $('img[title]').tooltipster({
                         position: {
                             viewport: $(window),
                             at: 'bottom center',
                             my: 'top right'
-                        },
-                        style: {
-                            tip: {
-                                corner: true,
-                                method: 'polygon'
-                            },
-                            classes: 'qtip-shadow qtip-dark'
                         }
                     });
-                    $('i[title]').qtip({
+                    $('i[title]').tooltipster({
                         position: {
                             viewport: $(window),
                             at: 'top center',
                             my: 'bottom center'
-                        },
-                        style: {
-                            tip: {
-                                corner: true,
-                                method: 'polygon'
-                            },
-                            classes: 'qtip-rounded qtip-shadow ui-tooltip-sb'
                         }
                     });
-                    $('.custom-pattern,#unpack').qtip({
+                    $('.custom-pattern,#unpack').tooltipster({
                         content: 'validating...',
                         show: {
                             event: false,
@@ -3358,11 +3340,11 @@ jQuery(document).ready(function ($) {
                 israr_supported: function () {
                     $.get(SICKRAGE.srWebRoot + '/config/postProcessing/isRarSupported', function (data) {
                         if (data !== "supported") {
-                            $('#unpack').qtip('option', {
-                                'content.text': gt('Unrar Executable not found.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#unpack').tooltipster({
+                                'content': gt('Unrar Executable not found.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#unpack').qtip('toggle', true);
+                            $('#unpack').tooltipster('toggle', true);
                             $('#unpack').css('background-color', '#FFFFDD');
                         }
                     });
@@ -3404,25 +3386,25 @@ jQuery(document).ready(function ($) {
                         anime_type: anime_type
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern is invalid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern is invalid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_pattern').qtip('toggle', true);
+                            $('#naming_pattern').tooltipster('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_pattern').qtip('toggle', true);
+                            $('#naming_pattern').tooltipster('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern is valid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-green'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern is valid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-green'
                             });
-                            $('#naming_pattern').qtip('toggle', false);
+                            $('#naming_pattern').tooltipster('toggle', false);
                             $('#naming_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3448,25 +3430,25 @@ jQuery(document).ready(function ($) {
                         abd: 'True'
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_abd_pattern').qtip('option', {
-                                'content.text': gt('This pattern is invalid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_abd_pattern').tooltipster({
+                                'content': gt('This pattern is invalid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_abd_pattern').qtip('toggle', true);
+                            $('#naming_abd_pattern').tooltipster('toggle', true);
                             $('#naming_abd_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_abd_pattern').qtip('option', {
-                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_abd_pattern').tooltipster({
+                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_abd_pattern').qtip('toggle', true);
+                            $('#naming_abd_pattern').tooltipster('toggle', true);
                             $('#naming_abd_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_abd_pattern').qtip('option', {
-                                'content.text': gt('This pattern is valid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-green'
+                            $('#naming_abd_pattern').tooltipster({
+                                'content': gt('This pattern is valid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-green'
                             });
-                            $('#naming_abd_pattern').qtip('toggle', false);
+                            $('#naming_abd_pattern').tooltipster('toggle', false);
                             $('#naming_abd_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3492,25 +3474,25 @@ jQuery(document).ready(function ($) {
                         sports: 'True'
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_sports_pattern').qtip('option', {
-                                'content.text': gt('This pattern is invalid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_sports_pattern').tooltipster({
+                                'content': gt('This pattern is invalid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_sports_pattern').qtip('toggle', true);
+                            $('#naming_sports_pattern').tooltipster('toggle', true);
                             $('#naming_sports_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_sports_pattern').qtip('option', {
-                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_sports_pattern').tooltipster({
+                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_sports_pattern').qtip('toggle', true);
+                            $('#naming_sports_pattern').tooltipster('toggle', true);
                             $('#naming_sports_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_sports_pattern').qtip('option', {
-                                'content.text': gt('This pattern is valid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-green'
+                            $('#naming_sports_pattern').tooltipster({
+                                'content': gt('This pattern is valid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-green'
                             });
-                            $('#naming_sports_pattern').qtip('toggle', false);
+                            $('#naming_sports_pattern').tooltipster('toggle', false);
                             $('#naming_sports_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3552,25 +3534,25 @@ jQuery(document).ready(function ($) {
                         anime_type: anime_type
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern is invalid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern is invalid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_pattern').qtip('toggle', true);
+                            $('#naming_pattern').tooltipster('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-red'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-red'
                             });
-                            $('#naming_pattern').qtip('toggle', true);
+                            $('#naming_pattern').tooltipster('toggle', true);
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_pattern').qtip('option', {
-                                'content.text': gt('This pattern is valid.'),
-                                'style.classes': 'qtip-rounded qtip-shadow qtip-green'
+                            $('#naming_pattern').tooltipster({
+                                'content': gt('This pattern is valid.'),
+                                'theme': 'qtip-rounded qtip-shadow qtip-green'
                             });
-                            $('#naming_pattern').qtip('toggle', false);
+                            $('#naming_pattern').tooltipster('toggle', false);
                             $('#naming_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -4664,7 +4646,6 @@ jQuery(document).ready(function ($) {
                         if (rootObject.name === searchFor) {
                             found = true;
                         }
-                        console.log(rootObject.name + " while searching for: " + searchFor);
                     });
                     return found;
                 },

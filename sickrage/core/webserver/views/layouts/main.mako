@@ -41,6 +41,8 @@
     <meta data-var="srWebRoot" data-content="${srWebRoot}">
     <meta data-var="themeSpinner" data-content="${('', '-dark')[sickrage.app.config.theme_name == 'dark']}">
     <meta data-var="anonURL" data-content="${sickrage.app.config.anon_redirect}">
+    <meta data-var="srLocale" data-content="${srLocale}">
+    <meta data-var="srLocaleDir" data-content="${srLocaleDir}">
     <meta data-var="sickrage.ANIME_SPLIT_HOME" data-content="${sickrage.app.config.anime_split_home}">
     <meta data-var="sickrage.COMING_EPS_LAYOUT" data-content="${sickrage.app.config.coming_eps_layout}">
     <meta data-var="sickrage.COMING_EPS_SORT" data-content="${sickrage.app.config.coming_eps_sort}">
@@ -63,9 +65,8 @@
 
     <link rel="icon" type="image/png" sizes="32x32" href="${srWebRoot}/images/favicon.png">
 
-    % if sickrage.app.config.gui_lang:
-        <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
-    % endif
+    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
+    <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
     % if current_user:
@@ -204,7 +205,7 @@
                             <span class="d-block d-sm-none">
                                 ${_('Config')}
                             </span>
-                                <i class="fas fa-2x fa-gears"></i>
+                                <i class="fas fa-2x fa-wrench"></i>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarConfig">

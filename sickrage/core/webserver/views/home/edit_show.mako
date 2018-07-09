@@ -303,7 +303,9 @@
                                         <div class="col component-desc">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text fas fa-file-word-o"></span>
+                                                    <span class="input-group-text">
+                                                        <span class="fas fa-file-word-o"></span>
+                                                    </span>
                                                 </div>
                                                 <input type="text" id="rls_ignore_words" name="rls_ignore_words"
                                                        value="${show.rls_ignore_words}"
@@ -323,7 +325,9 @@
                                         <div class="col component-desc">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text fas fa-file-word-o"></span>
+                                                    <span class="input-group-text">
+                                                        <span class="fas fa-file-word-o"></span>
+                                                    </span>
                                                 </div>
                                                 <input type="text" id="rls_require_words" name="rls_require_words"
                                                        placeholder="${_('ex. word1,word2,word3')}"
@@ -346,8 +350,9 @@
                                                        title="Scene exception name for show"
                                                        class="form-control "/>
                                                 <div class="input-group-append">
-                                                    <a href="#" class="input-group-text fas fa-plus"
-                                                       id="addSceneName"></a>
+                                                    <span class="input-group-text">
+                                                        <a href="#" class="fas fa-plus" id="addSceneName"></a>
+                                                    </span>
                                                 </div>
                                             </div>
                                             <br/>
@@ -363,8 +368,10 @@
                                                             % endfor
                                                         </select>
                                                         <div class="input-group-append">
-                                                            <a href="#" class="input-group-text fas fa-minus"
-                                                               id="removeSceneName"></a>
+                                                            <span class="input-group-text">
+                                                                <a href="#" class="fas fa-minus"
+                                                                   id="removeSceneName"></a>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -384,7 +391,9 @@
                                         <div class="col component-desc">
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text fas fa-clock-o"></span>
+                                                    <span class="input-group-text">
+                                                        <span class="fas fa-clock"></span>
+                                                    </span>
                                                 </div>
                                                 <input type="text" id="search_delay" name="search_delay"
                                                        placeholder="${_('ex. 1')}"

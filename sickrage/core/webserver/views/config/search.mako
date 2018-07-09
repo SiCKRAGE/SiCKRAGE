@@ -3,13 +3,13 @@
 <%!
     import sickrage
 %>
-<%block name="tabs">
+<%block name="menus">
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#search-setttings">${_('Search Settings')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#nzb-clients">${_('NZB Clients')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#torrent-clients">${_('Torrent Clients')}</a></li>
 </%block>
 <%block name="pages">
-    <div id="search-setttings" class="tab-page active">
+    <div id="search-setttings" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Search Settings')}</h3>
@@ -113,7 +113,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fas fa-clock-o"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-clock"></span>
+                                    </span>
                                 </div>
                                 <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
                                         title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
@@ -122,7 +124,9 @@
                                     % endfor
                                 </select>
                                 <div class="input-group-append">
-                                    hours
+                                    <span class="input-group-text">
+                                        hours
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +141,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fas fa-clock-o"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-clock"></span>
+                                    </span>
                                 </div>
                                 <select id="check_propers_interval" name="check_propers_interval"
                                         class="form-control" title="Interval to check for propers">
@@ -158,7 +164,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="backlog_frequency"
                                    id="backlog_frequency"
@@ -177,7 +185,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="dailysearch_frequency"
                                    id="dailysearch_frequency"
@@ -186,7 +196,9 @@
                                    title="minimum allowed time ${sickrage.app.config.min_daily_searcher_freq} minutes"
                                    class="form-control"/>
                             <div class="input-group-append">
-                                min
+                                <span class="input-group-text">
+                                    min
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -199,7 +211,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="usenet_retention"
                                    id="usenet_retention"
@@ -207,7 +221,9 @@
                                    title="age limit in days (ex. 500)"
                                    class="form-control"/>
                             <div class="input-group-append">
-                                days
+                                <span class="input-group-text">
+                                    days
+                                </span>
                             </div>
                         </div>
                     </div>

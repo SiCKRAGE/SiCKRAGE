@@ -16,10 +16,11 @@
     from sickrage.metadata import GenericMetadata
     from sickrage.core.api.google import GoogleDriveAPI
 %>
-<%block name="tabs">
+<%block name="menus">
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#misc">${_('Misc')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#interface">${_('Interface')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#advanced-settings">${_('Advanced Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#advanced-settings">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
@@ -30,7 +31,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('SiCKRAGE API')}</h3>
-                <small class="form-text text-muted">${_('Options for api.sickrage.ca')}</small>
+                <small class="form-text text-muted">
+                    ${_('Options for api.sickrage.ca')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -123,7 +126,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-book"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-book"></span>
+                                </span>
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
                                     title="${_('when launching SickRage interface')}">
@@ -151,16 +156,20 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="showupdate_hour" id="showupdate_hour"
                                    value="${sickrage.app.config.showupdate_hour}"
                                    class="form-control"/>
                             <div class="input-group-append">
-                                24hr
+                                <span class="input-group-text">
+                                    24hr
+                                </span>
                             </div>
                         </div>
-                        <label for="showupdate_hour">
+                        <label class="text-info" for="showupdate_hour">
                             ${_('with information such as next air dates, show ended, etc.')}<br/>
                             ${_('Use 15 for 3pm, 4 for 4am etc. Anything over 23 or under 0 will be set to 0 (12am)')}
                         </label>
@@ -187,7 +196,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="trash_remove_show"
                                id="trash_remove_show" ${('', 'checked')[bool(sickrage.app.config.trash_remove_show)]}/>
-                        <label for="trash_remove_show">${_('when using show "Remove" and delete files')}</label>
+                        <label for="trash_remove_show">
+                            ${_('when using show "Remove" and delete files')}
+                        </label>
                         <br/>
                         <input type="checkbox" name="trash_rotate_logs"
                                id="trash_rotate_logs" ${('', 'checked')[bool(sickrage.app.config.trash_rotate_logs)]}/>
@@ -195,9 +206,9 @@
                             ${_('on scheduled deletes of the oldest log files')}
                         </label>
                         <br/>
-                        <label>
-                            <pre>${_('selected actions use trash (recycle bin) instead of the default permanent delete')}</pre>
-                        </label>
+                        <div class="text-info">
+                            ${_('selected actions use trash (recycle bin) instead of the default permanent delete')}
+                        </div>
                     </div>
                 </div>
 
@@ -209,7 +220,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-file"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-file"></span>
+                                </span>
                             </div>
                             <input name="log_nr" id="log_nr"
                                    value="${sickrage.app.config.log_nr}"
@@ -229,7 +242,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-file"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-file"></span>
+                                </span>
                             </div>
                             <input name="log_size" id="log_size"
                                    value="${sickrage.app.config.log_size}"
@@ -249,7 +264,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-list"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-list"></span>
+                                </span>
                             </div>
                             <select id="indexer_default" name="indexer_default"
                                     title="default indexer selection when adding new shows"
@@ -274,7 +291,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="indexer_timeout" id="indexer_timeout"
                                    value="${sickrage.app.config.indexer_timeout}"
@@ -282,7 +301,9 @@
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
                             <div class="input-group-append">
-                                <span class="input-group-text">secs</span>
+                                <span class="input-group-text">
+                                    secs
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -306,10 +327,14 @@
             </fieldset>
         </div>
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Updates')}</h3>
-                <p>${_('Options for software updates.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Options for software updates.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
 
@@ -350,7 +375,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <input name="update_frequency" id="update_frequency"
                                    value="${sickrage.app.config.version_updater_freq}"
@@ -358,7 +385,9 @@
                                    title="hours between software updates"
                                    class="form-control"/>
                             <div class="input-group-append">
-                                <span class="input-group-text">hours</span>
+                                <span class="input-group-text">
+                                    hours
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -392,7 +421,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('User Interface')}</h3>
-                <p>${_('Options for visual appearance.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Options for visual appearance.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -405,7 +436,9 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fas fa-language"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-language"></span>
+                                        </span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
                                         <option value="" ${('', 'selected')[sickrage.app.config.gui_lang == ""]}>
@@ -420,7 +453,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="gui_language" class="red-text">
+                                <label for="gui_language" class="text-info">
                                     ${_('for appearance to take effect, save then refresh your browser')}
                                 </label>
                             </div>
@@ -435,7 +468,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-themeisle"></span>
+                                <span class="input-group-text">
+                                    <span class="fab fa-themeisle"></span>
+                                </span>
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
@@ -542,16 +577,11 @@
                         <label class="component-title">${_('Date style')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <select class="form-control ${(' metadataDiv', '')[bool(sickrage.app.config.fuzzy_dating)]}"
-                                id="date_presets${('_na', '')[bool(sickrage.app.config.fuzzy_dating)]}"
-                                name="date_preset${('_na', '')[bool(sickrage.app.config.fuzzy_dating)]}">
-                            % for cur_preset in date_presets:
-                                <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.date_preset == cur_preset or ("%x" == sickrage.app.config.date_preset and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.sys_encoding)}</option>
-                            % endfor
-                        </select>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-calendar"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-calendar"></span>
+                                </span>
                             </div>
                             <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}"
                                     id="date_presets${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}"
@@ -574,7 +604,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-clock-o"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-clock"></span>
+                                </span>
                             </div>
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
@@ -599,7 +631,7 @@
                                value="network" ${('', 'checked')[sickrage.app.config.timezone_display == "network"]} />
                         <label for="network">${_('Network')}</label>
                         <div class="form-row">
-                            <div class="col-md-12">
+                            <div class="col-md-12 text-info">
                                 ${_('display dates and times in either your timezone or the shows network timezone')}
                                 <br/>
                                 <b>${_('NOTE:')}</b> ${_('Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)')}
@@ -664,11 +696,15 @@
             </fieldset>
         </div><!-- /User interface tab-pane -->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Web Interface')}</h3>
-                <p>${_('It is recommended that you enable a username and password to secure SickRage from being tampered with remotely.')}</p>
-                <p><b>${_('These options require a manual restart to take effect.')}</b></p>
+                <small class="form-text text-muted">
+                    ${_('It is recommended that you enable a username and password to secure SiCKRAGE from being tampered with remotely.')}
+                    <p><b>${_('These options require a manual restart to take effect.')}</b></p>
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -706,7 +742,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <label for="web_external_port">
+                                    <label class="text-info" for="web_external_port">
                                         ${_('used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address')}
                                     </label>
                                 </div>
@@ -736,7 +772,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="web_port">
+                                <label class="text-info" for="web_port">
                                     ${_('used to access SiCKRAGE over a private internal IP address')}
                                 </label>
                             </div>
@@ -770,15 +806,18 @@
                                            value="${sickrage.app.config.api_key}"
                                            class="form-control"/>
                                     <div class="input-group-append">
-                                        <input class="button" type="button" id="generate_new_apikey"
-                                               value="Generate">
+                                        <span class="input-group-text">
+                                            <span class="btn btn-secondary" id="generate_new_apikey">
+                                                ${_('Generate')}
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="api_key">
+                                <label class="text-info" for="api_key">
                                     ${_('used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API')}
                                     <a href="${srWebRoot}/apibuilder/">${_('here')}</a>
                                 </label>
@@ -867,8 +906,7 @@
                         <input type="checkbox" name="handle_reverse_proxy"
                                id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.app.config.handle_reverse_proxy)]}/>
                         <label for="handle_reverse_proxy">
-                            ${_('accept the following reverse proxy headers (advanced)...')}<br/>
-                            ${_('(X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)')}
+                            ${_('accept the following reverse proxy headers (advanced) - (X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)')}
                         </label>
                     </div>
                 </div>
@@ -896,9 +934,7 @@
         </div><!-- /tab-pane2 //-->
     </div><!-- /tab-pane2 //-->
     <div id="advanced-settings" class="tab-pane">
-
         <div class="form-row">
-
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Advanced Settings')}</h3>
             </div>
@@ -911,7 +947,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fas fa-microchip"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-microchip"></span>
+                                </span>
                             </div>
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="Normal (default). High is lower and Low is higher CPU use">
@@ -1067,10 +1105,10 @@
                         <label class="component-title">${_('Use proxy for indexers')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="proxy_indexers"
-                               id="proxy_indexers" ${('', 'checked')[bool(sickrage.app.config.proxy_indexers)]}/>
-                        <label for="proxy_indexers">
-                            ${_('use proxy host for connecting to indexers (thetvdb)')}
+                        <label class="form-check-label">
+                            <input type="checkbox" name="proxy_indexers"
+                                   id="proxy_indexers" ${('', 'checked')[bool(sickrage.app.config.proxy_indexers)]}/>
+                            ${_('use proxy host for connecting to indexers (TheTVDB)')}
                         </label>
                     </div>
                 </div>
@@ -1081,11 +1119,12 @@
                         <label class="component-title">${_('Skip Remove Detection')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="skip_removed_files"
-                               id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.config.skip_removed_files)]}/>
-                        <label for="skip_removed_files">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="skip_removed_files"
+                                   id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.config.skip_removed_files)]}/>
                             ${_('Skip detection of removed files. If disable it will set default deleted status')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('This may mean SickRage misses renames as well')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('This may mean SiCKRAGE misses renames as well')}</div>
                         </label>
                     </div>
 
@@ -1124,7 +1163,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="ep_default_deleted_status">
+                                <label class="text-info" for="ep_default_deleted_status">
                                     ${_('Define the status to be set for media file that has been deleted.')}
                                     <br/>
                                     <b>${_('NOTE:')}</b> ${_('Archived option will keep previous downloaded quality')}
@@ -1145,6 +1184,8 @@
             </fieldset>
         </div>
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('PIP Settings')}</h3>
@@ -1159,7 +1200,9 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fas fa-file"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-file"></span>
+                                        </span>
                                     </div>
                                     <input id="pip_path" name="pip_path"
                                            value="${sickrage.app.config.pip_path}"
@@ -1167,7 +1210,11 @@
                                            title="only needed if OS is unable to locate pip from env"
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-append">
-                                        <input class="button" type="button" id="verifyPipPath" value="Verify Path">
+                                        <span class="input-group-text">
+                                            <span class="btn btn-secondary" id="verifyPipPath">
+                                                ${_('Verify Path')}
+                                            </span>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -1199,6 +1246,8 @@
             git_branch = sickrage.app.version_updater.updater.remote_branches
         %>
 
+            <hr/>
+
             <div class="form-row">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                     <h3>${_('GIT Settings')}</h3>
@@ -1213,7 +1262,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-git"></span>
+                                            <span class="input-group-text">
+                                                <span class="fab fa-git"></span>
+                                            </span>
                                         </div>
                                         <select id="branchVersion" class="form-control"
                                                 title=${_('GIT Branch Version')}>
@@ -1256,7 +1307,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-file"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-file"></span>
+                                            </span>
                                         </div>
                                         <input id="git_path" name="git_path"
                                                value="${sickrage.app.config.git_path}"
@@ -1264,7 +1317,11 @@
                                                title="only needed if OS is unable to locate git from env"
                                                class="form-control" autocapitalize="off"/>
                                         <div class="input-group-append">
-                                            <input class="button" type="button" id="verifyGitPath" value="Verify Path">
+                                            <span class="input-group-text">
+                                                <span class="btn btn-secondary" id="verifyGitPath">
+                                                    ${_('Verify Path')}
+                                                </span>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -1311,7 +1368,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
 

@@ -170,6 +170,8 @@ class BaseHandler(RequestHandler):
             'srThemeName': sickrage.app.config.theme_name,
             'srDefaultPage': sickrage.app.config.default_page,
             'srWebRoot': sickrage.app.config.web_root,
+            'srLocale': self.get_user_locale().code,
+            'srLocaleDir': sickrage.LOCALE_DIR,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
@@ -366,13 +368,13 @@ class WebRoot(WebHandler):
         self.set_header('Content-Type', 'text/plain')
         return "User-agent: *\nDisallow: /"
 
-    def messages_json(self):
-        """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.json """
-        locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.json')
-        if os.path.isfile(locale_file):
-            self.set_header('Content-Type', 'application/json')
-            with io.open(locale_file, 'r', encoding='utf8') as f:
-                return f.read()
+    def messages_po(self):
+        """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.po """
+        if sickrage.app.config.gui_lang:
+            locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.po')
+            if os.path.isfile(locale_file):
+                with io.open(locale_file, 'r', encoding='utf8') as f:
+                    return f.read()
 
     def apibuilder(self):
         def titler(x):
@@ -3820,7 +3822,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
 
-        sickrage.app.config.change_web_external_port(web_external_port)
+        #sickrage.app.config.change_web_external_port(web_external_port)
 
         if date_preset:
             sickrage.app.config.date_preset = date_preset
@@ -4731,34 +4733,37 @@ class ConfigSubtitles(Config):
             action='subtitles'
         )
 
-    def get_code(self, q=None):
-        codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+    def get_code(self, q=None, **kwargs):
+        codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 
         codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
 
         return json_encode(codes)
 
-    def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
-                      service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
-                      subtitles_multi=None, embedded_subtitles_all=None, subtitles_extra_scripts=None,
-                      subtitles_hearing_impaired=None, itasa_user=None, itasa_pass=None,
+    def wanted_languages(self):
+        codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+                 sickrage.subtitles.subtitle_code_filter()]
+
+        codes = filter(lambda code: code['id'] in sickrage.subtitles.wanted_languages(), codes)
+
+        return json_encode(codes)
+
+    def saveSubtitles(self, use_subtitles=None, subtitles_dir=None, service_order=None, subtitles_history=None,
+                      subtitles_finder_frequency=None, subtitles_multi=None, embedded_subtitles_all=None,
+                      subtitles_extra_scripts=None, subtitles_hearing_impaired=None, itasa_user=None, itasa_pass=None,
                       addic7ed_user=None, addic7ed_pass=None, legendastv_user=None, legendastv_pass=None,
-                      opensubtitles_user=None, opensubtitles_pass=None):
+                      opensubtitles_user=None, opensubtitles_pass=None, **kwargs):
 
         results = []
 
         sickrage.app.config.change_subtitle_searcher_freq(subtitles_finder_frequency)
         sickrage.app.config.use_subtitles = checkbox_to_value(use_subtitles)
-
-        sickrage.app.config.subtitles_languages = [code.strip() for code in subtitles_languages.split(',') if
-                                                   code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
+        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
         sickrage.app.config.subtitles_dir = subtitles_dir
         sickrage.app.config.subtitles_history = checkbox_to_value(subtitles_history)
-        sickrage.app.config.embedded_subtitles_all = checkbox_to_value(
-            embedded_subtitles_all)
-        sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(
-            subtitles_hearing_impaired)
+        sickrage.app.config.embedded_subtitles_all = checkbox_to_value(embedded_subtitles_all)
+        sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(subtitles_hearing_impaired)
         sickrage.app.config.subtitles_multi = checkbox_to_value(subtitles_multi)
         sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if
                                                        x.strip()]

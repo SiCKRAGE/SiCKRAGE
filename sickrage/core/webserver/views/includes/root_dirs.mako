@@ -30,12 +30,12 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 mt-1">
         <div id="rootDirsControls" class="rootdir-controls">
-            <input class="btn btn-inline pull-left" type="button" id="addRootDir" value="${_('New')}"/>
-            <input class="btn btn-inline pull-left" type="button" id="editRootDir" value="${_('Edit')}"/>
-            <input class="btn btn-inline pull-left" type="button" id="deleteRootDir" value="${_('Delete')}"/>
-            <input class="btn btn-inline pull-left" type="button" id="defaultRootDir" value="${_('Set as Default *')}"/>
+            <input class="btn btn-inline btn-secondary" type="button" id="addRootDir" value="${_('New')}"/>
+            <input class="btn btn-inline btn-secondary" type="button" id="editRootDir" value="${_('Edit')}"/>
+            <input class="btn btn-inline btn-secondary" type="button" id="deleteRootDir" value="${_('Delete')}"/>
+            <input class="btn btn-inline btn-secondary" type="button" id="defaultRootDir" value="${_('Set as Default *')}"/>
         </div>
         <input type="text" style="display: none" id="rootDirText" autocapitalize="off" title=""/>
     </div>

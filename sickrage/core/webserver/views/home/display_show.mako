@@ -37,7 +37,9 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
+                    <span class="input-group-text">
+                        <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
+                    </span>
                 </div>
             </div>
             <br/>
@@ -402,7 +404,9 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
+                    <span class="input-group-text">
+                        <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
+                    </span>
                 </div>
             </div>
             <input type="hidden" id="showID" value="${show.indexerid}"/>

@@ -5,7 +5,7 @@
     import sickrage.subtitles
     from sickrage.core.helpers import anon_url
 %>
-<%block name="tabs">
+<%block name="menus">
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-search">${_('Subtitles Search')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#plugin-settings">${_('Plugin Settings')}</a></li>
@@ -44,14 +44,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-flag"></span>
-                                </div>
-                                <input class="form-control "
-                                       id="subtitles_languages"
-                                       name="subtitles_languages"
-                                       title="Select subtitle languages"
-                                       value="${','.join(code for code in sickrage.subtitles.wanted_languages())}"/>
+                                <div id="subtitles_languages"></div>
                             </div>
                         </div>
                     </div>
@@ -132,7 +125,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fas fa-clock-o"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-clock"></span>
+                                    </span>
                                 </div>
                                 <input type="number" name="subtitles_finder_frequency"
                                        value="${sickrage.app.config.subtitle_searcher_freq}" hours="1"
@@ -140,7 +135,9 @@
                                        title="time in hours between scans"
                                        class="form-control"/>
                                 <div class="input-group-append">
-                                    <span class="input-group-text">hours</span>
+                                    <span class="input-group-text">
+                                        hours
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +149,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fas fa-file"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-file"></span>
+                                    </span>
                                 </div>
                                 <input name="subtitles_extra_scripts" id="subtitles_extra_scripts"
                                        value="<% '|'.join(sickrage.app.config.subtitles_extra_scripts) %>"

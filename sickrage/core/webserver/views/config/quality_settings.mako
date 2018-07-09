@@ -4,7 +4,7 @@
     import sickrage
 %>
 
-<%block name="tabs">
+<%block name="menus">
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#quality-sizes">${_('Quality Sizes')}</a></li>
 </%block>
 
@@ -31,7 +31,9 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fas fa-file"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-file"></span>
+                                        </span>
                                     </div>
                                     <input class="form-control"
                                            type="number"
@@ -41,7 +43,9 @@
                                            min="1"
                                            title="Specify max quality size allowed in MB">
                                     <div class="input-group-append">
-                                        MB
+                                        <span class="input-group-text">
+                                            MB
+                                        </span>
                                     </div>
                                 </div>
                             </div>

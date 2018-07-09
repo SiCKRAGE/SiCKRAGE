@@ -10,7 +10,7 @@
     from sickrage.core.common import Quality, qualityPresets, statusStrings, qualityPresetStrings, cpu_presets
     from sickrage.indexers import IndexerApi
 %>
-<%block name="tabs">
+<%block name="menus">
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#home-theater-nas">${_('Home Theater')} / ${_('NAS')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#devices">${_('Devices')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#social">${_('Social')}</a></li>
@@ -633,7 +633,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-database"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-database"></span>
+                                    </span>
                                 </div>
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.app.config.nmj_database}"
@@ -650,7 +652,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-database"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-database"></span>
+                                    </span>
                                 </div>
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.app.config.nmj_mount}"
@@ -748,7 +752,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-database"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-database"></span>
+                                    </span>
                                 </div>
                                 <select id="NMJv2db_instance" class="form-control ">
                                     <option value="0">#1</option>
@@ -784,7 +790,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-database"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-database"></span>
+                                    </span>
                                 </div>
                                 <input name="nmjv2_database" id="nmjv2_database"
                                        value="${sickrage.app.config.nmjv2_database}"
@@ -1207,7 +1215,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-exclamation"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-exclamation"></span>
+                                    </span>
                                 </div>
                                 <select id="prowl_priority" name="prowl_priority" class="form-control ">
                                     <option value="-2" ${('', 'selected')[sickrage.app.config.prowl_priority == '-2']}>
@@ -2341,7 +2351,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-hashtag"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-hashtag"></span>
+                                            </span>
                                         </div>
                                         <input name="twilio_phone_sid" id="twilio_phone_sid"
                                                value="${sickrage.app.config.twilio_phone_sid}"
@@ -2370,7 +2382,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-hashtag"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-hashtag"></span>
+                                            </span>
                                         </div>
                                         <input name="twilio_to_number" id="twilio_to_number"
                                                value="${sickrage.app.config.twilio_to_number}"
@@ -2532,7 +2546,9 @@
                                        placeholder="${_('Enter the key Twitter gave you')}"
                                        autocapitalize="off"/>
                                 <div class="input-group-append">
-                                    <input class="button" type="button" value="Verify Key" id="twitterStep2"/>
+                                    <span class="input-group-text">
+                                        <input class="button" type="button" value="Verify Key" id="twitterStep2"/>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -2611,8 +2627,10 @@
                                            placeholder="${_('authorization PIN code')}"
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-append">
-                                        <a href="#" id="TraktGetPin">Get PIN</a>
-                                        <a href="#" id="authTrakt" class="hide">${_('Authorize')}</a>
+                                        <span class="input-group-text">
+                                            <a href="#" id="TraktGetPin">Get PIN</a>
+                                            <a href="#" id="authTrakt" class="hide">${_('Authorize')}</a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -2626,13 +2644,17 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-clock-o"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-clock"></span>
+                                    </span>
                                 </div>
                                 <input name="trakt_timeout" id="trakt_timeout"
                                        value="${sickrage.app.config.trakt_timeout}"
                                        class="form-control"/>
                                 <div class="input-group-append">
-                                    secs
+                                    <span class="input-group-text">
+                                        secs
+                                    </span>
                                 </div>
                             </div>
                             <label for="trakt_timeout">
@@ -2647,7 +2669,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-linode"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-linode"></span>
+                                    </span>
                                 </div>
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
@@ -2706,7 +2730,9 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-binoculars"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-binoculars"></span>
+                                        </span>
                                     </div>
                                     <select id="trakt_method_add" name="trakt_method_add"
                                             class="form-control ">

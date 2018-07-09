@@ -1,7 +1,11 @@
 const path = require('path');
+const webpack = require('webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 module.exports = {
-    entry: './src/js/app.js',
+    entry: './src/app.js',
     output: {
         path: path.resolve(__dirname, 'sickrage/core/webserver/static/js'),
         filename: 'core.min.js'
@@ -9,14 +13,31 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.s?css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "sass-loader"
+                ]
+            },
+            {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: "babel-loader"
+                loader: "eslint-loader"
+            },
+            {
+                test: /\.js$/,
+                exclude: [
+                    /node_modules/,
+                    /spec/
+                ],
+                loader: "babel-loader",
+                options: {
+                    presets: ['env']
                 }
             },
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
                 use: [{
                     loader: 'file-loader',
                     options: {
@@ -26,25 +47,26 @@ module.exports = {
                 }]
             },
             {
-                test: /\.(scss)$/,
-                use: [{
-                    loader: 'style-loader' // inject CSS to page
-                }, {
-                    loader: 'css-loader' // translates CSS into CommonJS modules
-                }, {
-                    loader: 'postcss-loader', // Run post css actions
-                    options: {
-                        plugins: function () { // post css plugins, can be exported to postcss.config.js
-                            return [
-                                require('precss'),
-                                require('autoprefixer')
-                            ];
-                        }
-                    }
-                }, {
-                    loader: 'sass-loader' // compiles Sass to CSS
-                }]
+                test: /\.(jpe?g|png|gif)$/i,
+                loader: "file-loader",
+                query: {
+                    name: '[name].[ext]',
+                    outputPath: '../images/'
+                }
             }
         ]
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+        }),
+        new CleanWebpackPlugin(['sickrage/core/webserver/static/css/*.*', 'sickrage/core/webserver/static/js/*.*']),
+        new MiniCssExtractPlugin({
+            filename: "../css/core.min.css",
+            chunkFilename: "[id].css"
+        }),
+        new OptimizeCSSAssetsPlugin()
+    ]
 };

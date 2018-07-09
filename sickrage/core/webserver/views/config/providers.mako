@@ -8,14 +8,18 @@
     from sickrage.core.helpers import anon_url, validate_url
 %>
 
-<%block name="tabs">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#provider-priorities">${_('Provider Priorities')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#provider-options">${_('Provider Options')}</a></li>
+<%block name="menus">
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#provider-priorities">${_('Provider Priorities')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#provider-options">${_('Provider Options')}</a></li>
     % if sickrage.app.config.use_nzbs:
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#custom-newnab-providers">${_('Custom Newznab Providers')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                     href="#custom-newnab-providers">${_('Custom Newznab Providers')}</a></li>
     % endif
     % if sickrage.app.config.use_torrents:
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#custom-torrent-providers">${_('Custom Torrent Providers')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                     href="#custom-torrent-providers">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>
 
@@ -61,8 +65,10 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Provider Priorities')}</h3>
-                <p>${_('Check off and drag the providers into the order you want them to be used.')}</p>
-                <p>${_('At least one provider is required but two are recommended.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Check off and drag the providers into the order you want them to be used.')}
+                    <p>${_('At least one provider is required but two are recommended.')}</p>
+                </small>
 
                 % if not sickrage.app.config.use_nzbs or not sickrage.app.config.use_torrents:
                     <blockquote style="margin: 20px 0;">
@@ -75,44 +81,43 @@
                     <br>
                 % endif
 
-                <div>
-                    <p class="note">
-                        <span class="yellow-text fas fa-chevron-circle-left"></span> ${_('Provider does not support backlog searches at this time.')}
-                        <span class="red-text fas fa-exclamation-circle"></span> ${_('Provider is <b>NOT WORKING</b>.')}
-                    </p>
-                </div>
+                <small class="form-text text-muted">
+                    <i class="text-warning fas fa-chevron-circle-left"></i>
+                    ${_('Provider does not support backlog searches at this time.')}
+                    <br/>
+                    <i class="text-danger fas fa-exclamation-circle"></i>
+                    ${_('Provider is <b>NOT WORKING</b>.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
-                <ul id="provider_order_list">
+                <div class="list-group w-25" id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.use_nzbs) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.use_torrents):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
                         % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
                             <% provider_url = providerObj.custom_url %>
                         % endif
-                            <li class="ui-state-default ${('nzb-provider', 'torrent-provider')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]}"
+                            <div class="${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1"
                                 id="${providerID}">
-                                <input type="checkbox" id="enable_${providerID}"
-                                       class="provider_enabler" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
-                                <a href="${anon_url(provider_url)}" class="imgLink"
-                                   rel="noreferrer"
-                                   onclick="window.open(this.href, '_blank'); return false;"><img
-                                        src="${srWebRoot}/images/providers/${providerObj.imageName}"
-                                        alt="${providerObj.name}" title="${providerObj.name}" width="16"
-                                        height="16" style="vertical-align:middle;"/></a>
-                                <label for="enable_${providerID}"
-                                       style="vertical-align:middle;">${providerObj.name}</label>
-                                <span class="fas fa-arrows-v bg-primary pull-right"
-                                      style="vertical-align:middle;"></span>
-                                <span class="fa ${('fa-unlock bg-success','fa-lock bg-danger')[bool(providerObj.private)]} pull-right"
-                                      style="vertical-align:middle;"></span>
-                                ${('<span class="bg-warning fas fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
-                                ${('<span class="bg-danger fas fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
-                            </li>
+                                <div class="align-middle mt-1 ml-2">
+                                    <input type="checkbox" id="enable_${providerID}"
+                                           class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
+                                    <a href="${anon_url(provider_url)}" class="text-right imgLink"
+                                       rel="noreferrer"
+                                       onclick="window.open(this.href, '_blank'); return false;"><img
+                                            src="${srWebRoot}/images/providers/${providerObj.imageName}"
+                                            alt="${providerObj.name}" title="${providerObj.name}" width="16"
+                                            height="16"/></a>
+                                    <label class="font-weight-bold" for="enable_${providerID}">${providerObj.name}</label>
+                                    <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
+                                    ${('<i class="text-warning mt-1 fas fa-chevron-circle-left float-right"></i>', '')[bool(providerObj.supports_backlog)]}
+                                    ${('<i class="text-danger mt-1 fas fa-exclamation-circle float-right"></i>', '')[bool(providerObj.isAlive)]}
+                                </div>
+                            </div>
                         % endif
                     % endfor
-                </ul>
+                </div>
                 <input type="hidden" name="provider_order" id="provider_order"
                        value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
                 <br><input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
@@ -262,8 +267,10 @@
                                                 ${_('episodes only.')}
                                             </label>
                                             <p></p>
-                                            ${_('when searching for complete seasons you can choose to have it look for')} <br/>
-                                            ${_('season packs only, or choose to have it build a complete season from just')} <br/>
+                                            ${_('when searching for complete seasons you can choose to have it look for')}
+                                            <br/>
+                                            ${_('season packs only, or choose to have it build a complete season from just')}
+                                            <br/>
                                             ${_('single episodes.')}
                                         </div>
                                     </div>
@@ -474,7 +481,9 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-hashtag"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-hashtag"></span>
+                                            </span>
                                         </div>
                                         <input name="${providerID}_hash" id="${providerID}_hash"
                                                value="${providerObj.hash}"
@@ -589,7 +598,7 @@
                                                id="${providerID}_pin"
                                                value="${providerObj.pin}"
                                                title=${_('Provider PIN#')}
-                                               class="form-control"
+                                                       class="form-control"
                                                autocapitalize="off"/>
                                     </div>
                                 </div>
@@ -604,13 +613,15 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-percent"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-percent"></span>
+                                            </span>
                                         </div>
                                         <input type="number" step="0.1" name="${providerID}_ratio"
                                                id="${providerID}_ratio"
                                                value="${providerObj.ratio}"
                                                title=${_('stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)')}
-                                               class="form-control"/>
+                                                       class="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -624,13 +635,15 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-hashtag"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-hashtag"></span>
+                                            </span>
                                         </div>
                                         <input type="number" name="${providerID}_minseed"
                                                id="${providerID}_minseed"
                                                value="${providerObj.minseed}"
                                                title=${_('Minimum allowed seeders')}
-                                               class="form-control"/>
+                                                       class="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -644,13 +657,15 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fas fa-hashtag"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-hashtag"></span>
+                                            </span>
                                         </div>
                                         <input type="number" name="${providerID}_minleech"
                                                id="${providerID}_minleech"
                                                value="${providerObj.minleech}"
                                                title=${_('Minimum allowed leechers')}
-                                               class="form-control"/>
+                                                       class="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -943,7 +958,9 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fas fa-id-card"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </span>
                                     </div>
                                     <input id="newznab_name" class="form-control" title="Provider name"/>
                                 </div>
@@ -1011,7 +1028,8 @@
                         <div id="newznab_add_div">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-secondary newznab_save" type="button" id="newznab_add" value=${_('Add')}>
+                                    <input class="btn btn-secondary newznab_save" type="button" id="newznab_add"
+                                           value=${_('Add')}>
                                 </div>
                             </div>
                         </div>
@@ -1062,7 +1080,9 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fas fa-id-card"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-id-card"></span>
+                                        </span>
                                     </div>
                                     <input id="torrentrss_name"
                                            title="Provider name"

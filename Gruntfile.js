@@ -390,23 +390,11 @@ module.exports = function (grunt) {
         'default', [
             'clean',
             'npm-install',
-            'bower_concat',
             'googlefonts',
             'copy',
             'imagemin',
             'uglify',
-            'sprite',
-            'sass',
-            'cssmin',
-            'jshint'
-        ]
-    );
-
-    grunt.registerTask(
-        'css', [
-            'sprite',
-            'sass',
-            'cssmin'
+            'sprite'
         ]
     );
 
