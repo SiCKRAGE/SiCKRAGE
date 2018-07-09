@@ -19,7 +19,7 @@
                                placeholder="${_('Select the folder you wish to save your backup file to')}"
                                autocapitalize="off"/>
                         <div class="input-group-append">
-                            <a href="#" class="fa fa-download" title="${_('Backup')}" id="Backup"></a>
+                            <a href="#" class="fas fa-download" title="${_('Backup')}" id="Backup"></a>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                                        placeholder="${_('Select the backup file you wish to restore')}"
                                        class="form-control" autocapitalize="off"/>
                                 <div class="input-group-append">
-                                    <a href="#" class="fa fa-upload" title="${_('Restore')}" id="Restore"></a>
+                                    <a href="#" class="fas fa-upload" title="${_('Restore')}" id="Restore"></a>
                                 </div>
                             </div>
                         </div>

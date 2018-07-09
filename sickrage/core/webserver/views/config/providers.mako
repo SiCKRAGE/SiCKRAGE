@@ -77,8 +77,8 @@
 
                 <div>
                     <p class="note">
-                        <span class="yellow-text fa fa-chevron-circle-left"></span> ${_('Provider does not support backlog searches at this time.')}
-                        <span class="red-text fa fa-exclamation-circle"></span> ${_('Provider is <b>NOT WORKING</b>.')}
+                        <span class="yellow-text fas fa-chevron-circle-left"></span> ${_('Provider does not support backlog searches at this time.')}
+                        <span class="red-text fas fa-exclamation-circle"></span> ${_('Provider is <b>NOT WORKING</b>.')}
                     </p>
                 </div>
             </div>
@@ -103,12 +103,12 @@
                                         height="16" style="vertical-align:middle;"/></a>
                                 <label for="enable_${providerID}"
                                        style="vertical-align:middle;">${providerObj.name}</label>
-                                <span class="fa fa-arrows-v bg-primary pull-right"
+                                <span class="fas fa-arrows-v bg-primary pull-right"
                                       style="vertical-align:middle;"></span>
                                 <span class="fa ${('fa-unlock bg-success','fa-lock bg-danger')[bool(providerObj.private)]} pull-right"
                                       style="vertical-align:middle;"></span>
-                                ${('<span class="bg-warning fa fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
-                                ${('<span class="bg-danger fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
+                                ${('<span class="bg-warning fas fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
+                                ${('<span class="bg-danger fas fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
                             </li>
                         % endif
                     % endfor
@@ -474,7 +474,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-hashtag"></span>
+                                            <span class="input-group-text fas fa-hashtag"></span>
                                         </div>
                                         <input name="${providerID}_hash" id="${providerID}_hash"
                                                value="${providerObj.hash}"
@@ -604,7 +604,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-percent"></span>
+                                            <span class="input-group-text fas fa-percent"></span>
                                         </div>
                                         <input type="number" step="0.1" name="${providerID}_ratio"
                                                id="${providerID}_ratio"
@@ -624,7 +624,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-hashtag"></span>
+                                            <span class="input-group-text fas fa-hashtag"></span>
                                         </div>
                                         <input type="number" name="${providerID}_minseed"
                                                id="${providerID}_minseed"
@@ -644,7 +644,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-hashtag"></span>
+                                            <span class="input-group-text fas fa-hashtag"></span>
                                         </div>
                                         <input type="number" name="${providerID}_minleech"
                                                id="${providerID}_minleech"
@@ -943,7 +943,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-id-card"></span>
+                                        <span class="input-group-text fas fa-id-card"></span>
                                     </div>
                                     <input id="newznab_name" class="form-control" title="Provider name"/>
                                 </div>
@@ -1062,7 +1062,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-id-card"></span>
+                                        <span class="input-group-text fas fa-id-card"></span>
                                     </div>
                                     <input id="torrentrss_name"
                                            title="Provider name"

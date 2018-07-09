@@ -73,7 +73,7 @@
                                         <div class="clearfix">
                                             <p>
                                                 ${int(float(cur_rating)*10)}%
-                                                <span class="fa fa-heart red-text"></span>
+                                                <span class="fas fa-heart red-text"></span>
                                             </p>
                                             <i>${cur_votes}</i>
                                             <div class="traktShowTitleIcons">

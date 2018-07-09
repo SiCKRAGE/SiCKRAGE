@@ -42,7 +42,7 @@
                                     <div class="col-md-12">
                                         <div class="input-group input350">
                                             <div class="input-group-addon">
-                                                <span class="fa fa-tv"></span>
+                                                <span class="fas fa-tv"></span>
                                             </div>
                                             <input id="nameToSearch" value="${default_show_name}"
                                                    title="TV show name" class="form-control"/>

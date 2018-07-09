@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                             <button id="popover" type="button" class="form-control bg-secondary" style="border: none;">
-                                <i class="fa fa-caret-down"></i>
+                                <i class="fas fa-caret-down"></i>
                             </button>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <div class="input-group-text bg-secondary" style="border: none">
-                                    <i class="fa fa-search"></i>
+                                    <i class="fas fa-search"></i>
                                 </div>
                             </div>
                             <input id="filterShowName" class="form-control bg-secondary text-white-50"
@@ -89,13 +89,13 @@
                 <div class="dropdown">
                     <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
                         % if sickrage.app.config.home_layout == 'poster':
-                            <i class="fa fa-2x fa-th-large"></i>
+                            <i class="fas fa-2x fa-th-large"></i>
                         % elif sickrage.app.config.home_layout == 'small':
-                            <i class="fa fa-2x fa-th"></i>
+                            <i class="fas fa-2x fa-th"></i>
                         % elif sickrage.app.config.home_layout == 'banner':
-                            <i class="fa fa-2x fa-image"></i>
+                            <i class="fas fa-2x fa-image"></i>
                         % elif sickrage.app.config.home_layout == 'simple':
-                            <i class="fa fa-2x fa-th-list"></i>
+                            <i class="fas fa-2x fa-th-list"></i>
                         % endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right">

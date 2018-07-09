@@ -66,9 +66,6 @@
     % if sickrage.app.config.gui_lang:
         <link rel="gettext" type="application/json" href="${srWebRoot}/messages.json">
     % endif
-
-    <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
-    <%block name="css" />
 </head>
 <body data-controller="${controller}" data-action="${action}">
     % if current_user:
@@ -207,39 +204,39 @@
                             <span class="d-block d-sm-none">
                                 ${_('Config')}
                             </span>
-                                <i class="fa fa-2x fa-gears"></i>
+                                <i class="fas fa-2x fa-gears"></i>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarConfig">
                                 <a class="dropdown-item" href="${srWebRoot}/config/">
-                                    <i class="fa fa-info"></i>&nbsp;${_('Help and Info')}
+                                    <i class="fas fa-info"></i>&nbsp;${_('Help and Info')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/general/">
-                                    <i class="fa fa-cogs"></i>&nbsp;${_('General')}
+                                    <i class="fas fa-cogs"></i>&nbsp;${_('General')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/backuprestore/">
-                                    <i class="fa fa-upload"></i>&nbsp;${_('Backup and Restore')}
+                                    <i class="fas fa-upload"></i>&nbsp;${_('Backup and Restore')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/search/">
-                                    <i class="fa fa-binoculars"></i>&nbsp;${_('Search Clients')}
+                                    <i class="fas fa-binoculars"></i>&nbsp;${_('Search Clients')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/providers/">
-                                    <i class="fa fa-share-alt"></i>&nbsp;${_('Search Providers')}
+                                    <i class="fas fa-share-alt"></i>&nbsp;${_('Search Providers')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/subtitles/">
-                                    <i class="fa fa-cc"></i>&nbsp;${_('Subtitles Settings')}
+                                    <i class="fas fa-cc"></i>&nbsp;${_('Subtitles Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/qualitySettings/">
-                                    <i class="fa fa-wrench"></i>&nbsp;${_('Quality Settings')}
+                                    <i class="fas fa-wrench"></i>&nbsp;${_('Quality Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/postProcessing/">
-                                    <i class="fa fa-refresh"></i>&nbsp;${_('Post Processing')}
+                                    <i class="fas fa-refresh"></i>&nbsp;${_('Post Processing')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/notifications/">
-                                    <i class="fa fa-bell"></i>&nbsp;${_('Notifications')}
+                                    <i class="fas fa-bell"></i>&nbsp;${_('Notifications')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/anime/">
-                                    <i class="fa fa-eye"></i>&nbsp;${_('Anime')}
+                                    <i class="fas fa-eye"></i>&nbsp;${_('Anime')}
                                 </a>
                             </div>
                         </li>
@@ -257,53 +254,53 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
                                 <a class="dropdown-item" href="${srWebRoot}/IRC/">
-                                    <i class="fa fa-hashtag"></i>&nbsp;${_('IRC')}
+                                    <i class="fas fa-hashtag"></i>&nbsp;${_('IRC')}
                                 </a>
                                 <a class="dropdown-item" href="#" id="changelog">
-                                    <i class="fa fa-globe"></i>&nbsp;${_('Changelog')}
+                                    <i class="fas fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>
                                 <a class="dropdown-item" href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
-                                    <i class="fa fa-money"></i>&nbsp;${_('Donate')}
+                                    <i class="fas fa-money"></i>&nbsp;${_('Donate')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 %if numErrors:
                                     <a class="dropdown-item" href="${srWebRoot}/logs/">
-                                        <i class="fa fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
+                                        <i class="fas fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
                                         <span class="badge btn-danger">${numErrors}</span>
                                     </a>
                                 %endif
                                 %if numWarnings:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
-                                        <i class="fa fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
+                                        <i class="fas fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
                                         <span class="badge btn-warning">${numWarnings}</span>
                                     </a>
                                 %endif
                                 <a class="dropdown-item" href="${srWebRoot}/logs/viewlog/">
-                                    <i class="fa fa-file-text-o"></i>&nbsp;${_('View Log')}
+                                    <i class="fas fa-file-text-o"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                    <i class="fa fa-check-square"></i>&nbsp;${_('Check For Updates')}
+                                    <i class="fas fa-check-square"></i>&nbsp;${_('Check For Updates')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/restart/?pid=${srPID}"
                                    class="confirm restart">
-                                    <i class="fa fa-repeat"></i>&nbsp;${_('Restart')}
+                                    <i class="fas fa-redo"></i>&nbsp;${_('Restart')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/shutdown/?pid=${srPID}"
                                    class="confirm shutdown">
-                                    <i class="fa fa-power-off"></i>&nbsp;${_('Shutdown')}
+                                    <i class="fas fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
-                                    <i class="fa fa-unlink"></i>&nbsp;${_('Unlink Account')}
+                                    <i class="fas fa-unlink"></i>&nbsp;${_('Unlink Account')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/logout" class="confirm logout">
-                                    <i class="fa fa-sign-out"></i>&nbsp;${_('Logout')}
+                                    <i class="fas fa-sign-out-alt"></i>&nbsp;${_('Logout')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${srWebRoot}/home/status/">
-                                    <i class="fa fa-server"></i>&nbsp;${_('Server Status')}
+                                    <i class="fas fa-server"></i>&nbsp;${_('Server Status')}
                                 </a>
                             </div>
                         </li>
@@ -405,7 +402,6 @@
         </footer>
     % endif
 
-    <script src="${srWebRoot}/js/bower.min.js"></script>
     <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />
 

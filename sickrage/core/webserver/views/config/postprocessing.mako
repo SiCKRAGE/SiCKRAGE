@@ -107,7 +107,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input type="number" min="10" name="autopostprocessor_frequency"
                                    id="autopostprocessor_frequency"
@@ -139,7 +139,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-file"></span>
+                                <span class="input-group-text fas fa-file"></span>
                             </div>
                             <input name="sync_files" id="sync_files"
                                    value="${sickrage.app.config.sync_files}"
@@ -218,7 +218,7 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-file"></span>
+                                        <span class="input-group-text fas fa-file"></span>
                                     </div>
                                     <input name="allowed_extensions" id="allowed_extensions"
                                            value="${sickrage.app.config.allowed_extensions}"
@@ -268,7 +268,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <select name="file_timestamp_timezone" id="file_timestamp_timezone"
                                     title="What timezone should be used to change File Date?"
@@ -371,7 +371,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-file"></span>
+                                <span class="input-group-text fas fa-file"></span>
                             </div>
                             <input name="extra_scripts" id="extra_scripts"
                                    value="${'|'.join(sickrage.app.config.extra_scripts)}"
@@ -1378,7 +1378,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-tv"></span>
+                                <span class="input-group-text fas fa-tv"></span>
                             </div>
                             <select id="metadataType" class="form-control">
                                 % for (cur_id, cur_generator) in sorted(m_dict.items()):

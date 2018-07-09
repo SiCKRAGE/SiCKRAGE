@@ -132,7 +132,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-clock-o"></span>
+                                    <span class="input-group-text fas fa-clock-o"></span>
                                 </div>
                                 <input type="number" name="subtitles_finder_frequency"
                                        value="${sickrage.app.config.subtitle_searcher_freq}" hours="1"
@@ -152,7 +152,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-file"></span>
+                                    <span class="input-group-text fas fa-file"></span>
                                 </div>
                                 <input name="subtitles_extra_scripts" id="subtitles_extra_scripts"
                                        value="<% '|'.join(sickrage.app.config.subtitles_extra_scripts) %>"
@@ -226,7 +226,7 @@
                                                  height="16" style="vertical-align:middle;"/>
                                         </a>
                                         <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
-                                        <i class="fa fa-arrows-v blue-text pull-right"
+                                        <i class="fas fa-arrows-v blue-text pull-right"
                                            style="vertical-align:middle;"></i>
                                         <i class="fa ${('fa-unlock green-text','fa-lock red-text')[curService['name'] in providerLoginDict]} pull-right"
                                            style="vertical-align:middle;"></i>

@@ -21,7 +21,7 @@
         <div class="col">
             <div class="input-group w-50 mx-auto text-center">
                 <div class="input-group-prepend">
-                    <button id="prevShow" class="btn btn-secondary fa fa-arrow-left"></button>
+                    <button id="prevShow" class="btn btn-secondary fas fa-arrow-left"></button>
                 </div>
                 <select class="form-control" id="pickShow" title="Change Show">
                     % for curShowList in sortedShowLists:
@@ -37,7 +37,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="nextShow" class="btn btn-secondary fa fa-arrow-right"></button>
+                    <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
                 </div>
             </div>
             <br/>
@@ -127,7 +127,7 @@
                                 <td>
                                     % if show.imdb_info and 'imdbRating' in show.imdb_info:
                                     <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['imdbVotes']) + " Votes" %>
-                                        <span id="imdbstars" class="text-warning fa fa-star" title="${rating_tip}">
+                                        <span id="imdbstars" class="text-warning fas fa-star" title="${rating_tip}">
                                             ${show.imdb_info['imdbRating']}
                                         </span>
                                     % endif
@@ -402,7 +402,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="changeStatus" class="btn btn-secondary fa fa-play"></button>
+                    <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
                 </div>
             </div>
             <input type="hidden" id="showID" value="${show.indexerid}"/>
@@ -707,21 +707,21 @@
                            id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                            <i class="fa fa-refresh" title="${_('Retry Download')}"></i>
+                            <i class="fas fa-refresh" title="${_('Retry Download')}"></i>
                         </a>
                     % else:
                         <a class="epSearch"
                            id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                            <i class="fa fa-search" title="${_('Manual Search')}"></i>
+                            <i class="fas fa-search" title="${_('Manual Search')}"></i>
                         </a>
                     % endif
                 % endif
                 % if sickrage.app.config.use_subtitles and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
                     <a class="epSubtitlesSearch"
                        href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                        <i class="fa fa-comment" title="${_('Subtitles Search')}"></i>
+                        <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
                     </a>
                 % endif
             </td>

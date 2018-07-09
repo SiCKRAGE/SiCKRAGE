@@ -96,7 +96,7 @@
                         </div>
 
                         <div class="clearfix">
-                            <p>${int(cur_show.rating.value*10)}% <span class="fa fa-heart red-text"></span></p>
+                            <p>${int(cur_show.rating.value*10)}% <span class="fas fa-heart red-text"></span></p>
                             <i>${cur_show.votes} ${_('votes')}</i>
                             <div class="traktShowTitleIcons">
                                 <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"

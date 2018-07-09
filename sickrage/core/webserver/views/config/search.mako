@@ -113,7 +113,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-clock-o"></span>
+                                    <span class="input-group-text fas fa-clock-o"></span>
                                 </div>
                                 <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
                                         title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
@@ -137,7 +137,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text fa fa-clock-o"></span>
+                                    <span class="input-group-text fas fa-clock-o"></span>
                                 </div>
                                 <select id="check_propers_interval" name="check_propers_interval"
                                         class="form-control" title="Interval to check for propers">
@@ -158,7 +158,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="backlog_frequency"
                                    id="backlog_frequency"
@@ -177,7 +177,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="dailysearch_frequency"
                                    id="dailysearch_frequency"
@@ -199,7 +199,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="usenet_retention"
                                    id="usenet_retention"

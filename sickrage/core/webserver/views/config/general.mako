@@ -123,7 +123,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-book"></span>
+                                <span class="input-group-text fas fa-book"></span>
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
                                     title="${_('when launching SickRage interface')}">
@@ -151,7 +151,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="showupdate_hour" id="showupdate_hour"
                                    value="${sickrage.app.config.showupdate_hour}"
@@ -209,7 +209,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-file"></span>
+                                <span class="input-group-text fas fa-file"></span>
                             </div>
                             <input name="log_nr" id="log_nr"
                                    value="${sickrage.app.config.log_nr}"
@@ -229,7 +229,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-file"></span>
+                                <span class="input-group-text fas fa-file"></span>
                             </div>
                             <input name="log_size" id="log_size"
                                    value="${sickrage.app.config.log_size}"
@@ -249,7 +249,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-list"></span>
+                                <span class="input-group-text fas fa-list"></span>
                             </div>
                             <select id="indexer_default" name="indexer_default"
                                     title="default indexer selection when adding new shows"
@@ -274,7 +274,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="indexer_timeout" id="indexer_timeout"
                                    value="${sickrage.app.config.indexer_timeout}"
@@ -350,7 +350,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <input name="update_frequency" id="update_frequency"
                                    value="${sickrage.app.config.version_updater_freq}"
@@ -405,7 +405,7 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-language"></span>
+                                        <span class="input-group-text fas fa-language"></span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
                                         <option value="" ${('', 'selected')[sickrage.app.config.gui_lang == ""]}>
@@ -435,7 +435,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-themeisle"></span>
+                                <span class="input-group-text fas fa-themeisle"></span>
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
@@ -574,7 +574,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-clock-o"></span>
+                                <span class="input-group-text fas fa-clock-o"></span>
                             </div>
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
@@ -911,7 +911,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text fa fa-microchip"></span>
+                                <span class="input-group-text fas fa-microchip"></span>
                             </div>
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="Normal (default). High is lower and Low is higher CPU use">
@@ -1159,7 +1159,7 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text fa fa-file"></span>
+                                        <span class="input-group-text fas fa-file"></span>
                                     </div>
                                     <input id="pip_path" name="pip_path"
                                            value="${sickrage.app.config.pip_path}"
@@ -1213,7 +1213,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-git"></span>
+                                            <span class="input-group-text fas fa-git"></span>
                                         </div>
                                         <select id="branchVersion" class="form-control"
                                                 title=${_('GIT Branch Version')}>
@@ -1256,7 +1256,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text fa fa-file"></span>
+                                            <span class="input-group-text fas fa-file"></span>
                                         </div>
                                         <input id="git_path" name="git_path"
                                                value="${sickrage.app.config.git_path}"

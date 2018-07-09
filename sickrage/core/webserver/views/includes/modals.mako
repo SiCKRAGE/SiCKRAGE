@@ -8,7 +8,7 @@
                 </div>
                 <div class="modal-body">
                     <div id="ajax_loader">
-                        <i class="fa fa-spinner fa-spin"></i>
+                        <i class="fas fa-spinner fa-spin"></i>
                         <div id="current_info"></div>
                     </div>
                 </div>

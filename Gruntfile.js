@@ -18,21 +18,10 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            bower_components: 'bower_components',
-            //sass: [
-            //    '.sass-cache',
-            //    'sickrage/core/webserver/static/scss/'
-            //],
             options: {
                 force: true
-            }
-        },
-        bower: {
-            install: {
-                options: {
-                    copy: false
-                }
-            }
+            },
+            node_modules: 'node_modules'
         },
         bower_concat: {
             all: {
@@ -400,7 +389,7 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'default', [
             'clean',
-            'bower',
+            'npm-install',
             'bower_concat',
             'googlefonts',
             'copy',
