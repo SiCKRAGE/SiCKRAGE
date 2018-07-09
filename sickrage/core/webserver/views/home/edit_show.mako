@@ -27,15 +27,15 @@
                         <div class="card-header bg-secondary">
                             <ul class="nav nav-pills card-header-pills">
                                 <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark active text-white" data-toggle="tab"
+                                    <a class="nav-link bg-dark text-white bg-dark active text-white" data-toggle="tab"
                                        href="#core-tab-pane1">${_('Main')}</a>
                                 </li>
                                 <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark text-white" data-toggle="tab"
+                                    <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
                                        href="#core-tab-pane2">${_('Format')}</a>
                                 </li>
                                 <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark text-white" data-toggle="tab"
+                                    <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
                                        href="#core-tab-pane3">${_('Advanced')}</a>
                                 </li>
                             </ul>

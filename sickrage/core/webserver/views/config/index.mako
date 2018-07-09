@@ -15,11 +15,11 @@
 %>
 
 <%block name="content">
-    <div class="row">
+    <div class="form-row">
         <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-keys"></i> ${_('SR App ID:')}
                         </div>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-version"></i> ${_('SR Version:')}
                         </div>
@@ -38,7 +38,7 @@
                     </div>
                     <br/>
                     % if sickrage.app.version_updater.updater.type == 'git':
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                 <i class="icons-sickrage icons-sickrage-commit"></i> ${_('SR Commit:')}
                             </div>
@@ -48,7 +48,7 @@
                         </div>
                         <br/>
                     % endif
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-type"></i> ${_('SR Type:')}
                         </div>
@@ -58,7 +58,7 @@
                     </div>
                     <br/>
                     % if sr_user:
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                 <i class="icons-sickrage icons-sickrage-user"></i> ${_('SR User:')}
                             </div>
@@ -68,14 +68,14 @@
                         </div>
                         <br/>
                     % endif
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><i
                                 class="icons-sickrage icons-sickrage-locale"></i> ${_('SR Locale:')}
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">${sickrage.app.sys_encoding}</div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-cfg"></i> ${_('SR Config:')}
                         </div>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-cache"></i> ${_('SR Cache Dir:')}
                         </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-log"></i> ${_('SR Log File:')}
                         </div>
@@ -102,7 +102,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-console"></i> ${_('SR Arguments:')}
                         </div>
@@ -112,7 +112,7 @@
                     </div>
                     <br/>
                     % if sickrage.app.config.web_root:
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                 ${_('SR Web Root:')}
                             </div>
@@ -122,7 +122,7 @@
                         </div>
                         <br/>
                     % endif
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-tornado"></i> ${_('Tornado Version:')}
                         </div>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-python"></i> ${_('Python Version:')}
                         </div>
@@ -140,7 +140,7 @@
                         </div>
                     </div>
                     <hr/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-logo"></i> ${_('Homepage')}
                         </div>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-wiki"></i> ${_('WiKi')}
                         </div>
@@ -161,7 +161,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-forums"></i> ${_('Forums')}
                         </div>
@@ -172,7 +172,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-git"></i> ${_('Source')}
                         </div>
@@ -183,7 +183,7 @@
                         </div>
                     </div>
                     <br/>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                             <i class="icons-sickrage icons-sickrage-irc"></i> ${_('IRChat')}
                         </div>

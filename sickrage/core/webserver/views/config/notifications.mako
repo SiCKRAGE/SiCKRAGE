@@ -11,22 +11,22 @@
     from sickrage.indexers import IndexerApi
 %>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#tabs-1">${_('Home Theater')} / ${_('NAS')}</a></li>
-    <li><a data-toggle="tab" href="#tabs-2">${_('Devices')}</a></li>
-    <li><a data-toggle="tab" href="#tabs-3">${_('Social')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#home-theater-nas">${_('Home Theater')} / ${_('NAS')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#devices">${_('Devices')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#social">${_('Social')}</a></li>
 </%block>
 <%block name="pages">
-    <div id="tabs-1" class="tab-pane fade in active">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="home-theater-nas" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/kodi.png" alt=""
                      title="KODI"/>
                 <h3><a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">KODI</a></h3>
                 <p>${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div id="content_use_kodi">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Always on')}</label>
                         </div>
@@ -50,7 +50,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -62,7 +62,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -74,7 +74,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -86,7 +86,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Update library')}</label>
                         </div>
@@ -98,7 +98,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Full library update')}</label>
                         </div>
@@ -110,7 +110,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Only update first host')}</label>
                         </div>
@@ -122,13 +122,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('KODI IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="kodi_host" id="kodi_host"
@@ -138,14 +138,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('KODI username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input name="kodi_username" id="kodi_username"
@@ -156,13 +156,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('KODI password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input type="password" name="kodi_password" id="kodi_password"
@@ -173,15 +173,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testKODI-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test KODI')}" id="testKODI"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test KODI')}" id="testKODI"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -191,8 +191,8 @@
         </div><!-- /kodi tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Server"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
@@ -201,8 +201,8 @@
                 <p class="plexinfo hide">${_('For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port')}
                     <b>3005</b>.</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -216,15 +216,15 @@
                 </div>
 
                 <div id="content_use_plex">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Plex Media Server Auth Token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
                                         <input name="plex_server_token" id="plex_server_token"
@@ -234,7 +234,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="plex_server_token">
                                         ${_('Auth Token used by Plex')}
@@ -247,14 +247,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row tab-pane">
-                        <div class="row field-pair">
+                    <div class="form-row">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Server Username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="plex_username" id="plex_username"
@@ -264,13 +264,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Server/client password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="plex_password" id="plex_password"
@@ -282,8 +282,8 @@
                         </div>
                     </div>
 
-                    <div class="row tab-pane">
-                        <div class="row field-pair">
+                    <div class="form-row">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Update server library')}</label>
                             </div>
@@ -296,13 +296,13 @@
                             </div>
                         </div>
                         <div id="content_plex_update_library">
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Plex Media Server IP:Port')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="plex_server_host"
@@ -315,7 +315,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="testNotification" id="testPMS-result">
                                         ${_('Click below to test Plex servers')}
@@ -323,9 +323,9 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn" type="button" value="${_('Test Plex Server')}" id="testPMS"/>
+                                    <input class="btn btn-secondary" type="button" value="${_('Test Plex Server')}" id="testPMS"/>
                                     <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                                 </div>
                             </div>
@@ -335,15 +335,15 @@
             </fieldset>
         </div><!-- /plex media server tab-pane -->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
                      title="Plex Media Client"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">${_('Plex Media Client')}</a></h3>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -357,7 +357,7 @@
                 </div>
 
                 <div id="content_use_plex_client">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -369,7 +369,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -381,7 +381,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
@@ -394,13 +394,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Plex Client IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="plex_host" id="plex_host"
@@ -410,15 +410,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row tab-pane">
-                        <div class="row field-pair">
+                    <div class="form-row">
+                        <div class="form-row form-group">
 
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Server Username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="plex_client_username" id="plex_client_username"
@@ -428,13 +428,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Client Password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="plex_client_password" id="plex_client_password"
@@ -444,16 +444,16 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <div class="testNotification" id="testPMC-result">
                                     ${_('Click below to test Plex client(s)')}
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <input class="btn" type="button" value="${_('Test Plex Client')}" id="testPMC"/>
+                                <input class="btn btn-secondary" type="button" value="${_('Test Plex Client')}" id="testPMC"/>
                                 <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                             </div>
                         </div>
@@ -463,16 +463,16 @@
         </div><!-- /plex client tab-pane -->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/emby.png" alt=""
                      title="Emby"/>
                 <h3><a href="${anon_url('http://emby.media/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Emby</a></h3>
                 <p>${_('A home media server built using other popular open source technologies.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -485,13 +485,13 @@
                     </div>
                 </div>
                 <div id="content_use_emby">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Emby IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="emby_host" id="emby_host"
@@ -501,13 +501,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Emby API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="emby_apikey" id="emby_apikey"
@@ -518,7 +518,7 @@
                         </div>
                     </div>
                     
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -531,7 +531,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -544,7 +544,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -557,15 +557,15 @@
                         </div>
                     </div>
                     
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testEMBY-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Emby')}" id="testEMBY"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Emby')}" id="testEMBY"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -575,16 +575,16 @@
         </div><!-- /emby tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox"/>
                 <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">NMJ</a></h3>
                 <p>${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -598,13 +598,13 @@
                 </div>
 
                 <div id="content_use_nmj">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="nmj_host" id="nmj_host"
@@ -614,26 +614,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Get settings')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input class="btn btn-inline" type="button" value="${_('Get Settings')}"
+                            <input class="btn btn-secondary btn-inline" type="button" value="${_('Get Settings')}"
                                    id="settingsNMJ"/>
                             <label for="settingsNMJ">
                                 ${_('the Popcorn Hour device must be powered on and NMJ running.')}
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('NMJ database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-database"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-database"></span>
                                 </div>
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.app.config.nmj_database}"
@@ -643,14 +643,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('NMJ mount url')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-database"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-database"></span>
                                 </div>
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.app.config.nmj_mount}"
@@ -660,15 +660,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testNMJ-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -676,16 +676,16 @@
             </fieldset>
         </div><!-- /nmj tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
                      title="Networked Media Jukebox v2"/>
                 <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">NMJv2</a></h3>
                 <p>${_('The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -699,14 +699,14 @@
                 </div>
 
                 <div id="content_use_nmjv2">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="nmjv2_host" id="nmjv2_host"
@@ -716,12 +716,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Database location')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="radio" NAME="nmjv2_dbloc" VALUE="local"
                                            id="NMJV2_DBLOC_A" ${('', 'checked')[sickrage.app.config.nmjv2_dbloc == 'local']}/>PCH
@@ -730,7 +730,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="radio" NAME="nmjv2_dbloc" VALUE="network"
                                            id="NMJV2_DBLOC_B" ${('', 'checked')[sickrage.app.config.nmjv2_dbloc == 'network']}/>
@@ -741,14 +741,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Database instance')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-database"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-database"></span>
                                 </div>
                                 <select id="NMJv2db_instance" class="form-control ">
                                     <option value="0">#1</option>
@@ -765,26 +765,26 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Find database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="button" class="btn btn-inline" value="${_('Find Database')}"
+                            <input type="button" class="btn btn-secondary btn-inline" value="${_('Find Database')}"
                                    id="settingsNMJv2"/>
                             <label for="settingsNMJv2">
                                 ${_('the Popcorn Hour device must be powered on.')}
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('NMJv2 database')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-database"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-database"></span>
                                 </div>
                                 <input name="nmjv2_database" id="nmjv2_database"
                                        value="${sickrage.app.config.nmjv2_database}"
@@ -794,14 +794,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testNMJv2-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -810,8 +810,8 @@
         </div><!-- /nmjv2 tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synoindex.png" alt=""
                      title="Synology"/>
                 <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
@@ -820,8 +820,8 @@
                 <p>${_('Synology Indexer is the daemon running on the Synology NAS to build its media database.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -836,7 +836,7 @@
                 </div>
 
                 <div id="content_use_synoindex">
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -846,8 +846,8 @@
         </div><!-- /synoindex tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synologynotifier.png" alt=""
                      title="Synology Indexer"/>
                 <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
@@ -855,8 +855,8 @@
                 <p>${_('Synology Notifier is the notification system of Synology DSM')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -870,7 +870,7 @@
                     </div>
                 </div>
                 <div id="content_use_synologynotifier">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -882,7 +882,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -894,7 +894,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -906,7 +906,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -916,8 +916,8 @@
         </div><!-- /synology notifier tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pytivo.png" alt=""
                      title="pyTivo"/>
                 <h3><a href="${anon_url('http://pytivo.sourceforge.net/wiki/index.php/PyTivo')}"
@@ -925,8 +925,8 @@
                 </h3>
                 <p>${_('pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -941,14 +941,14 @@
                 </div>
 
                 <div id="content_use_pytivo">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('pyTivo IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="pytivo_host" id="pytivo_host"
@@ -959,13 +959,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('pyTivo share name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
                                 <input name="pytivo_share_name" id="pytivo_share_name"
@@ -978,13 +978,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Tivo name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-book"></span>
                                 </div>
                                 <input name="pytivo_tivo_name" id="pytivo_tivo_name"
@@ -997,7 +997,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1007,17 +1007,17 @@
         </div><!-- /tab-pane //-->
     </div>
 
-    <div id="tabs-2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="devices" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/growl.png" alt=""
                      title="Growl"/>
                 <h3><a href="${anon_url('http://growl.info/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Growl</a></h3>
                 <p>${_('A cross-platform unobtrusive global notification system.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1031,7 +1031,7 @@
                 </div>
 
                 <div id="content_use_growl">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1043,7 +1043,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1055,7 +1055,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1067,13 +1067,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Growl IP:Port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="growl_host" id="growl_host"
@@ -1083,13 +1083,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Growl password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input type="password" name="growl_password" id="growl_password"
@@ -1100,7 +1100,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testGrowl-result">
                                 ${_('Click below to rex.ster and test Growl, this is required for Growl notifications to work.')}
@@ -1108,9 +1108,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Register Growl')}" id="testGrowl"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Register Growl')}" id="testGrowl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1121,16 +1121,16 @@
         </div><!-- /growl tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/prowl.png" alt="Prowl"
                      title="Prowl"/>
                 <h3><a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Prowl</a></h3>
                 <p>${_('A Growl client for iOS.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1144,7 +1144,7 @@
                 </div>
 
                 <div id="content_use_prowl">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1156,7 +1156,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1168,7 +1168,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1180,13 +1180,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Prowl API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="prowl_api" id="prowl_api"
@@ -1200,14 +1200,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Prowl priority')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-exclamation"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-exclamation"></span>
                                 </div>
                                 <select id="prowl_priority" name="prowl_priority" class="form-control ">
                                     <option value="-2" ${('', 'selected')[sickrage.app.config.prowl_priority == '-2']}>
@@ -1232,15 +1232,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testProwl-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Prowl')}" id="testProwl"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Prowl')}" id="testProwl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1251,8 +1251,8 @@
         </div><!-- /prowl tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/libnotify.png" alt=""
                      title="Libnotify"/>
                 <h3><a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer"
@@ -1262,8 +1262,8 @@
                     (Ubuntu/Debian package <a href="apt:python-notify">python-notify</a>).
                 </p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1277,7 +1277,7 @@
                 </div>
 
                 <div id="content_use_libnotify">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1289,7 +1289,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1301,7 +1301,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1313,14 +1313,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testLibnotify-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Libnotify')}" id="testLibnotify"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Libnotify')}" id="testLibnotify"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1329,16 +1329,16 @@
         </div><!-- /libnotify tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushover.png" alt=""
                      title="Pushover"/>
                 <h3><a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Pushover</a></h3>
                 <p>${_('Pushover makes it easy to send real-time notifications to your Android and iOS devices.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1352,7 +1352,7 @@
                 </div>
 
                 <div id="content_use_pushover">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1364,7 +1364,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1376,7 +1376,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1388,14 +1388,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushover key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input name="pushover_userkey" id="pushover_userkey"
@@ -1406,13 +1406,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushover API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="pushover_apikey" id="pushover_apikey"
@@ -1427,13 +1427,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushover devices')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-list-alt"></span>
                                 </div>
                                 <input name="pushover_device" id="pushover_device"
@@ -1444,13 +1444,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushover notification sound')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-music"></span>
                                 </div>
                                 <select id="pushover_sound" name="pushover_sound" class="form-control ">
@@ -1531,23 +1531,23 @@
                         </div>
                     </div>
                     <div class="testNotification" id="testPushover-result">Click below to test.</div>
-                    <input class="btn" type="button" value="${_('Test Pushover')}" id="testPushover"/>
+                    <input class="btn btn-secondary" type="button" value="${_('Test Pushover')}" id="testPushover"/>
                     <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                 </div><!-- /content_use_pushover //-->
 
             </fieldset>
         </div><!-- /pushover tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar2.png" alt=""
                      title="Boxcar2"/>
                 <h3><a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Boxcar2</a></h3>
                 <p>${_('Read your messages where and when you want them!')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1561,7 +1561,7 @@
                 </div>
 
                 <div id="content_use_boxcar2">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1573,7 +1573,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1585,7 +1585,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1597,13 +1597,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Boxcar2 access token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="boxcar2_accesstoken" id="boxcar2_accesstoken"
@@ -1613,15 +1613,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testBoxcar2-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Boxcar2')}" id="testBoxcar2"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Boxcar2')}" id="testBoxcar2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1631,15 +1631,15 @@
             </fieldset>
         </div><!-- /boxcar2 tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nma.png" alt="" title="NMA"/>
                 <h3><a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Notify My Android</a></h3>
                 <p>${_('Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1653,7 +1653,7 @@
                 </div>
 
                 <div id="content_use_nma">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1665,7 +1665,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1677,7 +1677,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1689,13 +1689,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('NMA API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="nma_api" id="nma_api"
@@ -1705,13 +1705,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('NMA priority')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-exclamation-sign"></span>
                                 </div>
                                 <select id="nma_priority" name="nma_priority" class="form-control ">
@@ -1737,15 +1737,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testNMA-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test NMA')}" id="testNMA"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test NMA')}" id="testNMA"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1755,16 +1755,16 @@
             </fieldset>
         </div><!-- /nma tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushalot.png" alt=""
                      title="Pushalot"/>
                 <h3><a href="${anon_url('https://pushalot.com')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Pushalot</a></h3>
                 <p>${_('Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1778,7 +1778,7 @@
                 </div>
 
                 <div id="content_use_pushalot">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1790,7 +1790,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1802,7 +1802,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1814,13 +1814,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushalot authorization token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="pushalot_authorizationtoken"
@@ -1831,16 +1831,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testPushalot-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="${_('Test Pushalot')}" id="testPushalot"/>
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" class="btn btn-secondary" value="${_('Test Pushalot')}" id="testPushalot"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1849,16 +1849,16 @@
             </fieldset>
         </div><!-- /pushalot tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushbullet.png" alt=""
                      title="Pushbullet"/>
                 <h3><a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Pushbullet</a></h3>
                 <p>${_('Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1872,7 +1872,7 @@
                 </div>
 
                 <div id="content_use_pushbullet">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -1884,7 +1884,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -1896,7 +1896,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -1908,13 +1908,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushbullet API key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="pushbullet_api" id="pushbullet_api"
@@ -1925,15 +1925,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Pushbullet devices')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
                                         <select name="pushbullet_device_list" id="pushbullet_device_list"
@@ -1943,26 +1943,26 @@
                                 </div>
                             </div>
                             <br/>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="hidden" id="pushbullet_device"
                                            value="${sickrage.app.config.pushbullet_device}">
-                                    <input type="button" class="btn btn-inline" value="${_('Update device list')}"
+                                    <input type="button" class="btn btn-secondary btn-inline" value="${_('Update device list')}"
                                            id="getPushbulletDevices"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testPushbullet-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="${_('Test Pushbullet')}" id="testPushbullet"/>
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" class="btn btn-secondary" value="${_('Test Pushbullet')}" id="testPushbullet"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1970,16 +1970,16 @@
 
             </fieldset>
         </div><!-- /pushbullet tab-pane //-->
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/freemobile.png" alt=""
                      title="Free Mobile"/>
                 <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Free Mobile</a></h3>
                 <p>${_('Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -1993,7 +1993,7 @@
                 </div>
 
                 <div id="content_use_freemobile">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -2005,7 +2005,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -2017,7 +2017,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -2029,13 +2029,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Free Mobile customer ID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input name="freemobile_id" id="freemobile_id"
@@ -2046,13 +2046,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Free Mobile API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="freemobile_apikey" id="freemobile_apikey"
@@ -2063,7 +2063,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testFreeMobile-result">
                                 ${_('Click below to test your settings.')}
@@ -2071,9 +2071,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test SMS')}" id="testFreeMobile"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test SMS')}" id="testFreeMobile"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2081,16 +2081,16 @@
             </fieldset>
         </div><!-- /freemobile tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/telegram.png" alt=""
                      title="Telegram"/>
                 <h3><a href="${anon_url('http://telegram.org/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Telegram</a></h3>
                 <p>${_('Telegram is a cloud-based instant messaging service')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -2104,7 +2104,7 @@
                 </div>
 
                 <div id="content_use_telegram">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -2116,7 +2116,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -2128,7 +2128,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -2140,15 +2140,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('User/Group ID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </div>
                                         <input name="telegram_id" id="telegram_id"
@@ -2159,14 +2159,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="telegram_id">
                                         ${_('contact @myidbot on Telegram to get an ID')}
                                     </label>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label>
                                         <b>${_('NOTE')}
@@ -2176,15 +2176,15 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Bot API Key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
                                         <input name="telegram_apikey" id="telegram_apikey"
@@ -2195,7 +2195,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="telegram_apikey">
                                         ${_('contact @BotFather on Telegram to set up one')}
@@ -2205,7 +2205,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testTelegram-result">
                                 ${_('Click below to test your settings.')}
@@ -2213,9 +2213,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Telegram')}" id="testTelegram"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Telegram')}" id="testTelegram"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2223,8 +2223,8 @@
             </fieldset>
         </div><!-- /telegram tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twilio.png" alt=""
                      title="Twilio"/>
                 <h3><a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
@@ -2233,8 +2233,8 @@
                     ${_('Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device.')}
                 </p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -2248,7 +2248,7 @@
                 </div>
 
                 <div id="content_use_twilio">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -2260,7 +2260,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -2272,7 +2272,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -2285,15 +2285,15 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Twilio Account SID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </div>
                                         <input name="twilio_account_sid" id="twilio_account_sid"
@@ -2304,7 +2304,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="twilio_account_sid">
                                         ${_('account SID of your Twilio account.')}
@@ -2314,13 +2314,13 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Twilio Auth Token')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-cloud"></span>
                                 </div>
                                 <input name="twilio_auth_token" id="twilio_auth_token"
@@ -2332,16 +2332,16 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Twilio Phone SID')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-hashtag"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-hashtag"></span>
                                         </div>
                                         <input name="twilio_phone_sid" id="twilio_phone_sid"
                                                value="${sickrage.app.config.twilio_phone_sid}"
@@ -2351,7 +2351,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="twilio_phone_sid">
                                         ${_('phone SID that you would like to send the sms from.')}
@@ -2361,16 +2361,16 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Your phone number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-hashtag"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-hashtag"></span>
                                         </div>
                                         <input name="twilio_to_number" id="twilio_to_number"
                                                value="${sickrage.app.config.twilio_to_number}"
@@ -2380,7 +2380,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="twilio_to_number">
                                         ${_('phone number that will receive the sms.')}
@@ -2390,7 +2390,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testTwilio-result">
                                 ${_('Click below to test your settings.')}
@@ -2398,9 +2398,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2409,17 +2409,17 @@
         </div><!-- /twilio tab-pane //-->
     </div>
 
-    <div id="tabs-3" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="social" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twitter.png" alt=""
                      title="Twitter"/>
                 <h3><a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Twitter</a></h3>
                 <p>${_('A social networking and microblogging service, enabling its users to send and read other users messages called tweets.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -2434,7 +2434,7 @@
                 </div>
 
                 <div id="content_use_twitter">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -2446,7 +2446,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -2458,7 +2458,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -2470,7 +2470,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Send direct message')}</label>
                         </div>
@@ -2482,13 +2482,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Send DM to')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input name="twitter_dmto" id="twitter_dmto"
@@ -2499,17 +2499,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Step One')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn" type="button" value="${_('Request Authorization')}" id="twitterStep1"/>
+                                    <input class="btn btn-secondary" type="button" value="${_('Request Authorization')}" id="twitterStep1"/>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     ${_('Click the "Request Authorization" button.')}<br/>
                                     ${_('This will open a new page containing an auth key.')}<br/>
@@ -2518,34 +2518,34 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Step Two')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input id="twitter_key" value=""
                                        class="form-control"
                                        placeholder="${_('Enter the key Twitter gave you')}"
                                        autocapitalize="off"/>
-                                <div class="input-group-addon">
+                                <div class="input-group-append">
                                     <input class="button" type="button" value="Verify Key" id="twitterStep2"/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testTwitter-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Twitter')}" id="testTwitter"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Twitter')}" id="testTwitter"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2556,16 +2556,16 @@
         </div><!-- /twitter tab-pane //-->
 
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/trakt.png" alt=""
                      title="Trakt"/>
                 <h3><a href="${anon_url('http://trakt.tv/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">Trakt</a></h3>
                 <p>${_('Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you\'ll enjoy!')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -2579,13 +2579,13 @@
                 </div>
 
                 <div id="content_use_trakt">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Trakt username')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input name="trakt_username" id="trakt_username"
@@ -2598,19 +2598,19 @@
                     </div>
                     <input type="hidden" id="trakt_pin_url" value="${srTraktAPI()['oauth/pin'].url()}">
                     % if not sickrage.app.config.trakt_oauth_token:
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Trakt PIN')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input name="trakt_pin" id="trakt_pin" value=""
                                            placeholder="${_('authorization PIN code')}"
                                            class="form-control" autocapitalize="off"/>
-                                    <div class="input-group-addon">
+                                    <div class="input-group-append">
                                         <a href="#" id="TraktGetPin">Get PIN</a>
                                         <a href="#" id="authTrakt" class="hide">${_('Authorize')}</a>
                                     </div>
@@ -2618,20 +2618,20 @@
                             </div>
                         </div>
                     % endif
-                    <input type="button" class="btn hide" value="${_('Authorize SiCKRAGE')}" id="authTrakt"/>
-                    <div class="row field-pair">
+                    <input type="button" class="btn btn-secondary hide" value="${_('Authorize SiCKRAGE')}" id="authTrakt"/>
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('API Timeout')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-clock-o"></span>
                                 </div>
                                 <input name="trakt_timeout" id="trakt_timeout"
                                        value="${sickrage.app.config.trakt_timeout}"
                                        class="form-control"/>
-                                <div class="input-group-addon">
+                                <div class="input-group-append">
                                     secs
                                 </div>
                             </div>
@@ -2640,14 +2640,14 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Default indexer')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="fa fa-linode"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-linode"></span>
                                 </div>
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
                                         class="form-control " title="Default Indexer">
@@ -2658,7 +2658,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Sync libraries')}</label>
                         </div>
@@ -2671,7 +2671,7 @@
                         </div>
                     </div>
                     <div id="content_trakt_sync">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Remove Episodes From Collection')}</label>
                             </div>
@@ -2684,7 +2684,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Sync watchlist')}</label>
                         </div>
@@ -2699,14 +2699,14 @@
                         </div>
                     </div>
                     <div id="content_trakt_sync_watchlist">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Watchlist add method')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="fa fa-binoculars"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-binoculars"></span>
                                     </div>
                                     <select id="trakt_method_add" name="trakt_method_add"
                                             class="form-control ">
@@ -2726,7 +2726,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Remove episode')}</label>
                             </div>
@@ -2738,7 +2738,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Remove series')}</label>
                             </div>
@@ -2750,7 +2750,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Remove watched show')}</label>
                             </div>
@@ -2762,7 +2762,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Start paused')}</label>
                             </div>
@@ -2775,13 +2775,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Trakt blackList name')}</label>
                         </div>
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
                                 <input name="trakt_blacklist_name" id="trakt_blacklist_name"
@@ -2793,16 +2793,16 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testTrakt-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn" value="${_('Test Trakt')}" id="testTrakt"/>
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" class="btn btn-secondary" value="${_('Test Trakt')}" id="testTrakt"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -2810,8 +2810,8 @@
             </fieldset>
         </div><!-- /trakt tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/email.png" alt=""
                      title="Email"/>
                 <h3><a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}"
@@ -2819,8 +2819,8 @@
                 </h3>
                 <p>${_('Allows configuration of email notifications on a per show basis.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -2834,7 +2834,7 @@
                 </div>
 
                 <div id="content_use_email">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -2846,7 +2846,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -2858,7 +2858,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -2870,13 +2870,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('SMTP host')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="email_host" id="email_host"
@@ -2886,13 +2886,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('SMTP port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="email_port" id="email_port"
@@ -2902,13 +2902,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('SMTP from')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
                                 <input name="email_from" id="email_from"
@@ -2918,7 +2918,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Use TLS')}</label>
                         </div>
@@ -2930,13 +2930,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('SMTP user')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-user"></span>
                                 </div>
                                 <input name="email_user" id="email_user"
@@ -2946,13 +2946,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('SMTP password')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-lock"></span>
                                 </div>
                                 <input type="password" name="email_password" id="email_password"
@@ -2963,13 +2963,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Global email list')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-envelope"></span>
                                 </div>
                                 <input name="email_list" id="email_list"
@@ -2981,15 +2981,15 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Show notification list')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
                                         <select name="email_show" id="email_show" class="form-control ">
@@ -3002,10 +3002,10 @@
                                 </div>
                             </div>
                             <br/>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-envelope"></span>
                                         </div>
                                         <input name="email_show_list" id="email_show_list" class="form-control"
@@ -3016,32 +3016,32 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input id="email_show_save" class="btn" type="button" value="${_('Save for this show')}"/>
+                                    <input id="email_show_save" class="btn btn-secondary" type="button" value="${_('Save for this show')}"/>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testEmail-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Email')}" id="testEmail"/>
-                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Email')}" id="testEmail"/>
+                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_email //-->
             </fieldset>
         </div><!-- /email tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/slack.png" alt=""
                      title="Slack"/>
                 <h3><a href="${anon_url('http://www.slack.com')}"
@@ -3051,8 +3051,8 @@
                     ${_('Slack brings all your communication together in one place. It\'s real-time messaging, archiving and search for modern teams.')}
                 </p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -3066,7 +3066,7 @@
                 </div>
 
                 <div id="content_use_slack">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -3078,7 +3078,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -3090,7 +3090,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -3102,13 +3102,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Slack Incoming Webhook')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-globe"></span>
                                 </div>
                                 <input name="slack_webhook" id="slack_webhook"
@@ -3119,24 +3119,24 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testSlack-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Slack')}" id="testSlack"/>
-                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Slack')}" id="testSlack"/>
+                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_slack //-->
             </fieldset>
         </div><!-- /slack tab-pane //-->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/discord.png" alt=""
                      title="Discord"/>
                 <h3><a href="${anon_url('http://www.discordapp.com')}"
@@ -3146,8 +3146,8 @@
                     ${_('All-in-one voice and text chat for gamers that\'s free, secure, and works on both your desktop and phone.')}
                 </p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
@@ -3161,7 +3161,7 @@
                 </div>
 
                 <div id="content_use_discord">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
@@ -3174,7 +3174,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
@@ -3187,7 +3187,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -3200,15 +3200,15 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Discord Incoming Webhook')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="discord_webhook" id="discord_webhook"
@@ -3224,15 +3224,15 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Discord Bot Name')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="discord_name" id="discord_name"
@@ -3248,15 +3248,15 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Discord Avatar URL')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="discord_avatar_url" id="discord_avatar_url"
@@ -3272,7 +3272,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Discord TTS')}</label>
                         </div>
@@ -3284,16 +3284,16 @@
                     </div>
 
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testDiscord-result">${_('Click below to test.')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn" type="button" value="${_('Test Discord')}" id="testDiscord"/>
-                            <input class="btn config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Discord')}" id="testDiscord"/>
+                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_discord //-->

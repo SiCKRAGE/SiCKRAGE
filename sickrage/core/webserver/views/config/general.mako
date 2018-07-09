@@ -17,24 +17,24 @@
     from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="tabs">
-    <li class="nav-item"><a class="nav-link active" href="#core-tab-pane1">${_('Misc')}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#core-tab-pane2">${_('Interface')}</a></li>
-    <li class="nav-item"><a class="nav-link" href="#core-tab-pane3">${_('Advanced Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#misc">${_('Misc')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#interface">${_('Interface')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#advanced-settings">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">
     <% indexer = 0 %>
     % if sickrage.app.config.indexer_default:
         <% indexer = sickrage.app.config.indexer_default %>
     % endif
-    <div id="core-tab-pane1">
-        <div class="row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="misc" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('SiCKRAGE API')}</h3>
-                <p>${_('Options for api.sickrage.ca')}</p>
+                <small class="form-text text-muted">${_('Options for api.sickrage.ca')}</small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('API Provider Cache')}</label>
                     </div>
@@ -45,58 +45,57 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Google Drive')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                     % try:
                         % if GoogleDriveAPI().is_connected()['success']:
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <span class="label label-success">CONNECTED</span>
+                                    <span class="badge badge-success">CONNECTED</span>
                                 </div>
                             </div>
                             <br/>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
+                                    <input class="btn btn-secondary" type="button" value="${_('Sync To Google Drive')}"
                                            id="syncRemote"/>
-                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
+                                    <input class="btn btn-secondary" type="button" value="${_('Sync To Local Drive')}"
                                            id="syncLocal"/>
                                 </div>
                             </div>
                         % else:
-                            <span class="label label-danger">DISCONNECTED</span>
+                            <span class="badge badge-danger">DISCONNECTED</span>
                         % endif
                     % except Exception:
-                        <span class="label label-danger">DISCONNECTED</span>
+                        <span class="badge badge-danger">DISCONNECTED</span>
                     % endtry:
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
         </div>
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+
+        <hr/>
+
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Misc')}</h3>
-                <p>${_('Startup options. Indexer options. Log and show file locations.')}</p>
-                <p><b>${_('Some options may require a manual restart to take effect.')}</b></p>
+                <small class="form-text text-muted">
+                    ${_('Startup options. Indexer options. Log and show file locations.')}
+                    <p><b>${_('Some options may require a manual restart to take effect.')}</b></p>
+                </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Default Indexer Language')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-flag"></span>
                             </div>
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
@@ -107,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Launch browser')}</label>
                     </div>
@@ -117,14 +116,14 @@
                         <label for="launch_browser">${_('open the SickRage home page on startup')}</label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Initial page')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="fa fa-book"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-book"></span>
                             </div>
                             <select id="default_page" name="default_page" class="form-control"
                                     title="${_('when launching SickRage interface')}">
@@ -145,19 +144,19 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Daily show updates start time')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="showupdate_hour" id="showupdate_hour"
                                    value="${sickrage.app.config.showupdate_hour}"
                                    class="form-control"/>
-                            <div class="input-group-addon">
+                            <div class="input-group-append">
                                 24hr
                             </div>
                         </div>
@@ -168,7 +167,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Daily show updates stale shows')}</label>
                     </div>
@@ -181,7 +180,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Send to trash for actions')}</label>
                     </div>
@@ -202,15 +201,15 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Number of Log files saved')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-file"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-file"></span>
                             </div>
                             <input name="log_nr" id="log_nr"
                                    value="${sickrage.app.config.log_nr}"
@@ -222,15 +221,15 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Size of Log files saved')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-file"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-file"></span>
                             </div>
                             <input name="log_size" id="log_size"
                                    value="${sickrage.app.config.log_size}"
@@ -242,15 +241,15 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Default indexer for adding shows')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="fa fa-linode"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-list"></span>
                             </div>
                             <select id="indexer_default" name="indexer_default"
                                     title="default indexer selection when adding new shows"
@@ -267,30 +266,30 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Show indexer timeout')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="indexer_timeout" id="indexer_timeout"
                                    value="${sickrage.app.config.indexer_timeout}"
                                    placeholder="${_('default = 10')}"
                                    title="seconds of inactivity when finding new shows"
                                    class="form-control"/>
-                            <div class="input-group-addon">
-                                secs
+                            <div class="input-group-append">
+                                <span class="input-group-text">secs</span>
                             </div>
                         </div>
                     </div>
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Show root directories')}</label>
                     </div>
@@ -298,23 +297,23 @@
                             <%include file="../includes/root_dirs.mako"/>
                     </div>
                 </div>
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
             </fieldset>
         </div>
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Updates')}</h3>
                 <p>${_('Options for software updates.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Check software updates')}</label>
@@ -330,7 +329,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Automatically update')}</label>
                     </div>
@@ -344,28 +343,28 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Check the server every')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="update_frequency" id="update_frequency"
                                    value="${sickrage.app.config.version_updater_freq}"
                                    placeholder="${_('default = 12 (hours)')}"
                                    title="hours between software updates"
                                    class="form-control"/>
-                            <div class="input-group-addon">
-                                hours
+                            <div class="input-group-append">
+                                <span class="input-group-text">hours</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Notify on software update')}</label>
                     </div>
@@ -378,9 +377,9 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -388,24 +387,25 @@
 
         </div>
     </div><!-- /tab-pane1 //-->
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+
+    <div id="interface" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('User Interface')}</h3>
                 <p>${_('Options for visual appearance.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Interface Language')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="fa fa-language"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-language"></span>
                                     </div>
                                     <select id="gui_language" name="gui_language" class="form-control">
                                         <option value="" ${('', 'selected')[sickrage.app.config.gui_lang == ""]}>
@@ -418,7 +418,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="gui_language" class="red-text">
                                     ${_('for appearance to take effect, save then refresh your browser')}
@@ -428,14 +428,14 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Display theme')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="fa fa-themeisle"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-themeisle"></span>
                             </div>
                             <select id="theme_name" name="theme_name" class="form-control"
                                     title="for appearance to take effect, save then refresh your browser">
@@ -450,7 +450,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Show all seasons')}</label>
                     </div>
@@ -463,7 +463,7 @@
                     </div>
 
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Sort with "The", "A", "An"')}</label>
@@ -477,27 +477,27 @@
                     </div>
 
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <label class="component-title">${_('Filter Row')}</label>
+                        <label class="component-title">${_('Filter form-row')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="filter_row"
                                id="filter_row" ${('', 'checked')[bool(sickrage.app.config.filter_row)]}/>
                         <label for="filter_row">
-                            ${_('Add a filter row to the show display on the home page')}
+                            ${_('Add a filter form-row to the show display on the home page')}
                         </label>
                     </div>
 
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Missed episodes range')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
                             <input type="number" step="1" min="7" name="coming_eps_missed_range"
@@ -509,7 +509,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Display fuzzy dates')}</label>
@@ -524,7 +524,7 @@
                     </div>
 
                 </div>
-                <div class="row field-pair show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}">
+                <div class="form-row form-group show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Trim zero padding')}</label>
                     </div>
@@ -537,7 +537,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Date style')}</label>
                     </div>
@@ -549,8 +549,8 @@
                                 <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.date_preset == cur_preset or ("%x" == sickrage.app.config.date_preset and cur_preset == '%a, %b %d, %Y')]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.sys_encoding)}</option>
                             % endfor
                         </select>
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-calendar"></span>
                             </div>
                             <select class="form-control ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}"
@@ -567,14 +567,14 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Time style')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <select id="time_presets" name="time_preset" class="form-control"
                                     title="seconds are only shown on the History page">
@@ -586,7 +586,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Timezone')}</label>
                     </div>
@@ -598,7 +598,7 @@
                         <input type="radio" name="timezone_display" id="network"
                                value="network" ${('', 'checked')[sickrage.app.config.timezone_display == "network"]} />
                         <label for="network">${_('Network')}</label>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 ${_('display dates and times in either your timezone or the shows network timezone')}
                                 <br/>
@@ -608,13 +608,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Download url')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input name="download_url" id="download_url" class="form-control"
@@ -625,7 +625,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Show fanart in the background')}</label>
                     </div>
@@ -639,13 +639,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Fanart transparency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-transfer"></span>
                             </div>
                             <input type="number" step="0.1" min="0.1" max="1.0"
@@ -656,23 +656,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
         </div><!-- /User interface tab-pane -->
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Web Interface')}</h3>
                 <p>${_('It is recommended that you enable a username and password to secure SickRage from being tampered with remotely.')}</p>
                 <p><b>${_('These options require a manual restart to take effect.')}</b></p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable UPnP')}</label>
                     </div>
@@ -686,15 +686,15 @@
                 </div>
 
                 <div id="content_enable_upnp">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('HTTP public port')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="web_external_port" id="web_external_port"
@@ -704,7 +704,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="web_external_port">
                                         ${_('used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address')}
@@ -715,15 +715,15 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('HTTP private port')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input name="web_port" id="web_port"
@@ -734,7 +734,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="web_port">
                                     ${_('used to access SiCKRAGE over a private internal IP address')}
@@ -744,7 +744,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('HTTP logs')}</label>
                     </div>
@@ -755,28 +755,28 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Application API key')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
                                     <input name="api_key" id="api_key"
                                            value="${sickrage.app.config.api_key}"
                                            class="form-control"/>
-                                    <div class="input-group-addon">
+                                    <div class="input-group-append">
                                         <input class="button" type="button" id="generate_new_apikey"
                                                value="Generate">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="api_key">
                                     ${_('used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API')}
@@ -787,7 +787,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Listen on IPv6')}</label>
                     </div>
@@ -798,7 +798,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable HTTPS')}</label>
                     </div>
@@ -812,13 +812,13 @@
 
                 </div>
                 <div id="content_enable_https">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('HTTPS certificate')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_cert" id="https_cert"
                                            value="${sickrage.app.config.https_cert}"
@@ -826,7 +826,7 @@
                                            autocapitalize="off"/>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="https_cert">
                                         ${_('file name or path to HTTPS certificate')}
@@ -836,20 +836,20 @@
                         </div>
 
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('HTTPS key')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_key" id="https_key"
                                            value="${sickrage.app.config.https_key}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <label for="https_key">${_('file name or path to HTTPS key')}</label>
                                 </div>
@@ -859,7 +859,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Reverse proxy headers')}</label>
                     </div>
@@ -873,7 +873,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Notify on login')}</label>
                     </div>
@@ -886,32 +886,32 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
 
         </div><!-- /tab-pane2 //-->
     </div><!-- /tab-pane2 //-->
-    <div id="core-tab-pane3" class="tab-pane fade">
+    <div id="advanced-settings" class="tab-pane">
 
-        <div class="row tab-pane">
+        <div class="form-row">
 
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Advanced Settings')}</h3>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('CPU throttling')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="fa fa-microchip"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-microchip"></span>
                             </div>
                             <select id="cpu_presets" name="cpu_preset" class="form-control"
                                     title="Normal (default). High is lower and Low is higher CPU use">
@@ -923,13 +923,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Anonymous redirect')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input id="anon_redirect" name="anon_redirect"
@@ -941,7 +941,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable debug')}</label>
                     </div>
@@ -954,7 +954,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Verify SSL Certs')}</label>
                     </div>
@@ -968,7 +968,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('No Restart')}</label>
@@ -985,7 +985,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Encrypt settings')}</label>
@@ -1000,7 +1000,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Unprotected calendar')}</label>
@@ -1016,7 +1016,7 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Google Calendar Icons')}</label>
@@ -1032,12 +1032,12 @@
 
                 </div>
 
-                <div class="row field-pair" style="display: none">
+                <div class="form-row form-group" style="display: none">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Link Google Account')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input class="btn btn-inline" type="button" id="google_link" value="${_('Link')}">
+                        <input class="btn btn-secondary btn-inline" type="button" id="google_link" value="${_('Link')}">
                         <label for="google_link">
                             ${_('link your google account to SiCKRAGE for advanced feature usage such as settings/database storage')}
                         </label>
@@ -1045,13 +1045,13 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Proxy host')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-globe"></span>
                             </div>
                             <input id="proxy_setting" name="proxy_setting"
@@ -1062,7 +1062,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Use proxy for indexers')}</label>
                     </div>
@@ -1075,7 +1075,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
 
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Skip Remove Detection')}</label>
@@ -1091,15 +1091,15 @@
 
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Default deleted episode status')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-erase"></span>
                                     </div>
                                     % if not sickrage.app.config.skip_removed_files:
@@ -1122,7 +1122,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="ep_default_deleted_status">
                                     ${_('Define the status to be set for media file that has been deleted.')}
@@ -1136,49 +1136,49 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
             </fieldset>
         </div>
 
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('PIP Settings')}</h3>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('PIP executable path')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-file"></span>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-file"></span>
                                     </div>
                                     <input id="pip_path" name="pip_path"
                                            value="${sickrage.app.config.pip_path}"
                                            placeholder="${_('ex: /path/to/pip')}"
                                            title="only needed if OS is unable to locate pip from env"
                                            class="form-control" autocapitalize="off"/>
-                                    <div class="input-group-addon">
+                                    <div class="input-group-append">
                                         <input class="button" type="button" id="verifyPipPath" value="Verify Path">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <p></p>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <div class="testNotification" id="testPIP-result">
                                     ${_('Click vefify path to test.')}
                                 </div>
-                                <input class="btn btn-inline" type="button" id="installRequirements"
+                                <input class="btn btn-secondary btn-inline" type="button" id="installRequirements"
                                        value="Install Requirements">
                             </div>
                         </div>
@@ -1186,9 +1186,9 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -1199,21 +1199,21 @@
             git_branch = sickrage.app.version_updater.updater.remote_branches
         %>
 
-            <div class="row tab-pane">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+            <div class="form-row">
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                     <h3>${_('GIT Settings')}</h3>
                 </div>
-                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                    <div class="row field-pair">
+                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Git Branches')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-git"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-git"></span>
                                         </div>
                                         <select id="branchVersion" class="form-control"
                                                 title=${_('GIT Branch Version')}>
@@ -1231,14 +1231,14 @@
                                 </div>
                             </div>
                             <p></p>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     % if not git_branch:
-                                        <input class="btn btn-inline" type="button" id="branchCheckout"
+                                        <input class="btn btn-secondary btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch" disabled>
                                         <label for="branchCheckout">${_('Error: No branches found.')}</label>>
                                     % else:
-                                        <input class="btn btn-inline" type="button" id="branchCheckout"
+                                        <input class="btn btn-secondary btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch">
                                         <label for="branchCheckout">${_('select branch to use (restart required)')}</label>
                                     % endif
@@ -1247,30 +1247,30 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('GIT executable path')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
-                                        <div class="input-group-addon">
-                                            <span class="glyphicon glyphicon-file"></span>
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-file"></span>
                                         </div>
                                         <input id="git_path" name="git_path"
                                                value="${sickrage.app.config.git_path}"
                                                placeholder="${_('ex: /path/to/git')}"
                                                title="only needed if OS is unable to locate git from env"
                                                class="form-control" autocapitalize="off"/>
-                                        <div class="input-group-addon">
+                                        <div class="input-group-append">
                                             <input class="button" type="button" id="verifyGitPath" value="Verify Path">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <p></p>
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="testNotification"
                                          id="testGIT-result">${_('Click vefify path to test.')}</div>
@@ -1279,7 +1279,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair" hidden>
+                    <div class="form-row form-group" hidden>
 
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Git reset')}</label>
@@ -1294,7 +1294,7 @@
 
                     </div>
 
-                    <div class="row field-pair" hidden>
+                    <div class="form-row form-group" hidden>
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Git auto-issues submit')}</label>
                         </div>
@@ -1309,9 +1309,9 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
 

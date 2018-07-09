@@ -9,13 +9,13 @@
 %>
 
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Provider Priorities')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Provider Options')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#provider-priorities">${_('Provider Priorities')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#provider-options">${_('Provider Options')}</a></li>
     % if sickrage.app.config.use_nzbs:
-        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Custom Newznab Providers')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#custom-newnab-providers">${_('Custom Newznab Providers')}</a></li>
     % endif
     % if sickrage.app.config.use_torrents:
-        <li><a data-toggle="tab" href="#core-tab-pane4">${_('Custom Torrent Providers')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#custom-torrent-providers">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>
 
@@ -57,9 +57,9 @@
 </%block>
 
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="provider-priorities" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Provider Priorities')}</h3>
                 <p>${_('Check off and drag the providers into the order you want them to be used.')}</p>
                 <p>${_('At least one provider is required but two are recommended.')}</p>
@@ -83,7 +83,7 @@
                 </div>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <ul id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.use_nzbs) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.use_torrents):
@@ -103,39 +103,39 @@
                                         height="16" style="vertical-align:middle;"/></a>
                                 <label for="enable_${providerID}"
                                        style="vertical-align:middle;">${providerObj.name}</label>
-                                <span class="fa fa-arrows-v blue-text pull-right"
+                                <span class="fa fa-arrows-v bg-primary pull-right"
                                       style="vertical-align:middle;"></span>
-                                <span class="fa ${('fa-unlock green-text','fa-lock red-text')[bool(providerObj.private)]} pull-right"
+                                <span class="fa ${('fa-unlock bg-success','fa-lock bg-danger')[bool(providerObj.private)]} pull-right"
                                       style="vertical-align:middle;"></span>
-                                ${('<span class="yellow-text fa fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
-                                ${('<span class="red-text fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
+                                ${('<span class="bg-warning fa fa-chevron-circle-left pull-right"></span>', '')[bool(providerObj.supports_backlog)]}
+                                ${('<span class="bg-danger fa fa-exclamation-circle pull-right"></span>', '')[bool(providerObj.isAlive)]}
                             </li>
                         % endif
                     % endfor
                 </ul>
                 <input type="hidden" name="provider_order" id="provider_order"
                        value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
-                <br><input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
+                <br><input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="provider-options" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Provider Options')}</h3>
                 <p>${_('Configure individual provider settings here.')}</p>
                 <p>${_('Check with provider\'s website on how to obtain an API key if needed.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Configure provider:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-search"></span>
                             </div>
                             <select id="editAProvider" class="form-control" title="Choose a search provider">
@@ -152,13 +152,13 @@
                 % for providerID, providerObj in sickrage.app.search_providers.newznab().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if not providerObj.default:
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input id="${providerID}_url"
@@ -172,13 +172,13 @@
                         % endif
 
                         % if providerObj.private:
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
                                         <input id="${providerID}_key"
@@ -194,7 +194,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_daily'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
@@ -224,7 +224,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_fallback'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
@@ -241,12 +241,12 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_mode'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="row">
+                                    <div class="form-row">
                                         <div class="col-md-12">
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
@@ -276,13 +276,13 @@
                 % for providerID, providerObj in sickrage.app.search_providers.nzb().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'username'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </div>
                                         <input name="${providerID}_username"
@@ -295,13 +295,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'api_key'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('API key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
                                         <input name="${providerID}_api_key"
@@ -315,7 +315,7 @@
 
 
                         % if hasattr(providerObj, 'enable_daily'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
@@ -345,7 +345,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_fallback'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
@@ -364,12 +364,12 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_mode'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="row">
+                                    <div class="form-row">
                                         <div class="col-md-12">
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
@@ -380,7 +380,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                    <div class="form-row">
                                         <div class="col-md-12">
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
@@ -405,13 +405,13 @@
                 % for providerID, providerObj in sickrage.app.search_providers.all_torrent().items():
                     <div class="providerDiv" id="${providerID}Div">
                         % if hasattr(providerObj, 'custom_url'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Custom URL:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-globe"></span>
                                         </div>
                                         <input name="${providerID}_custom_url"
@@ -426,13 +426,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'api_key'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Api key:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-cloud"></span>
                                         </div>
                                         <input name="${providerID}_api_key"
@@ -447,13 +447,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'digest'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Digest:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-lock"></span>
                                         </div>
                                         <input name="${providerID}_digest" id="${providerID}_digest"
@@ -467,14 +467,14 @@
                         % endif
 
                         % if hasattr(providerObj, 'hash'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Hash:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-hashtag"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-hashtag"></span>
                                         </div>
                                         <input name="${providerID}_hash" id="${providerID}_hash"
                                                value="${providerObj.hash}"
@@ -487,13 +487,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'username'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Username:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </div>
                                         <input name="${providerID}_username"
@@ -508,13 +508,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'password'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Password:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-lock"></span>
                                         </div>
                                         <input type="password" name="${providerID}_password"
@@ -527,13 +527,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'passkey'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Passkey:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-lock"></span>
                                         </div>
                                         <input name="${providerID}_passkey"
@@ -548,13 +548,13 @@
                         % endif
 
                         % if getattr(providerObj, 'enable_cookies', False):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Cookies:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-certificate"></span>
                                         </div>
                                         <input name="${providerID}_cookies"
@@ -576,13 +576,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'pin'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Pin:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-lock"></span>
                                         </div>
                                         <input type="password" name="${providerID}_pin"
@@ -597,14 +597,14 @@
                         % endif
 
                         % if hasattr(providerObj, 'ratio'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Seed ratio:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-percent"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-percent"></span>
                                         </div>
                                         <input type="number" step="0.1" name="${providerID}_ratio"
                                                id="${providerID}_ratio"
@@ -617,14 +617,14 @@
                         % endif
 
                         % if hasattr(providerObj, 'minseed'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Minimum seeders:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-hashtag"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-hashtag"></span>
                                         </div>
                                         <input type="number" name="${providerID}_minseed"
                                                id="${providerID}_minseed"
@@ -637,14 +637,14 @@
                         % endif
 
                         % if hasattr(providerObj, 'minleech'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Minimum leechers:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
-                                            <span class="fa fa-hashtag"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text fa fa-hashtag"></span>
                                         </div>
                                         <input type="number" name="${providerID}_minleech"
                                                id="${providerID}_minleech"
@@ -657,7 +657,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'confirmed'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Confirmed download')}</label>
                                 </div>
@@ -672,7 +672,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'ranked'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Ranked torrents')}</label>
                                 </div>
@@ -687,7 +687,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'engrelease'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('English torrents')}</label>
                                 </div>
@@ -702,7 +702,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'onlyspasearch'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('For Spanish torrents')}</label>
                                 </div>
@@ -720,13 +720,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'sorting'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Sort results by')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-sort-by-order"></span>
                                         </div>
                                         <select name="${providerID}_sorting" id="${providerID}_sorting"
@@ -742,7 +742,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'freeleech'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Freeleech')}</label>
                                 </div>
@@ -757,7 +757,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_daily'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
@@ -772,7 +772,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'reject_m2ts'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
                                 </div>
@@ -787,7 +787,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="row field-pair ${(' hidden', '')[providerObj.supports_backlog]}">
+                            <div class="form-row form-group ${(' hidden', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
@@ -802,7 +802,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_fallback'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
@@ -821,12 +821,12 @@
                         % endif
 
                         % if hasattr(providerObj, 'search_mode'):
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Season search mode')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="row">
+                                    <div class="form-row">
                                         <div class="col-md-12">
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_sponly"
@@ -837,7 +837,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="row">
+                                    <div class="form-row">
                                         <div class="col-md-12">
                                             <input type="radio" name="${providerID}_search_mode"
                                                    id="${providerID}_search_mode_eponly"
@@ -858,13 +858,13 @@
                         % endif
 
                         % if hasattr(providerObj, 'cat') and providerID == 'tntvillage':
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Category:')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group input350">
-                                        <div class="input-group-addon">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
                                             <span class="glyphicon glyphicon-list"></span>
                                         </div>
                                         <select name="${providerID}_cat" id="${providerID}_cat"
@@ -880,7 +880,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'subtitle') and providerID == 'tntvillage':
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Subtitled')}</label>
                                 </div>
@@ -896,9 +896,9 @@
                     </div>
                 % endfor
                 <!-- end div for editing providers -->
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -906,9 +906,9 @@
     </div><!-- /tab-pane2 //-->
 
     % if sickrage.app.config.use_nzbs:
-        <div id="core-tab-pane3" class="tab-pane fade">
-            <div class="row tab-pane">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div id="custom-newnab-providers" class="tab-pane">
+            <div class="form-row">
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                     <h3>
                         ${_('Configure Custom')}<br/>
                         ${_('Newznab Providers')}
@@ -918,14 +918,14 @@
                     </p>
                 </div>
 
-                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                    <div class="row field-pair">
+                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </div>
                                 <select id="editANewznabProvider" class="form-control" title="Choose provider">
@@ -936,26 +936,26 @@
                     </div>
 
                     <div class="newznabProviderDiv" id="addNewznab">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="fa fa-id-card"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-id-card"></span>
                                     </div>
                                     <input id="newznab_name" class="form-control" title="Provider name"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Site URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input id="newznab_url" class="form-control" title="Provider URL"
@@ -963,13 +963,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('API key:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
                                     <input id="newznab_key" class="form-control" title="Provider API key"
@@ -978,12 +978,12 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="newznabcapdiv">
+                        <div class="form-row form-group" id="newznabcapdiv">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Newznab search categories:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="row">
+                                <div class="form-row">
                                     <div class="col-md-12">
                                         <select id="newznab_cap" multiple="multiple" title="Newznab caps"
                                                 style="min-width:10em;"></select>
@@ -997,9 +997,9 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                <div class="form-row">
                                     <div class="col-md-12">
-                                        <input class="btn newznab_cat_update"
+                                        <input class="btn btn-secondary newznab_cat_update"
                                                type="button"
                                                id="newznab_cat_update"
                                                value=${_('Update Categories')}/>
@@ -1009,14 +1009,14 @@
                         </div>
 
                         <div id="newznab_add_div">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn newznab_save" type="button" id="newznab_add" value=${_('Add')}>
+                                    <input class="btn btn-secondary newznab_save" type="button" id="newznab_add" value=${_('Add')}>
                                 </div>
                             </div>
                         </div>
                         <div id="newznab_update_div" style="display: none;">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input class="btn btn-danger newznab_delete" type="button" id="newznab_delete"
                                            value=${_('Delete')}>
@@ -1030,21 +1030,21 @@
     % endif
 
     % if sickrage.app.config.use_torrents:
-        <div id="core-tab-pane4" class="tab-pane fade">
-            <div class="row tab-pane">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+        <div id="custom-torrent-providers" class="tab-pane">
+            <div class="form-row">
+                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                     <h3>${_('Configure Custom Torrent Providers')}</h3>
                     <p>${_('Add and setup or remove custom RSS providers.')}</p>
                 </div>
 
-                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                    <div class="row field-pair">
+                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Select provider:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-search"></span>
                                 </div>
                                 <select id="editATorrentRssProvider" class="form-control" title="Choose provider">
@@ -1055,14 +1055,14 @@
                     </div>
 
                     <div class="torrentRssProviderDiv" id="addTorrentRss">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Provider name:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="fa fa-id-card"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-id-card"></span>
                                     </div>
                                     <input id="torrentrss_name"
                                            title="Provider name"
@@ -1070,13 +1070,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('RSS URL:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input id="torrentrss_url" title="Provider URL"
@@ -1084,13 +1084,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Cookies:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-certificate"></span>
                                     </div>
                                     <input id="torrentrss_cookies" placeholder="${_('ex. uid=xx;pass=yy')}"
@@ -1098,13 +1098,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Search element:')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </div>
                                     <input id="torrentrss_titleTAG" placeholder="${_('ex. title')}"
@@ -1114,15 +1114,15 @@
                             </div>
                         </div>
                         <div id="torrentrss_add_div">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
-                                    <input type="button" class="btn torrentrss_save" id="torrentrss_add"
+                                    <input type="button" class="btn btn-secondary torrentrss_save" id="torrentrss_add"
                                            value="Add"/>
                                 </div>
                             </div>
                         </div>
                         <div id="torrentrss_update_div" style="display: none;">
-                            <div class="row">
+                            <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="button" class="btn btn-danger torrentrss_delete"
                                            id="torrentrss_delete" value="Delete"/>

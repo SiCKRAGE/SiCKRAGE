@@ -4,20 +4,20 @@
     import sickrage
 %>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Search Settings')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('NZB Clients')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane3">${_('Torrent Clients')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#search-setttings">${_('Search Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#nzb-clients">${_('NZB Clients')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#torrent-clients">${_('Torrent Clients')}</a></li>
 </%block>
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active clearfix">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="search-setttings" class="tab-page active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Search Settings')}</h3>
                 <p>${_('How to manage searching with')} <a href="${srWebRoot}/config/providers">${_('providers')}</a>.
                 </p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Randomize Providers')}</label>
                     </div>
@@ -29,7 +29,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Download propers')}</label>
                     </div>
@@ -41,7 +41,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable provider RSS cache')}</label>
                     </div>
@@ -53,7 +53,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable provider RSS cache for valid shows only')}</label>
                     </div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Download UNVERIFIED torrent magnet links')}</label>
                     </div>
@@ -79,7 +79,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Convert provider torrent file links to magnetic links')}</label>
                     </div>
@@ -92,7 +92,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enable failed snatch handling')}</label>
                     </div>
@@ -106,14 +106,14 @@
                 </div>
 
                 <div id="content_use_failed_snatcher">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Check for failed snatches aged')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-clock-o"></span>
                                 </div>
                                 <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
                                         title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
@@ -121,7 +121,7 @@
                                         <option value="${hour}" ${('', 'selected')[sickrage.app.config.failed_snatch_age == hour]}>${hour}</option>
                                     % endfor
                                 </select>
-                                <div class="input-group-addon">
+                                <div class="input-group-append">
                                     hours
                                 </div>
                             </div>
@@ -130,14 +130,14 @@
                 </div>
 
                 <div id="content_download_propers">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Check propers every:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-clock-o"></span>
                                 </div>
                                 <select id="check_propers_interval" name="check_propers_interval"
                                         class="form-control" title="Interval to check for propers">
@@ -151,14 +151,14 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Backlog search frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="backlog_frequency"
                                    id="backlog_frequency"
@@ -170,14 +170,14 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Daily search frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="dailysearch_frequency"
                                    id="dailysearch_frequency"
@@ -185,41 +185,41 @@
                                    placeholder="${_('time in minutes')}"
                                    title="minimum allowed time ${sickrage.app.config.min_daily_searcher_freq} minutes"
                                    class="form-control"/>
-                            <div class="input-group-addon">
+                            <div class="input-group-append">
                                 min
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Usenet retention')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input name="usenet_retention"
                                    id="usenet_retention"
                                    value="${sickrage.app.config.usenet_retention}"
                                    title="age limit in days (ex. 500)"
                                    class="form-control"/>
-                            <div class="input-group-addon">
+                            <div class="input-group-append">
                                 days
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Ignore words')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-font"></span>
                             </div>
                             <input name="ignore_words"
@@ -231,13 +231,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Require words')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-font"></span>
                             </div>
                             <input name="require_words"
@@ -249,13 +249,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Ignore language names in subbed results')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-font"></span>
                             </div>
                             <input name="ignored_subs_list"
@@ -267,7 +267,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Allow high priority')}</label>
                     </div>
@@ -280,9 +280,9 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -290,16 +290,16 @@
         </div>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="nzb-clients" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('NZB Clients')}</h3>
                 <p>${_('How to handle NZB search results for clients.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
@@ -311,13 +311,13 @@
                 </div>
 
                 <div id="content_use_nzbs">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Send .nzb files to:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-send"></span>
                                 </div>
                                 <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
@@ -331,12 +331,12 @@
                     </div>
 
                     <div id="blackhole_settings">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Black hole folder location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group">
                                     <input name="nzb_dir" id="nzb_dir"
                                            value="${sickrage.app.config.nzb_dir}"
                                            class="form-control" autocapitalize="off"/>
@@ -351,13 +351,13 @@
                     </div>
 
                     <div id="sabnzbd_settings">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('SABnzbd server URL')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input id="sab_host" name="sab_host"
@@ -368,13 +368,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('SABnzbd username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="sab_username" id="sab_username"
@@ -386,13 +386,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('SABnzbd password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="sab_password" id="sab_password"
@@ -404,13 +404,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('SABnzbd API key')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-cloud"></span>
                                     </div>
                                     <input name="sab_apikey" id="sab_apikey"
@@ -422,13 +422,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use SABnzbd category')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="sab_category" id="sab_category"
@@ -440,13 +440,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use SABnzbd category (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="sab_category_backlog" id="sab_category_backlog"
@@ -458,13 +458,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use SABnzbd category for anime')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="sab_category_anime" id="sab_category_anime"
@@ -477,13 +477,13 @@
                         </div>
 
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use SABnzbd category for anime (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="sab_category_anime_backlog"
@@ -497,7 +497,7 @@
                         </div>
 
                         % if sickrage.app.config.allow_high_priority == True:
-                            <div class="row field-pair">
+                            <div class="form-row form-group">
                                 <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                     <label class="component-title">${_('Use forced priority')}</label>
                                 </div>
@@ -513,7 +513,7 @@
                     </div>
 
                     <div id="nzbget_settings">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Connect using HTTPS')}</label>
                             </div>
@@ -526,13 +526,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('NZBget host:port')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input name="nzbget_host" id="nzbget_host"
@@ -545,13 +545,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('NZBget username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="nzbget_username"
@@ -563,13 +563,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('NZBget password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="nzbget_password" id="nzbget_password"
@@ -581,13 +581,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use NZBget category')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="nzbget_category" id="nzbget_category"
@@ -599,13 +599,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use NZBget category (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="nzbget_category_backlog" id="nzbget_category_backlog"
@@ -617,13 +617,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use NZBget category for anime')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="nzbget_category_anime" id="nzbget_category_anime"
@@ -635,13 +635,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Use NZBget category for anime (backlog episodes)')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-book"></span>
                                     </div>
                                     <input name="nzbget_category_anime_backlog"
@@ -654,13 +654,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('NZBget priority')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-exclamation-sign"></span>
                                     </div>
                                     <select name="nzbget_priority" id="nzbget_priority"
@@ -690,16 +690,16 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testSABnzbd_result">${_('Click below to test')}</div>
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn test-button" type="button" value="${_('Test SABnzbd')}" id="testSABnzbd"/>
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
+                            <input class="btn btn-secondary test-button" type="button" value="${_('Test SABnzbd')}" id="testSABnzbd"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
                         </div>
                     </div>
 
@@ -709,16 +709,16 @@
         </div>
     </div><!-- /tab-pane2 //-->
 
-    <div id="core-tab-pane3" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="torrent-clients" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Torrent Clients')}</h3>
                 <p>${_('How to handle Torrent search results for clients.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
@@ -730,13 +730,13 @@
                 </div>
 
                 <div id="content_use_torrents">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Send .torrent files to:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-send"></span>
                                 </div>
                                 <select name="torrent_method" id="torrent_method" class="form-control"
@@ -751,12 +751,12 @@
                     </div>
 
                     <div id="options_torrent_blackhole">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Black hole folder location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group">
                                     <input name="torrent_dir" id="torrent_dir"
                                            value="${sickrage.app.config.torrent_dir}"
                                            class="form-control"
@@ -771,17 +771,17 @@
                         </div>
 
                         <div></div>
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
                     </div>
 
                     <div id="options_torrent_clients">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title" id="host_title">${_('Torrent host:port')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input name="torrent_host" id="torrent_host"
@@ -794,13 +794,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_rpcurl_option">
+                        <div class="form-row form-group" id="torrent_rpcurl_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title" id="rpcurl_title">${_('Torrent RPC URL')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-globe"></span>
                                     </div>
                                     <input name="torrent_rpcurl" id="torrent_rpcurl"
@@ -813,13 +813,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_auth_type_option">
+                        <div class="form-row form-group" id="torrent_auth_type_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('HTTP Authentication')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <select name="torrent_auth_type" id="torrent_auth_type" title="Client AUTH type"
@@ -834,7 +834,7 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_verify_cert_option">
+                        <div class="form-row form-group" id="torrent_verify_cert_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Verify certificate')}</label>
                             </div>
@@ -852,13 +852,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_username_option">
+                        <div class="form-row form-group" id="torrent_username_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title" id="username_title">${_('Client username')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="torrent_username" id="torrent_username"
@@ -869,13 +869,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_password_option">
+                        <div class="form-row form-group" id="torrent_password_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title" id="password_title">${_('Client password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="torrent_password" id="torrent_password"
@@ -886,13 +886,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_label_option">
+                        <div class="form-row form-group" id="torrent_label_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Add label to torrent')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-tag"></span>
                                     </div>
                                     <input name="torrent_label" id="torrent_label"
@@ -904,13 +904,13 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_label_anime_option">
+                        <div class="form-row form-group" id="torrent_label_anime_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Add anime label to torrent')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-tag"></span>
                                     </div>
                                     <input name="torrent_label_anime" id="torrent_label_anime"
@@ -922,12 +922,12 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_path_option">
+                        <div class="form-row form-group" id="torrent_path_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Downloaded files location')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
+                                <div class="input-group">
                                     <input name="torrent_path" id="torrent_path"
                                            value="${sickrage.app.config.torrent_path}"
                                            class="form-control"
@@ -941,15 +941,15 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_seed_time_option">
+                        <div class="form-row form-group" id="torrent_seed_time_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title" id="torrent_seed_time_label">
                                     ${_('Minimum seeding time is')}
                                 </label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-upload"></span>
                                     </div>
                                     <input type="number"
@@ -963,7 +963,7 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_paused_option">
+                        <div class="form-row form-group" id="torrent_paused_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Start torrent paused')}</label>
                             </div>
@@ -976,7 +976,7 @@
                             </div>
                         </div>
 
-                        <div class="row field-pair" id="torrent_high_bandwidth_option">
+                        <div class="form-row form-group" id="torrent_high_bandwidth_option">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${_('Allow high bandwidth')}</label>
                             </div>
@@ -989,17 +989,17 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <div class="testNotification" id="test_torrent_result">${_('Click below to test')}</div>
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <input class="btn test-button" type="button" value="${_('Test Connection')}"
+                                <input class="btn btn-secondary test-button" type="button" value="${_('Test Connection')}"
                                        id="test_torrent"/>
-                                <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
+                                <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
                             </div>
                         </div>
 

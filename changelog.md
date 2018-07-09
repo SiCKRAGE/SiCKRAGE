@@ -1,5 +1,6 @@
 # Changelog
 
+- * e6833ea - 2018-07-08: Refactored config views to Bootstrap 4.x 
 - * ae015ef - 2018-07-08: Release v9.3.54 
 - * afa499a - 2018-07-08: Set secure cookie to expire after 30 days 
 - * 443ec81 - 2018-07-08: Changed table text color to dark for display show view 

@@ -6,9 +6,9 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Subtitles Search')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane2">${_('Subtitles Plugin')}</a></li>
-    <li><a data-toggle="tab" href="#core-tab-pane3">${_('Plugin Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-search">${_('Subtitles Search')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#plugin-settings">${_('Plugin Settings')}</a></li>
 </%block>
 <%block name="pages">
     <%
@@ -17,15 +17,15 @@
                             'addic7ed': {'user': sickrage.app.config.addic7ed_user, 'pass': sickrage.app.config.addic7ed_pass},
                             'opensubtitles': {'user': sickrage.app.config.opensubtitles_user, 'pass': sickrage.app.config.opensubtitles_pass}}
     %>
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="subtitles-search" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitles Search')}</h3>
                 <p>${_('Settings that dictate how SickRage handles subtitles search results.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
@@ -38,13 +38,13 @@
                 </div>
 
                 <div id="content_use_subtitles">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Subtitle Languages')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-flag"></span>
                                 </div>
                                 <input class="form-control "
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Subtitles History')}</label>
                         </div>
@@ -67,7 +67,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Subtitles Multi-Language')}</label>
                         </div>
@@ -79,7 +79,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Embedded Subtitles')}</label>
                         </div>
@@ -92,7 +92,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Hearing Impaired Subtitles')}</label>
                         </div>
@@ -104,13 +104,13 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Subtitle Directory')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-folder-open"></span>
                                 </div>
                                 <input value="${sickrage.app.config.subtitles_dir}"
@@ -125,34 +125,34 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Subtitle Find Frequency')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-time"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-clock-o"></span>
                                 </div>
                                 <input type="number" name="subtitles_finder_frequency"
                                        value="${sickrage.app.config.subtitle_searcher_freq}" hours="1"
                                        placeholder="${_('1')}"
                                        title="time in hours between scans"
                                        class="form-control"/>
-                                <div class="input-group-addon">
-                                    hours
+                                <div class="input-group-append">
+                                    <span class="input-group-text">hours</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Extra Scripts')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
-                                    <span class="glyphicon glyphicon-file"></span>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text fa fa-file"></span>
                                 </div>
                                 <input name="subtitles_extra_scripts" id="subtitles_extra_scripts"
                                        value="<% '|'.join(sickrage.app.config.subtitles_extra_scripts) %>"
@@ -192,9 +192,9 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div>
@@ -202,17 +202,17 @@
         </div>
     </div><!-- /tab-pane1 //-->
 
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="subtitles-plugin" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitle Plugins')}</h3>
                 <p>${_('Check off and drag the plugins into the order you want them to be used.')}</p>
                 <p class="note">${_('At least one plugin is required.')}</p>
                 <p class="note"><span style="font-size: 16px;">*</span> ${_('Web-scraping plugin')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row">
                     <div class="col-md-12">
                         <ul id="service_order_list">
                             % for curService in sickrage.subtitles.sortedServiceList():
@@ -240,32 +240,32 @@
                 <input type="hidden" name="service_order" id="service_order"
                        value="<% ''.join(['%s:%d' % (x['name'], x['enabled']) for x in sickrage.subtitles.sortedServiceList()])%>"/>
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
         </div>
     </div><!-- /tab-pane2 //-->
 
-    <div id="core-tab-pane3" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="plugin-settings" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitle Settings')}</h3>
                 <p>${_('Set user and password for each provider')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 % for curService in sickrage.subtitles.sortedServiceList():
                     % if curService['name'] in providerLoginDict.keys():
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${curService['name'].capitalize()} ${_('User Name')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-user"></span>
                                     </div>
                                     <input name="${curService['name']}_user"
@@ -276,13 +276,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${curService['name'].capitalize()} ${_('Password')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-lock"></span>
                                     </div>
                                     <input type="password" name="${curService['name']}_pass"
@@ -295,9 +295,9 @@
                         </div>
                     % endif
                 % endfor
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>

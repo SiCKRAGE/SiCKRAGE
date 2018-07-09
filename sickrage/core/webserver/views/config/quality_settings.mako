@@ -5,14 +5,14 @@
 %>
 
 <%block name="tabs">
-    <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Quality Sizes')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#quality-sizes">${_('Quality Sizes')}</a></li>
 </%block>
 
 <%block name="pages">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="quality-sizes" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Quality Sizes')}</h3>
                 <p>${_('Use default qualitiy sizes or specify custom ones per quality definition.')}</p>
                 <div>
@@ -21,17 +21,17 @@
                     </p>
                 </div>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 % for qtype, qsize in sickrage.app.config.quality_sizes.items():
                     % if qsize:
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">${renderQualityPill(qtype)}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-file"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-file"></span>
                                     </div>
                                     <input class="form-control"
                                            type="number"
@@ -40,7 +40,7 @@
                                            id="${qtype}"
                                            min="1"
                                            title="Specify max quality size allowed in MB">
-                                    <div class="input-group-addon">
+                                    <div class="input-group-append">
                                         MB
                                     </div>
                                 </div>
@@ -49,9 +49,9 @@
                     % endif
                 % endfor
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 

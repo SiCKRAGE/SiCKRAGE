@@ -13,20 +13,20 @@
 
 <%block name="tabs">
     <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#core-tab-pane1">${_('Post-Processing')}</a></li>
-        <li><a data-toggle="tab" href="#core-tab-pane2">${_('Episode Naming')}</a></li>
-        <li><a data-toggle="tab" href="#core-tab-pane3">${_('Metadata')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#post-processing">${_('Post-Processing')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#episode-naming">${_('Episode Naming')}</a></li>
+        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#metadata">${_('Metadata')}</a></li>
     </ul>
 </%block>
 <%block name="pages">
-    <div id="core-tab-pane1" class="tab-pane fade in active">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="post-processing" class="tab-pane active">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Post-Processing')}</h3>
                 <p>${_('Settings that dictate how SickRage should process completed downloads.')}</p>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
@@ -40,15 +40,15 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Post Processing Dir')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-folder-open"></span>
                                     </div>
                                     <input name="tv_download_dir" id="tv_download_dir"
@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="tv_download_dir">
                                     ${_('The folder where your download client puts the completed TV downloads.')}<br/>
@@ -69,15 +69,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Processing Method:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </div>
                                     <select name="process_method" id="process_method" class="form-control"
@@ -90,7 +90,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="process_method">
                                     ${_('What method should be used to put files into the library?')}<br/>
@@ -100,27 +100,27 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Auto Post-Processing Frequency')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <input type="number" min="10" name="autopostprocessor_frequency"
                                    id="autopostprocessor_frequency"
                                    value="${sickrage.app.config.autopostprocessor_freq}"
                                    title="Time in minutes to check for new files to auto post-process (min 10)"
                                    class="form-control"/>
-                            <div class="input-group-addon">
+                            <div class="input-group-append">
                                 mins
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Postpone post processing')}</label>
                     </div>
@@ -132,14 +132,14 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Sync File Extensions to Ignore')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-file"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-file"></span>
                             </div>
                             <input name="sync_files" id="sync_files"
                                    value="${sickrage.app.config.sync_files}"
@@ -149,7 +149,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename Episodes')}</label>
                     </div>
@@ -161,7 +161,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
@@ -173,7 +173,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
@@ -185,7 +185,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
@@ -197,7 +197,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
@@ -209,16 +209,16 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Associated file extensions')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-file"></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text fa fa-file"></span>
                                     </div>
                                     <input name="allowed_extensions" id="allowed_extensions"
                                            value="${sickrage.app.config.allowed_extensions}"
@@ -229,14 +229,14 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <label for="allowed_extensions">${_('leaving it empty means no associated files will be post processed')}</label>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Delete non associated files')}</label>
                     </div>
@@ -248,7 +248,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Change File Date')}</label>
                     </div>
@@ -261,14 +261,14 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Timezone for File Date:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-time"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-clock-o"></span>
                             </div>
                             <select name="file_timestamp_timezone" id="file_timestamp_timezone"
                                     title="What timezone should be used to change File Date?"
@@ -280,7 +280,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Unpack')}</label>
                     </div>
@@ -294,13 +294,13 @@
                     </div>
                 </div>
                 <div id="content_unpack">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Unpack Directory')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-folder-open"></span>
                                 </div>
                                 <input name="unpack_dir" id="unpack_dir"
@@ -312,7 +312,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Delete RAR contents')}</label>
                         </div>
@@ -325,7 +325,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Don\'t delete empty folders')}</label>
                     </div>
@@ -338,7 +338,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Follow symbolic-links')}</label>
                     </div>
@@ -352,7 +352,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Delete Failed')}</label>
                     </div>
@@ -364,14 +364,14 @@
                         </label>
                     </div>
                 </div>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Extra Scripts')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-file"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-file"></span>
                             </div>
                             <input name="extra_scripts" id="extra_scripts"
                                    value="${'|'.join(sickrage.app.config.extra_scripts)}"
@@ -383,29 +383,29 @@
                         </label>
                     </div>
                 </div>
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
-    <div id="core-tab-pane2" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="episode-naming" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Episode Naming')}</h3>
                 <p>${_('How SickRage will name and sort your episodes.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
-                <div class="row field-pair">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Name Pattern:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-list"></span>
                             </div>
                             <select id="name_presets" class="form-control" title="Choose a naming pattern">
@@ -426,11 +426,11 @@
                 </div>
 
                 <div id="naming_custom">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                          alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
                                          class="legend" class="legend"/>
@@ -594,13 +594,13 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Multi-Episode Style:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
                                 <span class="glyphicon glyphicon-sunglasses"></span>
                             </div>
                             <select id="naming_multi_ep" name="naming_multi_ep" class="form-control"
@@ -614,7 +614,7 @@
                 </div>
 
                 <div id="naming_example_div">
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <h3>${_('Single-EP Sample:')}</h3>
                             <div class="example">
@@ -625,7 +625,7 @@
                 </div>
 
                 <div id="naming_example_multi_div">
-                    <div class="row">
+                    <div class="form-row">
                         <div class="col-md-12">
                             <h3>${_('Multi-EP sample:')}</h3>
                             <div class="example">
@@ -635,7 +635,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Strip Show Year')}</label>
                     </div>
@@ -649,7 +649,7 @@
                     </div>
                 </div>
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Custom Air-By-Date')}</label>
                     </div>
@@ -663,13 +663,13 @@
                 </div>
 
                 <div id="content_naming_custom_abd">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Air-by-date Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
                                 <select id="name_abd_presets" class="form-control" title="Choose a naming pattern">
@@ -690,11 +690,11 @@
                     </div>
 
                     <div id="naming_abd_custom">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                              alt="[Toggle Key]" id="show_naming_abd_key"
                                              title="Toggle ABD Naming Legend" class="legend"/>
@@ -848,7 +848,7 @@
                     </div><!-- /naming_abd_custom -->
 
                     <div id="naming_abd_example_div">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <h3>${_('Air-by-date Sample:')}</h3>
                                 <div class="example">
@@ -859,7 +859,7 @@
                     </div>
                 </div><!-- /naming_abd_different -->
 
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Custom Sports')}</label>
                     </div>
@@ -873,13 +873,13 @@
                 </div>
 
                 <div id="content_naming_custom_sports">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Sports Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
                                 <select id="name_sports_presets" class="form-control" title="Choose a naming pattern">
@@ -900,11 +900,11 @@
                     </div>
 
                     <div id="naming_sports_custom">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                              alt="[Toggle Key]" id="show_naming_sports_key"
                                              title="Toggle Sports Naming Legend" class="legend"/>
@@ -1058,7 +1058,7 @@
                     </div><!-- /naming_sports_custom -->
 
                     <div id="naming_sports_example_div">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <h3>${_('Sports Sample:')}</h3>
                                 <div class="example">
@@ -1070,7 +1070,7 @@
                 </div><!-- /naming_sports_different -->
 
                 <!-- naming_anime_custom -->
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Custom Anime')}</label>
                     </div>
@@ -1084,13 +1084,13 @@
                 </div>
 
                 <div id="content_naming_custom_anime">
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Anime Name Pattern:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-list"></span>
                                 </div>
                                 <select id="name_anime_presets" class="form-control" title="Choose a naming pattern">
@@ -1111,15 +1111,15 @@
                     </div>
 
                     <div id="naming_anime_custom">
-                        <div class="row field-pair">
+                        <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                                 <label class="component-title">
                                     &nbsp;
                                 </label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group input350">
-                                    <div class="input-group-addon">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
                                         <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
                                              alt="[Toggle Key]" id="show_naming_anime_key"
                                              title="Toggle Anime Naming Legend" class="legend"/>
@@ -1267,13 +1267,13 @@
                         </div>
                     </div><!-- /naming_anime_custom -->
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Multi-Episode Style:')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <div class="input-group input350">
-                                <div class="input-group-addon">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
                                     <span class="glyphicon glyphicon-sunglasses"></span>
                                 </div>
                                 <select id="naming_anime_multi_ep" name="naming_anime_multi_ep"
@@ -1288,7 +1288,7 @@
                     </div>
 
                     <div id="naming_example_anime_div">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <h3>${_('Single-EP Anime Sample:')}</h3>
                                 <div class="example">
@@ -1299,7 +1299,7 @@
                     </div>
 
                     <div id="naming_example_multi_anime_div">
-                        <div class="row">
+                        <div class="form-row">
                             <div class="col-md-12">
                                 <h3>${_('Multi-EP Anime sample:')}</h3>
                                 <div class="example">
@@ -1309,7 +1309,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Add Absolute Number')}</label>
                         </div>
@@ -1323,7 +1323,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Only Absolute Number')}</label>
                         </div>
@@ -1337,7 +1337,7 @@
                         </div>
                     </div>
 
-                    <div class="row field-pair">
+                    <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('No Absolute Number')}</label>
                         </div>
@@ -1353,32 +1353,32 @@
 
                 </div><!-- /naming_anime_different -->
 
-                <div class="row">
+                <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
         </div>
     </div><!-- /tab-pane2 //-->
 
-    <div id="core-tab-pane3" class="tab-pane fade">
-        <div class="row tab-pane">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 tab-pane-desc">
+    <div id="metadata" class="tab-pane">
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Metadata')}</h3>
                 <p>${_('The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.')}</p>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 tab-pane-list">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <% m_dict = sickrage.app.metadata_providers %>
-                <div class="row field-pair">
+                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Metadata Type:')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="fa fa-tv"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text fa fa-tv"></span>
                             </div>
                             <select id="metadataType" class="form-control">
                                 % for (cur_id, cur_generator) in sorted(m_dict.items()):
