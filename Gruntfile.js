@@ -2,27 +2,8 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-        'string-replace': {
-          inline: {
-            files: {
-              './': 'sickrage/locale/**/LC_MESSAGES/*.po'
-            },
-            options: {
-              replacements: [
-                {
-                  pattern: /("PO-Revision-Date.*")/ig,
-                  replacement: ''
-                }
-              ]
-            }
-          }
-        },
         clean: {
             bower_components: 'bower_components',
-            //sass: [
-            //    '.sass-cache',
-            //    'sickrage/core/webserver/static/scss/'
-            //],
             options: {
                 force: true
             }
@@ -208,17 +189,6 @@ module.exports = function (grunt) {
             core: {
                 files: {
                     'sickrage/core/webserver/static/js/core.min.js': ['dist/js/core.js']
-                }
-            }
-        },
-        sass: {
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/scss/core.scss': [
-                        'dist/css/core.css',
-                        'dist/css/fonts.css',
-                        'dist/css/icons-sickrage.css'
-                    ]
                 }
             }
         },
@@ -413,7 +383,6 @@ module.exports = function (grunt) {
             'imagemin',
             'uglify',
             'sprite',
-            'sass',
             'cssmin',
             'jshint'
         ]
@@ -421,7 +390,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'css', [
-            'sass',
             'cssmin'
         ]
     );
@@ -446,7 +414,6 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:crowdin_download_translations',
-            //'string-replace',
             'exec:babel_compile',
             'po2json'
         ];
