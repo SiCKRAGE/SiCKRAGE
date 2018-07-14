@@ -27,5 +27,8 @@
     "grunt-po2json": "git+https://github.com/rockykitamura/grunt-po2json.git",
     "grunt-spritesmith": "^6.4.0",
     "load-grunt-tasks": "^3.4.1"
+  },
+  "dependencies": {
+    "po2json": "^0.4.5"
   }
 }
