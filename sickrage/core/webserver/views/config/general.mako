@@ -99,7 +99,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-flag"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-flag"></span>
+                                </span>
                             </div>
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
                                     class="form-control form-control-inline bfh-languages"
@@ -533,7 +535,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-calendar"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-calendar"></span>
+                                </span>
                             </div>
                             <input type="number" step="1" min="7" name="coming_eps_missed_range"
                                    id="coming_eps_missed_range"
@@ -647,7 +651,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-globe"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-globe"></span>
+                                </span>
                             </div>
                             <input name="download_url" id="download_url" class="form-control"
                                    value="${sickrage.app.config.download_url}"
@@ -678,7 +684,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-transfer"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-exchange-alt"></span>
+                                </span>
                             </div>
                             <input type="number" step="0.1" min="0.1" max="1.0"
                                    name="fanart_background_opacity" id="fanart_background_opacity"
@@ -731,7 +739,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-globe"></span>
+                                            </span>
                                         </div>
                                         <input name="web_external_port" id="web_external_port"
                                                value="${sickrage.app.config.web_external_port}"
@@ -760,7 +770,9 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-globe"></span>
+                                        </span>
                                     </div>
                                     <input name="web_port" id="web_port"
                                            value="${sickrage.app.config.web_port}"
@@ -800,7 +812,9 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-cloud"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-cloud"></span>
+                                        </span>
                                     </div>
                                     <input name="api_key" id="api_key"
                                            value="${sickrage.app.config.api_key}"
@@ -968,7 +982,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-globe"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-globe"></span>
+                                </span>
                             </div>
                             <input id="anon_redirect" name="anon_redirect"
                                    value="${sickrage.app.config.anon_redirect}"
@@ -1090,7 +1106,9 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-globe"></span>
+                                <span class="input-group-text">
+                                    <span class="fas fa-globe"></span>
+                                </span>
                             </div>
                             <input id="proxy_setting" name="proxy_setting"
                                    value="${sickrage.app.config.proxy_setting}"
@@ -1114,7 +1132,6 @@
                 </div>
 
                 <div class="form-row form-group">
-
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Skip Remove Detection')}</label>
                     </div>
@@ -1127,7 +1144,6 @@
                                 <b>${_('NOTE:')}</b> ${_('This may mean SiCKRAGE misses renames as well')}</div>
                         </label>
                     </div>
-
                 </div>
 
                 <div class="form-row form-group">
@@ -1139,7 +1155,9 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-erase"></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-eraser"></span>
+                                        </span>
                                     </div>
                                     % if not sickrage.app.config.skip_removed_files:
                                         <select name="ep_default_deleted_status" id="ep_default_deleted_status"

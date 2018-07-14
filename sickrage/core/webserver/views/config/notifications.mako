@@ -129,7 +129,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-globe"></span>
+                                    </span>
                                 </div>
                                 <input name="kodi_host" id="kodi_host"
                                        value="${sickrage.app.config.kodi_host}"
@@ -146,7 +148,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </span>
                                 </div>
                                 <input name="kodi_username" id="kodi_username"
                                        value="${sickrage.app.config.kodi_username}"
@@ -163,7 +167,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </span>
                                 </div>
                                 <input type="password" name="kodi_password" id="kodi_password"
                                        value="${sickrage.app.config.kodi_password}"
@@ -225,7 +231,9 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            <span class="input-group-text">
+                                                <span class="fas fa-cloud"></span>
+                                            </span>
                                         </div>
                                         <input name="plex_server_token" id="plex_server_token"
                                                value="${sickrage.app.config.plex_server_token}"
@@ -255,7 +263,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="plex_username" id="plex_username"
                                            value="${sickrage.app.config.plex_username}"
@@ -271,7 +279,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="plex_password" id="plex_password"
                                            value="${sickrage.app.config.plex_password}"
@@ -303,7 +311,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input name="plex_server_host"
                                                id="plex_server_host"
@@ -401,7 +409,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="plex_host" id="plex_host"
                                        value="${sickrage.app.config.plex_host}"
@@ -419,7 +427,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="plex_client_username" id="plex_client_username"
                                            value="${sickrage.app.config.plex_client_username}"
@@ -435,7 +443,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="plex_client_password" id="plex_client_password"
                                            value="${sickrage.app.config.plex_client_password}"
@@ -492,7 +500,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="emby_host" id="emby_host"
                                        value="${sickrage.app.config.emby_host}"
@@ -508,7 +516,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="emby_apikey" id="emby_apikey"
                                        value="${sickrage.app.config.emby_apikey}"
@@ -605,7 +613,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="nmj_host" id="nmj_host"
                                        value="${sickrage.app.config.nmj_host}"
@@ -711,7 +719,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="nmjv2_host" id="nmjv2_host"
                                        value="${sickrage.app.config.nmjv2_host}"
@@ -957,7 +965,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="pytivo_host" id="pytivo_host"
                                        value="${sickrage.app.config.pytivo_host}"
@@ -974,7 +982,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-book"></span>
+                                    <span class="input-group-text"><span class="fas fa-book"></span></span>
                                 </div>
                                 <input name="pytivo_share_name" id="pytivo_share_name"
                                        value="${sickrage.app.config.pytivo_share_name}"
@@ -993,7 +1001,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-book"></span>
+                                    <span class="input-group-text"><span class="fas fa-book"></span></span>
                                 </div>
                                 <input name="pytivo_tivo_name" id="pytivo_tivo_name"
                                        value="${sickrage.app.config.pytivo_tivo_name}"
@@ -1082,7 +1090,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="growl_host" id="growl_host"
                                        value="${sickrage.app.config.growl_host}"
@@ -1098,7 +1106,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                 </div>
                                 <input type="password" name="growl_password" id="growl_password"
                                        value="${sickrage.app.config.growl_password}"
@@ -1195,7 +1203,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="prowl_api" id="prowl_api"
                                        value="${sickrage.app.config.prowl_api}"
@@ -1406,7 +1414,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                 </div>
                                 <input name="pushover_userkey" id="pushover_userkey"
                                        value="${sickrage.app.config.pushover_userkey}"
@@ -1423,7 +1431,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="pushover_apikey" id="pushover_apikey"
                                        value="${sickrage.app.config.pushover_apikey}"
@@ -1444,7 +1452,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-list-alt"></span>
+                                    <span class="input-group-text"><span class="fas fa-list-alt"></span></span>
                                 </div>
                                 <input name="pushover_device" id="pushover_device"
                                        value="${sickrage.app.config.pushover_device}"
@@ -1461,7 +1469,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-music"></span>
+                                    <span class="input-group-text"><span class="fas fa-music"></span></span>
                                 </div>
                                 <select id="pushover_sound" name="pushover_sound" class="form-control ">
                                     <option value="pushover" ${('', 'selected')[sickrage.app.config.pushover_sound == 'pushover']}>
@@ -1614,7 +1622,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="boxcar2_accesstoken" id="boxcar2_accesstoken"
                                        value="${sickrage.app.config.boxcar2_accesstoken}"
@@ -1706,7 +1714,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="nma_api" id="nma_api"
                                        value="${sickrage.app.config.nma_api}"
@@ -1722,7 +1730,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                    <span class="input-group-text"><span class="fas fa-exclamation-sign"></span></span>
                                 </div>
                                 <select id="nma_priority" name="nma_priority" class="form-control ">
                                     <option value="-2" ${('', 'selected')[sickrage.app.config.nma_priority == '-2']}>
@@ -1831,7 +1839,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="pushalot_authorizationtoken"
                                        id="pushalot_authorizationtoken"
@@ -1925,7 +1933,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="pushbullet_api" id="pushbullet_api"
                                        value="${sickrage.app.config.pushbullet_api}"
@@ -1944,7 +1952,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-list"></span>
+                                            <span class="input-group-text"><span class="fas fa-list"></span></span>
                                         </div>
                                         <select name="pushbullet_device_list" id="pushbullet_device_list"
                                                 class="form-control "></select>
@@ -2046,7 +2054,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
                                 </div>
                                 <input name="freemobile_id" id="freemobile_id"
                                        value="${sickrage.app.config.freemobile_id}"
@@ -2063,7 +2071,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="freemobile_apikey" id="freemobile_apikey"
                                        value="${sickrage.app.config.freemobile_apikey}"
@@ -2159,7 +2167,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-user"></span>
+                                            <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
                                         <input name="telegram_id" id="telegram_id"
                                                value="${sickrage.app.config.telegram_id}"
@@ -2195,7 +2203,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
                                         <input name="telegram_apikey" id="telegram_apikey"
                                                value="${sickrage.app.config.telegram_apikey}"
@@ -2304,7 +2312,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-user"></span>
+                                            <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
                                         <input name="twilio_account_sid" id="twilio_account_sid"
                                                value="${sickrage.app.config.twilio_account_sid}"
@@ -2331,7 +2339,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-cloud"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                 </div>
                                 <input name="twilio_auth_token" id="twilio_auth_token"
                                        value="${sickrage.app.config.twilio_auth_token}"
@@ -2503,7 +2511,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
                                 </div>
                                 <input name="twitter_dmto" id="twitter_dmto"
                                        value="${sickrage.app.config.twitter_dmto}"
@@ -2539,7 +2547,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                 </div>
                                 <input id="twitter_key" value=""
                                        class="form-control"
@@ -2602,7 +2610,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
                                 </div>
                                 <input name="trakt_username" id="trakt_username"
                                        value="${sickrage.app.config.trakt_username}"
@@ -2621,7 +2629,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input name="trakt_pin" id="trakt_pin" value=""
                                            placeholder="${_('authorization PIN code')}"
@@ -2808,7 +2816,7 @@
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-list"></span>
+                                    <span class="input-group-text"><span class="fas fa-list"></span></span>
                                 </div>
                                 <input name="trakt_blacklist_name" id="trakt_blacklist_name"
                                        value="${sickrage.app.config.trakt_blacklist_name}"
@@ -2903,7 +2911,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="email_host" id="email_host"
                                        value="${sickrage.app.config.email_host}"
@@ -2919,7 +2927,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="email_port" id="email_port"
                                        value="${sickrage.app.config.email_port}"
@@ -2935,7 +2943,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    <span class="input-group-text"><span class="fas fa-envelope"></span></span>
                                 </div>
                                 <input name="email_from" id="email_from"
                                        value="${sickrage.app.config.email_from}"
@@ -2963,7 +2971,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
                                 </div>
                                 <input name="email_user" id="email_user"
                                        value="${sickrage.app.config.email_user}"
@@ -2979,7 +2987,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                 </div>
                                 <input type="password" name="email_password" id="email_password"
                                        value="${sickrage.app.config.email_password}"
@@ -2996,7 +3004,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-envelope"></span>
+                                    <span class="input-group-text"><span class="fas fa-envelope"></span></span>
                                 </div>
                                 <input name="email_list" id="email_list"
                                        value="${sickrage.app.config.email_list}"
@@ -3016,7 +3024,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-list"></span>
+                                            <span class="input-group-text"><span class="fas fa-list"></span></span>
                                         </div>
                                         <select name="email_show" id="email_show" class="form-control ">
                                             <option value="-1">-- ${_('Select a Show')} --</option>
@@ -3032,7 +3040,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-envelope"></span>
+                                            <span class="input-group-text"><span class="fas fa-envelope"></span></span>
                                         </div>
                                         <input name="email_show_list" id="email_show_list" class="form-control"
                                                autocapitalize="off"/>
@@ -3135,7 +3143,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-globe"></span>
+                                    <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                 </div>
                                 <input name="slack_webhook" id="slack_webhook"
                                        value="${sickrage.app.config.slack_webhook}"
@@ -3235,7 +3243,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input name="discord_webhook" id="discord_webhook"
                                                value="${sickrage.app.config.discord_webhook}"
@@ -3259,7 +3267,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input name="discord_name" id="discord_name"
                                                value="${sickrage.app.config.discord_name}"
@@ -3283,7 +3291,7 @@
                                 <div class="col-md-12">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input name="discord_avatar_url" id="discord_avatar_url"
                                                value="${sickrage.app.config.discord_avatar_url}"

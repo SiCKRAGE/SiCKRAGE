@@ -22,14 +22,17 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                exclude: /node_modules/,
+                exclude: [
+                    /node_modules/,
+                    /bower_components/
+                ],
                 loader: "eslint-loader"
             },
             {
                 test: /\.js$/,
                 exclude: [
                     /node_modules/,
-                    /spec/
+                    /bower_components/
                 ],
                 loader: "babel-loader",
                 options: {
@@ -62,7 +65,10 @@ module.exports = {
             jQuery: 'jquery',
             'window.jQuery': 'jquery'
         }),
-        new CleanWebpackPlugin(['sickrage/core/webserver/static/css/*.*', 'sickrage/core/webserver/static/js/*.*']),
+        new CleanWebpackPlugin([
+            'sickrage/core/webserver/static/css/*.*',
+            'sickrage/core/webserver/static/js/*.*'
+        ]),
         new MiniCssExtractPlugin({
             filename: "../css/core.min.css",
             chunkFilename: "[id].css"

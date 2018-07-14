@@ -40,15 +40,15 @@
                             % else:
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="input-group input350">
-                                            <div class="input-group-addon">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
                                                 <span class="input-group-text">
                                                     <span class="fas fa-tv"></span>
                                                 </span>
                                             </div>
                                             <input id="nameToSearch" value="${default_show_name}"
                                                    title="TV show name" class="form-control"/>
-                                            <span class="input-group-addon"
+                                            <span class="input-group-append"
                                                   style="width:0; padding-left:0; padding-right:0; border:none;"></span>
                                             <select name="providedIndexer" id="providedIndexer"
                                                     class="form-control" title="Choose indexer">
@@ -64,9 +64,9 @@
                                 <br/>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="input-group input350">
-                                            <div class="input-group-addon">
-                                                <span class="glyphicon glyphicon-flag"></span>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><span class="fas fa-flag"></span></span>
                                             </div>
                                             <select name="indexerLang" id="indexerLang" class="form-control"
                                                     title="${_('Choose language')}">

@@ -54,16 +54,16 @@
                                         </div>
                                         <div class="col component-desc">
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                                 </div>
                                                 <input type="text" name="location" id="location"
                                                        value="${show.location}"
                                                        class="form-control "
                                                        autocapitalize="off" title="Location" required=""/>
                                             </div>
-                                            <label class="blockquote-footer" for="location">
+                                            <label class="text-info" for="location">
                                                 ${_('Location for where your show resides on your device')}
                                             </label>
                                         </div>
@@ -87,9 +87,11 @@
                                             <label class="component-title">${_('Default Episode Status')}</label>
                                         </div>
                                         <div class="col component-desc">
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="glyphicon glyphicon-list"></span>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <span class="fas fa-list"></span>
+                                                    </span>
                                                 </div>
                                                 <select name="defaultEpStatus" id="defaultEpStatusSelect"
                                                         title="This will set the status for future episodes."
@@ -99,7 +101,7 @@
                                                     % endfor
                                                 </select>
                                             </div>
-                                            <label class="blockquote-footer" for="defaultEpStatusSelect">
+                                            <label class="text-info" for="defaultEpStatusSelect">
                                                 ${_('Unaired episodes automatically set to this status when air date reached')}
                                             </label>
                                         </div>
@@ -113,9 +115,9 @@
                                         </div>
                                         <div class="col component-desc">
                                             <% languages = IndexerApi().indexer().languages.keys() %>
-                                            <div class="input-group input350">
-                                                <div class="input-group-addon">
-                                                    <span class="glyphicon glyphicon-flag"></span>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><span class="fas fa-flag"></span></span>
                                                 </div>
                                                 <select name="indexerLang" id="indexerLangSelect"
                                                         class="form-control bfh-languages"
@@ -123,7 +125,7 @@
                                                         data-language="${show.lang}"
                                                         data-available="${','.join(languages)}"></select>
                                             </div>
-                                            <label class="blockquote-footer" for="indexerLangSelect">
+                                            <label class="text-info" for="indexerLangSelect">
                                                 ${_('Language of show information is translated into')}
                                             </label>
                                         </div>
@@ -202,7 +204,7 @@
                                             <label class="mb-0" for="airbydate">
                                                 ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
                                             </label>
-                                            <div class="blockquote-footer">
+                                            <div class="text-info">
                                                 ${_('In case of an air date conflict between regular and special '
                                                 'episodes, the later will be ignored.')}
                                             </div>
@@ -220,7 +222,7 @@
                                                 ${_('check if the show is a sporting or MMA event released as '
                                                 'Show.03.02.2010 rather than Show.S02E03')}
                                             </label>
-                                            <div class="blockquote-footer">
+                                            <div class="text-info">
                                                 ${_('In case of an air date conflict between regular and special '
                                                 'episodes, the later will be ignored.')}
                                             </div>
@@ -237,7 +239,7 @@
                                             <label class="mb-0" for="dvdorder">
                                                 ${_('use the DVD order instead of the air order')}
                                             </label>
-                                            <div class="blockquote-footer">
+                                            <div class="text-info">
                                                 ${_('A "Force Full Update" is necessary, and if you have existing '
                                                 'episodes you need to sort them manually.')}
                                             </div>
@@ -312,7 +314,7 @@
                                                        placeholder="${_('ex. word1,word2,word3')}"
                                                        class="form-control "/>
                                             </div>
-                                            <label class="blockquote-footer" for="rls_ignore_words">
+                                            <label class="text-info" for="rls_ignore_words">
                                                 ${_('Search results with one or more words from this list will be ignored.')}
                                             </label>
                                         </div>
@@ -334,7 +336,7 @@
                                                        value="${show.rls_require_words}"
                                                        class="form-control "/>
                                             </div>
-                                            <label class="blockquote-footer" for="rls_require_words">
+                                            <label class="text-info" for="rls_require_words">
                                                 ${_('Search results with no words from this list will be ignored.')}
                                             </label>
                                         </div>
@@ -377,7 +379,7 @@
                                                 </div>
                                             </div>
 
-                                            <label class="blockquote-footer" for="exceptions_list">
+                                            <label class="text-info" for="exceptions_list">
                                                 ${_('This will affect episode search on NZB and torrent providers. '
                                                 'This list overrides the original name it doesn\'t append to it.')}
                                             </label>
@@ -400,7 +402,7 @@
                                                        value="${show.search_delay}"
                                                        class="form-control "/>
                                             </div>
-                                            <label class="blockquote-footer" for="search_delay">
+                                            <label class="text-info" for="search_delay">
                                                 ${_('Delays searching for new episodes by X number of days.')}
                                             </label>
                                         </div>

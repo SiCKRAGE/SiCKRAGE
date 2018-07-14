@@ -155,9 +155,9 @@
                 </td>
                 <td class="text-center">
                     % if required:
-                        <span class="glyphicon glyphicon-ok text-success" title="${_('Yes')}"></span>
+                        <span class="fas fa-check text-success" title="${_('Yes')}"></span>
                     % else:
-                        <span class="glyphicon glyphicon-remove text-muted" title="${_('No')}"></span>
+                        <span class="fas fa-times text-muted" title="${_('No')}"></span>
                     % endif
                 </td>
                 <td>${parameter_help.get('desc', '')}</td>

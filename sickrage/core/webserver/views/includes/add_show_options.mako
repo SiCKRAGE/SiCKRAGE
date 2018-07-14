@@ -69,9 +69,9 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <div class="input-group input350">
-            <div class="input-group-addon">
-                <span class="glyphicon glyphicon-arrow-left"></span>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><span class="fas fa-arrow-left"></span></span>
             </div>
             <select name="defaultStatus" id="statusSelect" class="form-control"
                     title="Status for previously aired episodes">
@@ -89,9 +89,9 @@
     </div>
 
     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-        <div class="input-group input350">
-            <div class="input-group-addon">
-                <span class="glyphicon glyphicon-arrow-right"></span>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><span class="fas fa-arrow-right"></span></span>
             </div>
             <select name="defaultStatusAfter" id="statusSelectAfter" title="Status for future episodes"
                     class="form-control">

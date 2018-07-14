@@ -49,7 +49,7 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-folder-open"></span>
+                                        <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                     </div>
                                     <input name="tv_download_dir" id="tv_download_dir"
                                            value="${sickrage.app.config.tv_download_dir}"
@@ -78,7 +78,7 @@
                             <div class="col-md-12">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-refresh"></span>
+                                        <span class="input-group-text"><span class="fas fa-sync"></span></span>
                                     </div>
                                     <select name="process_method" id="process_method" class="form-control"
                                             title="Processing method">
@@ -311,7 +311,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                    <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                 </div>
                                 <input name="unpack_dir" id="unpack_dir"
                                        value="${'|'.join(sickrage.app.config.unpack_dir)}"
@@ -418,7 +418,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-list"></span>
+                                <span class="input-group-text"><span class="fas fa-list"></span></span>
                             </div>
                             <select id="name_presets" class="form-control" title="Choose a naming pattern">
                                 <% is_custom = True %>
@@ -576,7 +576,7 @@
                             </tr>
                             <tr class="even">
                                 <td class="align-right">
-                                    <i class="glyphicon glyphicon-info-sign" title="Multi-EP style is ignored"></i>
+                                    <i class="fas fa-info-circle" title="Multi-EP style is ignored"></i>
                                     <b>${_('Release Name:')}</b>
                                 </td>
                                 <td>%RN</td>
@@ -584,7 +584,7 @@
                             </tr>
                             <tr>
                                 <td class="align-right">
-                                    <i class="glyphicon glyphicon-info-sign"
+                                    <i class="fas fa-info-circle"
                                        title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
                                     <b>${_('Release Group:')}</b>
                                 </td>
@@ -593,7 +593,7 @@
                             </tr>
                             <tr class="even">
                                 <td class="align-right">
-                                    <i class="glyphicon glyphicon-info-sign"
+                                    <i class="fas fa-info-circle"
                                        title="If episode is proper/repack add 'proper' to name."></i>
                                     <b>${_('Release Type:')}</b>
                                 </td>
@@ -613,7 +613,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-sunglasses"></span>
+                                <span class="input-group-text"><span class="fas fa-glasses"></span></span>
                             </div>
                             <select id="naming_multi_ep" name="naming_multi_ep" class="form-control"
                                     title="Choose a Multi-Episode Style">
@@ -682,7 +682,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-list"></span>
+                                    <span class="input-group-text"><span class="fas fa-list"></span></span>
                                 </div>
                                 <select id="name_abd_presets" class="form-control" title="Choose a naming pattern">
                                     <% is_abd_custom = True %>
@@ -828,7 +828,7 @@
                                 </tr>
                                 <tr>
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="Multi-EP style is ignored"></i>
                                         <b>${_('Release Name:')}</b>
                                     </td>
@@ -837,7 +837,7 @@
                                 </tr>
                                 <tr class="even">
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
                                         <b>${_('Release Group:')}</b>
                                     </td>
@@ -846,7 +846,7 @@
                                 </tr>
                                 <tr>
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="If episode is proper/repack add 'proper' to name."></i>
                                         <b>${_('Release Type:')}</b>
                                     </td>
@@ -892,7 +892,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-list"></span>
+                                    <span class="input-group-text"><span class="fas fa-list"></span></span>
                                 </div>
                                 <select id="name_sports_presets" class="form-control" title="Choose a naming pattern">
                                     <% is_sports_custom = True %>
@@ -1038,7 +1038,7 @@
                                 </tr>
                                 <tr>
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="Multi-EP style is ignored"></i>
                                         <b>${_('Release Name:')}</b>
                                     </td>
@@ -1047,7 +1047,7 @@
                                 </tr>
                                 <tr class="even">
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
                                         <b>${_('Release Group:')}</b>
                                     </td>
@@ -1056,7 +1056,7 @@
                                 </tr>
                                 <tr>
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="If episode is proper/repack add 'proper' to name.">
                                         </i>
                                         <b>${_('Release Type:')}</b></td>
@@ -1103,7 +1103,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-list"></span>
+                                    <span class="input-group-text"><span class="fas fa-list"></span></span>
                                 </div>
                                 <select id="name_anime_presets" class="form-control" title="Choose a naming pattern">
                                     <% is_anime_custom = True %>
@@ -1248,7 +1248,7 @@
                                 </tr>
                                 <tr class="even">
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="Multi-EP style is ignored"></i>
                                         <b>${_('Release Name:')}</b>
                                     </td>
@@ -1257,7 +1257,7 @@
                                 </tr>
                                 <tr>
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="'SiCKRAGE' is used in place of RLSGROUP if it could not be properly detected"></i>
                                         <b>${_('Release Group:')}</b>
                                     </td>
@@ -1266,7 +1266,7 @@
                                 </tr>
                                 <tr class="even">
                                     <td class="align-right">
-                                        <i class="glyphicon glyphicon-info-sign"
+                                        <i class="fas fa-info-circle"
                                            title="If episode is proper/repack add 'proper' to name."></i>
                                         <b>${_('Release Type:')}</b>
                                     </td>
@@ -1286,7 +1286,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-sunglasses"></span>
+                                    <span class="input-group-text"><span class="fas fa-glasses"></span></span>
                                 </div>
                                 <select id="naming_anime_multi_ep" name="naming_anime_multi_ep"
                                         title="Multi-Episode Style"
@@ -1414,7 +1414,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         % for (cur_id, cur_generator) in m_dict.items():
                             <div class="metadataDiv" id="${cur_id}">
-                                <div class="metadata_options_wrapper input350">
+                                <div class="metadata_options_wrapper">
                                     <div class="metadata_options">
                                         <input type="checkbox" class="metadata_checkbox"
                                                id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>

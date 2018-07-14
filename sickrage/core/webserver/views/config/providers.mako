@@ -139,7 +139,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-search"></span>
+                                <span class="input-group-text"><span class="fas fa-search"></span></span>
                             </div>
                             <select id="editAProvider" class="form-control" title="Choose a search provider">
                                 % for providerID, providerObj in sickrage.app.search_providers.enabled().items():
@@ -162,7 +162,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input id="${providerID}_url"
                                                value="${providerObj.urls['base_url']}"
@@ -182,7 +182,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
                                         <input id="${providerID}_key"
                                                name="${providerID}_key"
@@ -290,7 +290,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-user"></span>
+                                            <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
                                         <input name="${providerID}_username"
                                                value="${providerObj.username}"
@@ -309,7 +309,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
                                         <input name="${providerID}_api_key"
                                                value="${providerObj.api_key}"
@@ -417,7 +417,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-globe"></span>
+                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                         </div>
                                         <input name="${providerID}_custom_url"
                                                id="${providerID}_custom_url"
@@ -438,7 +438,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-cloud"></span>
+                                            <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                         </div>
                                         <input name="${providerID}_api_key"
                                                id="${providerID}_api_key"
@@ -459,7 +459,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-lock"></span>
+                                            <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input name="${providerID}_digest" id="${providerID}_digest"
                                                value="${providerObj.digest}"
@@ -501,7 +501,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-user"></span>
+                                            <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
                                         <input name="${providerID}_username"
                                                id="${providerID}_username"
@@ -522,7 +522,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-lock"></span>
+                                            <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input type="password" name="${providerID}_password"
                                                id="${providerID}_password" value="${providerObj.password}"
@@ -541,7 +541,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-lock"></span>
+                                            <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input name="${providerID}_passkey"
                                                id="${providerID}_passkey"
@@ -562,7 +562,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-certificate"></span>
+                                            <span class="input-group-text"><span class="fas fa-certificate"></span></span>
                                         </div>
                                         <input name="${providerID}_cookies"
                                                id="${providerID}_cookies"
@@ -590,7 +590,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-lock"></span>
+                                            <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                         </div>
                                         <input type="password" name="${providerID}_pin"
                                                id="${providerID}_pin"
@@ -740,7 +740,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-sort-by-order"></span>
+                                            <span class="input-group-text"><span class="fas fa-sort-by-order"></span></span>
                                         </div>
                                         <select name="${providerID}_sorting" id="${providerID}_sorting"
                                                 title="Sort search results"
@@ -877,7 +877,7 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="glyphicon glyphicon-list"></span>
+                                            <span class="input-group-text"><span class="fas fa-list"></span></span>
                                         </div>
                                         <select name="${providerID}_cat" id="${providerID}_cat"
                                                 title="Provider category"
@@ -938,7 +938,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-search"></span>
+                                    <span class="input-group-text"><span class="fas fa-search"></span></span>
                                 </div>
                                 <select id="editANewznabProvider" class="form-control" title="Choose provider">
                                     <option value="addNewznab">-- ${_('add new provider')} --</option>
@@ -970,7 +970,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input id="newznab_url" class="form-control" title="Provider URL"
                                            autocapitalize="off"/>
@@ -984,7 +984,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-cloud"></span>
+                                        <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                     </div>
                                     <input id="newznab_key" class="form-control" title="Provider API key"
                                            placeholder="if not required type 0" autocapitalize="off"/>
@@ -1065,7 +1065,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-search"></span>
+                                    <span class="input-group-text"><span class="fas fa-search"></span></span>
                                 </div>
                                 <select id="editATorrentRssProvider" class="form-control" title="Choose provider">
                                     <option value="addTorrentRss">-- ${_('add new provider')} --</option>
@@ -1099,7 +1099,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input id="torrentrss_url" title="Provider URL"
                                            class="form-control" autocapitalize="off"/>
@@ -1113,7 +1113,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-certificate"></span>
+                                        <span class="input-group-text"><span class="fas fa-certificate"></span></span>
                                     </div>
                                     <input id="torrentrss_cookies" placeholder="${_('ex. uid=xx;pass=yy')}"
                                            class="form-control" autocapitalize="off"/>
@@ -1127,7 +1127,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-search"></span>
+                                        <span class="input-group-text"><span class="fas fa-search"></span></span>
                                     </div>
                                     <input id="torrentrss_titleTAG" placeholder="${_('ex. title')}"
                                            class="form-control" value="title"

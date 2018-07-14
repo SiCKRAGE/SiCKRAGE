@@ -104,7 +104,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-folder-open"></span>
+                                    <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                 </div>
                                 <input value="${sickrage.app.config.subtitles_dir}"
                                        id="subtitles_dir"
@@ -265,7 +265,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="${curService['name']}_user"
                                            id="${curService['name']}_user"
@@ -282,7 +282,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="${curService['name']}_pass"
                                            id="${curService['name']}_pass"

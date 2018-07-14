@@ -13,8 +13,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <span class="input-group-text">
+                                                <span class="fas fa-user"></span>
+                                            </span>
+                                        </span>
                                     </div>
                                     <input class="form-control" title="${_('Username')}" name="username" type="text"
                                            placeholder="${_('Username')}" autocomplete="off"/>
@@ -26,8 +30,8 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <div class="input-group">
-                                    <div class="input-group-addon">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input class="form-control" title="${_('Password')}" name="password" type="password"
                                            placeholder="${_('Password')}" autocomplete="off"/>

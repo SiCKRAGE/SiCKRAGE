@@ -13,9 +13,9 @@
                         <b>${_('Enter the folder containing the episode')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-folder-open"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                             </div>
                             <input name="proc_dir" id="episodeDir" class="form-control" autocapitalize="off"
                                    value="${sickrage.app.config.tv_download_dir}" title="directory"/>
@@ -27,9 +27,9 @@
                         <b>${_('Process Method to be used:')}</b>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        <div class="input-group input350">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-refresh"></span>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><span class="fas fa-sync"></span></span>
                             </div>
                             <select name="process_method" id="process_method" title="Choose post-processing method"
                                     class="form-control form-control-inline input-sm">

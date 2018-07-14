@@ -23,7 +23,7 @@
 
         <form action="${srWebRoot}/manage/episodeStatuses">
             <label for="whichStatus">${_('Manage episodes with status')}</label>
-            <div class="input-group input350">
+            <div class="input-group">
                 <select name="whichStatus" id="whichStatus" class="form-control">
                     % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED:
                         %if curStatus not in [ARCHIVED, DOWNLOADED]:
@@ -31,7 +31,7 @@
                         %endif
                     % endfor
                 </select>
-                <div class="input-group-addon">
+                <div class="input-group-append">
                     <input class="button" type="submit" value="${_('Manage')}"/>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     <input type="hidden" id="row_class" value="${row_class}"/>
 
                     <label for="newStatus">${_('Set checked shows/episodes to')}</label>
-                    <div class="input-group input350">
+                    <div class="input-group">
                         <select name="newStatus" id="newStatus" class="form-control">
                             <%
                                 statusList = [SKIPPED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED
@@ -80,7 +80,7 @@
                                 <option value="${curStatus}">${statusStrings[curStatus]}</option>
                             % endfor
                         </select>
-                        <div class="input-group-addon">
+                        <div class="input-group-append">
                             <input class="button" type="submit" value="${_('Go')}"/>
                         </div>
                     </div>

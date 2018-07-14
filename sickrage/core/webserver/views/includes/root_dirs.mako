@@ -16,8 +16,10 @@
         <input type="hidden" id="whichDefaultRootDir" value="${backend_default}"/>
         <div class="rootdir-selectbox">
             <div class="input-group">
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-folder-open"></span>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="fas fa-folder-open"></span>
+                    </span>
                 </div>
                 <select name="rootDir" id="rootDirs" size="6" class="form-control"
                         title="${_('Root Directories')}">

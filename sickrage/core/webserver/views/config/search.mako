@@ -236,7 +236,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-font"></span>
+                                <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="ignore_words"
                                    value="${sickrage.app.config.ignore_words}"
@@ -254,7 +254,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-font"></span>
+                                <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="require_words"
                                    value="${sickrage.app.config.require_words}"
@@ -272,7 +272,7 @@
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="glyphicon glyphicon-font"></span>
+                                <span class="input-group-text"><span class="fas fa-font"></span></span>
                             </div>
                             <input name="ignored_subs_list"
                                    value="${sickrage.app.config.ignored_subs_list}"
@@ -334,7 +334,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-send"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud-upload-alt"></span></span>
                                 </div>
                                 <select name="nzb_method" id="nzb_method" class="form-control" title="NZB Clients">
                                     <% nzb_method_text = {'blackhole': "Black hole", 'sabnzbd': "SABnzbd", 'nzbget': "NZBget"} %>
@@ -374,7 +374,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input id="sab_host" name="sab_host"
                                            value="${sickrage.app.config.sab_host}"
@@ -391,7 +391,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="sab_username" id="sab_username"
                                            value="${sickrage.app.config.sab_username}"
@@ -409,7 +409,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="sab_password" id="sab_password"
                                            value="${sickrage.app.config.sab_password}"
@@ -427,7 +427,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-cloud"></span>
+                                        <span class="input-group-text"><span class="fas fa-cloud"></span></span>
                                     </div>
                                     <input name="sab_apikey" id="sab_apikey"
                                            value="${sickrage.app.config.sab_apikey}"
@@ -445,7 +445,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category" id="sab_category"
                                            value="${sickrage.app.config.sab_category}"
@@ -463,7 +463,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category_backlog" id="sab_category_backlog"
                                            value="${sickrage.app.config.sab_category_backlog}"
@@ -481,7 +481,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category_anime" id="sab_category_anime"
                                            value="${sickrage.app.config.sab_category_anime}"
@@ -500,7 +500,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="sab_category_anime_backlog"
                                            id="sab_category_anime_backlog"
@@ -549,7 +549,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="nzbget_host" id="nzbget_host"
                                            value="${sickrage.app.config.nzbget_host}"
@@ -568,7 +568,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="nzbget_username"
                                            value="${sickrage.app.config.nzbget_username}"
@@ -586,7 +586,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="nzbget_password" id="nzbget_password"
                                            value="${sickrage.app.config.nzbget_password}"
@@ -604,7 +604,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category" id="nzbget_category"
                                            value="${sickrage.app.config.nzbget_category}"
@@ -622,7 +622,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category_backlog" id="nzbget_category_backlog"
                                            value="${sickrage.app.config.nzbget_category_backlog}"
@@ -640,7 +640,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category_anime" id="nzbget_category_anime"
                                            value="${sickrage.app.config.nzbget_category_anime}"
@@ -658,7 +658,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-book"></span>
+                                        <span class="input-group-text"><span class="fas fa-book"></span></span>
                                     </div>
                                     <input name="nzbget_category_anime_backlog"
                                            id="nzbget_category_anime_backlog"
@@ -677,7 +677,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                                        <span class="input-group-text"><span class="fas fa-exclamation-sign"></span></span>
                                     </div>
                                     <select name="nzbget_priority" id="nzbget_priority"
                                             title="priority for daily snatches (no backlog)"
@@ -753,7 +753,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-send"></span>
+                                    <span class="input-group-text"><span class="fas fa-cloud-upload-alt"></span></span>
                                 </div>
                                 <select name="torrent_method" id="torrent_method" class="form-control"
                                         title="Torrent Clients">
@@ -798,7 +798,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="torrent_host" id="torrent_host"
                                            value="${sickrage.app.config.torrent_host}"
@@ -817,7 +817,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-globe"></span>
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
                                     </div>
                                     <input name="torrent_rpcurl" id="torrent_rpcurl"
                                            value="${sickrage.app.config.torrent_rpcurl}"
@@ -836,7 +836,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <select name="torrent_auth_type" id="torrent_auth_type" title="Client AUTH type"
                                             class="form-control">
@@ -875,7 +875,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-user"></span>
+                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
                                     </div>
                                     <input name="torrent_username" id="torrent_username"
                                            value="${sickrage.app.config.torrent_username}"
@@ -892,7 +892,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-lock"></span>
+                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                     </div>
                                     <input type="password" name="torrent_password" id="torrent_password"
                                            value="${sickrage.app.config.torrent_password}"
@@ -909,7 +909,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-tag"></span>
+                                        <span class="input-group-text"><span class="fas fa-tag"></span></span>
                                     </div>
                                     <input name="torrent_label" id="torrent_label"
                                            value="${sickrage.app.config.torrent_label}"
@@ -927,7 +927,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-tag"></span>
+                                        <span class="input-group-text"><span class="fas fa-tag"></span></span>
                                     </div>
                                     <input name="torrent_label_anime" id="torrent_label_anime"
                                            value="${sickrage.app.config.torrent_label_anime}"
@@ -966,7 +966,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="glyphicon glyphicon-upload"></span>
+                                        <span class="input-group-text"><span class="fas fa-upload"></span></span>
                                     </div>
                                     <input type="number"
                                            step="1"

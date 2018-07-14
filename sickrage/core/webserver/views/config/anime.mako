@@ -46,7 +46,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-user"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </span>
                                 </div>
                                 <input type="text" name="anidb_username" id="anidb_username"
                                        value="${sickrage.app.config.anidb_username}"
@@ -63,7 +65,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <span class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </span>
                                 </div>
                                 <input type="password" name="anidb_password" id="anidb_password"
                                        value="${sickrage.app.config.anidb_password}"
