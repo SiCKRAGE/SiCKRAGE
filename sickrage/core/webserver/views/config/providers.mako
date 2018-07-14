@@ -66,25 +66,20 @@
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Provider Priorities')}</h3>
                 <small class="form-text text-muted">
-                    ${_('Check off and drag the providers into the order you want them to be used.')}
-                    <p>${_('At least one provider is required but two are recommended.')}</p>
+                    ${_('Check off and drag the providers into the order you want them to be used.')}<br/>
+                    ${_('At least one provider is required but two are recommended.')}
                 </small>
 
                 % if not sickrage.app.config.use_nzbs or not sickrage.app.config.use_torrents:
-                    <blockquote style="margin: 20px 0;">
+                    <small class="form-text text-muted">
                         ${_('NZB/Torrent providers can be toggled in')}
-                        <b>
-                            <a href="${srWebRoot}/config/search">${_('Search Clients')}</a>
-                        </b>
-                    </blockquote>
-                % else:
-                    <br>
+                        <b><a href="${srWebRoot}/config/search">${_('Search Clients')}</a></b>
+                    </small>
                 % endif
 
                 <small class="form-text text-muted">
                     <i class="text-warning fas fa-chevron-circle-left"></i>
-                    ${_('Provider does not support backlog searches at this time.')}
-                    <br/>
+                    ${_('Provider does not support backlog searches at this time.')}<br/>
                     <i class="text-danger fas fa-exclamation-circle"></i>
                     ${_('Provider is <b>NOT WORKING</b>.')}
                 </small>
@@ -99,7 +94,7 @@
                             <% provider_url = providerObj.custom_url %>
                         % endif
                             <div class="${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1"
-                                id="${providerID}">
+                                 id="${providerID}">
                                 <div class="align-middle mt-1 ml-2">
                                     <input type="checkbox" id="enable_${providerID}"
                                            class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
@@ -109,7 +104,8 @@
                                             src="${srWebRoot}/images/providers/${providerObj.imageName}"
                                             alt="${providerObj.name}" title="${providerObj.name}" width="16"
                                             height="16"/></a>
-                                    <label class="font-weight-bold" for="enable_${providerID}">${providerObj.name}</label>
+                                    <label class="font-weight-bold"
+                                           for="enable_${providerID}">${providerObj.name}</label>
                                     <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
                                     ${('<i class="text-warning mt-1 fas fa-chevron-circle-left float-right"></i>', '')[bool(providerObj.supports_backlog)]}
                                     ${('<i class="text-danger mt-1 fas fa-exclamation-circle float-right"></i>', '')[bool(providerObj.isAlive)]}
@@ -129,8 +125,10 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Provider Options')}</h3>
-                <p>${_('Configure individual provider settings here.')}</p>
-                <p>${_('Check with provider\'s website on how to obtain an API key if needed.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Configure individual provider settings here.')}<br/>
+                    ${_('Check with provider\'s website on how to obtain an API key if needed.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -234,12 +232,14 @@
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <input type="checkbox" name="${providerID}_search_fallback"
-                                           id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
-                                    <label for="${providerID}_search_fallback">
-                                        ${_('when searching for a complete season depending on search mode you may <br/>'
-                                        'return no results, this helps by restarting the search using the opposite <br/>'
-                                        'search mode.')}
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                               id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
+                                        ${_('when searching for a complete season depending on search mode you may')}
+                                        <br/>
+                                        ${_('return no results, this helps by restarting the search using the opposite')}
+                                        <br/>
+                                        ${_('search mode.')}
                                     </label>
                                 </div>
                             </div>
@@ -253,25 +253,25 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="form-row">
                                         <div class="col-md-12">
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_sponly"
-                                                   value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_sponly"
+                                                       value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
                                                 ${_('season packs only.')}
                                             </label>
                                             <br/>
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_eponly"
-                                                   value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_eponly"
+                                                       value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
+
                                                 ${_('episodes only.')}
                                             </label>
-                                            <p></p>
-                                            ${_('when searching for complete seasons you can choose to have it look for')}
-                                            <br/>
-                                            ${_('season packs only, or choose to have it build a complete season from just')}
-                                            <br/>
-                                            ${_('single episodes.')}
+                                            <p class="text-info">
+                                                ${_('when searching for complete seasons you can choose to have it look for '
+                                                'season packs only, or choose to have it build a complete season from just '
+                                                'single episodes.')}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -357,14 +357,12 @@
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <input type="checkbox" name="${providerID}_search_fallback"
-                                           id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
-                                    <label for="${providerID}_search_fallback">
-                                        <p>
-                                            ${_('when searching for a complete season depending on search mode you may '
-                                            'return no results, this helps by restarting the search using the opposite '
-                                            'search mode.')}
-                                        </p>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                               id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
+                                        ${_('when searching for a complete season depending on search mode you may '
+                                        'return no results, this helps by restarting the search using the opposite '
+                                        'search mode.')}
                                     </label>
                                 </div>
                             </div>
@@ -378,10 +376,10 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="form-row">
                                         <div class="col-md-12">
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_eponly"
-                                                   value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_eponly"
+                                                       value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
                                                 ${_('episodes only.')}
                                             </label>
                                         </div>
@@ -389,16 +387,16 @@
 
                                     <div class="form-row">
                                         <div class="col-md-12">
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_sponly"
-                                                   value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_sponly"
+                                                       value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
                                                 ${_('season packs only.')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <p>
+                                    <p class="text-info">
                                         ${_('when searching for complete seasons you can choose to have it look for '
                                         'season packs only, or choose to have it build a complete season from just '
                                         'single episodes.')}
@@ -822,14 +820,12 @@
                                     <label class="component-title">${_('Search mode fallback')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <input type="checkbox" name="${providerID}_search_fallback"
-                                           id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
-                                    <label for="${providerID}_search_fallback">
-                                        <p>
-                                            ${_('when searching for a complete season depending on search mode you may '
-                                            'return no results, this helps by restarting the search using the opposite '
-                                            'search mode.')}
-                                        </p>
+                                    <label class="form-check-label">
+                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                               id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
+                                        ${_('when searching for a complete season depending on search mode you may '
+                                        'return no results, this helps by restarting the search using the opposite '
+                                        'search mode.')}
                                     </label>
                                 </div>
                             </div>
@@ -843,10 +839,10 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="form-row">
                                         <div class="col-md-12">
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_sponly"
-                                                   value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
-                                            <label for="${providerID}_search_mode_sponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_sponly"
+                                                       value="sponly" ${('', 'checked')[providerObj.search_mode=="sponly"]}/>
                                                 ${_('season packs only.')}
                                             </label>
                                         </div>
@@ -854,16 +850,17 @@
 
                                     <div class="form-row">
                                         <div class="col-md-12">
-                                            <input type="radio" name="${providerID}_search_mode"
-                                                   id="${providerID}_search_mode_eponly"
-                                                   value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
-                                            <label for="${providerID}_search_mode_eponly">
+                                            <label class="form-check-label">
+                                                <input type="radio" name="${providerID}_search_mode"
+                                                       id="${providerID}_search_mode_eponly"
+                                                       value="eponly" ${('', 'checked')[providerObj.search_mode=="eponly"]}/>
+
                                                 ${_('episodes only.')}
                                             </label>
                                         </div>
                                     </div>
 
-                                    <p>
+                                    <p class="text-info">
                                         ${_('when searching for complete seasons you can choose to have it look for '
                                         'season packs only, or choose to have it build a complete season from just '
                                         'single episodes.')}
@@ -928,9 +925,9 @@
                         ${_('Configure Custom')}<br/>
                         ${_('Newznab Providers')}
                     </h3>
-                    <p>
+                    <small class="form-text text-muted">
                         ${_('Add and setup or remove custom Newznab providers.')}
-                    </p>
+                    </small>
                 </div>
 
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1051,8 +1048,13 @@
         <div id="custom-torrent-providers" class="tab-pane">
             <div class="form-row">
                 <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                    <h3>${_('Configure Custom Torrent Providers')}</h3>
-                    <p>${_('Add and setup or remove custom RSS providers.')}</p>
+                    <h3>
+                        ${_('Configure Custom')}<br/>
+                        ${_('Torrent Providers')}
+                    </h3>
+                    <small class="form-text text-muted">
+                            ${_('Add and setup or remove custom RSS providers.')}
+                    </small>
                 </div>
 
                 <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
