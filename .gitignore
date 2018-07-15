@@ -61,7 +61,8 @@ Thumbs.db
 /.directory
 /.DS_Store
 
-# NodeJS Files       #
+# Build Files       #
 ######################
+/bower_components/
 /node_modules/
 /src/spritesmith-generated/
