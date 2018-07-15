@@ -37,9 +37,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <span class="input-group-text">
-                        <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
-                    </span>
+                    <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
                 </div>
             </div>
             <br/>
@@ -61,14 +59,14 @@
             % if not sickrage.app.config.display_show_specials and season_special:
                 <% lastSeason = seasonResults.pop(-1) %>
             % endif
-                <span class="h2footer pull-right">
+                <span class="h2footer text-right">
                     % if season_special:
                     ${_('Display Specials:')}
                         <a class="inner"
                            href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}</a>
                     % endif
                 </span>
-                <div class="h2footer pull-right">
+                <div class="h2footer text-right">
                     <span>
                         % if (len(seasonResults) > 14):
                             <select id="seasonJump" class="form-control input-sm" title="Jump to Season"
@@ -111,25 +109,25 @@
 
     <div class="row">
         <div class="col">
-            <div class="card font-weight-bold"
+            <div class="card bg-transparent font-weight-bold"
                  style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
                          url(${srWebRoot}${showImage(show.indexerid, 'banner').url});
                          background-size: 100% 100%;">
+                % if show.overview:
+                    <div class="card-header">
+                        <i>${show.overview}</i>
+                    </div>
+                % endif
                 <div class="card-body">
-                    % if show.overview:
-                        <div class="card-header">
-                            <i>${show.overview}</i>
-                        </div>
-                    % endif
-
-                    <div class="card-body">
-                        <table class="pull-left mx">
+                    <div class="card-text">
+                        <table class="float-md-left">
                             <tr>
                                 <td class="showLegend">${_('Rating:')}</td>
                                 <td>
                                     % if show.imdb_info and 'imdbRating' in show.imdb_info:
                                     <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['imdbVotes']) + " Votes" %>
-                                        <span id="imdbstars" class="text-warning fas fa-star" title="${rating_tip}">
+                                        <span id="imdbstars" class="text-warning fas fa-star"
+                                              title="${rating_tip}">
                                             ${show.imdb_info['imdbRating']}
                                         </span>
                                     % endif
@@ -309,88 +307,88 @@
                                 </tr>
                             % endif
                         </table>
-                    </div>
 
-                    <table class="pull-right">
-                        <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
-                        <tr>
-                            <td class="showLegend">${_('Info Language:')}</td>
-                            <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16"
-                                     height="11"
-                                     alt="${show.lang}" title="${show.lang}"
-                                     onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
-                            </td>
-                        </tr>
-                        % if sickrage.app.config.use_subtitles:
+                        <table class="float-md-right">
+                            <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                             <tr>
-                                <td class="showLegend">${_('Subtitles:')}</td>
-                                <td>
-                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
+                                <td class="showLegend">${_('Info Language:')}</td>
+                                <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16"
+                                         height="11"
+                                         alt="${show.lang}" title="${show.lang}"
+                                         onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
                                 </td>
                             </tr>
-                        % endif
-                        <tr>
-                            <td class="showLegend">${_('Subtitles Metadata:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Season Folders:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Paused:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Air-by-Date:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Sports:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Anime:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('DVD Order:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Scene Numbering:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="showLegend">${_('Skip Downloaded:')}</td>
-                            <td>
-                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
-                            </td>
-                        </tr>
-                    </table>
+                            % if sickrage.app.config.use_subtitles:
+                                <tr>
+                                    <td class="showLegend">${_('Subtitles:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
+                                    </td>
+                                </tr>
+                            % endif
+                            <tr>
+                                <td class="showLegend">${_('Subtitles Metadata:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Season Folders:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Paused:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Air-by-Date:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Sports:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Anime:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('DVD Order:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Scene Numbering:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="showLegend">${_('Skip Downloaded:')}</td>
+                                <td>
+                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row mt-1">
-        <div class="col pull-left">
+        <div class="col text-left">
             <div class="input-group">
                 <select id="statusSelect" title="Change selected episode statuses" class="form-control">
                     <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
@@ -404,9 +402,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <span class="input-group-text">
-                        <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
-                    </span>
+                    <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
                 </div>
             </div>
             <input type="hidden" id="showID" value="${show.indexerid}"/>
@@ -525,11 +521,11 @@
                 (epResult["season"]) > 0]}</h3>
                 % if not sickrage.app.config.display_all_seasons:
                     % if curSeason == -1:
-                        <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs pull-right"
+                        <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs text-right"
                                 data-toggle="collapse" data-target="#collapseSeason-${epResult['season']}"
                                 aria-expanded="true">${_('Hide Episodes')}</button>
                     %else:
-                        <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs pull-right"
+                        <button id="showseason-${epResult['season']}" type="button" class="btn btn-xs text-right"
                                 data-toggle="collapse"
                                 data-target="#collapseSeason-${epResult['season']}">${_('Show Episodes')}</button>
                     %endif

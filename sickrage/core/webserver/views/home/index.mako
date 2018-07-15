@@ -194,6 +194,13 @@
                                 data_date = '5000000000.0'
                             elif 'nded' in display_status:
                                 data_date = '5000000100.0'
+
+                        network_class_name = None
+                        if curShow.network:
+                            network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
+                            network_class_name = re.sub(r'\s+', '-', network_class_name)
+                            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                            network_class_name = network_class_name.lower()
                     %>
                         <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
                              data-date="${data_date}" data-network="${curShow.network}"
@@ -250,17 +257,13 @@
                                             % if sickrage.app.config.home_layout != 'simple':
                                                 % if curShow.network:
                                                     <span>
-                                                      <img class="show-network-image"
-                                                           src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                           alt="${curShow.network}"
-                                                           title="${curShow.network}"/>
-                                                  </span>
+                                                        <i class="sickrage-network sickrage-network-${network_class_name}"
+                                                           title="${curShow.network}"></i>
+                                                    </span>
                                                 % else:
                                                     <span>
-                                                      <img class="show-network-image"
-                                                           src="${srWebRoot}/images/network/nonetwork.png"
-                                                           alt="${_('No Network')}"
-                                                           title="${_('No Network')}"/>
+                                                        <i class="sickrage-network sickrage-network-no-network"
+                                                           title="${_('No Network')}"></i>
                                                   </span>
                                                 % endif
                                             % else:
@@ -387,6 +390,13 @@
                                     den = 1
 
                                 progressbar_percent = nom * 100 / den
+
+                                network_class_name = None
+                                if curShow.network:
+                                    network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
+                                    network_class_name = re.sub(r'\s+', '-', network_class_name)
+                                    network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                                    network_class_name = network_class_name.lower()
                             %>
                             <tr>
                                 % if cur_airs_next:
@@ -448,18 +458,12 @@
                                     <td class="align-middle text-center">
                                         % if curShow.network:
                                             <span>
-                                                <img id="network" width="54" height="27"
-                                                     src="${srWebRoot}${showImage(curShow.indexerid, 'network').url}"
-                                                     alt="${curShow.network}"
-                                                     title="${curShow.network}"/>
+                                                <i class="sickrage-network sickrage-network-${network_class_name}" title="${curShow.network}"></i>
                                             </span>
                                             <span class="d-none d-print-inline">${curShow.network}</span>
                                         % else:
                                             <span>
-                                                <img id="network" width="54" height="27"
-                                                     src="${srWebRoot}/images/network/nonetwork.png"
-                                                     alt="${_('No Network')}"
-                                                     title="${_('No Network')}"/>
+                                                <i class="sickrage-network sickrage-network-no-network" title="${_('No Network')}"></i>
                                             </span>
                                             <span class="d-none d-print-inline">No Network</span>
                                         % endif

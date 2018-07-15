@@ -138,6 +138,7 @@ module.exports = {
         makeSprite('network'),
         makeSprite('notifiers'),
         makeSprite('providers'),
-        makeSprite('subtitles')
+        makeSprite('subtitles'),
+        makeSprite('flags')
     ]
 };
