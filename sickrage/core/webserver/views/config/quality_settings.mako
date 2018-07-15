@@ -5,7 +5,8 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#quality-sizes">${_('Quality Sizes')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#quality-sizes">${_('Quality Sizes')}</a>
+    </li>
 </%block>
 
 <%block name="pages">
@@ -14,12 +15,10 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Quality Sizes')}</h3>
-                <p>${_('Use default qualitiy sizes or specify custom ones per quality definition.')}</p>
-                <div>
-                    <p class="note">
-                        ${_('Settings represent maximum size allowed per episode video file.')}
-                    </p>
-                </div>
+                <small class="form-text text-muted">
+                    ${_('Use default qualitiy sizes or specify custom ones per quality definition.')}<br/>
+                    ${_('Settings represent maximum size allowed per episode video file.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 % for qtype, qsize in sickrage.app.config.quality_sizes.items():

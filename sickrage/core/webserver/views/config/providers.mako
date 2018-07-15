@@ -86,7 +86,7 @@
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
-                <div class="list-group w-25" id="provider_order_list">
+                <div class="list-group w-50" id="provider_order_list">
                     % for providerID, providerObj in sickrage.app.search_providers.sort().items():
                         % if (providerObj.type in [NZBProvider.type, NewznabProvider.type] and sickrage.app.config.use_nzbs) or (providerObj.type in [TorrentProvider.type, TorrentRssProvider.type] and sickrage.app.config.use_torrents):
                         <% provider_url = providerObj.urls.get('base_url', '') %>
@@ -96,14 +96,15 @@
                             <div class="${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1"
                                  id="${providerID}">
                                 <div class="align-middle mt-1 ml-2">
-                                    <input type="checkbox" id="enable_${providerID}"
-                                           class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
-                                    <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
-                                       onclick="window.open(this.href, '_blank'); return false;">
-                                        <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
-                                    </a>
-                                    <label class="font-weight-bold"
-                                           for="enable_${providerID}">${providerObj.name}</label>
+                                    <label class="form-check-label" for="enable_${providerID}">
+                                        <input type="checkbox" id="enable_${providerID}"
+                                               class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
+                                        <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;">
+                                            <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
+                                        </a>
+                                        <span class="font-weight-bold">${providerObj.name}</span>
+                                    </label>
                                     <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
                                     ${('<i class="text-warning mt-1 fas fa-chevron-circle-left float-right"></i>', '')[bool(providerObj.supports_backlog)]}
                                     ${('<i class="text-danger mt-1 fas fa-exclamation-circle float-right"></i>', '')[bool(providerObj.isAlive)]}
@@ -560,7 +561,8 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><span class="fas fa-certificate"></span></span>
+                                            <span class="input-group-text"><span
+                                                    class="fas fa-certificate"></span></span>
                                         </div>
                                         <input name="${providerID}_cookies"
                                                id="${providerID}_cookies"
@@ -738,7 +740,8 @@
                                 <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text"><span class="fas fa-sort-by-order"></span></span>
+                                            <span class="input-group-text"><span
+                                                    class="fas fa-sort-by-order"></span></span>
                                         </div>
                                         <select name="${providerID}_sorting" id="${providerID}_sorting"
                                                 title="Sort search results"
@@ -1051,7 +1054,7 @@
                         ${_('Torrent Providers')}
                     </h3>
                     <small class="form-text text-muted">
-                            ${_('Add and setup or remove custom RSS providers.')}
+                        ${_('Add and setup or remove custom RSS providers.')}
                     </small>
                 </div>
 

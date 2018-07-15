@@ -4,18 +4,13 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col mx-auto text-center">
-            <h1 class="title">${title}</h1>
-            <hr class="bg-light"/>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-6 mx-auto">
             <div id="config-components">
                 <form id="configForm" action="${self.formaction()}" method="post">
                     <div class="card bg-dark">
                         <div class="card-header bg-secondary">
-                            <ul class="nav nav-pills card-header-pills" id="config-menus">
+                            <h3 class="float-md-left"><i class="fas fa-wrench"></i> ${title}</h3>
+                            <ul class="nav nav-pills card-header-pills float-md-right" id="config-menus">
                                     <%block name="menus"/>
                             </ul>
                         </div>

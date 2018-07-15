@@ -15,7 +15,7 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>
-                    <img src="${srWebRoot}/images/anidb24.png" alt="AniDB" title="${_('AniDB')}" width="24" height="24"/>
+                    <i class="sickrage-core sickrage-core-anidb" title="${_('AniDB')}"></i>
                     <a href="${anon_url('http://anidb.info')}"
                        onclick="window.open(this.href, '_blank'); return false;">AniDB</a>
                 </h3>

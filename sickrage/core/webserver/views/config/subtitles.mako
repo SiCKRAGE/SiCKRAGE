@@ -24,7 +24,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitles Search')}</h3>
-                <p>${_('Settings that dictate how SickRage handles subtitles search results.')}</p>
+                <small class="form-text text-muted">
+                    <p>${_('Settings that dictate how SickRage handles subtitles search results.')}</p>
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -80,11 +82,13 @@
                             <label class="component-title">${_('Embedded Subtitles')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" name="embedded_subtitles_all"
-                                   id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
-                            <label for="embedded_subtitles_all">
+                            <label class="form-check-label">
+                                <input type="checkbox" name="embedded_subtitles_all"
+                                       id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
                                 ${_('Ignore subtitles embedded inside video file?')}<br/>
-                                <b>${_('Warning:')}</b> ${_('this will ignore <u>all</u> embedded subtitles for every video file!')}
+                                <div class="text-info">
+                                    <b>${_('Warning:')}</b> ${_('this will ignore <u>all</u> embedded subtitles for every video file!')}
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -114,7 +118,7 @@
                                        name="subtitles_dir" class="form-control"
                                        autocapitalize="off"/>
                             </div>
-                            <label for="subtitles_dir">
+                            <label class="text-info" for="subtitles_dir">
                                 ${_('The directory where SickRage should store your')}
                                 <i>${_('Subtitles')}</i> ${_('files.')}<br/>
                                 <b>${_('NOTE:')}</b> ${_('Leave empty if you want store subtitle in episode path.')}
@@ -160,7 +164,7 @@
                                        value="<% '|'.join(sickrage.app.config.subtitles_extra_scripts) %>"
                                        class="form-control" autocapitalize="off"/>
                             </div>
-                            <label for="subtitles_extra_scripts">
+                            <label class="text-info" for="subtitles_extra_scripts">
                                 <b>${_('NOTE:')}</b>
                                 <ul>
                                     <li>
@@ -182,11 +186,11 @@
                                     <ul>
                                         <li>
                                             ${_('For Windows:')}
-                                            <pre>C:\Python27\pythonw.exe C:\Script\test.py</pre>
+                                            <small class="text-muted">C:\Python27\pythonw.exe C:\Script\test.py</small>
                                         </li>
                                         <li>
                                             ${_('For Linux:')}
-                                            <pre>python /Script/test.py</pre>
+                                            <small class="text-muted">python /Script/test.py</small>
                                         </li>
                                     </ul>
                                 </ul>
@@ -209,33 +213,34 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitle Plugins')}</h3>
-                <p>${_('Check off and drag the plugins into the order you want them to be used.')}</p>
-                <p class="note">${_('At least one plugin is required.')}</p>
-                <p class="note"><span style="font-size: 16px;">*</span> ${_('Web-scraping plugin')}</p>
+                <small class="form-text text-muted">
+                    <p>${_('Check off and drag the plugins into the order you want them to be used.')}</p>
+                    ${_('At least one plugin is required.')}<br/>
+                    <span style="font-size: 16px;">*</span> ${_('Web-scraping plugin')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row">
                     <div class="col-md-12">
-                        <ul id="service_order_list">
+                        <div class="list-group w-50" id="service_order_list">
                             % for curService in sickrage.subtitles.sortedServiceList():
-                                <li class="ui-state-default" id="${curService['name']}">
-                                    <label class="form-check-label">
-                                        <input type="checkbox" id="enable_${curService['name']}"
-                                               class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
-                                        <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
-                                            <i class="sickrage-subtitles sickrage-subtitles-${curService['name']}"
-                                               title="${curService['url']}" style="vertical-align:middle;"></i>
-                                        </a>
-                                        <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
-                                        <i class="fas fa-arrows-v blue-text pull-right"
-                                           style="vertical-align:middle;"></i>
-                                        <i class="fa ${('fa-unlock text-success','fa-lock text-danger')[curService['name'] in providerLoginDict]} pull-right"
-                                           style="vertical-align:middle;"></i>
-                                    </label>
-                                </li>
+                                <div class="list-group-item-dark rounded mb-1" id="${curService['name']}">
+                                    <div class="align-middle mt-1 ml-2">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" id="enable_${curService['name']}"
+                                                   class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
+                                            <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
+                                                <i class="sickrage-subtitles sickrage-subtitles-${curService['name']}"
+                                                   title="${curService['url']}"></i>
+                                            </a>
+                                            <span class="font-weight-bold">${curService['name'].capitalize()}</span>
+                                        </label>
+                                        <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[curService['name'] in providerLoginDict]}"></i>
+                                    </div>
+                                </div>
                             % endfor
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -255,7 +260,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Subtitle Settings')}</h3>
-                <p>${_('Set user and password for each provider')}</p>
+                <small class="form-text text-muted">
+                    <p>${_('Set user and password for each provider')}</p>
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">

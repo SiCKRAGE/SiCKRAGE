@@ -12,18 +12,20 @@
 %>
 
 <%block name="menus">
-    <ul class="nav nav-tabs">
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#post-processing">${_('Post-Processing')}</a></li>
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#episode-naming">${_('Episode Naming')}</a></li>
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#metadata">${_('Metadata')}</a></li>
-    </ul>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#post-processing">${_('Post-Processing')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#episode-naming">${_('Episode Naming')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#metadata">${_('Metadata')}</a></li>
 </%block>
 <%block name="pages">
     <div id="post-processing" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Post-Processing')}</h3>
-                <p>${_('Settings that dictate how SickRage should process completed downloads.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Settings that dictate how SickRage should process completed downloads.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -31,12 +33,14 @@
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="process_automatically"
-                               id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
-                        <label for="process_automatically">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="process_automatically"
+                                   id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
                             ${_('Enable the automatic post processor to scan and process any files in your')}
                             <i>${_('Post Processing Dir')}</i>?<br>
-                            <b>${_('NOTE:')}</b> ${_('Do not use if you use an external PostProcessing script')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('Do not use if you use an external PostProcessing script')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -60,7 +64,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="tv_download_dir">
+                                <label class="text-info" for="tv_download_dir">
                                     ${_('The folder where your download client puts the completed TV downloads.')}<br/>
                                     <b>${_('NOTE')}
                                         :</b> ${_('Please use seperate downloading and completed folders in your download client if possible.')}
@@ -92,7 +96,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="process_method">
+                                <label class="text-info" for="process_method">
                                     ${_('What method should be used to put files into the library?')}<br/>
                                     <b>${_('NOTE:')}</b> ${_('If you keep seeding torrents after they finish, please avoid the \'move\' processing method to prevent errors.')}
                                 </label>
@@ -159,11 +163,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename Episodes')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename episode using the Episode')}
-                        <input type="checkbox" name="rename_episodes"
-                               id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
-                        <label for="rename_episodes">
-                            ${_('Naming settings?')}
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <label>
+                            <input type="checkbox" name="rename_episodes"
+                                   id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
+                            ${_('Rename episode using the Episode Naming settings?')}
                         </label>
                     </div>
                 </div>
@@ -171,11 +175,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Create missing show directories')}
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="create_missing_show_dirs"
                                id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                         <label for="create_missing_show_dirs">
-                            ${_('when they get deleted')}
+                            ${_('Create missing show directories when they get deleted')}
                         </label>
                     </div>
                 </div>
@@ -183,11 +187,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Add shows without creating a')}
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="add_shows_wo_dir"
                                id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                         <label for="add_shows_wo_dir">
-                            ${_('directory (not recommended)')}
+                            ${_('Add shows without creating a directory (not recommended)')}
                         </label>
                     </div>
                 </div>
@@ -195,11 +199,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Move srr/srt/sfv/etc files with the')}
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="move_associated_files"
                                id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                         <label for="move_associated_files">
-                            ${_('episode when processed?')}
+                            ${_('Move srr/srt/sfv/etc files with the episode when processed?')}
                         </label>
                     </div>
                 </div>
@@ -207,11 +211,11 @@
                     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                         <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">${_('Rename the original .nfo file to')}
+                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         <input type="checkbox" name="nfo_rename"
                                id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                         <label for="nfo_rename">
-                            ${_('.nfo-orig to avoid conflicts?')}
+                            ${_('Rename the original .nfo file to .nfo-orig to avoid conflicts?')}
                         </label>
                     </div>
                 </div>
@@ -232,14 +236,9 @@
                                            value="${sickrage.app.config.allowed_extensions}"
                                            class="form-control" autocapitalize="off"/>
                                 </div>
-                                <label for="allowed_extensions">
-                                    ${_('comma separated list of associated file extensions SickRage should keep while post processing.')}
+                                <label class="text-info" for="allowed_extensions">
+                                    ${_('comma separated list of associated file extensions SickRage should keep while post processing. Leaving it empty means no associated files will be post processed')}
                                 </label>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <label for="allowed_extensions">${_('leaving it empty means no associated files will be post processed')}</label>
                             </div>
                         </div>
                     </div>
@@ -261,11 +260,12 @@
                         <label class="component-title">${_('Change File Date')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="airdate_episodes"
-                               id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
                         <label for="airdate_episodes">
+                            <input type="checkbox" name="airdate_episodes"
+                                   id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
                             ${_('Set last modified filedate to the date that the episode aired?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
+                            <div class="text-info"><b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -295,11 +295,11 @@
                         <label class="component-title">${_('Unpack')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input id="unpack" class="enabler" type="checkbox"
-                               name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                         <label for="unpack">
+                            <input id="unpack" class="enabler" type="checkbox"
+                                   name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                             ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
-                            <b>${_('NOTE:')}</b> ${_('Only works with RAR archives')}
+                            <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only works with RAR archives')}</div>
                         </label>
                     </div>
                 </div>
@@ -317,7 +317,7 @@
                                        value="${'|'.join(sickrage.app.config.unpack_dir)}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
-                            <label for="unpack_dir">
+                            <label class="text-info" for="unpack_dir">
                                 ${_('Choose a path to unpack files, leave blank to unpack in download dir')}
                             </label>
                         </div>
@@ -340,11 +340,13 @@
                         <label class="component-title">${_('Don\'t delete empty folders')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="no_delete"
-                               id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
                         <label for="no_delete">
+                            <input type="checkbox" name="no_delete"
+                                   id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
                             ${_('Leave empty folders when Post Processing?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('Can be overridden using manual Post Processing')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('Can be overridden using manual Post Processing')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -353,10 +355,9 @@
                         <label class="component-title">${_('Follow symbolic-links')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="processor_follow_symlinks"
-                               id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
                         <label for="processor_follow_symlinks">
-                            <b>${_('warning')}:</b>&nbsp;<b>${_('EXPERTS ONLY.')}</b><br/>
+                            <input type="checkbox" name="processor_follow_symlinks"
+                                   id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
                             ${_('Enable only if you know what <b>circular symbolic links</b> are,<br/>'
                             'and can <b>verify that you have none</b>.')}
                         </label>
@@ -389,9 +390,9 @@
                                    value="${'|'.join(sickrage.app.config.extra_scripts)}"
                                    class="form-control" autocapitalize="off"/>
                         </div>
-                        <label for="extra_scripts">${_('See')} <a
+                        <label class="text-info" for="extra_scripts">${_('See')} <a
                                 href="https://git.sickrage.ca/SiCKRAGE/sickrage/wikis/Post-Processing#extra-scripts">
-                            <span style="color: red; "><b>${_('Wiki')}</b></span></a> ${_('for script arguments description and usage.')}
+                            <span class="text-danger"><b>${_('Wiki')}</b></span></a> ${_('for script arguments description and usage.')}
                         </label>
                     </div>
                 </div>
@@ -403,11 +404,14 @@
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
+
     <div id="episode-naming" class="tab-pane">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Episode Naming')}</h3>
-                <p>${_('How SickRage will name and sort your episodes.')}</p>
+                <small class="form-text text-muted">
+                    ${_('How SickRage will name and sort your episodes.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -443,9 +447,9 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
-                                    <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                         alt="[Toggle Key]" id="show_naming_key" title="Toggle Naming Legend"
-                                         class="legend" class="legend"/>
+                                    <span class="input-group-text">
+                                        <i class="fas fa-eye" id="show_naming_key" title="Toggle Naming Legend"></i>
+                                    </span>
                                 </div>
                                 <input name="naming_pattern" id="naming_pattern"
                                        value="${sickrage.app.config.naming_pattern}"
@@ -458,15 +462,15 @@
                     </div>
 
                     <div id="naming_key" class="nocheck" style="display: none;">
-                        <table class="Key">
-                            <thead>
+                        <table class="table table-bordered table-dark Key">
+                            <thead class="table-secondary text-black-50">
                             <tr>
                                 <th class="align-right">${_('Meaning')}</th>
                                 <th>${_('Pattern')}</th>
                                 <th width="60%">${_('Result')}</th>
                             </tr>
                             </thead>
-                            <tfoot>
+                            <tfoot class="table-secondary text-black-50">
                             <tr>
                                 <th colspan="3">
                                     ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
@@ -625,23 +629,31 @@
                     </div>
                 </div>
 
-                <div id="naming_example_div">
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <h3>${_('Single-EP Sample:')}</h3>
-                            <div class="example">
-                                <span class="jumbo" id="naming_example">&nbsp;</span>
+                <div class="card bg-secondary mb-3">
+                    <div class="card-header">
+                        <h3>${_('Single-EP Sample:')}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <div id="naming_example_div">
+                                <div class="example">
+                                    <span class="jumbo" id="naming_example">&nbsp;</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="naming_example_multi_div">
-                    <div class="form-row">
-                        <div class="col-md-12">
-                            <h3>${_('Multi-EP sample:')}</h3>
-                            <div class="example">
-                                <span class="jumbo" id="naming_example_multi">&nbsp;</span>
+                <div class="card bg-secondary mb-3">
+                    <div class="card-header">
+                        <h3>${_('Multi-EP sample:')}</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <div id="naming_example_multi_div">
+                                <div class="example">
+                                    <span class="jumbo" id="naming_example_multi">&nbsp;</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -652,11 +664,11 @@
                         <label class="component-title">${_('Strip Show Year')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" id="naming_strip_year"
-                               name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
-                        <label for="naming_strip_year">
+                        <label>
+                            <input type="checkbox" id="naming_strip_year"
+                                   name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
                             ${_('Remove the TV show\'s year when renaming the file?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}
+                            <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}</div>
                         </label>
                     </div>
                 </div>
@@ -707,9 +719,10 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                             alt="[Toggle Key]" id="show_naming_abd_key"
-                                             title="Toggle ABD Naming Legend" class="legend"/>
+                                        <span class="input-group-text">
+                                            <i class="fas fa-eye" id="show_naming_abd_key"
+                                               title="Toggle ABD Naming Legend"></i>
+                                        </span>
                                     </div>
                                     <input name="naming_abd_pattern" id="naming_abd_pattern"
                                            value="${sickrage.app.config.naming_abd_pattern}"
@@ -720,15 +733,15 @@
                         </div>
 
                         <div id="naming_abd_key" class="nocheck" style="display: none;">
-                            <table class="Key">
-                                <thead>
+                            <table class="table table-bordered table-dark Key">
+                                <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>
                                     <th>${_('Pattern')}</th>
                                     <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
+                                <tfoot class="table-secondary text-black-50">
                                 <tr>
                                     <th colspan="3">
                                         ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
@@ -859,12 +872,16 @@
                         </div>
                     </div><!-- /naming_abd_custom -->
 
-                    <div id="naming_abd_example_div">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <h3>${_('Air-by-date Sample:')}</h3>
-                                <div class="example">
-                                    <span class="jumbo" id="naming_abd_example">&nbsp;</span>
+                    <div class="card bg-secondary mb-3">
+                        <div class="card-header">
+                            <h3>${_('Air-by-date Sample:')}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div id="naming_example_abd_div">
+                                    <div class="example">
+                                        <span class="jumbo" id="naming_abd_example">&nbsp;</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -930,15 +947,15 @@
                         </div>
 
                         <div id="naming_sports_key" class="nocheck" style="display: none;">
-                            <table class="Key">
-                                <thead>
+                            <table class="table table-bordered table-dark Key">
+                                <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>
                                     <th>${_('Pattern')}</th>
                                     <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
+                                <tfoot class="table-secondary text-black-50">
                                 <tr>
                                     <th colspan="3">
                                         ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
@@ -1069,12 +1086,16 @@
                         </div>
                     </div><!-- /naming_sports_custom -->
 
-                    <div id="naming_sports_example_div">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <h3>${_('Sports Sample:')}</h3>
-                                <div class="example">
-                                    <span class="jumbo" id="naming_sports_example">&nbsp;</span>
+                    <div class="card bg-secondary mb-3">
+                        <div class="card-header">
+                            <h3>${_('Sports Sample:')}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div id="naming_sports_example_div">
+                                    <div class="example">
+                                        <span class="jumbo" id="naming_sports_example">&nbsp;</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1132,9 +1153,10 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                             alt="[Toggle Key]" id="show_naming_anime_key"
-                                             title="Toggle Anime Naming Legend" class="legend"/>
+                                        <span class="input-group-text">
+                                            <i class="fas fa-eye" id="show_naming_anime_key"
+                                               title="Toggle Anime Naming Legend"></i>
+                                        </span>
                                     </div>
                                     <input name="naming_anime_pattern" id="naming_anime_pattern"
                                            value="${sickrage.app.config.naming_anime_pattern}"
@@ -1145,15 +1167,15 @@
                         </div>
 
                         <div id="naming_anime_key" class="nocheck" style="display: none;">
-                            <table class="Key">
-                                <thead>
+                            <table class="table table-bordered table-dark Key">
+                                <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>
                                     <th>${_('Pattern')}</th>
                                     <th width="60%">${_('Result')}</th>
                                 </tr>
                                 </thead>
-                                <tfoot>
+                                <tfoot class="table-secondary text-black-50">
                                 <tr>
                                     <th colspan="3">
                                         ${_('Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)')}
@@ -1299,23 +1321,31 @@
                         </div>
                     </div>
 
-                    <div id="naming_example_anime_div">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <h3>${_('Single-EP Anime Sample:')}</h3>
-                                <div class="example">
-                                    <span class="jumbo" id="naming_example_anime">&nbsp;</span>
+                    <div class="card bg-secondary mb-3">
+                        <div class="card-header">
+                            <h3>${_('Single-EP Anime Sample:')}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div id="naming_example_anime_div">
+                                    <div class="example">
+                                        <span class="jumbo" id="naming_example_anime">&nbsp;</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="naming_example_multi_anime_div">
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <h3>${_('Multi-EP Anime sample:')}</h3>
-                                <div class="example">
-                                    <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
+                    <div class="card bg-secondary mb-3">
+                        <div class="card-header">
+                            <h3>${_('Multi-EP Anime sample:')}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-text">
+                                <div id="naming_example_multi_anime_div">
+                                    <div class="example">
+                                        <span class="jumbo" id="naming_example_multi_anime">&nbsp;</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1378,7 +1408,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Metadata')}</h3>
-                <p>${_('The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.')}</p>
+                <small class="form-text text-muted">
+                    ${_('The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">

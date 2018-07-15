@@ -4,17 +4,21 @@
     import sickrage
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#search-setttings">${_('Search Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#search-setttings">${_('Search Settings')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#nzb-clients">${_('NZB Clients')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#torrent-clients">${_('Torrent Clients')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#torrent-clients">${_('Torrent Clients')}</a>
+    </li>
 </%block>
 <%block name="pages">
     <div id="search-setttings" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Search Settings')}</h3>
-                <p>${_('How to manage searching with')} <a href="${srWebRoot}/config/providers">${_('providers')}</a>.
-                </p>
+                <small class="form-text text-muted">
+                    <p>${_('How to manage searching with')} <a
+                            href="${srWebRoot}/config/providers">${_('providers')}</a>.</p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -71,7 +75,8 @@
                         <label class="component-title">${_('Download UNVERIFIED torrent magnet links')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" name="download_unverified_magnet_link" id="download_unverified_magnet_link"
+                        <input type="checkbox" name="download_unverified_magnet_link"
+                               id="download_unverified_magnet_link"
                                class="enabler" ${('', 'checked')[bool(sickrage.app.config.download_unverified_magnet_link)]}/>
                         <label for="download_unverified_magnet_link">
                             <p>${_('enables/disables downloading of unverified torrent magnet links via clients')}</p>
@@ -310,7 +315,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('NZB Clients')}</h3>
-                <p>${_('How to handle NZB search results for clients.')}</p>
+                <small class="form-text text-muted">
+                    <p>${_('How to handle NZB search results for clients.')}</p>
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -677,7 +684,9 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-exclamation-sign"></span></span>
+                                        <span class="input-group-text">
+                                            <span class="fas fa-exclamation-triangle"></span>
+                                        </span>
                                     </div>
                                     <select name="nzbget_priority" id="nzbget_priority"
                                             title="priority for daily snatches (no backlog)"
@@ -714,8 +723,10 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary test-button" type="button" value="${_('Test SABnzbd')}" id="testSABnzbd"/>
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
+                            <input class="btn btn-secondary test-button" type="button" value="${_('Test SABnzbd')}"
+                                   id="testSABnzbd"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/><br>
                         </div>
                     </div>
 
@@ -729,7 +740,9 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <h3>${_('Torrent Clients')}</h3>
-                <p>${_('How to handle Torrent search results for clients.')}</p>
+                <small class="form-text text-muted">
+                    <p>${_('How to handle Torrent search results for clients.')}</p>
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -787,7 +800,8 @@
                         </div>
 
                         <div></div>
-                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
+                        <input type="submit" class="btn btn-secondary config_submitter"
+                               value="${_('Save Changes')}"/><br>
                     </div>
 
                     <div id="options_torrent_clients">
@@ -1013,9 +1027,11 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input class="btn btn-secondary test-button" type="button" value="${_('Test Connection')}"
+                                <input class="btn btn-secondary test-button" type="button"
+                                       value="${_('Test Connection')}"
                                        id="test_torrent"/>
-                                <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
+                                <input type="submit" class="btn btn-secondary config_submitter"
+                                       value="${_('Save Changes')}"/><br>
                             </div>
                         </div>
 
