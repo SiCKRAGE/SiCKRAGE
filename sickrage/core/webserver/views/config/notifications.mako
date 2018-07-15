@@ -19,11 +19,12 @@
     <div id="home-theater-nas" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/kodi.png" alt=""
-                     title="KODI"/>
                 <h3><a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">KODI</a></h3>
-                <p>${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}</p>
+                       onclick="window.open(this.href, '_blank'); return false;">
+                    <i class="text-right sickrage-notifiers sickrage-notifiers-kodi" title="KODI"></i>KODI</a></h3>
+                <small class="text-muted">
+                    <p>${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}</p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -196,13 +197,12 @@
             </fieldset>
         </div><!-- /kodi tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
-                     title="Plex Media Server"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Plex Media Server</a></h3>
+                       onclick="window.open(this.href, '_blank'); return false;"><i class="sickrage-notifiers sickrage-notifiers-plex" title="Plex Media Server"></i>Plex Media Server</a></h3>
                 <p>${_('Experience your media on a visually stunning, easy to use interface on your Mac connected to your TV. Your media library has never looked this good!')}</p>
                 <p class="plexinfo hide">${_('For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port')}
                     <b>3005</b>.</p>
@@ -343,12 +343,13 @@
             </fieldset>
         </div><!-- /plex media server tab-pane -->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/plex.png" alt=""
-                     title="Plex Media Client"/>
                 <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">${_('Plex Media Client')}</a></h3>
+                       onclick="window.open(this.href, '_blank'); return false;">
+                    <i class="text-right sickrage-notifiers sickrage-notifiers-plex" title="Plex Media Client"></i>${_('Plex Media Client')}</a></h3>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -470,13 +471,13 @@
             </fieldset>
         </div><!-- /plex client tab-pane -->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/emby.png" alt=""
-                     title="Emby"/>
                 <h3><a href="${anon_url('http://emby.media/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Emby</a></h3>
+                       onclick="window.open(this.href, '_blank'); return false;">
+                    <i class="text-right sickrage-notifiers sickrage-notifiers-emby" title="Emby"></i>Emby</a></h3>
                 <p>${_('A home media server built using other popular open source technologies.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -525,7 +526,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on snatch')}</label>
@@ -564,7 +565,7 @@
                             </label>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="col-md-12">
                             <div class="testNotification" id="testEMBY-result">${_('Click below to test.')}</div>
@@ -582,6 +583,7 @@
             </fieldset>
         </div><!-- /emby tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
@@ -687,6 +689,8 @@
                 </div><!-- /content_use_nmj //-->
             </fieldset>
         </div><!-- /nmj tab-pane //-->
+
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
