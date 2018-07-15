@@ -98,20 +98,16 @@
                                                 % if curStatus in [SNATCHED, FAILED]:
                                                     % if hItem["provider"].lower() in sickrage.app.search_providers.all():
                                                     <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
-                                                        <img src="${srWebRoot}/images/providers/${provider.imageName}"
-                                                             width="16"
-                                                             height="16"
-                                                             style="vertical-align:middle;"/> <span
+                                                        <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                           style="vertical-align:middle;"></i><span
                                                             style="vertical-align:middle;">${provider.name}</span>
                                                     % else:
                                                         <span style="vertical-align:middle;">${hItem["provider"]}</span>
                                                     % endif
                                                 % else:
-                                                    <img src="${srWebRoot}/images/subtitles/${hItem['provider']}.png"
-                                                         width="16"
-                                                         height="16"
-                                                         style="vertical-align:middle;"/> <span
-                                                        style="vertical-align:middle;">${hItem["provider"].capitalize()}</span>
+                                                    <i class="sickrage-subtitles sickrage-subtitles-${hItem['provider']}"
+                                                       style="vertical-align:middle;"></i>
+                                                    <span style="vertical-align:middle;">${hItem["provider"].capitalize()}</span>
                                                 % endif
                                             % endif
                                         % endif
@@ -166,17 +162,13 @@
                                             % if curStatus in [SNATCHED, FAILED]:
                                                 % if action["provider"].lower() in sickrage.app.search_providers.all():
                                                 <% provider = sickrage.app.search_providers.all()[action["provider"].lower()] %>
-                                                    <img src="${srWebRoot}/images/providers/${provider.imageName}"
-                                                         width="16"
-                                                         height="16"
-                                                         style="vertical-align:middle;cursor: help;"
-                                                         alt="${provider.name}"
-                                                         title="${provider.name}: ${os.path.basename(action["resource"])}"/>
+                                                    <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                       title="${provider.name}: ${os.path.basename(action["resource"])}"
+                                                       style="vertical-align:middle;cursor: help;"></i>
                                                 % else:
-                                                    <img src="${srWebRoot}/images/providers/missing.png" width="16"
-                                                         height="16"
-                                                         style="vertical-align:middle;" alt="missing provider"
-                                                         title="${_('missing provider')}"/>
+                                                    <i class="sickrage-providers sickrage-providers-missing"
+                                                       style="vertical-align:middle;"
+                                                       title="${_('missing provider')}"></i>
                                                 % endif
                                             % endif
                                         % endfor
@@ -200,11 +192,9 @@
                                             % for action in sorted(hItem["actions"]):
                                                 <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
                                                 % if curStatus == SUBTITLED:
-                                                    <img src="${srWebRoot}/images/subtitles/${action['provider']}.png"
-                                                         width="16"
-                                                         height="16"
-                                                         style="vertical-align:middle;" alt="${action["provider"]}"
-                                                         title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"/>
+                                                    <i class="sickrage-subtitles sickrage-subtitles-${action['provider']}"
+                                                       style="vertical-align:middle;"
+                                                       title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"></i>
                                                     <span style="vertical-align:middle;"> / </span>
                                                     <img width="16" height="11"
                                                          style="vertical-align:middle;!important;"

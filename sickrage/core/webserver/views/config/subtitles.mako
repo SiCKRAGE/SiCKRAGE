@@ -6,9 +6,12 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-search">${_('Subtitles Search')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#plugin-settings">${_('Plugin Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#subtitles-search">${_('Subtitles Search')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+                                 href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#plugin-settings">${_('Plugin Settings')}</a>
+    </li>
 </%block>
 <%block name="pages">
     <%
@@ -193,7 +196,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div>
@@ -216,18 +220,17 @@
                         <ul id="service_order_list">
                             % for curService in sickrage.subtitles.sortedServiceList():
                                 <li class="ui-state-default" id="${curService['name']}">
-                                    <input type="checkbox" id="enable_${curService['name']}"
-                                           class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
-                                    <label for="enable_${curService['name']}">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" id="enable_${curService['name']}"
+                                               class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
                                         <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
-                                            <img src="${srWebRoot}/images/subtitles/${curService['image']}"
-                                                 alt="${curService['url']}" title="${curService['url']}" width="16"
-                                                 height="16" style="vertical-align:middle;"/>
+                                            <i class="sickrage-subtitles sickrage-subtitles-${curService['name']}"
+                                               title="${curService['url']}" style="vertical-align:middle;"></i>
                                         </a>
                                         <span style="vertical-align:middle;">${curService['name'].capitalize()}</span>
                                         <i class="fas fa-arrows-v blue-text pull-right"
                                            style="vertical-align:middle;"></i>
-                                        <i class="fa ${('fa-unlock green-text','fa-lock red-text')[curService['name'] in providerLoginDict]} pull-right"
+                                        <i class="fa ${('fa-unlock text-success','fa-lock text-danger')[curService['name'] in providerLoginDict]} pull-right"
                                            style="vertical-align:middle;"></i>
                                     </label>
                                 </li>

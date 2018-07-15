@@ -2,93 +2,11 @@ module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-        'string-replace': {
-            inline: {
-                files: {
-                    './': 'sickrage/locale/**/LC_MESSAGES/*.po'
-                },
-                options: {
-                    replacements: [
-                        {
-                            pattern: /("PO-Revision-Date.*")/ig,
-                            replacement: ''
-                        }
-                    ]
-                }
-            }
-        },
         clean: {
             options: {
                 force: true
             },
             node_modules: 'node_modules'
-        },
-        bower_concat: {
-            all: {
-                dest: {
-                    js: 'dist/js/bower.js',
-                    css: 'dist/css/bower.css'
-                },
-                callback: function (mainFiles) {
-                    return mainFiles.map(function (filepath) {
-                        var min = filepath.replace(/\.js$/, '.min.js');
-                        return grunt.file.exists(min) ? min : filepath;
-                    });
-                },
-                mainFiles: {
-                    'bootstrap': [
-                        //'dist/css/bootstrap.css',
-                        'dist/js/bootstrap.bundle.js'
-                    ],
-                    'bootstrap-formhelpers': [
-                        'dist/js/bootstrap-formhelpers.min.js',
-                        'dist/css/bootstrap-formhelpers.min.css'
-                    ],
-                    'jquery-ui': [
-                        'jquery-ui.min.js',
-                        'themes/base/jquery-ui.min.css'
-                    ],
-                    'jquery.tablesorter': [
-                        'dist/js/jquery.tablesorter.js',
-                        'dist/js/widgets/widget-columnSelector.min.js',
-                        'dist/js/widgets/widget-stickyHeaders.min.js',
-                        'dist/js/widgets/widget-reflow.min.js',
-                        'dist/js/widgets/widget-filter.min.js',
-                        'dist/js/widgets/widget-saveSort.min.js',
-                        'dist/js/widgets/widget-storage.min.js',
-                        'dist/css/theme.bootstrap_4.min.css',
-                        'dist/css/theme.dark.min.css'
-                    ],
-                    'isotope': [
-                        "dist/isotope.pkgd.min.js"
-                    ],
-                    'jquery-json': [
-                        'dist/jquery.json.min.js'
-                    ],
-                    'pnotify': [
-                        'dist/pnotify.js',
-                        'dist/pnotify.desktop.js',
-                        'dist/pnotify.nonblock.js',
-                        'dist/pnotify.css'
-                    ],
-                    "outlayer": [
-                        "item.js",
-                        "outlayer.js"
-                    ],
-                    "bootstrap-tokenfield": [
-                        "dist/bootstrap-tokenfield.js",
-                        "dist/css/tokenfield-typeahead.css",
-                        "dist/css/bootstrap-tokenfield.css"
-                    ]
-                },
-                bowerOptions: {
-                    relative: false
-                },
-                dependencies: {
-                    'selectboxes': 'jquery',
-                    'bookmarkscroll': 'jquery'
-                }
-            }
         },
         googlefonts: {
             build: {
@@ -129,113 +47,6 @@ module.exports = function (grunt) {
                     ]
                 }
             }
-        },
-        copy: {
-            glyphicon: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/bootstrap/fonts/',
-                    src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/static/fonts/'
-                }]
-            },
-            fontawesome: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/components-font-awesome/fonts/',
-                    src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/static/fonts/'
-                }]
-            }
-        },
-        imagemin: {
-            jquery_ui: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/jquery-ui/themes/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/'
-                }]
-            },
-            tablesorter: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/jquery.tablesorter/dist/css/images/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/tablesorter/'
-                }]
-            },
-            boostrap_formhelpers: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/bootstrap-formhelpers/img/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/bootstrap-formhelpers/'
-                }]
-            }
-        },
-        sprite: {
-            icons_sickrage: {
-                src: 'dist/images/icons/sickrage/*.png',
-                dest: 'sickrage/core/webserver/static/images/icons-sickrage.png',
-                destCss: 'dist/css/icons-sickrage.css',
-                imgPath: '../images/icons-sickrage.png',
-                cssTemplate: 'dist/css/icons-sickrage.css.handlebars',
-                padding: 2
-            }
-        },
-        uglify: {
-            bower: {
-                files: {
-                    'sickrage/core/webserver/static/js/bower.min.js': ['dist/js/bower.js']
-                }
-            },
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/js/core.min.js': ['dist/js/core.js']
-                }
-            }
-        },
-        cssmin: {
-            options: {
-                shorthandCompacting: false,
-                roundingPrecision: -1
-            },
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/css/core.min.css': 'dist/css/core.css'
-                }
-            }
-        },
-        compass: {
-            dist: {
-                options: {
-                    sassDir: 'dist/scss',
-                    cssDir: 'dist/css',
-                    environment: 'production'
-                }
-            }
-        },
-        sass: {
-            core: {
-                options: {
-                    //compass: true
-                },
-                files: {
-                    'dist/css/core.css': 'dist/scss/core.scss'
-                }
-            }
-        },
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc'
-            },
-            all: ['dist/js/core.js']
         },
         po2json: {
             messages: {
@@ -389,12 +200,7 @@ module.exports = function (grunt) {
     grunt.registerTask(
         'default', [
             'clean',
-            'npm-install',
-            'googlefonts',
-            'copy',
-            'imagemin',
-            'uglify',
-            'sprite'
+            'npm-install'
         ]
     );
 
@@ -418,7 +224,6 @@ module.exports = function (grunt) {
 
         var tasks = [
             'exec:crowdin_download_translations',
-            //'string-replace',
             'exec:babel_compile',
             'po2json'
         ];

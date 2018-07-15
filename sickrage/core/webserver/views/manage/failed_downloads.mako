@@ -34,7 +34,8 @@
                         <th width="10%">${_('Size')}</th>
                         <th width="14%">${_('Provider')}</th>
                         <th width="1%">${_('Remove')}<br>
-                            <input type="checkbox" class="bulkCheck" id="removeCheck" title="${_('Remove failed release')}"/>
+                            <input type="checkbox" class="bulkCheck" id="removeCheck"
+                                   title="${_('Remove failed release')}"/>
                         </th>
                     </tr>
                     </thead>
@@ -60,14 +61,11 @@
                                 <td align="center">
                                     <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
                                     % if provider is not None:
-                                        <img src="${srWebRoot}/images/providers/${provider.imageName}" width="16"
-                                             height="16"
-                                             alt="${provider.name}"
-                                             title="${provider.name}"/>
+                                        <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                           title="${provider.name}"></i>
                                     % else:
-                                        <img src="${srWebRoot}/images/providers/missing.png" width="16" height="16"
-                                             alt="${_('missing provider')}"
-                                             title="${_('missing provider')}"/>
+                                        <i class="sickrage-providers sickrage-providers-missing"
+                                           title="${_('missing provider')}"></i>
                                     % endif
                                 </td>
                                 <td align="center">${curRemove}</td>

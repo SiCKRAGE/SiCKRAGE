@@ -616,10 +616,7 @@ class TorrentProvider(GenericProvider):
 
     @property
     def imageName(self):
-        if os.path.isfile(
-                os.path.join(sickrage.app.config.gui_static_dir, 'images', 'providers', self.id + '.png')):
-            return self.id + '.png'
-        return self.type + '.png'
+        return self.id
 
     @property
     def seed_ratio(self):
@@ -769,10 +766,7 @@ class NZBProvider(GenericProvider):
 
     @property
     def imageName(self):
-        if os.path.isfile(
-                os.path.join(sickrage.app.config.gui_static_dir, 'images', 'providers', self.id + '.png')):
-            return self.id + '.png'
-        return self.type + '.png'
+        return self.id
 
     def getResult(self, episodes=None):
         """

@@ -98,12 +98,10 @@
                                 <div class="align-middle mt-1 ml-2">
                                     <input type="checkbox" id="enable_${providerID}"
                                            class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
-                                    <a href="${anon_url(provider_url)}" class="text-right imgLink"
-                                       rel="noreferrer"
-                                       onclick="window.open(this.href, '_blank'); return false;"><img
-                                            src="${srWebRoot}/images/providers/${providerObj.imageName}"
-                                            alt="${providerObj.name}" title="${providerObj.name}" width="16"
-                                            height="16"/></a>
+                                    <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
+                                       onclick="window.open(this.href, '_blank'); return false;">
+                                        <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
+                                    </a>
                                     <label class="font-weight-bold"
                                            for="enable_${providerID}">${providerObj.name}</label>
                                     <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
