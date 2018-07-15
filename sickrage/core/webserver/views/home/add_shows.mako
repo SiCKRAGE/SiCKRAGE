@@ -16,7 +16,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/newShow/">
                     <div class="card card-block text-white bg-dark mb-3">
-                        <div class="card-header"><i class="icons-sickrage icons-sickrage-add-new"></i></div>
+                        <div class="card-header"><i class="sickrage-core sickrage-core-addnew"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add New Show')}</h4>
                             <p class="card-text">${_('For shows that you haven\'t downloaded yet, this option finds a '
@@ -31,7 +31,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/traktShows">
                     <div class="card card-block text-white bg-dark mb-3">
-                        <div class="card-header"><i class="icons-sickrage icons-sickrage-add-trakt"></i></div>
+                        <div class="card-header"><i class="sickrage-core sickrage-core-addtrakt"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add from Trakt')}</h4>
                             <p class="card-text">${_('For shows that you haven\'t downloaded yet, this option lets you '
@@ -46,7 +46,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/popularShows">
                     <div class="card card-block text-white bg-dark mb-3">
-                        <div class="card-header"><i class="icons-sickrage icons-sickrage-add-imdb"></i></div>
+                        <div class="card-header"><i class="sickrage-core sickrage-core-addimdb"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add from IMDB')}</h4>
                             <p class="card-text">${_('View IMDB\'s list of the most popular shows. This feature uses '
@@ -61,7 +61,7 @@
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/existingShows">
                     <div class="card card-block text-white bg-dark mb-3">
-                        <div class="card-header"><i class="icons-sickrage icons-sickrage-add-existing"></i></div>
+                        <div class="card-header"><i class="sickrage-core sickrage-core-addexisting"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add Existing Shows')}</h4>
                             <p class="card-text">${_('Use this option to add shows that already have a folder created '
