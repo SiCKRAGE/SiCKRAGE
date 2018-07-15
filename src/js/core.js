@@ -146,8 +146,7 @@ $(document).ready(function ($) {
                 SICKRAGE.srPID = SICKRAGE.getMeta('srPID');
                 SICKRAGE.srWebRoot = SICKRAGE.getMeta('srWebRoot');
                 SICKRAGE.srDefaultPage = SICKRAGE.getMeta('srDefaultPage');
-                SICKRAGE.themeSpinner = SICKRAGE.getMeta('themeSpinner');
-                SICKRAGE.loadingHTML = '<img src="' + SICKRAGE.getMeta('srWebRoot') + '/images/loading16' + SICKRAGE.getMeta('themeSpinner') + '.gif" height="16" width="16" />';
+                SICKRAGE.loadingHTML = '<i class="fas fa-spinner fa-spin fa-fw"></i>';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
 
                 // add locale translation
@@ -456,39 +455,31 @@ $(document).ready(function ($) {
 
             updateImages: function (data) {
                 $.each(data.episodes, function (name, ep) {
-                    var loadingImage = 'loading16.gif';
-                    var queuedImage = 'queued.png';
-                    var searchImage = 'search16.png';
+                    var loadingIcon = 'fas fa-spinner fa-spin fa-fw';
+                    var queuedIcon = 'fas fa-clock';
+                    var searchIcon = 'fas fa-search';
                     var htmlContent = '';
                     var el = $('a[id=' + ep.show + 'x' + ep.season + 'x' + ep.episode + ']');
-                    var img = el.children('img');
+                    var img = el.children('i');
                     var parent = el.parent();
 
                     if (el) {
                         var rSearchTerm = '';
                         if (ep.searchstatus.toLowerCase() === 'searching') {
-                            //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
                             img.prop('title', gt('Searching'));
-                            img.prop('alt', 'searching');
-                            img.prop('src', SICKRAGE.srWebRoot + '/images/' + loadingImage);
+                            img.prop('class', loadingIcon);
                             SICKRAGE.ajax_search.disableLink(el);
-                            // Update Status and Quality
-                            //rSearchTerm = /(\w+)\s\((.+?)\)/;
                             htmlContent = ep.searchstatus;
 
                         } else if (ep.searchstatus.toLowerCase() === 'queued') {
-                            //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
                             img.prop('title', gt('Queued'));
-                            img.prop('alt', 'queued');
-                            img.prop('src', SICKRAGE.srWebRoot + '/images/' + queuedImage);
+                            img.prop('class', queuedIcon);
                             SICKRAGE.ajax_search.disableLink(el);
                             htmlContent = ep.searchstatus;
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
-                            //el=$('td#' + ep.season + 'x' + ep.episode + '.search img');
                             img.prop('title', gt('Searching'));
-                            img.prop('alt', 'searching');
                             img.parent().prop('class', 'epRetry');
-                            img.prop('src', SICKRAGE.srWebRoot + '/images/' + searchImage);
+                            img.prop('class', searchIcon);
                             SICKRAGE.ajax_search.enableLink(el);
 
                             // Update Status and Quality
@@ -500,22 +491,23 @@ $(document).ready(function ($) {
                         parent.siblings('.col-status').html(htmlContent);
 
                     }
+
                     var elementCompleteEpisodes = $('a[id=forceUpdate-' + ep.show + 'x' + ep.season + 'x' + ep.episode + ']');
-                    var imageCompleteEpisodes = elementCompleteEpisodes.children('img');
+                    var imageCompleteEpisodes = elementCompleteEpisodes.children('i');
                     if (elementCompleteEpisodes) {
                         if (ep.searchstatus.toLowerCase() === 'searching') {
                             imageCompleteEpisodes.prop('title', gt('Searching'));
                             imageCompleteEpisodes.prop('alt', 'searching');
-                            imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + loadingImage);
+                            imageCompleteEpisodes.prop('class', loadingIcon);
                             SICKRAGE.ajax_search.disableLink(elementCompleteEpisodes);
                         } else if (ep.searchstatus.toLowerCase() === 'queued') {
                             imageCompleteEpisodes.prop('title', gt('Queued'));
                             imageCompleteEpisodes.prop('alt', 'queued');
-                            imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + queuedImage);
+                            imageCompleteEpisodes.prop('class', queuedIcon);
                         } else if (ep.searchstatus.toLowerCase() === 'finished') {
                             imageCompleteEpisodes.prop('title', gt('Manual Search'));
                             imageCompleteEpisodes.prop('alt', '[search]');
-                            imageCompleteEpisodes.prop('src', SICKRAGE.srWebRoot + '/images/' + searchImage);
+                            imageCompleteEpisodes.prop('class', searchIcon);
                             if (ep.overview.toLowerCase() === 'snatched') {
                                 elementCompleteEpisodes.closest('tr').remove();
                             } else {
@@ -535,10 +527,9 @@ $(document).ready(function ($) {
                 var link = SICKRAGE.ajax_search.selectedEpisode;
 
                 // Create var for img under anchor and set options for the loading gif
-                var img = SICKRAGE.ajax_search.selectedEpisode.children('img');
+                var img = SICKRAGE.ajax_search.selectedEpisode.children('i');
                 img.prop('title', gt('loading'));
-                img.prop('alt', '');
-                img.prop('src', SICKRAGE.srWebRoot + '/images/' + options.loadingImage);
+                img.prop('class', options.loadingIcon);
 
                 var url = SICKRAGE.ajax_search.selectedEpisode.prop('href');
 
@@ -551,12 +542,12 @@ $(document).ready(function ($) {
                 $.getJSON(url, function (data) {
                     // if they failed then just put the red X
                     if (data.result.toLowerCase() === 'failure') {
-                        imageName = options.noImage;
+                        imageName = options.noIcon;
                         imageResult = 'failed';
 
                         // if the snatch was successful then apply the corresponding class and fill in the row appropriately
                     } else {
-                        imageName = options.loadingImage;
+                        imageName = options.loadingIcon;
                         imageResult = 'success';
                         // color the row
                         if (options.colorRow) {
@@ -573,9 +564,8 @@ $(document).ready(function ($) {
 
                     // put the corresponding image as the result of queuing of the manual search
                     img.prop('title', imageResult);
-                    img.prop('alt', imageResult);
                     img.prop('height', options.size);
-                    img.prop('src', SICKRAGE.srWebRoot + "/images/" + imageName);
+                    img.prop('class', imageName);
                 });
 
                 // don't follow the link
@@ -614,10 +604,10 @@ $(document).ready(function ($) {
                 var defaults = {
                     size: 16,
                     colorRow: false,
-                    loadingImage: 'loading16.gif',
-                    queuedImage: 'queued.png',
-                    noImage: 'no16.png',
-                    yesImage: 'yes16.png'
+                    loadingIcon: 'fas fa-spinner fa-spin fa-fw',
+                    queuedIcon: 'fas fa-clock',
+                    noIcon: 'fas fa-times',
+                    yesIcon: 'fas fa-check'
                 };
 
                 options = $.extend({}, defaults, options);
@@ -669,9 +659,8 @@ $(document).ready(function ($) {
                     var subtitlesSearchLink = $(this);
                     // fill with the ajax loading gif
                     subtitlesSearchLink.empty();
-                    subtitlesSearchLink.append($("<img/>").attr({
-                        "src": SICKRAGE.srWebRoot + "/images/loading16.gif",
-                        "alt": "",
+                    subtitlesSearchLink.append($("<i/>").attr({
+                        "class": "fas fa-spinner fa-spin fa-fw",
                         "title": gt("loading")
                     }));
                     $.getJSON($(this).attr('href'), function (data) {
@@ -682,18 +671,12 @@ $(document).ready(function ($) {
                             $.each(subtitles, function (index, language) {
                                 if (language !== "" && language !== "und") {
                                     if (index !== subtitles.length - 1) {
-                                        subtitlesTd.append($("<img/>").attr({
-                                            "src": SICKRAGE.srWebRoot + "/images/subtitles/flags/" + language + ".png",
-                                            "alt": language,
-                                            "width": 16,
-                                            "height": 11
+                                        subtitlesTd.append($("<i/>").attr({
+                                            "class": "sickrage-flags sickrage-flags-" + language
                                         }));
                                     } else {
-                                        subtitlesTd.append($("<img/>").attr({
-                                            "src": SICKRAGE.srWebRoot + "/images/subtitles/flags/" + language + ".png",
-                                            "alt": language,
-                                            "width": 16,
-                                            "height": 11
+                                        subtitlesTd.append($("<i/>").attr({
+                                            "class": "sickrage-flags sickrage-flags-" + language
                                         }));
                                     }
                                 }
@@ -715,9 +698,8 @@ $(document).ready(function ($) {
                     var subtitlesMergeLink = $(this);
                     // fill with the ajax loading gif
                     subtitlesMergeLink.empty();
-                    subtitlesMergeLink.append($("<img/>").attr({
-                        "src": SICKRAGE.srWebRoot + "/images/loading16.gif",
-                        "alt": "",
+                    subtitlesMergeLink.append($("<i/>").attr({
+                        "class": "fas fa-spinner fa-spin fa-fw",
                         "title": gt("loading")
                     }));
                     $.getJSON($(this).attr('href'), function () {
@@ -1273,7 +1255,7 @@ $(document).ready(function ($) {
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['banner', 'poster'])) {
                     SICKRAGE.ajax_search.ajaxEpSearch({
                         'size': 16,
-                        'loadingImage': 'loading16' + SICKRAGE.themeSpinner + '.gif'
+                        'loadingIcon': 'fas fa-spinner fa-spin fa-fw'
                     });
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
@@ -2542,7 +2524,7 @@ $(document).ready(function ($) {
                     }
 
                     var searchingFor = '<b>' + $('#nameToSearch').val().trim() + '</b> on ' + $('#providedIndexer option:selected').text() + '<br/>';
-                    $('#messages').empty().html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32' + SICKRAGE.themeSpinner + '.gif" height="24" width="24" /> searching for ' + searchingFor);
+                    $('#messages').empty().html('<i id="searchingAnim" class="fas fa-spinner fa-spin fa-fw"></i> searching for ' + searchingFor);
 
                     $.ajax({
                         url: SICKRAGE.srWebRoot + '/home/addShows/searchIndexersForShowName',

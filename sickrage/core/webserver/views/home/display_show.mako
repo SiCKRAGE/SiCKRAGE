@@ -707,7 +707,7 @@
                            id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
                            href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                            <i class="fas fa-refresh" title="${_('Retry Download')}"></i>
+                            <i class="fas fa-sync" title="${_('Retry Download')}"></i>
                         </a>
                     % else:
                         <a class="epSearch"
