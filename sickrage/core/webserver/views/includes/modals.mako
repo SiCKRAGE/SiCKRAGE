@@ -2,8 +2,8 @@
 <%def name="mainModals()">
     <div class="modal fade" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
+            <div class="modal-content bg-dark">
+                <div class="modal-header bg-secondary">
                     <h1>Please Wait</h1>
                 </div>
                 <div class="modal-body">
