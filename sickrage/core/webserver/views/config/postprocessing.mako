@@ -668,7 +668,9 @@
                             <input type="checkbox" id="naming_strip_year"
                                    name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
                             ${_('Remove the TV show\'s year when renaming the file?')}<br/>
-                            <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}</div>
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('Only applies to shows that have year inside parentheses')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -1356,11 +1358,13 @@
                             <label class="component-title">${_('Add Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="radio" name="naming_anime" id="naming_anime"
-                                   value="1" ${('', 'checked')[sickrage.app.config.naming_anime == 1]}/>
-                            <label for="naming_anime">
+                            <label>
+                                <input type="radio" name="naming_anime" id="naming_anime"
+                                       value="1" ${('', 'checked')[sickrage.app.config.naming_anime == 1]}/>
                                 ${_('Add the absolute number to the season/episode format?')}<br/>
-                                <b>${_('NOTE:')}</b> ${_('Only applies to animes. (eg. S15E45 - 310 vs S15E45)')}
+                                <div class="text-info">
+                                    <b>${_('NOTE:')}</b> ${_('Only applies to animes. (eg. S15E45 - 310 vs S15E45)')}
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -1370,11 +1374,11 @@
                             <label class="component-title">${_('Only Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="radio" name="naming_anime" id="naming_anime_only"
-                                   value="2" ${('', 'checked')[sickrage.app.config.naming_anime == 2]}/>
-                            <label for="naming_anime_only">
+                            <label>
+                                <input type="radio" name="naming_anime" id="naming_anime_only"
+                                       value="2" ${('', 'checked')[sickrage.app.config.naming_anime == 2]}/>
                                 ${_('Replace season/episode format with absolute number')}<br/>
-                                <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}
+                                <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only applies to animes.')}</div>
                             </label>
                         </div>
                     </div>
@@ -1384,11 +1388,11 @@
                             <label class="component-title">${_('No Absolute Number')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="radio" name="naming_anime" id="naming_anime_none"
-                                   value="3" ${('', 'checked')[sickrage.app.config.naming_anime == 3]}/>
-                            <label for="naming_anime_none">
+                            <label>
+                                <input type="radio" name="naming_anime" id="naming_anime_none"
+                                       value="3" ${('', 'checked')[sickrage.app.config.naming_anime == 3]}/>
                                 ${_('Dont include the absolute number')}<br/>
-                                <b>${_('NOTE:')}</b> ${_('Only applies to animes.')}
+                                <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only applies to animes.')}</div>
                             </label>
                         </div>
                     </div>
@@ -1432,7 +1436,7 @@
                                 % endfor
                             </select>
                         </div>
-                        <label for="metadataType">
+                        <label class="text-info" for="metadataType">
                             ${_('Toggle the metadata options that you wish to be created.')}<br/>
                             <b>${_('Multiple targets may be used.')}</b>
                         </label>
@@ -1445,104 +1449,119 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                         % for (cur_id, cur_generator) in m_dict.items():
-                            <div class="metadataDiv" id="${cur_id}">
-                                <div class="metadata_options_wrapper">
-                                    <div class="metadata_options">
-                                        <input type="checkbox" class="metadata_checkbox"
+                            <div class="list-group metadataDiv" id="${cur_id}">
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_show_metadata">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
-                                        <label for="${cur_id}_show_metadata">
-                                            ${_('Show Metadata')}<br/>
-                                            <span id="${cur_id}_eg_show_metadata">
-                                                ${cur_generator.eg_show_metadata}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
-                                        <label for="${cur_id}_episode_metadata">
-                                            ${_('Episode Metadata')}<br/>
-                                            <span id="${cur_id}_eg_episode_metadata">
-                                                ${cur_generator.eg_episode_metadata}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
-                                        <label for="${cur_id}_fanart">
-                                            ${_('Show Fanart')}<br/>
-                                            <span id="${cur_id}_eg_fanart">
-                                                ${cur_generator.eg_fanart}
-                                            </span>
-                                        </label>
-
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
-                                        <label for="${cur_id}_poster">
-                                            ${_('Show Poster')}<br/>
-                                            <span id="${cur_id}_eg_poster">
-                                                ${cur_generator.eg_poster}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
-                                        <label for="${cur_id}_banner">
-                                            ${_('Show Banner')}<br/>
-                                            <span id="${cur_id}_eg_banner">
-                                                ${cur_generator.eg_banner}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
-                                        <label for="${cur_id}_episode_thumbnails">
-                                            ${_('Episode Thumbnails')}<br/>
-                                            <span id="${cur_id}_eg_episode_thumbnails">
-                                                ${cur_generator.eg_episode_thumbnails}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
-                                        <label for="${cur_id}_season_posters">
-                                            ${_('Season Posters')}<br/>
-                                            <span id="${cur_id}_eg_season_posters">
-                                                ${cur_generator.eg_season_posters}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
-                                        <label for="${cur_id}_season_banners">
-                                            ${_('Season Banners')}<br/>
-                                            <span id="${cur_id}_eg_season_banners">
-                                                ${cur_generator.eg_season_banners}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
-                                        <label for="${cur_id}_season_all_poster">
-                                            ${_('Season All Poster')}<br/>
-                                            <span id="${cur_id}_eg_season_all_poster">
-                                                ${cur_generator.eg_season_all_poster}
-                                            </span>
-                                        </label>
-
-                                        <input type="checkbox" class="metadata_checkbox"
-                                               id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
-                                        <label for="${cur_id}_season_all_banner">
-                                            ${_('Season All Banner')}<br/>
-                                            <span id="${cur_id}_eg_season_all_banner">
-                                                ${cur_generator.eg_season_all_banner}
-                                            </span>
-                                        </label>
-                                    </div>
+                                        ${_('Show Metadata')}
+                                        <span id="${cur_id}_eg_show_metadata">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_show_metadata}</span>
+                                        </span>
+                                    </label>
                                 </div>
-                                <input type="hidden" name="${cur_id}_data" id="${cur_id}_data"
-                                       value="${cur_generator.get_config()}"/>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_episode_metadata">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
+                                        ${_('Episode Metadata')}
+                                        <span id="${cur_id}_eg_episode_metadata">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_episode_metadata}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_fanart">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
+                                        ${_('Show Fanart')}
+                                        <span id="${cur_id}_eg_fanart">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_fanart}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_poster">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
+                                        ${_('Show Poster')}
+                                        <span id="${cur_id}_eg_poster">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_poster}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_banner">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
+                                        ${_('Show Banner')}
+                                        <span id="${cur_id}_eg_banner">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_banner}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_episode_thumbnails">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
+                                        ${_('Episode Thumbnails')}
+                                        <span id="${cur_id}_eg_episode_thumbnails">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_episode_thumbnails}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_season_posters">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
+                                        ${_('Season Posters')}
+                                        <span id="${cur_id}_eg_season_posters">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_season_posters}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_season_banners">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
+                                        ${_('Season Banners')}
+                                        <span id="${cur_id}_eg_season_banners">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_season_banners}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label for="${cur_id}_season_all_poster">
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
+                                        ${_('Season All Poster')}
+                                        <span id="${cur_id}_eg_season_all_poster">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_season_all_poster}</span>
+                                        </span>
+                                    </label>
+                                </div>
+
+                                <div class="list-group-item-dark rounded mb-1">
+                                    <label>
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                               id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
+                                        ${_('Season All Banner')}
+                                        <span id="${cur_id}_eg_season_all_banner">
+                                            <span class="blockquote-footer ml-1">${cur_generator.eg_season_all_banner}</span>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
+                            <input type="hidden" name="${cur_id}_data" id="${cur_id}_data"
+                                   value="${cur_generator.get_config()}"/>
                         % endfor
                     </div>
                 </div>

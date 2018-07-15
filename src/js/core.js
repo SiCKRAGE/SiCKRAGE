@@ -2696,12 +2696,11 @@ $(document).ready(function ($) {
 
                 // store the currently selected tab in the hash value
                 $("ul.nav-pills > li > a").on("shown.bs.tab", function (e) {
-                    var id = $(e.target).attr("href").substr(1);
-                    window.location.hash = id;
+                    window.location.hash = $(e.target).attr("href").substr(1);
                 });
 
                 // on load of the page: switch to the currently selected tab
-                $('#config-menus a[href="' + window.location.hash + '"]').tab('show');
+                $('#config-menus a[href="' + window.location.hash + '"]').tab('show')
 
                 $('a.resetConfig').confirm({
                     title: gt('Reset Config to Defaults'),
