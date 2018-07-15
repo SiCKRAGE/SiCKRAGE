@@ -21,10 +21,10 @@
 <%def name="displayShowModals()">
     <div id="manualSearchModalFailed" class="modal fade">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <div class="modal-content bg-dark">
+                <div class="modal-header bg-secondary">
                     <h4 class="modal-title">${_('Manual Search')}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <p>${_('Do you want to mark this episode as failed?')}</p>
@@ -42,10 +42,10 @@
 
     <div id="manualSearchModalQuality" class="modal fade">
         <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <div class="modal-content bg-dark">
+                <div class="modal-header bg-secondary">
                     <h4 class="modal-title">${_('Manual Search')}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     <p>${_('Do you want to include the current episode quality in the search?')}</p>
