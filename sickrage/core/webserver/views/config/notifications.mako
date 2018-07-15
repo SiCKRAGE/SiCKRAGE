@@ -11,7 +11,8 @@
     from sickrage.indexers import IndexerApi
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#home-theater-nas">${_('Home Theater')} / ${_('NAS')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#home-theater-nas">${_('Home Theater')}
+        / ${_('NAS')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#devices">${_('Devices')}</a></li>
     <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#social">${_('Social')}</a></li>
 </%block>
@@ -19,11 +20,15 @@
     <div id="home-theater-nas" class="tab-pane active">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <h3><a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
+                <h3>
+                    <a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
-                    <i class="text-right sickrage-notifiers sickrage-notifiers-kodi" title="KODI"></i>KODI</a></h3>
-                <small class="text-muted">
-                    <p>${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}</p>
+                        <i class="text-right sickrage-notifiers sickrage-notifiers-kodi" title="KODI"></i>
+                        ${_('KODI')}
+                    </a>
+                </h3>
+                <small class="form-text text-muted">
+                    ${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}
                 </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -182,7 +187,11 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testKODI-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testKODI-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -201,11 +210,18 @@
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;"><i class="sickrage-notifiers sickrage-notifiers-plex" title="Plex Media Server"></i>Plex Media Server</a></h3>
-                <p>${_('Experience your media on a visually stunning, easy to use interface on your Mac connected to your TV. Your media library has never looked this good!')}</p>
-                <p class="plexinfo hide">${_('For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port')}
-                    <b>3005</b>.</p>
+                <h3>
+                    <a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-plex" title="${_('Plex Media Server')}"></i>
+                        ${_('Plex Media Server')}
+                    </a>
+                </h3>
+                <small class="form-text text-muted">
+                    <p>${_('Experience your media on a visually stunning, easy to use interface on your computer connected to your TV')}</p>
+                    <p class="plexinfo hide">${_('For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port')}
+                        <b>3005</b>.</p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -244,98 +260,97 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <label for="plex_server_token">
-                                        ${_('Auth Token used by Plex')}
-                                        (<a href="${anon_url('https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token')}"
-                                            rel="noreferrer"
-                                            onclick="window.open(this.href, '_blank'); return false;">
-                                        <u>${_('Finding your account token')}</u></a>)
+                                    <label class="text-info" for="plex_server_token">
+                                        ${_('Auth Token used by Plex')} -
+                                        <a href="${anon_url('https://support.plex.tv/hc/en-us/articles/204059436-Finding-your-account-token-X-Plex-Token')}"
+                                           rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;">
+                                            <u>${_('Finding your account token')}</u></a>
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Server Username')}</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
-                                    </div>
-                                    <input name="plex_username" id="plex_username"
-                                           value="${sickrage.app.config.plex_username}"
-                                           placeholder="${_('blank = no authentication')}"
-                                           class="form-control" autocapitalize="off"/>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Server Username')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
                                 </div>
+                                <input name="plex_username" id="plex_username"
+                                       value="${sickrage.app.config.plex_username}"
+                                       placeholder="${_('blank = no authentication')}"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
-                        <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Server/client password')}</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
-                                    </div>
-                                    <input type="password" name="plex_password" id="plex_password"
-                                           value="${sickrage.app.config.plex_password}"
-                                           placeholder="${_('blank = no authentication')}"
-                                           class="form-control" autocapitalize="off"/>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Server/client password')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
                                 </div>
+                                <input type="password" name="plex_password" id="plex_password"
+                                       value="${sickrage.app.config.plex_password}"
+                                       placeholder="${_('blank = no authentication')}"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Update server library')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <input type="checkbox" class="enabler" name="plex_update_library"
+                                   id="plex_update_library" ${('', 'checked')[bool(sickrage.app.config.plex_update_library)]}/>
+                            <label for="plex_update_library">
+                                ${_('update Plex Media Server library after download finishes')}
+                            </label>
+                        </div>
+                    </div>
+                    <div id="content_plex_update_library">
                         <div class="form-row form-group">
                             <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Update server library')}</label>
+                                <label class="component-title">${_('Plex Media Server IP:Port')}</label>
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <input type="checkbox" class="enabler" name="plex_update_library"
-                                       id="plex_update_library" ${('', 'checked')[bool(sickrage.app.config.plex_update_library)]}/>
-                                <label for="plex_update_library">
-                                    ${_('update Plex Media Server library after download finishes')}
-                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><span class="fas fa-globe"></span></span>
+                                    </div>
+                                    <input name="plex_server_host"
+                                           id="plex_server_host"
+                                           placeholder="${_('ex. 192.168.1.1:32400, 192.168.1.2:32400')}"
+                                           value="${re.sub(r'\b,\b', ', ', sickrage.app.config.plex_server_host)}"
+                                           class="form-control"
+                                           autocapitalize="off"/>
+                                </div>
                             </div>
                         </div>
-                        <div id="content_plex_update_library">
-                            <div class="form-row form-group">
-                                <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                    <label class="component-title">${_('Plex Media Server IP:Port')}</label>
-                                </div>
-                                <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><span class="fas fa-globe"></span></span>
-                                        </div>
-                                        <input name="plex_server_host"
-                                               id="plex_server_host"
-                                               placeholder="${_('ex. 192.168.1.1:32400, 192.168.1.2:32400')}"
-                                               value="${re.sub(r'\b,\b', ', ', sickrage.app.config.plex_server_host)}"
-                                               class="form-control"
-                                               autocapitalize="off"/>
+
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <div class="card bg-info mb-3">
+                                    <div class="card-text m-1">
+                                        <div id="testPMS-result">${_('Click below to test')}</div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <div class="testNotification" id="testPMS-result">
-                                        ${_('Click below to test Plex servers')}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <input class="btn btn-secondary" type="button" value="${_('Test Plex Server')}" id="testPMS"/>
-                                    <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
-                                </div>
+                        <div class="form-row">
+                            <div class="col-md-12">
+                                <input class="btn btn-secondary" type="button" value="${_('Test Plex Server')}"
+                                       id="testPMS"/>
+                                <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                             </div>
                         </div>
                     </div>
@@ -347,9 +362,13 @@
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <h3><a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
+                <h3>
+                    <a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
-                    <i class="text-right sickrage-notifiers sickrage-notifiers-plex" title="Plex Media Client"></i>${_('Plex Media Client')}</a></h3>
+                        <i class="text-right sickrage-notifiers sickrage-notifiers-plex" title="Plex Media Client"></i>
+                        ${_('Plex Media Client')}
+                    </a>
+                </h3>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -391,7 +410,6 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
@@ -419,52 +437,53 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-row form-group">
 
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Server Username')}</label>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Server Username')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><span class="fas fa-user"></span></span>
+                                </div>
+                                <input name="plex_client_username" id="plex_client_username"
+                                       value="${sickrage.app.config.plex_client_username}"
+                                       placeholder="${_('blank = no authentication')}"
+                                       class="form-control" autocapitalize="off"/>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-user"></span></span>
-                                    </div>
-                                    <input name="plex_client_username" id="plex_client_username"
-                                           value="${sickrage.app.config.plex_client_username}"
-                                           placeholder="${_('blank = no authentication')}"
-                                           class="form-control" autocapitalize="off"/>
+                        </div>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <label class="component-title">${_('Client Password')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><span class="fas fa-lock"></span></span>
+                                </div>
+                                <input type="password" name="plex_client_password" id="plex_client_password"
+                                       value="${sickrage.app.config.plex_client_password}"
+                                       placeholder="${_('blank = no authentication')}"
+                                       class="form-control" autocapitalize="off"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testPMC-result">${_('Click below to test')}</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                                <label class="component-title">${_('Client Password')}</label>
-                            </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><span class="fas fa-lock"></span></span>
-                                    </div>
-                                    <input type="password" name="plex_client_password" id="plex_client_password"
-                                           value="${sickrage.app.config.plex_client_password}"
-                                           placeholder="${_('blank = no authentication')}"
-                                           class="form-control" autocapitalize="off"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <div class="testNotification" id="testPMC-result">
-                                    ${_('Click below to test Plex client(s)')}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-12">
-                                <input class="btn btn-secondary" type="button" value="${_('Test Plex Client')}" id="testPMC"/>
-                                <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
-                            </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <input class="btn btn-secondary" type="button" value="${_('Test Plex Client')}"
+                                   id="testPMC"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_plex_client -->
@@ -475,9 +494,13 @@
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <h3><a href="${anon_url('http://emby.media/')}" rel="noreferrer"
+                <h3>
+                    <a href="${anon_url('http://emby.media/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
-                    <i class="text-right sickrage-notifiers sickrage-notifiers-emby" title="Emby"></i>Emby</a></h3>
+                        <i class="text-right sickrage-notifiers sickrage-notifiers-emby" title="Emby"></i>
+                        ${_('Emby')}
+                    </a>
+                </h3>
                 <p>${_('A home media server built using other popular open source technologies.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -568,7 +591,11 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testEMBY-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testEMBY-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -587,10 +614,13 @@
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
-                     title="Networked Media Jukebox"/>
-                <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">NMJ</a></h3>
+                <h3>
+                    <a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-nmj" title="Networked Media Jukebox"></i>
+                        ${_('NMJ')}
+                    </a>
+                </h3>
                 <p>${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -676,7 +706,11 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testNMJ-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testNMJ-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -694,10 +728,13 @@
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nmj.png" alt=""
-                     title="Networked Media Jukebox v2"/>
-                <h3><a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">NMJv2</a></h3>
+                <h3>
+                    <a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-nmj" title="Networked Media Jukebox v2"></i>
+                        ${_('NMJv2')}
+                    </a>
+                </h3>
                 <p>${_('The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -816,7 +853,11 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testNMJv2-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testNMJv2-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
@@ -829,15 +870,21 @@
             </fieldset>
         </div><!-- /nmjv2 tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synoindex.png" alt=""
-                     title="Synology"/>
-                <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Synology</a></h3>
-                <p>${_('The Synology DiskStation NAS.')}</p>
-                <p>${_('Synology Indexer is the daemon running on the Synology NAS to build its media database.')}</p>
+                <h3>
+                    <a href="${anon_url('http://synology.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-synoindex" title="Synology"></i>
+                        ${_('Synology')}
+                    </a>
+                </h3>
+                <small class="form-text text-muted">
+                    ${_('The Synology DiskStation NAS.')}<br/>
+                    ${_('Synology Indexer is the daemon running on the Synology NAS to build its media database.')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -846,11 +893,12 @@
                         <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_synoindex"
-                               id="use_synoindex" ${('', 'checked')[bool(sickrage.app.config.use_synoindex)]}/>
                         <label for="use_synoindex">
+                            <input type="checkbox" class="enabler" name="use_synoindex"
+                                   id="use_synoindex" ${('', 'checked')[bool(sickrage.app.config.use_synoindex)]}/>
                             ${_('send Synology notifications?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('requires SickRage to be running on your Synology NAS.')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('requires SickRage to be running on your Synology NAS.')}</div>
                         </label>
                     </div>
                 </div>
@@ -865,13 +913,17 @@
             </fieldset>
         </div><!-- /synoindex tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/synologynotifier.png" alt=""
-                     title="Synology Indexer"/>
-                <h3><a href="${anon_url('http://synology.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Synology ${_('Notifier')}</a></h3>
+                <h3>
+                    <a href="${anon_url('http://synology.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-synologynotifier" title="Synology Notifier"></i>
+                        ${_('Synology Notifier')}
+                    </a>
+                </h3>
                 <p>${_('Synology Notifier is the notification system of Synology DSM')}</p>
             </div>
 
@@ -881,11 +933,12 @@
                         <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_synologynotifier"
-                               id="use_synologynotifier" ${('', 'checked')[bool(sickrage.app.config.use_synologynotifier)]}/>
                         <label for="use_synologynotifier">
+                            <input type="checkbox" class="enabler" name="use_synologynotifier"
+                                   id="use_synologynotifier" ${('', 'checked')[bool(sickrage.app.config.use_synologynotifier)]}/>
                             ${_('send notifications to the Synology Notifier?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('requires SickRage to be running on your Synology DSM.')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('requires SickRage to be running on your Synology DSM.')}</div>
                         </label>
                     </div>
                 </div>
@@ -935,13 +988,18 @@
             </fieldset>
         </div><!-- /synology notifier tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pytivo.png" alt=""
                      title="pyTivo"/>
-                <h3><a href="${anon_url('http://pytivo.sourceforge.net/wiki/index.php/PyTivo')}"
-                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">pyTivo</a>
+                <h3>
+                    <a href="${anon_url('http://pytivo.sourceforge.net/wiki/index.php/PyTivo')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-pytivo" title="pyTivo"></i>
+                        ${_('pyTivo')}
+                    </a>
                 </h3>
                 <p>${_('pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.')}</p>
             </div>
@@ -951,11 +1009,13 @@
                         <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_pytivo"
-                               id="use_pytivo" ${('', 'checked')[bool(sickrage.app.config.use_pytivo)]}/>
                         <label for="use_pytivo">
+                            <input type="checkbox" class="enabler" name="use_pytivo"
+                                   id="use_pytivo" ${('', 'checked')[bool(sickrage.app.config.use_pytivo)]}/>
                             ${_('send notifications to pyTivo?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('requires the downloaded files to be accessible by pyTivo.')}
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('requires the downloaded files to be accessible by pyTivo.')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -993,7 +1053,7 @@
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
-                            <label for="pytivo_share_name">
+                            <label class="text-info" for="pytivo_share_name">
                                 ${_('value used in pyTivo Web Configuration to name the share.')}
                             </label>
                         </div>
@@ -1012,7 +1072,7 @@
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
-                            <label for="pytivo_tivo_name">
+                            <label class="text-info" for="pytivo_tivo_name">
                                 ${_('(Messages and Settings > Account and System Information > System Information > DVR name)')}
                             </label>
                         </div>
@@ -1030,10 +1090,13 @@
     <div id="devices" class="tab-pane">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/growl.png" alt=""
-                     title="Growl"/>
-                <h3><a href="${anon_url('http://growl.info/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Growl</a></h3>
+                <h3>
+                    <a href="${anon_url('http://growl.info/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-growl" title="Growl"></i>
+                        ${_('Growl')}
+                    </a>
+                </h3>
                 <p>${_('A cross-platform unobtrusive global notification system.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1122,15 +1185,18 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testGrowl-result">
-                                ${_('Click below to rex.ster and test Growl, this is required for Growl notifications to work.')}
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testGrowl-result">${_('Click below to register and test Growl, this is required for Growl notifications to work.')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Register Growl')}" id="testGrowl"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Register Growl')}"
+                                   id="testGrowl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1140,13 +1206,17 @@
             </fieldset>
         </div><!-- /growl tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/prowl.png" alt="Prowl"
-                     title="Prowl"/>
-                <h3><a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Prowl</a></h3>
+                <h3>
+                    <a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-prowl" title="Prowl"></i>
+                        ${_('Prowl')}
+                    </a>
+                </h3>
                 <p>${_('A Growl client for iOS.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1256,7 +1326,11 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testProwl-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testProwl-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1272,13 +1346,17 @@
             </fieldset>
         </div><!-- /prowl tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/libnotify.png" alt=""
-                     title="Libnotify"/>
-                <h3><a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Libnotify</a></h3>
+                <h3>
+                    <a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-libnotify" title="Libnotify"></i>
+                        ${_('Libnotify')}
+                    </a>
+                </h3>
                 <p>
                     ${_('The standard desktop notification API for Linux/*nix systems. This notifier will only function if the pynotify module is installed')}
                     (Ubuntu/Debian package <a href="apt:python-notify">python-notify</a>).
@@ -1337,12 +1415,17 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testLibnotify-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testLibnotify-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Libnotify')}" id="testLibnotify"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Libnotify')}"
+                                   id="testLibnotify"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1350,13 +1433,17 @@
             </fieldset>
         </div><!-- /libnotify tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushover.png" alt=""
-                     title="Pushover"/>
-                <h3><a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Pushover</a></h3>
+                <h3>
+                    <a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-pushover" title="Pushover"></i>
+                        ${_('Pushover')}
+                    </a>
+                </h3>
                 <p>${_('Pushover makes it easy to send real-time notifications to your Android and iOS devices.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1552,20 +1639,38 @@
                             </label>
                         </div>
                     </div>
-                    <div class="testNotification" id="testPushover-result">Click below to test.</div>
-                    <input class="btn btn-secondary" type="button" value="${_('Test Pushover')}" id="testPushover"/>
-                    <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testPushover-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="btn btn-secondary" type="button" value="${_('Test Pushover')}"
+                                   id="testPushover"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
+                        </div>
+                    </div>
                 </div><!-- /content_use_pushover //-->
 
             </fieldset>
         </div><!-- /pushover tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/boxcar2.png" alt=""
-                     title="Boxcar2"/>
-                <h3><a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Boxcar2</a></h3>
+                <h3>
+                    <a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-boxcar2" title="Boxcar2"></i>
+                        ${_('Boxcar2')}
+                    </a>
+                </h3>
                 <p>${_('Read your messages where and when you want them!')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1637,13 +1742,18 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testBoxcar2-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testBoxcar2-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Boxcar2')}" id="testBoxcar2"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Boxcar2')}"
+                                   id="testBoxcar2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1653,11 +1763,17 @@
             </fieldset>
         </div><!-- /boxcar2 tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/nma.png" alt="" title="NMA"/>
-                <h3><a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Notify My Android</a></h3>
+                <h3>
+                    <a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-nma" title="Notify My Android"></i>
+                        ${_('Notify My Android')}
+                    </a>
+                </h3>
                 <p>${_('Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1761,7 +1877,11 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testNMA-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testNMA-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1777,12 +1897,17 @@
             </fieldset>
         </div><!-- /nma tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushalot.png" alt=""
-                     title="Pushalot"/>
-                <h3><a href="${anon_url('https://pushalot.com')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Pushalot</a></h3>
+                <h3>
+                    <a href="${anon_url('https://pushalot.com')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-pushalot" title="Pushalot"></i>
+                        ${_('Pushalot')}
+                    </a>
+                </h3>
                 <p>${_('Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1855,14 +1980,20 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testPushalot-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testPushalot-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn btn-secondary" value="${_('Test Pushalot')}" id="testPushalot"/>
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" class="btn btn-secondary" value="${_('Test Pushalot')}"
+                                   id="testPushalot"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -1871,12 +2002,17 @@
             </fieldset>
         </div><!-- /pushalot tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pushbullet.png" alt=""
-                     title="Pushbullet"/>
-                <h3><a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Pushbullet</a></h3>
+                <h3>
+                    <a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-pushbullet" title="Pushbullet"></i>
+                        ${_('Pushbullet')}
+                    </a>
+                </h3>
                 <p>${_('Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1969,35 +2105,47 @@
                                 <div class="col-md-12">
                                     <input type="hidden" id="pushbullet_device"
                                            value="${sickrage.app.config.pushbullet_device}">
-                                    <input type="button" class="btn btn-secondary btn-inline" value="${_('Update device list')}"
+                                    <input type="button" class="btn btn-secondary btn-inline"
+                                           value="${_('Update device list')}"
                                            id="getPushbulletDevices"/>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testPushbullet-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testPushbullet-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn btn-secondary" value="${_('Test Pushbullet')}" id="testPushbullet"/>
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" class="btn btn-secondary" value="${_('Test Pushbullet')}"
+                                   id="testPushbullet"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
-
                 </div><!-- /content_use_pushbullet //-->
-
             </fieldset>
         </div><!-- /pushbullet tab-pane //-->
+
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/freemobile.png" alt=""
-                     title="Free Mobile"/>
-                <h3><a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Free Mobile</a></h3>
+                <h3>
+                    <a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-freemobile" title="FreeMobile"></i>
+                        ${_('Free Mobile')}
+                    </a>
+                </h3>
                 <p>${_('Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -2087,15 +2235,18 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testFreeMobile-result">
-                                ${_('Click below to test your settings.')}
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testFreeMobile-result">${_('Click below to test')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test SMS')}" id="testFreeMobile"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test SMS')}"
+                                   id="testFreeMobile"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2103,12 +2254,17 @@
             </fieldset>
         </div><!-- /freemobile tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/telegram.png" alt=""
-                     title="Telegram"/>
-                <h3><a href="${anon_url('http://telegram.org/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Telegram</a></h3>
+                <h3>
+                    <a href="${anon_url('http://telegram.org/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-telegram" title="Telegram"></i>
+                        ${_('Telegram')}
+                    </a>
+                </h3>
                 <p>${_('Telegram is a cloud-based instant messaging service')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -2229,15 +2385,18 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testTelegram-result">
-                                ${_('Click below to test your settings.')}
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testTelegram-result">${_('Click below to test')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Telegram')}" id="testTelegram"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Telegram')}"
+                                   id="testTelegram"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2245,12 +2404,17 @@
             </fieldset>
         </div><!-- /telegram tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twilio.png" alt=""
-                     title="Twilio"/>
-                <h3><a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Twilio</a></h3>
+                <h3>
+                    <a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-twilio" title="Twilio"></i>
+                        ${_('Twilio')}
+                    </a>
+                </h3>
                 <p>
                     ${_('Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device.')}
                 </p>
@@ -2418,8 +2582,10 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testTwilio-result">
-                                ${_('Click below to test your settings.')}
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testTwilio-result">${_('Click below to test')}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2438,10 +2604,13 @@
     <div id="social" class="tab-pane">
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/twitter.png" alt=""
-                     title="Twitter"/>
-                <h3><a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Twitter</a></h3>
+                <h3>
+                    <a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-twitter" title="Twitter"></i>
+                        ${_('Twitter')}
+                    </a>
+                </h3>
                 <p>${_('A social networking and microblogging service, enabling its users to send and read other users messages called tweets.')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -2532,7 +2701,8 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-secondary" type="button" value="${_('Request Authorization')}" id="twitterStep1"/>
+                                    <input class="btn btn-secondary" type="button" value="${_('Request Authorization')}"
+                                           id="twitterStep1"/>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -2567,13 +2737,18 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testTwitter-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testTwitter-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Twitter')}" id="testTwitter"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Twitter')}"
+                                   id="testTwitter"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2583,13 +2758,17 @@
             </fieldset>
         </div><!-- /twitter tab-pane //-->
 
+        <hr/>
 
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/trakt.png" alt=""
-                     title="Trakt"/>
-                <h3><a href="${anon_url('http://trakt.tv/')}" rel="noreferrer"
-                       onclick="window.open(this.href, '_blank'); return false;">Trakt</a></h3>
+                <h3>
+                    <a href="${anon_url('http://trakt.tv/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-trakt" title="Trakt"></i>
+                        ${_('Trakt')}
+                    </a>
+                </h3>
                 <p>${_('Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you\'ll enjoy!')}</p>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -2648,7 +2827,8 @@
                             </div>
                         </div>
                     % endif
-                    <input type="button" class="btn btn-secondary hide" value="${_('Authorize SiCKRAGE')}" id="authTrakt"/>
+                    <input type="button" class="btn btn-secondary hide" value="${_('Authorize SiCKRAGE')}"
+                           id="authTrakt"/>
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <label class="component-title">${_('API Timeout')}</label>
@@ -2833,14 +3013,19 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testTrakt-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testTrakt-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
                             <input type="button" class="btn btn-secondary" value="${_('Test Trakt')}" id="testTrakt"/>
-                            <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                            <input type="submit" class="btn btn-secondary config_submitter"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
 
@@ -2848,12 +3033,16 @@
             </fieldset>
         </div><!-- /trakt tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/email.png" alt=""
-                     title="Email"/>
-                <h3><a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}"
-                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Email</a>
+                <h3>
+                    <a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-email" title="Email"></i>
+                        ${_('Email')}
+                    </a>
                 </h3>
                 <p>${_('Allows configuration of email notifications on a per show basis.')}</p>
             </div>
@@ -3056,7 +3245,8 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input id="email_show_save" class="btn btn-secondary" type="button" value="${_('Save for this show')}"/>
+                                    <input id="email_show_save" class="btn btn-secondary" type="button"
+                                           value="${_('Save for this show')}"/>
                                 </div>
                             </div>
                         </div>
@@ -3064,26 +3254,35 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testEmail-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testEmail-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
                             <input class="btn btn-secondary" type="button" value="${_('Test Email')}" id="testEmail"/>
-                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary config_submitter" type="submit"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_email //-->
             </fieldset>
         </div><!-- /email tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/slack.png" alt=""
-                     title="Slack"/>
-                <h3><a href="${anon_url('http://www.slack.com')}"
-                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Slack</a>
+                <h3>
+                    <a href="${anon_url('http://www.slack.com')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-slack" title="Slack"></i>
+                        ${_('Slack')}
+                    </a>
                 </h3>
                 <p>
                     ${_('Slack brings all your communication together in one place. It\'s real-time messaging, archiving and search for modern teams.')}
@@ -3159,26 +3358,35 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testSlack-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testSlack-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
                             <input class="btn btn-secondary" type="button" value="${_('Test Slack')}" id="testSlack"/>
-                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary config_submitter" type="submit"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_slack //-->
             </fieldset>
         </div><!-- /slack tab-pane //-->
 
+        <hr/>
+
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
-                <img class="notifier-icon" src="${srWebRoot}/images/notifiers/discord.png" alt=""
-                     title="Discord"/>
-                <h3><a href="${anon_url('http://www.discordapp.com')}"
-                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">Discord</a>
+                <h3>
+                    <a href="${anon_url('http://www.discordapp.com')}"
+                       rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-discord" title="Discord"></i>
+                        ${_('Discord')}
+                    </a>
                 </h3>
                 <p>
                     ${_('All-in-one voice and text chat for gamers that\'s free, secure, and works on both your desktop and phone.')}
@@ -3324,14 +3532,20 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="testNotification" id="testDiscord-result">${_('Click below to test.')}</div>
+                            <div class="card bg-info mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testDiscord-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Discord')}" id="testDiscord"/>
-                            <input class="btn btn-secondary config_submitter" type="submit" value="${_('Save Changes')}"/>
+                            <input class="btn btn-secondary" type="button" value="${_('Test Discord')}"
+                                   id="testDiscord"/>
+                            <input class="btn btn-secondary config_submitter" type="submit"
+                                   value="${_('Save Changes')}"/>
                         </div>
                     </div>
                 </div><!-- /content_use_discord //-->
