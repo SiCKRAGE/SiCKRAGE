@@ -202,28 +202,27 @@
                                            rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;"
                                            title="http://www.imdb.com/title/${show.imdbid}">
-                                            <img alt="[imdb]" height="16" width="16"
-                                                 src="${srWebRoot}/images/imdb.png"
-                                                 style="margin-top: -1px; vertical-align:middle;"/>
+                                            <i class="sickrage-core sickrage-core-imdb"
+                                               style="margin-top: -1px; vertical-align:middle;"></i>
                                         </a>
                                     % endif
-                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
-                                       onclick="window.open(this.href, '_blank'); return false;"
-                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>"><img
-                                            alt="${IndexerApi(show.indexer).name}" height="16" width="16"
-                                            src="${srWebRoot}/images/${IndexerApi(show.indexer).config["icon"]}"
-                                            style="margin-top: -1px; vertical-align:middle;"/></a>
+
                                     % if xem_numbering or xem_absolute_numbering:
                                         <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
                                            rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;"
                                            title="http://thexem.de/search?q-${show.name}">
-                                            <img alt="[xem]"
-                                                 height="16"
-                                                 width="16"
-                                                 src="${srWebRoot}/images/xem.png"
-                                                 style="margin-top: -1px; vertical-align:middle;"/></a>
+                                            <i class="sickrage-core sickrage-core-xem"
+                                               style="margin-top: -1px; vertical-align:middle;"></i>
+                                        </a>
                                     % endif
+
+                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                       onclick="window.open(this.href, '_blank'); return false;"
+                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>">
+                                        <i class="sickrage-core sickrage-core-${IndexerApi(show.indexer).name.lower()}"
+                                           style="margin-top: -1px; vertical-align:middle;"></i>
+                                    </a>
                                 </td>
                             </tr>
 
@@ -312,10 +311,9 @@
                             <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
                             <tr>
                                 <td class="showLegend">${_('Info Language:')}</td>
-                                <td><img src="${srWebRoot}/images/subtitles/flags/${info_flag}.png" width="16"
-                                         height="11"
-                                         alt="${show.lang}" title="${show.lang}"
-                                         onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                                <td>
+                                    <i class="sickrage-flags sickrage-flags-${info_flag}"
+                                       onError="this.onerror=null;this.class='sickrage-flags sickrage-flags-unknown';"></i>
                                 </td>
                             </tr>
                             % if sickrage.app.config.use_subtitles:
@@ -578,20 +576,18 @@
             </td>
 
             <td align="center">
-                <img src="${srWebRoot}/images/${("nfo-no.gif", "nfo.gif")[epResult["hasnfo"]]}"
-                     alt="${("N", "Y")[epResult["hasnfo"]]}" width="23" height="11"/>
+                <i class="fas ${("fa-times", "fa-check")[epResult["hasnfo"]]}"></i>
             </td>
 
             <td align="center">
-                <img src="${srWebRoot}/images/${("tbn-no.gif", "tbn.gif")[epResult["hastbn"]]}"
-                     alt="${("N", "Y")[epResult["hastbn"]]}" width="23" height="11"/>
+                <i class="fas ${("fa-times", "fa-check")[epResult["hastbn"]]}"></i>
             </td>
 
             <td align="center">
                 <%
                     text = str(epResult['episode'])
                     if epLoc != '' and epLoc is not None:
-                                    text = '<span title="' + epLoc + '" class="addQTip badge">' + text + "</span>"
+                        text = '<span title="' + epLoc + '" class="badge badge-dark">' + text + "</span>"
                 %>
             ${text}
             </td>
@@ -629,16 +625,8 @@
             </td>
 
             <td class="col-name">
-                <img src="${srWebRoot}/images/info32.png" width="16" height="16" alt=""
-                     id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
-                    % if epResult["description"]:
-                     class="plotInfo"
-                     title="${epResult["description"]}"
-                    % else:
-                     class="plotInfoNone"
-                     title=""
-                    % endif
-                />
+                <i id="plot_info_${str(show.indexerid)}_${str(epResult["season"])}_${str(epResult["episode"])}"
+                   class="fas fa-info-circle" title="${epResult["description"]}"></i>
                 ${epResult["name"]}
             </td>
 
@@ -678,17 +666,16 @@
 
             <td class="col-subtitles" align="center">
                 % for flag in (epResult["subtitles"] or '').split(','):
-                    % if flag.strip() != 'und':
-                        <img src="${srWebRoot}/images/subtitles/flags/${flag}.png"
-                             data-image-url="${srWebRoot}/images/subtitles/flags/${flag}.png"
-                             width="16" height="11"
-                             alt="${sickrage.subtitles.name_from_code(flag)}"
-                             title="${sickrage.subtitles.name_from_code(flag)}"
-                             onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                    % if sickrage.subtitles.name_from_code(flag).lower() != 'undetermined':
+                        % if flag.strip() != 'und':
+                            <i class="sickrage-flags sickrage-flag-${flag}"
+                               title="${sickrage.subtitles.name_from_code(flag)}"></i>
+                        % else:
+                            <i class="sickrage-flags sickrage-flag-${flag}"
+                               title="${sickrage.subtitles.name_from_code(flag)}"></i>
+                        % endif
                     % else:
-                        <img src="${srWebRoot}/images/subtitles/flags/${flag}.png" width="16" height="11"
-                             alt="${sickrage.subtitles.name_from_code(flag)}"
-                             onError="this.onerror=null;this.src='${srWebRoot}/images/flags/unknown.png';"/>
+                        <i class="sickrage-flags sickrage-flags-unknown" title="${_('Unknown')}"></i>
                     % endif
                 % endfor
             </td>

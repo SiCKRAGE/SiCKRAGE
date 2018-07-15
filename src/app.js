@@ -5,6 +5,7 @@ require('./spritesmith-generated/sickrage-notifiers.css');
 require('./spritesmith-generated/sickrage-network.css');
 require('./spritesmith-generated/sickrage-providers.css');
 require('./spritesmith-generated/sickrage-subtitles.css');
+require('./spritesmith-generated/sickrage-flags.css');
 
 // JS
 require('./js/core.js');
