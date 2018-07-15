@@ -218,7 +218,7 @@
                     </a>
                 </h3>
                 <small class="form-text text-muted">
-                    <p>${_('Experience your media on a visually stunning, easy to use interface on your computer connected to your TV')}</p>
+                    ${_('Experience your media on a visually stunning, easy to use interface on your computer connected to your TV')}
                     <p class="plexinfo hide">${_('For sending notifications to Plex Home Theater (PHT) clients, use the KODI notifier with port')}
                         <b>3005</b>.</p>
                 </small>
@@ -501,7 +501,9 @@
                         ${_('Emby')}
                     </a>
                 </h3>
-                <p>${_('A home media server built using other popular open source technologies.')}</p>
+                <small class="form-text text-muted">
+                    ${_('A home media server built using other popular open source technologies.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -621,7 +623,9 @@
                         ${_('NMJ')}
                     </a>
                 </h3>
-                <p>${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}</p>
+                <small class="form-text text-muted">
+                        ${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -735,7 +739,9 @@
                         ${_('NMJv2')}
                     </a>
                 </h3>
-                <p>${_('The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.')}</p>
+                <small class="form-text text-muted">
+                    ${_('The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -777,9 +783,9 @@
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="radio" NAME="nmjv2_dbloc" VALUE="local"
-                                           id="NMJV2_DBLOC_A" ${('', 'checked')[sickrage.app.config.nmjv2_dbloc == 'local']}/>PCH
+                                           id="NMJV2_DBLOC_A" ${('', 'checked')[sickrage.app.config.nmjv2_dbloc == 'local']}/>
                                     <label for="NMJV2_DBLOC_A" class="space-right">
-                                        ${_('Local Media')}
+                                        ${_('PCH Local Media')}
                                     </label>
                                 </div>
                             </div>
@@ -815,20 +821,8 @@
                                     <option value="6">#7</option>
                                 </select>
                             </div>
-                            <label for="NMJv2db_instance">
+                            <label class="text-info" for="NMJv2db_instance">
                                 ${_('adjust this value if the wrong database is selected.')}
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                            <label class="component-title">${_('Find database')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="button" class="btn btn-secondary btn-inline" value="${_('Find Database')}"
-                                   id="settingsNMJv2"/>
-                            <label for="settingsNMJv2">
-                                ${_('the Popcorn Hour device must be powered on.')}
                             </label>
                         </div>
                     </div>
@@ -848,6 +842,11 @@
                                        class="form-control"
                                        placeholder="${_('automatically filled via the Find Database')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.app.config.nmjv2_database == True]}/>
+                                <div class="input-group-append">
+                                    <input type="button" class="btn btn-secondary btn-inline"
+                                           value="${_('Find Database')}"
+                                           id="settingsNMJv2"/>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -924,7 +923,9 @@
                         ${_('Synology Notifier')}
                     </a>
                 </h3>
-                <p>${_('Synology Notifier is the notification system of Synology DSM')}</p>
+                <small class="form-text text-muted">
+                    ${_('Synology Notifier is the notification system of Synology DSM')}
+                </small>
             </div>
 
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
@@ -1001,7 +1002,9 @@
                         ${_('pyTivo')}
                     </a>
                 </h3>
-                <p>${_('pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.')}</p>
+                <small class="form-text text-muted">
+                    ${_('pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1097,7 +1100,9 @@
                         ${_('Growl')}
                     </a>
                 </h3>
-                <p>${_('A cross-platform unobtrusive global notification system.')}</p>
+                <small class="form-text text-muted">
+                    ${_('A cross-platform unobtrusive global notification system.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1217,7 +1222,9 @@
                         ${_('Prowl')}
                     </a>
                 </h3>
-                <p>${_('A Growl client for iOS.')}</p>
+                <small class="form-text text-muted">
+                    ${_('A Growl client for iOS.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1283,7 +1290,7 @@
                                        value="${sickrage.app.config.prowl_api}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
-                            <label for="prowl_api">
+                            <label class="text-info" for="prowl_api">
                                 ${_('get your key at:')}
                                 <a href="${anon_url('https://www.prowlapp.com/api_settings.php')}" rel="noreferrer"
                                    onclick="window.open(this.href, '_blank'); return false;">https://www.prowlapp.com/api_settings.php</a>
@@ -1319,8 +1326,8 @@
                                     </option>
                                 </select>
                             </div>
-                            <label for="prowl_priority">
-                                ${_('priority of Prowl messages from SickRage.')}
+                            <label class="text-info" for="prowl_priority">
+                                ${_('priority of Prowl messages from SiCKRAGE.')}
                             </label>
                         </div>
                     </div>
@@ -1357,10 +1364,10 @@
                         ${_('Libnotify')}
                     </a>
                 </h3>
-                <p>
+                <small class="form-text text-muted">
                     ${_('The standard desktop notification API for Linux/*nix systems. This notifier will only function if the pynotify module is installed')}
                     (Ubuntu/Debian package <a href="apt:python-notify">python-notify</a>).
-                </p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1444,7 +1451,9 @@
                         ${_('Pushover')}
                     </a>
                 </h3>
-                <p>${_('Pushover makes it easy to send real-time notifications to your Android and iOS devices.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Pushover makes it easy to send real-time notifications to your Android and iOS devices.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1529,7 +1538,7 @@
                                        class="form-control"
                                        autocapitalize="off"/>
                             </div>
-                            <label for="pushover_apikey">
+                            <label class="text-info" for="pushover_apikey">
                                 <a href="${anon_url('https://pushover.net/apps/clone/sickrage')}"
                                    rel="noreferrer"
                                    onclick="window.open(this.href, '_blank'); return false;"><b>${_('Click here')}</b></a> ${_('to create a Pushover API key')}
@@ -1634,7 +1643,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <label for="pushover_sound">
+                            <label class="text-info" for="pushover_sound">
                                 ${_('Choose notification sound to use')}
                             </label>
                         </div>
@@ -1671,7 +1680,9 @@
                         ${_('Boxcar2')}
                     </a>
                 </h3>
-                <p>${_('Read your messages where and when you want them!')}</p>
+                <small class="form-text text-muted">
+                    ${_('Read your messages where and when you want them!')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1774,7 +1785,9 @@
                         ${_('Notify My Android')}
                     </a>
                 </h3>
-                <p>${_('Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -1870,8 +1883,8 @@
                                     </option>
                                 </select>
                             </div>
-                            <label for="nma_priority">
-                                ${_('priority of NMA messages from SickRage.')}
+                            <label class="text-info" for="nma_priority">
+                                ${_('priority of NMA messages from SiCKRAGE.')}
                             </label>
                         </div>
                     </div>
@@ -1908,7 +1921,9 @@
                         ${_('Pushalot')}
                     </a>
                 </h3>
-                <p>${_('Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2013,7 +2028,9 @@
                         ${_('Pushbullet')}
                     </a>
                 </h3>
-                <p>${_('Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2096,18 +2113,16 @@
                                         </div>
                                         <select name="pushbullet_device_list" id="pushbullet_device_list"
                                                 class="form-control "></select>
+                                        <div class="input-group-append">
+                                            <input type="hidden" id="pushbullet_device"
+                                                   value="${sickrage.app.config.pushbullet_device}">
+                                            <input type="button" class="btn btn-secondary btn-inline"
+                                                   value="${_('Update device list')}"
+                                                   id="getPushbulletDevices"/>
+                                        </div>
                                     </div>
-                                    <label for="pushbullet_device_list">${_('select device you wish to push to.')}</label>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <input type="hidden" id="pushbullet_device"
-                                           value="${sickrage.app.config.pushbullet_device}">
-                                    <input type="button" class="btn btn-secondary btn-inline"
-                                           value="${_('Update device list')}"
-                                           id="getPushbulletDevices"/>
+                                    <label class="text-info"
+                                           for="pushbullet_device_list">${_('select device you wish to push to.')}</label>
                                 </div>
                             </div>
                         </div>
@@ -2146,7 +2161,9 @@
                         ${_('Free Mobile')}
                     </a>
                 </h3>
-                <p>${_('Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2265,7 +2282,9 @@
                         ${_('Telegram')}
                     </a>
                 </h3>
-                <p>${_('Telegram is a cloud-based instant messaging service')}</p>
+                <small class="form-text text-muted">
+                    ${_('Telegram is a cloud-based instant messaging service')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2335,20 +2354,11 @@
                                                placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label for="telegram_id">
+                                    <label class="text-info" for="telegram_id">
                                         ${_('contact @myidbot on Telegram to get an ID')}
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label>
-                                        <b>${_('NOTE')}
+                                        <p><b>${_('NOTE')}
                                             :</b> ${_('Don\'t forget to talk with your bot at least one time if you get a 403 error.')}
+                                        </p>
                                     </label>
                                 </div>
                             </div>
@@ -2371,11 +2381,7 @@
                                                placeholder="${_('enter yourt API key')}"
                                                autocapitalize="off"/>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label for="telegram_apikey">
+                                    <label class="text-info" for="telegram_apikey">
                                         ${_('contact @BotFather on Telegram to set up one')}
                                     </label>
                                 </div>
@@ -2415,9 +2421,9 @@
                         ${_('Twilio')}
                     </a>
                 </h3>
-                <p>
+                <small class="form-text text-muted">
                     ${_('Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device.')}
-                </p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2488,11 +2494,7 @@
                                                placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label for="twilio_account_sid">
+                                    <label class="text-info" for="twilio_account_sid">
                                         ${_('account SID of your Twilio account.')}
                                     </label>
                                 </div>
@@ -2537,11 +2539,7 @@
                                                placeholder="${_('ex. 12345678')}"
                                                autocapitalize="off"/>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label for="twilio_phone_sid">
+                                    <label class="text-info" for="twilio_phone_sid">
                                         ${_('phone SID that you would like to send the sms from.')}
                                     </label>
                                 </div>
@@ -2568,11 +2566,7 @@
                                                placeholder="${_('ex. +1-###-###-####')}"
                                                autocapitalize="off"/>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-md-12">
-                                    <label for="twilio_to_number">
+                                    <label class="text-info" for="twilio_to_number">
                                         ${_('phone number that will receive the sms.')}
                                     </label>
                                 </div>
@@ -2611,7 +2605,9 @@
                         ${_('Twitter')}
                     </a>
                 </h3>
-                <p>${_('A social networking and microblogging service, enabling its users to send and read other users messages called tweets.')}</p>
+                <small class="form-text text-muted">
+                    ${_('A social networking and microblogging service, enabling its users to send and read other users messages called tweets.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2619,11 +2615,12 @@
                         <label class="component-title">${_('Enable')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                        <input type="checkbox" class="enabler" name="use_twitter"
-                               id="use_twitter" ${('', 'checked')[bool(sickrage.app.config.use_twitter)]}/>
                         <label for="use_twitter">
+                            <input type="checkbox" class="enabler" name="use_twitter"
+                                   id="use_twitter" ${('', 'checked')[bool(sickrage.app.config.use_twitter)]}/>
                             ${_('post tweets on Twitter?')}<br/>
-                            <b>${_('NOTE:')}</b> ${_('you may want to use a secondary account.')}
+                            <div class="text-info"><b>${_('NOTE:')}</b> ${_('you may want to use a secondary account.')}
+                            </div>
                         </label>
                     </div>
                 </div>
@@ -2707,9 +2704,11 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    ${_('Click the "Request Authorization" button.')}<br/>
-                                    ${_('This will open a new page containing an auth key.')}<br/>
-                                    <b>${_('NOTE:')}</b>${_('if nothing happens check your popup blocker.')}<br/>
+                                    <div class="text-info">
+                                        ${_('Click the "Request Authorization" button.')}<br/>
+                                        ${_('This will open a new page containing an auth key.')}<br/>
+                                        <b>${_('NOTE:')}</b>${_('if nothing happens check your popup blocker.')}<br/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2769,7 +2768,9 @@
                         ${_('Trakt')}
                     </a>
                 </h3>
-                <p>${_('Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you\'ll enjoy!')}</p>
+                <small class="form-text text-muted">
+                    ${_('Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you\'ll enjoy!')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -2862,7 +2863,7 @@
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
-                                        <span class="fas fa-linode"></span>
+                                        <span class="fab fa-linode"></span>
                                     </span>
                                 </div>
                                 <select id="trakt_default_indexer" name="trakt_default_indexer"
@@ -2905,12 +2906,13 @@
                             <label class="component-title">${_('Sync watchlist')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input type="checkbox" class="enabler" name="trakt_sync_watchlist"
-                                   id="trakt_sync_watchlist" ${('', 'checked')[bool(sickrage.app.config.trakt_sync_watchlist)]}/>
                             <label for="trakt_sync_watchlist">
+                                <input type="checkbox" class="enabler" name="trakt_sync_watchlist"
+                                       id="trakt_sync_watchlist" ${('', 'checked')[bool(sickrage.app.config.trakt_sync_watchlist)]}/>
                                 ${_('sync your SickRage show watchlist with your trakt show watchlist (either Show and Episode).')}
-                                <br/>
-                                ${_('Episode will be added on watch list when wanted or snatched and will be removed when downloaded')}
+                                <div class="text-info">
+                                    <p>${_('Episode will be added on watch list when wanted or snatched and will be removed when downloaded')}</p>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -2939,7 +2941,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <label for="trakt_method_add">
+                                <label class="text-info" for="trakt_method_add">
                                     ${_('method in which to download episodes for new show\'s.')}
                                 </label>
                             </div>
@@ -3006,7 +3008,7 @@
                                        value="${sickrage.app.config.trakt_blacklist_name}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
-                            <label for="trakt_blacklist_name">
+                            <label class="text-info" for="trakt_blacklist_name">
                                 ${_('Name(slug) of list on Trakt for blacklisting show on \'Add from Trakt\' page')}
                             </label>
                         </div>
@@ -3028,7 +3030,6 @@
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
-
                 </div><!-- /content_use_trakt //-->
             </fieldset>
         </div><!-- /trakt tab-pane //-->
@@ -3044,7 +3045,9 @@
                         ${_('Email')}
                     </a>
                 </h3>
-                <p>${_('Allows configuration of email notifications on a per show basis.')}</p>
+                <small class="form-text text-muted">
+                    ${_('Allows configuration of email notifications on a per show basis.')}
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -3203,7 +3206,7 @@
                                        value="${sickrage.app.config.email_list}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
-                            <label for="email_list">
+                            <label class="text-info" for="email_list">
                                 ${_('all emails here receive notifications for')} <b>${_('all')}</b> ${_('shows.')}
                             </label>
                         </div>
@@ -3223,7 +3226,7 @@
                                             <option value="-1">-- ${_('Select a Show')} --</option>
                                         </select>
                                     </div>
-                                    <label for="email_show">
+                                    <label class="text-info" for="email_show">
                                         ${_('configure per show notifications here.')}
                                     </label>
                                 </div>
@@ -3238,7 +3241,7 @@
                                         <input name="email_show_list" id="email_show_list" class="form-control"
                                                autocapitalize="off"/>
                                     </div>
-                                    <label for="email_show_list">
+                                    <label class="text-info" for="email_show_list">
                                         ${_('configure per-show notifications here by entering email addresses, separated by commas, after selecting a show in the drop-down box. Be sure to activate the Save for this show button below after each entry.')}
                                     </label>
                                 </div>
@@ -3284,9 +3287,9 @@
                         ${_('Slack')}
                     </a>
                 </h3>
-                <p>
+                <small class="form-text text-muted">
                     ${_('Slack brings all your communication together in one place. It\'s real-time messaging, archiving and search for modern teams.')}
-                </p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -3388,9 +3391,9 @@
                         ${_('Discord')}
                     </a>
                 </h3>
-                <p>
+                <small class="form-text text-muted">
                     ${_('All-in-one voice and text chat for gamers that\'s free, secure, and works on both your desktop and phone.')}
-                </p>
+                </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
                 <div class="form-row form-group">
@@ -3462,10 +3465,10 @@
                                                placeholder="${_('Discord webhook')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
+                                    <label class="text-info" for="discord_webhook">
+                                        ${_('Create webhook under channel settings.')}
+                                    </label>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="discord_webhook">${_('Create webhook under channel settings.')}</label>
                             </div>
                         </div>
                     </div>
@@ -3486,10 +3489,9 @@
                                                placeholder="${_('Discord Bot Name')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
+                                    <label class="text-info"
+                                           for="discord_name">${_('Blank will use webhook default name.')}</label>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="discord_name">${_('Blank will use webhook default name.')}</label>
                             </div>
                         </div>
                     </div>
@@ -3510,10 +3512,9 @@
                                                placeholder="${_('Discord Avatar URL')}"
                                                class="form-control" autocapitalize="off"/>
                                     </div>
+                                    <label class="text-info"
+                                           for="discord_avatar_url">${_('Blank will use webhook default avatar.')}</label>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <label for="discord_avatar_url">${_('Blank will use webhook default avatar.')}</label>
                             </div>
                         </div>
                     </div>

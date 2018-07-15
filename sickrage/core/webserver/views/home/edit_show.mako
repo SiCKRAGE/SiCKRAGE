@@ -15,32 +15,27 @@
     <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
     <div id="show">
         <div class="row">
-            <div class="col mx-auto text-center">
-                <h1 class="title">${title}</h1>
-                <hr class="bg-light"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 mx-auto">
-                <form action="editShow" method="post">
-                    <div class="card bg-dark">
-                        <div class="card-header bg-secondary">
-                            <ul class="nav nav-pills card-header-pills">
-                                <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark text-white bg-dark active text-white" data-toggle="tab"
-                                       href="#core-tab-pane1">${_('Main')}</a>
-                                </li>
-                                <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
-                                       href="#core-tab-pane2">${_('Format')}</a>
-                                </li>
-                                <li class="nav-item px-1">
-                                    <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
-                                       href="#core-tab-pane3">${_('Advanced')}</a>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="col-lg-6 mx-auto">
+                <div class="card bg-dark m-1">
+                    <div class="card-header bg-secondary">
+                        <h3 class="title float-md-left">${title}</h3>
+                        <ul class="nav nav-pills card-header-pills float-md-right">
+                            <li class="nav-item px-1">
+                                <a class="nav-link bg-dark text-white bg-dark active text-white" data-toggle="tab"
+                                   href="#core-tab-pane1">${_('Main')}</a>
+                            </li>
+                            <li class="nav-item px-1">
+                                <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
+                                   href="#core-tab-pane2">${_('Format')}</a>
+                            </li>
+                            <li class="nav-item px-1">
+                                <a class="nav-link bg-dark text-white bg-dark text-white" data-toggle="tab"
+                                   href="#core-tab-pane3">${_('Advanced')}</a>
+                            </li>
+                        </ul>
+                    </div>
 
+                    <form action="editShow" method="post">
                         <div class="card-body tab-content">
                             <div id="core-tab-pane1" class="tab-pane active">
                                 <div class="card-title">
@@ -56,7 +51,8 @@
                                             <input type="hidden" name="show" value="${show.indexerid}"/>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
+                                                    <span class="input-group-text"><span
+                                                            class="fas fa-folder-open"></span></span>
                                                 </div>
                                                 <input type="text" name="location" id="location"
                                                        value="${show.location}"
@@ -117,7 +113,8 @@
                                             <% languages = IndexerApi().indexer().languages.keys() %>
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text"><span class="fas fa-flag"></span></span>
+                                                    <span class="input-group-text"><span
+                                                            class="fas fa-flag"></span></span>
                                                 </div>
                                                 <select name="indexerLang" id="indexerLangSelect"
                                                         class="form-control bfh-languages"
@@ -416,8 +413,8 @@
                                        class="btn btn-secondary pull-left config_submitter button">
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

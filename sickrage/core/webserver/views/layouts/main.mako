@@ -202,10 +202,12 @@
                         <li class="nav-item dropdown${('', ' active')[topmenu == 'config']}">
                             <a id="navbarConfig" class="nav-link" href="${srWebRoot}/config/" role="button"
                                aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
-                            <span class="d-block d-sm-none">
-                                ${_('Config')}
-                            </span>
-                                <i class="fas fa-2x fa-wrench"></i>
+                                <span class="d-none d-sm-block d-md-none">
+                                    ${_('Config')}
+                                </span>
+                                <span class="d-sm-none d-md-block">
+                                    <i class="fas fa-2x fa-wrench"></i>
+                                </span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarConfig">
@@ -243,14 +245,16 @@
                         </li>
 
                         <li class="nav-item dropdown${('', ' active')[topmenu == 'system']}">
-                            <a id="navbarSystem" class="nav-link dropdown-toggle" href="#" role="button"
+                            <a id="navbarSystem" class="nav-link" href="#" role="button"
                                aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
-                            <span class="d-block d-sm-none">
-                                ${_('Tools')}
-                            </span>
-                                <img class="rounded-circle" style="width: 40px;height: 40px;"
-                                     src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
-                                ${toolsBadge}
+                                <span class="d-none d-sm-block d-md-none">
+                                    ${_('Tools')}
+                                </span>
+                                <span class="d-sm-none d-md-block">
+                                    <img class="rounded-circle" style="width: 40px;height: 40px;"
+                                         src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
+                                        ${toolsBadge}
+                                </span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
@@ -327,12 +331,12 @@
                             %>
                             % for cur_link in menuItem['path']:
                             ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
-                                                                     class="inner ${menuItem.get('class', '')}">${cur_link}</a>
+                                                                     class="inner ${menuItem.get('class', '')} m-1">${cur_link}</a>
                             <% inner_first = False %>
                             % endfor
                             % else:
                                 <a href="${srWebRoot}${menuItem['path']}"
-                                   class="btn btn-secondary shadow ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
+                                   class="btn btn-secondary shadow ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
                                     <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
                                 </a>
                             <% first = False %>
