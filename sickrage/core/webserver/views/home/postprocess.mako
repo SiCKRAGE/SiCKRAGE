@@ -9,8 +9,8 @@
                 <div class="card-header bg-secondary">
                     <h3 class="title">${title}</h3>
                 </div>
-                <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
-                    <div class="card-body">
+                <div class="card-body">
+                    <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
                         <input type="hidden" id="type" name="proc_type" value="manual">
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -100,8 +100,8 @@
                                 <input id="submit" class="btn btn-secondary" type="submit" value="${_('Process')}"/>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

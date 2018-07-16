@@ -35,7 +35,7 @@
     </div>
 
     <form name="massUpdateForm" method="post" action="massUpdate">
-        <table id="massUpdateTable" class="table table-bordered table-dark tablesorter" cellspacing="1" border="0" cellpadding="0">
+        <table id="massUpdateTable" class="table table-bordered table-striped table-dark" cellspacing="1" border="0" cellpadding="0">
             <thead>
             <tr>
                 <th class="table-fit text-center col-checkbox">${_('Selected')}<br/>

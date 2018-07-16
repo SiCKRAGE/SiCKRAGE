@@ -282,8 +282,7 @@
             </div>
         % else:
             <div class="horizontal-scroll">
-                <table id="showListTable${curListType}" class="table table-bordered table-striped table-dark"
-                       cellspacing="1" border="0" cellpadding="0">
+                <table id="showListTable${curListType}" class="table table-bordered table-striped table-dark">
                     <thead>
                     <tr>
                         <th class="nowrap">${_('Next Ep')}</th>

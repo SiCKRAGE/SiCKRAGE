@@ -1,5 +1,21 @@
 <!-- Main Modals -->
 <%def name="mainModals()">
+    <div class="modal fade" id="fileBrowserDialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header bg-secondary">
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-success" value="${_('Yes')}"/>
+                    <input type="button" class="btn btn-danger" value="${_('No')}" data-dismiss="modal"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="pleaseWaitDialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">

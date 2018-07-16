@@ -3,6 +3,7 @@ import 'jquery-form';
 import 'jquery-ui/ui/disable-selection';
 import 'jquery-ui/ui/widgets/slider';
 import 'jquery-ui/ui/widgets/sortable';
+import 'jquery-ui/ui/widgets/dialog';
 import 'tooltipster';
 import 'jquery-backstretch';
 import 'tablesorter';
@@ -743,14 +744,14 @@ $(document).ready(function ($) {
                     SICKRAGE.browser.currentRequest.abort();
                 }
 
-                SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog busy');
+                //SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog busy');
 
                 SICKRAGE.browser.currentRequest = $.getJSON(endpoint, {
                     path: path,
                     includeFiles: includeFiles,
                     fileTypes: fileTypes.join(',')
                 }, function (data) {
-                    SICKRAGE.browser.fileBrowserDialog.empty();
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-body').empty();
                     var firstVal = data[0];
                     var i = 0;
                     var list, link = null;
@@ -765,13 +766,13 @@ $(document).ready(function ($) {
                                 SICKRAGE.browser.browse(e.target.value, endpoint, includeFiles, fileTypes);
                             }
                         })
-                        .appendTo(SICKRAGE.browser.fileBrowserDialog)
+                        .appendTo(SICKRAGE.browser.fileBrowserDialog.find('.modal-body'))
                         .fileBrowser({showBrowseButton: false})
                         .on('autocompleteselect', function (e, ui) {
                             SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles, fileTypes);
                         });
 
-                    list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog);
+                    list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog.find('.modal-body'));
                     $.each(data, function (i, entry) {
                         if (entry.isFile && fileTypes &&
                             (!entry.isAllowed || fileTypes.indexOf("images") !== -1 && !entry.isImage)) {
@@ -801,7 +802,7 @@ $(document).ready(function ($) {
                         link.appendTo(list);
                     });
                     $('a', list).wrap('<li class="ui-state-default ui-corner-all">');
-                    SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog');
+                    //SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog');
                 });
             },
 
@@ -811,39 +812,16 @@ $(document).ready(function ($) {
                 // make a fileBrowserDialog object if one doesn't exist already
                 if (!SICKRAGE.browser.fileBrowserDialog) {
                     // set up the jquery dialog
-                    SICKRAGE.browser.fileBrowserDialog = $('<div id="fileBrowserDialog" style="display:hidden"></div>').appendTo('body').dialog({
-                        dialogClass: 'browserDialog',
-                        title: options.title,
-                        minWidth: Math.min($(document).width() - 80, 650),
-                        height: Math.min($(document).height() - 80, $(window).height() - 80),
-                        maxHeight: Math.min($(document).height() - 80, $(window).height() - 80),
-                        maxWidth: $(document).width() - 80,
-                        modal: true,
-                        autoOpen: false
-                    });
+                    SICKRAGE.browser.fileBrowserDialog = $('#fileBrowserDialog').modal();
                 } else {
                     // The title may change, even if fileBrowserDialog already exists
-                    SICKRAGE.browser.fileBrowserDialog.dialog('option', 'title', options.title);
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
                 }
 
-                SICKRAGE.browser.fileBrowserDialog.dialog('option', 'buttons', [
-                    {
-                        text: gt("Ok"),
-                        class: "btn",
-                        click: function () {
-                            // store the browsed path to the associated text field
-                            callback(SICKRAGE.browser.currentBrowserPath, options);
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: gt("Cancel"),
-                        class: "btn",
-                        click: function () {
-                            $(this).dialog("close");
-                        }
-                    }
-                ]);
+                SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click(function () {
+                    callback(SICKRAGE.browser.currentBrowserPath, options);
+                    SICKRAGE.browser.fileBrowserDialog.modal('hide');
+                });
 
                 // set up the browser and launch the dialog
                 var initialDir = '';
@@ -852,7 +830,7 @@ $(document).ready(function ($) {
                 }
 
                 SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles, options.fileTypes);
-                SICKRAGE.browser.fileBrowserDialog.dialog('open');
+                SICKRAGE.browser.fileBrowserDialog.modal('show');
 
                 return false;
             },
@@ -929,7 +907,7 @@ $(document).ready(function ($) {
                 if (options.showBrowseButton) {
                     // append the browse button and give it a click behaviour
                     options.field.after(
-                        $('<div class="input-group-addon"><a href="#" class="fileBrowser glyphicon glyphicon-search""></a></div>').on('click', function () {
+                        $('<div class="input-group-append"><span class="input-group-text"><a href="#" class="fileBrowser fas fa-search""></a></span></div>').on('click', function () {
                             var initialDir = options.field.val() || (options.key && path) || '';
                             var optionsWithInitialDir = $.extend({}, options, {initialDir: initialDir});
                             $(this).nFileBrowser(callback, optionsWithInitialDir);
@@ -1552,8 +1530,6 @@ $(document).ready(function ($) {
                 });
 
                 $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    theme: "bootstrap",
-
                     sortList: [[7, 1], [2, 0]],
                     textExtraction: {
                         0: function (node) {
@@ -5020,6 +4996,7 @@ $(document).ready(function ($) {
 
             mass_update: function () {
                 $("#massUpdateTable:has(tbody tr)").tablesorter({
+                    headerTemplate: '{content}{icon}',
                     sortList: [[1, 0]],
                     textExtraction: {
                         2: function (node) {
@@ -5047,7 +5024,7 @@ $(document).ready(function ($) {
                             return $(node).find("img").attr("alt");
                         }
                     },
-                    widgets: ['zebra', 'reflow'],
+                    widgets: ['scroller'],
                     headers: {
                         0: {sorter: false},
                         1: {sorter: 'showNames'},
