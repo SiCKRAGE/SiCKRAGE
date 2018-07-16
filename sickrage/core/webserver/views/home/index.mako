@@ -282,7 +282,7 @@
             </div>
         % else:
             <div class="horizontal-scroll">
-                <table id="showListTable${curListType}" class="table table-bordered table-striped table-dark">
+                <table id="showListTable${curListType}" class="sickrage-table">
                     <thead>
                     <tr>
                         <th class="nowrap">${_('Next Ep')}</th>

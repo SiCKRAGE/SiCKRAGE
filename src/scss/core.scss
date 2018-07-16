@@ -208,3 +208,26 @@ span.snatched b {
   white-space: nowrap;
   width: 1%;
 }
+
+.sickrage-table {
+  @extend .table;
+  @extend .table-bordered;
+  @extend .table-striped;
+  @extend .table-dark;
+}
+
+.sickrage-btn {
+  @extend .btn;
+  @extend .btn-secondary;
+  @extend .shadow
+}
+
+.sickrage-card {
+  @extend .card;
+  @extend .bg-dark;
+}
+
+.sickrage-card-header {
+  @extend .card-header;
+  @extend .bg-secondary;
+}

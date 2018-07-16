@@ -197,7 +197,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test KODI')}" id="testKODI"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test KODI')}" id="testKODI"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -348,7 +348,7 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input class="btn btn-secondary" type="button" value="${_('Test Plex Server')}"
+                                <input class="sickrage-btn" type="button" value="${_('Test Plex Server')}"
                                        id="testPMS"/>
                                 <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                             </div>
@@ -481,7 +481,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Plex Client')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Plex Client')}"
                                    id="testPMC"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -603,7 +603,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Emby')}" id="testEMBY"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test Emby')}" id="testEMBY"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -663,7 +663,7 @@
                             <label class="component-title">${_('Get settings')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
-                            <input class="btn btn-secondary btn-inline" type="button" value="${_('Get Settings')}"
+                            <input class="sickrage-btn btn-inline" type="button" value="${_('Get Settings')}"
                                    id="settingsNMJ"/>
                             <label for="settingsNMJ">
                                 ${_('the Popcorn Hour device must be powered on and NMJ running.')}
@@ -720,7 +720,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -843,7 +843,7 @@
                                        placeholder="${_('automatically filled via the Find Database')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.app.config.nmjv2_database == True]}/>
                                 <div class="input-group-append">
-                                    <input type="button" class="btn btn-secondary btn-inline"
+                                    <input type="button" class="sickrage-btn btn-inline"
                                            value="${_('Find Database')}"
                                            id="settingsNMJv2"/>
                                 </div>
@@ -861,7 +861,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1200,7 +1200,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Register Growl')}"
+                            <input class="sickrage-btn" type="button" value="${_('Register Growl')}"
                                    id="testGrowl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1343,7 +1343,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Prowl')}" id="testProwl"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test Prowl')}" id="testProwl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1431,7 +1431,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Libnotify')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Libnotify')}"
                                    id="testLibnotify"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1659,7 +1659,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Pushover')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Pushover')}"
                                    id="testPushover"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1763,7 +1763,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Boxcar2')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Boxcar2')}"
                                    id="testBoxcar2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1900,7 +1900,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test NMA')}" id="testNMA"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test NMA')}" id="testNMA"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2005,9 +2005,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn btn-secondary" value="${_('Test Pushalot')}"
+                            <input type="button" class="sickrage-btn" value="${_('Test Pushalot')}"
                                    id="testPushalot"/>
-                            <input type="submit" class="btn btn-secondary config_submitter"
+                            <input type="submit" class="sickrage-btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2116,7 +2116,7 @@
                                         <div class="input-group-append">
                                             <input type="hidden" id="pushbullet_device"
                                                    value="${sickrage.app.config.pushbullet_device}">
-                                            <input type="button" class="btn btn-secondary btn-inline"
+                                            <input type="button" class="sickrage-btn btn-inline"
                                                    value="${_('Update device list')}"
                                                    id="getPushbulletDevices"/>
                                         </div>
@@ -2140,9 +2140,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn btn-secondary" value="${_('Test Pushbullet')}"
+                            <input type="button" class="sickrage-btn" value="${_('Test Pushbullet')}"
                                    id="testPushbullet"/>
-                            <input type="submit" class="btn btn-secondary config_submitter"
+                            <input type="submit" class="sickrage-btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2262,7 +2262,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test SMS')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test SMS')}"
                                    id="testFreeMobile"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2401,7 +2401,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Telegram')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Telegram')}"
                                    id="testTelegram"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2586,7 +2586,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
+                            <input class="sickrage-btn" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2698,7 +2698,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-secondary" type="button" value="${_('Request Authorization')}"
+                                    <input class="sickrage-btn" type="button" value="${_('Request Authorization')}"
                                            id="twitterStep1"/>
                                 </div>
                             </div>
@@ -2746,7 +2746,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Twitter')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Twitter')}"
                                    id="testTwitter"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2828,7 +2828,7 @@
                             </div>
                         </div>
                     % endif
-                    <input type="button" class="btn btn-secondary hide" value="${_('Authorize SiCKRAGE')}"
+                    <input type="button" class="sickrage-btn hide" value="${_('Authorize SiCKRAGE')}"
                            id="authTrakt"/>
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
@@ -3025,8 +3025,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="btn btn-secondary" value="${_('Test Trakt')}" id="testTrakt"/>
-                            <input type="submit" class="btn btn-secondary config_submitter"
+                            <input type="button" class="sickrage-btn" value="${_('Test Trakt')}" id="testTrakt"/>
+                            <input type="submit" class="sickrage-btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3248,7 +3248,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input id="email_show_save" class="btn btn-secondary" type="button"
+                                    <input id="email_show_save" class="sickrage-btn" type="button"
                                            value="${_('Save for this show')}"/>
                                 </div>
                             </div>
@@ -3267,8 +3267,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Email')}" id="testEmail"/>
-                            <input class="btn btn-secondary config_submitter" type="submit"
+                            <input class="sickrage-btn" type="button" value="${_('Test Email')}" id="testEmail"/>
+                            <input class="sickrage-btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3371,8 +3371,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Slack')}" id="testSlack"/>
-                            <input class="btn btn-secondary config_submitter" type="submit"
+                            <input class="sickrage-btn" type="button" value="${_('Test Slack')}" id="testSlack"/>
+                            <input class="sickrage-btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3543,9 +3543,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary" type="button" value="${_('Test Discord')}"
+                            <input class="sickrage-btn" type="button" value="${_('Test Discord')}"
                                    id="testDiscord"/>
-                            <input class="btn btn-secondary config_submitter" type="submit"
+                            <input class="sickrage-btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>

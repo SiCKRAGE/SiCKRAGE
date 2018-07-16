@@ -303,7 +303,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -723,9 +723,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="btn btn-secondary test-button" type="button" value="${_('Test SABnzbd')}"
+                            <input class="sickrage-btn test-button" type="button" value="${_('Test SABnzbd')}"
                                    id="testSABnzbd"/>
-                            <input type="submit" class="btn btn-secondary config_submitter"
+                            <input type="submit" class="sickrage-btn config_submitter"
                                    value="${_('Save Changes')}"/><br>
                         </div>
                     </div>
@@ -800,7 +800,7 @@
                         </div>
 
                         <div></div>
-                        <input type="submit" class="btn btn-secondary config_submitter"
+                        <input type="submit" class="sickrage-btn config_submitter"
                                value="${_('Save Changes')}"/><br>
                     </div>
 
@@ -1027,10 +1027,10 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input class="btn btn-secondary test-button" type="button"
+                                <input class="sickrage-btn test-button" type="button"
                                        value="${_('Test Connection')}"
                                        id="test_torrent"/>
-                                <input type="submit" class="btn btn-secondary config_submitter"
+                                <input type="submit" class="sickrage-btn config_submitter"
                                        value="${_('Save Changes')}"/><br>
                             </div>
                         </div>

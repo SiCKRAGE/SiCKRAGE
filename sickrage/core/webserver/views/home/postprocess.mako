@@ -5,8 +5,8 @@
 <%block name="content">
     <div class="row">
         <div class="col-lg-6 mx-auto">
-            <div class="card bg-dark m-1">
-                <div class="card-header bg-secondary">
+            <div class="sickrage-card m-1">
+                <div class="sickrage-card-header">
                     <h3 class="title">${title}</h3>
                 </div>
                 <div class="card-body">
@@ -97,7 +97,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <input id="submit" class="btn btn-secondary" type="submit" value="${_('Process')}"/>
+                                <input id="submit" class="sickrage-btn" type="submit" value="${_('Process')}"/>
                             </div>
                         </div>
                     </form>

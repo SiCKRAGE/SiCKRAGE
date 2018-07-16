@@ -21,7 +21,7 @@
         <div class="col">
             <div class="input-group w-50 mx-auto text-center">
                 <div class="input-group-prepend">
-                    <button id="prevShow" class="btn btn-secondary fas fa-arrow-left"></button>
+                    <button id="prevShow" class="sickrage-btn fas fa-arrow-left"></button>
                 </div>
                 <select class="form-control" id="pickShow" title="Change Show">
                     % for curShowList in sortedShowLists:
@@ -37,7 +37,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="nextShow" class="btn btn-secondary fas fa-arrow-right"></button>
+                    <button id="nextShow" class="sickrage-btn fas fa-arrow-right"></button>
                 </div>
             </div>
             <br/>
@@ -400,7 +400,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="changeStatus" class="btn btn-secondary fas fa-play"></button>
+                    <button id="changeStatus" class="sickrage-btn fas fa-play"></button>
                 </div>
             </div>
             <input type="hidden" id="showID" value="${show.indexerid}"/>
@@ -441,13 +441,13 @@
             <br/>
             <div class="row">
                 <div class="col text-right">
-                    <button class="btn btn-secondary seriesCheck">
+                    <button class="sickrage-btn seriesCheck">
                         ${_('Select Filtered Episodes')}
                     </button>
-                    <button class="btn btn-secondary clearAll">
+                    <button class="sickrage-btn clearAll">
                         ${_('Clear All')}
                     </button>
-                    <button class="btn btn-secondary" id="popover" type="button">
+                    <button class="sickrage-btn" id="popover" type="button">
                         ${_('Select Columns')} <b class="caret"></b>
                     </button>
                 </div>

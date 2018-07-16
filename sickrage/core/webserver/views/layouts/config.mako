@@ -7,8 +7,8 @@
         <div class="col-lg-6 mx-auto">
             <div id="config-components">
                 <form id="configForm" action="${self.formaction()}" method="post">
-                    <div class="card bg-dark">
-                        <div class="card-header bg-secondary">
+                    <div class="sickrage-card">
+                        <div class="sickrage-card-header">
                             <h3 class="float-md-left"><i class="fas fa-wrench"></i> ${title}</h3>
                             <ul class="nav nav-pills card-header-pills float-md-right" id="config-menus">
                                     <%block name="menus"/>
@@ -23,11 +23,11 @@
                     <div class="row">
                         <div class="col-auto text-left py-2">
                             <input type="submit"
-                                   class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                                   class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
                         </div>
                         <div class="col-auto text-left py-2">
                             <input type="button" href="/config/reset"
-                                   class="btn btn-secondary resetConfig" value="${_('Reset to Defaults')}"/>
+                                   class="sickrage-btn resetConfig" value="${_('Reset to Defaults')}"/>
                         </div>
                         <div class="col pull-right">
                             <h6 class="text-right">

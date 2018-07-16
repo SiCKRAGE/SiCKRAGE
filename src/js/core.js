@@ -759,7 +759,7 @@ $(document).ready(function ($) {
                         return i++ !== 0;
                     });
 
-                    $('<input class="form-control input-sm">')
+                    $('<input class="form-control mb-1">')
                         .val(firstVal.currentPath)
                         .on('keypress', function (e) {
                             if (e.which === 13) {
@@ -772,7 +772,7 @@ $(document).ready(function ($) {
                             SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles, fileTypes);
                         });
 
-                    list = $('<ul>').appendTo(SICKRAGE.browser.fileBrowserDialog.find('.modal-body'));
+                    list = $('<div class="list-group">').appendTo(SICKRAGE.browser.fileBrowserDialog.find('.modal-body'));
                     $.each(data, function (i, entry) {
                         if (entry.isFile && fileTypes &&
                             (!entry.isAllowed || fileTypes.indexOf("images") !== -1 && !entry.isImage)) {
@@ -787,21 +787,21 @@ $(document).ready(function ($) {
                             }
                         }).text(entry.name);
                         if (entry.isImage) {
-                            link.prepend('<span class="ui-icon ui-icon-image"></span>');
+                            link.prepend('<span class="fas fa-file-image ml-1"></span>');
                         } else if (entry.isFile) {
-                            link.prepend('<span class="ui-icon ui-icon-blank"></span>');
+                            link.prepend('<span class="fas fa-file ml-1"></span>');
                         } else {
-                            link.prepend('<span class="ui-icon ui-icon-folder-collapsed"></span>')
+                            link.prepend('<span class="fas fa-folder ml-1"></span>')
                                 .on('mouseenter', function () {
-                                    $('span', this).addClass('ui-icon-folder-open');
+                                    $('span', this).addClass('fa-folder-open');
                                 })
                                 .on('mouseleave', function () {
-                                    $('span', this).removeClass('ui-icon-folder-open');
+                                    $('span', this).removeClass('fa-folder-open');
                                 });
                         }
                         link.appendTo(list);
                     });
-                    $('a', list).wrap('<li class="ui-state-default ui-corner-all">');
+                    $('a', list).wrap('<div class="list-group-item-dark">');
                     //SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog');
                 });
             },
@@ -813,6 +813,7 @@ $(document).ready(function ($) {
                 if (!SICKRAGE.browser.fileBrowserDialog) {
                     // set up the jquery dialog
                     SICKRAGE.browser.fileBrowserDialog = $('#fileBrowserDialog').modal();
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
                 } else {
                     // The title may change, even if fileBrowserDialog already exists
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
@@ -2767,7 +2768,7 @@ $(document).ready(function ($) {
                         success: function () {
                             clearInterval(window.progressInterval);
                             $('#pleaseWaitDialog').modal('hide');
-                        },
+                        }
                     });
                 });
 

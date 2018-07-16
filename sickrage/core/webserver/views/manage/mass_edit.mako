@@ -18,8 +18,8 @@
 
     <div class="row">
         <div class="col-lg-6 mx-auto">
-            <div class="card bg-dark m-1">
-                <div class="card-header bg-secondary">
+            <div class="sickrage-card m-1">
+                <div class="sickrage-card-header">
                     <h3 class="title">${title}</h3>
                 </div>
 
@@ -50,7 +50,7 @@
                             <div class="row">
                                 <span class="component-desc">
                                     ${_('Root Directories')} (*)
-                                    <table class="table table-bordered table-striped table-dark">
+                                    <table class="sickrage-table">
                                         <thead>
                                             <tr>
                                                 <th class="text-nowrap">${_('Current')}</th>
@@ -69,12 +69,12 @@
                                                         ${cur_dir}
                                                     </td>
                                                     <td>
-                                                        <a href="#" class="btn btn-secondary edit_root_dir"
+                                                        <a href="#" class="sickrage-btn edit_root_dir"
                                                            class="edit_root_dir"
                                                            id="edit_root_dir_${cur_index}">
                                                             ${_('Edit')}
                                                         </a>
-                                                        <a href="#" class="btn btn-secondary delete_root_dir"
+                                                        <a href="#" class="sickrage-btn delete_root_dir"
                                                            class="delete_root_dir"
                                                            id="delete_root_dir_${cur_index}">
                                                             ${_('Delete')}
@@ -291,7 +291,7 @@
 
                         </fieldset>
                         <input id="submit" type="submit" value="${_('Save Changes')}"
-                               class="btn btn-secondary config_submitter button">
+                               class="sickrage-btn config_submitter button">
                     </form>
                 </div>
             </div>

@@ -336,7 +336,7 @@
                             % endfor
                             % else:
                                 <a href="${srWebRoot}${menuItem['path']}"
-                                   class="btn btn-secondary shadow ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
+                                   class="sickrage-btn shadow ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
                                     <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
                                 </a>
                             <% first = False %>

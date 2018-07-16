@@ -54,7 +54,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 

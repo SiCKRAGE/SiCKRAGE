@@ -16,8 +16,8 @@
     <div id="show">
         <div class="row">
             <div class="col-lg-6 mx-auto">
-                <div class="card bg-dark m-1">
-                    <div class="card-header bg-secondary">
+                <div class="sickrage-card m-1">
+                    <div class="sickrage-card-header">
                         <h3 class="title float-md-left">${title}</h3>
                         <ul class="nav nav-pills card-header-pills float-md-right">
                             <li class="nav-item px-1">
@@ -410,7 +410,7 @@
                         <div class="form-row py-1 px-1">
                             <div class="col-md-12">
                                 <input id="submit" type="submit" value="${_('Save Changes')}"
-                                       class="btn btn-secondary pull-left config_submitter button">
+                                       class="sickrage-btn pull-left config_submitter button">
                             </div>
                         </div>
                     </form>

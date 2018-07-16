@@ -115,7 +115,7 @@
                 </div>
                 <input type="hidden" name="provider_order" id="provider_order"
                        value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
-                <br><input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/><br>
+                <br><input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/><br>
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
@@ -911,7 +911,7 @@
                 <!-- end div for editing providers -->
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="btn btn-secondary config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -1014,7 +1014,7 @@
 
                                 <div class="form-row">
                                     <div class="col-md-12">
-                                        <input class="btn btn-secondary newznab_cat_update"
+                                        <input class="sickrage-btn newznab_cat_update"
                                                type="button"
                                                id="newznab_cat_update"
                                                value=${_('Update Categories')}/>
@@ -1026,7 +1026,7 @@
                         <div id="newznab_add_div">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="btn btn-secondary newznab_save" type="button" id="newznab_add"
+                                    <input class="sickrage-btn newznab_save" type="button" id="newznab_add"
                                            value=${_('Add')}>
                                 </div>
                             </div>
@@ -1139,7 +1139,7 @@
                         <div id="torrentrss_add_div">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input type="button" class="btn btn-secondary torrentrss_save" id="torrentrss_add"
+                                    <input type="button" class="sickrage-btn torrentrss_save" id="torrentrss_add"
                                            value="Add"/>
                                 </div>
                             </div>

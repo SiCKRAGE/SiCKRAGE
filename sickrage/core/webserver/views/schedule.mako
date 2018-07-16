@@ -68,10 +68,10 @@
             <div class="key">
                 % if 'calendar' != layout:
                     <b>Key:</b>
-                    <span class="listing-key listing-overdue">Missed</span>
-                    <span class="listing-key listing-current">Today</span>
-                    <span class="listing-key listing-default">Soon</span>
-                    <span class="listing-key listing-toofar">Later</span>
+                    <span class="badge listing-overdue">Missed</span>
+                    <span class="badge listing-current">Today</span>
+                    <span class="badge listing-default">Soon</span>
+                    <span class="badge listing-toofar">Later</span>
                 % endif
                 <a class="btn btn-inline forceBacklog" href="webcal://${srHost}:${srHttpPort}/calendar">
                     <i class="icon-calendar icon-white"></i>Subscribe</a>

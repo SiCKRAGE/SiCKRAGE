@@ -11,14 +11,14 @@
     <div class="row bg-dark mb-3 px-4">
         <div class="col">
             <div class="m-2">
-                <button class="btn btn-secondary" id="submitMassEdit">${_('Mass Edit')}</button>
-                <button class="btn btn-secondary" id="submitMassUpdate">${_('Mass Update')}</button>
-                <button class="btn btn-secondary" id="submitMassRescan">${_('Mass Rescan')}</button>
-                <button class="btn btn-secondary" id="submitMassRename">${_('Mass Rename')}</button>
-                <button class="btn btn-secondary" id="submitMassDelete">${_('Mass Delete')}</button>
-                <button class="btn btn-secondary" id="submitMassRemove">${_('Mass Remove')}</button>
+                <button class="sickrage-btn" id="submitMassEdit">${_('Mass Edit')}</button>
+                <button class="sickrage-btn" id="submitMassUpdate">${_('Mass Update')}</button>
+                <button class="sickrage-btn" id="submitMassRescan">${_('Mass Rescan')}</button>
+                <button class="sickrage-btn" id="submitMassRename">${_('Mass Rename')}</button>
+                <button class="sickrage-btn" id="submitMassDelete">${_('Mass Delete')}</button>
+                <button class="sickrage-btn" id="submitMassRemove">${_('Mass Remove')}</button>
                 % if sickrage.app.config.use_subtitles:
-                    <input class="btn btn-secondary pull-left" type="button" value="${_('Mass Subtitle')}"
+                    <input class="sickrage-btn pull-left" type="button" value="${_('Mass Subtitle')}"
                            id="submitMassSubtitle"/>
                 % endif
             </div>
@@ -35,7 +35,7 @@
     </div>
 
     <form name="massUpdateForm" method="post" action="massUpdate">
-        <table id="massUpdateTable" class="table table-bordered table-striped table-dark" cellspacing="1" border="0" cellpadding="0">
+        <table id="massUpdateTable" class="sickrage-table" cellspacing="1" border="0" cellpadding="0">
             <thead>
             <tr>
                 <th class="table-fit text-center col-checkbox">${_('Selected')}<br/>
