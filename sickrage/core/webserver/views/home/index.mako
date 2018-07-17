@@ -205,7 +205,7 @@
                         <div class="show-container" id="show${curShow.indexerid}" data-name="${curShow.name}"
                              data-date="${data_date}" data-network="${curShow.network}"
                              data-progress="${progressbar_percent}">
-                            <div class="card card-block text-white bg-dark m-1">
+                            <div class="card card-block text-white bg-dark m-1 shadow">
                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                     <img alt="" class="card-img-top"
                                          src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
@@ -285,15 +285,15 @@
                 <table id="showListTable${curListType}" class="sickrage-table">
                     <thead>
                     <tr>
-                        <th class="nowrap">${_('Next Ep')}</th>
-                        <th class="nowrap">${_('Prev Ep')}</th>
+                        <th class="table-fit nowrap">${_('Next Ep')}</th>
+                        <th class="table-fit nowrap">${_('Prev Ep')}</th>
                         <th>${_('Show')}</th>
-                        <th>${_('Network')}</th>
-                        <th>${_('Quality')}</th>
+                        <th class="table-fit">${_('Network')}</th>
+                        <th class="table-fit">${_('Quality')}</th>
                         <th>${_('Downloads')}</th>
-                        <th>${_('Size')}</th>
-                        <th>${_('Active')}</th>
-                        <th>${_('Status')}</th>
+                        <th class="table-fit">${_('Size')}</th>
+                        <th class="table-fit">${_('Active')}</th>
+                        <th class="table-fit">${_('Status')}</th>
                     </tr>
                     </thead>
 
@@ -432,7 +432,7 @@
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
                                            title="${curShow.name}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                 style="width: auto;height: 20%"
+                                                 class="rounded shadow" style="width: auto;height: 20%"
                                                  alt="${curShow.indexerid}"/>
                                         </a>
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
@@ -444,12 +444,15 @@
                                         <span style="display: none;">${curShow.name}</span>
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
-                                                 class="rounded" alt="${curShow.indexerid}" title="${curShow.name}"/>
+                                                 class="rounded shadow" alt="${curShow.indexerid}"
+                                                 title="${curShow.name}"/>
                                         </a>
                                     </td>
                                 % elif sickrage.app.config.home_layout == 'simple':
-                                    <td class="tvShow"><a
-                                            href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
+                                    <td class="tvShow">
+                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                            ${curShow.name}
+                                        </a>
                                     </td>
                                 % endif
 
@@ -457,12 +460,14 @@
                                     <td class="align-middle text-center">
                                         % if curShow.network:
                                             <span>
-                                                <i class="sickrage-network sickrage-network-${network_class_name}" title="${curShow.network}"></i>
+                                                <i class="sickrage-network sickrage-network-${network_class_name}"
+                                                   title="${curShow.network}"></i>
                                             </span>
                                             <span class="d-none d-print-inline">${curShow.network}</span>
                                         % else:
                                             <span>
-                                                <i class="sickrage-network sickrage-network-no-network" title="${_('No Network')}"></i>
+                                                <i class="sickrage-network sickrage-network-no-network"
+                                                   title="${_('No Network')}"></i>
                                             </span>
                                             <span class="d-none d-print-inline">No Network</span>
                                         % endif
@@ -477,7 +482,7 @@
 
                                 <td class="align-middle text-center">
                                     <span style="display: none;">${download_stat}</span>
-                                    <div class="bg-dark rounded">
+                                    <div class="bg-dark rounded shadow">
                                         <div class="progress-bar rounded" style="width: ${progressbar_percent}%"
                                              data-show-id="${curShow.indexerid}"
                                              data-progress-percentage="${progressbar_percent}"

@@ -6,122 +6,130 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col-md-12">
-            <h1 class="title">${title}</h1>
+        <div class="col-lg-6 mx-auto">
+            <div class="sickrage-card m-1">
+                <div class="sickrage-card-header">
+                    <h3>${title}</h3>
+                </div>
+                <div class="card-body">
+                    % if not whichStatus or (whichStatus and not ep_counts):
+                    % if whichStatus:
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>
+                                    ${_('None of your episodes have status')} ${statusStrings[int(whichStatus)]}
+                                </h2>
+                            </div>
+                        </div>
+                    % endif
+
+                        <form action="${srWebRoot}/manage/episodeStatuses">
+                            <label for="whichStatus">${_('Manage episodes with status')}</label>
+                            <div class="input-group">
+                                <select name="whichStatus" id="whichStatus" class="form-control shadow">
+                                    % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED:
+                                        %if curStatus not in [ARCHIVED, DOWNLOADED]:
+                                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                        %endif
+                                    % endfor
+                                </select>
+                                <div class="input-group-append">
+                                    <input class="sickrage-btn" type="submit" value="${_('Manage')}"/>
+                                </div>
+                            </div>
+                        </form>
+                    % else:
+                        <form action="${srWebRoot}/manage/changeEpisodeStatuses" method="post">
+                            <input type="hidden" id="oldStatus" name="oldStatus" value="${whichStatus}"/>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h2>
+                                        ${_('Shows containing')} ${statusStrings[int(whichStatus)]} ${_('episodes')}
+                                    </h2>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <%
+                                        if int(whichStatus) in [IGNORED, SNATCHED] + Quality.DOWNLOADED + Quality.ARCHIVED:
+                                            row_class = "good"
+                                        else:
+                                            row_class = Overview.overviewStrings[int(whichStatus)]
+                                    %>
+
+                                    <input type="hidden" id="row_class" value="${row_class}"/>
+
+                                    <label for="newStatus">${_('Set checked shows/episodes to')}</label>
+                                    <div class="input-group">
+                                        <select name="newStatus" id="newStatus" class="form-control">
+                                            <%
+                                                statusList = [SKIPPED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED
+                                                # Do not allow setting to bare downloaded or archived!
+                                                statusList.remove(DOWNLOADED)
+                                                statusList.remove(ARCHIVED)
+                                                if int(whichStatus) in statusList:
+                                                    statusList.remove(int(whichStatus))
+
+                                                if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED:
+                                                    statusList.append(FAILED)
+                                            %>
+
+                                            % for curStatus in statusList:
+                                                <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                            % endfor
+                                        </select>
+                                        <div class="input-group-append">
+                                            <input class="button" type="submit" value="${_('Go')}"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-xs selectAllShows">${_('Select All')}</button>
+                                    <button class="btn btn-xs unselectAllShows">${_('Clear All')}</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="sickrageTable manageTable" cellspacing="1" border="0" cellpadding="0">
+                                        % for cur_indexer_id in sorted_show_ids:
+                                            <tr id="${cur_indexer_id}">
+                                                <th>
+                                                    <input type="checkbox" class="allCheck"
+                                                           id="allCheck-${cur_indexer_id}"
+                                                           title="${show_names[cur_indexer_id]}"
+                                                           name="${cur_indexer_id}-all" checked/>
+                                                </th>
+                                                <th colspan="2" style="width: 100%; text-align: left;">
+                                                    <a class="whitelink"
+                                                       href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
+                                                        ${show_names[cur_indexer_id]}
+                                                    </a>
+                                                    (${ep_counts[cur_indexer_id]}) <input type="button"
+                                                                                          class="pull-right get_more_eps btn"
+                                                                                          id="${cur_indexer_id}"
+                                                                                          value="${_('Expand')}"/>
+                                                </th>
+                                            </tr>
+                                        % endfor
+                                        <tr>
+                                            <td style="padding:0;"></td>
+                                            <td style="padding:0;"></td>
+                                            <td style="padding:0;"></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    % endif
+                </div>
+            </div>
         </div>
     </div>
-    % if not whichStatus or (whichStatus and not ep_counts):
-        % if whichStatus:
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>
-                        ${_('None of your episodes have status')} ${statusStrings[int(whichStatus)]}
-                    </h2>
-                </div>
-            </div>
-        % endif
-
-        <form action="${srWebRoot}/manage/episodeStatuses">
-            <label for="whichStatus">${_('Manage episodes with status')}</label>
-            <div class="input-group">
-                <select name="whichStatus" id="whichStatus" class="form-control">
-                    % for curStatus in [SKIPPED, SNATCHED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                        %if curStatus not in [ARCHIVED, DOWNLOADED]:
-                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
-                        %endif
-                    % endfor
-                </select>
-                <div class="input-group-append">
-                    <input class="button" type="submit" value="${_('Manage')}"/>
-                </div>
-            </div>
-        </form>
-    % else:
-        <form action="${srWebRoot}/manage/changeEpisodeStatuses" method="post">
-            <input type="hidden" id="oldStatus" name="oldStatus" value="${whichStatus}"/>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <h2>
-                        ${_('Shows containing')} ${statusStrings[int(whichStatus)]} ${_('episodes')}
-                    </h2>
-                </div>
-            </div>
-
-            <br>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <%
-                        if int(whichStatus) in [IGNORED, SNATCHED] + Quality.DOWNLOADED + Quality.ARCHIVED:
-                            row_class = "good"
-                        else:
-                            row_class = Overview.overviewStrings[int(whichStatus)]
-                    %>
-
-                    <input type="hidden" id="row_class" value="${row_class}"/>
-
-                    <label for="newStatus">${_('Set checked shows/episodes to')}</label>
-                    <div class="input-group">
-                        <select name="newStatus" id="newStatus" class="form-control">
-                            <%
-                                statusList = [SKIPPED, WANTED, IGNORED] + Quality.DOWNLOADED + Quality.ARCHIVED
-                                # Do not allow setting to bare downloaded or archived!
-                                statusList.remove(DOWNLOADED)
-                                statusList.remove(ARCHIVED)
-                                if int(whichStatus) in statusList:
-                                    statusList.remove(int(whichStatus))
-
-                                if int(whichStatus) in [SNATCHED, SNATCHED_PROPER, SNATCHED_BEST] + Quality.ARCHIVED + Quality.DOWNLOADED:
-                                    statusList.append(FAILED)
-                            %>
-
-                            % for curStatus in statusList:
-                                <option value="${curStatus}">${statusStrings[curStatus]}</option>
-                            % endfor
-                        </select>
-                        <div class="input-group-append">
-                            <input class="button" type="submit" value="${_('Go')}"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <button class="btn btn-xs selectAllShows">${_('Select All')}</button>
-                    <button class="btn btn-xs unselectAllShows">${_('Clear All')}</button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="sickrageTable manageTable" cellspacing="1" border="0" cellpadding="0">
-                        % for cur_indexer_id in sorted_show_ids:
-                            <tr id="${cur_indexer_id}">
-                                <th>
-                                    <input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
-                                           title="${show_names[cur_indexer_id]}"
-                                           name="${cur_indexer_id}-all" checked/>
-                                </th>
-                                <th colspan="2" style="width: 100%; text-align: left;">
-                                    <a class="whitelink" href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
-                                        ${show_names[cur_indexer_id]}
-                                    </a>
-                                    (${ep_counts[cur_indexer_id]}) <input type="button"
-                                                                          class="pull-right get_more_eps btn"
-                                                                          id="${cur_indexer_id}"
-                                                                          value="${_('Expand')}"/>
-                                </th>
-                            </tr>
-                        % endfor
-                        <tr>
-                            <td style="padding:0;"></td>
-                            <td style="padding:0;"></td>
-                            <td style="padding:0;"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </form>
-    % endif
 </%block>

@@ -4,13 +4,13 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col">
+        <div class="col-lg-6 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Backlog Search:')}</b>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Daily Search:')}</b>
@@ -46,7 +46,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Find Propers Search:')}</b>
@@ -67,7 +67,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Post-Processor:')}</b>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>${_('Search Queue:')}</h3>
                         </div>
@@ -108,7 +108,7 @@
                         </div>
                     </div>
 
-                    <div class="card bg-transparent mb-3">
+                    <div class="sickrage-card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>${_('Post-Processor Queue:')}</h3>
                         </div>

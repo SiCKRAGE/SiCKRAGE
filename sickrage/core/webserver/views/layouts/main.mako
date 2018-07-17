@@ -87,10 +87,7 @@
         <nav class="navbar navbar-expand-md navbar-dark navbar-default py-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="${srWebRoot}/home/">
-                    <img alt="SiCKRAGE"
-                         src="${srWebRoot}/images/logo.png"
-                         style="width: 400px;height: 50px;"
-                         class="img-responsive pull-left"/>
+                    <img alt="SiCKRAGE" src="${srWebRoot}/images/logo.png" style="width: 400px;height: 50px;"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent"
@@ -251,7 +248,7 @@
                                     ${_('Tools')}
                                 </span>
                                 <span class="d-sm-none d-md-block">
-                                    <img class="rounded-circle" style="width: 40px;height: 40px;"
+                                    <img class="rounded-circle shadow" style="width: 40px;height: 40px;"
                                          src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
                                         ${toolsBadge}
                                 </span>
@@ -336,7 +333,7 @@
                             % endfor
                             % else:
                                 <a href="${srWebRoot}${menuItem['path']}"
-                                   class="sickrage-btn shadow ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
+                                   class="sickrage-btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
                                     <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
                                 </a>
                             <% first = False %>

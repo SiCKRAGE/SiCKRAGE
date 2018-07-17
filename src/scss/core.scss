@@ -214,20 +214,23 @@ span.snatched b {
   @extend .table-bordered;
   @extend .table-striped;
   @extend .table-dark;
+  @extend .shadow;
 }
 
 .sickrage-btn {
   @extend .btn;
   @extend .btn-secondary;
-  @extend .shadow
+  @extend .shadow;
 }
 
 .sickrage-card {
   @extend .card;
   @extend .bg-dark;
+  @extend .shadow;
 }
 
 .sickrage-card-header {
   @extend .card-header;
   @extend .bg-secondary;
+  @extend .shadow;
 }
