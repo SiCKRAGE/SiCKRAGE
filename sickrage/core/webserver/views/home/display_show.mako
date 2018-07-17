@@ -312,8 +312,7 @@
                             <tr>
                                 <td class="showLegend">${_('Info Language:')}</td>
                                 <td>
-                                    <i class="sickrage-flags sickrage-flags-${info_flag}"
-                                       onError="this.onerror=null;this.class='sickrage-flags sickrage-flags-unknown';"></i>
+                                    <i class="sickrage-flags sickrage-flags-${info_flag}"></i>
                                 </td>
                             </tr>
                             % if sickrage.app.config.use_subtitles:

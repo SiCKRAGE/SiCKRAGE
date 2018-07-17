@@ -233,3 +233,10 @@ span.snatched b {
   @extend .bg-secondary;
   @extend .shadow;
 }
+
+.sickrage-form-control {
+  @extend .form-control;
+  @extend .bg-dark;
+  @extend .text-white;
+  @extend .border-0;
+}

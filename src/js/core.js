@@ -1257,52 +1257,6 @@ $(document).ready(function ($) {
             },
 
             history: function () {
-                $("#historyTable:has(tbody tr)").tablesorter({
-                    widgets: ['zebra', 'filter', 'reflow'],
-                    sortList: [[0, 1]],
-                    textExtraction: (function () {
-                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
-                            return {
-                                0: function (node) {
-                                    return $(node).find('time').attr('datetime');
-                                },
-                                4: function (node) {
-                                    return $(node).find("span").text().toLowerCase();
-                                }
-                            };
-                        } else {
-                            return {
-                                0: function (node) {
-                                    return $(node).find('time').attr('datetime');
-                                },
-                                1: function (node) {
-                                    return $(node).find("span").text().toLowerCase();
-                                },
-                                2: function (node) {
-                                    return $(node).attr("data-provider").toLowerCase();
-                                },
-                                5: function (node) {
-                                    return $(node).attr("data-quality").toLowerCase();
-                                }
-                            };
-                        }
-                    }()),
-                    headers: (function () {
-                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
-                            return {
-                                0: {sorter: 'realISODate'},
-                                4: {sorter: 'data-quality'}
-                            };
-                        } else {
-                            return {
-                                0: {sorter: 'realISODate'},
-                                4: {sorter: false},
-                                5: {sorter: 'data-quality'}
-                            };
-                        }
-                    }())
-                });
-
                 $('#history_limit').on('change', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/history/?limit=' + $(this).val();
                 });
