@@ -109,7 +109,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="card bg-transparent font-weight-bold"
+            <div class="sickrage-card bg-transparent font-weight-bold"
                  style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
                          url(${srWebRoot}${showImage(show.indexerid, 'banner').url});
                          background-size: 100% 100%;">
@@ -534,7 +534,7 @@
         <div class="col-md-12">
         <div class="horizontal-scroll">
         <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
-               class="table table-bordered table-dark display_show"
+               class="sickrage-table display_show"
                style="opacity: .80" cellspacing="0" border="0" cellpadding="0">
             <thead>
             <tr class="seasoncols">

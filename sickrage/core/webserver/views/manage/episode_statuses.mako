@@ -83,7 +83,7 @@
                                             % endfor
                                         </select>
                                         <div class="input-group-append">
-                                            <input class="button" type="submit" value="${_('Go')}"/>
+                                            <input class="sickrage-btn" type="submit" value="${_('Go')}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -91,13 +91,14 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="btn btn-xs selectAllShows">${_('Select All')}</button>
-                                    <button class="btn btn-xs unselectAllShows">${_('Clear All')}</button>
+                                    <button class="sickrage-btn selectAllShows">${_('Select All')}</button>
+                                    <button class="sickrage-btn unselectAllShows">${_('Clear All')}</button>
                                 </div>
                             </div>
+                            <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="sickrageTable manageTable" cellspacing="1" border="0" cellpadding="0">
+                                    <table class="sickrage-table manageTable">
                                         % for cur_indexer_id in sorted_show_ids:
                                             <tr id="${cur_indexer_id}">
                                                 <th>
@@ -111,10 +112,9 @@
                                                        href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
                                                         ${show_names[cur_indexer_id]}
                                                     </a>
-                                                    (${ep_counts[cur_indexer_id]}) <input type="button"
-                                                                                          class="pull-right get_more_eps btn"
-                                                                                          id="${cur_indexer_id}"
-                                                                                          value="${_('Expand')}"/>
+                                                    (${ep_counts[cur_indexer_id]})
+                                                    <input type="button" class="sickrage-btn btn-sm get_more_eps"
+                                                           id="${cur_indexer_id}" value="${_('Expand')}"/>
                                                 </th>
                                             </tr>
                                         % endfor
