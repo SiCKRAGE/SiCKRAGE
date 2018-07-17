@@ -287,7 +287,7 @@
                     <tr>
                         <th class="table-fit nowrap">${_('Next Ep')}</th>
                         <th class="table-fit nowrap">${_('Prev Ep')}</th>
-                        <th>${_('Show')}</th>
+                        <th class="${('', 'table-fit')[sickrage.app.config.home_layout in ['small', 'banner']]}">${_('Show')}</th>
                         <th class="table-fit">${_('Network')}</th>
                         <th class="table-fit">${_('Quality')}</th>
                         <th>${_('Downloads')}</th>
@@ -428,15 +428,12 @@
                                 % endif
 
                                 % if sickrage.app.config.home_layout == 'small':
-                                    <td class="tvShow" align="left">
+                                    <td class="tvShow" align="center">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
                                            title="${curShow.name}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                 class="rounded shadow" style="width: auto;height: 20%"
+                                                 class="rounded shadow" style="width: auto;height: 30%"
                                                  alt="${curShow.indexerid}"/>
-                                        </a>
-                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                            ${curShow.name}
                                         </a>
                                     </td>
                                 % elif sickrage.app.config.home_layout == 'banner':
