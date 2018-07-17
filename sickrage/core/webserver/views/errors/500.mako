@@ -9,7 +9,7 @@
     <a href="#mako-error" class="btn btn-default" data-toggle="collapse">${_('Show/Hide Error')}</a>
     <div id="mako-error" class="collapse">
         <br>
-        <div class="align-center">
+        <div class="align-center text-white">
             <% filename, lineno, function, line = backtrace.traceback[-1] %>
             <pre>
                 ${_('File')} ${filename}:${lineno}, ${_('in')} ${function}:

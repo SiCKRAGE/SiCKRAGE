@@ -1184,50 +1184,6 @@ $(document).ready(function ($) {
 
             schedule: function () {
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['list'])) {
-                    var sortCodes = {'date': 0, 'show': 2, 'network': 5};
-                    var sort = SICKRAGE.getMeta('sickrage.COMING_EPS_SORT');
-                    var sortList = (sort in sortCodes) ? [[sortCodes[sort], 0]] : [[0, 0]];
-
-                    $('#showListTable:has(tbody tr)').tablesorter({
-                        widgets: ['stickyHeaders', 'filter', 'columnSelector', 'saveSort', 'reflow'],
-                        sortList: sortList,
-                        textExtraction: {
-                            0: function (node) {
-                                return $(node).find('time').attr('datetime');
-                            },
-                            1: function (node) {
-                                return $(node).find('time').attr('datetime');
-                            },
-                            7: function (node) {
-                                return $(node).find('span').text().toLowerCase();
-                            }
-                        },
-                        headers: {
-                            0: {sorter: 'realISODate'},
-                            1: {sorter: 'realISODate'},
-                            2: {sorter: 'loadingNames'},
-                            4: {sorter: 'loadingNames'},
-                            7: {sorter: 'quality'},
-                            8: {sorter: false},
-                            9: {sorter: false}
-                        },
-                        widgetOptions: (function () {
-                            if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
-                                return {
-                                    filter_columnFilters: true,
-                                    filter_hideFilters: true,
-                                    filter_saveFilters: true,
-                                    columnSelector_mediaquery: false
-                                };
-                            } else {
-                                return {
-                                    filter_columnFilters: false,
-                                    columnSelector_mediaquery: false
-                                };
-                            }
-                        }())
-                    });
-
                     SICKRAGE.ajax_search.ajaxEpSearch();
                 }
 
@@ -4950,58 +4906,6 @@ $(document).ready(function ($) {
             },
 
             mass_update: function () {
-                $("#massUpdateTable:has(tbody tr)").tablesorter({
-                    headerTemplate: '{content}{icon}',
-                    sortList: [[1, 0]],
-                    textExtraction: {
-                        2: function (node) {
-                            return $(node).find("span").text().toLowerCase();
-                        },
-                        3: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        4: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        5: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        6: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        7: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        8: function (node) {
-                            return $(node).find("img").attr("alt");
-                        },
-                        9: function (node) {
-                            return $(node).find("img").attr("alt");
-                        }
-                    },
-                    widgets: ['scroller'],
-                    headers: {
-                        0: {sorter: false},
-                        1: {sorter: 'showNames'},
-                        2: {sorter: 'quality'},
-                        3: {sorter: 'sports'},
-                        4: {sorter: 'scene'},
-                        5: {sorter: 'anime'},
-                        6: {sorter: 'flatten_folders'},
-                        7: {sorter: 'skip_downloaded'},
-                        8: {sorter: 'paused'},
-                        9: {sorter: 'subtitle'},
-                        10: {sorter: 'default_ep_status'},
-                        11: {sorter: 'status'},
-                        12: {sorter: false},
-                        13: {sorter: false},
-                        14: {sorter: false},
-                        15: {sorter: false},
-                        16: {sorter: false},
-                        17: {sorter: false}
-                    }
-                });
-
                 $('#submitMassEdit').on('click', function () {
                     var checkArr = [];
 

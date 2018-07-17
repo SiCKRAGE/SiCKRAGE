@@ -26,7 +26,7 @@
     <% curSeason = -1 %>
     <% odd = False%>
 
-    <table id="SelectAllTable" class="sickrageTable" cellspacing="1" border="0" cellpadding="0">
+    <table id="SelectAllTable" class="sickrage-table" cellspacing="1" border="0" cellpadding="0">
         <thead>
         <tr class="seasonheader" id="season-all">
             <td colspan="4">
@@ -48,7 +48,7 @@
     <input type="submit" value="${_('Rename Selected')}" class="btn btn-success"/>
     <a href="${srWebRoot}/home/displayShow?show=${show.indexerid}" class="btn btn-danger">${_('Cancel Rename')}</a>
 
-    <table id="testRenameTable" class="sickrageTable" cellspacing="1" border="0" cellpadding="0">
+    <table id="testRenameTable" class="sickrage-table" cellspacing="1" border="0" cellpadding="0">
 
         % for cur_ep_obj in ep_obj_list:
         <%

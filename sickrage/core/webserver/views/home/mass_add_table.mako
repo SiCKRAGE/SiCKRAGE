@@ -4,7 +4,7 @@
     from sickrage.indexers import IndexerApi
 %>
 
-<table id="addRootDirTable" class="sickrageTable tablesorter">
+<table id="addRootDirTable" class="sickrage-table">
     <thead>
     <tr>
         <th class="col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>

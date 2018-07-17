@@ -70,7 +70,7 @@
                         </div>
                         <% bestQualityList = filter(lambda x: Quality.SDTV <= x < Quality.UNKNOWN, Quality.qualityStrings) %>
                         <select id="bestQualities" name="bestQualities" multiple="multiple"
-                                size="${len(bestQualityList)}" class="form-control form-control-inline input-sm"
+                                size="${len(bestQualityList)}" class="form-control form-control-inline"
                                 title="bestQualities">
                             % for curQuality in sorted(bestQualityList):
                                 <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in bestQualities]}>${Quality.qualityStrings[curQuality]}</option>

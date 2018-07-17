@@ -115,7 +115,7 @@
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
         <label class="component-title">
-            <input class="btn btn-inline" type="button" id="saveDefaultsButton" value="${_('Save As Defaults')}"
+            <input class="sickrage-btn" type="button" id="saveDefaultsButton" value="${_('Save As Defaults')}"
                    disabled/>
         </label>
     </div>

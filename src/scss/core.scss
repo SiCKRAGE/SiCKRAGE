@@ -59,6 +59,22 @@ body {
   background-image: -o-linear-gradient(#da5945, #b11a10) !important;
 }
 
+.listing-default {
+    background-color: #f5f1e4;
+}
+
+.listing-current {
+    background-color: #ffb65e;
+}
+
+.listing-overdue {
+    background-color: #ffb0b0;
+}
+
+.listing-toofar {
+    background-color: #bedeed;
+}
+
 span.any-hd {
   background: #2672b6 repeating-linear-gradient(
                   -45deg,

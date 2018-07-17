@@ -74,7 +74,7 @@
                                 <button type="button" class="sickrage-btn unselectAllShows">${_('Clear all')}</button>
                             </div>
                             <br>
-                            <table class="sickrageTable manageTable" cellspacing="1" border="0" cellpadding="0">
+                            <table class="sickrage-table manageTable" cellspacing="1" border="0" cellpadding="0">
                                 % for cur_indexer_id in sorted_show_ids:
                                     <tr id="${cur_indexer_id}">
                                         <th style="width: 1%;">
