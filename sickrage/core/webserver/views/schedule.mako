@@ -21,11 +21,9 @@
                     <div class="float-right">
                         <div class="input-group">
                             % if layout == 'list':
-                                <button id="popover" type="button"
-                                        class="form-control form-control-inline"><b
-                                        class="caret"></b></button>
+                                <input id="popover" type="button" class="sickrage-btn"/>
                             % else:
-                                <select id="sortby" name="sort" class="form-control"
+                                <select id="sortby" name="sort" class="sickrage-form-control"
                                         onchange="location = this.options[this.selectedIndex].value;">
                                     <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'date']} >
                                         Date
@@ -49,6 +47,7 @@
                                     Shown
                                 </option>
                             </select>
+
                             <select id="layout" name="layout" class="form-control"
                                     onchange="location = this.options[this.selectedIndex].value;">
                                 <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'poster']} >
@@ -64,8 +63,14 @@
                                     List
                                 </option>
                             </select>
+
+                            <a class="sickrage-btn btn-dark forceBacklog"
+                               href="webcal://${srHost}:${srHttpPort}/calendar">
+                                <i class="icon-calendar icon-white"></i>
+                                Subscribe
+                            </a>
                         </div>
-                        <div class="key float-right">
+                        <div class="float-right">
                             % if 'calendar' != layout:
                                 <b>Key:</b>
                                 <span class="badge text-black-50 listing-overdue">Missed</span>
@@ -73,9 +78,6 @@
                                 <span class="badge text-black-50 listing-default">Soon</span>
                                 <span class="badge text-black-50 listing-toofar">Later</span>
                             % endif
-                            <a class="sickrage-btn btn-dark forceBacklog"
-                               href="webcal://${srHost}:${srHttpPort}/calendar">
-                                <i class="icon-calendar icon-white"></i>Subscribe</a>
                         </div>
                     </div>
                 </div>

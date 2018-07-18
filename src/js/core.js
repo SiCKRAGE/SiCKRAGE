@@ -6,7 +6,6 @@ import 'jquery-ui/ui/widgets/sortable';
 import 'jquery-ui/ui/widgets/dialog';
 import 'tooltipster';
 import 'jquery-backstretch';
-import 'tablesorter';
 import 'bootbox';
 import 'pnotify/dist/es/PNotifyMobile';
 import 'pnotify/dist/es/PNotifyButtons';
@@ -210,99 +209,6 @@ $(document).ready(function ($) {
                     };
                     $("[datetime]").timeago();
                 }
-
-                $.tablesorter.addParser(
-                    {
-                        id: 'loadingNames',
-                        is: function () {
-                            return false;
-                        },
-                        format: function (s) {
-                            if (0 === s.indexOf('Loading...')) {
-                                return s.replace('Loading...', '000');
-                            } else {
-                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (s || '') : (s || '').replace(/^(The|A|An)\s/i, ''));
-                            }
-                        },
-                        type: 'text'
-                    }
-                );
-
-                $.tablesorter.addParser(
-                    {
-                        id: 'quality',
-                        is: function () {
-                            return false;
-                        },
-                        format: function (s) {
-                            return s.replace('hd1080p', 5).replace('hd720p', 4).replace('hd', 3).replace('sd', 2).replace('any', 1).replace('best', 0).replace('custom', 7);
-                        },
-                        type: 'numeric'
-                    }
-                );
-
-                $.tablesorter.addParser(
-                    {
-                        id: 'realISODate',
-                        is: function () {
-                            return false;
-                        },
-                        format: function (s) {
-                            return new Date(s).getTime();
-                        },
-                        type: 'numeric'
-                    }
-                );
-
-                $.tablesorter.addParser(
-                    {
-                        id: 'cDate',
-                        is: function () {
-                            return false;
-                        },
-                        format: function (s) {
-                            return s;
-                        },
-                        type: 'numeric'
-                    }
-                );
-
-                $.tablesorter.addParser(
-                    {
-                        id: 'eps',
-                        is: function () {
-                            return false;
-                        },
-                        format: function (s) {
-                            var match = s.match(/^(.*)/);
-
-                            if (match === null || match[1] === "?") {
-                                return -10;
-                            }
-
-                            var nums = match[1].split(" / ");
-                            if (nums[0].indexOf("+") !== -1) {
-                                var numParts = nums[0].split("+");
-                                nums[0] = numParts[0];
-                            }
-
-                            nums[0] = parseInt(nums[0]);
-                            nums[1] = parseInt(nums[1]);
-
-                            if (nums[0] === 0) {
-                                return nums[1];
-                            }
-                            var finalNum = parseInt((SICKRAGE.getMeta('max_download_count')) * nums[0] / nums[1]);
-                            var pct = Math.round((nums[0] / nums[1]) * 100) / 1000;
-                            if (finalNum > 0) {
-                                finalNum += nums[0];
-                            }
-
-                            return finalNum + pct;
-                        },
-                        type: 'numeric'
-                    }
-                );
 
                 jconfirm.defaults = {
                     theme: 'dark',
@@ -1201,15 +1107,6 @@ $(document).ready(function ($) {
                         });
                     });
                 }
-
-                $('#popover').popover({
-                    placement: 'bottom',
-                    html: true, // required if content has HTML
-                    content: '<div id="popover-target"></div>'
-                }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
-                    // call this function to copy the column selection code into the popover
-                    $.tablesorter.columnSelector.attachTo($('#showListTable'), '#popover-target');
-                });
             },
 
             history: function () {
@@ -1344,16 +1241,6 @@ $(document).ready(function ($) {
                 //    $('[href=#command-' + commandId + ']').click();
                 //}
                 //});
-            },
-
-            status: function () {
-                $("#schedulerStatusTable").tablesorter({
-                    widgets: ['saveSort', 'zebra', 'reflow']
-                });
-                $("#queueStatusTable").tablesorter({
-                    widgets: ['saveSort', 'zebra', 'reflow'],
-                    sortList: [[3, 0], [4, 0], [2, 1]]
-                });
             }
         },
 
@@ -1380,16 +1267,16 @@ $(document).ready(function ($) {
                 }, 500));
 
                 function resizePosters(newSize) {
-                    var fontSize, logoWidth, borderRadius;
+                    var fontSize, spriteScale, borderRadius;
                     if (newSize < 125) { // small
                         borderRadius = 3;
                     } else if (newSize < 175) { // medium
                         fontSize = 9;
-                        logoWidth = 40;
+                        spriteScale = .6;
                         borderRadius = 4;
                     } else { // large
                         fontSize = 11;
-                        logoWidth = 50;
+                        spriteScale = 1;
                         borderRadius = 6;
                     }
 
@@ -1400,7 +1287,7 @@ $(document).ready(function ($) {
                     } else {
                         $('.show-details').show();
                         $('.show-dlstats, .show-quality').css('fontSize', fontSize);
-                        $('.show-network-image').css('width', logoWidth);
+                        $('.show-network-image').css('transform', `scale(${spriteScale})`);
                     }
 
                     $('.show-container').css({
@@ -1440,126 +1327,6 @@ $(document).ready(function ($) {
                     $(this).remove();
                 });
 
-                $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
-                    sortList: [[7, 1], [2, 0]],
-                    textExtraction: {
-                        0: function (node) {
-                            return $(node).find('time').attr('datetime');
-                        },
-                        1: function (node) {
-                            return $(node).find('time').attr('datetime');
-                        },
-                        3: function (node) {
-                            return $(node).find("span").prop("title").toLowerCase();
-                        },
-                        4: function (node) {
-                            return $(node).find("span").text().toLowerCase();
-                        },
-                        5: function (node) {
-                            return $(node).find("span:first").text();
-                        },
-                        6: function (node) {
-                            return $(node).data('show-size');
-                        },
-                        7: function (node) {
-                            return $(node).find("img").attr("alt");
-                        }
-                    },
-                    widgets: ['saveSort', 'zebra', 'stickyHeaders', 'filter', 'columnSelector'],
-                    headers: (function () {
-                        if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
-                            return {
-                                0: {sorter: 'realISODate'},
-                                1: {sorter: 'realISODate'},
-                                2: {sorter: 'loadingNames'},
-                                4: {sorter: 'quality'},
-                                5: {sorter: 'eps'},
-                                6: {sorter: 'digit'},
-                                7: {filter: 'parsed'}
-                            };
-                        } else {
-                            return {
-                                0: {sorter: 'realISODate'},
-                                1: {sorter: 'realISODate'},
-                                2: {sorter: 'loadingNames'},
-                                4: {sorter: 'quality'},
-                                5: {sorter: 'eps'},
-                                6: {sorter: 'digit'}
-                            };
-                        }
-                    }()),
-                    widgetOptions: (function () {
-                        if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
-                            return {
-                                filter_columnFilters: true,
-                                filter_hideFilters: true,
-                                // filter_saveFilters: true,
-                                filter_functions: {
-                                    5: function (e, n, f) {
-                                        var test = false;
-                                        var pct = Math.floor((n % 1) * 1000);
-                                        if (f === '') {
-                                            test = true;
-                                        } else {
-                                            var result = f.match(/(<|<=|>=|>)\s(\d+)/i);
-                                            if (result) {
-                                                if (result[1] === "<") {
-                                                    if (pct < parseInt(result[2])) {
-                                                        test = true;
-                                                    }
-                                                } else if (result[1] === "<=") {
-                                                    if (pct <= parseInt(result[2])) {
-                                                        test = true;
-                                                    }
-                                                } else if (result[1] === ">=") {
-                                                    if (pct >= parseInt(result[2])) {
-                                                        test = true;
-                                                    }
-                                                } else if (result[1] === ">") {
-                                                    if (pct > parseInt(result[2])) {
-                                                        test = true;
-                                                    }
-                                                }
-                                            }
-
-                                            result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
-                                            if (result) {
-                                                if ((result[2] === "-") || (result[2] === "to")) {
-                                                    if ((pct >= parseInt(result[1])) && (pct <= parseInt(result[3]))) {
-                                                        test = true;
-                                                    }
-                                                }
-                                            }
-
-                                            result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
-                                            if (result) {
-                                                if ((result[1] === "=") || (result[3] === "=")) {
-                                                    if (parseInt(result[2]) === pct) {
-                                                        test = true;
-                                                    }
-                                                }
-                                            }
-
-                                            if (!isNaN(parseFloat(f)) && isFinite(f)) {
-                                                if (parseInt(f) === pct) {
-                                                    test = true;
-                                                }
-                                            }
-                                        }
-                                        return test;
-                                    }
-                                },
-                                columnSelector_mediaquery: false
-                            };
-                        } else {
-                            return {
-                                filter_columnFilters: false
-                            };
-                        }
-                    }()),
-                    sortStable: true,
-                    sortAppend: [[2, 0]]
-                });
 
                 $('.show-grid').imagesLoaded(function () {
                     //$('.loading-spinner').hide();
@@ -1655,16 +1422,6 @@ $(document).ready(function ($) {
                     });
                 });
 
-                if ($("#showListTableShows").find("tbody").find("tr").length > 0) {
-                    $.tablesorter.filter.bindSearch("#showListTableShows", $('.search'));
-                }
-
-                if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
-                    if ($("#showListTableAnime").find("tbody").find("tr").length > 0) {
-                        $.tablesorter.filter.bindSearch("#showListTableAnime", $('.search'));
-                    }
-                }
-
                 $('#postersort').on('change', function () {
                     var sortValue = $(this).val();
                     $('.show-grid').isotope({sortBy: sortValue});
@@ -1676,18 +1433,6 @@ $(document).ready(function ($) {
                     $('.show-grid').isotope({sortAscending: sortDirection});
                     $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
-
-                $('#popover').popover({
-                    placement: 'bottom',
-                    html: true, // required if content has HTML
-                    content: '<div id="popover-target"></div>'
-                }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
-                    // call this function to copy the column selection code into the popover
-                    $.tablesorter.columnSelector.attachTo($('#showListTableShows'), '#popover-target');
-                    if (SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
-                        $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
-                    }
-                });
             },
 
             display_show: {
@@ -1696,24 +1441,6 @@ $(document).ready(function ($) {
                         $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
-
-                    $("#showTable, #animeTable").tablesorter({
-                        widgets: ['saveSort', 'columnSelector'],
-                        widgetOptions: {
-                            columnSelector_saveColumns: true,
-                            columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
-                            columnSelector_mediaquery: false,
-                            columnSelector_cssChecked: 'checked'
-                        }
-                    });
-
-                    $('#popover').popover({
-                        placement: 'bottom',
-                        html: true, // required if content has HTML
-                        content: '<div id="popover-target"></div>'
-                    }).on('shown.bs.popover', function () {
-                        $.tablesorter.columnSelector.attachTo($("#showTable, #animeTable"), '#popover-target');
-                    });
 
                     $('#imdbstars').each(function (i, e) {
                         $(e).html($('<span>').width($(e).text() * 12));
@@ -2134,13 +1861,6 @@ $(document).ready(function ($) {
                     $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" />' + gt('loading folders...'));
                     $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
-                        $("#addRootDirTable").tablesorter({
-                            sortList: [[1, 0]],
-                            widgets: ['zebra', 'reflow'],
-                            headers: {
-                                0: {sorter: false}
-                            }
-                        });
                     });
                 },
 
@@ -5066,12 +4786,6 @@ $(document).ready(function ($) {
             },
 
             failed_downloads: function () {
-                $("#failedTable:has(tbody tr)").tablesorter({
-                    widgets: ['zebra', 'reflow'],
-                    sortList: [[0, 0]],
-                    headers: {3: {sorter: false}}
-                });
-
                 $('#limit').change(function () {
                     window.location.href = SICKRAGE.srWebRoot + '/manage/failedDownloads/?limit=' + $(this).val();
                 });

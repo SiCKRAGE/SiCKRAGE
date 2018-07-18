@@ -247,33 +247,35 @@
                                       ${out}
                                     </div>
                                 </div>
-                                <div class="card-footer py-1 px-1">
-                                    <div class="row">
-                                        <div class="col text-left small">
-                                          <span class="badge badge-info show-dlstats"
-                                                title="${download_stat_tip}">${download_stat}</span>
-                                        </div>
-                                        <div class="col">
-                                            % if sickrage.app.config.home_layout != 'simple':
-                                                % if curShow.network:
-                                                    <span>
-                                                        <i class="sickrage-network sickrage-network-${network_class_name}"
-                                                           title="${curShow.network}"></i>
-                                                    </span>
+                                <div class="card-footer show-details p-1">
+                                    <table class="show-details text-center w-100">
+                                        <tr>
+                                            <td class="text-left">
+                                                <span class="d-inline-block small show-dlstats"
+                                                      title="${download_stat_tip}">${download_stat}</span>
+                                            </td>
+                                            <td style="vertical-align: middle">
+                                                % if sickrage.app.config.home_layout != 'simple':
+                                                    % if curShow.network:
+                                                        <span>
+                                                            <i class="d-block show-network-image sickrage-network sickrage-network-${network_class_name}"
+                                                               title="${curShow.network}"></i>
+                                                        </span>
+                                                    % else:
+                                                        <span>
+                                                            <i class="d-block show-network-image sickrage-network sickrage-network-no-network"
+                                                               title="${_('No Network')}"></i>
+                                                        </span>
+                                                    % endif
                                                 % else:
-                                                    <span>
-                                                        <i class="sickrage-network sickrage-network-no-network"
-                                                           title="${_('No Network')}"></i>
-                                                  </span>
+                                                    <span title="${curShow.network}">${curShow.network}</span>
                                                 % endif
-                                            % else:
-                                                <span title="${curShow.network}">${curShow.network}</span>
-                                            % endif
-                                        </div>
-                                        <div class="col text-right small">
-                                            ${renderQualityPill(curShow.quality, showTitle=True)}
-                                        </div>
-                                    </div>
+                                            </td>
+                                            <td class="text-right">
+                                                ${renderQualityPill(curShow.quality, showTitle=True)}
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
                             </div>
                         </div>
