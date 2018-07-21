@@ -1260,7 +1260,8 @@ $(document).ready(function ($) {
                 $('#filterShowName').on('input', _.debounce(function () {
                     $('.show-grid').isotope({
                         filter: function () {
-                            var name = $(this).find('.show-title').html().trim().toLowerCase();
+                            var name = $('.show-container', this).data('name').trim().toLowerCase();
+                            console.log(name);
                             return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
                         }
                     });
@@ -2055,46 +2056,78 @@ $(document).ready(function ($) {
 
             new_show: {
                 init: function () {
-                    $("#addShowForm").steps({
-                        bodyTag: "section",
-                        transitionEffect: "fade",
-                        stepsOrientation: "vertical",
-                        onStepChanging: function (event, currentIndex, newIndex) {
-                            var show_name;
-                            if (currentIndex > newIndex) {
-                                return true;
-                            }
+                    var navListItems = $('div.setup-panel div a'),
+                        allWells = $('.setup-content'),
+                        allNextBtn = $('.nextBtn'),
+                        step1 = $('.setup-content #step-1'),
+                        step2 = $('.setup-content #step-2'),
+                        step3 = $('.setup-content #step-3');
 
-                            SICKRAGE.home.add_show_options();
-                            SICKRAGE.root_dirs.init();
-                            SICKRAGE.quality_chooser.init();
+                    allWells.hide();
 
+                    if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
+                        step1.hide();
+                        step2.show();
+                    }
 
-                            // if they've picked a radio button then use that
-                            if ($('input:radio[name=whichSeries]:checked').length) {
-                                show_name = $('input:radio[name=whichSeries]:checked').val().split('|')[4];
-                            }
-                            // if we provided a show in the hidden field, use that
-                            else if ($('input:hidden[name=whichSeries]').length && $('input:hidden[name=whichSeries]').val().length) {
-                                show_name = $('#providedName').val();
-                            } else {
-                                show_name = '';
-                            }
-
-                            if (show_name.length) {
-                                SICKRAGE.home.update_bwlist(show_name);
-                                return true;
-                            }
-                        },
-                        onFinished: function () {
-                            SICKRAGE.home.generate_bwlist();
-                            $(this).submit();
+                    $('#searchName').click(function() {
+                        if ($('#addShowForm')[0].checkValidity() === true) {
+                            $('#addShowForm')[0].classList.add('was-validated');
+                            $(".nextBtn").removeClass('disabled');
                         }
                     });
 
-                    if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
-                        $("#addShowForm").steps('getStep', '1');
-                    }
+                    $('#addShowForm').submit(function() {
+                        SICKRAGE.home.generate_bwlist();
+                    })
+
+                    navListItems.click(function (e) {
+                        e.preventDefault();
+                        var $target = $($(this).attr('href')),
+                            $item = $(this);
+
+                        if (!$item.hasClass('disabled')) {
+                            navListItems.removeClass('btn-success').addClass('btn-dark');
+                            $item.removeClass('btn-dark').addClass('btn-success');
+                            allWells.hide();
+                            $target.show();
+                            $target.find('input:eq(0)').focus();
+                        }
+                    });
+
+                    allNextBtn.click(function () {
+                        var curStep = $(this).closest(".setup-content"),
+                            curStepID = curStep.attr("id"),
+                            nextStepWizard = $('div.setup-panel div a[href="#' + curStepID + '"]').parent().next().children("a"),
+                            isValid = true,
+                            showName = '';
+
+                        if (curStepID == 'step-1') {
+                            // if they've picked a radio button then use that
+                            if ($('input:radio[name=whichSeries]:checked').length) {
+                                showName = $('input:radio[name=whichSeries]:checked').val().split('|')[4];
+                            }
+                            // if we provided a show in the hidden field, use that
+                            else if ($('input:hidden[name=whichSeries]').length && $('input:hidden[name=whichSeries]').val().length) {
+                                showName = $('#providedName').val();
+                            }
+
+                            if (showName.length) {
+                                SICKRAGE.home.update_bwlist(showName);
+                            } else {
+                                isValid = false;
+                            }
+                        } else if (curStepID == 'step-2') {
+                            SICKRAGE.root_dirs.init();
+                        } else if (curStepID == 'step-3') {
+                            SICKRAGE.home.add_show_options();
+                            SICKRAGE.quality_chooser.init();
+                        }
+
+                        if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
+                    });
+
+                    $('div.setup-panel div a.btn-success').trigger('click');
 
                     $('#searchName').on('click', function () {
                         $('#searchName').prop('disabled', true);
@@ -2109,17 +2142,15 @@ $(document).ready(function ($) {
 
                     $('#nameToSearch').focus();
 
-                    $('#indexerLang').bfhlanguages({
+                    /*$('#indexerLang').bfhlanguages({
                         language: SICKRAGE.getMeta('sickrage.DEFAULT_LANGUAGE'),
                         available: SICKRAGE.getMeta('sickrage.LANGUAGES')
-                    });
+                    });*/
 
-                    if ($('#nameToSearch').length && $('#nameToSearch').val().length) {
-                        $('#searchName').click();
-                    }
-
-                    $('#nameToSearch').keyup(function (event) {
-                        if (event.keyCode === 13) {
+                    $('#nameToSearch').keypress(function (e) {
+                        e.preventDefault();
+                        var keycode = (e.keyCode ? e.keyCode : e.which);
+                        if (keycode === 13) {
                             $('#searchName').click();
                         }
                     });

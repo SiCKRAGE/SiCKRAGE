@@ -125,10 +125,28 @@
                         % if not curLoadingShow.show:
                             <div class="show-container" data-name="0" data-date="010101" data-network="0"
                                  data-progress="101">
-                                <img alt="" title="${curLoadingShow.show_name}" class="show-image"
-                                     style="border-bottom: 1px solid #111;" src="${srWebRoot}/images/poster.png"/>
-                                <div class="show-details">
-                                    <div class="show-add">${_('Loading...')} ${curLoadingShow.show_name}</div>
+                                <div class="card card-block text-white bg-dark m-1 shadow">
+                                    <img alt="" title="${curLoadingShow.show_name}" class="card-img-top"
+                                         src="${srWebRoot}/images/poster.png"/>
+                                    <div class="card-header py-0 px-0">
+                                        <div class="bg-dark rounded">
+                                            <div class="progress progress-bar rounded hidden-print" role="progressbar"
+                                                 style="width: ${progressbar_percent}%;height: 5px;"
+                                                 data-progress-percentage="${progressbar_percent}"
+                                                 data-show-id="${curShow.indexerid}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body text-truncate py-1 px-1 small">
+                                        <div class="show-title">
+                                            ${curLoadingShow.show_name}
+                                        </div>
+                                    </div>
+                                    <div class="card-footer show-details p-1">
+                                        <div class="show-details">
+                                            <div class="show-add text-center">${_('... Loading ...')}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         % endif
@@ -251,19 +269,19 @@
                                     <table class="show-details text-center w-100">
                                         <tr>
                                             <td class="text-left">
-                                                <span class="d-inline-block small show-dlstats"
+                                                <span class="d-block small show-dlstats"
                                                       title="${download_stat_tip}">${download_stat}</span>
                                             </td>
                                             <td style="vertical-align: middle">
                                                 % if sickrage.app.config.home_layout != 'simple':
                                                     % if curShow.network:
                                                         <span>
-                                                            <i class="d-block show-network-image sickrage-network sickrage-network-${network_class_name}"
+                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-${network_class_name}"
                                                                title="${curShow.network}"></i>
                                                         </span>
                                                     % else:
                                                         <span>
-                                                            <i class="d-block show-network-image sickrage-network sickrage-network-no-network"
+                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-no-network"
                                                                title="${_('No Network')}"></i>
                                                         </span>
                                                     % endif
