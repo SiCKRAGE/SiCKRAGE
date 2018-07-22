@@ -21,18 +21,18 @@
 <%block name="pages">
     <div id="post-processing" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Post-Processing')}</h3>
                 <small class="form-text text-muted">
                     ${_('Settings that dictate how SickRage should process completed downloads.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
                             <input type="checkbox" name="process_automatically"
                                    id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
@@ -45,10 +45,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Post Processing Dir')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -74,10 +74,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Processing Method:')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -105,10 +105,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Auto Post-Processing Frequency')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -129,10 +129,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Postpone post processing')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="postpone_if_sync_files"
                                id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.postpone_if_sync_files)]}/>
                         <label for="postpone_if_sync_files">
@@ -141,10 +141,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Sync File Extensions to Ignore')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -160,10 +160,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Rename Episodes')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
                             <input type="checkbox" name="rename_episodes"
                                    id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
@@ -172,10 +172,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="create_missing_show_dirs"
                                id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                         <label for="create_missing_show_dirs">
@@ -184,10 +184,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="add_shows_wo_dir"
                                id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                         <label for="add_shows_wo_dir">
@@ -196,10 +196,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="move_associated_files"
                                id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                         <label for="move_associated_files">
@@ -208,10 +208,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="nfo_rename"
                                id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                         <label for="nfo_rename">
@@ -220,10 +220,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Associated file extensions')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -244,10 +244,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Delete non associated files')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="delete_non_associated_files"
                                id="delete_non_associated_files" ${('', 'checked')[bool(sickrage.app.config.delete_non_associated_files)]}/>
                         <label for="delete_non_associated_files">
@@ -256,10 +256,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Change File Date')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="airdate_episodes">
                             <input type="checkbox" name="airdate_episodes"
                                    id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
@@ -270,10 +270,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Timezone for File Date:')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -291,10 +291,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Unpack')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="unpack">
                             <input id="unpack" class="enabler" type="checkbox"
                                    name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
@@ -305,10 +305,10 @@
                 </div>
                 <div id="content_unpack">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Unpack Directory')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
@@ -323,10 +323,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Delete RAR contents')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="del_rar_contents"
                                    id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
                             <label for="del_rar_contents">
@@ -336,10 +336,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Don\'t delete empty folders')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="no_delete">
                             <input type="checkbox" name="no_delete"
                                    id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
@@ -351,10 +351,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Follow symbolic-links')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="processor_follow_symlinks">
                             <input type="checkbox" name="processor_follow_symlinks"
                                    id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
@@ -364,10 +364,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Delete Failed')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input id="delete_failed" type="checkbox"
                                name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
                         <label for="delete_failed">
@@ -376,10 +376,10 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Extra Scripts')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -407,19 +407,19 @@
 
     <div id="episode-naming" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Episode Naming')}</h3>
                 <small class="form-text text-muted">
                     ${_('How SickRage will name and sort your episodes.')}
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Name Pattern:')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><span class="fas fa-list"></span></span>
@@ -443,8 +443,8 @@
 
                 <div id="naming_custom">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-3 col-md-4 col-sm-5"></div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -611,10 +611,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Multi-Episode Style:')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><span class="fas fa-glasses"></span></span>
@@ -660,10 +660,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Strip Show Year')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
                             <input type="checkbox" id="naming_strip_year"
                                    name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
@@ -676,10 +676,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Custom Air-By-Date')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_abd"
                                name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.naming_custom_abd)]}/>
                         <label for="naming_custom_abd">
@@ -690,10 +690,10 @@
 
                 <div id="content_naming_custom_abd">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Air-by-date Name Pattern:')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-list"></span></span>
@@ -717,8 +717,8 @@
 
                     <div id="naming_abd_custom">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-3 col-md-4 col-sm-5"></div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
@@ -891,10 +891,10 @@
                 </div><!-- /naming_abd_different -->
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Custom Sports')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_sports"
                                name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.naming_custom_sports)]}/>
                         <label for="naming_custom_sports">
@@ -905,10 +905,10 @@
 
                 <div id="content_naming_custom_sports">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Sports Name Pattern:')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-list"></span></span>
@@ -932,8 +932,8 @@
 
                     <div id="naming_sports_custom">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12"></div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-3 col-md-4 col-sm-5"></div>
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
@@ -1106,10 +1106,10 @@
 
                 <!-- naming_anime_custom -->
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Custom Anime')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" id="naming_custom_anime"
                                name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.naming_custom_anime)]}/>
                         <label for="naming_custom_anime">
@@ -1120,10 +1120,10 @@
 
                 <div id="content_naming_custom_anime">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Anime Name Pattern:')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-list"></span></span>
@@ -1147,12 +1147,12 @@
 
                     <div id="naming_anime_custom">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">
                                     &nbsp;
                                 </label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
@@ -1304,10 +1304,10 @@
                     </div><!-- /naming_anime_custom -->
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Multi-Episode Style:')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-glasses"></span></span>
@@ -1354,10 +1354,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Add Absolute Number')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label>
                                 <input type="radio" name="naming_anime" id="naming_anime"
                                        value="1" ${('', 'checked')[sickrage.app.config.naming_anime == 1]}/>
@@ -1370,10 +1370,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Only Absolute Number')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label>
                                 <input type="radio" name="naming_anime" id="naming_anime_only"
                                        value="2" ${('', 'checked')[sickrage.app.config.naming_anime == 2]}/>
@@ -1384,10 +1384,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('No Absolute Number')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label>
                                 <input type="radio" name="naming_anime" id="naming_anime_none"
                                        value="3" ${('', 'checked')[sickrage.app.config.naming_anime == 3]}/>
@@ -1410,20 +1410,20 @@
 
     <div id="metadata" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Metadata')}</h3>
                 <small class="form-text text-muted">
                     ${_('The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience.')}
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <% m_dict = sickrage.app.metadata_providers %>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Metadata Type:')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -1444,10 +1444,10 @@
                 </div>
 
                 <div class="field-pair row">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Select Metadata')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         % for (cur_id, cur_generator) in m_dict.items():
                             <div class="list-group metadataDiv" id="${cur_id}">
                                 <div class="list-group-item-dark rounded mb-1">

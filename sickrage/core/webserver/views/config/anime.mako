@@ -13,7 +13,7 @@
 <%block name="pages">
     <div id="settings" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <i class="sickrage-core sickrage-core-anidb" title="${_('AniDB')}"></i>
                     <a href="${anon_url('http://anidb.info')}"
@@ -24,12 +24,12 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_anidb"
                                id="use_anidb" ${('', 'checked')[bool(sickrage.app.config.use_anidb)]} />
                         <label for="use_anidb">
@@ -40,10 +40,10 @@
 
                 <div id="content_use_anidb">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('AniDB Username')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -59,10 +59,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('AniDB Password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -78,10 +78,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('AniDB MyList')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="anidb_use_mylist"
                                    id="anidb_use_mylist" ${('', 'checked')[bool(sickrage.app.config.anidb_use_mylist)]}/>
                             <label for="anidb_use_mylist">
@@ -101,15 +101,15 @@
 
     <div id="interface" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('User Interface')}</h3>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Split show lists')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="split_home"
                                id="split_home" ${('', 'checked')[bool(sickrage.app.config.anime_split_home)]}/>
                         <label for="split_home">

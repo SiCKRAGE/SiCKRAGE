@@ -27,7 +27,7 @@
     %>
 
     <div class="row">
-        <div class="col-sm-10 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3>${_('Scheduler')}</h3>
@@ -104,7 +104,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-10 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3>${_('Show Queue')}</h3>
@@ -194,7 +194,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-10 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3>${_('Disk Space')}</h3>

@@ -19,7 +19,7 @@
 <%block name="pages">
     <div id="home-theater-nas" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://kodi.tv/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -31,12 +31,12 @@
                     ${_('A free and open source cross-platform media center and home entertainment system software with a 10-foot user interface designed for the living-room TV.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_kodi"
                                id="use_kodi" ${('', 'checked')[bool(sickrage.app.config.use_kodi)]}/>
                         <label for="use_kodi">${_('send KODI commands?')}</label>
@@ -45,10 +45,10 @@
 
                 <div id="content_use_kodi">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Always on')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_always_on"
                                    id="kodi_always_on" ${('', 'checked')[bool(sickrage.app.config.kodi_always_on)]}/>
                             <label for="kodi_always_on">
@@ -57,10 +57,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_notify_onsnatch"
                                    id="kodi_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.kodi_notify_onsnatch)]}/>
                             <label for="kodi_notify_onsnatch">
@@ -69,10 +69,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_notify_ondownload"
                                    id="kodi_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.kodi_notify_ondownload)]}/>
                             <label for="kodi_notify_ondownload">
@@ -81,10 +81,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_notify_onsubtitledownload"
                                    id="kodi_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.kodi_notify_onsubtitledownload)]}/>
                             <label for="kodi_notify_onsubtitledownload">
@@ -93,10 +93,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Update library')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_update_library"
                                    id="kodi_update_library" ${('', 'checked')[bool(sickrage.app.config.kodi_update_library)]}/>
                             <label for="kodi_update_library">
@@ -105,10 +105,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Full library update')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_update_full"
                                    id="kodi_update_full" ${('', 'checked')[bool(sickrage.app.config.kodi_update_full)]}/>
                             <label for="kodi_update_full">
@@ -117,10 +117,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Only update first host')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="kodi_update_onlyfirst"
                                    id="kodi_update_onlyfirst" ${('', 'checked')[bool(sickrage.app.config.kodi_update_onlyfirst)]}/>
                             <label for="kodi_update_onlyfirst">
@@ -129,10 +129,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('KODI IP:Port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -148,10 +148,10 @@
                     </div>
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('KODI username')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -167,10 +167,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('KODI password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -209,7 +209,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -223,12 +223,12 @@
                         <b>3005</b>.</p>
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex" ${('', 'checked')[bool(sickrage.app.config.use_plex)]}/>
                         <label for="use_plex">
@@ -239,10 +239,10 @@
 
                 <div id="content_use_plex">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Plex Media Server Auth Token')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -272,10 +272,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Server Username')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -288,10 +288,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Server/client password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -305,10 +305,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Update server library')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" class="enabler" name="plex_update_library"
                                    id="plex_update_library" ${('', 'checked')[bool(sickrage.app.config.plex_update_library)]}/>
                             <label for="plex_update_library">
@@ -318,10 +318,10 @@
                     </div>
                     <div id="content_plex_update_library">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Plex Media Server IP:Port')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -361,7 +361,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.plexapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -370,12 +370,12 @@
                     </a>
                 </h3>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_plex"
                                id="use_plex_client" ${('', 'checked')[bool(sickrage.app.config.use_plex_client)]}/>
                         <label for="use_plex_client">
@@ -386,10 +386,10 @@
 
                 <div id="content_use_plex_client">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="plex_notify_onsnatch"
                                    id="plex_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.plex_notify_onsnatch)]}/>
                             <label for="plex_notify_onsnatch">
@@ -398,10 +398,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="plex_notify_ondownload"
                                    id="plex_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.plex_notify_ondownload)]}/>
                             <label for="plex_notify_ondownload">
@@ -410,10 +410,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="plex_notify_onsubtitledownload"
                                    id="plex_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.plex_notify_onsubtitledownload)]}/>
                             <label for="plex_notify_onsubtitledownload">
@@ -422,10 +422,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Plex Client IP:Port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -439,10 +439,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Server Username')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -455,10 +455,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Client Password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -493,7 +493,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://emby.media/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -505,12 +505,12 @@
                     ${_('A home media server built using other popular open source technologies.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_emby"
                                id="use_emby" ${('', 'checked')[bool(sickrage.app.config.use_emby)]} />
                         <label class="control-label" for="use_emby">
@@ -520,10 +520,10 @@
                 </div>
                 <div id="content_use_emby">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Emby IP:Port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -536,10 +536,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Emby API Key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -553,10 +553,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="emby_notify_onsnatch"
                                    id="emby_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.emby_notify_onsnatch)]}/>
                             <label for="emby_notify_onsnatch">
@@ -566,10 +566,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="emby_notify_ondownload"
                                    id="emby_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.emby_notify_ondownload)]}/>
                             <label for="emby_notify_ondownload">
@@ -579,10 +579,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="emby_notify_onsubtitledownload"
                                    id="emby_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.emby_notify_onsubtitledownload)]}/>
                             <label for="emby_notify_onsubtitledownload">
@@ -615,7 +615,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -627,12 +627,12 @@
                         ${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmj"
                                id="use_nmj" ${('', 'checked')[bool(sickrage.app.config.use_nmj)]}/>
                         <label for="use_nmj">
@@ -643,10 +643,10 @@
 
                 <div id="content_use_nmj">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -659,10 +659,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Get settings')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input class="sickrage-btn btn-inline" type="button" value="${_('Get Settings')}"
                                    id="settingsNMJ"/>
                             <label for="settingsNMJ">
@@ -671,10 +671,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('NMJ database')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -690,10 +690,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('NMJ mount url')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -731,7 +731,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.popcornhour.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -743,12 +743,12 @@
                     ${_('The Networked Media Jukebox, or NMJv2, is the official media jukebox interface made available for the Popcorn Hour 300 & 400-series.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_nmjv2"
                                id="use_nmjv2" ${('', 'checked')[bool(sickrage.app.config.use_nmjv2)]}/>
                         <label for="use_nmjv2">
@@ -760,10 +760,10 @@
                 <div id="content_use_nmjv2">
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Popcorn IP address')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -776,10 +776,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Database location')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input type="radio" NAME="nmjv2_dbloc" VALUE="local"
@@ -801,10 +801,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Database instance')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -827,10 +827,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('NMJv2 database')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -872,7 +872,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://synology.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -886,12 +886,12 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_synoindex">
                             <input type="checkbox" class="enabler" name="use_synoindex"
                                    id="use_synoindex" ${('', 'checked')[bool(sickrage.app.config.use_synoindex)]}/>
@@ -915,7 +915,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://synology.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -928,12 +928,12 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_synologynotifier">
                             <input type="checkbox" class="enabler" name="use_synologynotifier"
                                    id="use_synologynotifier" ${('', 'checked')[bool(sickrage.app.config.use_synologynotifier)]}/>
@@ -945,10 +945,10 @@
                 </div>
                 <div id="content_use_synologynotifier">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_onsnatch"
                                    id="synologynotifier_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.synologynotifier_notify_onsnatch)]}/>
                             <label for="synologynotifier_notify_onsnatch">
@@ -957,10 +957,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_ondownload"
                                    id="synologynotifier_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.synologynotifier_notify_ondownload)]}/>
                             <label for="synologynotifier_notify_ondownload">
@@ -969,10 +969,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="synologynotifier_notify_onsubtitledownload"
                                    id="synologynotifier_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.synologynotifier_notify_onsubtitledownload)]}/>
                             <label for="synologynotifier_notify_onsubtitledownload">
@@ -992,7 +992,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <img class="notifier-icon" src="${srWebRoot}/images/notifiers/pytivo.png" alt=""
                      title="pyTivo"/>
                 <h3>
@@ -1006,12 +1006,12 @@
                     ${_('pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_pytivo">
                             <input type="checkbox" class="enabler" name="use_pytivo"
                                    id="use_pytivo" ${('', 'checked')[bool(sickrage.app.config.use_pytivo)]}/>
@@ -1026,10 +1026,10 @@
                 <div id="content_use_pytivo">
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('pyTivo IP:Port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -1043,10 +1043,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('pyTivo share name')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-book"></span></span>
@@ -1062,10 +1062,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Tivo name')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-book"></span></span>
@@ -1092,7 +1092,7 @@
 
     <div id="devices" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://growl.info/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1104,12 +1104,12 @@
                     ${_('A cross-platform unobtrusive global notification system.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_growl"
                                id="use_growl" ${('', 'checked')[bool(sickrage.app.config.use_growl)]}/>
                         <label for="use_growl">
@@ -1120,10 +1120,10 @@
 
                 <div id="content_use_growl">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="growl_notify_onsnatch"
                                    id="growl_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.growl_notify_onsnatch)]}/>
                             <label for="growl_notify_onsnatch">
@@ -1132,10 +1132,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="growl_notify_ondownload"
                                    id="growl_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.growl_notify_ondownload)]}/>
                             <label for="growl_notify_ondownload">
@@ -1144,10 +1144,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="growl_notify_onsubtitledownload"
                                    id="growl_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.growl_notify_onsubtitledownload)]}/>
                             <label for="growl_notify_onsubtitledownload">
@@ -1156,10 +1156,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Growl IP:Port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -1172,10 +1172,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Growl password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -1214,7 +1214,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.prowlapp.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1226,12 +1226,12 @@
                     ${_('A Growl client for iOS.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_prowl"
                                id="use_prowl" ${('', 'checked')[bool(sickrage.app.config.use_prowl)]}/>
                         <label for="use_prowl">
@@ -1242,10 +1242,10 @@
 
                 <div id="content_use_prowl">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="prowl_notify_onsnatch"
                                    id="prowl_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.prowl_notify_onsnatch)]}/>
                             <label for="prowl_notify_onsnatch">
@@ -1254,10 +1254,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="prowl_notify_ondownload"
                                    id="prowl_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.prowl_notify_ondownload)]}/>
                             <label for="prowl_notify_ondownload">
@@ -1266,10 +1266,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="prowl_notify_onsubtitledownload"
                                    id="prowl_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.prowl_notify_onsubtitledownload)]}/>
                             <label for="prowl_notify_onsubtitledownload">
@@ -1278,10 +1278,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Prowl API key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -1298,10 +1298,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Prowl priority')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -1356,7 +1356,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://library.gnome.org/devel/libnotify/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1369,12 +1369,12 @@
                     (Ubuntu/Debian package <a href="apt:python-notify">python-notify</a>).
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_libnotify"
                                id="use_libnotify" ${('', 'checked')[bool(sickrage.app.config.use_libnotify)]}/>
                         <label for="use_libnotify">
@@ -1385,10 +1385,10 @@
 
                 <div id="content_use_libnotify">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="libnotify_notify_onsnatch"
                                    id="libnotify_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.libnotify_notify_onsnatch)]}/>
                             <label for="libnotify_notify_onsnatch">
@@ -1397,10 +1397,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="libnotify_notify_ondownload"
                                    id="libnotify_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.libnotify_notify_ondownload)]}/>
                             <label for="libnotify_notify_ondownload">
@@ -1409,10 +1409,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="libnotify_notify_onsubtitledownload"
                                    id="libnotify_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.libnotify_notify_onsubtitledownload)]}/>
                             <label for="libnotify_notify_onsubtitledownload">
@@ -1443,7 +1443,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('https://pushover.net/apps/clone/sickrage')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1455,12 +1455,12 @@
                     ${_('Pushover makes it easy to send real-time notifications to your Android and iOS devices.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushover"
                                id="use_pushover" ${('', 'checked')[bool(sickrage.app.config.use_pushover)]}/>
                         <label for="use_pushover">
@@ -1471,10 +1471,10 @@
 
                 <div id="content_use_pushover">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushover_notify_onsnatch"
                                    id="pushover_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.pushover_notify_onsnatch)]}/>
                             <label for="pushover_notify_onsnatch">
@@ -1483,10 +1483,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushover_notify_ondownload"
                                    id="pushover_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.pushover_notify_ondownload)]}/>
                             <label for="pushover_notify_ondownload">
@@ -1495,10 +1495,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushover_notify_onsubtitledownload"
                                    id="pushover_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.pushover_notify_onsubtitledownload)]}/>
                             <label for="pushover_notify_onsubtitledownload">
@@ -1508,10 +1508,10 @@
                     </div>
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushover key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -1525,10 +1525,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushover API key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -1546,10 +1546,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushover devices')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-list-alt"></span></span>
@@ -1563,10 +1563,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushover notification sound')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-music"></span></span>
@@ -1672,7 +1672,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('https://new.boxcar.io/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1684,12 +1684,12 @@
                     ${_('Read your messages where and when you want them!')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_boxcar2"
                                id="use_boxcar2" ${('', 'checked')[bool(sickrage.app.config.use_boxcar2)]}/>
                         <label for="use_boxcar2">
@@ -1700,10 +1700,10 @@
 
                 <div id="content_use_boxcar2">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="boxcar2_notify_onsnatch"
                                    id="boxcar2_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.boxcar2_notify_onsnatch)]}/>
                             <label for="boxcar2_notify_onsnatch">
@@ -1712,10 +1712,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="boxcar2_notify_ondownload"
                                    id="boxcar2_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.boxcar2_notify_ondownload)]}/>
                             <label for="boxcar2_notify_ondownload">
@@ -1724,10 +1724,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="boxcar2_notify_onsubtitledownload"
                                    id="boxcar2_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.boxcar2_notify_onsubtitledownload)]}/>
                             <label for="boxcar2_notify_onsubtitledownload">
@@ -1736,10 +1736,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Boxcar2 access token')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -1777,7 +1777,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://nma.usk.bz')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1789,12 +1789,12 @@
                     ${_('Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_nma"
                                id="use_nma" ${('', 'checked')[bool(sickrage.app.config.use_nma)]}/>
                         <label for="use_nma">
@@ -1805,10 +1805,10 @@
 
                 <div id="content_use_nma">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="nma_notify_onsnatch"
                                    id="nma_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.nma_notify_onsnatch)]}/>
                             <label for="nma_notify_onsnatch">
@@ -1817,10 +1817,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="nma_notify_ondownload"
                                    id="nma_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.nma_notify_ondownload)]}/>
                             <label for="nma_notify_ondownload">
@@ -1829,10 +1829,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="nma_notify_onsubtitledownload"
                                    id="nma_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.nma_notify_onsubtitledownload)]}/>
                             <label for="nma_notify_onsubtitledownload">
@@ -1841,10 +1841,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('NMA API key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -1857,10 +1857,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('NMA priority')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-exclamation-sign"></span></span>
@@ -1913,7 +1913,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('https://pushalot.com')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -1925,12 +1925,12 @@
                     ${_('Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushalot"
                                id="use_pushalot" ${('', 'checked')[bool(sickrage.app.config.use_pushalot)]}/>
                         <label for="use_pushalot">
@@ -1941,10 +1941,10 @@
 
                 <div id="content_use_pushalot">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushalot_notify_onsnatch"
                                    id="pushalot_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.pushalot_notify_onsnatch)]}/>
                             <label for="pushalot_notify_onsnatch">
@@ -1953,10 +1953,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushalot_notify_ondownload"
                                    id="pushalot_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.pushalot_notify_ondownload)]}/>
                             <label for="pushalot_notify_ondownload">
@@ -1965,10 +1965,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushalot_notify_onsubtitledownload"
                                    id="pushalot_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.pushalot_notify_onsubtitledownload)]}/>
                             <label for="pushalot_notify_onsubtitledownload">
@@ -1977,10 +1977,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushalot authorization token')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -2020,7 +2020,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('https://www.pushbullet.com')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2032,12 +2032,12 @@
                     ${_('Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_pushbullet"
                                id="use_pushbullet" ${('', 'checked')[bool(sickrage.app.config.use_pushbullet)]}/>
                         <label for="use_pushbullet">
@@ -2048,10 +2048,10 @@
 
                 <div id="content_use_pushbullet">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushbullet_notify_onsnatch"
                                    id="pushbullet_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.pushbullet_notify_onsnatch)]}/>
                             <label for="pushbullet_notify_onsnatch">
@@ -2060,10 +2060,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushbullet_notify_ondownload"
                                    id="pushbullet_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.pushbullet_notify_ondownload)]}/>
                             <label for="pushbullet_notify_ondownload">
@@ -2072,10 +2072,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="pushbullet_notify_onsubtitledownload"
                                    id="pushbullet_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.pushbullet_notify_onsubtitledownload)]}/>
                             <label for="pushbullet_notify_onsubtitledownload">
@@ -2084,10 +2084,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushbullet API key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -2101,10 +2101,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Pushbullet devices')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2153,7 +2153,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://mobile.free.fr/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2165,12 +2165,12 @@
                     ${_('Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_freemobile"
                                id="use_freemobile" ${('', 'checked')[bool(sickrage.app.config.use_freemobile)]}/>
                         <label for="use_freemobile">
@@ -2181,10 +2181,10 @@
 
                 <div id="content_use_freemobile">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="freemobile_notify_onsnatch"
                                    id="freemobile_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.freemobile_notify_onsnatch)]}/>
                             <label for="freemobile_notify_onsnatch">
@@ -2193,10 +2193,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="freemobile_notify_ondownload"
                                    id="freemobile_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.freemobile_notify_ondownload)]}/>
                             <label for="freemobile_notify_ondownload">
@@ -2205,10 +2205,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="freemobile_notify_onsubtitledownload"
                                    id="freemobile_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.freemobile_notify_onsubtitledownload)]}/>
                             <label for="freemobile_notify_onsubtitledownload">
@@ -2217,10 +2217,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Free Mobile customer ID')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -2234,10 +2234,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Free Mobile API Key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -2274,7 +2274,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://telegram.org/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2286,12 +2286,12 @@
                     ${_('Telegram is a cloud-based instant messaging service')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_telegram"
                                id="use_telegram" ${('', 'checked')[bool(sickrage.app.config.use_telegram)]}/>
                         <label for="use_telegram">
@@ -2302,10 +2302,10 @@
 
                 <div id="content_use_telegram">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="telegram_notify_onsnatch"
                                    id="telegram_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.telegram_notify_onsnatch)]}/>
                             <label for="telegram_notify_onsnatch">
@@ -2314,10 +2314,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="telegram_notify_ondownload"
                                    id="telegram_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.telegram_notify_ondownload)]}/>
                             <label for="telegram_notify_ondownload">
@@ -2326,10 +2326,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="telegram_notify_onsubtitledownload"
                                    id="telegram_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.telegram_notify_onsubtitledownload)]}/>
                             <label for="telegram_notify_onsubtitledownload">
@@ -2338,10 +2338,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('User/Group ID')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2365,10 +2365,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Bot API Key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2413,7 +2413,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2425,12 +2425,12 @@
                     ${_('Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_twilio"
                                id="use_twilio" ${('', 'checked')[bool(sickrage.app.config.use_twilio)]}/>
                         <label for="use_twilio">
@@ -2441,10 +2441,10 @@
 
                 <div id="content_use_twilio">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twilio_notify_onsnatch"
                                    id="twilio_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.twilio_notify_onsnatch)]}/>
                             <label for="twilio_notify_onsnatch">
@@ -2453,10 +2453,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twilio_notify_ondownload"
                                    id="twilio_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.twilio_notify_ondownload)]}/>
                             <label for="twilio_notify_ondownload">
@@ -2465,10 +2465,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twilio_notify_onsubtitledownload"
                                    id="twilio_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.twilio_notify_onsubtitledownload)]}/>
                             <label for="twilio_notify_onsubtitledownload">
@@ -2478,10 +2478,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Twilio Account SID')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2503,10 +2503,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Twilio Auth Token')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-cloud"></span></span>
@@ -2521,10 +2521,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Twilio Phone SID')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2548,10 +2548,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Your phone number')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -2597,7 +2597,7 @@
 
     <div id="social" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.twitter.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2609,12 +2609,12 @@
                     ${_('A social networking and microblogging service, enabling its users to send and read other users messages called tweets.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_twitter">
                             <input type="checkbox" class="enabler" name="use_twitter"
                                    id="use_twitter" ${('', 'checked')[bool(sickrage.app.config.use_twitter)]}/>
@@ -2627,10 +2627,10 @@
 
                 <div id="content_use_twitter">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twitter_notify_onsnatch"
                                    id="twitter_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.twitter_notify_onsnatch)]}/>
                             <label for="twitter_notify_onsnatch">
@@ -2639,10 +2639,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twitter_notify_ondownload"
                                    id="twitter_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.twitter_notify_ondownload)]}/>
                             <label for="twitter_notify_ondownload">
@@ -2651,10 +2651,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twitter_notify_onsubtitledownload"
                                    id="twitter_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.twitter_notify_onsubtitledownload)]}/>
                             <label for="twitter_notify_onsubtitledownload">
@@ -2663,10 +2663,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Send direct message')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="twitter_usedm"
                                    id="twitter_usedm" ${('', 'checked')[bool(sickrage.app.config.twitter_usedm)]}/>
                             <label for="twitter_usedm">
@@ -2675,10 +2675,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Send DM to')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -2692,10 +2692,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Step One')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input class="sickrage-btn" type="button" value="${_('Request Authorization')}"
@@ -2714,10 +2714,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Step Two')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -2760,7 +2760,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://trakt.tv/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
@@ -2772,12 +2772,12 @@
                     ${_('Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you\'ll enjoy!')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_trakt"
                                id="use_trakt" ${('', 'checked')[bool(sickrage.app.config.use_trakt)]}/>
                         <label for="use_trakt">
@@ -2788,10 +2788,10 @@
 
                 <div id="content_use_trakt">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Trakt username')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -2807,10 +2807,10 @@
                     <input type="hidden" id="trakt_pin_url" value="${srTraktAPI()['oauth/pin'].url()}">
                     % if not sickrage.app.config.trakt_oauth_token:
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Trakt PIN')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -2831,10 +2831,10 @@
                     <input type="button" class="sickrage-btn hide" value="${_('Authorize SiCKRAGE')}"
                            id="authTrakt"/>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('API Timeout')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -2856,10 +2856,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Default indexer')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -2876,10 +2876,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Sync libraries')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" class="enabler" name="trakt_sync"
                                    id="trakt_sync" ${('', 'checked')[bool(sickrage.app.config.trakt_sync)]}/>
                             <label for="trakt_sync">
@@ -2889,10 +2889,10 @@
                     </div>
                     <div id="content_trakt_sync">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Remove Episodes From Collection')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <input type="checkbox" name="trakt_sync_remove"
                                        id="trakt_sync_remove" ${('', 'checked')[bool(sickrage.app.config.trakt_sync_remove)]}/>
                                 <label for="trakt_sync_remove">
@@ -2902,10 +2902,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Sync watchlist')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="trakt_sync_watchlist">
                                 <input type="checkbox" class="enabler" name="trakt_sync_watchlist"
                                        id="trakt_sync_watchlist" ${('', 'checked')[bool(sickrage.app.config.trakt_sync_watchlist)]}/>
@@ -2918,10 +2918,10 @@
                     </div>
                     <div id="content_trakt_sync_watchlist">
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Watchlist add method')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
@@ -2947,10 +2947,10 @@
                             </div>
                         </div>
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Remove episode')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <input type="checkbox" name="trakt_remove_watchlist"
                                        id="trakt_remove_watchlist" ${('', 'checked')[bool(sickrage.app.config.trakt_remove_watchlist)]}/>
                                 <label for="trakt_remove_watchlist">
@@ -2959,10 +2959,10 @@
                             </div>
                         </div>
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Remove series')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <input type="checkbox" name="trakt_remove_serieslist"
                                        id="trakt_remove_serieslist" ${('', 'checked')[bool(sickrage.app.config.trakt_remove_serieslist)]}/>
                                 <label for="trakt_remove_serieslist">
@@ -2971,10 +2971,10 @@
                             </div>
                         </div>
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Remove watched show')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <input type="checkbox" name="trakt_remove_show_from_sickrage"
                                        id="trakt_remove_show_from_sickrage" ${('', 'checked')[bool(sickrage.app.config.trakt_remove_show_from_sickrage)]}/>
                                 <label for="trakt_remove_show_from_sickrage">
@@ -2983,10 +2983,10 @@
                             </div>
                         </div>
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${_('Start paused')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <input type="checkbox" name="trakt_start_paused"
                                        id="trakt_start_paused" ${('', 'checked')[bool(sickrage.app.config.trakt_start_paused)]}/>
                                 <label for="trakt_start_paused">
@@ -2996,10 +2996,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Trakt blackList name')}</label>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-list"></span></span>
@@ -3037,7 +3037,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://en.wikipedia.org/wiki/Comparison_of_webmail_providers')}"
                        rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
@@ -3049,12 +3049,12 @@
                     ${_('Allows configuration of email notifications on a per show basis.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_email"
                                id="use_email" ${('', 'checked')[bool(sickrage.app.config.use_email)]}/>
                         <label for="use_email">
@@ -3065,10 +3065,10 @@
 
                 <div id="content_use_email">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="email_notify_onsnatch"
                                    id="email_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.email_notify_onsnatch)]}/>
                             <label for="email_notify_onsnatch">
@@ -3077,10 +3077,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="email_notify_ondownload"
                                    id="email_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.email_notify_ondownload)]}/>
                             <label for="email_notify_ondownload">
@@ -3089,10 +3089,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="email_notify_onsubtitledownload"
                                    id="email_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.email_notify_onsubtitledownload)]}/>
                             <label for="email_notify_onsubtitledownload">
@@ -3101,10 +3101,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('SMTP host')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -3117,10 +3117,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('SMTP port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -3133,10 +3133,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('SMTP from')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-envelope"></span></span>
@@ -3149,10 +3149,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Use TLS')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="email_tls"
                                    id="email_tls" ${('', 'checked')[bool(sickrage.app.config.email_tls)]}/>
                             <label for="email_tls">
@@ -3161,10 +3161,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('SMTP user')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -3177,10 +3177,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('SMTP password')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-lock"></span></span>
@@ -3194,10 +3194,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Global email list')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-envelope"></span></span>
@@ -3212,10 +3212,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Show notification list')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -3279,7 +3279,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.slack.com')}"
                        rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
@@ -3291,12 +3291,12 @@
                     ${_('Slack brings all your communication together in one place. It\'s real-time messaging, archiving and search for modern teams.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_slack"
                                id="use_slack" ${('', 'checked')[bool(sickrage.app.config.use_slack)]}/>
                         <label for="use_slack">
@@ -3307,10 +3307,10 @@
 
                 <div id="content_use_slack">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="slack_notify_onsnatch"
                                    id="slack_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.slack_notify_onsnatch)]}/>
                             <label for="slack_notify_onsnatch">
@@ -3319,10 +3319,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="slack_notify_ondownload"
                                    id="slack_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.slack_notify_ondownload)]}/>
                             <label for="slack_notify_ondownload">
@@ -3331,10 +3331,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="slack_notify_onsubtitledownload"
                                    id="slack_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.slack_notify_onsubtitledownload)]}/>
                             <label for="slack_notify_onsubtitledownload">
@@ -3343,10 +3343,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Slack Incoming Webhook')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-globe"></span></span>
@@ -3383,7 +3383,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
                     <a href="${anon_url('http://www.discordapp.com')}"
                        rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;">
@@ -3395,12 +3395,12 @@
                     ${_('All-in-one voice and text chat for gamers that\'s free, secure, and works on both your desktop and phone.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="use_discord"
                                id="use_discord" ${('', 'checked')[bool(sickrage.app.config.use_discord)]}/>
                         <label for="use_discord">
@@ -3411,10 +3411,10 @@
 
                 <div id="content_use_discord">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on snatch')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="discord_notify_onsnatch"
                                    id="discord_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.discord_notify_onsnatch)]}/>
                             <label for="discord_notify_onsnatch">
@@ -3424,10 +3424,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="discord_notify_ondownload"
                                    id="discord_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.discord_notify_ondownload)]}/>
                             <label for="discord_notify_ondownload">
@@ -3437,10 +3437,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Notify on subtitle download')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="discord_notify_onsubtitledownload"
                                    id="discord_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.discord_notify_onsubtitledownload)]}/>
                             <label for="discord_notify_onsubtitledownload">
@@ -3450,10 +3450,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Discord Incoming Webhook')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -3474,10 +3474,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Discord Bot Name')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -3497,10 +3497,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Discord Avatar URL')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -3520,10 +3520,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Discord TTS')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="discord_tts"
                                    id="discord_tts" ${('', 'checked="checked"')[bool(sickrage.app.config.discord_tts)]}/>
                             <label for="discord_tts">${_('Send notifications using text-to-speech.')}</label>

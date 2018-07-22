@@ -4,7 +4,7 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col-lg-6 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3>${title}</h3>

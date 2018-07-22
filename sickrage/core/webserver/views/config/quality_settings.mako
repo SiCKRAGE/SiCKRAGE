@@ -13,21 +13,21 @@
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
     <div id="quality-sizes" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Quality Sizes')}</h3>
                 <small class="form-text text-muted">
                     ${_('Use default qualitiy sizes or specify custom ones per quality definition.')}<br/>
                     ${_('Settings represent maximum size allowed per episode video file.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 % for qtype, qsize in sickrage.app.config.quality_sizes.items():
                     % if qsize:
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${renderQualityPill(qtype)}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">

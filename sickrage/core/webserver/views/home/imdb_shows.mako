@@ -6,7 +6,7 @@
 <%block name="content">
     <div class="col-md-12">
         <div class="row">
-            <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12 pull-right">
+            <div class="col-lg-8 col-md-7 col-sm-7 pull-right">
                 <div class="pull-right">
                     <label>
                         <span>${_('Sort By:')}</span>
@@ -29,7 +29,7 @@
                     </label>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-5 col-sm-5 col-xs-12">
+            <div class="col-lg-4 col-md-5 col-sm-5">
                 <h1 class="title">${title}</h1>
             </div>
         </div>

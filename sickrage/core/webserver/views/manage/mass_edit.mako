@@ -17,7 +17,7 @@
     %>
 
     <div class="row">
-        <div class="col-lg-6 mx-auto">
+        <div class="col-md-10 mx-auto">
             <div class="sickrage-card m-1">
                 <div class="sickrage-card-header">
                     <h3 class="title">${title}</h3>
@@ -35,7 +35,7 @@
                             </u>
                         </p>
 
-                        <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                        <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                             <div class="row field-pair">
                                 <label for="shows">
                                     <span class="component-title">${_('Selected Shows')}</span>

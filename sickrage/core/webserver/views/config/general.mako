@@ -29,19 +29,19 @@
     % endif
     <div id="misc" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('SiCKRAGE API')}</h3>
                 <small class="form-text text-muted">
                     ${_('Options for api.sickrage.ca')}
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('API Provider Cache')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="enable_api_providers_cache"
                                id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
                         <label for="enable_api_providers_cache">${_('Enable provider cache ?')}</label>
@@ -49,10 +49,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Google Drive')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                     % try:
                         % if GoogleDriveAPI().is_connected()['success']:
                             <div class="form-row">
@@ -83,7 +83,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Misc')}</h3>
                 <small class="form-text text-muted">
                     ${_('Startup options. Indexer options. Log and show file locations.')}
@@ -91,12 +91,12 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Default Indexer Language')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -112,20 +112,20 @@
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Launch browser')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="launch_browser"
                                id="launch_browser" ${('', 'checked')[bool(sickrage.app.config.launch_browser)]}/>
                         <label for="launch_browser">${_('open the SickRage home page on startup')}</label>
                     </div>
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Initial page')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -152,10 +152,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Daily show updates start time')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -179,10 +179,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Daily show updates stale shows')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="showupdate_stale"
                                id="showupdate_stale" ${('', 'checked')[bool(sickrage.app.config.showupdate_stale)]}/>
                         <label for="showupdate_stale">
@@ -192,10 +192,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Send to trash for actions')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="trash_remove_show"
                                id="trash_remove_show" ${('', 'checked')[bool(sickrage.app.config.trash_remove_show)]}/>
                         <label for="trash_remove_show">
@@ -216,10 +216,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Number of Log files saved')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -238,10 +238,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Size of Log files saved')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -260,10 +260,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Default indexer for adding shows')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -287,10 +287,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Show indexer timeout')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -313,10 +313,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Show root directories')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <%include file="../includes/root_dirs.mako"/>
                     </div>
                 </div>
@@ -332,20 +332,20 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Updates')}</h3>
                 <small class="form-text text-muted">
                     ${_('Options for software updates.')}
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Check software updates')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="version_notify"
                                id="version_notify" ${('', 'checked')[bool(sickrage.app.config.version_notify)]}/>
                         <label for="version_notify">
@@ -357,10 +357,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Automatically update')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="auto_update"
                                id="auto_update" ${('', 'checked')[bool(sickrage.app.config.auto_update)]}/>
                         <label for="auto_update">
@@ -371,10 +371,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Check the server every')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -396,10 +396,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Notify on software update')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="notify_on_update"
                                id="notify_on_update" ${('', 'checked')[bool(sickrage.app.config.notify_on_update)]}/>
                         <label for="notify_on_update">
@@ -421,19 +421,19 @@
 
     <div id="interface" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('User Interface')}</h3>
                 <small class="form-text text-muted">
                     ${_('Options for visual appearance.')}
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Interface Language')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -464,10 +464,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Display theme')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -488,10 +488,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Show all seasons')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="display_all_seasons"
                                id="display_all_seasons" ${('', 'checked')[bool(sickrage.app.config.display_all_seasons)]}>
                         <label for="display_all_seasons">
@@ -502,10 +502,10 @@
                 </div>
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Sort with "The", "A", "An"')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="sort_article"
                                id="sort_article" ${('', 'checked')[bool(sickrage.app.config.sort_article)]}/>
                         <label for="sort_article">
@@ -516,10 +516,10 @@
                 </div>
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Filter form-row')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="filter_row"
                                id="filter_row" ${('', 'checked')[bool(sickrage.app.config.filter_row)]}/>
                         <label for="filter_row">
@@ -529,10 +529,10 @@
 
                 </div>
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Missed episodes range')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -550,10 +550,10 @@
                 </div>
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Display fuzzy dates')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="fuzzy_dating"
                                id="fuzzy_dating"
                                class="viewIf datePresets" ${('', 'checked')[bool(sickrage.app.config.fuzzy_dating)]}/>
@@ -564,10 +564,10 @@
 
                 </div>
                 <div class="form-row form-group show_if_fuzzy_dating ${(' metadataDiv', '')[not bool(sickrage.app.config.fuzzy_dating)]}">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Trim zero padding')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="trim_zero"
                                id="trim_zero" ${('', 'checked')[bool(sickrage.app.config.trim_zero)]}/>
                         <label for="trim_zero">
@@ -577,10 +577,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Date style')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -602,10 +602,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Time style')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -623,10 +623,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Timezone')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="radio" name="timezone_display" id="local"
                                value="local" ${('', 'checked')[sickrage.app.config.timezone_display == "local"]} />
                         <label for="local">${_('Local')}</label>
@@ -645,10 +645,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Download url')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -664,10 +664,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Show fanart in the background')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" class="enabler" name="fanart_background"
 
                                id="fanart_background" ${('', 'checked')[bool(sickrage.app.config.fanart_background)]}>
@@ -678,10 +678,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Fanart transparency')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -707,7 +707,7 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Web Interface')}</h3>
                 <small class="form-text text-muted">
                     ${_('It is recommended that you enable a username and password to secure SiCKRAGE from being tampered with remotely.')}
@@ -715,12 +715,12 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable UPnP')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="enable_upnp" class="enabler"
                                id="enable_upnp" ${('', 'checked')[bool(sickrage.app.config.enable_upnp)]}/>
                         <label for="enable_upnp">
@@ -731,10 +731,10 @@
 
                 <div id="content_enable_upnp">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('HTTP public port')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -762,10 +762,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('HTTP private port')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -793,10 +793,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('HTTP logs')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="web_log"
                                id="web_log" ${('', 'checked')[bool(sickrage.app.config.web_log)]}/>
                         <label for="web_log">${_('enable logs from the internal Tornado web server')}</label>
@@ -804,10 +804,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Application API key')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -841,10 +841,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Listen on IPv6')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="web_ipv6"
                                id="web_ipv6" ${('', 'checked')[bool(sickrage.app.config.web_ipv6)]}/>
                         <label for="web_ipv6">${_('attempt binding to any available IPv6 address')}</label>
@@ -852,10 +852,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable HTTPS')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="enable_https" class="enabler"
                                id="enable_https" ${('', 'checked')[bool(sickrage.app.config.enable_https)]}/>
                         <label for="enable_https">
@@ -867,10 +867,10 @@
                 <div id="content_enable_https">
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('HTTPS certificate')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_cert" id="https_cert"
@@ -891,10 +891,10 @@
                     </div>
                     <div class="form-row form-group">
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('HTTPS key')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <input name="https_key" id="https_key"
@@ -913,10 +913,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Reverse proxy headers')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="handle_reverse_proxy"
                                id="handle_reverse_proxy" ${('', 'checked')[bool(sickrage.app.config.handle_reverse_proxy)]}/>
                         <label for="handle_reverse_proxy">
@@ -926,10 +926,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Notify on login')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="notify_on_login"
                                id="notify_on_login" ${('', 'checked')[bool(sickrage.app.config.notify_on_login)]}/>
                         <label for="notify_on_login">
@@ -949,16 +949,16 @@
     </div><!-- /tab-pane2 //-->
     <div id="advanced-settings" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Advanced Settings')}</h3>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('CPU throttling')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -976,10 +976,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Anonymous redirect')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -996,10 +996,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enable debug')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="debug"
                                id="debug" ${('', 'checked')[bool(sickrage.app.config.debug)]}/>
                         <label for="debug">
@@ -1009,10 +1009,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Verify SSL Certs')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="ssl_verify"
                                id="ssl_verify" ${('', 'checked')[bool(sickrage.app.config.ssl_verify)]}/>
                         <label for="ssl_verify">
@@ -1024,10 +1024,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('No Restart')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="no_restart"
                                title="Only select this when you have external software restarting SR automatically when it stops (like FireDaemon)"
                                id="no_restart" ${('', 'checked')[bool(sickrage.app.config.no_restart)]}/>
@@ -1041,10 +1041,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Encrypt settings')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="encryption_version"
                                id="encryption_version" ${('', 'checked')[bool(sickrage.app.config.encryption_version)]}/>
                         <label for="encryption_version">
@@ -1056,10 +1056,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Unprotected calendar')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="calendar_unprotected"
                                id="calendar_unprotected" ${('', 'checked')[bool(sickrage.app.config.calendar_unprotected)]}/>
                         <label for="calendar_unprotected">
@@ -1072,10 +1072,10 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Google Calendar Icons')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox" name="calendar_icons"
                                id="calendar_icons" ${('', 'checked')[bool(sickrage.app.config.calendar_icons)]}/>
                         <label for="calendar_icons">
@@ -1087,10 +1087,10 @@
                 </div>
 
                 <div class="form-row form-group" style="display: none">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Link Google Account')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input class="sickrage-btn btn-inline" type="button" id="google_link" value="${_('Link')}">
                         <label for="google_link">
                             ${_('link your google account to SiCKRAGE for advanced feature usage such as settings/database storage')}
@@ -1100,10 +1100,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Proxy host')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -1119,10 +1119,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Use proxy for indexers')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
                             <input type="checkbox" name="proxy_indexers"
                                    id="proxy_indexers" ${('', 'checked')[bool(sickrage.app.config.proxy_indexers)]}/>
@@ -1132,10 +1132,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Skip Remove Detection')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
                             <input type="checkbox" name="skip_removed_files"
                                    id="skip_removed_files" ${('', 'checked')[bool(sickrage.app.config.skip_removed_files)]}/>
@@ -1147,10 +1147,10 @@
                 </div>
 
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Default deleted episode status')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -1205,15 +1205,15 @@
         <hr/>
 
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('PIP Settings')}</h3>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('PIP executable path')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <div class="form-row">
                             <div class="col-md-12">
                                 <div class="input-group">
@@ -1267,15 +1267,15 @@
             <hr/>
 
             <div class="form-row">
-                <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+                <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                     <h3>${_('GIT Settings')}</h3>
                 </div>
-                <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+                <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Git Branches')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -1317,10 +1317,10 @@
                     </div>
 
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('GIT executable path')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
                                     <div class="input-group">
@@ -1356,10 +1356,10 @@
 
                     <div class="form-row form-group" hidden>
 
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Git reset')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="git_reset"
                                    id="git_reset" ${('', 'checked')[bool(sickrage.app.config.git_reset)]}/>
                             <label for="git_reset">
@@ -1370,10 +1370,10 @@
                     </div>
 
                     <div class="form-row form-group" hidden>
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Git auto-issues submit')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="git_autoissues"
                                    id="git_autoissues" ${('', 'checked')[bool(sickrage.app.config.git_autoissues)]}
                                    disabled="disabled"/>

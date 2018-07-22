@@ -22,19 +22,19 @@
     %>
     <div id="subtitles-search" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Subtitles Search')}</h3>
                 <small class="form-text text-muted">
                     <p>${_('Settings that dictate how SickRage handles subtitles search results.')}</p>
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <input type="checkbox"
                                class="enabler" ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
                                id="use_subtitles" name="use_subtitles">
@@ -44,20 +44,20 @@
 
                 <div id="content_use_subtitles">
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Subtitle Languages')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div id="subtitles_languages"></div>
                             </div>
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Subtitles History')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="subtitles_history"
                                    id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles_history)]}/>
                             <label for="subtitles_history">
@@ -66,10 +66,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Subtitles Multi-Language')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="subtitles_multi"
                                    id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles_multi)]}/>
                             <label for="subtitles_multi">
@@ -78,10 +78,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Embedded Subtitles')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label class="form-check-label">
                                 <input type="checkbox" name="embedded_subtitles_all"
                                        id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
@@ -93,10 +93,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Hearing Impaired Subtitles')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <input type="checkbox" name="subtitles_hearing_impaired"
                                    id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles_hearing_impaired)]}/>
                             <label for="subtitles_hearing_impaired">
@@ -105,10 +105,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Subtitle Directory')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
@@ -126,10 +126,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Subtitle Find Frequency')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -150,10 +150,10 @@
                         </div>
                     </div>
                     <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
                             <label class="component-title">${_('Extra Scripts')}</label>
                         </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">
@@ -211,7 +211,7 @@
 
     <div id="subtitles-plugin" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Subtitle Plugins')}</h3>
                 <small class="form-text text-muted">
                     <p>${_('Check off and drag the plugins into the order you want them to be used.')}</p>
@@ -220,7 +220,7 @@
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row">
                     <div class="col-md-12">
                         <div class="list-group w-50" id="service_order_list">
@@ -258,21 +258,21 @@
 
     <div id="plugin-settings" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Subtitle Settings')}</h3>
                 <small class="form-text text-muted">
                     <p>${_('Set user and password for each provider')}</p>
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 % for curService in sickrage.subtitles.sortedServiceList():
                     % if curService['name'] in providerLoginDict.keys():
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${curService['name'].capitalize()} ${_('User Name')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-user"></span></span>
@@ -286,10 +286,10 @@
                             </div>
                         </div>
                         <div class="form-row form-group">
-                            <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <div class="col-lg-3 col-md-4 col-sm-5">
                                 <label class="component-title">${curService['name'].capitalize()} ${_('Password')}</label>
                             </div>
-                            <div class="col-lg-9 col-md-8 col-sm-7 col-xs-12 component-desc">
+                            <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><span class="fas fa-lock"></span></span>

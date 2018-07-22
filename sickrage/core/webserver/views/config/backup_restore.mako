@@ -7,14 +7,14 @@
 <%block name="pages">
     <div id="backup" class="tab-pane active">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Backup')}</h3>
                 <small class="form-text text-muted">
                     <b>${_('Backup your main database file and config')}</b>
                 </small>
             </div>
 
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
                     <div class="col-md-12 component-desc">
                         <div class="input-group">
@@ -40,13 +40,13 @@
 
     <div id="restore" class="tab-pane">
         <div class="form-row">
-            <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 card-title">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>${_('Restore')}</h3>
                 <small class="form-text text-muted">
                     <b>${_('Restore your main database file and config')}</b>
                 </small>
             </div>
-            <fieldset class="col-lg-9 col-md-8 col-sm-8 col-xs-12 card-text">
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
                 <div class="form-row form-group">
                     <div class="col-md-12 component-desc">
                         <div class="form-row">
