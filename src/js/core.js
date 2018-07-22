@@ -1174,13 +1174,13 @@ $(document).ready(function ($) {
                             }
                         }
 
-                        target.parents('.result-wrapper').removeClass('hidden');
+                        target.parents('.result-wrapper').removeClass('d-none');
                     });
                 });
 
                 // Remove the result of an API call
                 $('[data-action=clear-result]').on('click', function () {
-                    $($(this).data('target')).html('').parents('.result-wrapper').addClass('hidden');
+                    $($(this).data('target')).html('').parents('.result-wrapper').addClass('d-none');
                 });
 
                 // Update the list of episodes
@@ -1192,7 +1192,7 @@ $(document).ready(function ($) {
                     var episodes = select.val();
 
                     if (select !== undefined) {
-                        select.removeClass('hidden');
+                        select.removeClass('d-none');
                         select.find('option:gt(0)').remove();
 
                         for (var episode in episodes[show][season]) {
@@ -1214,7 +1214,7 @@ $(document).ready(function ($) {
                     var episodes = select.val();
 
                     if (select !== undefined) {
-                        select.removeClass('hidden');
+                        select.removeClass('d-none');
                         select.find('option:gt(0)').remove();
 
                         for (var season in episodes[show]) {
