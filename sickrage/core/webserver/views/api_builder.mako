@@ -64,7 +64,7 @@
                                     <h4>${_('Parameters')}</h4>
 
                                     <div class="table-responsive">
-                                        <table class="tablesorter">
+                                        <table class="sickrage-table">
                                             <thead>
                                             <tr>
                                                 <th>${_('Name')}</th>
