@@ -316,7 +316,7 @@
     % if submenu:
         <div id="sub-menu-container" class="row bg-dark mb-4 py-2 px-4">
             <div class="col text-center">
-                <div id="sub-menu" class="hidden-print">
+                <div id="sub-menu" class="d-print-none">
                     <% first = True %>
                     % for menuItem in submenu:
                         % if menuItem.get('requires', 1):

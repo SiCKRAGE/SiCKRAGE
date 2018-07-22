@@ -211,7 +211,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="row field-pair${(' hidden', '')[providerObj.supports_backlog]}">
+                            <div class="row field-pair${(' d-none', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
@@ -336,7 +336,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="field-pair${(' hidden', '')[providerObj.supports_backlog]}">
+                            <div class="field-pair${(' d-none', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
@@ -801,7 +801,7 @@
                         % endif
 
                         % if hasattr(providerObj, 'enable_backlog'):
-                            <div class="form-row form-group ${(' hidden', '')[providerObj.supports_backlog]}">
+                            <div class="form-row form-group ${(' d-none', '')[providerObj.supports_backlog]}">
                                 <div class="col-lg-3 col-md-4 col-sm-5">
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>

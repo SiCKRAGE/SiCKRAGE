@@ -38,7 +38,7 @@
                 <input type="checkbox" class="seriesCheck" id="SelectAll"/>
             </th>
             <th align="left" valign="top" class="nowrap">${_('Select All')}</th>
-            <th width="100%" class="col-name" style="visibility:hidden;"></th>
+            <th width="100%" class="col-name d-none"></th>
         </tr>
         </thead>
     </table>

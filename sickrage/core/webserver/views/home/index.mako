@@ -130,7 +130,7 @@
                                          src="${srWebRoot}/images/poster.png"/>
                                     <div class="card-header py-0 px-0">
                                         <div class="bg-dark rounded">
-                                            <div class="progress progress-bar rounded hidden-print" role="progressbar"
+                                            <div class="progress progress-bar rounded d-print-none" role="progressbar"
                                                  style="width: ${progressbar_percent}%;height: 5px;"
                                                  data-progress-percentage="${progressbar_percent}"
                                                  data-show-id="${curShow.indexerid}">
@@ -230,7 +230,7 @@
                                 </a>
                                 <div class="card-header py-0 px-0">
                                     <div class="bg-dark rounded">
-                                        <div class="progress progress-bar rounded hidden-print" role="progressbar"
+                                        <div class="progress progress-bar rounded d-print-none" role="progressbar"
                                              style="width: ${progressbar_percent}%;height: 5px;"
                                              data-progress-percentage="${progressbar_percent}"
                                              data-show-id="${curShow.indexerid}">
