@@ -301,7 +301,7 @@
                 </div>
             </div>
         % else:
-            <div class="horizontal-scroll">
+            <div class="table-responsive">
                 <table id="showListTable${curListType}" class="sickrage-table">
                     <thead>
                     <tr>

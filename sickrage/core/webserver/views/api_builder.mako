@@ -63,7 +63,7 @@
                                 <div class="col-md-12">
                                     <h4>${_('Parameters')}</h4>
 
-                                    <div class="horizontal-scroll">
+                                    <div class="table-responsive">
                                         <table class="tablesorter">
                                             <thead>
                                             <tr>

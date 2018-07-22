@@ -531,7 +531,7 @@
         </div>
         <div class="row">
         <div class="col-md-12">
-        <div class="horizontal-scroll">
+        <div class="table-responsive">
         <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
                class="sickrage-table display_show"
                style="opacity: .80" cellspacing="0" border="0" cellpadding="0">
@@ -586,9 +586,9 @@
                 <%
                     text = str(epResult['episode'])
                     if epLoc != '' and epLoc is not None:
-                        text = '<span title="' + epLoc + '" class="badge badge-dark">' + text + "</span>"
+                            text = '<span title="' + epLoc + '" class="badge badge-dark">' + text + "</span>"
                 %>
-            ${text}
+                ${text}
             </td>
 
             <td align="center">${epResult["absolute_number"]}</td>
@@ -631,7 +631,7 @@
 
             <td class="text-nowrap col-ep">
                 % if epResult["file_size"]:
-                            <% file_size = pretty_filesize(epResult["file_size"]) %>
+                                <% file_size = pretty_filesize(epResult["file_size"]) %>
                 ${file_size}
                 % endif
             </td>
@@ -655,8 +655,8 @@
                 <%
                     filename = epResult['location']
                     for rootDir in sickrage.app.config.root_dirs.split('|'):
-                                    if rootDir.startswith('/'):
-                                        filename = filename.replace(rootDir, "")
+                                        if rootDir.startswith('/'):
+                                            filename = filename.replace(rootDir, "")
                     filename = sickrage.app.config.download_url + urllib.quote(filename.encode('utf8'))
                 %>
                     <div style="text-align: center;"><a href="${filename}">${_('Download')}</a></div>

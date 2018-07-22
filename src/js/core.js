@@ -2142,11 +2142,6 @@ $(document).ready(function ($) {
 
                     $('#nameToSearch').focus();
 
-                    /*$('#indexerLang').bfhlanguages({
-                        language: SICKRAGE.getMeta('sickrage.DEFAULT_LANGUAGE'),
-                        available: SICKRAGE.getMeta('sickrage.LANGUAGES')
-                    });*/
-
                     $('#nameToSearch').keypress(function (e) {
                         e.preventDefault();
                         var keycode = (e.keyCode ? e.keyCode : e.which);

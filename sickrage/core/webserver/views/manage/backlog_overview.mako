@@ -49,7 +49,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="horizontal-scroll">
+                            <div class="table-responsive">
                                 % for curShow in sorted(sickrage.app.showlist, key=lambda x: x.name):
                                     <table class="sickrage-table m-0">
                                         % if not showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] == 0:

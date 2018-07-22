@@ -94,9 +94,13 @@
                                                         <span class="fas fa-flag"></span>
                                                     </span>
                                                 </div>
-                                                <select name="indexerLang" id="indexerLang"
-                                                        class="form-control"
+                                                <select name="indexerLang" id="indexerLang" class="form-control"
                                                         title="${_('Choose language')}">
+                                                    % for language in IndexerApi().indexer().languages.keys():
+                                                        <option value="${language}" ${('', 'selected')[sickrage.app.config.indexer_default_language == language]}>
+                                                            ${sickrage.subtitles.name_from_code(language)}
+                                                        </option>
+                                                    % endfor
                                                 </select>
                                             </div>
                                         </div>
@@ -141,7 +145,7 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                <%include file="../includes/add_show_options.mako"/>
+                                    <%include file="../includes/add_show_options.mako"/>
                             </div>
                             <button class="btn btn-success pull-right" type="submit">
                                 ${_('Finish!')}
