@@ -118,8 +118,11 @@
             </div>
         % endif
         % if sickrage.app.config.home_layout == 'poster':
+            <div class="loading-spinner text-center">
+                <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
+            </div>
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
-                 class="show-grid mx-auto clearfix">
+                 class="show-grid mx-auto clearfix d-none">
                 <div class="posterview">
                     % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
                         % if not curLoadingShow.show:

@@ -1330,8 +1330,8 @@ $(document).ready(function ($) {
 
 
                 $('.show-grid').imagesLoaded(function () {
-                    //$('.loading-spinner').hide();
-                    $('.show-grid').show().isotope({
+                    $('.loading-spinner').hide();
+                    $('.show-grid').removeClass('d-none').isotope({
                         itemSelector: '.show-container',
                         sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
                         sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
@@ -1932,12 +1932,58 @@ $(document).ready(function ($) {
                     $('#showsort').val('original');
                     $('#showsortdirection').val('asc');
 
-                    var $container = [$('#container')];
-                    $.each($container, function () {
-                        $(this).isotope({
-                            itemSelector: '.trakt_show',
+                    function resizePosters(newSize) {
+                        var fontSize, spriteScale, borderRadius;
+                        if (newSize < 125) { // small
+                            borderRadius = 3;
+                        } else if (newSize < 175) { // medium
+                            fontSize = 9;
+                            spriteScale = .6;
+                            borderRadius = 4;
+                        } else { // large
+                            fontSize = 11;
+                            spriteScale = 1;
+                            borderRadius = 6;
+                        }
+
+                        $('#posterPopup').remove();
+
+                        if (fontSize === undefined) {
+                            $('.show-details').hide();
+                        } else {
+                            $('.show-details').show();
+                        }
+
+                        $('.show-container').css({
+                            width: newSize,
+                            borderRadius: borderRadius
+                        });
+                    }
+
+                    $('#posterSizeSlider').slider({
+                        min: 75,
+                        max: 250,
+                        value: localStorage.traktPosterSize || 188,
+                        change: function (e, ui) {
+                            if (window.localStorage) {
+                                localStorage.setItem('traktPosterSize', ui.value);
+                            }
+                            resizePosters(ui.value);
+                            $('.show-grid').isotope('layout');
+                        }
+                    });
+
+                    resizePosters(parseInt(localStorage.traktPosterSize || 188));
+
+                    $('.show-grid').imagesLoaded(function () {
+                        $('.loading-spinner').hide();
+                        $('.show-grid').removeClass('d-none').isotope({
+                            itemSelector: '.show-container',
                             sortBy: 'original-order',
-                            layoutMode: 'fitRows',
+                            layoutMode: 'masonry',
+                            masonry: {
+                                isFitWidth: true
+                            },
                             getSortData: {
                                 name: function (itemElem) {
                                     var name = $(itemElem).attr('data-name') || '';

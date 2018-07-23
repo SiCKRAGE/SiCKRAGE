@@ -12,14 +12,9 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
 </%block>
 <%block name="content">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="title">${title}</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="text-center">
+    <div class="row bg-dark mb-3 px-4">
+        <div class="col text-left">
+            <div class="form-inline m-2">
                 <span>${_('Sort By:')}</span>
                 <select id="showsort" class="form-control form-control-inline input-sm">
                     <option value="name">${_('Name')}</option>
@@ -36,7 +31,8 @@
                 </select>
 
                 <span style="margin-left:12px">${_('Select Trakt List:')}</span>
-                <select id="traktlist" class="form-control form-control-inline input-sm" title="Trakt List Selection">
+                <select id="traktlist" class="form-control form-control-inline input-sm"
+                        title="Trakt List Selection">
                     <option value="anticipated" ${('', ' selected')[trakt_list == "anticipated"]}>
                         ${_('Most Anticipated')}
                     </option>
@@ -66,50 +62,67 @@
                 </select>
             </div>
         </div>
+        <div class="col text-right">
+            <div class="form-inline m-1 d-inline-flex">
+                <div style="width: 100px" id="posterSizeSlider"></div>
+            </div>
+        </div>
     </div>
 
-
-    <div class="clearfix"></div>
-    <div id="container">
-        % if not trakt_shows:
-            <div class="trakt_show" style="width:100%; margin-top:20px">
-                <p class="red-text">${_('Trakt API did not return any results, please check your config.')}
-            </div>
-        % else:
-            % for cur_show in trakt_shows:
-            <% indexer_id = cur_show.ids['tvdb'] %>
-            <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show.ids['slug'] %>
-
-                <div class="trakt_show" data-name="${cur_show.title}"
-                     data-rating="${cur_show.rating.value}" data-votes="${cur_show.votes}">
-                    <div class="traktContainer">
-                        <div class="trakt-image">
-                            <a class="trakt-image" href="${anon_url(show_url)}" target="_blank">
-                                <img alt="" class="trakt-image" src="" data-image-loaded=""
-                                     data-indexerid="${indexer_id}"
-                                     height="273px" width="186px"/>
-                            </a>
-                        </div>
-
-                        <div class="show-title">
-                            ${(cur_show.title, '<span>&nbsp;</span>')['' == cur_show.title]}
-                        </div>
-
-                        <div class="clearfix">
-                            <p>${int(cur_show.rating.value*10)}% <span class="fas fa-heart red-text"></span></p>
-                            <i>${cur_show.votes} ${_('votes')}</i>
-                            <div class="traktShowTitleIcons">
-                                <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"
-                                   class="btn btn-xs" data-no-redirect>${_('Add Show')}</a>
-                                % if black_list:
-                                    <a href="${srWebRoot}/addShows/addShowToBlacklist?indexer_id=${indexer_id}"
-                                       class="btn btn-xs">${_('Remove Show')}</a>
-                                % endif
-                            </div>
-                        </div>
-                    </div>
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="sickrage-card m-1">
+                <div class="sickrage-card-header">
+                    <h3>${title}</h3>
                 </div>
-            % endfor
-        % endif
+                <div class="card-body">
+                    % if not trakt_shows:
+                        <div class="trakt_show" style="width:100%; margin-top:20px">
+                            <p class="red-text">${_('Trakt API did not return any results, please check your config.')}
+                        </div>
+                    % else:
+                        <div class="loading-spinner text-center">
+                            <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
+                        </div>
+                        <div class="show-grid d-none">
+                            % for cur_show in trakt_shows:
+                            <% indexer_id = cur_show.ids['tvdb'] %>
+                            <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show.ids['slug'] %>
+                                <div class="show-container" data-name="${cur_show.title}"
+                                     data-rating="${cur_show.rating.value}" data-votes="${cur_show.votes}">
+                                    <div class="card card-block text-white bg-dark m-1 shadow">
+                                        <div class="card-header p-0">
+                                            <a href="${anon_url(show_url)}" target="_blank">
+                                                <img class="card-img-top trakt-image" src="" data-image-loaded=""
+                                                     data-indexerid="${indexer_id}"/>
+                                            </a>
+                                        </div>
+                                        <div class="card-body text-truncate py-1 px-1 small">
+                                            <div class="show-title">
+                                                ${(cur_show.title, '<span>&nbsp;</span>')['' == cur_show.title]}
+                                            </div>
+                                            <div class="show-votes">
+                                                <i>${cur_show.votes} ${_('votes')}</i>
+                                                <span class="fas fa-heart text-danger font-weight-bold">
+                                                    ${int(cur_show.rating.value*10)}%
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer show-details p-1">
+                                            <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"
+                                               class="sickrage-btn btn-sm" data-no-redirect>${_('Add Show')}</a>
+                                            % if black_list:
+                                                <a href="${srWebRoot}/addShows/addShowToBlacklist?indexer_id=${indexer_id}"
+                                                   class="sickrage-btn btn-sm">${_('Remove Show')}</a>
+                                            % endif
+                                        </div>
+                                    </div>
+                                </div>
+                            % endfor
+                        </div>
+                    % endif
+                </div>
+            </div>
+        </div>
     </div>
 </%block>
