@@ -1913,7 +1913,7 @@ $(document).ready(function ($) {
                                 return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
                             },
                             rating: '[data-rating] parseInt',
-                            votes: '[data-votes] parseInt',
+                            votes: '[data-votes] parseInt'
                         }
                     });
                 }
@@ -2053,7 +2053,68 @@ $(document).ready(function ($) {
             },
 
             popular_shows: function () {
-                SICKRAGE.home.add_existing_shows.showGrid();
+                function resizePosters(newSize) {
+                    var fontSize, spriteScale, borderRadius;
+                    if (newSize < 125) { // small
+                        borderRadius = 3;
+                    } else if (newSize < 175) { // medium
+                        fontSize = 9;
+                        spriteScale = .6;
+                        borderRadius = 4;
+                    } else { // large
+                        fontSize = 11;
+                        spriteScale = 1;
+                        borderRadius = 6;
+                    }
+
+                    $('#posterPopup').remove();
+
+                    if (fontSize === undefined) {
+                        $('.show-details').hide();
+                    } else {
+                        $('.show-details').show();
+                    }
+
+                    $('.show-container').css({
+                        width: newSize,
+                        borderRadius: borderRadius
+                    });
+                }
+
+                $('#posterSizeSlider').slider({
+                    min: 75,
+                    max: 250,
+                    value: localStorage.imdbPosterSize || 188,
+                    change: function (e, ui) {
+                        if (window.localStorage) {
+                            localStorage.setItem('imdbPosterSize', ui.value);
+                        }
+                        resizePosters(ui.value);
+                        $('.show-grid').isotope('layout');
+                    }
+                });
+
+                resizePosters(parseInt(localStorage.traktPosterSize || 188));
+
+                $('.show-grid').imagesLoaded(function () {
+                    $('.loading-spinner').hide();
+                    $('.show-grid').removeClass('d-none').isotope({
+                        itemSelector: '.show-container',
+                        sortBy: 'original-order',
+                        layoutMode: 'masonry',
+                        masonry: {
+                            isFitWidth: true
+                        },
+                        getSortData: {
+                            name: function (itemElem) {
+                                var name = $(itemElem).attr('data-name') || '';
+                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^(The|A|An)\s/i, '')).toLowerCase();
+                            },
+                            rating: '[data-rating] parseInt',
+                            votes: '[data-votes] parseInt'
+                        }
+                    });
+                });
             },
 
             test_renaming: function () {

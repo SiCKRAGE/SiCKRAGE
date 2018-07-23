@@ -84,7 +84,7 @@
                         <div class="loading-spinner text-center">
                             <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
                         </div>
-                        <div class="show-grid d-none">
+                        <div class="show-grid mx-auto d-none">
                             % for cur_show in trakt_shows:
                             <% indexer_id = cur_show.ids['tvdb'] %>
                             <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show.ids['slug'] %>
@@ -102,10 +102,10 @@
                                                 ${(cur_show.title, '<span>&nbsp;</span>')['' == cur_show.title]}
                                             </div>
                                             <div class="show-votes">
-                                                <i>${cur_show.votes} ${_('votes')}</i>
-                                                <span class="fas fa-heart text-danger font-weight-bold">
-                                                    ${int(cur_show.rating.value*10)}%
-                                                </span>
+                                                ${cur_show.votes} <i class="fas fa-thumbs-up text-success"></i>
+                                            </div>
+                                            <div class="show-ratings">
+                                                ${int(cur_show.rating.value*10)}% <i class="fas fa-heart text-danger"></i>
                                             </div>
                                         </div>
                                         <div class="card-footer show-details p-1">
