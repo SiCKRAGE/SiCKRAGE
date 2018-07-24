@@ -15,8 +15,7 @@
     <div class="row bg-dark mb-3 px-4">
         <div class="col text-left">
             <div class="form-inline m-2">
-                <span>${_('Sort By:')}</span>
-                <select id="showsort" class="form-control form-control-inline input-sm">
+                <select id="showsort" class="form-control form-control-inline m-1" title="${_('Sort By')}">
                     <option value="name">${_('Name')}</option>
                     <option value="original" selected>${_('Original')}</option>
                     <option value="votes">${_('Votes')}</option>
@@ -24,15 +23,12 @@
                     <option value="rating_votes">${_('% Rating > Votes')}</option>
                 </select>
 
-                <span style="margin-left:12px">${_('Sort Order:')}</span>
-                <select id="showsortdirection" class="form-control form-control-inline input-sm">
+                <select id="showsortdirection" class="form-control form-control-inline m-1" title="${_('Sort Order')}">
                     <option value="asc" selected>${_('Asc')}</option>
                     <option value="desc">${_('Desc')}</option>
                 </select>
 
-                <span style="margin-left:12px">${_('Select Trakt List:')}</span>
-                <select id="traktlist" class="form-control form-control-inline input-sm"
-                        title="Trakt List Selection">
+                <select id="traktlist" class="form-control form-control-inline m-1" title="${_('Trakt List Selection')}">
                     <option value="anticipated" ${('', ' selected')[trakt_list == "anticipated"]}>
                         ${_('Most Anticipated')}
                     </option>
@@ -53,8 +49,7 @@
                     </option>
                 </select>
 
-                <span style="margin-left:12px">${_('Limit:')}</span>
-                <select id="limit" class="form-control form-control-inline input-sm">
+                <select id="limit" class="form-control form-control-inline m-1" title="${_('Limit')}">
                     <option value="10" ${('', ' selected')[limit == "10"]}>10</option>
                     <option value="25" ${('', ' selected')[limit == "25"]}>25</option>
                     <option value="50" ${('', ' selected')[limit == "50"]}>50</option>
@@ -62,8 +57,8 @@
                 </select>
             </div>
         </div>
-        <div class="col text-right">
-            <div class="form-inline m-1 d-inline-flex">
+        <div class="text-right">
+            <div class="form-inline d-inline m-1">
                 <div style="width: 100px" id="posterSizeSlider"></div>
             </div>
         </div>
@@ -93,8 +88,8 @@
                                     <div class="card card-block text-white bg-dark m-1 shadow">
                                         <div class="card-header p-0">
                                             <a href="${anon_url(show_url)}" target="_blank">
-                                                <img class="card-img-top trakt-image" src="" data-image-loaded=""
-                                                     data-indexerid="${indexer_id}"/>
+                                                <img class="card-img-top"
+                                                     src="${srWebRoot}${indexerImage(id=indexer_id, which="poster_thumb").url}"/>
                                             </a>
                                         </div>
                                         <div class="card-body text-truncate py-1 px-1 small">

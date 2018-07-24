@@ -7,24 +7,23 @@
     <div class="row bg-dark mb-3 px-4">
         <div class="col text-left">
             <div class="form-inline m-2">
-                <select id="showsort" class="form-control form-control-inline input-sm" title="Show Sort">
+                <select id="showsort" class="form-control form-control-inline m-1" title="${_('Show Sort')}">
                     <option value="name">${_('Name')}</option>
-                    <option value="original" selected="selected">Original</option>
+                    <option value="original" selected="selected">${_('Original')}</option>
                     <option value="votes">${_('Votes')}</option>
                     <option value="rating">${_('% Rating')}</option>
                     <option value="rating_votes">${_('% Rating > Votes')}</option>
                 </select>
                 &nbsp;
-                <select id="showsortdirection" class="form-control form-control-inline input-sm"
-                        title="Show Sort Direction">
+                <select id="showsortdirection" class="form-control form-control-inline m-1" title="${_('Show Sort Direction')}">
                     <option value="asc" selected="selected">${_('Asc')}</option>
                     <option value="desc">${_('Desc')}</option>
                 </select>
             </div>
         </div>
 
-        <div class="col text-right">
-            <div class="form-inline m-1 d-inline-flex">
+        <div class="text-right">
+            <div class="form-inline d-inline m-1">
                 <div style="width: 100px" id="posterSizeSlider"></div>
             </div>
         </div>
@@ -67,7 +66,7 @@
                                             <div class="card-header p-0">
                                                 <a class="trakt-image" href="${anon_url(cur_result['imdb_url'])}"
                                                    target="_blank">
-                                                    <img class="card-img-top trakt-image"
+                                                    <img class="card-img-top"
                                                          src="${srWebRoot}/${cur_result['image_path']}"/>
                                                 </a>
                                             </div>

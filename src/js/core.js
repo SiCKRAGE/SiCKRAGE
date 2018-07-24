@@ -2005,7 +2005,7 @@ $(document).ready(function ($) {
                                 /* randomise, else the rating_votes can already
                                  * have sorted leaving this with nothing to do.
                                  */
-                                $('#container').isotope({sortBy: 'random'});
+                                $('.show-grid').isotope({sortBy: 'random'});
                                 sortCriteria = 'rating';
                                 break;
                             case 'rating_votes':
@@ -2018,11 +2018,11 @@ $(document).ready(function ($) {
                                 sortCriteria = 'name';
                                 break;
                         }
-                        $('#container').isotope({sortBy: sortCriteria});
+                        $('.show-grid').isotope({sortBy: sortCriteria});
                     });
 
                     $('#showsortdirection').on('change', function () {
-                        $('#container').isotope({sortAscending: ('asc' === $(this).value)});
+                        $('.show-grid').isotope({sortAscending: ('asc' === $(this).value)});
                     });
 
                     $('#traktlist').on('change', function (e) {
@@ -2033,21 +2033,6 @@ $(document).ready(function ($) {
                     $('#limit').on('change', function (e) {
                         var url = SICKRAGE.updateUrlParameter(document.location.href, 'limit', e.target.value);
                         document.location.href = url;
-                    });
-
-                    $('img.trakt-image').each(function () {
-                        if ($(this).data("image-loaded") !== true) {
-                            $.ajax({
-                                url: SICKRAGE.srWebRoot + '/addShows/getIndexerImage',
-                                type: "GET",
-                                data: {indexerid: $(this).data('indexerid')},
-                                context: this,
-                                success: function (data) {
-                                    $(this).data("image-loaded", true);
-                                    $(this).attr("src", data);
-                                }
-                            });
-                        }
                     });
                 }
             },
@@ -2114,6 +2099,36 @@ $(document).ready(function ($) {
                             votes: '[data-votes] parseInt'
                         }
                     });
+                });
+
+                $('#showsort').on('change', function () {
+                    var sortCriteria;
+                    switch ($(this).value) {
+                        case 'original':
+                            sortCriteria = 'original-order';
+                            break;
+                        case 'rating':
+                            /* randomise, else the rating_votes can already
+                             * have sorted leaving this with nothing to do.
+                             */
+                            $('.show-grid').isotope({sortBy: 'random'});
+                            sortCriteria = 'rating';
+                            break;
+                        case 'rating_votes':
+                            sortCriteria = ['rating', 'votes'];
+                            break;
+                        case 'votes':
+                            sortCriteria = 'votes';
+                            break;
+                        default:
+                            sortCriteria = 'name';
+                            break;
+                    }
+                    $('.show-grid').isotope({sortBy: sortCriteria});
+                });
+
+                $('#showsortdirection').on('change', function () {
+                    $('.show-grid').isotope({sortAscending: ('asc' === $(this).value)});
                 });
             },
 
