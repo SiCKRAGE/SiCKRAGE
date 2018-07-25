@@ -12,8 +12,8 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3 class="float-lg-left">${title}</h3>
                     <div class="float-lg-right">
                         <select name="limit" id="limit" class="form-control" title="${_('Limit')}">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="failedTable" class="sickrage-table">
+                    <table id="failedTable" class="table">
                         <thead>
                         <tr>
                             <th align="left" class="nowrap">${_('Release')}</th>
@@ -63,7 +63,7 @@
                             % endfor
                         </tbody>
                     </table>
-                    <input type="button" class="sickrage-btn" value="${_('Submit')}"
+                    <input type="button" class="btn" value="${_('Submit')}"
                                                            id="submitMassRemove">
                 </div>
             </div>

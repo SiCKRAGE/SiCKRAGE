@@ -18,8 +18,8 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3 class="title">${title}</h3>
                 </div>
 
@@ -48,7 +48,7 @@
                             <div class="row">
                                 <span class="component-desc">
                                     ${_('Root Directories')} (*)
-                                    <table class="sickrage-table">
+                                    <table class="table">
                                         <thead>
                                             <tr>
                                                 <th class="text-nowrap">${_('Current')}</th>
@@ -289,7 +289,7 @@
 
                         </fieldset>
                         <input id="submit" type="submit" value="${_('Save Changes')}"
-                               class="sickrage-btn config_submitter button">
+                               class="btn config_submitter button">
                     </form>
                 </div>
             </div>

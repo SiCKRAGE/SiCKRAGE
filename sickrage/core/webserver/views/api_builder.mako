@@ -13,8 +13,8 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
@@ -46,7 +46,7 @@
                             command_id = command.replace('.', '-')
                             help = commands[command](application, request, **{'help':1}).run()
                         %>
-                            <div class="sickrage-card m-1">
+                            <div class="card mt-1 mb-3">
                                 <div class="card-header">
                                     <h4 class="card-title">
                                         <a data-toggle="collapse" data-parent="#commands_list"
@@ -66,7 +66,7 @@
                                                     <h4>${_('Parameters')}</h4>
 
                                                     <div class="table-responsive">
-                                                        <table class="sickrage-table">
+                                                        <table class="table">
                                                             <thead>
                                                             <tr>
                                                                 <th>${_('Name')}</th>
@@ -133,7 +133,7 @@
                                                     ${_('URL:')} <kbd id="command-${command_id}-url"></kbd>
                                                 </span>
                                                 <span class="float-right">
-                                                    <button class="sickrage-btn" data-action="clear-result"
+                                                    <button class="btn" data-action="clear-result"
                                                             data-target="#command-${command_id}-response">${_('Clear')}</button>
                                                 </span>
                                             </div>

@@ -18,8 +18,8 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-3 mb-3">
+                <div class="card-header">
                     <h3 class="float-md-left">${title}</h3>
                     <div class="float-md-right">
                         <span class="badge wanted">${_('Wanted:')} <b>${totalWanted}</b></span>
@@ -47,12 +47,14 @@
                         </div>
                     </div>
 
+                    <br/>
+
                     <div class="row">
                         <div class="col-md-12">
                             <div class="table-responsive">
                                 % for curShow in sorted(sickrage.app.showlist, key=lambda x: x.name):
-                                    <table class="sickrage-table m-0">
                                         % if not showCounts[curShow.indexerid][Overview.QUAL] + showCounts[curShow.indexerid][Overview.WANTED] == 0:
+                                        <table class="table mb-3">
                                             <tr class="seasonheader" id="show-${curShow.indexerid}">
                                                 <td colspan="3" class="align-left">
                                                     <div class="float-md-left">
@@ -65,7 +67,7 @@
                                                             <b>${showCounts[curShow.indexerid][Overview.WANTED]}</b></span>
                                                         <span class="badge qual">${_('Low Quality:')}
                                                             <b>${showCounts[curShow.indexerid][Overview.QUAL]}</b></span>
-                                                        <a class="sickrage-btn forceBacklog"
+                                                        <a class="btn forceBacklog"
                                                            href="${srWebRoot}/manage/backlogShow?indexer_id=${curShow.indexerid}"><i
                                                                 class="icon-play-circle icon-white"></i> ${_('Force Backlog')}
                                                         </a>

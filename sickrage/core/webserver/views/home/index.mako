@@ -13,7 +13,7 @@
 </%block>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div class="row bg-dark mb-3 px-4">
+    <div class="row sickrage-submenu">
         <div class="col text-left">
             <div class="form-inline m-2">
                 % if sickrage.app.config.home_layout != 'poster':
@@ -24,7 +24,8 @@
                                     ${_('Select Columns:')}
                                 </div>
                             </div>
-                            <button id="popover" type="button" class="form-control bg-secondary" style="border: none;">
+                            <button id="popover" type="button" class="form-control bg-secondary"
+                                    style="border: none;">
                                 <i class="fas fa-caret-down"></i>
                             </button>
                         </div>
@@ -45,7 +46,8 @@
                     </div>
 
                     <div class="px-1">
-                        <select id="postersort" class="form-control bg-secondary text-white-50" style="border: none;">
+                        <select id="postersort" class="form-control bg-secondary text-white-50"
+                                style="border: none;">
                             <option value="name"
                                     data-sort="${srWebRoot}/setPosterSortBy/?sort=name" ${('', 'selected')[sickrage.app.config.poster_sortby == 'name']}>
                                 ${_('Name')}
@@ -86,8 +88,9 @@
                 % if sickrage.app.config.home_layout == 'poster':
                     <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
-                <div class="dropdown">
-                    <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                <div class="dropdown ml-4">
+                    <button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown"
+                            style="border: none;">
                         % if sickrage.app.config.home_layout == 'poster':
                             <i class="fas fa-2x fa-th-large"></i>
                         % elif sickrage.app.config.home_layout == 'small':
@@ -305,7 +308,7 @@
             </div>
         % else:
             <div class="table-responsive">
-                <table id="showListTable${curListType}" class="sickrage-table">
+                <table id="showListTable${curListType}" class="table">
                     <thead>
                     <tr>
                         <th class="table-fit nowrap">${_('Next Ep')}</th>

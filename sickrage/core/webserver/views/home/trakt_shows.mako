@@ -12,7 +12,7 @@
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
 </%block>
 <%block name="content">
-    <div class="row bg-dark mb-3 px-4">
+    <div class="row sickrage-submenu">
         <div class="col text-left">
             <div class="form-inline m-2">
                 <select id="showsort" class="form-control form-control-inline m-1" title="${_('Sort By')}">
@@ -57,7 +57,7 @@
                 </select>
             </div>
         </div>
-        <div class="text-right">
+        <div class="text-right pr-3">
             <div class="form-inline d-inline m-1">
                 <div style="width: 100px" id="posterSizeSlider"></div>
             </div>
@@ -66,8 +66,8 @@
 
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
@@ -105,10 +105,10 @@
                                         </div>
                                         <div class="card-footer show-details p-1">
                                             <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${indexer_id}&showName=${cur_show.title}"
-                                               class="sickrage-btn btn-sm" data-no-redirect>${_('Add Show')}</a>
+                                               class="btn btn-sm" data-no-redirect>${_('Add Show')}</a>
                                             % if black_list:
                                                 <a href="${srWebRoot}/addShows/addShowToBlacklist?indexer_id=${indexer_id}"
-                                                   class="sickrage-btn btn-sm">${_('Remove Show')}</a>
+                                                   class="btn btn-sm">${_('Remove Show')}</a>
                                             % endif
                                         </div>
                                     </div>

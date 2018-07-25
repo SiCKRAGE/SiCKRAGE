@@ -13,17 +13,17 @@
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <div class="float-md-left">
                         <h3>${title}</h3>
                     </div>
                     <div class="float-right">
                         <div class="input-group">
                             % if layout == 'list':
-                                <input id="popover" type="button" class="sickrage-btn"/>
+                                <input id="popover" type="button" class="btn"/>
                             % else:
-                                <select id="sortby" name="sort" class="sickrage-form-control"
+                                <select id="sortby" name="sort" class="form-control"
                                         onchange="location = this.options[this.selectedIndex].value;">
                                     <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'date']} >
                                         Date
@@ -64,7 +64,7 @@
                                 </option>
                             </select>
 
-                            <a class="sickrage-btn btn-dark forceBacklog"
+                            <a class="btn btn-dark forceBacklog"
                                href="webcal://${srHost}:${srHttpPort}/calendar">
                                 <i class="icon-calendar icon-white"></i>
                                 Subscribe
@@ -86,7 +86,7 @@
                         <div class="col-md-12">
                             <% show_div = 'listing-default' %>
 
-                            <table class="sickrage-table" id="showListTable">
+                            <table class="table" id="showListTable">
                                 <thead>
                                 <tr>
                                     <th class="table-fit">Airdate
@@ -420,7 +420,7 @@
                                 <% tbl_day = 0 %>
                                 % for day in dates:
                                 <% tbl_day += 1 %>
-                                    <table class="sickrage-table float-left w-auto text-center ${'cal-{}'.format(('even', 'odd')[bool(tbl_day % 2)])}">
+                                    <table class="table float-left w-auto text-center ${'cal-{}'.format(('even', 'odd')[bool(tbl_day % 2)])}">
                                         <thead>
                                         <tr>
                                             <th>${day.strftime('%A %d').decode(sickrage.app.sys_encoding).capitalize()}</th>

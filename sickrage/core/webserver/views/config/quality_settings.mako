@@ -5,7 +5,7 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#quality-sizes">${_('Quality Sizes')}</a>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#quality-sizes">${_('Quality Sizes')}</a>
     </li>
 </%block>
 
@@ -54,7 +54,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 

@@ -6,7 +6,7 @@
         ${_('Mako errors that happen during updates may be a one time error if there were significant ui changes.')}
     </p>
     <hr>
-    <a href="#mako-error" class="sickrage-btn" data-toggle="collapse">${_('Show/Hide Error')}</a>
+    <a href="#mako-error" class="btn" data-toggle="collapse">${_('Show/Hide Error')}</a>
     <div id="mako-error" class="collapse">
         <br>
         <div class="text-left">

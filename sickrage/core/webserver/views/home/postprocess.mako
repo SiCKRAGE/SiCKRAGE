@@ -5,12 +5,13 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
-                    <h3 class="title">${title}</h3>
-                </div>
-                <div class="card-body">
-                    <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
+            <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
+                <div class="card mt-3 mb-3">
+                    <div class="card-header">
+                        <h3 class="title">${title}</h3>
+                    </div>
+                    <div class="card-body">
+
                         <input type="hidden" id="type" name="proc_type" value="manual">
                         <div class="row">
                             <div class="col-md-6">
@@ -95,14 +96,12 @@
                                 <input id="failed" name="failed" type="checkbox" title="">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input id="submit" class="sickrage-btn" type="submit" value="${_('Process')}"/>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="card-footer">
+                        <input id="submit" class="btn" type="submit" value="${_('Process')}"/>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </%block>

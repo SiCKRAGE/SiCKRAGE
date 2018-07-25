@@ -112,20 +112,20 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHome">
                                 <a class="dropdown-item" href="${srWebRoot}/home/">
-                                    <i class="menu-icon-home"></i>&nbsp;${_('Show List')}
+                                    <i class="fas fa-home"></i>&nbsp;${_('Show List')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/addShows/">
-                                    <i class="menu-icon-addshow"></i>&nbsp;${_('Add Shows')}
+                                    <i class="fas fa-tv"></i>&nbsp;${_('Add Shows')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/postprocess/">
-                                    <i class="menu-icon-postprocess"></i>&nbsp;${_('Manual Post-Processing')}
+                                    <i class="fas fa-folder-open"></i>&nbsp;${_('Manual Post-Processing')}
                                 </a>
                                 % if sickrage.app.config.shows_recent:
                                     <div class="dropdown-divider"></div>
                                 % for recentShow in sickrage.app.config.shows_recent:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
-                                        <i class="menu-icon-addshow"></i>&nbsp;${recentShow['name']|trim,h}
+                                        <i class="fas fa-tv"></i>&nbsp;${recentShow['name']|trim,h}
                                     </a>
                                 % endfor
                                 % endif
@@ -141,48 +141,48 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
                                 <a class="dropdown-item" href="${srWebRoot}/manage/">
-                                    <i class="menu-icon-manage"></i>&nbsp;${_('Mass Update')}
+                                    <i class="fas fa-diagnoses"></i>&nbsp;${_('Mass Update')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/backlogOverview/">
-                                    <i class="menu-icon-backlog-view"></i>&nbsp;${_('Backlog Overview')}
+                                    <i class="fas fa-backward"></i>&nbsp;${_('Backlog Overview')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/manageQueues/">
-                                    <i class="menu-icon-manage-searches"></i>&nbsp;${_('Manage Queues')}
+                                    <i class="fas fa-list"></i>&nbsp;${_('Manage Queues')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/episodeStatuses/">
-                                    <i class="menu-icon-backlog"></i>&nbsp;${_('Episode Status Management')}
+                                    <i class="fas fa-th-list"></i>&nbsp;${_('Episode Status Management')}
                                 </a>
                                 % if sickrage.app.config.use_trakt and sickrage.app.config.trakt_oauth_token != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/syncTrakt/">
-                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Sync Trakt')}
+                                        <i class="fas fa-sync"></i>&nbsp;${_('Sync Trakt')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_plex and sickrage.app.config.plex_server_host != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updatePLEX/">
-                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update PLEX')}
+                                        <i class="fas fa-sync"></i>&nbsp;${_('Update PLEX')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
-                                        <i class="menu-icon-kodi"></i>&nbsp;${_('Update KODI')}
+                                        <i class="fas fa-sync"></i>&nbsp;${_('Update KODI')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
-                                        <i class="menu-icon-backlog-view"></i>&nbsp;${_('Update Emby')}
+                                        <i class="fas fa-sync"></i>&nbsp;${_('Update Emby')}
                                     </a>
                                 % endif
                                 % if torrent_webui_url:
                                     <a class="dropdown-item" href="${torrent_webui_url}" target="_blank">
-                                        <i class="menu-icon-bittorrent"></i>&nbsp;${_('Manage Torrents')}
+                                        <i class="fas fa-video"></i>&nbsp;${_('Manage Torrents')}
                                     </a>
                                 % endif
                                 <a class="dropdown-item" href="${srWebRoot}/manage/failedDownloads/">
-                                    <i class="menu-icon-failed-download"></i>&nbsp;${_('Failed Downloads')}
+                                    <i class="fas fa-first-aid"></i>&nbsp;${_('Failed Downloads')}
                                 </a>
                                 % if sickrage.app.config.use_subtitles:
                                     <a class="dropdown-item" href="${srWebRoot}/manage/subtitleMissed/">
-                                        <i class="menu-icon-backlog"></i>&nbsp;${_('Missed Subtitle Management')}
+                                        <i class="fas fa-question"></i>&nbsp;${_('Missed Subtitle Management')}
                                     </a>
                                 % endif
                             </div>
@@ -224,13 +224,13 @@
                                     <i class="fas fa-share-alt"></i>&nbsp;${_('Search Providers')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/subtitles/">
-                                    <i class="fas fa-cc"></i>&nbsp;${_('Subtitles Settings')}
+                                    <i class="fas fa-closed-captioning"></i>&nbsp;${_('Subtitles Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/qualitySettings/">
                                     <i class="fas fa-wrench"></i>&nbsp;${_('Quality Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/postProcessing/">
-                                    <i class="fas fa-refresh"></i>&nbsp;${_('Post Processing')}
+                                    <i class="fas fa-folder-open"></i>&nbsp;${_('Post Processing')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/notifications/">
                                     <i class="fas fa-bell"></i>&nbsp;${_('Notifications')}
@@ -312,42 +312,45 @@
         </nav>
     % endif
 
-<div class="container-fluid">
     % if submenu:
-        <div id="sub-menu-container" class="row bg-dark mb-4 py-2 px-4">
-            <div class="col text-center">
-                <div id="sub-menu" class="d-print-none">
-                    <% first = True %>
-                    % for menuItem in submenu:
-                        % if menuItem.get('requires', 1):
-                            % if isinstance(menuItem['path'], dict):
-                            ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                            <%
-                                first = False
-                                inner_first = True
-                            %>
-                            % for cur_link in menuItem['path']:
-                            ${("&middot;", "")[bool(inner_first)]}<a href="${srWebRoot}${menuItem['path'][cur_link]}"
-                                                                     class="inner ${menuItem.get('class', '')} m-1">${cur_link}</a>
-                            <% inner_first = False %>
-                            % endfor
-                            % else:
-                                <a href="${srWebRoot}${menuItem['path']}"
-                                   class="sickrage-btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
-                                    <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
-                                </a>
-                            <% first = False %>
+        <div class="container-fluid">
+            <div class="row sickrage-submenu">
+                <div class="col">
+                    <div class="text-center d-print-none">
+                        <% first = True %>
+                        % for menuItem in submenu:
+                            % if menuItem.get('requires', 1):
+                                % if isinstance(menuItem['path'], dict):
+                                ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                                <%
+                                    first = False
+                                    inner_first = True
+                                %>
+                                % for cur_link in menuItem['path']:
+                                ${("&middot;", "")[bool(inner_first)]}
+                                    <a href="${srWebRoot}${menuItem['path'][cur_link]}"
+                                       class="inner ${menuItem.get('class', '')} m-1">
+                                        ${cur_link}
+                                    </a>
+                                <% inner_first = False %>
+                                % endfor
+                                % else:
+                                    <a href="${srWebRoot}${menuItem['path']}"
+                                       class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
+                                        <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
+                                    </a>
+                                <% first = False %>
+                                % endif
                             % endif
-                        % endif
-                    % endfor
+                        % endfor
+                    </div>
                 </div>
             </div>
         </div>
     % endif
-</div>
 
 <div class="container-fluid">
-    <%block name="content" />
+        <%block name="content" />
 </div>
 
 <div class="container-fluid">

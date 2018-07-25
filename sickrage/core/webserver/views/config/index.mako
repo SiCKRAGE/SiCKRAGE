@@ -17,7 +17,7 @@
 <%block name="content">
     <div class="form-row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card">
+            <div class="card">
                 <div class="card-body">
                     <div class="card-text">
                         <div class="form-row">

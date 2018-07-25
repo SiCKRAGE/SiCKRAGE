@@ -5,12 +5,12 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Backlog Search:')}</b>
@@ -18,17 +18,17 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <a class="sickrage-btn" href="${srWebRoot}/manage/manageQueues/forceBacklogSearch">
+                            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceBacklogSearch">
                                 <i class="icon-exclamation-sign"></i>${_('Force')}
                             </a>
-                            <a class="sickrage-btn"
+                            <a class="btn"
                                href="${srWebRoot}/manage/manageQueues/pauseBacklogSearcher?paused=${('1', '0')[bool(backlogSearchPaused)]}">
                                 <i class="icon-${('paused', 'play')[bool(backlogSearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(backlogSearchPaused)]}
                             </a>
                         </div>
                     </div>
 
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Daily Search:')}</b>
@@ -36,17 +36,17 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <a class="sickrage-btn" href="${srWebRoot}/manage/manageQueues/forceDailySearch">
+                            <a class="btn" href="${srWebRoot}/manage/manageQueues/forceDailySearch">
                                 <i class="icon-exclamation-sign"></i>${_('Force')}
                             </a>
-                            <a class="sickrage-btn"
+                            <a class="btn"
                                href="${srWebRoot}/manage/manageQueues/pauseDailySearcher?paused=${('1', '0')[bool(dailySearchPaused)]}">
                                 <i class="icon-${('paused', 'play')[bool(dailySearchPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(dailySearchPaused)]}
                             </a>
                         </div>
                     </div>
 
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Find Propers Search:')}</b>
@@ -60,14 +60,14 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <a class="sickrage-btn ${('disabled', '')[bool(sickrage.app.config.download_propers)]}"
+                            <a class="btn ${('disabled', '')[bool(sickrage.app.config.download_propers)]}"
                                href="${srWebRoot}/manage/manageQueues/forceFindPropers">
                                 <i class="icon-exclamation-sign"></i>Force
                             </a>
                         </div>
                     </div>
 
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>
                                 <b>${_('Post-Processor:')}</b>
@@ -75,14 +75,14 @@
                             </h3>
                         </div>
                         <div class="card-body">
-                            <a class="sickrage-btn"
+                            <a class="btn"
                                href="${srWebRoot}/manage/manageQueues/pausePostProcessor?paused=${('1', '0')[bool(postProcessorPaused)]}">
                                 <i class="icon-${('paused', 'play')[bool(postProcessorPaused)]}"></i>${(_('Pause'), _('Unpause'))[bool(postProcessorPaused)]}
                             </a>
                         </div>
                     </div>
 
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>${_('Search Queue:')}</h3>
                         </div>
@@ -108,7 +108,7 @@
                         </div>
                     </div>
 
-                    <div class="sickrage-card bg-transparent mb-3">
+                    <div class="card bg-transparent mb-3">
                         <div class="card-header">
                             <h3>${_('Post-Processor Queue:')}</h3>
                         </div>

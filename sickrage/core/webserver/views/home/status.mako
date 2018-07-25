@@ -28,13 +28,13 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${_('Scheduler')}</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="schedulerStatusTable" class="sickrage-table" width="100%">
+                        <table id="schedulerStatusTable" class="table" width="100%">
                             <thead>
                             <tr>
                                 <th>${_('Scheduled Job')}</th>
@@ -105,12 +105,12 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${_('Show Queue')}</h3>
                 </div>
                 <div class="card-body">
-                    <table id="queueStatusTable" class="sickrage-table" width="100%">
+                    <table id="queueStatusTable" class="table" width="100%">
                         <thead>
                         <tr>
                             <th>${_('Show ID')}</th>
@@ -195,12 +195,12 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${_('Disk Space')}</h3>
                 </div>
                 <div class="card-body">
-                    <table id="DFStatusTable" class="sickrage-table" width="50%">
+                    <table id="DFStatusTable" class="table" width="50%">
                         <thead>
                         <tr>
                             <th>${_('Type')}</th>

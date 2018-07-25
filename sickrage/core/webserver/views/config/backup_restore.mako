@@ -1,8 +1,8 @@
 <%inherit file="../layouts/config.mako"/>
 <%def name='formaction()'><% return 'backuprestore' %></%def>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#backup">${_('Backup')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#restore">${_('Restore')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#backup">${_('Backup')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#restore">${_('Restore')}</a></li>
 </%block>
 <%block name="pages">
     <div id="backup" class="tab-pane active">

@@ -37,7 +37,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" id="removeW" value="${_('Remove')}" type="button"/>
+                            <input class="btn" id="removeW" value="${_('Remove')}" type="button"/>
                         </div>
                     </div>
                 </div>
@@ -61,8 +61,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" id="addW" value="${_('Add to Whitelist')}" type="button"/>
-                            <input class="sickrage-btn" id="addB" value="${_('Add to Blacklist')}" type="button"/>
+                            <input class="btn" id="addW" value="${_('Add to Whitelist')}" type="button"/>
+                            <input class="btn" id="addB" value="${_('Add to Blacklist')}" type="button"/>
                         </div>
                     </div>
                 </div>
@@ -83,7 +83,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" id="removeB" value="${_('Remove')}" type="button"/>
+                            <input class="btn" id="removeB" value="${_('Remove')}" type="button"/>
                         </div>
                     </div>
                 </div>
@@ -101,8 +101,8 @@
                 <div class="col-md-12">
                     <input type="text" id="addToPoolText" class="form-control form-control-inline"
                            autocapitalize="off" title="addToPoolText"/>
-                    <input class="sickrage-btn" type="button" value="${_('Add to Whitelist')}" id="addToWhite">
-                    <input class="sickrage-btn" type="button" value="${_('Add to Blacklist')}" id="addToBlack">
+                    <input class="btn" type="button" value="${_('Add to Whitelist')}" id="addToWhite">
+                    <input class="btn" type="button" value="${_('Add to Blacklist')}" id="addToBlack">
                 </div>
             </div>
         </div>

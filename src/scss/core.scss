@@ -225,11 +225,11 @@ span.snatched b {
 }
 
 .back-to-top {
-    cursor: pointer;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display:none;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
 }
 
 // Stepper
@@ -280,34 +280,59 @@ span.snatched b {
   }
 }
 
-.sickrage-table {
-  @extend .table;
+.btn {
+  @extend .btn-primary;
+  @extend .shadow;
+}
+
+.input-group-append, .input-group-prepend {
+  .btn {
+    @extend .btn-secondary;
+  }
+}
+
+.table {
   @extend .table-bordered;
   @extend .table-dark;
   @extend .shadow;
 }
 
-.sickrage-btn {
-  @extend .btn;
-  @extend .btn-secondary;
-  @extend .shadow;
-}
-
-.sickrage-card {
-  @extend .card;
+.card {
   @extend .bg-dark;
   @extend .shadow;
+
+  .form-control {
+    @extend .bg-light;
+    @extend .border-0;
+    @extend .shadow;
+  }
 }
 
-.sickrage-card-header {
-  @extend .card-header;
+.card-header {
   @extend .bg-secondary;
   @extend .shadow;
+
+  .nav-link {
+    @extend .bg-dark;
+    @extend .text-white;
+    @extend .shadow;
+  }
+
+  .form-control {
+    @extend .bg-dark;
+    @extend .text-white;
+    @extend .border-0;
+    @extend .shadow;
+  }
 }
 
-.sickrage-form-control {
-  @extend .form-control;
+.sickrage-submenu {
   @extend .bg-dark;
-  @extend .text-white;
-  @extend .border-0;
+  @extend .mb-3;
+  @extend .p-1;
+
+  .btn {
+    @extend .btn-secondary;
+    @extend .shadow;
+  }
 }

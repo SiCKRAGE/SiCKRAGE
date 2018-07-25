@@ -17,9 +17,9 @@
     from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#misc">${_('Misc')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#interface">${_('Interface')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#misc">${_('Misc')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#interface">${_('Interface')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                  href="#advanced-settings">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">
@@ -63,9 +63,9 @@
                             <br/>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="sickrage-btn" type="button" value="${_('Sync To Google Drive')}"
+                                    <input class="btn" type="button" value="${_('Sync To Google Drive')}"
                                            id="syncRemote"/>
-                                    <input class="sickrage-btn" type="button" value="${_('Sync To Local Drive')}"
+                                    <input class="btn" type="button" value="${_('Sync To Local Drive')}"
                                            id="syncLocal"/>
                                 </div>
                             </div>
@@ -322,7 +322,7 @@
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -410,7 +410,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -698,7 +698,7 @@
                 </div>
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -821,7 +821,7 @@
                                            class="form-control"/>
                                     <div class="input-group-append">
                                         <span class="input-group-text">
-                                            <span class="sickrage-btn" id="generate_new_apikey">
+                                            <span class="btn" id="generate_new_apikey">
                                                 ${_('Generate')}
                                             </span>
                                         </span>
@@ -940,7 +940,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -1091,7 +1091,7 @@
                         <label class="component-title">${_('Link Google Account')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input class="sickrage-btn btn-inline" type="button" id="google_link" value="${_('Link')}">
+                        <input class="btn btn-inline" type="button" id="google_link" value="${_('Link')}">
                         <label for="google_link">
                             ${_('link your google account to SiCKRAGE for advanced feature usage such as settings/database storage')}
                         </label>
@@ -1195,7 +1195,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -1229,7 +1229,7 @@
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-append">
                                         <span class="input-group-text">
-                                            <span class="sickrage-btn" id="verifyPipPath">
+                                            <span class="btn" id="verifyPipPath">
                                                 ${_('Verify Path')}
                                             </span>
                                         </span>
@@ -1243,7 +1243,7 @@
                                 <div class="testNotification" id="testPIP-result">
                                     ${_('Click vefify path to test.')}
                                 </div>
-                                <input class="sickrage-btn btn-inline" type="button" id="installRequirements"
+                                <input class="btn btn-inline" type="button" id="installRequirements"
                                        value="Install Requirements">
                             </div>
                         </div>
@@ -1253,7 +1253,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -1303,11 +1303,11 @@
                             <div class="form-row">
                                 <div class="col-md-12">
                                     % if not git_branch:
-                                        <input class="sickrage-btn btn-inline" type="button" id="branchCheckout"
+                                        <input class="btn btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch" disabled>
                                         <label for="branchCheckout">${_('Error: No branches found.')}</label>>
                                     % else:
-                                        <input class="sickrage-btn btn-inline" type="button" id="branchCheckout"
+                                        <input class="btn btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch">
                                         <label for="branchCheckout">${_('select branch to use (restart required)')}</label>
                                     % endif
@@ -1336,7 +1336,7 @@
                                                class="form-control" autocapitalize="off"/>
                                         <div class="input-group-append">
                                             <span class="input-group-text">
-                                                <span class="sickrage-btn" id="verifyGitPath">
+                                                <span class="btn" id="verifyGitPath">
                                                     ${_('Verify Path')}
                                                 </span>
                                             </span>
@@ -1386,7 +1386,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>

@@ -21,7 +21,7 @@
         <div class="col">
             <div class="input-group w-50 mx-auto text-center">
                 <div class="input-group-prepend">
-                    <button id="prevShow" class="sickrage-btn fas fa-arrow-left"></button>
+                    <button id="prevShow" class="btn fas fa-arrow-left"></button>
                 </div>
                 <select class="form-control" id="pickShow" title="Change Show">
                     % for curShowList in sortedShowLists:
@@ -37,7 +37,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="nextShow" class="sickrage-btn fas fa-arrow-right"></button>
+                    <button id="nextShow" class="btn fas fa-arrow-right"></button>
                 </div>
             </div>
             <br/>
@@ -109,12 +109,12 @@
 
     <div class="row">
         <div class="col">
-            <div class="sickrage-card bg-transparent font-weight-bold"
+            <div class="card bg-transparent font-weight-bold"
                  style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),
                          url(${srWebRoot}${showImage(show.indexerid, 'banner').url});
                          background-size: 100% 100%;">
                 % if show.overview:
-                    <div class="card-header">
+                    <div class="card-header bg-transparent">
                         <i>${show.overview}</i>
                     </div>
                 % endif
@@ -399,7 +399,7 @@
                     % endfor
                 </select>
                 <div class="input-group-append">
-                    <button id="changeStatus" class="sickrage-btn fas fa-play"></button>
+                    <button id="changeStatus" class="btn fas fa-play"></button>
                 </div>
             </div>
             <input type="hidden" id="showID" value="${show.indexerid}"/>
@@ -440,13 +440,13 @@
             <br/>
             <div class="row">
                 <div class="col text-right">
-                    <button class="sickrage-btn seriesCheck">
+                    <button class="btn seriesCheck">
                         ${_('Select Filtered Episodes')}
                     </button>
-                    <button class="sickrage-btn clearAll">
+                    <button class="btn clearAll">
                         ${_('Clear All')}
                     </button>
-                    <button class="sickrage-btn" id="popover" type="button">
+                    <button class="btn" id="popover" type="button">
                         ${_('Select Columns')} <b class="caret"></b>
                     </button>
                 </div>
@@ -533,7 +533,7 @@
         <div class="col-md-12">
         <div class="table-responsive">
         <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
-               class="sickrage-table display_show"
+               class="table display_show"
                style="opacity: .80" cellspacing="0" border="0" cellpadding="0">
             <thead>
             <tr class="seasoncols">

@@ -11,10 +11,10 @@
     from sickrage.indexers import IndexerApi
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#home-theater-nas">${_('Home Theater')}
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#home-theater-nas">${_('Home Theater')}
         / ${_('NAS')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#devices">${_('Devices')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#social">${_('Social')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#devices">${_('Devices')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#social">${_('Social')}</a></li>
 </%block>
 <%block name="pages">
     <div id="home-theater-nas" class="tab-pane active">
@@ -187,7 +187,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testKODI-result">${_('Click below to test')}</div>
                                 </div>
@@ -197,7 +197,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test KODI')}" id="testKODI"/>
+                            <input class="btn" type="button" value="${_('Test KODI')}" id="testKODI"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <div class="card bg-info mb-3">
+                                <div class="card mb-3">
                                     <div class="card-text m-1">
                                         <div id="testPMS-result">${_('Click below to test')}</div>
                                     </div>
@@ -348,7 +348,7 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input class="sickrage-btn" type="button" value="${_('Test Plex Server')}"
+                                <input class="btn" type="button" value="${_('Test Plex Server')}"
                                        id="testPMS"/>
                                 <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                             </div>
@@ -472,7 +472,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testPMC-result">${_('Click below to test')}</div>
                                 </div>
@@ -481,7 +481,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Plex Client')}"
+                            <input class="btn" type="button" value="${_('Test Plex Client')}"
                                    id="testPMC"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -593,7 +593,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testEMBY-result">${_('Click below to test')}</div>
                                 </div>
@@ -603,7 +603,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Emby')}" id="testEMBY"/>
+                            <input class="btn" type="button" value="${_('Test Emby')}" id="testEMBY"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -624,7 +624,7 @@
                     </a>
                 </h3>
                 <small class="form-text text-muted">
-                        ${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}
+                    ${_('The Networked Media Jukebox, or NMJ, is the official media jukebox interface made available for the Popcorn Hour 200-series.')}
                 </small>
             </div>
             <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
@@ -655,19 +655,11 @@
                                        value="${sickrage.app.config.nmj_host}"
                                        placeholder="${_('ex. 192.168.1.100')}"
                                        class="form-control" autocapitalize="off"/>
+                                <div class="input-group-append">
+                                    <input class="btn btn-inline" type="button" value="${_('Get Settings')}"
+                                           id="settingsNMJ"/>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-row form-group">
-                        <div class="col-lg-3 col-md-4 col-sm-5">
-                            <label class="component-title">${_('Get settings')}</label>
-                        </div>
-                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input class="sickrage-btn btn-inline" type="button" value="${_('Get Settings')}"
-                                   id="settingsNMJ"/>
-                            <label for="settingsNMJ">
-                                ${_('the Popcorn Hour device must be powered on and NMJ running.')}
-                            </label>
                         </div>
                     </div>
                     <div class="form-row form-group">
@@ -684,7 +676,7 @@
                                 <input name="nmj_database" id="nmj_database"
                                        value="${sickrage.app.config.nmj_database}"
                                        class="form-control"
-                                       placeholder="${_('automatically filled via the Get Settings')}"
+                                       placeholder="${_('automatically filled via Get Settings')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.app.config.nmj_database == True]}/>
                             </div>
                         </div>
@@ -703,14 +695,14 @@
                                 <input name="nmj_mount" id="nmj_mount"
                                        value="${sickrage.app.config.nmj_mount}"
                                        class="form-control"
-                                       placeholder="${_('automatically filled via the Get Settings')}"
+                                       placeholder="${_('automatically filled via Get Settings')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.app.config.nmj_mount == True]}/>
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testNMJ-result">${_('Click below to test')}</div>
                                 </div>
@@ -720,7 +712,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
+                            <input class="btn" type="button" value="${_('Test NMJ')}" id="testNMJ"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -843,7 +835,7 @@
                                        placeholder="${_('automatically filled via the Find Database')}"
                                        autocapitalize="off" ${(' readonly="readonly"', '')[sickrage.app.config.nmjv2_database == True]}/>
                                 <div class="input-group-append">
-                                    <input type="button" class="sickrage-btn btn-inline"
+                                    <input type="button" class="btn btn-inline"
                                            value="${_('Find Database')}"
                                            id="settingsNMJv2"/>
                                 </div>
@@ -852,7 +844,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testNMJv2-result">${_('Click below to test')}</div>
                                 </div>
@@ -861,7 +853,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
+                            <input class="btn" type="button" value="${_('Test NMJv2')}" id="testNMJv2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1190,7 +1182,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testGrowl-result">${_('Click below to register and test Growl, this is required for Growl notifications to work.')}</div>
                                 </div>
@@ -1200,7 +1192,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Register Growl')}"
+                            <input class="btn" type="button" value="${_('Register Growl')}"
                                    id="testGrowl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1333,7 +1325,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testProwl-result">${_('Click below to test')}</div>
                                 </div>
@@ -1343,7 +1335,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Prowl')}" id="testProwl"/>
+                            <input class="btn" type="button" value="${_('Test Prowl')}" id="testProwl"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1422,7 +1414,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testLibnotify-result">${_('Click below to test')}</div>
                                 </div>
@@ -1431,7 +1423,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Libnotify')}"
+                            <input class="btn" type="button" value="${_('Test Libnotify')}"
                                    id="testLibnotify"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1650,7 +1642,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testPushover-result">${_('Click below to test')}</div>
                                 </div>
@@ -1659,7 +1651,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Pushover')}"
+                            <input class="btn" type="button" value="${_('Test Pushover')}"
                                    id="testPushover"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1753,7 +1745,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testBoxcar2-result">${_('Click below to test')}</div>
                                 </div>
@@ -1763,7 +1755,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Boxcar2')}"
+                            <input class="btn" type="button" value="${_('Test Boxcar2')}"
                                    id="testBoxcar2"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -1890,7 +1882,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testNMA-result">${_('Click below to test')}</div>
                                 </div>
@@ -1900,7 +1892,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test NMA')}" id="testNMA"/>
+                            <input class="btn" type="button" value="${_('Test NMA')}" id="testNMA"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -1995,7 +1987,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testPushalot-result">${_('Click below to test')}</div>
                                 </div>
@@ -2005,9 +1997,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="sickrage-btn" value="${_('Test Pushalot')}"
+                            <input type="button" class="btn" value="${_('Test Pushalot')}"
                                    id="testPushalot"/>
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2116,7 +2108,7 @@
                                         <div class="input-group-append">
                                             <input type="hidden" id="pushbullet_device"
                                                    value="${sickrage.app.config.pushbullet_device}">
-                                            <input type="button" class="sickrage-btn btn-inline"
+                                            <input type="button" class="btn btn-inline"
                                                    value="${_('Update device list')}"
                                                    id="getPushbulletDevices"/>
                                         </div>
@@ -2130,7 +2122,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testPushbullet-result">${_('Click below to test')}</div>
                                 </div>
@@ -2140,9 +2132,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="sickrage-btn" value="${_('Test Pushbullet')}"
+                            <input type="button" class="btn" value="${_('Test Pushbullet')}"
                                    id="testPushbullet"/>
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2252,7 +2244,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testFreeMobile-result">${_('Click below to test')}</div>
                                 </div>
@@ -2262,7 +2254,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test SMS')}"
+                            <input class="btn" type="button" value="${_('Test SMS')}"
                                    id="testFreeMobile"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2391,7 +2383,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testTelegram-result">${_('Click below to test')}</div>
                                 </div>
@@ -2401,7 +2393,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Telegram')}"
+                            <input class="btn" type="button" value="${_('Test Telegram')}"
                                    id="testTelegram"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2576,7 +2568,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testTwilio-result">${_('Click below to test')}</div>
                                 </div>
@@ -2586,7 +2578,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
+                            <input class="btn" type="button" value="${_('Test Twilio')}" id="testTwilio"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -2698,7 +2690,7 @@
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input class="sickrage-btn" type="button" value="${_('Request Authorization')}"
+                                    <input class="btn" type="button" value="${_('Request Authorization')}"
                                            id="twitterStep1"/>
                                 </div>
                             </div>
@@ -2727,16 +2719,14 @@
                                        placeholder="${_('Enter the key Twitter gave you')}"
                                        autocapitalize="off"/>
                                 <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <input class="button" type="button" value="Verify Key" id="twitterStep2"/>
-                                    </span>
+                                    <input class="btn" type="button" value="Verify Key" id="twitterStep2"/>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testTwitter-result">${_('Click below to test')}</div>
                                 </div>
@@ -2746,7 +2736,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Twitter')}"
+                            <input class="btn" type="button" value="${_('Test Twitter')}"
                                    id="testTwitter"/>
                             <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
                         </div>
@@ -2819,16 +2809,14 @@
                                            placeholder="${_('authorization PIN code')}"
                                            class="form-control" autocapitalize="off"/>
                                     <div class="input-group-append">
-                                        <span class="input-group-text">
-                                            <a href="#" id="TraktGetPin">Get PIN</a>
-                                            <a href="#" id="authTrakt" class="hide">${_('Authorize')}</a>
-                                        </span>
+                                        <a class="btn" href="#" id="TraktGetPin">Get PIN</a>
+                                        <a class="btn d-none" href="#" id="authTrakt">${_('Authorize')}</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     % endif
-                    <input type="button" class="sickrage-btn hide" value="${_('Authorize SiCKRAGE')}"
+                    <input type="button" class="btn hide" value="${_('Authorize SiCKRAGE')}"
                            id="authTrakt"/>
                     <div class="form-row form-group">
                         <div class="col-lg-3 col-md-4 col-sm-5">
@@ -3015,7 +3003,7 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testTrakt-result">${_('Click below to test')}</div>
                                 </div>
@@ -3025,8 +3013,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="button" class="sickrage-btn" value="${_('Test Trakt')}" id="testTrakt"/>
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="button" class="btn" value="${_('Test Trakt')}" id="testTrakt"/>
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3248,7 +3236,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    <input id="email_show_save" class="sickrage-btn" type="button"
+                                    <input id="email_show_save" class="btn" type="button"
                                            value="${_('Save for this show')}"/>
                                 </div>
                             </div>
@@ -3257,7 +3245,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testEmail-result">${_('Click below to test')}</div>
                                 </div>
@@ -3267,8 +3255,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Email')}" id="testEmail"/>
-                            <input class="sickrage-btn config_submitter" type="submit"
+                            <input class="btn" type="button" value="${_('Test Email')}" id="testEmail"/>
+                            <input class="btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3361,7 +3349,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testSlack-result">${_('Click below to test')}</div>
                                 </div>
@@ -3371,8 +3359,8 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Slack')}" id="testSlack"/>
-                            <input class="sickrage-btn config_submitter" type="submit"
+                            <input class="btn" type="button" value="${_('Test Slack')}" id="testSlack"/>
+                            <input class="btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -3533,7 +3521,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <div class="card bg-info mb-3">
+                            <div class="card mb-3">
                                 <div class="card-text m-1">
                                     <div id="testDiscord-result">${_('Click below to test')}</div>
                                 </div>
@@ -3543,9 +3531,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn" type="button" value="${_('Test Discord')}"
+                            <input class="btn" type="button" value="${_('Test Discord')}"
                                    id="testDiscord"/>
-                            <input class="sickrage-btn config_submitter" type="submit"
+                            <input class="btn config_submitter" type="submit"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>

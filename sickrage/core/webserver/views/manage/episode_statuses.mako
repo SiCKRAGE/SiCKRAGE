@@ -7,8 +7,8 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
@@ -34,7 +34,7 @@
                                     % endfor
                                 </select>
                                 <div class="input-group-append">
-                                    <input class="sickrage-btn" type="submit" value="${_('Manage')}"/>
+                                    <input class="btn" type="submit" value="${_('Manage')}"/>
                                 </div>
                             </div>
                         </form>
@@ -83,7 +83,7 @@
                                             % endfor
                                         </select>
                                         <div class="input-group-append">
-                                            <input class="sickrage-btn" type="submit" value="${_('Go')}"/>
+                                            <input class="btn" type="submit" value="${_('Go')}"/>
                                         </div>
                                     </div>
                                 </div>
@@ -91,14 +91,14 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <button class="sickrage-btn selectAllShows">${_('Select All')}</button>
-                                    <button class="sickrage-btn unselectAllShows">${_('Clear All')}</button>
+                                    <button class="btn selectAllShows">${_('Select All')}</button>
+                                    <button class="btn unselectAllShows">${_('Clear All')}</button>
                                 </div>
                             </div>
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="sickrage-table manageTable">
+                                    <table class="table manageTable">
                                         % for cur_indexer_id in sorted_show_ids:
                                             <tr id="${cur_indexer_id}">
                                                 <th>
@@ -113,7 +113,7 @@
                                                         ${show_names[cur_indexer_id]}
                                                     </a>
                                                     (${ep_counts[cur_indexer_id]})
-                                                    <input type="button" class="sickrage-btn btn-sm get_more_eps"
+                                                    <input type="button" class="btn btn-sm get_more_eps"
                                                            id="${cur_indexer_id}" value="${_('Expand')}"/>
                                                 </th>
                                             </tr>

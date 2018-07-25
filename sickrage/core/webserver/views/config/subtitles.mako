@@ -6,11 +6,11 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                  href="#subtitles-search">${_('Subtitles Search')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                  href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#plugin-settings">${_('Plugin Settings')}</a>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#plugin-settings">${_('Plugin Settings')}</a>
     </li>
 </%block>
 <%block name="pages">
@@ -200,7 +200,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/>
                         </div>
                     </div>
@@ -249,7 +249,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>
@@ -306,7 +306,7 @@
                 % endfor
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
             </fieldset>

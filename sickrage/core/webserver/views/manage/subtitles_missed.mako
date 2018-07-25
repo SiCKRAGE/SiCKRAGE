@@ -8,8 +8,8 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3>${title}</h3>
                 </div>
                 <div class="card-body">
@@ -46,7 +46,7 @@
                                     </select>
                                 % endif
                                 <div class="input-group-append">
-                                    <input class="sickrage-btn" type="submit" value="${_('Manage')}"/>
+                                    <input class="btn" type="submit" value="${_('Manage')}"/>
                                 </div>
                             </div>
 
@@ -70,11 +70,11 @@
                                                                                            type="submit"
                                                                                            value="${_('Go')}"/>
                             <div>
-                                <button type="button" class="sickrage-btn selectAllShows">${_('Select all')}</button>
-                                <button type="button" class="sickrage-btn unselectAllShows">${_('Clear all')}</button>
+                                <button type="button" class="btn selectAllShows">${_('Select all')}</button>
+                                <button type="button" class="btn unselectAllShows">${_('Clear all')}</button>
                             </div>
                             <br>
-                            <table class="sickrage-table manageTable" cellspacing="1" border="0" cellpadding="0">
+                            <table class="table manageTable" cellspacing="1" border="0" cellpadding="0">
                                 % for cur_indexer_id in sorted_show_ids:
                                     <tr id="${cur_indexer_id}">
                                         <th style="width: 1%;">
@@ -87,7 +87,7 @@
                                                 ${show_names[cur_indexer_id]}
                                             </a>
                                             (${ep_counts[cur_indexer_id]})
-                                            <input type="button" class="sickrage-btn get_more_eps"
+                                            <input type="button" class="btn get_more_eps"
                                                    id="${cur_indexer_id}" value="${_('Expand')}"/>
                                         </th>
                                     </tr>

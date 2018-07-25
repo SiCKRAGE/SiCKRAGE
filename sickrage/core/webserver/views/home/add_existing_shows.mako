@@ -5,25 +5,25 @@
 <%block name="content">
     <div class="row">
         <div class="col-md-8 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
-                    <h3>${title}</h3>
-                </div>
-                <div class="card-body">
-                    <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
-                          accept-charset="utf-8">
+            <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
+                  accept-charset="utf-8">
+                <div class="card mt-3 mb-3">
+                    <div class="card-header">
+                        <h3>${title}</h3>
+                    </div>
+                    <div class="card-body">
                         <div class="card bg-transparent mb-3">
                             <div class="card-header">
                                 <ul class="nav nav-pills card-header-pills">
                                     <li class="nav-item px-1">
-                                        <a class="nav-link bg-primary text-white shadow active"
+                                        <a class="nav-link active"
                                            data-toggle="tab"
                                            href="#manage">
                                             ${_('Manage Directories')}
                                         </a>
                                     </li>
                                     <li class="nav-item px-1">
-                                        <a class="nav-link bg-primary text-white shadow"
+                                        <a class="nav-link"
                                            data-toggle="tab"
                                            href="#customize">
                                             ${_('Customize Options')}
@@ -72,15 +72,13 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <input class="btn btn-primary" type="button" value="${_('Submit')}"
-                                       id="submitShowDirs"/>
-                            </div>
-                        </div>
-                    </form>
+                    </div>
+                    <div class="card-footer">
+                        <input class="btn btn-primary" type="button" value="${_('Submit')}"
+                               id="submitShowDirs"/>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </%block>

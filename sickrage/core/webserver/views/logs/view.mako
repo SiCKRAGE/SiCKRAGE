@@ -5,8 +5,8 @@
 <%block name="content">
     <div class="row">
         <div class="col">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3 class="float-md-left">${title}</h3>
                     <div class="d-inline-flex float-md-right">
                         <label class="m-1">

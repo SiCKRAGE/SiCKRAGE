@@ -39,8 +39,8 @@
 
                 <form class="needs-validation" id="addShowForm" method="post"
                       action="${srWebRoot}/home/addShows/addNewShow">
-                    <div class="sickrage-card setup-content active" id="step-1">
-                        <div class="sickrage-card-header">
+                    <div class="card setup-content active" id="step-1">
+                        <div class="card-header">
                             <h3 class="card-title">${_('Find a show')}</h3>
                         </div>
                         <div class="card-body">
@@ -109,6 +109,8 @@
                                     <div id="messages"></div>
                                 % endif
                             </div>
+                        </div>
+                        <div class="card-footer">
                             <button class="btn btn-success btn-inline" type="button" id="searchName">
                                 ${_('Search')}
                             </button>
@@ -118,8 +120,8 @@
                         </div>
                     </div>
 
-                    <div class="sickrage-card setup-content" id="step-2">
-                        <div class="sickrage-card-header">
+                    <div class="card setup-content" id="step-2">
+                        <div class="card-header">
                             <h3 class="card-title">${_('Pick a folder')}</h3>
                         </div>
                         <div class="card-body">
@@ -133,20 +135,24 @@
                                     <%include file="../includes/root_dirs.mako"/>
                                 % endif
                             </div>
+                        </div>
+                        <div class="card-footer">
                             <button class="btn btn-primary nextBtn pull-right" type="button">
                                 ${_('Next')}
                             </button>
                         </div>
                     </div>
 
-                    <div class="sickrage-card setup-content" id="step-3">
-                        <div class="sickrage-card-header">
+                    <div class="card setup-content" id="step-3">
+                        <div class="card-header">
                             <h3 class="card-title">${_('Custom options')}</h3>
                         </div>
                         <div class="card-body">
                             <div class="form-group">
                                     <%include file="../includes/add_show_options.mako"/>
                             </div>
+                        </div>
+                        <div class="card-footer">
                             <button class="btn btn-success pull-right" type="submit">
                                 ${_('Finish!')}
                             </button>

@@ -4,10 +4,10 @@
     import sickrage
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab"
                                  href="#search-setttings">${_('Search Settings')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#nzb-clients">${_('NZB Clients')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#torrent-clients">${_('Torrent Clients')}</a>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#nzb-clients">${_('NZB Clients')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#torrent-clients">${_('Torrent Clients')}</a>
     </li>
 </%block>
 <%block name="pages">
@@ -303,7 +303,7 @@
 
                 <div class="form-row">
                     <div class="col-md-12">
-                        <input type="submit" class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
+                        <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
                     </div>
                 </div>
 
@@ -723,9 +723,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12">
-                            <input class="sickrage-btn test-button" type="button" value="${_('Test SABnzbd')}"
+                            <input class="btn test-button" type="button" value="${_('Test SABnzbd')}"
                                    id="testSABnzbd"/>
-                            <input type="submit" class="sickrage-btn config_submitter"
+                            <input type="submit" class="btn config_submitter"
                                    value="${_('Save Changes')}"/><br>
                         </div>
                     </div>
@@ -800,7 +800,7 @@
                         </div>
 
                         <div></div>
-                        <input type="submit" class="sickrage-btn config_submitter"
+                        <input type="submit" class="btn config_submitter"
                                value="${_('Save Changes')}"/><br>
                     </div>
 
@@ -1027,10 +1027,10 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <input class="sickrage-btn test-button" type="button"
+                                <input class="btn test-button" type="button"
                                        value="${_('Test Connection')}"
                                        id="test_torrent"/>
-                                <input type="submit" class="sickrage-btn config_submitter"
+                                <input type="submit" class="btn config_submitter"
                                        value="${_('Save Changes')}"/><br>
                             </div>
                         </div>

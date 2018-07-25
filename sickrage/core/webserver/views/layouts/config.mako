@@ -6,8 +6,8 @@
     <div class="row">
         <div class="col-md-10 mx-auto">
             <form id="configForm" action="${self.formaction()}" method="post">
-                <div class="sickrage-card">
-                    <div class="sickrage-card-header">
+                <div class="card mb-3">
+                    <div class="card-header">
                         <h3 class="float-md-left"><i class="fas fa-wrench"></i> ${title}</h3>
                         <ul class="nav nav-pills card-header-pills float-md-right" id="config-menus">
                                 <%block name="menus"/>
@@ -18,24 +18,22 @@
                                 <%block name="pages"/>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-auto text-left py-2">
-                        <input type="submit"
-                               class="sickrage-btn config_submitter" value="${_('Save Changes')}"/>
-                    </div>
-                    <div class="col-auto text-left py-2">
-                        <input type="button" href="/config/reset"
-                               class="sickrage-btn resetConfig" value="${_('Reset to Defaults')}"/>
-                    </div>
-                    <div class="col pull-right">
-                        <h6 class="text-right">
-                            <b>
-                                <small class="text-warning">
-                                    ${_('All non-absolute folder locations are relative to')} ${sickrage.app.data_dir}
-                                </small>
-                            </b>
-                        </h6>
+                    <div class="card-footer">
+                        <div class="float-left">
+                            <input type="submit"
+                                   class="btn config_submitter" value="${_('Save Changes')}"/>
+                            <input type="button" href="/config/reset"
+                                   class="btn resetConfig" value="${_('Reset to Defaults')}"/>
+                        </div>
+                        <div class="float-right">
+                            <h6 class="text-right">
+                                <b>
+                                    <small class="text-warning">
+                                        ${_('All non-absolute folder locations are relative to')} ${sickrage.app.data_dir}
+                                    </small>
+                                </b>
+                            </h6>
+                        </div>
                     </div>
                 </div>
             </form>

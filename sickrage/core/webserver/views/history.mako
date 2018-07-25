@@ -15,12 +15,12 @@
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="sickrage-card m-1">
-                <div class="sickrage-card-header">
+            <div class="card mt-1 mb-3">
+                <div class="card-header">
                     <h3 class="float-md-left">${title}</h3>
                     <div class="float-md-right">
                         <div class="form-inline">
-                            <select name="history_limit" id="history_limit" class="sickrage-form-control mr-sm-2">
+                            <select name="history_limit" id="history_limit" class="form-control mr-sm-2">
                                 <option value="10" ${('', 'selected')[limit == 10]}>10</option>
                                 <option value="25" ${('', 'selected')[limit == 25]}>25</option>
                                 <option value="50" ${('', 'selected')[limit == 50]}>50</option>
@@ -32,7 +32,7 @@
                                 <option value="0"   ${('', 'selected')[limit == 0  ]}>${_('All')}</option>
                             </select>
 
-                            <select name="HistoryLayout" class="sickrage-form-control"
+                            <select name="HistoryLayout" class="form-control"
                                     onchange="location = this.options[this.selectedIndex].value;">
                                 <option value="${srWebRoot}/setHistoryLayout/?layout=compact"  ${('', 'selected')[sickrage.app.config.history_layout == 'compact']}>
                                     ${_('Compact')}
@@ -47,7 +47,7 @@
                 </div>
                 <div class="card-body">
                     % if sickrage.app.config.history_layout == "detailed":
-                        <table id="historyTable" class="sickrage-table">
+                        <table id="historyTable" class="table">
                             <thead>
                             <tr>
                                 <th class="text-nowrap">${_('Time')}</th>
@@ -117,7 +117,7 @@
                             </tbody>
                         </table>
                     % else:
-                        <table id="historyTable" class="sickrage-table pre-scrollable">
+                        <table id="historyTable" class="table pre-scrollable">
                             <thead>
                             <tr>
                                 <th class="nowrap">${_('Time')}</th>

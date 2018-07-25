@@ -166,7 +166,6 @@ $(document).ready(function ($) {
 
                 // scroll body to 0px on click
                 $('#back-to-top').click(function () {
-                    $('#back-to-top').tooltip('hide');
                     $('body,html').animate({
                         scrollTop: 0
                     }, 800);
@@ -3772,16 +3771,16 @@ $(document).ready(function ($) {
 
                     $('#TraktGetPin').click(function () {
                         window.open($('#trakt_pin_url').val(), "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
-                        $('#trakt_pin').removeClass('hide');
+                        $('#trakt_pin').removeClass('d-none');
                     });
 
                     $('#trakt_pin').on('keyup change', function () {
                         if ($('#trakt_pin').val().length !== 0) {
-                            $('#TraktGetPin').addClass('hide');
-                            $('#authTrakt').removeClass('hide');
+                            $('#TraktGetPin').addClass('d-none');
+                            $('#authTrakt').removeClass('d-none');
                         } else {
-                            $('#TraktGetPin').removeClass('hide');
-                            $('#authTrakt').addClass('hide');
+                            $('#TraktGetPin').removeClass('d-none');
+                            $('#authTrakt').addClass('d-none');
                         }
                     });
 
@@ -3791,9 +3790,9 @@ $(document).ready(function ($) {
                                 "trakt_pin": $('#trakt_pin').val()
                             }).done(function (data) {
                                 $('#testTrakt-result').html(data);
-                                $('#authTrakt').addClass('hide');
-                                $('#trakt_pin').addClass('hide');
-                                $('#TraktGetPin').addClass('hide');
+                                $('#authTrakt').addClass('d-none');
+                                $('#trakt_pin').addClass('d-none');
+                                $('#TraktGetPin').addClass('d-none');
                             });
                         }
                     });
@@ -3969,9 +3968,9 @@ $(document).ready(function ($) {
                     // show instructions for plex when enabled
                     $('#use_plex').click(function () {
                         if ($(this).is(':checked')) {
-                            $('.plexinfo').removeClass('hide');
+                            $('.plexinfo').removeClass('d-none');
                         } else {
-                            $('.plexinfo').addClass('hide');
+                            $('.plexinfo').addClass('d-none');
                         }
                     });
                 },
