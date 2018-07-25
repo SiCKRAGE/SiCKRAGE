@@ -25,9 +25,7 @@
 
                 <div class="card-body">
                     <form action="massEditSubmit" method="post">
-
                         <input type="hidden" name="toEdit" value="${showList}"/>
-
                         <p>
                             <u>
                                 ${_('Changing any settings marked with')}
@@ -61,7 +59,7 @@
                                         <tbody>
                                             % for cur_dir in root_dir_list:
                                                 <% cur_index = root_dir_list.index(cur_dir) %>
-                                                <tr class="listing-default">
+                                                <tr>
                                                     <td align="center">
                                                         ${cur_dir}
                                                     </td>
@@ -69,12 +67,12 @@
                                                         ${cur_dir}
                                                     </td>
                                                     <td>
-                                                        <a href="#" class="sickrage-btn edit_root_dir"
+                                                        <a href="#" class="btn btn-primary btn-sm edit_root_dir"
                                                            class="edit_root_dir"
                                                            id="edit_root_dir_${cur_index}">
                                                             ${_('Edit')}
                                                         </a>
-                                                        <a href="#" class="sickrage-btn delete_root_dir"
+                                                        <a href="#" class="btn btn-primary btn-sm delete_root_dir"
                                                            class="delete_root_dir"
                                                            id="delete_root_dir_${cur_index}">
                                                             ${_('Delete')}

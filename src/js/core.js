@@ -12,7 +12,6 @@ import 'pnotify/dist/es/PNotifyButtons';
 import 'pnotify/dist/es/PNotifyDesktop';
 import {gettext, addLocale, useLocale} from 'ttag';
 import {po} from 'gettext-parser'
-import scrollUp from 'scrollup';
 import jconfirm from 'jquery-confirm';
 import PNotify from 'pnotify/dist/es/PNotify';
 import jQueryBridget from 'jquery-bridget';
@@ -157,18 +156,27 @@ $(document).ready(function ($) {
                     }
                 });
 
+                $(window).scroll(function () {
+                    if ($(this).scrollTop() > 50) {
+                        $('#back-to-top').fadeIn();
+                    } else {
+                        $('#back-to-top').fadeOut();
+                    }
+                });
+
+                // scroll body to 0px on click
+                $('#back-to-top').click(function () {
+                    $('#back-to-top').tooltip('hide');
+                    $('body,html').animate({
+                        scrollTop: 0
+                    }, 800);
+                    return false;
+                });
+
+
                 // tooltips
                 $('[title!=""]').tooltipster();
 
-                // init scrollUp
-                scrollUp({
-                    animation: 'fade',
-                    scrollImg: {
-                        active: true,
-                        type: 'background',
-                        src: SICKRAGE.srWebRoot + '/images/top.png'
-                    }
-                });
 
                 var imgDefer = document.getElementsByTagName('img');
                 for (var i = 0; i < imgDefer.length; i++) {
@@ -1261,7 +1269,6 @@ $(document).ready(function ($) {
                     $('.show-grid').isotope({
                         filter: function () {
                             var name = $('.show-container', this).data('name').trim().toLowerCase();
-                            console.log(name);
                             return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
                         }
                     });
@@ -1874,16 +1881,14 @@ $(document).ready(function ($) {
                     $('#showsortdirection').val('asc');
 
                     function resizePosters(newSize) {
-                        var fontSize, spriteScale, borderRadius;
+                        var fontSize, borderRadius;
                         if (newSize < 125) { // small
                             borderRadius = 3;
                         } else if (newSize < 175) { // medium
                             fontSize = 9;
-                            spriteScale = .6;
                             borderRadius = 4;
                         } else { // large
                             fontSize = 11;
-                            spriteScale = 1;
                             borderRadius = 6;
                         }
 
@@ -1980,16 +1985,14 @@ $(document).ready(function ($) {
 
             popular_shows: function () {
                 function resizePosters(newSize) {
-                    var fontSize, spriteScale, borderRadius;
+                    var fontSize, borderRadius;
                     if (newSize < 125) { // small
                         borderRadius = 3;
                     } else if (newSize < 175) { // medium
                         fontSize = 9;
-                        spriteScale = .6;
                         borderRadius = 4;
                     } else { // large
                         fontSize = 11;
-                        spriteScale = 1;
                         borderRadius = 6;
                     }
 
@@ -2121,26 +2124,23 @@ $(document).ready(function ($) {
                 init: function () {
                     var navListItems = $('div.setup-panel div a'),
                         allWells = $('.setup-content'),
-                        allNextBtn = $('.nextBtn'),
-                        step1 = $('.setup-content #step-1'),
-                        step2 = $('.setup-content #step-2'),
-                        step3 = $('.setup-content #step-3');
+                        allNextBtn = $('.nextBtn');
 
                     allWells.hide();
 
                     if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
-                        step1.hide();
-                        step2.show();
+                        $('.setup-content #step-1').hide();
+                        $('.setup-content #step-2').show();
                     }
 
-                    $('#searchName').click(function() {
+                    $('#searchName').click(function () {
                         if ($('#addShowForm')[0].checkValidity() === true) {
                             $('#addShowForm')[0].classList.add('was-validated');
                             $(".nextBtn").removeClass('disabled');
                         }
                     });
 
-                    $('#addShowForm').submit(function() {
+                    $('#addShowForm').submit(function () {
                         SICKRAGE.home.generate_bwlist();
                     })
 

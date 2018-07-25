@@ -250,7 +250,7 @@
                                 <span class="d-sm-none d-md-block">
                                     <img class="rounded-circle shadow" style="width: 40px;height: 40px;"
                                          src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
-                                        ${toolsBadge}
+                                    ${toolsBadge}
                                 </span>
                             </a>
 
@@ -347,7 +347,7 @@
 </div>
 
 <div class="container-fluid">
-        <%block name="content" />
+    <%block name="content" />
 </div>
 
 <div class="container-fluid">
@@ -410,5 +410,11 @@
     <div id="mainModal"></div>
     ${mainModals()}
 </div>
+
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button"
+   title="Click to return on the top page" data-toggle="tooltip" data-placement="left">
+    <span class="fas fa-chevron-up"></span>
+</a>
+
 </body>
 </html>

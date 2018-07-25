@@ -34,12 +34,12 @@
 <div class="row">
     <div class="col-md-12 mt-1">
         <div id="rootDirsControls" class="rootdir-controls">
-            <input class="sickrage-btn m-1" type="button" id="addRootDir" value="${_('New')}"/>
-            <input class="sickrage-btn m-1" type="button" id="editRootDir" value="${_('Edit')}"/>
-            <input class="sickrage-btn m-1" type="button" id="deleteRootDir" value="${_('Delete')}"/>
-            <input class="sickrage-btn m-1" type="button" id="defaultRootDir" value="${_('Set as Default *')}"/>
+            <input class="btn btn-primary btn-sm m-1" type="button" id="addRootDir" value="${_('New')}"/>
+            <input class="btn btn-primary btn-sm m-1" type="button" id="editRootDir" value="${_('Edit')}"/>
+            <input class="btn btn-primary btn-sm m-1" type="button" id="deleteRootDir" value="${_('Delete')}"/>
+            <input class="btn btn-primary btn-sm m-1" type="button" id="defaultRootDir" value="${_('Set as Default *')}"/>
         </div>
-        <input type="text" style="display: none" id="rootDirText" autocapitalize="off" title=""/>
+        <input type="text" class="d-none" id="rootDirText" autocapitalize="off" title=""/>
     </div>
 </div>
 
