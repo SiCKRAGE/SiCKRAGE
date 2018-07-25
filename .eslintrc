@@ -14,7 +14,7 @@
   },
   "parser": "babel-eslint",
   "plugins": [],
-  "extends": "eslint:recommended",
+  //"extends": "eslint:recommended",
   "rules": {
     //
   }

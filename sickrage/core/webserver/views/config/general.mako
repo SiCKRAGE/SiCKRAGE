@@ -17,9 +17,9 @@
     from sickrage.core.api.google import GoogleDriveAPI
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#misc">${_('Misc')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#interface">${_('Interface')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#misc">${_('Misc')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#interface">${_('Interface')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#advanced-settings">${_('Advanced Settings')}</a></li>
 </%block>
 <%block name="pages">

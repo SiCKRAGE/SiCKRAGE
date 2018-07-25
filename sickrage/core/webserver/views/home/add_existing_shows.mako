@@ -3,74 +3,84 @@
     import sickrage
 %>
 <%block name="content">
-    <div id="newShowPortal">
-        <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
-              accept-charset="utf-8">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="sickrage-card m-1">
+                <div class="sickrage-card-header">
+                    <h3>${title}</h3>
+                </div>
+                <div class="card-body">
+                    <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
+                          accept-charset="utf-8">
+                        <div class="card bg-transparent mb-3">
+                            <div class="card-header">
+                                <ul class="nav nav-pills card-header-pills">
+                                    <li class="nav-item px-1">
+                                        <a class="nav-link bg-primary text-white shadow active"
+                                           data-toggle="tab"
+                                           href="#manage">
+                                            ${_('Manage Directories')}
+                                        </a>
+                                    </li>
+                                    <li class="nav-item px-1">
+                                        <a class="nav-link bg-primary text-white shadow"
+                                           data-toggle="tab"
+                                           href="#customize">
+                                            ${_('Customize Options')}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body tab-content">
+                                <div id="manage" class="tab-pane active">
+                                        <%include file="../includes/root_dirs.mako"/>
+                                </div>
+                                <div id="customize" class="tab-pane">
+                                        <%include file="../includes/add_show_options.mako"/>
+                                </div>
+                            </div>
+                        </div>
 
-            <div id="tabs">
-                <ul>
-                    <li><a href="#tabs-1">${_('Manage Directories')}</a></li>
-                    <li><a href="#tabs-2">${_('Customize Options')}</a></li>
-                </ul>
-                <div id="tabs-1" class="existingtabs">
-                        <%include file="../includes/root_dirs.mako"/>
-                </div>
-                <div id="tabs-2" class="existingtabs">
-                        <%include file="../includes/add_show_options.mako"/>
-                </div>
-            </div>
-            <br>
+                        <div class="card bg-transparent mb-3">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <p>
+                                            ${_('SiCKRAGE can add existing shows, using the current options, by using '
+                                            'locally stored NFO/XML metadata to eliminate user interaction. If you '
+                                            'would rather have SiCKRAGE prompt you to customize each show, then use '
+                                            'the checkbox below.')}
+                                        </p>
+                                        <label>
+                                            <input type="checkbox" name="promptForSettings" id="promptForSettings"/>
+                                            ${_('Prompt me to set settings for each show')}
+                                        </label>
+                                    </div>
+                                </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <p>
-                        ${_('SiCKRAGE can add existing shows, using the current options, by using '
-                        'locally stored NFO/XML metadata to eliminate user interaction. If you '
-                        'would rather have SickRage prompt you to customize each show, then use '
-                        'the checkbox below.')}
-                    </p>
-                </div>
-            </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="list-group" id="rootDirStaticList"></div>
+                                    </div>
+                                </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <p>
-                        <input type="checkbox" name="promptForSettings" id="promptForSettings"/>
-                        <label for="promptForSettings">
-                            ${_('Prompt me to set settings for each show')}
-                        </label>
-                    </p>
-                </div>
-            </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="tableDiv"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <div class="row">
-                <div class="col-md-12">
-                    <p>
-                        <b>
-                            ${_('Displaying folders within these directories which aren\'t already '
-                            'added to SiCKRAGE:')}
-                        </b>
-                    </p>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input class="btn btn-primary" type="button" value="${_('Submit')}"
+                                       id="submitShowDirs"/>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <ul id="rootDirStaticList"></ul>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="tableDiv"></div>
-                </div>
-            </div>
-            <br/>
-            <div class="row">
-                <div class="col-md-12">
-                    <input class="btn btn-primary" type="button" value="${_('Submit')}"
-                           id="submitShowDirs"/>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
 </%block>

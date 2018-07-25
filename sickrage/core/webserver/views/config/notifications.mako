@@ -11,10 +11,10 @@
     from sickrage.indexers import IndexerApi
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#home-theater-nas">${_('Home Theater')}
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#home-theater-nas">${_('Home Theater')}
         / ${_('NAS')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#devices">${_('Devices')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#social">${_('Social')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#devices">${_('Devices')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#social">${_('Social')}</a></li>
 </%block>
 <%block name="pages">
     <div id="home-theater-nas" class="tab-pane active">

@@ -6,11 +6,11 @@
     from sickrage.core.helpers import anon_url
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#subtitles-search">${_('Subtitles Search')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#subtitles-plugin">${_('Subtitles Plugin')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#plugin-settings">${_('Plugin Settings')}</a>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#plugin-settings">${_('Plugin Settings')}</a>
     </li>
 </%block>
 <%block name="pages">

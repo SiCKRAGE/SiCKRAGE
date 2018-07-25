@@ -12,11 +12,11 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#post-processing">${_('Post-Processing')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#episode-naming">${_('Episode Naming')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#metadata">${_('Metadata')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#metadata">${_('Metadata')}</a></li>
 </%block>
 <%block name="pages">
     <div id="post-processing" class="tab-pane active">

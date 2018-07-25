@@ -5,7 +5,7 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#quality-sizes">${_('Quality Sizes')}</a>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#quality-sizes">${_('Quality Sizes')}</a>
     </li>
 </%block>
 

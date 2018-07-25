@@ -1783,11 +1783,6 @@ $(document).ready(function ($) {
 
             add_existing_shows: {
                 init: function () {
-                    $("#tabs").tabs({
-                        collapsible: true,
-                        selected: (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? -1 : 0)
-                    });
-
                     $('#tableDiv').on('click', '#checkAll', function () {
                         $('.dirCheck').not(this).prop('checked', this.checked);
                     });
@@ -1831,7 +1826,7 @@ $(document).ready(function ($) {
                         }
                         $('#rootDirStaticList').html('');
                         $('#rootDirs option').each(function (i, w) {
-                            $('#rootDirStaticList').append('<li class="ui-state-default ui-corner-all"><input type="checkbox" class="cb dir_check" id="' + $(w).val() + '" checked=checked> <label for="' + $(w).val() + '"><b>' + $(w).val() + '</b></label></li>');
+                            $('#rootDirStaticList').append('<div class="list-group-item-dark mb-1"><div class="align-middle m-1"><label class="form-check-label" for="\' + $(w).val() + \'"><input type="checkbox" class="dir_check" id="' + $(w).val() + '" checked=checked><b>' + $(w).val() + '</b></label></div></div>');
                         });
                         SICKRAGE.home.add_existing_shows.loadContent();
                     });
@@ -1840,7 +1835,6 @@ $(document).ready(function ($) {
 
                     $('#tableDiv').on('click', '.showManage', function (event) {
                         event.preventDefault();
-                        $("#tabs").tabs('option', 'active', 0);
                         $('html,body').animate({scrollTop: 0}, 1000);
                     });
 
@@ -1859,62 +1853,9 @@ $(document).ready(function ($) {
                         }
                     });
 
-                    $('#tableDiv').html('<img id="searchingAnim" src="' + SICKRAGE.srWebRoot + '/images/loading32.gif" height="32" width="32" />' + gt('loading folders...'));
+                    $('#tableDiv').html('<span>' + SICKRAGE.loadingHTML + gt('loading folders...') + '</span>');
                     $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
-                    });
-                },
-
-                showGrid: function () {
-                    // Set defaults on page load
-                    $('#showsort').val('original');
-                    $('#showsortdirection').val('asc');
-
-                    $('#showsort').on('change', function () {
-                        var sortCriteria;
-                        switch (this.value) {
-                            case 'original':
-                                sortCriteria = 'original-order';
-                                break;
-                            case 'rating':
-                                /* randomise, else the rating_votes can already
-                                 * have sorted leaving this with nothing to do.
-                                 */
-                                $('#container').isotope({sortBy: 'random'});
-                                sortCriteria = 'rating';
-                                break;
-                            case 'rating_votes':
-                                sortCriteria = ['rating', 'votes'];
-                                break;
-                            case 'votes':
-                                sortCriteria = 'votes';
-                                break;
-                            default:
-                                sortCriteria = 'name';
-                                break;
-                        }
-                        $('#container').isotope({
-                            sortBy: sortCriteria
-                        });
-                    });
-
-                    $('#showsortdirection').on('change', function () {
-                        $('#container').isotope({
-                            sortAscending: ('asc' === this.value)
-                        });
-                    });
-
-                    $('#container').isotope({
-                        sortBy: 'original-order',
-                        layoutMode: 'fitRows',
-                        getSortData: {
-                            name: function (itemElem) {
-                                var name = $(itemElem).attr('data-name') || '';
-                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? name : name.replace(/^((?:The|A|An)\s)/i, '')).toLowerCase();
-                            },
-                            rating: '[data-rating] parseInt',
-                            votes: '[data-votes] parseInt'
-                        }
                     });
                 }
             },

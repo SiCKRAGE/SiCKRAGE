@@ -7,10 +7,10 @@
 <table id="addRootDirTable" class="sickrage-table">
     <thead>
     <tr>
-        <th class="col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
+        <th class="table-fit col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
         <th>${_('Directory')}</th>
-        <th width="20%">${_('Show Name (tvshow.nfo)')}</th>
-        <th width="20%">${_('Indexer')}</th>
+        <th class="table-fit">${_('Show Name (tvshow.nfo)')}</th>
+        <th class="table-fit">${_('Indexer')}</th>
     </tr>
     </thead>
     <tbody>
@@ -35,14 +35,14 @@
                     </td>
                     <td><label for="${show_id}">${curDir['display_dir']}</label></td>
                     % if curDir['existing_info'][1] and indexer > 0:
-                        <td>
+                        <td class="text-center">
                             <a href="${anon_url(IndexerApi(indexer).config['show_url'], curDir['existing_info'][0])}">${curDir['existing_info'][1]}</a>
                         </td>
                     % else:
                         <td>?</td>
                     % endif
-                    <td align="center">
-                        <select name="indexer">
+                    <td class="text-center">
+                        <select class="rounded" name="indexer">
                             % for curIndexer in IndexerApi().indexers.items():
                                 <option value="${curIndexer[0]}" ${('', 'selected')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>
                             % endfor

@@ -4,10 +4,10 @@
     import sickrage
 %>
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#search-setttings">${_('Search Settings')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#nzb-clients">${_('NZB Clients')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#torrent-clients">${_('Torrent Clients')}</a>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#nzb-clients">${_('NZB Clients')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#torrent-clients">${_('Torrent Clients')}</a>
     </li>
 </%block>
 <%block name="pages">

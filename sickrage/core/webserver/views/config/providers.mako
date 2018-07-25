@@ -9,16 +9,16 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#provider-priorities">${_('Provider Priorities')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                  href="#provider-options">${_('Provider Options')}</a></li>
     % if sickrage.app.config.use_nzbs:
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+        <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                      href="#custom-newnab-providers">${_('Custom Newznab Providers')}</a></li>
     % endif
     % if sickrage.app.config.use_torrents:
-        <li class="nav-item px-1"><a class="nav-link bg-dark text-white"
+        <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab"
                                      href="#custom-torrent-providers">${_('Custom Torrent Providers')}</a></li>
     % endif
 </%block>

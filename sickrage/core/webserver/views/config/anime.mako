@@ -6,8 +6,8 @@
 %>
 
 <%block name="menus">
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#settings">${_('AnimeDB Settings')}</a></li>
-    <li class="nav-item px-1"><a class="nav-link bg-dark text-white" href="#interface">${_('User Interface')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#settings">${_('AnimeDB Settings')}</a></li>
+    <li class="nav-item px-1"><a class="nav-link bg-primary text-white shadow" data-toggle="tab" href="#interface">${_('User Interface')}</a></li>
 </%block>
 
 <%block name="pages">
