@@ -6,26 +6,36 @@
 <meta data-var="srDefaultPage" data-content="${srDefaultPage}">
 <%block name="metas" />
 
-<link rel="stylesheet" type="text/css" href="${srWebRoot}/css/bower.min.css"/>
+<link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
 <%block name="css" />
 
 <%block name="content">
-    <div class="text-center">
-        <h2>${_('Performing Restart')}</h2>
-        <div class="progress center-block" style="width:50%">
-            <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar"></div>
+    <div class="row mx-autow-100">
+        <div class="col p-0 text-center">
+            <div class="card">
+                <div class="card-header">
+                    <h2>${_('Performing Restart')}</h2>
+                </div>
+                <div class="card-text progress mx-auto w-100" style="width:50%">
+                    <div id="dynamic" class="progress-bar progress-bar-striped active" role="progressbar"></div>
+                </div>
+                <div class="card-footer">
+                    <strong id="message">
+                        Waiting for SiCKRAGE to shut down
+                    </strong>
+                </div>
+            </div>
         </div>
-        <div id="message">Waiting for SiCKRAGE to shut down</div>
     </div>
 </%block>
 
-<script src="${srWebRoot}/js/bower.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script>
-    var timeout_id;
-    var current_pid = '';
-    var current_percent = 0;
-    var srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
-    var srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
+    let timeout_id;
+    let current_pid = '';
+    let current_percent = 0;
+    let srWebRoot = $('meta[data-var="srWebRoot"]').data('content');
+    let srDefaultPage = $('meta[data-var="srDefaultPage"]').data('content');
 
     function checkIsAlive() {
         current_percent += 1;
