@@ -160,6 +160,9 @@ $(document).ready(function ($) {
                 $('#quicksearch').autocomplete({
                     minLength: 1,
                     source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
+                    search: function () {
+                        $("#quicksearchcancel").removeClass('d-none');
+                    },
                     focus: function (event, ui) {
                         $('#quicksearch').val(ui.item.name);
                         return false;
@@ -196,6 +199,11 @@ $(document).ready(function ($) {
 
                     return $li.appendTo(ul);
                 };
+
+                $("#quicksearchcancel").click(function() {
+                    $('#quicksearch').autocomplete('close').val('');
+                    $("#quicksearchcancel").addClass('d-none');
+                });
 
                 $(window).scroll(function () {
                     if ($(this).scrollTop() > 50) {

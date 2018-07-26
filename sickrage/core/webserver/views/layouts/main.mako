@@ -107,6 +107,11 @@
                                 </div>
                                 <input id="quicksearch" class="form-control bg-dark"
                                        style="width:350px;border: none;" type="search">
+                                <div class="input-group-append">
+                                    <div class="input-group-text bg-dark" style="border: none">
+                                        <i id="quicksearchcancel" class="fas fa-times d-none"></i>
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     </ul>
