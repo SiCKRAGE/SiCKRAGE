@@ -13,7 +13,7 @@
 </%block>
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div class="row sickrage-submenu">
+    <div class="row sickrage-submenu mb-3">
         <div class="col text-left">
             <div class="form-inline m-2">
                 % if sickrage.app.config.home_layout != 'poster':

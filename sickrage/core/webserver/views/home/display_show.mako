@@ -51,58 +51,62 @@
                 </div>
             </div>
             <br/>
-            <h1 class="title" id="showtitle" data-showname="${show.name}">
-                ${show.name}
-                <hr class="bg-light"/>
-            </h1>
+            <div class="row" id="showtitle" data-showname="${show.name}">
+                <div class="col-6">
+                    <h1>
+                        ${show.name}
+                    </h1>
+                </div>
+                <div class="col-6">
+                    % if seasonResults:
+                    % if int(seasonResults[-1]) == 0:
+                        <% season_special = 1 %>
+                    % else:
+                        <% season_special = 0 %>
+                    % endif
+                    % if not sickrage.app.config.display_show_specials and season_special:
+                        <% lastSeason = seasonResults.pop(-1) %>
+                    % endif
+                        <div class="text-right mt-3">
+                            % if season_special:
+                            ${_('Display Specials:')}
+                                <a class="inner" href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">
+                                    ${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}
+                                </a>
+                            % endif
+                            % if (len(seasonResults) > 14):
+                                <select id="seasonJump" class="form-control input-sm" title="Jump to Season"
+                                        style="position: relative; top: -4px;">
+                                    <option value="jump">Jump to Season</option>
+                                    % for seasonNum in seasonResults:
+                                        <option value="#season-${seasonNum}"
+                                                data-season="${seasonNum}">${('Specials', 'Season ' + str(seasonNum))[int(seasonNum) > 0]}</option>
+                                    % endfor
+                                </select>
+                            % else:
+                                ${_('Season:')}
+                                % for seasonNum in seasonResults:
+                                    % if int(seasonNum) == 0:
+                                        <a href="#season-${seasonNum}">Specials</a>
+                                    % else:
+                                        <a href="#season-${seasonNum}">${str(seasonNum)}</a>
+                                    % endif
+                                    % if seasonNum != seasonResults[-1]:
+                                        <span>|</span>
+                                    % endif
+                                % endfor
+                            % endif
+                        </div>
+                    % endif
+                </div>
+            </div>
+            <hr class="bg-light"/>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            % if seasonResults:
-            % if int(seasonResults[-1]) == 0:
-                <% season_special = 1 %>
-            % else:
-                <% season_special = 0 %>
-            % endif
-            % if not sickrage.app.config.display_show_specials and season_special:
-                <% lastSeason = seasonResults.pop(-1) %>
-            % endif
-                <span class="h2footer text-right">
-                    % if season_special:
-                    ${_('Display Specials:')}
-                        <a class="inner"
-                           href="${srWebRoot}/toggleDisplayShowSpecials/?show=${show.indexerid}">${('Show', 'Hide')[bool(sickrage.app.config.display_show_specials)]}</a>
-                    % endif
-                </span>
-                <div class="h2footer text-right">
-                    <span>
-                        % if (len(seasonResults) > 14):
-                            <select id="seasonJump" class="form-control input-sm" title="Jump to Season"
-                                    style="position: relative; top: -4px;">
-                                <option value="jump">Jump to Season</option>
-                                % for seasonNum in seasonResults:
-                                    <option value="#season-${seasonNum}"
-                                            data-season="${seasonNum}">${('Specials', 'Season ' + str(seasonNum))[int(seasonNum) > 0]}</option>
-                                % endfor
-                            </select>
-                        % else:
-                            ${_('Season:')}
-                            % for seasonNum in seasonResults:
-                                % if int(seasonNum) == 0:
-                                    <a href="#season-${seasonNum}">Specials</a>
-                                % else:
-                                    <a href="#season-${seasonNum}">${str(seasonNum)}</a>
-                                % endif
-                                % if seasonNum != seasonResults[-1]:
-                                    <span class="separator">|</span>
-                                % endif
-                            % endfor
-                        % endif
-                    </span>
-                </div>
-            % endif
+
         </div>
     </div>
 
@@ -436,16 +440,15 @@
                     </div>
                 </div>
             </div>
-            <br/>
             <div class="row">
                 <div class="col text-right">
-                    <button class="btn seriesCheck">
+                    <button class="btn mt-1 mb-1 seriesCheck">
                         ${_('Select Filtered Episodes')}
                     </button>
-                    <button class="btn clearAll">
+                    <button class="btn mt-1 mb-1 clearAll">
                         ${_('Clear All')}
                     </button>
-                    <button class="btn" id="popover" type="button">
+                    <button class="btn mt-1 mb-1" id="popover" type="button">
                         ${_('Select Columns')} <b class="caret"></b>
                     </button>
                 </div>

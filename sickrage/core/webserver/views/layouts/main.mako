@@ -395,7 +395,7 @@
 
                 % if ep_snatched:
                     <span class="text-primary">
-                                    <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
+                        <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
                     </span>
                 ${_('Snatched')}
                 % endif

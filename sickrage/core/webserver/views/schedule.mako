@@ -15,15 +15,11 @@
         <div class="col-md-10 mx-auto">
             <div class="card mt-3 mb-3">
                 <div class="card-header">
-                    <div class="float-md-left">
-                        <h3>${title}</h3>
-                    </div>
-                    <div class="float-right">
-                        <div class="input-group">
-                            % if layout == 'list':
-                                <input id="popover" type="button" class="btn"/>
-                            % else:
-                                <select id="sortby" name="sort" class="form-control"
+                    <h3 class="float-md-left">${title}</h3>
+                    <div class="float-md-right">
+                        <div class="form-inline">
+                            % if layout != 'list':
+                                <select id="sortby" name="sort" class="form-control mr-sm-2"
                                         onchange="location = this.options[this.selectedIndex].value;">
                                     <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'date']} >
                                         Date
@@ -37,8 +33,7 @@
                                 </select>
                             % endif
 
-                            <select id="viewpaused" name="viewpaused"
-                                    class="form-control"
+                            <select id="viewpaused" name="viewpaused" class="form-control mr-sm-2"
                                     onchange="location = this.options[this.selectedIndex].value;">
                                 <option value="${srWebRoot}/toggleScheduleDisplayPaused" ${('', 'selected')[not bool(sickrage.app.config.coming_eps_display_paused)]}>
                                     Hidden
@@ -48,7 +43,7 @@
                                 </option>
                             </select>
 
-                            <select id="layout" name="layout" class="form-control"
+                            <select id="layout" name="layout" class="form-control mr-sm-2"
                                     onchange="location = this.options[this.selectedIndex].value;">
                                 <option value="${srWebRoot}/setScheduleLayout/?layout=poster" ${('', 'selected')[sickrage.app.config.coming_eps_layout == 'poster']} >
                                     Poster
@@ -70,7 +65,7 @@
                                 Subscribe
                             </a>
                         </div>
-                        <div class="float-right">
+                        <div class="float-right mt-1">
                             % if 'calendar' != layout:
                                 <b>Key:</b>
                                 <span class="badge text-black-50 listing-overdue">Missed</span>
@@ -320,8 +315,8 @@
                                     % endif
                                 % endif
                             % endif
-                                <div class="card mb-3 ${show_div}" id="listing-${cur_result['showid']}">
-                                    <div class="card-body rounded bg-light m-1">
+                                <div class="card mb-3" id="listing-${cur_result['showid']}">
+                                    <div class="card-body rounded ${show_div} m-1">
                                         <div class="row">
                                             <div class="col-auto justify-content-center align-self-center">
                                                 <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
@@ -329,11 +324,32 @@
                                                          src="${srWebRoot}${srWebRoot}${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster']).url}"/>
                                                 </a>
                                             </div>
-                                            <div class="col-auto text-dark">
+                                            <div class="col text-dark font-weight-bold">
                                                 <div class="clearfix">
                                                     <span>
                                                         <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}
                                                             ${('', '<span class="pause">[paused]</span>')[int(cur_result['paused'])]}
+                                                        </a>
+                                                        % if cur_result['imdb_id']:
+                                                            <a href="${anon_url('http://www.imdb.com/title/', cur_result['imdb_id'])}"
+                                                               rel="noreferrer"
+                                                               onclick="window.open(this.href, '_blank'); return false"
+                                                               title="http://www.imdb.com/title/${cur_result['imdb_id']}">
+                                                                <i class="sickrage-core sickrage-core-imdb"></i>
+                                                            </a>
+                                                        % endif
+                                                        <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
+                                                           rel="noreferrer"
+                                                           onclick="window.open(this.href, '_blank'); return false"
+                                                           title="${IndexerApi(cur_indexer).config['show_url']}">
+                                                            <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
+                                                        </a>
+                                                        <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
+                                                           title="Manual Search"
+                                                           id="forceUpdate-${cur_result['showid']}"
+                                                           class="epSearch forceUpdate">
+                                                            <i class="fas fa-search"
+                                                               id="forceUpdateImage-${cur_result['showid']}"></i>
                                                         </a>
                                                     </span>
                                                 </div>
@@ -367,7 +383,7 @@
                                                         <span class="title" style="vertical-align:middle;">
                                                             Plot:
                                                         </span>
-                                                        <i class="fas fa-plus ep_summaryTrigger"
+                                                        <i class="fas fa-plus-square ep_summaryTrigger"
                                                            title="${_('Toggle Summary')}"></i>
                                                         <div class="ep_summary">
                                                             ${cur_result['description']}
@@ -378,33 +394,6 @@
                                                         <i class="fas fa-plus ep_summaryTriggerNone"
                                                            title="${_('Toggle Summary')}"></i>
                                                     % endif
-                                                </div>
-                                            </div>
-                                            <div class="col-auto m-1">
-                                                <div class="clearfix">
-                                                    % if cur_result['imdb_id']:
-                                                        <a href="${anon_url('http://www.imdb.com/title/', cur_result['imdb_id'])}"
-                                                           rel="noreferrer"
-                                                           onclick="window.open(this.href, '_blank'); return false"
-                                                           title="http://www.imdb.com/title/${cur_result['imdb_id']}">
-                                                            <i class="sickrage-core sickrage-core-imdb"></i>
-                                                        </a>
-                                                    % endif
-                                                    <a href="${anon_url(IndexerApi(cur_indexer).config['show_url'], cur_result['showid'])}"
-                                                       rel="noreferrer"
-                                                       onclick="window.open(this.href, '_blank'); return false"
-                                                       title="${IndexerApi(cur_indexer).config['show_url']}">
-                                                        <i class="sickrage-core sickrage-core-${IndexerApi(cur_indexer).name.lower()}"></i>
-                                                    </a>
-                                                    <span>
-                                                        <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
-                                                           title="Manual Search"
-                                                           id="forceUpdate-${cur_result['showid']}"
-                                                           class="epSearch forceUpdate">
-                                                            <i class="fas fa-search"
-                                                               id="forceUpdateImage-${cur_result['showid']}"></i>
-                                                        </a>
-                                                    </span>
                                                 </div>
                                             </div>
                                         </div>

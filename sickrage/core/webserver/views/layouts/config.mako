@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-10 mx-auto">
             <form id="configForm" action="${self.formaction()}" method="post">
-                <div class="card mb-3">
+                <div class="card mt-3 mb-3">
                     <div class="card-header">
                         <h3 class="float-md-left"><i class="fas fa-wrench"></i> ${title}</h3>
                         <ul class="nav nav-pills card-header-pills float-md-right" id="config-menus">
