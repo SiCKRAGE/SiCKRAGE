@@ -147,12 +147,6 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask(
-        'default', [
-            'webpack'
-        ]
-    );
-
     grunt.registerTask('upload_trans', 'Upload translations', function () {
         grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
@@ -230,7 +224,7 @@ module.exports = function (grunt) {
         grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
 
         const tasks = [
-            'default',
+            'webpack:dev',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
@@ -266,7 +260,7 @@ module.exports = function (grunt) {
         grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
         const tasks = [
-            'default',
+            'webpack:prod',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_release_start:' + newVersion,
