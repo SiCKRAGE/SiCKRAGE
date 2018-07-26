@@ -103,7 +103,7 @@
     % for curListType, curShowlist in showlists.items():
         % if curListType == "Anime":
             <div class="row">
-                <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12">
+                <div class="col mx-auto">
                     <div class="h4 card" style="text-align: center;">${_('Anime List')}</div>
                 </div>
             </div>

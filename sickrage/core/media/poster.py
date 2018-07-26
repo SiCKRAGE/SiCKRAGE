@@ -33,7 +33,7 @@ class Poster(Media):
         super(Poster, self).__init__(indexer_id, media_format)
 
     def get_default_media_name(self):
-        return 'poster.png'
+        return 'poster-thumb.png' if self.media_format == 'thumb' else 'poster.png'
 
     def get_media_path(self):
         media_file = ''

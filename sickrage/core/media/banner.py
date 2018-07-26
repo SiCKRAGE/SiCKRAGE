@@ -33,7 +33,7 @@ class Banner(Media):
         super(Banner, self).__init__(indexer_id, media_format)
 
     def get_default_media_name(self):
-        return 'banner.png'
+        return 'banner-thumb.png' if self.media_format == 'thumb' else 'banner.png'
 
     def get_media_path(self):
         media_file = ''

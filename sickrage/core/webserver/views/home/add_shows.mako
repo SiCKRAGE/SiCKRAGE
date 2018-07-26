@@ -15,7 +15,7 @@
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/newShow/">
-                    <div class="card card-block text-white bg-dark mb-3">
+                    <div class="card card-block text-white bg-dark">
                         <div class="card-header"><i class="sickrage-core sickrage-core-addnew"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add New Show')}</h4>
@@ -30,7 +30,7 @@
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/traktShows">
-                    <div class="card card-block text-white bg-dark mb-3">
+                    <div class="card card-block text-white bg-dark">
                         <div class="card-header"><i class="sickrage-core sickrage-core-addtrakt"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add from Trakt')}</h4>
@@ -45,7 +45,7 @@
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/popularShows">
-                    <div class="card card-block text-white bg-dark mb-3">
+                    <div class="card card-block text-white bg-dark">
                         <div class="card-header"><i class="sickrage-core sickrage-core-addimdb"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add from IMDB')}</h4>
@@ -60,7 +60,7 @@
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/existingShows">
-                    <div class="card card-block text-white bg-dark mb-3">
+                    <div class="card card-block text-white bg-dark">
                         <div class="card-header"><i class="sickrage-core sickrage-core-addexisting"></i></div>
                         <div class="card-body">
                             <h4 class="card-title">${_('Add Existing Shows')}</h4>
