@@ -13,7 +13,7 @@
     <%namespace file="./includes/quality_defaults.mako" import="renderQualityPill"/>
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="card mt-1 mb-3">
+            <div class="card mt-3 mb-3">
                 <div class="card-header">
                     <div class="float-md-left">
                         <h3>${title}</h3>

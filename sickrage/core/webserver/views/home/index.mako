@@ -104,7 +104,7 @@
         % if curListType == "Anime":
             <div class="row">
                 <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-12">
-                    <div class="h4 well well-sm" style="text-align: center;">${_('Anime List')}</div>
+                    <div class="h4 card" style="text-align: center;">${_('Anime List')}</div>
                 </div>
             </div>
         % endif
@@ -122,15 +122,6 @@
                                 <div class="card card-block text-white bg-dark m-1 shadow">
                                     <img alt="" title="${curLoadingShow.show_name}" class="card-img-top"
                                          src="${srWebRoot}/images/poster.png"/>
-                                    <div class="card-header py-0 px-0">
-                                        <div class="bg-dark rounded">
-                                            <div class="progress progress-bar rounded d-print-none" role="progressbar"
-                                                 style="width: ${progressbar_percent}%;height: 5px;"
-                                                 data-progress-percentage="${progressbar_percent}"
-                                                 data-show-id="${curShow.indexerid}">
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="card-body text-truncate py-1 px-1 small">
                                         <div class="show-title">
                                             ${curLoadingShow.show_name}

@@ -84,6 +84,15 @@
                 toolsBadge = ''
         %>
 
+        % if current_user and sickrage.app.newest_version_string:
+            <div class="alert alert-success alert-dismissible fade show text-center m-0 rounded-0">
+                <strong>${sickrage.app.newest_version_string}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        % endif
+
         <nav class="navbar navbar-expand-md navbar-dark navbar-default py-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="${srWebRoot}/home/">
@@ -95,7 +104,7 @@
                         aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div align="center" class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li>
@@ -119,11 +128,11 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav align-items-center ml-auto">
                         <li class="nav-item dropdown${('', ' active')[topmenu == 'home']}">
-                            <a id="navbarHome" class="nav-link dropdown-toggle" href="${srWebRoot}/home/" role="button"
+                            <a id="navbarHome" class="nav-link dropdown-toggle" href="#" role="button"
                                aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
-                            <span>
-                                ${_('Shows')}
-                            </span>
+                                <span>
+                                    ${_('Shows')}
+                                </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHome">
                                 <a class="dropdown-item" href="${srWebRoot}/home/">
@@ -214,11 +223,11 @@
                         <li class="nav-item dropdown${('', ' active')[topmenu == 'config']}">
                             <a id="navbarConfig" class="nav-link" href="${srWebRoot}/config/" role="button"
                                aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
-                                <span class="d-none d-sm-block d-md-none">
+                                <span class="d-none d-sm-block dropdown-toggle d-md-none">
                                     ${_('Config')}
                                 </span>
                                 <span class="d-sm-none d-md-block">
-                                    <i class="fas fa-2x fa-wrench"></i>
+                                    <i class="fas fa-2x fa-cogs"></i>
                                 </span>
                             </a>
 
@@ -227,7 +236,7 @@
                                     <i class="fas fa-info"></i>&nbsp;${_('Help and Info')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/general/">
-                                    <i class="fas fa-cogs"></i>&nbsp;${_('General')}
+                                    <i class="fas fa-wrench"></i>&nbsp;${_('General')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/backuprestore/">
                                     <i class="fas fa-upload"></i>&nbsp;${_('Backup and Restore')}
@@ -259,7 +268,7 @@
                         <li class="nav-item dropdown${('', ' active')[topmenu == 'system']}">
                             <a id="navbarSystem" class="nav-link" href="#" role="button"
                                aria-haspopup="true" data-toggle="dropdown" aria-expanded="false">
-                                <span class="d-none d-sm-block d-md-none">
+                                <span class="d-none d-sm-block dropdown-toggle d-md-none">
                                     ${_('Tools')}
                                 </span>
                                 <span class="d-sm-none d-md-block">

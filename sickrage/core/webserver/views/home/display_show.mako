@@ -17,7 +17,17 @@
 <%block name="content">
     <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
     <%namespace file="../includes/modals.mako" import="displayShowModals"/>
-    <div class="row">
+
+    <div class="row mt-3">
+        <!-- Alert -->
+        % if show_message:
+            <div class="col-md-12 p-0">
+                <div class="alert alert-info rounded-0 text-center">
+                    <strong>${show_message}</strong>
+                </div>
+            </div>
+        % endif
+
         <div class="col">
             <div class="input-group w-50 mx-auto text-center">
                 <div class="input-group-prepend">
@@ -95,17 +105,6 @@
             % endif
         </div>
     </div>
-
-    <!-- Alert -->
-    % if show_message:
-        <div class="row">
-            <div class="col-md-12">
-                <div class="alert alert-info">
-                    ${show_message}
-                </div>
-            </div>
-        </div>
-    % endif
 
     <div class="row">
         <div class="col">

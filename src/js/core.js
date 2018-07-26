@@ -2244,9 +2244,9 @@ $(document).ready(function ($) {
                     $('#nameToSearch').focus();
 
                     $('#nameToSearch').keypress(function (e) {
-                        e.preventDefault();
                         var keycode = (e.keyCode ? e.keyCode : e.which);
                         if (keycode === 13) {
+                            e.preventDefault();
                             $('#searchName').click();
                         }
                     });

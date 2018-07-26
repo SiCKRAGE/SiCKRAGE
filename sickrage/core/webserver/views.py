@@ -1151,7 +1151,7 @@ class Home(WebHandler):
 
         submenu = [
             {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
-             'icon': 'fa fa-edit'}]
+             'icon': 'fas fa-edit'}]
 
         showLoc = showObj.location
 
@@ -1182,32 +1182,32 @@ class Home(WebHandler):
             if not sickrage.app.show_queue.isBeingUpdated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'fa fa-play'})
+                                    'icon': 'fas fa-play'})
                 else:
                     submenu.append({'title': _('Pause'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'fa fa-pause'})
+                                    'icon': 'fas fa-pause'})
 
                 submenu.append({'title': _('Remove'), 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
-                                'class': 'removeshow', 'confirm': True, 'icon': 'fa fa-trash'})
+                                'class': 'removeshow', 'confirm': True, 'icon': 'fas fa-trash'})
                 submenu.append({'title': _('Re-scan files'), 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
-                                'icon': 'fa fa-sync'})
+                                'icon': 'fas fa-compass'})
                 submenu.append({'title': _('Full Update'),
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
-                                'icon': 'fa fa-exchange'})
+                                'icon': 'fas fa-sync'})
                 submenu.append(
                     {'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
-                     'requires': self.haveKODI(), 'icon': 'fa fa-tv-retro'})
+                     'requires': self.haveKODI(), 'icon': 'fas fa-tv'})
                 submenu.append(
                     {'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
-                     'requires': self.haveEMBY(), 'icon': 'fa fa-tv-retro'})
+                     'requires': self.haveEMBY(), 'icon': 'fas fa-tv'})
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
-                                'icon': 'fa fa-tag'})
+                                'icon': 'fas fa-tag'})
 
                 if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.isBeingSubtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
-                         'icon': 'fa fa-comment'})
+                         'icon': 'fas fa-comment'})
 
         epCats = {}
         epCounts = {
@@ -3674,16 +3674,16 @@ class Config(WebHandler):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fa fa-info'},
-            {'title': _('General'), 'path': '/config/general/', 'icon': 'fa fa-cogs'},
-            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fa fa-upload'},
-            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fa fa-binoculars'},
-            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fa fa-share-alt'},
-            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fa fa-cc'},
-            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fa fa-wrench'},
-            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fa fa-refresh'},
-            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fa fa-bell'},
-            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fa fa-eye'},
+            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fas fa-info'},
+            {'title': _('General'), 'path': '/config/general/', 'icon': 'fas fa-cogs'},
+            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fas fa-upload'},
+            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fas fa-binoculars'},
+            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fas fa-share-alt'},
+            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fas fa-cc'},
+            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fas fa-wrench'},
+            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fas fa-refresh'},
+            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fas fa-bell'},
+            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fas fa-eye'},
         ]
 
         return menu

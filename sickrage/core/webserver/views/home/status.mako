@@ -28,7 +28,7 @@
 
     <div class="row">
         <div class="col-md-10 mx-auto">
-            <div class="card mt-1 mb-3">
+            <div class="card mt-3 mb-3">
                 <div class="card-header">
                     <h3>${_('Scheduler')}</h3>
                 </div>
