@@ -38,7 +38,7 @@
         <table id="massUpdateTable" class="table" cellspacing="1" border="0" cellpadding="0">
             <thead>
             <tr>
-                <th class="table-fit text-center col-checkbox">${_('Selected')}<br/>
+                <th class="table-fit text-center col-checkbox">
                     <input type="checkbox" class="bulkCheck" id="checkAll"/>
                 </th>
                 <th class="text-nowrap" align="left">${_('Show Name')}</th>
@@ -50,7 +50,7 @@
                 <th class="table-fit text-center col-legend">${_('Skip downloaded')}</th>
                 <th class="table-fit text-center col-legend">${_('Paused')}</th>
                 <th class="table-fit text-center col-legend">${_('Subtitle')}</th>
-                <th class="table-fit text-center col-legend">${_('Default Ep')}<br>${_('Status')}</th>
+                <th class="table-fit text-center col-legend">${_('Default Ep Status')}</th>
                 <th class="table-fit text-center col-legend">${_('Status')}</th>
             </tr>
             </thead>
