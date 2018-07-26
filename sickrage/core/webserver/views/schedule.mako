@@ -124,30 +124,30 @@
                                             %>
 
                                             <tr class="${show_div}">
-                                                <td align="center" nowrap="nowrap">
+                                                <td class="text-center text-nowrap">
                                                     <% airDate = srdatetime.srDateTime(cur_result['localtime'], convert=True).dt %>
                                                     <time datetime="${airDate.isoformat()}"
                                                           class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                                                 </td>
 
-                                                <td align="center" nowrap="nowrap">
+                                                <td class="text-center text-nowrap">
                                                     <% ends = srdatetime.srDateTime(cur_ep_enddate, convert=True).dt %>
                                                     <time datetime="${ends.isoformat()}"
                                                           class="date">${srdatetime.srDateTime(ends).srfdatetime()}</time>
                                                 </td>
 
-                                                <td class="tvShow" nowrap="nowrap"><a
+                                                <td class="tvShow" class="text-nowrap"><a
                                                         href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">${cur_result['show_name']}</a>
                                                     % if int(cur_result['paused']):
                                                         <span class="pause">[paused]</span>
                                                     % endif
                                                 </td>
 
-                                                <td nowrap="nowrap" align="center">
+                                                <td class="text-center text-nowrap">
                                                     ${'S{:02d}E{:02d}'.format(int(cur_result['season']), int(cur_result['episode']))}
                                                 </td>
 
-                                                <td>
+                                                <td class="text-nowrap">
                                                     % if cur_result['description']:
                                                         <i class="fas fa-exclamation-circle"
                                                            title="${cur_result["description"]}"
@@ -158,19 +158,19 @@
                                                     ${cur_result['name']}
                                                 </td>
 
-                                                <td align="center">
+                                                <td class="text-center text-nowrap">
                                                     ${cur_result['network']}
                                                 </td>
 
-                                                <td align="center">
+                                                <td class="text-center">
                                                     ${run_time}min
                                                 </td>
 
-                                                <td align="center">
+                                                <td class="text-center">
                                                     ${renderQualityPill(cur_result['quality'], showTitle=True)}
                                                 </td>
 
-                                                <td align="center" style="vertical-align: middle;">
+                                                <td class="text-center" style="vertical-align: middle;">
                                                     % if cur_result['imdb_id']:
                                                         <a href="${anon_url('http://www.imdb.com/title/', cur_result['imdb_id'])}"
                                                            rel="noreferrer"
@@ -187,7 +187,7 @@
                                                     </a>
                                                 </td>
 
-                                                <td align="center">
+                                                <td class="text-center">
                                                     <a href="${srWebRoot}/home/searchEpisode?show=${cur_result['showid']}&season=${cur_result['season']}&episode=${cur_result['episode']}"
                                                        title="${_('Manual Search')}"
                                                        id="forceUpdate-${cur_result['showid']}x${cur_result['season']}x${cur_result['episode']}"

@@ -37,7 +37,7 @@
             <th class="col-checkbox">
                 <input type="checkbox" class="seriesCheck" id="SelectAll"/>
             </th>
-            <th align="left" valign="top" class="nowrap">${_('Select All')}</th>
+            <th align="left" valign="top" class="text-nowrap">${_('Select All')}</th>
             <th width="100%" class="col-name d-none"></th>
         </tr>
         </thead>
@@ -68,7 +68,7 @@
                 <th class="col-checkbox">
                     <input type="checkbox" class="seasonCheck" id="${cur_ep_obj.season}"/>
                 </th>
-                <th class="nowrap">${_('Episode')}</th>
+                <th class="text-nowrap">${_('Episode')}</th>
                 <th class="col-name">${_('Old Location')}</th>
                 <th class="col-name">${_('New Location')}</th>
             </tr>
@@ -91,7 +91,7 @@
                                name="${"{}x{}".format(cur_ep_obj.season, cur_ep_obj.episode)}"/>
                     % endif
                 </td>
-                <td align="center" valign="top" class="nowrap">${"-".join(map(str, epList))}</td>
+                <td align="center" valign="top" class="text-nowrap">${"-".join(map(str, epList))}</td>
                 <td width="50%" class="col-name">${curLoc}</td>
                 <td width="50%" class="col-name">${newLoc}</td>
             </tr>

@@ -290,13 +290,13 @@
                 <table id="showListTable${curListType}" class="table">
                     <thead>
                     <tr>
-                        <th class="table-fit nowrap">${_('Next Ep')}</th>
-                        <th class="table-fit nowrap">${_('Prev Ep')}</th>
+                        <th class="table-fit text-nowrap">${_('Next Ep')}</th>
+                        <th class="table-fit text-nowrap">${_('Prev Ep')}</th>
                         <th class="${('', 'table-fit')[sickrage.app.config.home_layout in ['small', 'banner']]}">${_('Show')}</th>
-                        <th class="table-fit">${_('Network')}</th>
+                        <th class="table-fit text-nowrap">${_('Network')}</th>
                         <th class="table-fit">${_('Quality')}</th>
                         <th>${_('Downloads')}</th>
-                        <th class="table-fit">${_('Size')}</th>
+                        <th class="table-fit text-nowrap">${_('Size')}</th>
                         <th class="table-fit">${_('Active')}</th>
                         <th class="table-fit">${_('Status')}</th>
                     </tr>
@@ -406,30 +406,30 @@
                                 % if cur_airs_next:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td class="align-middle text-center nowrap">
+                                    <td class="align-middle text-center text-nowrap">
                                         <time datetime="${airDate.isoformat()}"
                                               class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                     </td>
                                 % except ValueError:
-                                    <td class="align-middle text-center nowrap"></td>
+                                    <td class="align-middle text-center text-nowrap"></td>
                                 % endtry
                                 % else:
-                                    <td class="align-middle text-center nowrap"></td>
+                                    <td class="align-middle text-center text-nowrap"></td>
                                 % endif
 
                                 % if cur_airs_prev:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td class="align-middle text-center nowrap">
+                                    <td class="align-middle text-center text-nowrap">
                                         <time datetime="${airDate.isoformat()}" class="date">
                                             ${srdatetime.srDateTime(airDate).srfdate()}
                                         </time>
                                     </td>
                                 % except ValueError:
-                                    <td class="align-middle text-center nowrap"></td>
+                                    <td class="align-middle text-center text-nowrap"></td>
                                 % endtry
                                 % else:
-                                    <td class="align-middle text-center nowrap"></td>
+                                    <td class="align-middle text-center text-nowrap"></td>
                                 % endif
 
                                 % if sickrage.app.config.home_layout == 'small':
@@ -475,7 +475,7 @@
                                         % endif
                                     </td>
                                 % else:
-                                    <td>
+                                    <td class="text-nowrap">
                                         <span title="${curShow.network}">${curShow.network}</span>
                                     </td>
                                 % endif
@@ -493,7 +493,7 @@
                                     </div>
                                 </td>
 
-                                <td class="align-middle text-center " data-show-size="${show_size}">
+                                <td class="align-middle text-center text-nowrap" data-show-size="${show_size}">
                                     ${pretty_filesize(show_size)}
                                 </td>
 

@@ -28,7 +28,7 @@
                     <table id="failedTable" class="table">
                         <thead>
                         <tr>
-                            <th align="left" class="nowrap">${_('Release')}</th>
+                            <th align="left" class="text-nowrap">${_('Release')}</th>
                             <th class="table-fit text-center">${_('Size')}</th>
                             <th class="table-fit text-center">${_('Provider')}</th>
                             <th class="table-fit text-center" title="${_('Remove All')} ">
@@ -40,7 +40,7 @@
                             % for hItem in failedResults:
                                 <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem["release"]+"\" />" %>
                                 <tr>
-                                    <td class="nowrap">${hItem["release"]}</td>
+                                    <td class="text-nowrap">${hItem["release"]}</td>
                                     <td align="center">
                                         % if hItem["size"] != -1:
                                             ${pretty_filesize(hItem["size"])}

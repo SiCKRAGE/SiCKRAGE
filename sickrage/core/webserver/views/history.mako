@@ -60,7 +60,7 @@
 
                             <tfoot>
                             <tr>
-                                <th class="nowrap" colspan="5">&nbsp;</th>
+                                <th class="text-nowrap" colspan="5">&nbsp;</th>
                             </tr>
                             </tfoot>
 
@@ -120,7 +120,7 @@
                         <table id="historyTable" class="table pre-scrollable">
                             <thead>
                             <tr>
-                                <th class="nowrap">${_('Time')}</th>
+                                <th class="text-nowrap">${_('Time')}</th>
                                 <th>${_('Episode')}</th>
                                 <th>${_('Snatched')}</th>
                                 <th>${_('Downloaded')}</th>
@@ -133,7 +133,7 @@
 
                             <tfoot>
                             <tr>
-                                <th class="nowrap" colspan="6">&nbsp;</th>
+                                <th class="text-nowrap" colspan="6">&nbsp;</th>
                             </tr>
                             </tfoot>
 

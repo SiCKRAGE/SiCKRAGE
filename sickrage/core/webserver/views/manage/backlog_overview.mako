@@ -78,7 +78,7 @@
                                             <tr class="seasoncols">
                                                 <th>${_('Episode')}</th>
                                                 <th>${_('Name')}</th>
-                                                <th class="nowrap">${_('Airdate')}</th>
+                                                <th class="text-nowrap">${_('Airdate')}</th>
                                             </tr>
 
                                         % for curResult in showResults[curShow.indexerid]:
@@ -87,7 +87,7 @@
                                             % if overview in (Overview.QUAL, Overview.WANTED):
                                                 <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexerid][whichStr]]}">
                                                     <td class="tableleft" align="center">${whichStr}</td>
-                                                    <td class="tableright" align="center" class="nowrap">
+                                                    <td class="tableright" align="center" class="text-nowrap">
                                                         ${curResult["name"]}
                                                     </td>
                                                     <td>
