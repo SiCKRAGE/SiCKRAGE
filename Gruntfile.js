@@ -1,65 +1,15 @@
+const webpackConfig = require('./webpack.config');
+
 module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-        clean: {
-            options: {
-                force: true
-            },
-            node_modules: 'node_modules'
-        },
-        googlefonts: {
-            build: {
-                options: {
-                    fontPath: 'sickrage/core/webserver/static/fonts/',
-                    cssFile: 'dist/css/fonts.css',
-                    httpPath: '../fonts/',
-                    formats: {
-                        eot: true,
-                        ttf: true,
-                        woff: true,
-                        woff2: true,
-                        svg: true
-                    },
-                    fonts: [
-                        {
-                            family: 'Open Sans',
-                            styles: [
-                                300, '300italic',
-                                400, '400italic',
-                                600, '600italic',
-                                700, '700italic',
-                                800, '800italic'
-                            ]
-                        },
-                        {
-                            family: 'Droid Sans',
-                            styles: [
-                                400, 700
-                            ]
-                        },
-                        {
-                            family: 'Roboto',
-                            styles: [
-                                400, 700
-                            ]
-                        }
-                    ]
-                }
-            }
-        },
-        po2json: {
-            messages: {
-                options: {
-                    singleFile: true
-                },
-                files: [{
-                    expand: true,
-                    src: 'sickrage/locale/*/LC_MESSAGES/messages.po',
-                    dest: '',
-                    ext: ''
-                }]
-            }
+        webpack: {
+          options: {
+            stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+          },
+          prod: webpackConfig,
+          dev: webpackConfig
         },
         changelog: {
             release: {
@@ -104,7 +54,7 @@ module.exports = function (grunt) {
             },
             'git_push': {
                 cmd: function (remote, branch, tags) {
-                    var pushCmd = 'git push ' + remote + ' ' + branch;
+                    let pushCmd = 'git push ' + remote + ' ' + branch;
                     if (tags) {
                         pushCmd += ' --tags';
                     }
@@ -142,7 +92,7 @@ module.exports = function (grunt) {
                 },
                 stdout: false,
                 callback: function (err, stdout) {
-                    var commits = stdout.trim()
+                    const commits = stdout.trim()
                         .replace(/`/gm, '').replace(/^\([\w\d\s,.\-+_/>]+\)\s/gm, '');  // removes ` and tag information
                     if (commits) {
                         grunt.config('commits', commits);
@@ -199,15 +149,14 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'default', [
-            'clean',
-            'npm-install'
+            'webpack'
         ]
     );
 
     grunt.registerTask('upload_trans', 'Upload translations', function () {
         grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'exec:babel_extract',
             'exec:crowdin_upload_sources'
         ];
@@ -222,10 +171,9 @@ module.exports = function (grunt) {
     grunt.registerTask('download_trans', 'Download translations', function () {
         grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'exec:crowdin_download_translations',
-            'exec:babel_compile',
-            'po2json'
+            'exec:babel_compile'
         ];
 
         if (process.env.CROWDIN_API_KEY) {
@@ -238,7 +186,7 @@ module.exports = function (grunt) {
     grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function () {
         grunt.log.writeln('Syncing translations with Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'upload_trans',
             'download_trans'
         ];
@@ -253,11 +201,11 @@ module.exports = function (grunt) {
     grunt.registerTask('pre-release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
 
-        var vFile = 'sickrage/version.txt';
+        const vFile = 'sickrage/version.txt';
 
-        var version = grunt.file.read(vFile);
-        var versionParts = version.split('.');
-        var vArray = {
+        const version = grunt.file.read(vFile);
+        const versionParts = version.split('.');
+        const vArray = {
             vMajor: versionParts[0],
             vMinor: versionParts[1],
             vPatch: versionParts[2],
@@ -274,14 +222,14 @@ module.exports = function (grunt) {
 
         vArray.vPre = parseFloat(vArray.vPre) + 1;
 
-        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
         grunt.config('new_version', newVersion);
 
         grunt.file.write(vFile, newVersion);
 
         grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
 
-        var tasks = [
+        const tasks = [
             'default',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
@@ -296,10 +244,10 @@ module.exports = function (grunt) {
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
 
-        var vFile = 'sickrage/version.txt';
-        var version = grunt.file.read(vFile);
-        var versionParts = version.split('.');
-        var vArray = {
+        const vFile = 'sickrage/version.txt';
+        const version = grunt.file.read(vFile);
+        const versionParts = version.split('.');
+        const vArray = {
             vMajor: versionParts[0],
             vMinor: versionParts[1],
             vPatch: versionParts[2],
@@ -310,14 +258,14 @@ module.exports = function (grunt) {
             vArray.vPatch = parseFloat(vArray.vPatch) + 1;
         }
 
-        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
 
         grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
 
         grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
-        var tasks = [
+        const tasks = [
             'default',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,

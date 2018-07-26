@@ -11,7 +11,7 @@
   "homepage": "https://www.sickrage.ca",
   "scripts": {
     "dev": "webpack --mode development",
-    "build": "webpack --mode production"
+    "prod": "webpack --mode production"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.1.0",
@@ -38,6 +38,7 @@
     "grunt-google-fonts": "^0.3.0",
     "grunt-npm-install": "^0.3.1",
     "grunt-spritesmith": "^6.4.0",
+    "grunt-webpack": "^3.1.2",
     "imagesloaded": "^4.1.4",
     "isotope-layout": "^3.0.6",
     "jquery": "^3.3.1",
