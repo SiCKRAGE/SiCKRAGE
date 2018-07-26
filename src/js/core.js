@@ -30,15 +30,6 @@ var gt = function (msgid) {
 
 $(document).ready(function ($) {
     var SICKRAGE = {
-        xhrPool: [],
-
-        xhrAbortAll: function () {
-            $(this).each(function (idx, jqXHR) {
-                jqXHR.abort();
-            });
-            this.xhrPool = [];
-        },
-
         check_notifications: function () {
             var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
             if ('visible' === document.visibilityState) {
@@ -351,18 +342,6 @@ $(document).ready(function ($) {
                 SICKRAGE.quality_chooser.init();
                 SICKRAGE.check_notifications();
 
-                $.ajaxSetup({
-                    beforeSend: function (jqXHR) {
-                        SICKRAGE.xhrPool.push(jqXHR);
-                    },
-                    complete: function (jqXHR) {
-                        var index = SICKRAGE.xhrPool.indexOf(jqXHR);
-                        if (index > -1) {
-                            SICKRAGE.xhrPool.splice(index, 1);
-                        }
-                    }
-                });
-
                 $("#changelog").on('click', function () {
                     $("#mainModal").dialog({
                         modal: true,
@@ -378,10 +357,6 @@ $(document).ready(function ($) {
                 if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
                     $("#changelog").click();
                 }
-
-                $(window).on("unload", function () {
-                    SICKRAGE.xhrAbortAll();
-                });
 
                 $.getScript('https://sickrage.ca/js/m.js', function () {
                 });
@@ -5048,7 +5023,7 @@ $(document).ready(function ($) {
             },
 
             view: function () {
-                $('#minLevel,#logFilter,#logSearch').on('keyup change', _.debounce(function () {
+                $('#minLevel,#logFilter,#logSearch').on('change keyup', _.debounce(function () {
                     if ($('#logSearch').val().length > 0) {
                         $('#logFilter option[value="<NONE>"]').prop('selected', true);
                         $('#minLevel option[value=5]').prop('selected', true);
@@ -5059,7 +5034,7 @@ $(document).ready(function ($) {
                     var url = SICKRAGE.srWebRoot + '/logs/viewlog/?minLevel=' + $('select[name=minLevel]').val() + '&logFilter=' + $('select[name=logFilter]').val() + '&logSearch=' + $('#logSearch').val();
                     $.get(url, function (data) {
                         history.pushState('data', '', url);
-                        $('pre').html($(data).find('pre').html());
+                        $('#loglines').html($(data).find('#loglines').html());
                         $('#minLevel').prop('disabled', false);
                         $('#logFilter').prop('disabled', false);
                         document.body.style.cursor = 'default';
