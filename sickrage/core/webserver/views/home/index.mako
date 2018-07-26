@@ -34,18 +34,6 @@
 
                 % if sickrage.app.config.home_layout == 'poster':
                     <div class="px-1">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text bg-secondary" style="border: none">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                            </div>
-                            <input id="filterShowName" class="form-control bg-secondary text-white-50"
-                                   style="border: none;" type="search" placeholder="${_('Filter Show Name')}">
-                        </div>
-                    </div>
-
-                    <div class="px-1">
                         <select id="postersort" class="form-control bg-secondary text-white-50"
                                 style="border: none;">
                             <option value="name"

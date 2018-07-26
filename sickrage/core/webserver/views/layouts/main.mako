@@ -98,7 +98,17 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        <li>
+                            <div class="input-group input-group-lg">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text bg-dark" style="border: none">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <input id="quicksearch" class="form-control bg-dark"
+                                       style="width:350px;border: none;" type="search">
+                            </div>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

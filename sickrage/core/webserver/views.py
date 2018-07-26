@@ -65,6 +65,7 @@ from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.imdb_popular import imdbPopular
+from sickrage.core.media.util import showImage
 from sickrage.core.nameparser import validator
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
@@ -507,6 +508,21 @@ class WebRoot(WebHandler):
     def unlink(self):
         API().unregister_appid(sickrage.app.config.app_id)
         return self.redirect('/logout/')
+
+    def quicksearch_json(self, term):
+        data = []
+
+        for s in sorted(sickrage.app.showlist, key=lambda k: k.name):
+            if term.lower() not in s.name.lower():
+                continue
+
+            data += [{
+                'id': s.indexerid,
+                'name': s.name,
+                'img': sickrage.app.config.web_root + showImage(s.indexerid, 'poster_thumb').url
+            }]
+
+        return json_encode(data)
 
 
 @Route('/ui(/?.*)')

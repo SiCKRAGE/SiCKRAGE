@@ -4,6 +4,7 @@ import 'jquery-ui/ui/disable-selection';
 import 'jquery-ui/ui/widgets/slider';
 import 'jquery-ui/ui/widgets/sortable';
 import 'jquery-ui/ui/widgets/dialog';
+import 'jquery-ui/ui/widgets/autocomplete';
 import 'tooltipster';
 import 'jquery-backstretch';
 import 'bootbox';
@@ -155,6 +156,46 @@ $(document).ready(function ($) {
                         useLocale(SICKRAGE.getMeta('srLocale'));
                     }
                 });
+
+                $('#quicksearch').autocomplete({
+                    minLength: 1,
+                    source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
+                    focus: function (event, ui) {
+                        $('#quicksearch').val(ui.item.name);
+                        return false;
+                    },
+                    open: function () {
+                        $("ul.ui-menu").width($(this).innerWidth());
+                        $("ul.ui-menu").css('border', 'none');
+                        $("ul.ui-menu").css('outline', 'none');
+                        $("ul.ui-menu").addClass('bg-dark shadow rounded');
+
+                    }
+                });
+
+                $('#quicksearch').data("ui-autocomplete")._renderItem = function (ul, item) {
+                    var $li = $('<li class="bg-transparent m-1">'),
+                        $img = $('<img>'),
+                        $a = $('<a>');
+
+                    $a.attr({
+                        href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.id}`,
+                        class: 'btn btn-dark btn-block text-left text-white'
+                    });
+
+                    $img.attr({
+                        src: item.img,
+                        alt: item.name,
+                        class: 'm-1',
+                        style: 'width:10%;height:100%'
+                    });
+
+                    $li.attr('data-value', item.name);
+                    $li.append($a);
+                    $li.find('a').append($img).append(item.name);
+
+                    return $li.appendTo(ul);
+                };
 
                 $(window).scroll(function () {
                     if ($(this).scrollTop() > 50) {
@@ -1262,16 +1303,6 @@ $(document).ready(function ($) {
                 $('.resetsorting').on('click', function () {
                     $('table').trigger('filterReset');
                 });
-
-                // Handle filtering in the poster layout
-                $('#filterShowName').on('input', _.debounce(function () {
-                    $('.show-grid').isotope({
-                        filter: function () {
-                            var name = $('.show-container', this).data('name').trim().toLowerCase();
-                            return name.indexOf($('#filterShowName').val().toLowerCase()) > -1;
-                        }
-                    });
-                }, 500));
 
                 function resizePosters(newSize) {
                     var fontSize, spriteScale, borderRadius;
