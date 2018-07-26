@@ -16,22 +16,6 @@
     <div class="row sickrage-submenu mb-3">
         <div class="col text-left">
             <div class="form-inline m-2">
-                % if sickrage.app.config.home_layout != 'poster':
-                    <div class="px-1">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text bg-secondary text-white-50" style="border: none;">
-                                    ${_('Select Columns:')}
-                                </div>
-                            </div>
-                            <button id="popover" type="button" class="form-control bg-secondary"
-                                    style="border: none;">
-                                <i class="fas fa-caret-down"></i>
-                            </button>
-                        </div>
-                    </div>
-                % endif
-
                 % if sickrage.app.config.home_layout == 'poster':
                     <div class="px-1">
                         <select id="postersort" class="form-control bg-secondary text-white-50"
@@ -109,7 +93,7 @@
             </div>
         % endif
         % if sickrage.app.config.home_layout == 'poster':
-            <div class="loading-spinner text-center">
+            <div class="loading-spinner text-center m-3">
                 <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
             </div>
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
@@ -304,7 +288,7 @@
 
                     <tfoot>
                     <tr>
-                        <th rowspan="1" colspan="1" align="center">
+                        <th rowspan="1" colspan="1" align="center" class="text-nowrap">
                             <a href="${srWebRoot}/home/addShows/">
                                 ${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}
                             </a>
@@ -485,7 +469,7 @@
                                 <td class="align-middle text-center">
                                     <span style="display: none;">${download_stat}</span>
                                     <div class="bg-dark rounded shadow">
-                                        <div class="progress-bar rounded" style="width: ${progressbar_percent}%"
+                                        <div class="progress-bar rounded " style="width: ${progressbar_percent}%"
                                              data-show-id="${curShow.indexerid}"
                                              data-progress-percentage="${progressbar_percent}"
                                              data-progress-text="${download_stat}"
