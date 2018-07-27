@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-26 17:22-0700\n"
-"PO-Revision-Date: 2018-07-27 00:23\n"
+"POT-Creation-Date: 2018-07-26 22:01-0700\n"
+"PO-Revision-Date: 2018-07-27 05:01\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -25,307 +25,311 @@ msgstr "Τερματισμός λειτουργίας"
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κλείσει SiCKRAGE;"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:281
+#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:282
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: src/js/core.js:282
+#: src/js/core.js:283
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κάνετε επανεκκίνηση του SiCKRAGE;"
 
-#: src/js/core.js:286
+#: src/js/core.js:288
 msgid "Submit Errors"
 msgstr "Υποβολή σφάλματα"
 
-#: src/js/core.js:287
+#: src/js/core.js:289
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:287
+#: src/js/core.js:289
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:287
+#: src/js/core.js:289
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:414 src/js/core.js:425 src/js/core.js:446
+#: src/js/core.js:416 src/js/core.js:427 src/js/core.js:448
 msgid "Searching"
 msgstr "Αναζήτηση"
 
-#: src/js/core.js:420 src/js/core.js:451
+#: src/js/core.js:422 src/js/core.js:453
 msgid "Queued"
 msgstr "Στην ουρά"
 
 #: sickrage/core/webserver/views/home/display_show.mako:705
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
-#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:455
+#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:457
 msgid "Manual Search"
 msgstr "Χειροκίνητη αναζήτηση"
 
-#: sickrage/core/webserver/views/home/index.mako:312 src/js/core.js:480
-#: src/js/core.js:626 src/js/core.js:669
+#: sickrage/core/webserver/views/home/index.mako:312 src/js/core.js:482
+#: src/js/core.js:628 src/js/core.js:671
 msgid "loading"
 msgstr "φόρτωση"
 
-#: src/js/core.js:685
+#: src/js/core.js:687
 msgid "Choose Directory"
 msgstr "Επιλέξτε κατάλογο"
 
-#: sickrage/core/webserver/views.py:3635 src/js/core.js:1208
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1211
 msgid "Clear History"
 msgstr "Εκκαθάριση ιστορικού"
 
-#: src/js/core.js:1209
+#: src/js/core.js:1212
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να καταργήσετε την επιλογή όλων κατεβάσετε ιστορία;"
 
-#: sickrage/core/webserver/views.py:3637 src/js/core.js:1213
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1217
 msgid "Trim History"
 msgstr "Τελειώματα ιστορία"
 
-#: src/js/core.js:1214
+#: src/js/core.js:1218
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να τακτοποιήσει όλων κατεβάσετε ιστορία που είναι παλαιότερες από 30 ημέρες;"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1747
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1752
 msgid "Remove Show"
 msgstr "Καταργήσετε Show"
 
-#: src/js/core.js:1748
+#: src/js/core.js:1753
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:1748
+#: src/js/core.js:1753
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:1748
+#: src/js/core.js:1753
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:1792 src/js/core.js:1824
+#: src/js/core.js:1797 src/js/core.js:1829
 msgid "Update failed."
 msgstr "Η ενημέρωση απέτυχε."
 
-#: src/js/core.js:1835
+#: src/js/core.js:1840
 msgid "Select Show Location"
 msgstr "Επιλέξτε Εμφάνιση της θέσης"
 
-#: src/js/core.js:1969
+#: src/js/core.js:1974
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:1978
+#: src/js/core.js:1983
 msgid "Select Unprocessed Episode Folder"
 msgstr "Επιλέξτε φάκελο αμεταποίητα επεισόδιο"
 
-#: src/js/core.js:2350
+#: src/js/core.js:2355
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "έληξε το χρονικό όριο της αναζήτησης, δοκιμάστε αυξανόμενη χρονικού ορίου για δεικτοδότη"
 
-#: src/js/core.js:2354
+#: src/js/core.js:2359
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2358
+#: src/js/core.js:2363
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2377
+#: src/js/core.js:2382
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2379
+#: src/js/core.js:2384
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2424
+#: src/js/core.js:2429
 msgid "Saved Defaults"
 msgstr "Αποθηκευμένες προεπιλογές"
 
-#: src/js/core.js:2424
+#: src/js/core.js:2429
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "«Προσθέστε Εμφάνιση» προεπιλογές σας έχουν οριστεί σε τρέχουσες επιλογές σας."
 
-#: src/js/core.js:2478
+#: src/js/core.js:2483
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2519
+#: src/js/core.js:2525
 msgid "Reset Config to Defaults"
 msgstr "Config επαναφορά στις προεπιλογές"
 
-#: src/js/core.js:2520
+#: src/js/core.js:2526
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Είστε βέβαιοι ότι θέλετε να επαναφέρετε config προεπιλογές;"
 
-#: src/js/core.js:2612
+#: src/js/core.js:2618
 msgid "Select path to pip"
 msgstr "Επιλέξτε διαδρομή pip"
 
-#: src/js/core.js:2618
+#: src/js/core.js:2624
 msgid "Select path to git"
 msgstr "Επιλέξτε διαδρομή git"
 
-#: src/js/core.js:2626 src/js/core.js:2644 src/js/core.js:3488 src/js/core.js:3506
-#: src/js/core.js:3527 src/js/core.js:3549 src/js/core.js:3572 src/js/core.js:3594
-#: src/js/core.js:3622 src/js/core.js:3639 src/js/core.js:3683 src/js/core.js:3768
-#: src/js/core.js:3826 src/js/core.js:3843 src/js/core.js:3873 src/js/core.js:3930
-#: src/js/core.js:4006 src/js/core.js:4025 src/js/core.js:4041
+#: src/js/core.js:2632 src/js/core.js:2650 src/js/core.js:3494 src/js/core.js:3512
+#: src/js/core.js:3533 src/js/core.js:3555 src/js/core.js:3578 src/js/core.js:3600
+#: src/js/core.js:3628 src/js/core.js:3645 src/js/core.js:3689 src/js/core.js:3774
+#: src/js/core.js:3832 src/js/core.js:3849 src/js/core.js:3879 src/js/core.js:3936
+#: src/js/core.js:4012 src/js/core.js:4031 src/js/core.js:4047
 msgid "Please fill out the necessary fields above."
 msgstr "Παρακαλούμε συμπληρώστε τα απαραίτητα πεδία παραπάνω."
 
-#: src/js/core.js:2682
+#: src/js/core.js:2688
 msgid "Select Subtitles Download Directory"
 msgstr "Επιλέξτε υπότιτλοι Κατέβασμα καταλόγου"
 
-#: src/js/core.js:2798
+#: src/js/core.js:2804
 msgid "Select .nzb blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία blackhole/ρολόι .nzb"
 
-#: src/js/core.js:2799
+#: src/js/core.js:2805
 msgid "Select .torrent blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία .torrent blackhole/ρολόι"
 
-#: src/js/core.js:2800
+#: src/js/core.js:2806
 msgid "Select .torrent download location"
 msgstr "Επιλέξτε θέση λήψης .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2867
+#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2873
 msgid "Minimum seeding time is"
 msgstr "Ελάχιστο σπορά χρόνος είναι"
 
-#: src/js/core.js:2869
+#: src/js/core.js:2875
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "Διεύθυνση URL για το uTorrent πρόγραμμα-πελάτη (π.χ. http://localhost:8000)"
 
-#: src/js/core.js:2872
+#: src/js/core.js:2878
 msgid "Stop seeding when inactive for"
 msgstr "Σταματήσω σπορά όταν ανενεργός για"
 
-#: src/js/core.js:2878
+#: src/js/core.js:2884
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας μετάδοσης (π.χ. http://localhost:9091)"
 
-#: src/js/core.js:2888
+#: src/js/core.js:2894
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "Διεύθυνση URL για το χείμαρρο πελάτη σας (π.χ. http://localhost:8112)"
 
-#: src/js/core.js:2897
+#: src/js/core.js:2903
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "Διεύθυνση IP ή όνομα κεντρικού υπολογιστή του σας κατακλύζω δαίμονα (π.χ. scgi://localhost:58846)"
 
-#: src/js/core.js:2904
+#: src/js/core.js:2910
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας Synology DS (π.χ. http://localhost:5000)"
 
-#: src/js/core.js:2909
+#: src/js/core.js:2915
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:2909
+#: src/js/core.js:2915
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:2919
+#: src/js/core.js:2925
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας qbittorrent (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:2929
+#: src/js/core.js:2935
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "Διεύθυνση URL για να σας: MLDonkey (π.χ. http://localhost:4080)"
 
-#: src/js/core.js:2940
+#: src/js/core.js:2946
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να σας putio προγράμματος-πελάτη (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:3126
+#: src/js/core.js:3132
 msgid "Select TV Download Directory"
 msgstr "Επιλέξτε κατάλογο λήψης Τηλεόρασης"
 
-#: src/js/core.js:3127
+#: src/js/core.js:3133
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3142
+#: src/js/core.js:3148
 msgid "Unrar Executable not found."
 msgstr "Unrar εκτελέσιμο αρχείο δεν βρέθηκε."
 
-#: src/js/core.js:3188 src/js/core.js:3232 src/js/core.js:3276 src/js/core.js:3336
+#: src/js/core.js:3194 src/js/core.js:3238 src/js/core.js:3282 src/js/core.js:3342
 msgid "This pattern is invalid."
 msgstr "Αυτό το πρότυπο δεν είναι έγκυρη."
 
-#: src/js/core.js:3195 src/js/core.js:3239 src/js/core.js:3283 src/js/core.js:3343
+#: src/js/core.js:3201 src/js/core.js:3245 src/js/core.js:3289 src/js/core.js:3349
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Αυτό το μοτίβο θα είναι άκυρη χωρίς τους φακέλους, χρησιμοποιώντας το θα αναγκάσει «Ισιώστε» για όλες τις παραστάσεις."
 
-#: src/js/core.js:3202 src/js/core.js:3246 src/js/core.js:3290 src/js/core.js:3350
+#: src/js/core.js:3208 src/js/core.js:3252 src/js/core.js:3296 src/js/core.js:3356
 msgid "This pattern is valid."
 msgstr "Αυτό το μοτίβο είναι έγκυρη."
 
-#: src/js/core.js:3676
+#: src/js/core.js:3682
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> επιβεβαιώστε εξουσιοδότησης"
 
-#: src/js/core.js:3733 src/js/core.js:3787
+#: src/js/core.js:3739 src/js/core.js:3793
 msgid "Please fill in the Popcorn IP address"
 msgstr "Παρακαλούμε συμπληρώστε τη διεύθυνση IP του ποπ κορν"
 
-#: src/js/core.js:3940
+#: src/js/core.js:3946
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Ελέγξτε το όνομα μαύρη λίστα? η τιμή πρέπει να είναι ένα γυμνοσάλιαγκα trakt"
 
-#: src/js/core.js:3972
+#: src/js/core.js:3978
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:3975
+#: src/js/core.js:3981
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:3977
+#: src/js/core.js:3983
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:3983
+#: src/js/core.js:3989
 msgid "Enter an email address to send the test to:"
 msgstr "Πληκτρολογήστε μια διεύθυνση ηλεκτρονικού ταχυδρομείου για να στείλετε το τεστ για να:"
 
-#: src/js/core.js:3985
+#: src/js/core.js:3991
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4055
+#: src/js/core.js:4061
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Λίστα συσκευών ενημερώνεται. Παρακαλώ επιλέξτε μια συσκευή για να ωθήσει."
 
-#: src/js/core.js:4116
+#: src/js/core.js:4122
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Δεν μπορείτε να δώσετε ένα κλειδί Pushbullet api"
 
-#: src/js/core.js:4146
+#: src/js/core.js:4152
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Μην ξεχάσετε να αποθηκεύσετε τις ρυθμίσεις σας με τη νέα pushbullet."
 
-#: src/js/core.js:4218
+#: src/js/core.js:4224
 msgid "Select backup folder to save to"
 msgstr "Επιλέξτε το φάκελο αντιγράφων ασφαλείας για να αποθηκεύσετε"
 
-#: src/js/core.js:4223
+#: src/js/core.js:4229
 msgid "Select backup files to restore"
 msgstr "Επιλέξτε τα αρχεία αντιγράφων ασφαλείας για επαναφορά"
 
-#: src/js/core.js:4768
+#: src/js/core.js:4774
 msgid "No providers available to configure."
 msgstr "Υπάρχουν διαθέσιμες για να ρυθμίσετε παροχείς."
 
-#: src/js/core.js:4928
+#: sickrage/core/webserver/views/manage/mass_update.mako:18 src/js/core.js:4936
+msgid "Mass Delete"
+msgstr "Μαζική διαγραφή"
+
+#: src/js/core.js:4937
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Έχετε επιλέξει να διαγράψετε παρουσίαζει(-ουν).  Είστε βέβαιοι ότι θέλετε να συνεχίσετε; Όλα τα αρχεία θα αφαιρεθεί από το σύστημά σας."
 
-#: src/js/core.js:4998
+#: src/js/core.js:5014
 msgid "DELETED"
 msgstr ""
 
@@ -5757,7 +5761,7 @@ msgstr "Ορίστε παραδιδόμενες εκπομπές/επεισόδ�
 msgid "Go"
 msgstr "Πάει"
 
-#: sickrage/core/webserver/views/manage/episode_statuses.mako:117
+#: sickrage/core/webserver/views/manage/episode_statuses.mako:116
 #: sickrage/core/webserver/views/manage/subtitles_missed.mako:91
 msgid "Expand"
 msgstr "Αναπτύξτε το στοιχείο"
@@ -5850,10 +5854,6 @@ msgstr "Μάζα Rescan"
 #: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Rename"
 msgstr "Μαζική μετονομασία"
-
-#: sickrage/core/webserver/views/manage/mass_update.mako:18
-msgid "Mass Delete"
-msgstr "Μαζική διαγραφή"
 
 #: sickrage/core/webserver/views/manage/mass_update.mako:19
 msgid "Mass Remove"

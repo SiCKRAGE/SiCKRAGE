@@ -1,6 +1,69 @@
 # Changelog
 
-- * db885c8 - 2018-07-09: Migrating away from Bower to NPM/WebPack 
+- * 003a768 - 2018-07-26: Pre-Release v9.3.56.dev3 
+- * e12e04f - 2018-07-26: Removed bootbox jquery package Fixed confirmation dialog boxes for history and mass update views Changed text color from white to dark for episode statuses view Added css for jquery confirm package 
+- * 5ac6bac - 2018-07-26: Pre-Release v9.3.56.dev2 
+- * 1f9d56a - 2018-07-26: Fixed issue with retrieving image thumbnails from Fanart.tv 
+- * b96888a - 2018-07-26: Removed focus box shadow for quick search form control 
+- * 900b680 - 2018-07-26: Pre-Release v9.3.56.dev1 
+- * 6afa4c2 - 2018-07-26: Updated grunt tasks 
+- * 3a87793 - 2018-07-26: Removed select column control from shows view 
+- * d5f8615 - 2018-07-26: Refactored restart view page 
+- * efff7db - 2018-07-26: Fixed logs view 
+- * dfb4f99 - 2018-07-26: Refactored mass update view and manage queues view 
+- * b0e6922 - 2018-07-26: Fixed table text wraps 
+- * fb7255b - 2018-07-26: Added thumbs for default poster and banners Fixed margins for add shows view 
+- * 524cb0a - 2018-07-26: Misc style changes 
+- * 7d1e3f3 - 2018-07-26: Added updates alert above navbar 
+- * 2fb8d02 - 2018-07-26: Added clear button to quick show search 
+- * 11ddcd3 - 2018-07-26: Added quick show search to navbar 
+- * dcad4d1 - 2018-07-25: Refactoring SCSS theme styles 
+- * 97b4239 - 2018-07-24: Misc code corrections and cleanups 
+- * e1ea56c - 2018-07-24: Migrated add existing shows view to bootstrap 4 
+- * 71b4cfa - 2018-07-23: Misc code cleanup 
+- * 2fa2261 - 2018-07-23: Migrated imdb popular shows view to bootstrap 4 
+- * 7abe9f9 - 2018-07-22: Migrated add trakt show view to bootstrap 4 Added pre-loading div for main show and trakt show views 
+- * 476f90a - 2018-07-22: Misc code migrates to bootstrap 4 
+- * 9abbba8 - 2018-07-22: Migrated API builder to bootstrap 4 
+- * d115e61 - 2018-07-21: Misc code cleanup 
+- * 2742737 - 2018-07-21: Refactored manual post-processing view responsiveness 
+- * 2466e65 - 2018-07-21: Refactored edit show view responsiveness 
+- * fbc0c9e - 2018-07-21: Refactored responsive column for views 
+- * bc2a0f2 - 2018-07-21: Migrated status view to bootstrap 4 
+- * a3ff9ab - 2018-07-21: Refactored add new show view to bootstrap 4 
+- * 03c08d7 - 2018-07-18: Fixed main shows page show details footer 
+- * 453ca1a - 2018-07-17: Refactored schedule view 
+- * 0fdb6df - 2018-07-16: Refactored history view 
+- * 427b651 - 2018-07-16: Refactored missing subtitles view 
+- * 6727208 - 2018-07-16: Refactored failed history view 
+- * b24cc27 - 2018-07-16: Refactored display show view 
+- * e61f206 - 2018-07-16: Refactored layouts for main shows view 
+- * 605eee5 - 2018-07-16: Added shadowing for theme classes 
+- * 6cd3963 - 2018-07-16: Created themed scss classes Migrated manage queues view 
+- * bce28bd - 2018-07-15: Migrated file browser modal to bootstrap 4 
+- * 1df34fa - 2018-07-15: Refactored mass update view 
+- * ef5ceee - 2018-07-15: Refactored all config views Refactored manual post-processing view Refactored edit show view Refactored main layout Refactored config layout 
+- * 085af56 - 2018-07-15: Refactored notifications config view 
+- * 22d3071 - 2018-07-15: Refactored metadata config view 
+- * 8b4add8 - 2018-07-15: Refactored episode naming view and misc config views 
+- * df9b9e3 - 2018-07-15: Updated notifications view 
+- * 9dad99d - 2018-07-15: Themed main modal 
+- * c334f29 - 2018-07-15: Themed display show modals 
+- * fe6e1f0 - 2018-07-15: Migrated more icons to font awesome 
+- * 1e21e2d - 2018-07-15: Migrated loading, queued, searching icons to font awesome icons 
+- * 736d021 - 2018-07-14: Re-sized buttons bar for main view 
+- * 961b90c - 2018-07-14: Migrated home view network logo&#x27;s from images to sprites Fixed display show view responsiveness Added subtitle and flag sprites to webpack 
+- * 6f84b0d - 2018-07-14: Updated gitignore file 
+- * b3107c2 - 2018-07-14: Migrated provider and subtitle image references to sprite references 
+- * 901a870 - 2018-07-14: Updated gitignore file 
+- * f94568a - 2018-07-14: Converted provider icons to sprites Converted subtitle icons to sprites Converted network icons to sprites Converted notifier icons to sprites Converted core icons to sprites 
+- * f626619 - 2018-07-14: Converted provider icons to sprites Converted subtitle icons to sprites Converted network icons to sprites Converted notifier icons to sprites Converted core icons to sprites 
+- * 0672255 - 2018-07-14: Converted all glyphicons icons to fontawesome icons 
+- * fd36e3d - 2018-07-13: Release v9.3.55 
+- * a60f7af - 2018-07-13: Updated gruntfile 
+- * 2f5ba4a - 2018-07-13: Updated Yggtorrent provider base url Update Torrent9 provider base url 
+- * d2cea58 - 2018-07-13: Migrated config providers view to bootstrap 4 
+- * d73439e - 2018-07-09: Migrating away from Bower to NPM/WebPack 
 - * a4b58c9 - 2018-07-09: Migrating away from Bower to NPM/WebPack 
 - * 86021ad - 2018-07-09: Compiled all CSS/SCSS into 1 core file 
 - * b912b2e - 2018-07-08: Refactored config views to Bootstrap 4.x 
