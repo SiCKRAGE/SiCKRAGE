@@ -711,6 +711,7 @@ $(document).ready(function ($) {
                             SICKRAGE.browser.browse(ui.item.value, endpoint, includeFiles, fileTypes);
                         });
 
+
                     list = $('<div class="list-group">').appendTo(SICKRAGE.browser.fileBrowserDialog.find('.modal-body'));
                     $.each(data, function (i, entry) {
                         if (entry.isFile && fileTypes &&
@@ -725,12 +726,13 @@ $(document).ready(function ($) {
                                 SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
                         }).text(entry.name);
+
                         if (entry.isImage) {
-                            link.prepend('<span class="fas fa-file-image ml-1"></span>');
+                            link.prepend('<span class="fas fa-file-image ml-1 mr-1"></span>');
                         } else if (entry.isFile) {
-                            link.prepend('<span class="fas fa-file ml-1"></span>');
+                            link.prepend('<span class="fas fa-file ml-1 mr-1"></span>');
                         } else {
-                            link.prepend('<span class="fas fa-folder ml-1"></span>')
+                            link.prepend('<span class="fas fa-folder ml-1 mr-1"></span>')
                                 .on('mouseenter', function () {
                                     $('span', this).addClass('fa-folder-open');
                                 })
@@ -740,7 +742,7 @@ $(document).ready(function ($) {
                         }
                         link.appendTo(list);
                     });
-                    $('a', list).wrap('<div class="list-group-item-dark">');
+                    $('a', list).wrap('<div class="list-group-item list-group-item-action list-group-item-dark p-0">');
                     //SICKRAGE.browser.fileBrowserDialog.dialog('option', 'dialogClass', 'browserDialog');
                 });
             },
@@ -752,6 +754,7 @@ $(document).ready(function ($) {
                 if (!SICKRAGE.browser.fileBrowserDialog) {
                     // set up the jquery dialog
                     SICKRAGE.browser.fileBrowserDialog = $('#fileBrowserDialog').modal();
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-body').addClass('ui-front');
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
                 } else {
                     // The title may change, even if fileBrowserDialog already exists
