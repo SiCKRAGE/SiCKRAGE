@@ -93,9 +93,9 @@
                         % if hasattr(providerObj, 'custom_url') and validate_url(providerObj.custom_url):
                             <% provider_url = providerObj.custom_url %>
                         % endif
-                            <div class="${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1"
+                            <div class="list-group-item list-group-item-action ${('list-group-item-dark', 'list-group-item-secondary')[bool(providerObj.type in [TorrentProvider.type, TorrentRssProvider.type])]} rounded mb-1 p-2"
                                  id="${providerID}">
-                                <div class="align-middle mt-1 ml-2">
+                                <div class="align-middle">
                                     <label class="form-check-label" for="enable_${providerID}">
                                         <input type="checkbox" id="enable_${providerID}"
                                                class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
@@ -105,9 +105,11 @@
                                         </a>
                                         <span class="font-weight-bold">${providerObj.name}</span>
                                     </label>
-                                    <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
-                                    ${('<i class="text-warning mt-1 fas fa-chevron-circle-left float-right"></i>', '')[bool(providerObj.supports_backlog)]}
-                                    ${('<i class="text-danger mt-1 fas fa-exclamation-circle float-right"></i>', '')[bool(providerObj.isAlive)]}
+                                    <span class="float-right d-inline-block">
+                                        ${('<i class="text-warning fas fa-chevron-circle-left"></i>', '')[bool(providerObj.supports_backlog)]}
+                                        ${('<i class="text-danger fas fa-exclamation-circle"></i>', '')[bool(providerObj.isAlive)]}
+                                        <i class="fas ${('fa-unlock text-success','fa-lock text-danger')[bool(providerObj.private)]}"></i>
+                                    </span>
                                 </div>
                             </div>
                         % endif
@@ -115,7 +117,7 @@
                 </div>
                 <input type="hidden" name="provider_order" id="provider_order"
                        value="${" ".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
-                <br><input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/><br>
+                <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
             </fieldset>
         </div>
     </div><!-- /tab-pane1 //-->
