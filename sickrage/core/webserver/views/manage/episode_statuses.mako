@@ -98,7 +98,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table manageTable">
+                                    <table class="table">
                                         % for cur_indexer_id in sorted_show_ids:
                                             <tr id="${cur_indexer_id}">
                                                 <th>
@@ -108,20 +108,19 @@
                                                            name="${cur_indexer_id}-all" checked/>
                                                 </th>
                                                 <th colspan="2" style="width: 100%; text-align: left;">
-                                                    <a class="whitelink"
-                                                       href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
+                                                    <a class="text-white" href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
                                                         ${show_names[cur_indexer_id]}
                                                     </a>
-                                                    (${ep_counts[cur_indexer_id]})
+                                                    (<span class="text-info">${ep_counts[cur_indexer_id]}</span>)
                                                     <input type="button" class="btn btn-sm get_more_eps"
                                                            id="${cur_indexer_id}" value="${_('Expand')}"/>
                                                 </th>
                                             </tr>
                                         % endfor
                                         <tr>
-                                            <td style="padding:0;"></td>
-                                            <td style="padding:0;"></td>
-                                            <td style="padding:0;"></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
                                         </tr>
                                     </table>
                                 </div>

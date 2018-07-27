@@ -7,7 +7,6 @@ import 'jquery-ui/ui/widgets/dialog';
 import 'jquery-ui/ui/widgets/autocomplete';
 import 'tooltipster';
 import 'jquery-backstretch';
-import 'bootbox';
 import 'pnotify/dist/es/PNotifyMobile';
 import 'pnotify/dist/es/PNotifyButtons';
 import 'pnotify/dist/es/PNotifyDesktop';
@@ -267,16 +266,19 @@ $(document).ready(function ($) {
                 };
 
                 $('a.shutdown').confirm({
+                    theme: 'dark',
                     title: gt('Shutdown'),
                     content: gt('Are you sure you want to shutdown SiCKRAGE ?')
                 });
 
                 $('a.restart').confirm({
+                    theme: 'dark',
                     title: gt('Restart'),
                     content: gt('Are you sure you want to restart SiCKRAGE ?')
                 });
 
                 $('a.submiterrors').confirm({
+                    theme: 'dark',
                     title: gt('Submit Errors'),
                     content: gt('Are you sure you want to submit these errors ?') + '<br><br><span class="red-text">' + gt('Make sure SiCKRAGE is updated and trigger') + '<br>' + gt('this error with debug enabled before submitting') + '</span>'
                 });
@@ -1146,11 +1148,13 @@ $(document).ready(function ($) {
                 });
 
                 $('a.clearhistory').confirm({
+                    theme: 'dark',
                     title: gt('Clear History'),
                     content: gt('Are you sure you want to clear all download history ?')
                 });
 
                 $('a.trimhistory').confirm({
+                    theme: 'dark',
                     title: gt('Trim History'),
                     content: gt('Are you sure you want to trim all download history older than 30 days ?')
                 });
@@ -1653,6 +1657,7 @@ $(document).ready(function ($) {
                     SICKRAGE.ajax_search.init();
 
                     $("a.removeshow").confirm({
+                        theme: 'dark',
                         title: gt("Remove Show"),
                         content: gt('Are you sure you want to remove') + '<span class="footerhighlight">' + $('#showtitle').data('showname') + '</span>' + gt(' from the database?') + '<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">' + gt('Check to delete files as well. IRREVERSIBLE') + '</label>',
                         buttons: {
@@ -2412,6 +2417,7 @@ $(document).ready(function ($) {
                 $('#config-menus a[href="' + window.location.hash + '"]').tab('show')
 
                 $('a.resetConfig').confirm({
+                    theme: 'dark',
                     title: gt('Reset Config to Defaults'),
                     content: gt('Are you sure you want to reset config to defaults?')
                 });
@@ -4660,7 +4666,7 @@ $(document).ready(function ($) {
             episode_statuses: function () {
                 function makeRow(indexerId, season, episode, name, checked) {
                     var row = '';
-                    row += ' <tr class="' + $('#row_class').val() + ' show-' + indexerId + '">';
+                    row += ' <tr class="text-dark ' + $('#row_class').val() + ' show-' + indexerId + '">';
                     row += '  <td class="tableleft" align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
                     row += '  <td>' + season + 'x' + episode + '</td>';
                     row += '  <td class="tableright" style="width: 100%">' + name + '</td>';
@@ -4795,11 +4801,21 @@ $(document).ready(function ($) {
                         return;
                     }
 
-                    $.bootbox.confirm(gt("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system."), function (result) {
-                        if (result) {
-                            window.location.href = 'massUpdate?toDelete=' + checkArr.join('|');
+                    $.confirm({
+                        theme: 'dark',
+                        title: gt("Mass Delete"),
+                        content: gt("You have selected to delete " + checkArr.length + " show(s).  Are you sure you wish to continue? All files will be removed from your system."),
+                        buttons: {
+                            confirm: function () {
+                                window.location.href = 'massUpdate?toDelete=' + checkArr.join('|');
+                            },
+                            cancel: {
+                                action: function () {
+                                }
+                            }
                         }
                     });
+
                 });
 
                 $('#submitMassRemove').on('click', function () {

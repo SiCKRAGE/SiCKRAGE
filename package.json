@@ -23,7 +23,6 @@
     "babel-loader": "^7.1.5",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-preset-env": "^1.7.0",
-    "bootbox": "^4.4.0",
     "bootstrap": "^4.1.1",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^1.0.0",

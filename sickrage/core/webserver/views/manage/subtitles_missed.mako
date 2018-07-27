@@ -74,7 +74,7 @@
                                 <button type="button" class="btn unselectAllShows">${_('Clear all')}</button>
                             </div>
                             <br>
-                            <table class="table manageTable" cellspacing="1" border="0" cellpadding="0">
+                            <table class="table">
                                 % for cur_indexer_id in sorted_show_ids:
                                     <tr id="${cur_indexer_id}">
                                         <th style="width: 1%;">
