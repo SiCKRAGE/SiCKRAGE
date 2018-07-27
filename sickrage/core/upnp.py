@@ -60,7 +60,7 @@ class UPNPClient(threading.Thread):
             self.add_nat_portmap()
 
     def add_nat_portmap(self):
-        sickrage.app.log.debug("Adding SiCKRAGE UPNP portmap...")
+        #sickrage.app.log.debug("Adding SiCKRAGE UPNP portmap...")
 
         try:
             upnp_dev = self._discover_upnp_device()
@@ -97,10 +97,10 @@ class UPNPClient(threading.Thread):
                 NewLeaseDuration=self._nat_portmap_lifetime,
             )
 
-        sickrage.app.log.debug("UPnP port forwarding successfully added")
+        #sickrage.app.log.debug("UPnP port forwarding successfully added")
 
     def delete_nat_portmap(self):
-        sickrage.app.log.debug("Deleting SiCKRAGE UPNP portmap...")
+        #sickrage.app.log.debug("Deleting SiCKRAGE UPNP portmap...")
 
         upnp_dev = self._discover_upnp_device()
         if upnp_dev is None:
@@ -120,7 +120,7 @@ class UPNPClient(threading.Thread):
                 NewProtocol=protocol,
             )
 
-        sickrage.app.log.debug("UPnP port forwarding successfully deleted")
+        #sickrage.app.log.debug("UPnP port forwarding successfully deleted")
 
     def _discover_upnp_device(self):
         devices = upnpclient.discover()

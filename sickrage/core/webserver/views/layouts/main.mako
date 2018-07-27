@@ -336,42 +336,42 @@
         </nav>
     % endif
 
+<div class="container-fluid">
     % if submenu:
-        <div class="container-fluid">
-            <div class="row sickrage-submenu">
-                <div class="col">
-                    <div class="text-center d-print-none">
-                        <% first = True %>
-                        % for menuItem in submenu:
-                            % if menuItem.get('requires', 1):
-                                % if isinstance(menuItem['path'], dict):
-                                ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
-                                <%
-                                    first = False
-                                    inner_first = True
-                                %>
-                                % for cur_link in menuItem['path']:
-                                ${("&middot;", "")[bool(inner_first)]}
-                                    <a href="${srWebRoot}${menuItem['path'][cur_link]}"
-                                       class="inner ${menuItem.get('class', '')} m-1">
-                                        ${cur_link}
-                                    </a>
-                                <% inner_first = False %>
-                                % endfor
-                                % else:
-                                    <a href="${srWebRoot}${menuItem['path']}"
-                                       class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
-                                        <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
-                                    </a>
-                                <% first = False %>
-                                % endif
+        <div class="row sickrage-submenu">
+            <div class="col">
+                <div class="text-center d-print-none">
+                    <% first = True %>
+                    % for menuItem in submenu:
+                        % if menuItem.get('requires', 1):
+                            % if isinstance(menuItem['path'], dict):
+                            ${("</span><span>", "")[bool(first)]}<b>${menuItem['title']}</b>
+                            <%
+                                first = False
+                                inner_first = True
+                            %>
+                            % for cur_link in menuItem['path']:
+                            ${("&middot;", "")[bool(inner_first)]}
+                                <a href="${srWebRoot}${menuItem['path'][cur_link]}"
+                                   class="inner ${menuItem.get('class', '')} m-1">
+                                    ${cur_link}
+                                </a>
+                            <% inner_first = False %>
+                            % endfor
+                            % else:
+                                <a href="${srWebRoot}${menuItem['path']}"
+                                   class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
+                                    <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
+                                </a>
+                            <% first = False %>
                             % endif
-                        % endfor
-                    </div>
+                        % endif
+                    % endfor
                 </div>
             </div>
         </div>
     % endif
+</div>
 
 <div class="container-fluid">
         <%block name="content" />
