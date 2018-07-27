@@ -658,12 +658,12 @@ class GenericMetadata(object):
             try:
                 image_url = t.images(show_obj.indexerid, key_type='poster')[which]['thumbnail']
             except (KeyError, IndexError):
-                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
+                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
         elif image_type == 'series_thumb':
             try:
                 image_url = t.images(show_obj.indexerid, key_type='series')[which]['thumbnail']
             except (KeyError, IndexError):
-                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
+                image_url = self._retrieve_show_images_from_fanart(show_obj, image_type, True)
         else:
             try:
                 image_url = t.images(show_obj.indexerid, key_type=image_type)[which]['filename']
