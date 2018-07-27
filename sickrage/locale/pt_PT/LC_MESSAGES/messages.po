@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-26 23:36-0700\n"
-"PO-Revision-Date: 2018-07-27 06:37\n"
+"POT-Creation-Date: 2018-07-27 00:31-0700\n"
+"PO-Revision-Date: 2018-07-27 07:32\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -73,263 +73,263 @@ msgstr "a carregar"
 msgid "Choose Directory"
 msgstr "Escolher o diretório"
 
-#: sickrage/core/webserver/views.py:3635 src/js/core.js:1211
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1214
 msgid "Clear History"
 msgstr "Limpar histórico"
 
-#: src/js/core.js:1212
+#: src/js/core.js:1215
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Você tem certeza de que deseja limpar todos baixar história?"
 
-#: sickrage/core/webserver/views.py:3637 src/js/core.js:1217
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1220
 msgid "Trim History"
 msgstr "História da guarnição"
 
-#: src/js/core.js:1218
+#: src/js/core.js:1221
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Você tem certeza de que pretende encurtar todos baixar a história de mais de 30 dias?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1750
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1753
 msgid "Remove Show"
 msgstr "Remover o Show"
 
-#: src/js/core.js:1751
+#: src/js/core.js:1754
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:1751
+#: src/js/core.js:1754
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:1751
+#: src/js/core.js:1754
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:1804 src/js/core.js:1836
+#: src/js/core.js:1807 src/js/core.js:1839
 msgid "Update failed."
 msgstr "Falhado na atualização."
 
-#: src/js/core.js:1847
+#: src/js/core.js:1850
 msgid "Select Show Location"
 msgstr "Selecione o local do Show"
 
-#: src/js/core.js:1981
+#: src/js/core.js:1984
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:1990
+#: src/js/core.js:1993
 msgid "Select Unprocessed Episode Folder"
 msgstr "Selecione a pasta episódio não transformados"
 
-#: src/js/core.js:2360
+#: src/js/core.js:2363
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "Pesquisar o tempo limite, tente timeout crescente por indexador"
 
-#: src/js/core.js:2364
+#: src/js/core.js:2367
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2368
+#: src/js/core.js:2371
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2387
+#: src/js/core.js:2390
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2389
+#: src/js/core.js:2392
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2434
+#: src/js/core.js:2437
 msgid "Saved Defaults"
 msgstr "Salvo os padrões"
 
-#: src/js/core.js:2434
+#: src/js/core.js:2437
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Os padrões de \"Adicionar programa\" foram criados para suas seleções atuais."
 
-#: src/js/core.js:2488
+#: src/js/core.js:2491
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2530
+#: src/js/core.js:2533
 msgid "Reset Config to Defaults"
 msgstr "Redefinir a configuração para os padrões"
 
-#: src/js/core.js:2531
+#: src/js/core.js:2534
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Tem certeza de que deseja redefinir config para os padrões?"
 
-#: src/js/core.js:2623
+#: src/js/core.js:2626
 msgid "Select path to pip"
 msgstr "Selecione o caminho para o pip"
 
-#: src/js/core.js:2629
+#: src/js/core.js:2632
 msgid "Select path to git"
 msgstr "Selecione o caminho para git"
 
-#: src/js/core.js:2637 src/js/core.js:2655 src/js/core.js:3499 src/js/core.js:3517
-#: src/js/core.js:3538 src/js/core.js:3560 src/js/core.js:3583 src/js/core.js:3605
-#: src/js/core.js:3633 src/js/core.js:3650 src/js/core.js:3694 src/js/core.js:3779
-#: src/js/core.js:3837 src/js/core.js:3854 src/js/core.js:3884 src/js/core.js:3941
-#: src/js/core.js:4017 src/js/core.js:4036 src/js/core.js:4052
+#: src/js/core.js:2640 src/js/core.js:2658 src/js/core.js:3502 src/js/core.js:3520
+#: src/js/core.js:3541 src/js/core.js:3563 src/js/core.js:3586 src/js/core.js:3608
+#: src/js/core.js:3636 src/js/core.js:3653 src/js/core.js:3697 src/js/core.js:3782
+#: src/js/core.js:3840 src/js/core.js:3857 src/js/core.js:3887 src/js/core.js:3944
+#: src/js/core.js:4020 src/js/core.js:4039 src/js/core.js:4055
 msgid "Please fill out the necessary fields above."
 msgstr "Por favor, preencha os campos necessários acima."
 
-#: src/js/core.js:2693
+#: src/js/core.js:2696
 msgid "Select Subtitles Download Directory"
 msgstr "Diretório de Download selecione legendas"
 
-#: src/js/core.js:2809
+#: src/js/core.js:2812
 msgid "Select .nzb blackhole/watch location"
 msgstr "Selecionar local de blackhole/relógio NZB"
 
-#: src/js/core.js:2810
+#: src/js/core.js:2813
 msgid "Select .torrent blackhole/watch location"
 msgstr "Selecione torrent blackhole/relógio local"
 
-#: src/js/core.js:2811
+#: src/js/core.js:2814
 msgid "Select .torrent download location"
 msgstr "Selecionar local de download torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2878
+#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2881
 msgid "Minimum seeding time is"
 msgstr "É o mínimo tempo de semeadura"
 
-#: src/js/core.js:2880
+#: src/js/core.js:2883
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL para seu cliente uTorrent (por exemplo, http://localhost:8000/)"
 
-#: src/js/core.js:2883
+#: src/js/core.js:2886
 msgid "Stop seeding when inactive for"
 msgstr "Parar a propagação quando inativo para"
 
-#: src/js/core.js:2889
+#: src/js/core.js:2892
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL para seu cliente de transmissão (por exemplo, http://localhost:9091)"
 
-#: src/js/core.js:2899
+#: src/js/core.js:2902
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL para seu cliente de dilúvio (por exemplo, http://localhost:8112)"
 
-#: src/js/core.js:2908
+#: src/js/core.js:2911
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP ou nome do host do seu Daemon do dilúvio (por exemplo, scgi://localhost:58846)"
 
-#: src/js/core.js:2915
+#: src/js/core.js:2918
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL para seu cliente Synology DS (por exemplo, http://localhost:5000)"
 
-#: src/js/core.js:2920
+#: src/js/core.js:2923
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:2920
+#: src/js/core.js:2923
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:2930
+#: src/js/core.js:2933
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente qbittorrent (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:2940
+#: src/js/core.js:2943
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL para seu MLDonkey (por exemplo, http://localhost:4080)"
 
-#: src/js/core.js:2951
+#: src/js/core.js:2954
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente putio (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:3137
+#: src/js/core.js:3140
 msgid "Select TV Download Directory"
 msgstr "Selecione o diretório de Download TV"
 
-#: src/js/core.js:3138
+#: src/js/core.js:3141
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3153
+#: src/js/core.js:3156
 msgid "Unrar Executable not found."
 msgstr "Unrar executável não encontrado."
 
-#: src/js/core.js:3199 src/js/core.js:3243 src/js/core.js:3287 src/js/core.js:3347
+#: src/js/core.js:3202 src/js/core.js:3246 src/js/core.js:3290 src/js/core.js:3350
 msgid "This pattern is invalid."
 msgstr "Este padrão é inválido."
 
-#: src/js/core.js:3206 src/js/core.js:3250 src/js/core.js:3294 src/js/core.js:3354
+#: src/js/core.js:3209 src/js/core.js:3253 src/js/core.js:3297 src/js/core.js:3357
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Esse padrão seria inválido sem as pastas, usá-lo irá forçar \"Flatten\" fora para todos os shows."
 
-#: src/js/core.js:3213 src/js/core.js:3257 src/js/core.js:3301 src/js/core.js:3361
+#: src/js/core.js:3216 src/js/core.js:3260 src/js/core.js:3304 src/js/core.js:3364
 msgid "This pattern is valid."
 msgstr "Este padrão é válido."
 
-#: src/js/core.js:3687
+#: src/js/core.js:3690
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmar autorização"
 
-#: src/js/core.js:3744 src/js/core.js:3798
+#: src/js/core.js:3747 src/js/core.js:3801
 msgid "Please fill in the Popcorn IP address"
 msgstr "Por favor, preencha o endereço de IP de pipoca"
 
-#: src/js/core.js:3951
+#: src/js/core.js:3954
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Verificar o nome de \"lista negra\"; o valor precisa ser uma lesma trakt"
 
-#: src/js/core.js:3983
+#: src/js/core.js:3986
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:3986
+#: src/js/core.js:3989
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:3988
+#: src/js/core.js:3991
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:3994
+#: src/js/core.js:3997
 msgid "Enter an email address to send the test to:"
 msgstr "Digite um endereço de e-mail para enviar o teste:"
 
-#: src/js/core.js:3996
+#: src/js/core.js:3999
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4066
+#: src/js/core.js:4069
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Lista de dispositivos atualizada. Por favor, escolha um dispositivo para forçar."
 
-#: src/js/core.js:4127
+#: src/js/core.js:4130
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Você não fornecer uma chave de api Pushbullet"
 
-#: src/js/core.js:4157
+#: src/js/core.js:4160
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Não se esqueça de salvar as novas configurações de pushbullet."
 
-#: src/js/core.js:4229
+#: src/js/core.js:4232
 msgid "Select backup folder to save to"
 msgstr "Selecione a pasta de backup para salvar em"
 
-#: src/js/core.js:4234
+#: src/js/core.js:4237
 msgid "Select backup files to restore"
 msgstr "Selecione arquivos de backup para restaurar"
 
-#: src/js/core.js:4779
+#: src/js/core.js:4782
 msgid "No providers available to configure."
 msgstr "Não há provedores disponíveis para configurar."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:18 src/js/core.js:4941
+#: sickrage/core/webserver/views/manage/mass_update.mako:18 src/js/core.js:4944
 msgid "Mass Delete"
 msgstr "Exclusão em massa"
 
-#: src/js/core.js:4942
+#: src/js/core.js:4945
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Você selecionou excluir show(s).  Tem certeza que deseja continuar? Todos os arquivos serão removidos do seu sistema."
 
-#: src/js/core.js:5019
+#: src/js/core.js:5022
 msgid "DELETED"
 msgstr ""
 
@@ -385,7 +385,7 @@ msgstr "Parque infantil"
 
 #: sickrage/core/webserver/views/api_builder.mako:91
 #: sickrage/core/webserver/views/api_builder.mako:133
-#: sickrage/core/webserver/views/config/providers.mako:159
+#: sickrage/core/webserver/views/config/providers.mako:161
 msgid "URL:"
 msgstr "URL:"
 
@@ -500,7 +500,7 @@ msgid "Downloaded"
 msgstr "Baixei"
 
 #: sickrage/core/common.py:626
-#: sickrage/core/webserver/views/config/providers.mako:898
+#: sickrage/core/webserver/views/config/providers.mako:900
 #: sickrage/core/webserver/views/history.mako:128
 msgid "Subtitled"
 msgstr "Legendado"
@@ -600,16 +600,16 @@ msgstr "Você quer adicionar os episódios pós-processado para o MyList?"
 #: sickrage/core/webserver/views/config/notifications.mako:3537
 #: sickrage/core/webserver/views/config/postprocessing.mako:401
 #: sickrage/core/webserver/views/config/postprocessing.mako:1404
-#: sickrage/core/webserver/views/config/providers.mako:118
-#: sickrage/core/webserver/views/config/providers.mako:914
+#: sickrage/core/webserver/views/config/providers.mako:120
+#: sickrage/core/webserver/views/config/providers.mako:916
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
 #: sickrage/core/webserver/views/config/search.mako:306
 #: sickrage/core/webserver/views/config/search.mako:729
 #: sickrage/core/webserver/views/config/search.mako:804
 #: sickrage/core/webserver/views/config/search.mako:1034
 #: sickrage/core/webserver/views/config/subtitles.mako:204
-#: sickrage/core/webserver/views/config/subtitles.mako:252
-#: sickrage/core/webserver/views/config/subtitles.mako:309
+#: sickrage/core/webserver/views/config/subtitles.mako:254
+#: sickrage/core/webserver/views/config/subtitles.mako:311
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
 #: sickrage/core/webserver/views/manage/mass_edit.mako:291
@@ -3464,7 +3464,7 @@ msgid "Provider Priorities"
 msgstr "Prioridades do provedor"
 
 #: sickrage/core/webserver/views/config/providers.mako:15
-#: sickrage/core/webserver/views/config/providers.mako:126
+#: sickrage/core/webserver/views/config/providers.mako:128
 msgid "Provider Options"
 msgstr "Opções de provedor"
 
@@ -3502,313 +3502,313 @@ msgstr "Provedor não dá suporte a lista de pendências de buscas neste momento
 msgid "Provider is <b>NOT WORKING</b>."
 msgstr "Provedor é <b>NOT WORKING</b>."
 
-#: sickrage/core/webserver/views/config/providers.mako:128
+#: sickrage/core/webserver/views/config/providers.mako:130
 msgid "Configure individual provider settings here."
 msgstr "Defina configurações de provedor individual aqui."
 
-#: sickrage/core/webserver/views/config/providers.mako:129
+#: sickrage/core/webserver/views/config/providers.mako:131
 msgid "Check with provider's website on how to obtain an API key if needed."
 msgstr "Verifique com o site do provedor sobre como obter uma chave de API, se necessário."
 
-#: sickrage/core/webserver/views/config/providers.mako:136
+#: sickrage/core/webserver/views/config/providers.mako:138
 msgid "Configure provider:"
 msgstr "Configure o provedor:"
 
-#: sickrage/core/webserver/views/config/providers.mako:179
-#: sickrage/core/webserver/views/config/providers.mako:306
-#: sickrage/core/webserver/views/config/providers.mako:983
+#: sickrage/core/webserver/views/config/providers.mako:181
+#: sickrage/core/webserver/views/config/providers.mako:308
+#: sickrage/core/webserver/views/config/providers.mako:985
 msgid "API key:"
 msgstr "Chave da API:"
 
-#: sickrage/core/webserver/views/config/providers.mako:201
-#: sickrage/core/webserver/views/config/providers.mako:326
-#: sickrage/core/webserver/views/config/providers.mako:776
+#: sickrage/core/webserver/views/config/providers.mako:203
+#: sickrage/core/webserver/views/config/providers.mako:328
+#: sickrage/core/webserver/views/config/providers.mako:778
 msgid "Enable daily searches"
 msgstr "Permitir buscas diárias"
 
-#: sickrage/core/webserver/views/config/providers.mako:207
-#: sickrage/core/webserver/views/config/providers.mako:332
-#: sickrage/core/webserver/views/config/providers.mako:782
+#: sickrage/core/webserver/views/config/providers.mako:209
+#: sickrage/core/webserver/views/config/providers.mako:334
+#: sickrage/core/webserver/views/config/providers.mako:784
 msgid "enable provider to perform daily searches."
 msgstr "Habilite o provedor realizar buscas diárias."
 
-#: sickrage/core/webserver/views/config/providers.mako:216
-#: sickrage/core/webserver/views/config/providers.mako:341
-#: sickrage/core/webserver/views/config/providers.mako:806
+#: sickrage/core/webserver/views/config/providers.mako:218
+#: sickrage/core/webserver/views/config/providers.mako:343
+#: sickrage/core/webserver/views/config/providers.mako:808
 msgid "Enable backlog searches"
 msgstr "Habilitar lista de pendências de buscas"
 
-#: sickrage/core/webserver/views/config/providers.mako:222
-#: sickrage/core/webserver/views/config/providers.mako:347
-#: sickrage/core/webserver/views/config/providers.mako:812
+#: sickrage/core/webserver/views/config/providers.mako:224
+#: sickrage/core/webserver/views/config/providers.mako:349
+#: sickrage/core/webserver/views/config/providers.mako:814
 msgid "enable provider to perform backlog searches."
 msgstr "Habilite o provedor executar pesquisas de lista de pendências."
 
-#: sickrage/core/webserver/views/config/providers.mako:231
-#: sickrage/core/webserver/views/config/providers.mako:356
-#: sickrage/core/webserver/views/config/providers.mako:821
+#: sickrage/core/webserver/views/config/providers.mako:233
+#: sickrage/core/webserver/views/config/providers.mako:358
+#: sickrage/core/webserver/views/config/providers.mako:823
 msgid "Search mode fallback"
 msgstr "Modo de busca retorno"
 
-#: sickrage/core/webserver/views/config/providers.mako:237
+#: sickrage/core/webserver/views/config/providers.mako:239
 msgid "when searching for a complete season depending on search mode you may"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:239
+#: sickrage/core/webserver/views/config/providers.mako:241
 msgid "return no results, this helps by restarting the search using the opposite"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:241
+#: sickrage/core/webserver/views/config/providers.mako:243
 msgid "search mode."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:250
-#: sickrage/core/webserver/views/config/providers.mako:373
-#: sickrage/core/webserver/views/config/providers.mako:838
+#: sickrage/core/webserver/views/config/providers.mako:252
+#: sickrage/core/webserver/views/config/providers.mako:375
+#: sickrage/core/webserver/views/config/providers.mako:840
 msgid "Season search mode"
 msgstr "Modo de busca temporada"
 
-#: sickrage/core/webserver/views/config/providers.mako:259
-#: sickrage/core/webserver/views/config/providers.mako:393
-#: sickrage/core/webserver/views/config/providers.mako:847
+#: sickrage/core/webserver/views/config/providers.mako:261
+#: sickrage/core/webserver/views/config/providers.mako:395
+#: sickrage/core/webserver/views/config/providers.mako:849
 msgid "season packs only."
 msgstr "apenas pacotes de temporada."
 
-#: sickrage/core/webserver/views/config/providers.mako:267
-#: sickrage/core/webserver/views/config/providers.mako:382
-#: sickrage/core/webserver/views/config/providers.mako:859
+#: sickrage/core/webserver/views/config/providers.mako:269
+#: sickrage/core/webserver/views/config/providers.mako:384
+#: sickrage/core/webserver/views/config/providers.mako:861
 msgid "episodes only."
 msgstr "episódios apenas."
 
-#: sickrage/core/webserver/views/config/providers.mako:270
-#: sickrage/core/webserver/views/config/providers.mako:399
-#: sickrage/core/webserver/views/config/providers.mako:865
+#: sickrage/core/webserver/views/config/providers.mako:272
+#: sickrage/core/webserver/views/config/providers.mako:401
+#: sickrage/core/webserver/views/config/providers.mako:867
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "ao procurar por temporadas completas você pode escolher para tê-lo procurar pacotes de temporada apenas, ou optar por tê-lo a construir uma temporada completa de episódios apenas único."
 
-#: sickrage/core/webserver/views/config/providers.mako:287
-#: sickrage/core/webserver/views/config/providers.mako:498
+#: sickrage/core/webserver/views/config/providers.mako:289
+#: sickrage/core/webserver/views/config/providers.mako:500
 msgid "Username:"
 msgstr "Nome de usuário:"
 
-#: sickrage/core/webserver/views/config/providers.mako:362
-#: sickrage/core/webserver/views/config/providers.mako:827
+#: sickrage/core/webserver/views/config/providers.mako:364
+#: sickrage/core/webserver/views/config/providers.mako:829
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "Quando à procura de uma temporada completa, dependendo do modo de busca você não pode retornar nenhum resultado, isso ajuda reiniciando a busca usando o modo de busca a oposta."
 
-#: sickrage/core/webserver/views/config/providers.mako:414
+#: sickrage/core/webserver/views/config/providers.mako:416
 msgid "Custom URL:"
 msgstr "URL personalizada:"
 
-#: sickrage/core/webserver/views/config/providers.mako:435
+#: sickrage/core/webserver/views/config/providers.mako:437
 msgid "Api key:"
 msgstr "Chave da API:"
 
-#: sickrage/core/webserver/views/config/providers.mako:456
+#: sickrage/core/webserver/views/config/providers.mako:458
 msgid "Digest:"
 msgstr "Digest:"
 
-#: sickrage/core/webserver/views/config/providers.mako:476
+#: sickrage/core/webserver/views/config/providers.mako:478
 msgid "Hash:"
 msgstr "Hash:"
 
-#: sickrage/core/webserver/views/config/providers.mako:519
+#: sickrage/core/webserver/views/config/providers.mako:521
 msgid "Password:"
 msgstr "Senha:"
 
-#: sickrage/core/webserver/views/config/providers.mako:538
+#: sickrage/core/webserver/views/config/providers.mako:540
 msgid "Passkey:"
 msgstr "Chave de acesso:"
 
-#: sickrage/core/webserver/views/config/providers.mako:559
-#: sickrage/core/webserver/views/config/providers.mako:1112
+#: sickrage/core/webserver/views/config/providers.mako:561
+#: sickrage/core/webserver/views/config/providers.mako:1114
 msgid "Cookies:"
 msgstr "Cookies:"
 
-#: sickrage/core/webserver/views/config/providers.mako:577
+#: sickrage/core/webserver/views/config/providers.mako:579
 msgid "this provider requires the following cookies: "
 msgstr "Este provedor requer os seguintes cookies: "
 
-#: sickrage/core/webserver/views/config/providers.mako:588
+#: sickrage/core/webserver/views/config/providers.mako:590
 msgid "Pin:"
 msgstr "PIN:"
 
-#: sickrage/core/webserver/views/config/providers.mako:598
+#: sickrage/core/webserver/views/config/providers.mako:600
 msgid "Provider PIN#"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:609
+#: sickrage/core/webserver/views/config/providers.mako:611
 msgid "Seed ratio:"
 msgstr "Relação de sementes:"
 
-#: sickrage/core/webserver/views/config/providers.mako:621
+#: sickrage/core/webserver/views/config/providers.mako:623
 msgid "stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:631
+#: sickrage/core/webserver/views/config/providers.mako:633
 msgid "Minimum seeders:"
 msgstr "Semeadoras de mínimo:"
 
-#: sickrage/core/webserver/views/config/providers.mako:643
+#: sickrage/core/webserver/views/config/providers.mako:645
 msgid "Minimum allowed seeders"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:653
+#: sickrage/core/webserver/views/config/providers.mako:655
 msgid "Minimum leechers:"
 msgstr "Leechers mínimas:"
 
-#: sickrage/core/webserver/views/config/providers.mako:665
+#: sickrage/core/webserver/views/config/providers.mako:667
 msgid "Minimum allowed leechers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:675
+#: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Confirmed download"
 msgstr "Baixar confirmada"
 
-#: sickrage/core/webserver/views/config/providers.mako:681
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "Só baixar torrents de uploaders confiáveis ou verificadas?"
 
-#: sickrage/core/webserver/views/config/providers.mako:690
+#: sickrage/core/webserver/views/config/providers.mako:692
 msgid "Ranked torrents"
 msgstr "Classificado de torrentes"
 
-#: sickrage/core/webserver/views/config/providers.mako:696
+#: sickrage/core/webserver/views/config/providers.mako:698
 msgid "only download ranked torrents (internal releases)"
 msgstr "Só baixar torrents classificados (comunicados internos)"
 
-#: sickrage/core/webserver/views/config/providers.mako:705
+#: sickrage/core/webserver/views/config/providers.mako:707
 msgid "English torrents"
 msgstr "Torrentes de inglês"
 
-#: sickrage/core/webserver/views/config/providers.mako:711
+#: sickrage/core/webserver/views/config/providers.mako:713
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "Só baixar inglês torrentes, ou torrents contendo legendas em inglês"
 
-#: sickrage/core/webserver/views/config/providers.mako:720
+#: sickrage/core/webserver/views/config/providers.mako:722
 msgid "For Spanish torrents"
 msgstr "Para espanholas torrents"
 
-#: sickrage/core/webserver/views/config/providers.mako:727
+#: sickrage/core/webserver/views/config/providers.mako:729
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "SOMENTE pesquisar sobre este provedor se info show é definido como \"Espanhol\" (evitar o uso do provedor para VOS shows)"
 
-#: sickrage/core/webserver/views/config/providers.mako:738
+#: sickrage/core/webserver/views/config/providers.mako:740
 msgid "Sort results by"
 msgstr "Resultados da classificação por"
 
-#: sickrage/core/webserver/views/config/providers.mako:761
+#: sickrage/core/webserver/views/config/providers.mako:763
 msgid "Freeleech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:767
+#: sickrage/core/webserver/views/config/providers.mako:769
 msgid "only download"
 msgstr "Só baixar"
 
-#: sickrage/core/webserver/views/config/providers.mako:767
+#: sickrage/core/webserver/views/config/providers.mako:769
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:767
+#: sickrage/core/webserver/views/config/providers.mako:769
 msgid "torrents."
 msgstr "torrentes."
 
-#: sickrage/core/webserver/views/config/providers.mako:791
+#: sickrage/core/webserver/views/config/providers.mako:793
 msgid "Reject Blu-ray M2TS releases"
 msgstr "Rejeitar os lançamentos Blu-ray M2TS"
 
-#: sickrage/core/webserver/views/config/providers.mako:797
+#: sickrage/core/webserver/views/config/providers.mako:799
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "Habilitar para ignorar o fluxo de transporte MPEG-2 Blu-ray lançamentos de contêiner"
 
-#: sickrage/core/webserver/views/config/providers.mako:876
+#: sickrage/core/webserver/views/config/providers.mako:878
 msgid "Category:"
 msgstr "Categoria:"
 
-#: sickrage/core/webserver/views/config/providers.mako:904
+#: sickrage/core/webserver/views/config/providers.mako:906
 msgid "select torrent with Italian subtitle"
 msgstr "Selecione torrent com legendas italiana"
 
-#: sickrage/core/webserver/views/config/providers.mako:926
-#: sickrage/core/webserver/views/config/providers.mako:1053
+#: sickrage/core/webserver/views/config/providers.mako:928
+#: sickrage/core/webserver/views/config/providers.mako:1055
 msgid "Configure Custom"
 msgstr "Configurar personalizado"
 
-#: sickrage/core/webserver/views/config/providers.mako:927
+#: sickrage/core/webserver/views/config/providers.mako:929
 msgid "Newznab Providers"
 msgstr "Newznab fornecedores"
 
-#: sickrage/core/webserver/views/config/providers.mako:930
+#: sickrage/core/webserver/views/config/providers.mako:932
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "Adicionar e configurar ou remover provedores personalizados de Newznab."
 
-#: sickrage/core/webserver/views/config/providers.mako:937
-#: sickrage/core/webserver/views/config/providers.mako:1064
+#: sickrage/core/webserver/views/config/providers.mako:939
+#: sickrage/core/webserver/views/config/providers.mako:1066
 msgid "Select provider:"
 msgstr "Selecione o provedor:"
 
-#: sickrage/core/webserver/views/config/providers.mako:945
-#: sickrage/core/webserver/views/config/providers.mako:1072
+#: sickrage/core/webserver/views/config/providers.mako:947
+#: sickrage/core/webserver/views/config/providers.mako:1074
 msgid "add new provider"
 msgstr "Adicionar novo provedor"
 
-#: sickrage/core/webserver/views/config/providers.mako:954
-#: sickrage/core/webserver/views/config/providers.mako:1081
+#: sickrage/core/webserver/views/config/providers.mako:956
+#: sickrage/core/webserver/views/config/providers.mako:1083
 msgid "Provider name:"
 msgstr "Nome do provedor:"
 
-#: sickrage/core/webserver/views/config/providers.mako:969
+#: sickrage/core/webserver/views/config/providers.mako:971
 msgid "Site URL:"
 msgstr "URL do site:"
 
-#: sickrage/core/webserver/views/config/providers.mako:998
+#: sickrage/core/webserver/views/config/providers.mako:1000
 msgid "Newznab search categories:"
 msgstr "Newznab categorias de pesquisa:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1008
+#: sickrage/core/webserver/views/config/providers.mako:1010
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(selecione suas categorias de Newznab à esquerda e clique no botão \"atualizar categorias\" para usá-los para pesquisa.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:1010
+#: sickrage/core/webserver/views/config/providers.mako:1012
 msgid "Don't forget to save changes!"
 msgstr "Não se esqueça de salvar as alterações!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1020
+#: sickrage/core/webserver/views/config/providers.mako:1022
 msgid "Update Categories"
 msgstr "Atualização de categorias"
 
-#: sickrage/core/webserver/views/config/providers.mako:1030
+#: sickrage/core/webserver/views/config/providers.mako:1032
 #: sickrage/core/webserver/views/home/index.mako:293
 msgid "Add"
 msgstr "Adicionar"
 
-#: sickrage/core/webserver/views/config/providers.mako:1038
+#: sickrage/core/webserver/views/config/providers.mako:1040
 #: sickrage/core/webserver/views/includes/root_dirs.mako:39
 #: sickrage/core/webserver/views/manage/mass_edit.mako:78
 msgid "Delete"
 msgstr "Excluir"
 
-#: sickrage/core/webserver/views/config/providers.mako:1054
+#: sickrage/core/webserver/views/config/providers.mako:1056
 msgid "Torrent Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:1057
+#: sickrage/core/webserver/views/config/providers.mako:1059
 msgid "Add and setup or remove custom RSS providers."
 msgstr "Adicionar e configurar ou remover provedores personalizados RSS."
 
-#: sickrage/core/webserver/views/config/providers.mako:1098
+#: sickrage/core/webserver/views/config/providers.mako:1100
 msgid "RSS URL:"
 msgstr "URL DO RSS:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1119
+#: sickrage/core/webserver/views/config/providers.mako:1121
 msgid "ex. uid=xx;pass=yy"
 msgstr "ex. uid = xx; passar = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1126
+#: sickrage/core/webserver/views/config/providers.mako:1128
 msgid "Search element:"
 msgstr "Elemento de pesquisa:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1133
+#: sickrage/core/webserver/views/config/providers.mako:1135
 msgid "ex. title"
 msgstr "título de ex."
 
@@ -4382,19 +4382,19 @@ msgstr "Pelo menos um plugin é necessário."
 msgid "Web-scraping plugin"
 msgstr "Raspagem Web plugin"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:262
+#: sickrage/core/webserver/views/config/subtitles.mako:264
 msgid "Subtitle Settings"
 msgstr "Configurações de legendas"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:264
+#: sickrage/core/webserver/views/config/subtitles.mako:266
 msgid "Set user and password for each provider"
 msgstr "Definir o usuário e senha para cada provedor"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:273
+#: sickrage/core/webserver/views/config/subtitles.mako:275
 msgid "User Name"
 msgstr "Nome de usuário"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:290
+#: sickrage/core/webserver/views/config/subtitles.mako:292
 msgid "Password"
 msgstr "Senha"
 
