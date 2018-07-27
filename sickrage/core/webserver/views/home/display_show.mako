@@ -128,11 +128,9 @@
                                 <td class="showLegend">${_('Rating:')}</td>
                                 <td>
                                     % if show.imdb_info and 'imdbRating' in show.imdb_info:
-                                    <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars" + "<br />" + str(show.imdb_info['imdbVotes']) + " Votes" %>
-                                        <span id="imdbstars" class="text-warning fas fa-star"
-                                              title="${rating_tip}">
-                                            ${show.imdb_info['imdbRating']}
-                                        </span>
+                                    <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars and " + str(show.imdb_info['imdbVotes']) + " Votes" %>
+                                        <span id="imdbstars" data-imdb-rating="${show.imdb_info['imdbRating']}"
+                                              title="${rating_tip}"></span>
                                     % endif
                                 </td>
                             </tr>

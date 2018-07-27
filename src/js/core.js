@@ -190,7 +190,7 @@ $(document).ready(function ($) {
                     return $li.appendTo(ul);
                 };
 
-                $("#quicksearchcancel").click(function() {
+                $("#quicksearchcancel").click(function () {
                     $('#quicksearch').autocomplete('close').val('');
                     $("#quicksearchcancel").addClass('d-none');
                 });
@@ -1462,14 +1462,12 @@ $(document).ready(function ($) {
 
             display_show: {
                 init: function () {
+                    SICKRAGE.home.display_show.imdbRating();
+
                     if (SICKRAGE.metaToBool('sickrage.FANART_BACKGROUND')) {
                         $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
-
-                    $('#imdbstars').each(function (i, e) {
-                        $(e).html($('<span>').width($(e).text() * 12));
-                    });
 
                     $('#seasonJump').on('change', function () {
                         var id = $('#seasonJump option:selected').val();
@@ -1671,6 +1669,15 @@ $(document).ready(function ($) {
                             }
                         }
                     });
+                },
+
+                imdbRating: function () {
+                    let imdbstars = $('#imdbstars');
+                    const rating = imdbstars.data('imdb-rating');
+                    const rating_star = $('<i>').addClass('fas fa-star text-warning');
+                    for (var i = 0; i < rating; i++) {
+                        imdbstars.append(rating_star.clone());
+                    }
                 },
 
                 setEpisodeSceneNumbering: function (forSeason, forEpisode, sceneSeason, sceneEpisode) {
