@@ -287,24 +287,24 @@
                                 </a>
                                 <a class="dropdown-item" href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
-                                    <i class="fas fa-money"></i>&nbsp;${_('Donate')}
+                                    <i class="fas fa-donate"></i>&nbsp;${_('Donate')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 %if numErrors:
                                     <a class="dropdown-item" href="${srWebRoot}/logs/">
                                         <i class="fas fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
-                                        <span class="badge btn-danger">${numErrors}</span>
+                                        <span class="badge badge-danger">${numErrors}</span>
                                     </a>
                                 %endif
                                 %if numWarnings:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
                                         <i class="fas fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
-                                        <span class="badge btn-warning">${numWarnings}</span>
+                                        <span class="badge badge-warning">${numWarnings}</span>
                                     </a>
                                 %endif
                                 <a class="dropdown-item" href="${srWebRoot}/logs/viewlog/">
-                                    <i class="fas fa-file-text-o"></i>&nbsp;${_('View Log')}
+                                    <i class="fas fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 003a768 - 2018-07-26: Pre-Release v9.3.56.dev3 
+- * f48bc0b - 2018-07-26: Fixed missing icons in navbar Migrated misc css classes to bootstrap 4 
+- * 45d2074 - 2018-07-26: Pre-Release v9.3.56.dev3 
 - * e12e04f - 2018-07-26: Removed bootbox jquery package Fixed confirmation dialog boxes for history and mass update views Changed text color from white to dark for episode statuses view Added css for jquery confirm package 
 - * 5ac6bac - 2018-07-26: Pre-Release v9.3.56.dev2 
 - * 1f9d56a - 2018-07-26: Fixed issue with retrieving image thumbnails from Fanart.tv 
