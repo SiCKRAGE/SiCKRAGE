@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-27 00:31-0700\n"
-"PO-Revision-Date: 2018-07-27 07:32\n"
+"POT-Creation-Date: 2018-07-27 12:01-0700\n"
+"PO-Revision-Date: 2018-07-27 19:02\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -467,7 +467,7 @@ msgstr "Tijd"
 #: sickrage/core/webserver/views/history.mako:54
 #: sickrage/core/webserver/views/history.mako:124
 #: sickrage/core/webserver/views/home/display_show.mako:545
-#: sickrage/core/webserver/views/home/test_renaming.mako:71
+#: sickrage/core/webserver/views/home/test_renaming.mako:97
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
 msgstr "Aflevering"
@@ -5302,34 +5302,34 @@ msgstr "TV Download Directory"
 msgid "Media Root Directories"
 msgstr "Media wortel Directories"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:15
+#: sickrage/core/webserver/views/home/test_renaming.mako:28
 msgid "Preview of the proposed name changes"
 msgstr "Voorbeeld van de voorgestelde naamwijzigingen"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:33
+#: sickrage/core/webserver/views/home/test_renaming.mako:50
 msgid "All Seasons"
 msgstr "Alle seizoenen"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:40
+#: sickrage/core/webserver/views/home/test_renaming.mako:59
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:94
 msgid "Select All"
 msgstr "Selecteer alle"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:48
-#: sickrage/core/webserver/views/home/test_renaming.mako:102
+#: sickrage/core/webserver/views/home/test_renaming.mako:66
+#: sickrage/core/webserver/views/home/test_renaming.mako:129
 msgid "Rename Selected"
 msgstr "Hernoemen geselecteerd"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:49
-#: sickrage/core/webserver/views/home/test_renaming.mako:103
+#: sickrage/core/webserver/views/home/test_renaming.mako:68
+#: sickrage/core/webserver/views/home/test_renaming.mako:131
 msgid "Cancel Rename"
 msgstr "Naam wijzigen annuleren"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:72
+#: sickrage/core/webserver/views/home/test_renaming.mako:98
 msgid "Old Location"
 msgstr "Oude locatie"
 
-#: sickrage/core/webserver/views/home/test_renaming.mako:73
+#: sickrage/core/webserver/views/home/test_renaming.mako:99
 msgid "New Location"
 msgstr "Nieuwe locatie"
 
