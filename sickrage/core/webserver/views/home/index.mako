@@ -195,7 +195,7 @@
                             <div class="card card-block text-white bg-dark m-1 shadow">
                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                     <img alt="" class="card-img-top"
-                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"/>
+                                         src="${srWebRoot}${showImage(curShow.indexerid, 'poster').url}"/>
                                 </a>
                                 <div class="card-header py-0 px-0">
                                     <div class="bg-dark rounded">
@@ -421,7 +421,7 @@
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
                                            title="${curShow.name}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                 class="rounded shadow" style="width: auto;height: 30%"
+                                                 class="rounded shadow img-fluid"
                                                  alt="${curShow.indexerid}"/>
                                         </a>
                                     </td>

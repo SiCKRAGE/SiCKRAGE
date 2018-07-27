@@ -232,13 +232,13 @@
                             <tr>
                                 <td class="showLegend">${_('Genre:')}</td>
                                 <td>
-                                    <ul class="list-inline">
+                                    <ul class="list-group d-inline">
                                         % if not show.imdbid and show.genre:
                                             % for genre in show.genre[1:-1].split(','):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${genre} shows on trakt.tv.">
-                                                    <li class="list-inline-item badge badge-primary">${genre}</li>
+                                                    <li class="list-group-item badge badge-primary">${genre}</li>
                                                 </a>
                                             % endfor
                                         % endif
