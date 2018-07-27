@@ -280,7 +280,7 @@ $(document).ready(function ($) {
                 $('a.submiterrors').confirm({
                     theme: 'dark',
                     title: gt('Submit Errors'),
-                    content: gt('Are you sure you want to submit these errors ?') + '<br><br><span class="red-text">' + gt('Make sure SiCKRAGE is updated and trigger') + '<br>' + gt('this error with debug enabled before submitting') + '</span>'
+                    content: gt('Are you sure you want to submit these errors ?') + '<br><br><span class="text-danger">' + gt('Make sure SiCKRAGE is updated and trigger') + '<br>' + gt('this error with debug enabled before submitting') + '</span>'
                 });
 
                 $('#removeW').click(function () {
@@ -812,7 +812,7 @@ $(document).ready(function ($) {
                         });
                         return $("<li></li>")
                             .data("ui-autocomplete-item", item)
-                            .append("<a class='nowrap'>" + result_item + "</a>")
+                            .append("<a class='text-nowrap'>" + result_item + "</a>")
                             .appendTo(ul);
                     };
                 }
@@ -1657,7 +1657,7 @@ $(document).ready(function ($) {
                     $("a.removeshow").confirm({
                         theme: 'dark',
                         title: gt("Remove Show"),
-                        content: gt('Are you sure you want to remove') + '<span class="footerhighlight">' + $('#showtitle').data('showname') + '</span>' + gt(' from the database?') + '<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="red-text">' + gt('Check to delete files as well. IRREVERSIBLE') + '</label>',
+                        content: gt('Are you sure you want to remove') + '<span class="footerhighlight">' + $('#showtitle').data('showname') + '</span>' + gt(' from the database?') + '<br><br><input type="checkbox" id="deleteFiles" name="deleteFiles"/>&nbsp;<label for="deleteFiles" class="text-danger">' + gt('Check to delete files as well. IRREVERSIBLE') + '</label>',
                         buttons: {
                             confirm: function () {
                                 var $deleteFiles = this.$content.find('#deleteFiles').prop('checked');
@@ -1997,13 +1997,11 @@ $(document).ready(function ($) {
                     });
 
                     $('#traktlist').on('change', function (e) {
-                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'list', e.target.value);
-                        document.location.href = url;
+                        document.location.href = SICKRAGE.updateUrlParameter(document.location.href, 'list', e.target.value);
                     });
 
                     $('#limit').on('change', function (e) {
-                        var url = SICKRAGE.updateUrlParameter(document.location.href, 'limit', e.target.value);
-                        document.location.href = url;
+                        document.location.href = SICKRAGE.updateUrlParameter(document.location.href, 'limit', e.target.value);
                     });
                 }
             },
@@ -4102,7 +4100,7 @@ $(document).ready(function ($) {
                             'backupFile': $("#backupFile").val(),
                             'restore_database': $("#restore_database").prop('checked'),
                             'restore_config': $("#restore_config").prop('checked'),
-                            'restore_cache': $("#restore_cache").prop('checked'),
+                            'restore_cache': $("#restore_cache").prop('checked')
                         })
                         .done(function (data) {
                             $('#Restore-result').html(data);
@@ -4674,9 +4672,9 @@ $(document).ready(function ($) {
                 function makeRow(indexerId, season, episode, name, checked) {
                     var row = '';
                     row += ' <tr class="text-dark ' + $('#row_class').val() + ' show-' + indexerId + '">';
-                    row += '  <td class="tableleft" align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
+                    row += '  <td align="center"><input type="checkbox" class="' + indexerId + '-epcheck" name="' + indexerId + '-' + season + 'x' + episode + '"' + (checked ? ' checked' : '') + '></td>';
                     row += '  <td>' + season + 'x' + episode + '</td>';
-                    row += '  <td class="tableright" style="width: 100%">' + name + '</td>';
+                    row += '  <td style="width: 100%">' + name + '</td>';
                     row += ' </tr>';
 
                     return row;

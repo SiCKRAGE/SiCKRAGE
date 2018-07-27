@@ -1,6 +1,7 @@
 # Changelog
 
-- * 19d235e - 2018-07-26: Fixed IMDb star ratings for display show view 
+- * 2045802 - 2018-07-26: Misc JS code fixes 
+- * 96a1978 - 2018-07-26: Fixed IMDb star ratings for display show view 
 - * 9c41f4b - 2018-07-26: Fixed genre row alignment for display show view Fixed small poster sizing for shows view 
 - * c702306 - 2018-07-26: Fixed missing icons in navbar Migrated misc css classes to bootstrap 4 
 - * 45d2074 - 2018-07-26: Pre-Release v9.3.56.dev3 
