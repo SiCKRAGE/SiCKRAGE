@@ -12,7 +12,7 @@
 
 <%block name="content">
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <div class="sickrage-stepper m-1">
                 <div class="stepwizard">
                     <div class="stepwizard-row setup-panel form-inline">

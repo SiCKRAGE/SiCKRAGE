@@ -14,7 +14,7 @@
 <%block name="content">
     <%namespace file="../includes/quality_chooser.mako" import="QualityChooser"/>
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <form action="editShow" method="post">
                 <div class="card mt-3 mb-3">
                     <div class="card-header">

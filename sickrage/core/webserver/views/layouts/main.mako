@@ -93,7 +93,7 @@
             </div>
         % endif
 
-        <nav class="navbar navbar-expand-md navbar-dark navbar-default py-0">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-default py-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="${srWebRoot}/home/">
                     <img alt="SiCKRAGE" src="${srWebRoot}/images/logo.png" style="width: 400px;height: 50px;"/>

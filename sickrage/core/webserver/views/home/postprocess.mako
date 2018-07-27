@@ -4,7 +4,7 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <form name="processForm" method="post" action="processEpisode" style="line-height: 40px;">
                 <div class="card mt-3 mb-3">
                     <div class="card-header">

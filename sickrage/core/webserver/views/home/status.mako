@@ -27,7 +27,7 @@
     %>
 
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <div class="card mt-3 mb-3">
                 <div class="card-header">
                     <h3>${_('Scheduler')}</h3>
@@ -104,7 +104,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <div class="card mt-1 mb-3">
                 <div class="card-header">
                     <h3>${_('Show Queue')}</h3>
@@ -194,7 +194,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <div class="card mt-1 mb-3">
                 <div class="card-header">
                     <h3>${_('Disk Space')}</h3>
