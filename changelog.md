@@ -1,6 +1,7 @@
 # Changelog
 
-- * 329c931 - 2018-07-27: Fixed provider view list items 
+- * 8b3f7bc - 2018-07-27: Refactored list group in subtitles config view 
+- * 1867aaf - 2018-07-27: Fixed provider view list items 
 - * 1243962 - 2018-07-27: Fixed file browser modal 
 - * 24b4751 - 2018-07-26: Pre-Release v9.3.56.dev4 
 - * 334b7c7 - 2018-07-26: Misc JS code fixes 

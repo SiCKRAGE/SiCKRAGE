@@ -225,8 +225,8 @@
                     <div class="col-md-12">
                         <div class="list-group w-50" id="service_order_list">
                             % for curService in sickrage.subtitles.sortedServiceList():
-                                <div class="list-group-item-dark rounded mb-1" id="${curService['name']}">
-                                    <div class="align-middle mt-1 ml-2">
+                                <div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="${curService['name']}">
+                                    <div class="align-middle">
                                         <label class="form-check-label">
                                             <input type="checkbox" id="enable_${curService['name']}"
                                                    class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
@@ -236,7 +236,9 @@
                                             </a>
                                             <span class="font-weight-bold">${curService['name'].capitalize()}</span>
                                         </label>
-                                        <i class="float-right mx-2 mt-1 fas ${('fa-unlock text-success','fa-lock text-danger')[curService['name'] in providerLoginDict]}"></i>
+                                        <span class="d-inline-block float-right">
+                                            <i class="fas ${('fa-unlock text-success','fa-lock text-danger')[curService['name'] in providerLoginDict]}"></i>
+                                        </span>
                                     </div>
                                 </div>
                             % endfor
