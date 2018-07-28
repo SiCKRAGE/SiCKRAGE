@@ -236,7 +236,7 @@
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${genre} shows on trakt.tv.">
-                                                    <li class="badge badge-primary">${genre}</li>
+                                                    <li class="fas fa-tag badge badge-primary p-1"> ${genre}</li>
                                                 </a>
                                             % endfor
                                         % endif
@@ -245,7 +245,7 @@
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                                    <li class="badge badge-primary">${imdbgenre}</li>
+                                                    <li class="fas fa-tag badge badge-primary p-1"> ${imdbgenre}</li>
                                                 </a>
                                             % endfor
                                         % endif

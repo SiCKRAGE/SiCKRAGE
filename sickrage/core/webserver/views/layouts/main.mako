@@ -272,8 +272,8 @@
                                     ${_('Tools')}
                                 </span>
                                 <span class="d-sm-none d-md-block">
-                                    <object class="d-block fas fa-2x fa-user-circle rounded-circle shadow" data="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404" style="width: 40px;height: auto;" type="image/jpg">
-                                    </object>
+                                    <img class="rounded-circle shadow"
+                                         src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?d=mm&s=40"/>
                                     ${toolsBadge}
                                 </span>
                             </a>

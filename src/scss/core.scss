@@ -1,4 +1,5 @@
 @import "~bootstrap/scss/bootstrap";
+@import "~tablesorter/dist/css/theme.bootstrap_4.min.css";
 @import "~tokenfield/dist/tokenfield.css";
 @import "~jquery-ui/themes/base/all.css";
 @import "~tooltipster/dist/css/tooltipster.bundle.css";
@@ -296,13 +297,16 @@ span.snatched b {
   @extend .table-bordered;
   @extend .table-dark;
   @extend .shadow;
+
   th {
     @extend .text-center;
     @extend .text-nowrap;
   }
+
   th, td {
     @extend .p-1;
   }
+
   .table-fit {
     white-space: nowrap;
     width: 1%;

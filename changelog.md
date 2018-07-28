@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7edca97 - 2018-07-27: Refactored table show show/episode column for history view Removed table footer from history view 
+- * 484adbd - 2018-07-27: Added tablesorter with bootstrap 4 compatibility Case-insensitive sorting fixed for shows view 
+- * d086087 - 2018-07-27: Refactored table show show/episode column for history view Removed table footer from history view 
 - * 876ddfc - 2018-07-27: Pre-Release v9.3.56.dev7 
 - * 19cb817 - 2018-07-27: Refactored table class spacing/padding and column widths 
 - * 5a27b14 - 2018-07-27: Pre-Release v9.3.56.dev6 

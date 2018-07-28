@@ -271,8 +271,8 @@
             </div>
         % else:
             <div class="table-responsive">
-                <table id="showListTable${curListType}" class="table">
-                    <thead>
+                <table class="table tablesorter-bootstrap" id="showListTable${curListType}" data-sortlist="[[2,0]]">
+                    <thead class="thead-dark">
                     <tr>
                         <th>${_('Next Ep')}</th>
                         <th>${_('Prev Ep')}</th>
@@ -285,24 +285,6 @@
                         <th>${_('Status')}</th>
                     </tr>
                     </thead>
-
-                    <tfoot>
-                    <tr>
-                        <th>
-                            <a href="${srWebRoot}/home/addShows/">
-                                ${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}
-                            </a>
-                        </th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                        <th>&nbsp;</th>
-                    </tr>
-                    </tfoot>
 
                     % if sickrage.app.show_queue.loadingShowList:
                         <tbody>

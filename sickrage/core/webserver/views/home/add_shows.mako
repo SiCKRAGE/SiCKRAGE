@@ -5,13 +5,7 @@
     import sickrage
 %>
 <%block name="content">
-    <div id="addShowPortal" class="mx-auto w-50">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="title">${title}</h1>
-                <hr class="bg-dark"/>
-            </div>
-        </div>
+    <div id="addShowPortal" class="mx-auto w-50 mt-3 mb-3">
         <div class="row">
             <div class="col-md-12">
                 <a href="${srWebRoot}/home/addShows/newShow/">
