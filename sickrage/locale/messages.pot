@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.56.dev7\n"
+"Project-Id-Version: sickrage 9.3.56.dev8\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-27 18:03-0700\n"
+"POT-Creation-Date: 2018-07-27 23:38-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,323 +17,323 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.5.1\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:276
+#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:277
 msgid "Shutdown"
 msgstr ""
 
-#: src/js/core.js:277
+#: src/js/core.js:278
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:282
+#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:283
 msgid "Restart"
 msgstr ""
 
-#: src/js/core.js:283
+#: src/js/core.js:284
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr ""
 
-#: src/js/core.js:288
+#: src/js/core.js:289
 msgid "Submit Errors"
 msgstr ""
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:416 src/js/core.js:427 src/js/core.js:448
+#: src/js/core.js:417 src/js/core.js:428 src/js/core.js:449
 msgid "Searching"
 msgstr ""
 
-#: src/js/core.js:422 src/js/core.js:453
+#: src/js/core.js:423 src/js/core.js:454
 msgid "Queued"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:698
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
-#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:457
+#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:458
 msgid "Manual Search"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:312 src/js/core.js:482
-#: src/js/core.js:628 src/js/core.js:671
+#: sickrage/core/webserver/views/home/index.mako:294 src/js/core.js:483
+#: src/js/core.js:629 src/js/core.js:672
 msgid "loading"
 msgstr ""
 
-#: src/js/core.js:687
+#: src/js/core.js:688
 msgid "Choose Directory"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3635 src/js/core.js:1214
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1215
 msgid "Clear History"
 msgstr ""
 
-#: src/js/core.js:1215
+#: src/js/core.js:1216
 msgid "Are you sure you want to clear all download history ?"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3637 src/js/core.js:1220
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1221
 msgid "Trim History"
 msgstr ""
 
-#: src/js/core.js:1221
+#: src/js/core.js:1222
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1753
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1750
 msgid "Remove Show"
 msgstr ""
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:1807 src/js/core.js:1839
+#: src/js/core.js:1804 src/js/core.js:1836
 msgid "Update failed."
 msgstr ""
 
-#: src/js/core.js:1850
+#: src/js/core.js:1847
 msgid "Select Show Location"
 msgstr ""
 
-#: src/js/core.js:1984
+#: src/js/core.js:1981
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:1993
+#: src/js/core.js:1990
 msgid "Select Unprocessed Episode Folder"
 msgstr ""
 
-#: src/js/core.js:2363
+#: src/js/core.js:2360
 msgid "search timed out, try increasing timeout for indexer"
 msgstr ""
 
-#: src/js/core.js:2367
+#: src/js/core.js:2364
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2371
+#: src/js/core.js:2368
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2390
+#: src/js/core.js:2387
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2392
+#: src/js/core.js:2389
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2437
+#: src/js/core.js:2434
 msgid "Saved Defaults"
 msgstr ""
 
-#: src/js/core.js:2437
+#: src/js/core.js:2434
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr ""
 
-#: src/js/core.js:2491
+#: src/js/core.js:2488
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2533
+#: src/js/core.js:2530
 msgid "Reset Config to Defaults"
 msgstr ""
 
-#: src/js/core.js:2534
+#: src/js/core.js:2531
 msgid "Are you sure you want to reset config to defaults?"
 msgstr ""
 
-#: src/js/core.js:2626
+#: src/js/core.js:2623
 msgid "Select path to pip"
 msgstr ""
 
-#: src/js/core.js:2632
+#: src/js/core.js:2629
 msgid "Select path to git"
 msgstr ""
 
-#: src/js/core.js:2640 src/js/core.js:2658 src/js/core.js:3502 src/js/core.js:3520
-#: src/js/core.js:3541 src/js/core.js:3563 src/js/core.js:3586 src/js/core.js:3608
-#: src/js/core.js:3636 src/js/core.js:3653 src/js/core.js:3697 src/js/core.js:3782
-#: src/js/core.js:3840 src/js/core.js:3857 src/js/core.js:3887 src/js/core.js:3944
-#: src/js/core.js:4020 src/js/core.js:4039 src/js/core.js:4055
+#: src/js/core.js:2637 src/js/core.js:2655 src/js/core.js:3499 src/js/core.js:3517
+#: src/js/core.js:3538 src/js/core.js:3560 src/js/core.js:3583 src/js/core.js:3605
+#: src/js/core.js:3633 src/js/core.js:3650 src/js/core.js:3694 src/js/core.js:3779
+#: src/js/core.js:3837 src/js/core.js:3854 src/js/core.js:3884 src/js/core.js:3941
+#: src/js/core.js:4017 src/js/core.js:4036 src/js/core.js:4052
 msgid "Please fill out the necessary fields above."
 msgstr ""
 
-#: src/js/core.js:2696
+#: src/js/core.js:2693
 msgid "Select Subtitles Download Directory"
 msgstr ""
 
-#: src/js/core.js:2812
+#: src/js/core.js:2809
 msgid "Select .nzb blackhole/watch location"
 msgstr ""
 
-#: src/js/core.js:2813
+#: src/js/core.js:2810
 msgid "Select .torrent blackhole/watch location"
 msgstr ""
 
-#: src/js/core.js:2814
+#: src/js/core.js:2811
 msgid "Select .torrent download location"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2881
+#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2878
 msgid "Minimum seeding time is"
 msgstr ""
 
-#: src/js/core.js:2883
+#: src/js/core.js:2880
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr ""
 
-#: src/js/core.js:2886
+#: src/js/core.js:2883
 msgid "Stop seeding when inactive for"
 msgstr ""
 
-#: src/js/core.js:2892
+#: src/js/core.js:2889
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr ""
 
-#: src/js/core.js:2902
+#: src/js/core.js:2899
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr ""
 
-#: src/js/core.js:2911
+#: src/js/core.js:2908
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr ""
 
-#: src/js/core.js:2918
+#: src/js/core.js:2915
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2920
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2920
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:2933
+#: src/js/core.js:2930
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr ""
 
-#: src/js/core.js:2943
+#: src/js/core.js:2940
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr ""
 
-#: src/js/core.js:2954
+#: src/js/core.js:2951
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr ""
 
-#: src/js/core.js:3140
+#: src/js/core.js:3137
 msgid "Select TV Download Directory"
 msgstr ""
 
-#: src/js/core.js:3141
+#: src/js/core.js:3138
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3156
+#: src/js/core.js:3153
 msgid "Unrar Executable not found."
 msgstr ""
 
-#: src/js/core.js:3202 src/js/core.js:3246 src/js/core.js:3290 src/js/core.js:3350
+#: src/js/core.js:3199 src/js/core.js:3243 src/js/core.js:3287 src/js/core.js:3347
 msgid "This pattern is invalid."
 msgstr ""
 
-#: src/js/core.js:3209 src/js/core.js:3253 src/js/core.js:3297 src/js/core.js:3357
+#: src/js/core.js:3206 src/js/core.js:3250 src/js/core.js:3294 src/js/core.js:3354
 msgid ""
 "This pattern would be invalid without the folders, using it will force "
 "\"Flatten\" off for all shows."
 msgstr ""
 
-#: src/js/core.js:3216 src/js/core.js:3260 src/js/core.js:3304 src/js/core.js:3364
+#: src/js/core.js:3213 src/js/core.js:3257 src/js/core.js:3301 src/js/core.js:3361
 msgid "This pattern is valid."
 msgstr ""
 
-#: src/js/core.js:3690
+#: src/js/core.js:3687
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr ""
 
-#: src/js/core.js:3747 src/js/core.js:3801
+#: src/js/core.js:3744 src/js/core.js:3798
 msgid "Please fill in the Popcorn IP address"
 msgstr ""
 
-#: src/js/core.js:3954
+#: src/js/core.js:3951
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr ""
 
-#: src/js/core.js:3986
+#: src/js/core.js:3983
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:3989
+#: src/js/core.js:3986
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:3991
+#: src/js/core.js:3988
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:3997
+#: src/js/core.js:3994
 msgid "Enter an email address to send the test to:"
 msgstr ""
 
-#: src/js/core.js:3999
+#: src/js/core.js:3996
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4069
+#: src/js/core.js:4066
 msgid "Device list updated. Please choose a device to push to."
 msgstr ""
 
-#: src/js/core.js:4130
+#: src/js/core.js:4127
 msgid "You didn't supply a Pushbullet api key"
 msgstr ""
 
-#: src/js/core.js:4160
+#: src/js/core.js:4157
 msgid "Don't forget to save your new pushbullet settings."
 msgstr ""
 
-#: src/js/core.js:4232
+#: src/js/core.js:4229
 msgid "Select backup folder to save to"
 msgstr ""
 
-#: src/js/core.js:4237
+#: src/js/core.js:4234
 msgid "Select backup files to restore"
 msgstr ""
 
-#: src/js/core.js:4782
+#: src/js/core.js:4779
 msgid "No providers available to configure."
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:4944
+#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:4941
 msgid "Mass Delete"
 msgstr ""
 
-#: src/js/core.js:4945
+#: src/js/core.js:4942
 msgid ""
 "You have selected to delete  show(s).  Are you sure you wish to continue? All"
 " files will be removed from your system."
 msgstr ""
 
-#: src/js/core.js:5022
+#: src/js/core.js:5019
 msgid "DELETED"
 msgstr ""
 
@@ -509,7 +509,7 @@ msgstr ""
 msgid "Subtitled"
 msgstr ""
 
-#: sickrage/core/webserver/views/history.mako:170
+#: sickrage/core/webserver/views/history.mako:164
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:59
 msgid "missing provider"
 msgstr ""
@@ -3893,7 +3893,6 @@ msgid "Update Categories"
 msgstr ""
 
 #: sickrage/core/webserver/views/config/providers.mako:1032
-#: sickrage/core/webserver/views/home/index.mako:293
 msgid "Add"
 msgstr ""
 
@@ -4573,41 +4572,41 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:21
+#: sickrage/core/webserver/views/home/add_shows.mako:15
 msgid "Add New Show"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:22
+#: sickrage/core/webserver/views/home/add_shows.mako:16
 msgid ""
 "For shows that you haven't downloaded yet, this option finds a show on "
 "theTVDB.com, creates a directory for it's episodes and adds it."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:36
+#: sickrage/core/webserver/views/home/add_shows.mako:30
 msgid "Add from Trakt"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:37
+#: sickrage/core/webserver/views/home/add_shows.mako:31
 msgid ""
 "For shows that you haven't downloaded yet, this option lets you choose a show"
 " from one of the Trakt lists to add to SiCKRAGE."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:51
+#: sickrage/core/webserver/views/home/add_shows.mako:45
 msgid "Add from IMDB"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:52
+#: sickrage/core/webserver/views/home/add_shows.mako:46
 msgid ""
 "View IMDB's list of the most popular shows. This feature uses IMDB's "
 "MOVIEMeter algorithm to identify popular TV Series."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:66
+#: sickrage/core/webserver/views/home/add_shows.mako:60
 msgid "Add Existing Shows"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/add_shows.mako:67
+#: sickrage/core/webserver/views/home/add_shows.mako:61
 msgid ""
 "Use this option to add shows that already have a folder created on your hard "
 "drive. SickRage will scan your existing metadata/episodes and add the show "
@@ -4997,7 +4996,6 @@ msgstr ""
 
 #: sickrage/core/webserver/views.py:3686 sickrage/core/webserver/views.py:4826
 #: sickrage/core/webserver/views/home/edit_show.mako:250
-#: sickrage/core/webserver/views/home/index.mako:293
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:263
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
@@ -5139,34 +5137,34 @@ msgid "... Loading ..."
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:135
-#: sickrage/core/webserver/views/home/index.mako:491
+#: sickrage/core/webserver/views/home/index.mako:473
 #: sickrage/core/webserver/views/manage/mass_update.mako:27
 msgid "Continuing"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:137
-#: sickrage/core/webserver/views/home/index.mako:493
+#: sickrage/core/webserver/views/home/index.mako:475
 #: sickrage/core/webserver/views/manage/mass_update.mako:30
 msgid "Ended"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:156
-#: sickrage/core/webserver/views/home/index.mako:364
+#: sickrage/core/webserver/views/home/index.mako:346
 msgid "Downloaded: "
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:159
-#: sickrage/core/webserver/views/home/index.mako:367
+#: sickrage/core/webserver/views/home/index.mako:349
 msgid "Snatched: "
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:162
-#: sickrage/core/webserver/views/home/index.mako:370
+#: sickrage/core/webserver/views/home/index.mako:352
 msgid "Total: "
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:165
-#: sickrage/core/webserver/views/home/index.mako:373
+#: sickrage/core/webserver/views/home/index.mako:355
 msgid "no data"
 msgstr ""
 
@@ -5175,7 +5173,7 @@ msgid "Invalid date"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:254
-#: sickrage/core/webserver/views/home/index.mako:456
+#: sickrage/core/webserver/views/home/index.mako:438
 msgid "No Network"
 msgstr ""
 
@@ -5188,7 +5186,6 @@ msgid "Prev Ep"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:279
-#: sickrage/core/webserver/views/home/index.mako:293
 msgid "Show"
 msgstr ""
 
@@ -5202,7 +5199,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:316
+#: sickrage/core/webserver/views/home/index.mako:298
 msgid "Loading..."
 msgstr ""
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-27 18:03-0700\n"
-"PO-Revision-Date: 2018-07-28 01:04\n"
+"POT-Creation-Date: 2018-07-27 23:38-0700\n"
+"PO-Revision-Date: 2018-07-28 06:39\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -17,319 +17,319 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: ko_KR\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:276
+#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:277
 msgid "Shutdown"
 msgstr "종료"
 
-#: src/js/core.js:277
+#: src/js/core.js:278
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "당신은 SiCKRAGE 종료 하 시겠습니까?"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:282
+#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:283
 msgid "Restart"
 msgstr "다시 시작"
 
-#: src/js/core.js:283
+#: src/js/core.js:284
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "당신은 SiCKRAGE를 다시 시작 하 시겠습니까?"
 
-#: src/js/core.js:288
+#: src/js/core.js:289
 msgid "Submit Errors"
 msgstr "제출 오류"
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:289
+#: src/js/core.js:290
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:416 src/js/core.js:427 src/js/core.js:448
+#: src/js/core.js:417 src/js/core.js:428 src/js/core.js:449
 msgid "Searching"
 msgstr "검색"
 
-#: src/js/core.js:422 src/js/core.js:453
+#: src/js/core.js:423 src/js/core.js:454
 msgid "Queued"
 msgstr "대기"
 
 #: sickrage/core/webserver/views/home/display_show.mako:698
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
-#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:457
+#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:458
 msgid "Manual Search"
 msgstr "수동 검색"
 
-#: sickrage/core/webserver/views/home/index.mako:312 src/js/core.js:482
-#: src/js/core.js:628 src/js/core.js:671
+#: sickrage/core/webserver/views/home/index.mako:294 src/js/core.js:483
+#: src/js/core.js:629 src/js/core.js:672
 msgid "loading"
 msgstr "로드"
 
-#: src/js/core.js:687
+#: src/js/core.js:688
 msgid "Choose Directory"
 msgstr "디렉터리 선택"
 
-#: sickrage/core/webserver/views.py:3635 src/js/core.js:1214
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1215
 msgid "Clear History"
 msgstr "기록 지우기"
 
-#: src/js/core.js:1215
+#: src/js/core.js:1216
 msgid "Are you sure you want to clear all download history ?"
 msgstr "당신은 모두를 다운로드 역사는?"
 
-#: sickrage/core/webserver/views.py:3637 src/js/core.js:1220
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1221
 msgid "Trim History"
 msgstr "역사를 트림"
 
-#: src/js/core.js:1221
+#: src/js/core.js:1222
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "당신은 모든 트림을 다운로드 30 일 보다 오래 된 역사는?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1753
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1750
 msgid "Remove Show"
 msgstr "표시 제거"
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:1754
+#: src/js/core.js:1751
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:1807 src/js/core.js:1839
+#: src/js/core.js:1804 src/js/core.js:1836
 msgid "Update failed."
 msgstr "업데이트 하지 못했습니다."
 
-#: src/js/core.js:1850
+#: src/js/core.js:1847
 msgid "Select Show Location"
 msgstr "보기 위치 선택"
 
-#: src/js/core.js:1984
+#: src/js/core.js:1981
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:1993
+#: src/js/core.js:1990
 msgid "Select Unprocessed Episode Folder"
 msgstr "처리 되지 않은 에피소드 폴더 선택"
 
-#: src/js/core.js:2363
+#: src/js/core.js:2360
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "검색 시간 초과, 인덱서 증가 시간 제한"
 
-#: src/js/core.js:2367
+#: src/js/core.js:2364
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2371
+#: src/js/core.js:2368
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2390
+#: src/js/core.js:2387
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2392
+#: src/js/core.js:2389
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2437
+#: src/js/core.js:2434
 msgid "Saved Defaults"
 msgstr "저장 된 기본값"
 
-#: src/js/core.js:2437
+#: src/js/core.js:2434
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "현재 선택 항목에 \"쇼를 추가\" 기본값 설정 되었습니다."
 
-#: src/js/core.js:2491
+#: src/js/core.js:2488
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2533
+#: src/js/core.js:2530
 msgid "Reset Config to Defaults"
 msgstr "기본값 설정으로 재설정"
 
-#: src/js/core.js:2534
+#: src/js/core.js:2531
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "당신은 설정 기본값으로 재설정 하 시겠습니까?"
 
-#: src/js/core.js:2626
+#: src/js/core.js:2623
 msgid "Select path to pip"
 msgstr "Pip를 경로 선택"
 
-#: src/js/core.js:2632
+#: src/js/core.js:2629
 msgid "Select path to git"
 msgstr "자식에 대 한 경로 선택"
 
-#: src/js/core.js:2640 src/js/core.js:2658 src/js/core.js:3502 src/js/core.js:3520
-#: src/js/core.js:3541 src/js/core.js:3563 src/js/core.js:3586 src/js/core.js:3608
-#: src/js/core.js:3636 src/js/core.js:3653 src/js/core.js:3697 src/js/core.js:3782
-#: src/js/core.js:3840 src/js/core.js:3857 src/js/core.js:3887 src/js/core.js:3944
-#: src/js/core.js:4020 src/js/core.js:4039 src/js/core.js:4055
+#: src/js/core.js:2637 src/js/core.js:2655 src/js/core.js:3499 src/js/core.js:3517
+#: src/js/core.js:3538 src/js/core.js:3560 src/js/core.js:3583 src/js/core.js:3605
+#: src/js/core.js:3633 src/js/core.js:3650 src/js/core.js:3694 src/js/core.js:3779
+#: src/js/core.js:3837 src/js/core.js:3854 src/js/core.js:3884 src/js/core.js:3941
+#: src/js/core.js:4017 src/js/core.js:4036 src/js/core.js:4052
 msgid "Please fill out the necessary fields above."
 msgstr "위의 필요한 필드를 작성 하십시오."
 
-#: src/js/core.js:2696
+#: src/js/core.js:2693
 msgid "Select Subtitles Download Directory"
 msgstr "선택 자막 다운로드 디렉토리"
 
-#: src/js/core.js:2812
+#: src/js/core.js:2809
 msgid "Select .nzb blackhole/watch location"
 msgstr ".Nzb 블랙홀/시계 위치 선택"
 
-#: src/js/core.js:2813
+#: src/js/core.js:2810
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent blackhole/시계 위치 선택"
 
-#: src/js/core.js:2814
+#: src/js/core.js:2811
 msgid "Select .torrent download location"
 msgstr ".Torrent 다운로드 위치를 선택"
 
-#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2881
+#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2878
 msgid "Minimum seeding time is"
 msgstr "최소 시간 시드"
 
-#: src/js/core.js:2883
+#: src/js/core.js:2880
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL을 당신의 uTorrent 클라이언트 (예: http://localhost:8000)"
 
-#: src/js/core.js:2886
+#: src/js/core.js:2883
 msgid "Stop seeding when inactive for"
 msgstr "시드 비활성 때 중지"
 
-#: src/js/core.js:2892
+#: src/js/core.js:2889
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL 전송 클라이언트 (예: http://localhost:9091)을"
 
-#: src/js/core.js:2902
+#: src/js/core.js:2899
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL을 당신의 홍수 클라이언트 (예: http://localhost:8112)"
 
-#: src/js/core.js:2911
+#: src/js/core.js:2908
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 또는 호스트 이름 홍수 데몬 (예: scgi://localhost:58846)"
 
-#: src/js/core.js:2918
+#: src/js/core.js:2915
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL을 당신의 Synology DS 클라이언트 (예: http://localhost:5000)"
 
-#: src/js/core.js:2923
+#: src/js/core.js:2920
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2920
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:2933
+#: src/js/core.js:2930
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:2943
+#: src/js/core.js:2940
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL을 당신의 MLDonkey (예: http://localhost:4080)"
 
-#: src/js/core.js:2954
+#: src/js/core.js:2951
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Putio 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:3140
+#: src/js/core.js:3137
 msgid "Select TV Download Directory"
 msgstr "TV 다운로드 디렉터리 선택"
 
-#: src/js/core.js:3141
+#: src/js/core.js:3138
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3156
+#: src/js/core.js:3153
 msgid "Unrar Executable not found."
 msgstr "Unrar 실행 파일을 찾을 수 없습니다."
 
-#: src/js/core.js:3202 src/js/core.js:3246 src/js/core.js:3290 src/js/core.js:3350
+#: src/js/core.js:3199 src/js/core.js:3243 src/js/core.js:3287 src/js/core.js:3347
 msgid "This pattern is invalid."
 msgstr "이 패턴 유효 하지 않습니다."
 
-#: src/js/core.js:3209 src/js/core.js:3253 src/js/core.js:3297 src/js/core.js:3357
+#: src/js/core.js:3206 src/js/core.js:3250 src/js/core.js:3294 src/js/core.js:3354
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "이 패턴은 유효한 것 없이 폴더를 그것을 사용 하 여 강제로 \"결합\"에서 모든 프로그램에 대 한."
 
-#: src/js/core.js:3216 src/js/core.js:3260 src/js/core.js:3304 src/js/core.js:3364
+#: src/js/core.js:3213 src/js/core.js:3257 src/js/core.js:3301 src/js/core.js:3361
 msgid "This pattern is valid."
 msgstr "이 패턴은 유효 합니다."
 
-#: src/js/core.js:3690
+#: src/js/core.js:3687
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 권한 부여 확인"
 
-#: src/js/core.js:3747 src/js/core.js:3801
+#: src/js/core.js:3744 src/js/core.js:3798
 msgid "Please fill in the Popcorn IP address"
 msgstr "팝콘 IP 주소를 입력 하시기 바랍니다"
 
-#: src/js/core.js:3954
+#: src/js/core.js:3951
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "체크 블랙 리스트 이름; 값 필요 trakt 슬러그"
 
-#: src/js/core.js:3986
+#: src/js/core.js:3983
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:3989
+#: src/js/core.js:3986
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:3991
+#: src/js/core.js:3988
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:3997
+#: src/js/core.js:3994
 msgid "Enter an email address to send the test to:"
 msgstr "테스트를 보낼 이메일 주소를 입력:"
 
-#: src/js/core.js:3999
+#: src/js/core.js:3996
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4069
+#: src/js/core.js:4066
 msgid "Device list updated. Please choose a device to push to."
 msgstr "장치 목록 업데이트입니다. 장치를 선택 하십시오."
 
-#: src/js/core.js:4130
+#: src/js/core.js:4127
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet api 키를 입력 하지 않은"
 
-#: src/js/core.js:4160
+#: src/js/core.js:4157
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "새로운 pushbullet 설정을 저장 하려면 잊지 마세요."
 
-#: src/js/core.js:4232
+#: src/js/core.js:4229
 msgid "Select backup folder to save to"
 msgstr "백업 폴더에 저장를 선택합니다"
 
-#: src/js/core.js:4237
+#: src/js/core.js:4234
 msgid "Select backup files to restore"
 msgstr "복원할 백업 파일 선택"
 
-#: src/js/core.js:4782
+#: src/js/core.js:4779
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:4944
+#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:4941
 msgid "Mass Delete"
 msgstr "대량 삭제"
 
-#: src/js/core.js:4945
+#: src/js/core.js:4942
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: src/js/core.js:5022
+#: src/js/core.js:5019
 msgid "DELETED"
 msgstr ""
 
@@ -505,7 +505,7 @@ msgstr "다운로드"
 msgid "Subtitled"
 msgstr "자막"
 
-#: sickrage/core/webserver/views/history.mako:170
+#: sickrage/core/webserver/views/history.mako:164
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:59
 msgid "missing provider"
 msgstr "누락 된 공급자"
@@ -3778,7 +3778,6 @@ msgid "Update Categories"
 msgstr "카테고리 업데이트"
 
 #: sickrage/core/webserver/views/config/providers.mako:1032
-#: sickrage/core/webserver/views/home/index.mako:293
 msgid "Add"
 msgstr "추가"
 
@@ -4447,35 +4446,35 @@ msgstr "각 보기에 대 한 설정을 지정 하는 방법"
 msgid "Submit"
 msgstr "전송"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:21
+#: sickrage/core/webserver/views/home/add_shows.mako:15
 msgid "Add New Show"
 msgstr "새로운 쇼 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:22
+#: sickrage/core/webserver/views/home/add_shows.mako:16
 msgid "For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a directory for it's episodes and adds it."
 msgstr "아직 다운로드 하지 않은 쇼에 대 한이 옵션, theTVDB.com에는 쇼를 발견 에피소드 이며 추가 대 한 디렉터리를 만듭니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:36
+#: sickrage/core/webserver/views/home/add_shows.mako:30
 msgid "Add from Trakt"
 msgstr "Trakt에서 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:37
+#: sickrage/core/webserver/views/home/add_shows.mako:31
 msgid "For shows that you haven't downloaded yet, this option lets you choose a show from one of the Trakt lists to add to SiCKRAGE."
 msgstr "아직 다운로드 하지 않은 쇼에 대 한이 옵션 SiCKRAGE에 추가할 Trakt 목록 중 하나에서 쇼를 선택할 수 있습니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:51
+#: sickrage/core/webserver/views/home/add_shows.mako:45
 msgid "Add from IMDB"
 msgstr "IMDB에서 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:52
+#: sickrage/core/webserver/views/home/add_shows.mako:46
 msgid "View IMDB's list of the most popular shows. This feature uses IMDB's MOVIEMeter algorithm to identify popular TV Series."
 msgstr "가장 인기 있는 쇼의 IMDB의 목록 보기. 이 기능은 인기 TV 시리즈를 식별 하기 위해 IMDB의 MOVIEMeter 알고리즘을 사용 합니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:66
+#: sickrage/core/webserver/views/home/add_shows.mako:60
 msgid "Add Existing Shows"
 msgstr "기존 쇼 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:67
+#: sickrage/core/webserver/views/home/add_shows.mako:61
 msgid "Use this option to add shows that already have a folder created on your hard drive. SickRage will scan your existing metadata/episodes and add the show accordingly."
 msgstr "하드 드라이브에 만든 폴더에 이미 있는 프로그램을 추가 하려면이 옵션을 사용 합니다. SickRage 기존 메타 데이터/에피소드를 검사 하 고 그에 따라 쇼를 추가."
 
@@ -4854,7 +4853,6 @@ msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필�
 
 #: sickrage/core/webserver/views.py:3686 sickrage/core/webserver/views.py:4826
 #: sickrage/core/webserver/views/home/edit_show.mako:250
-#: sickrage/core/webserver/views/home/index.mako:293
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:263
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
@@ -4992,34 +4990,34 @@ msgid "... Loading ..."
 msgstr ""
 
 #: sickrage/core/webserver/views/home/index.mako:135
-#: sickrage/core/webserver/views/home/index.mako:491
+#: sickrage/core/webserver/views/home/index.mako:473
 #: sickrage/core/webserver/views/manage/mass_update.mako:27
 msgid "Continuing"
 msgstr "계속"
 
 #: sickrage/core/webserver/views/home/index.mako:137
-#: sickrage/core/webserver/views/home/index.mako:493
+#: sickrage/core/webserver/views/home/index.mako:475
 #: sickrage/core/webserver/views/manage/mass_update.mako:30
 msgid "Ended"
 msgstr "종료"
 
 #: sickrage/core/webserver/views/home/index.mako:156
-#: sickrage/core/webserver/views/home/index.mako:364
+#: sickrage/core/webserver/views/home/index.mako:346
 msgid "Downloaded: "
 msgstr "다운로드: "
 
 #: sickrage/core/webserver/views/home/index.mako:159
-#: sickrage/core/webserver/views/home/index.mako:367
+#: sickrage/core/webserver/views/home/index.mako:349
 msgid "Snatched: "
 msgstr "납치: "
 
 #: sickrage/core/webserver/views/home/index.mako:162
-#: sickrage/core/webserver/views/home/index.mako:370
+#: sickrage/core/webserver/views/home/index.mako:352
 msgid "Total: "
 msgstr "총: "
 
 #: sickrage/core/webserver/views/home/index.mako:165
-#: sickrage/core/webserver/views/home/index.mako:373
+#: sickrage/core/webserver/views/home/index.mako:355
 msgid "no data"
 msgstr "데이터 없음"
 
@@ -5028,7 +5026,7 @@ msgid "Invalid date"
 msgstr "잘못 된 날짜"
 
 #: sickrage/core/webserver/views/home/index.mako:254
-#: sickrage/core/webserver/views/home/index.mako:456
+#: sickrage/core/webserver/views/home/index.mako:438
 msgid "No Network"
 msgstr "없음 네트워크"
 
@@ -5041,7 +5039,6 @@ msgid "Prev Ep"
 msgstr "이전 Ep"
 
 #: sickrage/core/webserver/views/home/index.mako:279
-#: sickrage/core/webserver/views/home/index.mako:293
 msgid "Show"
 msgstr "보기"
 
@@ -5055,7 +5052,7 @@ msgstr "다운로드"
 msgid "Active"
 msgstr "활성"
 
-#: sickrage/core/webserver/views/home/index.mako:316
+#: sickrage/core/webserver/views/home/index.mako:298
 msgid "Loading..."
 msgstr "로드 중입니다..."
 
