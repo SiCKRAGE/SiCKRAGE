@@ -74,7 +74,7 @@
                                                 <% isoDate = datetime.datetime.strptime(str(hItem["date"]), History.date_format).isoformat() %>
                                                 <time datetime="${isoDate}" class="date">${airDate}</time>
                                             </td>
-                                            <td class="text-center tvShow">
+                                            <td class="tvShow">
                                                 <a href="${srWebRoot}/home/displayShow?show=${hItem["show_id"]}#S${hItem["season"]}E${hItem["episode"]}">
                                                     ${hItem["show_name"]}
                                                     - ${"S{:02d}".format(int(hItem["season"]))}${"E{:02d}".format(int(hItem["episode"]))} ${('', '<span class="badge badge-success">Proper</span>')["proper" in hItem["resource"].lower() or "repack" in hItem["resource"].lower()]}
@@ -131,12 +131,6 @@
                                     <th>${_('Quality')}</th>
                                 </tr>
                                 </thead>
-
-                                <tfoot>
-                                <tr>
-                                    <th class="text-nowrap" colspan="6">&nbsp;</th>
-                                </tr>
-                                </tfoot>
 
                                 <tbody>
                                     % for hItem in compactResults:

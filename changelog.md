@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9d9b510 - 2018-07-27: Pre-Release v9.3.56.dev7 
+- * 7edca97 - 2018-07-27: Refactored table show show/episode column for history view Removed table footer from history view 
+- * 876ddfc - 2018-07-27: Pre-Release v9.3.56.dev7 
 - * 19cb817 - 2018-07-27: Refactored table class spacing/padding and column widths 
 - * 5a27b14 - 2018-07-27: Pre-Release v9.3.56.dev6 
 - * 76afe3b - 2018-07-27: Refactored content column size for large devices, small to medium devices are now full-width 
