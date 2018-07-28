@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5faf901 - 2018-07-27: Pre-Release v9.3.56.dev6 
+- * 4128407 - 2018-07-27: Refactored table class spacing/padding and column widths 
+- * 5a27b14 - 2018-07-27: Pre-Release v9.3.56.dev6 
 - * 76afe3b - 2018-07-27: Refactored content column size for large devices, small to medium devices are now full-width 
 - * 9f09e96 - 2018-07-27: Refactored preview rename view CSS 
 - * e39068a - 2018-07-27: Pre-Release v9.3.56.dev5 

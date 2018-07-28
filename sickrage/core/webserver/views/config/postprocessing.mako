@@ -462,7 +462,7 @@
                     </div>
 
                     <div id="naming_key" class="nocheck" style="display: none;">
-                        <table class="table table-bordered table-dark Key">
+                        <table class="table">
                             <thead class="table-secondary text-black-50">
                             <tr>
                                 <th class="align-right">${_('Meaning')}</th>
@@ -735,7 +735,7 @@
                         </div>
 
                         <div id="naming_abd_key" class="nocheck" style="display: none;">
-                            <table class="table table-bordered table-dark Key">
+                            <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>
@@ -949,7 +949,7 @@
                         </div>
 
                         <div id="naming_sports_key" class="nocheck" style="display: none;">
-                            <table class="table table-bordered table-dark Key">
+                            <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>
@@ -1169,7 +1169,7 @@
                         </div>
 
                         <div id="naming_anime_key" class="nocheck" style="display: none;">
-                            <table class="table table-bordered table-dark Key">
+                            <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>
                                     <th class="align-right">${_('Meaning')}</th>

@@ -219,12 +219,6 @@ span.snatched b {
   font-weight: 800;
 }
 
-.table td.table-fit,
-.table th.table-fit {
-  white-space: nowrap;
-  width: 1%;
-}
-
 .back-to-top {
   cursor: pointer;
   position: fixed;
@@ -302,6 +296,18 @@ span.snatched b {
   @extend .table-bordered;
   @extend .table-dark;
   @extend .shadow;
+  th {
+    @extend .text-center;
+    @extend .text-nowrap;
+  }
+  th, td {
+    @extend .p-1;
+  }
+  .table-fit {
+    white-space: nowrap;
+    width: 1%;
+    @extend .text-center;
+  }
 }
 
 .card {
@@ -350,5 +356,7 @@ span.snatched b {
   .btn {
     @extend .btn-secondary;
     @extend .shadow;
+    @extend .mt-1;
+    @extend .mb-1;
   }
 }

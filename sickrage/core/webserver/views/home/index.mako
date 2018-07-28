@@ -56,7 +56,7 @@
             </div>
         </div>
         <div class="col text-right">
-            <div class="form-inline m-1 d-inline-flex">
+            <div class="form-inline d-inline-flex">
                 % if sickrage.app.config.home_layout == 'poster':
                     <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
@@ -274,21 +274,21 @@
                 <table id="showListTable${curListType}" class="table">
                     <thead>
                     <tr>
-                        <th class="table-fit text-nowrap">${_('Next Ep')}</th>
-                        <th class="table-fit text-nowrap">${_('Prev Ep')}</th>
-                        <th class="${('', 'table-fit')[sickrage.app.config.home_layout in ['small', 'banner']]}">${_('Show')}</th>
-                        <th class="table-fit text-nowrap">${_('Network')}</th>
-                        <th class="table-fit">${_('Quality')}</th>
+                        <th>${_('Next Ep')}</th>
+                        <th>${_('Prev Ep')}</th>
+                        <th>${_('Show')}</th>
+                        <th>${_('Network')}</th>
+                        <th>${_('Quality')}</th>
                         <th>${_('Downloads')}</th>
-                        <th class="table-fit text-nowrap">${_('Size')}</th>
-                        <th class="table-fit">${_('Active')}</th>
-                        <th class="table-fit">${_('Status')}</th>
+                        <th>${_('Size')}</th>
+                        <th>${_('Active')}</th>
+                        <th>${_('Status')}</th>
                     </tr>
                     </thead>
 
                     <tfoot>
                     <tr>
-                        <th rowspan="1" colspan="1" align="center" class="text-nowrap">
+                        <th>
                             <a href="${srWebRoot}/home/addShows/">
                                 ${_('Add')} ${(_('Show'), _('Anime'))[curListType == 'Anime']}
                             </a>
@@ -309,7 +309,7 @@
                             % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
                                 % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
                                     <tr>
-                                        <td align="center">(${_('loading')})</td>
+                                        <td class="table-fit">(${_('loading')})</td>
                                         <td></td>
                                         <td>
                                             % if curLoadingShow.show is None:
@@ -390,34 +390,34 @@
                                 % if cur_airs_next:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td class="align-middle text-center text-nowrap">
+                                    <td class="table-fit">
                                         <time datetime="${airDate.isoformat()}"
                                               class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                     </td>
                                 % except ValueError:
-                                    <td class="align-middle text-center text-nowrap"></td>
+                                    <td class="table-fit"></td>
                                 % endtry
                                 % else:
-                                    <td class="align-middle text-center text-nowrap"></td>
+                                    <td class="table-fit"></td>
                                 % endif
 
                                 % if cur_airs_prev:
                                 <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                 % try:
-                                    <td class="align-middle text-center text-nowrap">
+                                    <td class="table-fit">
                                         <time datetime="${airDate.isoformat()}" class="date">
                                             ${srdatetime.srDateTime(airDate).srfdate()}
                                         </time>
                                     </td>
                                 % except ValueError:
-                                    <td class="align-middle text-center text-nowrap"></td>
+                                    <td class="table-fit"></td>
                                 % endtry
                                 % else:
-                                    <td class="align-middle text-center text-nowrap"></td>
+                                    <td class="table-fit"></td>
                                 % endif
 
                                 % if sickrage.app.config.home_layout == 'small':
-                                    <td class="tvShow" align="center">
+                                    <td class="table-fit tvShow">
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
                                            title="${curShow.name}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
@@ -426,7 +426,7 @@
                                         </a>
                                     </td>
                                 % elif sickrage.app.config.home_layout == 'banner':
-                                    <td class="align-middle text-center">
+                                    <td class="table-fit">
                                         <span style="display: none;">${curShow.name}</span>
                                         <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                             <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
@@ -443,7 +443,7 @@
                                 % endif
 
                                 % if sickrage.app.config.home_layout != 'simple':
-                                    <td class="align-middle text-center">
+                                    <td class="table-fit">
                                         % if curShow.network:
                                             <span>
                                                 <i class="sickrage-network sickrage-network-${network_class_name}"
@@ -459,14 +459,14 @@
                                         % endif
                                     </td>
                                 % else:
-                                    <td class="text-nowrap">
+                                    <td class="table-fit">
                                         <span title="${curShow.network}">${curShow.network}</span>
                                     </td>
                                 % endif
 
-                                <td class="align-middle text-center">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
 
-                                <td class="align-middle text-center">
+                                <td>
                                     <span style="display: none;">${download_stat}</span>
                                     <div class="bg-dark rounded shadow">
                                         <div class="progress-bar rounded " style="width: ${progressbar_percent}%"
@@ -477,16 +477,16 @@
                                     </div>
                                 </td>
 
-                                <td class="align-middle text-center text-nowrap" data-show-size="${show_size}">
+                                <td class="table-fit" data-show-size="${show_size}">
                                     ${pretty_filesize(show_size)}
                                 </td>
 
-                                <td class="align-middle text-center ">
+                                <td class="table-fit">
                                     <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
                                     <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
                                 </td>
 
-                                <td class="align-middle text-center">
+                                <td class="table-fit">
                                     % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
                                         ${_('Continuing')}
                                     % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):

@@ -272,8 +272,8 @@
                                     ${_('Tools')}
                                 </span>
                                 <span class="d-sm-none d-md-block">
-                                    <img class="rounded-circle shadow" style="width: 40px;height: 40px;"
-                                         src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404">
+                                    <object class="d-block fas fa-2x fa-user-circle rounded-circle shadow" data="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?&d=404" style="width: 40px;height: auto;" type="image/jpg">
+                                    </object>
                                     ${toolsBadge}
                                 </span>
                             </a>
@@ -360,7 +360,7 @@
                             % endfor
                             % else:
                                 <a href="${srWebRoot}${menuItem['path']}"
-                                   class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')} m-1">
+                                   class="btn ${('', ' confirm ')['confirm' in menuItem]} ${menuItem.get('class', '')}">
                                     <i class='${menuItem.get('icon', '')}'></i> ${menuItem['title']}
                                 </a>
                             <% first = False %>

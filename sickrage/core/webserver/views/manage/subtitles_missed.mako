@@ -74,25 +74,27 @@
                                 <button type="button" class="btn unselectAllShows">${_('Clear all')}</button>
                             </div>
                             <br>
-                            <table class="table">
-                                % for cur_indexer_id in sorted_show_ids:
-                                    <tr id="${cur_indexer_id}">
-                                        <th style="width: 1%;">
-                                            <input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
-                                                   name="${cur_indexer_id}-all" checked/>
-                                        </th>
-                                        <th colspan="3" style="text-align: left;">
-                                            <a class="whitelink"
-                                               href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
-                                                ${show_names[cur_indexer_id]}
-                                            </a>
-                                            (${ep_counts[cur_indexer_id]})
-                                            <input type="button" class="btn get_more_eps"
-                                                   id="${cur_indexer_id}" value="${_('Expand')}"/>
-                                        </th>
-                                    </tr>
-                                % endfor
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    % for cur_indexer_id in sorted_show_ids:
+                                        <tr id="${cur_indexer_id}">
+                                            <th style="width: 1%;">
+                                                <input type="checkbox" class="allCheck" id="allCheck-${cur_indexer_id}"
+                                                       name="${cur_indexer_id}-all" checked/>
+                                            </th>
+                                            <th colspan="3" style="text-align: left;">
+                                                <a class="whitelink"
+                                                   href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
+                                                    ${show_names[cur_indexer_id]}
+                                                </a>
+                                                (${ep_counts[cur_indexer_id]})
+                                                <input type="button" class="btn get_more_eps"
+                                                       id="${cur_indexer_id}" value="${_('Expand')}"/>
+                                            </th>
+                                        </tr>
+                                    % endfor
+                                </table>
+                            </div>
                         </form>
                     % endif
                 </div>

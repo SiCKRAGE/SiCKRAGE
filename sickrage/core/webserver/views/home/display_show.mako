@@ -29,7 +29,7 @@
         % endif
 
         <div class="col">
-            <div class="input-group w-50 mx-auto text-center">
+            <div class="input-group mx-auto" style="width: 30%">
                 <div class="input-group-prepend">
                     <button id="prevShow" class="btn fas fa-arrow-left"></button>
                 </div>
@@ -232,11 +232,11 @@
                                 <td>
                                     <ul class="list-group d-inline">
                                         % if not show.imdbid and show.genre:
-                                            % for genre in show.genre[1:-1].split(','):
+                                            % for genre in show.genre.split(','):
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${genre} shows on trakt.tv.">
-                                                    <li class="list-group-item badge badge-primary">${genre}</li>
+                                                    <li class="badge badge-primary">${genre}</li>
                                                 </a>
                                             % endfor
                                         % endif
@@ -245,7 +245,7 @@
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                                    <li class="list-inline-item badge badge-primary">${imdbgenre}</li>
+                                                    <li class="badge badge-primary">${imdbgenre}</li>
                                                 </a>
                                             % endfor
                                         % endif
@@ -387,7 +387,7 @@
 
     <div class="row mt-1">
         <div class="col text-left">
-            <div class="input-group">
+            <div class="input-group w-50">
                 <select id="statusSelect" title="Change selected episode statuses" class="form-control">
                     <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
                     % if sickrage.app.developer:
@@ -445,9 +445,6 @@
                     </button>
                     <button class="btn mt-1 mb-1 clearAll">
                         ${_('Clear All')}
-                    </button>
-                    <button class="btn mt-1 mb-1" id="popover" type="button">
-                        ${_('Select Columns')} <b class="caret"></b>
                     </button>
                 </div>
             </div>
@@ -532,27 +529,25 @@
         <div class="row">
         <div class="col-md-12">
         <div class="table-responsive">
-        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}"
-               class="table display_show"
-               style="opacity: .80" cellspacing="0" border="0" cellpadding="0">
+        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="table display_show" style="opacity: .80">
             <thead>
             <tr class="seasoncols">
-                <th data-sorter="false" data-priority="critical" class="table-fit col-checkbox">
+                <th data-sorter="false" data-priority="critical" class="col-checkbox">
                     <input type="checkbox" class="seasonCheck" id="${epResult["season"]}"/>
                 </th>
-                <th data-sorter="false" class="table-fit col-metadata">${_('NFO')}</th>
-                <th data-sorter="false" class="table-fit col-metadata">${_('TBN')}</th>
-                <th data-sorter="false" class="table-fit col-ep episode">${_('Episode')}</th>
-                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
-                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(scene)]}>${_('Scene')}</th>
-                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
+                <th data-sorter="false" class="col-metadata">${_('NFO')}</th>
+                <th data-sorter="false" class="col-metadata">${_('TBN')}</th>
+                <th data-sorter="false" class="col-ep episode">${_('Episode')}</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(show.is_anime)]}>${_('Absolute')}</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene)]}>${_('Scene')}</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(scene_anime)]}>${_('Scene Absolute')}</th>
                 <th data-sorter="false" class="col-name">${_('Name')}</th>
-                <th data-sorter="false" class="table-fit col-ep columnSelector-false size">${_('Size')}</th>
-                <th data-sorter="false" class="table-fit col-airdate">${_('Airdate')}</th>
-                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
-                <th data-sorter="false" ${("class=\"table-fit col-ep columnSelector-false\"", "class=\"table-fit col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
-                <th data-sorter="false" class="table-fit col-status">${_('Status')}</th>
-                <th data-sorter="false" class="table-fit col-search">${_('Search')}</th>
+                <th data-sorter="false" class="col-ep columnSelector-false size">${_('Size')}</th>
+                <th data-sorter="false" class="col-airdate">${_('Airdate')}</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
+                <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
+                <th data-sorter="false" class="col-status">${_('Status')}</th>
+                <th data-sorter="false" class="col-search">${_('Search')}</th>
             </tr>
             </thead>
 
@@ -566,7 +561,7 @@
         <tr class="${Overview.overviewStrings[epCats[epStr]]} season-${curSeason} seasonstyle font-weight-bold text-dark"
             id="S${str(epResult["season"])}E${str(epResult["episode"])}">
 
-            <td class="col-checkbox">
+            <td class="table-fit col-checkbox">
                 % if int(epResult["status"]) != UNAIRED:
                     <input type="checkbox" class="epCheck"
                            id="${str(epResult["season"])}x${str(epResult["episode"])}"
@@ -574,15 +569,15 @@
                 % endif
             </td>
 
-            <td align="center">
+            <td class="table-fit">
                 <i class="fas ${("fa-times", "fa-check")[epResult["hasnfo"]]}"></i>
             </td>
 
-            <td align="center">
+            <td class="table-fit">
                 <i class="fas ${("fa-times", "fa-check")[epResult["hastbn"]]}"></i>
             </td>
 
-            <td align="center">
+            <td class="table-fit">
                 <%
                     text = str(epResult['episode'])
                     if epLoc != '' and epLoc is not None:
@@ -591,9 +586,9 @@
                 ${text}
             </td>
 
-            <td align="center">${epResult["absolute_number"]}</td>
+            <td class="table-fit">${epResult["absolute_number"]}</td>
 
-            <td align="center">
+            <td class="table-fit">
                 <input placeholder="${str(dfltSeas)}x${str(dfltEpis)}" size="6"
                        maxlength="8"
                        class="sceneSeasonXEpisode form-control input-scene"
@@ -609,9 +604,9 @@
                        style="padding: 0; text-align: center; max-width: 60px;"/>
             </td>
 
-            <td align="center">
+            <td class="table-fit">
                 <input placeholder="${str(dfltAbsolute)}" size="6" maxlength="8"
-                       class="sceneAbsolute form-control input-scene"
+                       class="sceneAbsolute form-control d-inline input-scene"
                        data-for-absolute="${epResult["absolute_number"]}"
                        id="sceneAbsolute_${show.indexerid}_${str(epResult["absolute_number"])}"
                        title="Change the value here if scene absolute numbering differs from the indexer absolute numbering"
@@ -629,14 +624,14 @@
                 ${epResult["name"]}
             </td>
 
-            <td class="text-nowrap col-ep">
+            <td class="table-fit text-nowrap col-ep">
                 % if epResult["file_size"]:
-                                <% file_size = pretty_filesize(epResult["file_size"]) %>
+                    <% file_size = pretty_filesize(epResult["file_size"]) %>
                 ${file_size}
                 % endif
             </td>
 
-            <td class="col-airdate">
+            <td class="table-fit col-airdate">
                 % if int(epResult['airdate']) != 1:
                 <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
 
@@ -650,7 +645,7 @@
                 % endif
             </td>
 
-            <td>
+            <td class="table-fit">
                 % if sickrage.app.config.download_url and epResult['location']:
                 <%
                     filename = epResult['location']
@@ -663,7 +658,7 @@
                 % endif
             </td>
 
-            <td class="col-subtitles" align="center">
+            <td class="table-fit col-subtitles">
                 % for flag in (epResult["subtitles"] or '').split(','):
                     % if sickrage.subtitles.name_from_code(flag).lower() != 'undetermined':
                         % if flag.strip() != 'und':
@@ -681,12 +676,12 @@
 
             <% curStatus, curQuality = Quality.splitCompositeStatus(int(epResult["status"])) %>
             % if curQuality != Quality.NONE:
-                <td class="text-nowrap col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
+                <td class="table-fit text-nowrap col-status">${statusStrings[curStatus]} ${renderQualityPill(curQuality)}</td>
             % else:
-                <td class="text-nowrap col-status">${statusStrings[curStatus]}</td>
+                <td class="table-fit text-nowrap col-status">${statusStrings[curStatus]}</td>
             % endif
 
-            <td class="text-center col-search">
+            <td class="table-fit col-search">
                 % if int(epResult["season"]) != 0:
                     % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ):
                         <a class="epRetry"

@@ -163,7 +163,7 @@
                         ${parameter}
                     % endif
                 </td>
-                <td class="text-center">
+                <td class="table-fit">
                     % if required:
                         <span class="fas fa-check text-success" title="${_('Yes')}"></span>
                     % else:

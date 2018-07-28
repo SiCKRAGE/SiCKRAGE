@@ -98,31 +98,32 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table">
-                                        % for cur_indexer_id in sorted_show_ids:
-                                            <tr id="${cur_indexer_id}">
-                                                <th>
-                                                    <input type="checkbox" class="allCheck"
-                                                           id="allCheck-${cur_indexer_id}"
-                                                           title="${show_names[cur_indexer_id]}"
-                                                           name="${cur_indexer_id}-all" checked/>
-                                                </th>
-                                                <th colspan="2" style="width: 100%; text-align: left;">
-                                                    <a class="text-white" href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
-                                                        ${show_names[cur_indexer_id]}
-                                                    </a>
-                                                    (<span class="text-info">${ep_counts[cur_indexer_id]}</span>)
-                                                    <input type="button" class="btn btn-sm get_more_eps"
-                                                           id="${cur_indexer_id}" value="${_('Expand')}"/>
-                                                </th>
-                                            </tr>
-                                        % endfor
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </table>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            % for cur_indexer_id in sorted_show_ids:
+                                                <tr id="${cur_indexer_id}">
+                                                    <td class="table-fit" style="border:none">
+                                                        <input type="checkbox" class="allCheck"
+                                                               id="allCheck-${cur_indexer_id}"
+                                                               title="${show_names[cur_indexer_id]}"
+                                                               name="${cur_indexer_id}-all" checked/>
+                                                    </td>
+                                                    <td class="text-left text-nowrap" style="border:none">
+                                                        <a class="text-white"
+                                                           href="${srWebRoot}/home/displayShow?show=${cur_indexer_id}">
+                                                            ${show_names[cur_indexer_id]}
+                                                        </a>
+                                                        (<span class="text-info">${ep_counts[cur_indexer_id]}</span>)
+                                                    </td>
+                                                    <td style="border:none"></td>
+                                                    <td class="table-fit" style="border:none">
+                                                        <input type="button" class="btn btn-sm get_more_eps"
+                                                               id="${cur_indexer_id}" value="${_('Expand')}"/>
+                                                    </td>
+                                                </tr>
+                                            % endfor
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </form>

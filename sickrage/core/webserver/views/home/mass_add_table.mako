@@ -7,10 +7,10 @@
 <table id="addRootDirTable" class="table">
     <thead>
     <tr>
-        <th class="table-fit col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
+        <th class="col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
         <th>${_('Directory')}</th>
-        <th class="table-fit">${_('Show Name (tvshow.nfo)')}</th>
-        <th class="table-fit">${_('Indexer')}</th>
+        <th>${_('Show Name (tvshow.nfo)')}</th>
+        <th>${_('Indexer')}</th>
     </tr>
     </thead>
     <tbody>
@@ -31,17 +31,17 @@
                 %>
 
                 <tr>
-                    <td class="col-checkbox"><input type="checkbox" id="${show_id}" class="dirCheck" checked=checked>
+                    <td class="table-fit col-checkbox"><input type="checkbox" id="${show_id}" class="dirCheck" checked=checked>
                     </td>
                     <td><label for="${show_id}">${curDir['display_dir']}</label></td>
                     % if curDir['existing_info'][1] and indexer > 0:
-                        <td class="text-center">
+                        <td class="table-fit">
                             <a href="${anon_url(IndexerApi(indexer).config['show_url'], curDir['existing_info'][0])}">${curDir['existing_info'][1]}</a>
                         </td>
                     % else:
                         <td>?</td>
                     % endif
-                    <td class="text-center">
+                    <td class="table-fit">
                         <select class="rounded" name="indexer">
                             % for curIndexer in IndexerApi().indexers.items():
                                 <option value="${curIndexer[0]}" ${('', 'selected')[curIndexer[0] == indexer]}>${curIndexer[1]}</option>

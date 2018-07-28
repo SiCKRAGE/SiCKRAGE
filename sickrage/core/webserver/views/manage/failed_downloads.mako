@@ -25,44 +25,48 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="failedTable" class="table">
-                        <thead>
-                        <tr>
-                            <th align="left" class="text-nowrap">${_('Release')}</th>
-                            <th class="table-fit text-center">${_('Size')}</th>
-                            <th class="table-fit text-center">${_('Provider')}</th>
-                            <th class="table-fit text-center" title="${_('Remove All')} ">
-                                <input type="checkbox" class="bulkCheck" id="removeCheck"/>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            % for hItem in failedResults:
-                                <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem["release"]+"\" />" %>
-                                <tr>
-                                    <td class="text-nowrap">${hItem["release"]}</td>
-                                    <td align="center">
-                                        % if hItem["size"] != -1:
-                                            ${pretty_filesize(hItem["size"])}
-                                        % else:
-                                            ?
-                                        % endif
-                                    </td>
-                                    <td align="center">
-                                        <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
-                                        % if provider is not None:
-                                            <i class="sickrage-providers sickrage-providers-${provider.id}"
-                                               title="${provider.name}"></i>
-                                        % else:
-                                            <i class="sickrage-providers sickrage-providers-missing"
-                                               title="${_('missing provider')}"></i>
-                                        % endif
-                                    </td>
-                                    <td align="center">${curRemove}</td>
-                                </tr>
-                            % endfor
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="failedTable" class="table">
+                            <thead>
+                            <tr>
+                                <th>${_('Release')}</th>
+                                <th>${_('Size')}</th>
+                                <th>${_('Provider')}</th>
+                                <th>
+                                    <input type="checkbox" class="bulkCheck" id="removeCheck"/>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                % for hItem in failedResults:
+                                    <% curRemove  = "<input type=\"checkbox\" class=\"removeCheck\" id=\"remove-"+hItem["release"]+"\" />" %>
+                                    <tr>
+                                        <td class="text-nowrap">${hItem["release"]}</td>
+                                        <td class="table-fit">
+                                            % if hItem["size"] != -1:
+                                                ${pretty_filesize(hItem["size"])}
+                                            % else:
+                                                ?
+                                            % endif
+                                        </td>
+                                        <td class="table-fit">
+                                            <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
+                                            % if provider is not None:
+                                                <i class="sickrage-providers sickrage-providers-${provider.id}"
+                                                   title="${provider.name}"></i>
+                                            % else:
+                                                <i class="sickrage-providers sickrage-providers-missing"
+                                                   title="${_('missing provider')}"></i>
+                                            % endif
+                                        </td>
+                                        <td class="table-fit">
+                                            ${curRemove}
+                                        </td>
+                                    </tr>
+                                % endfor
+                            </tbody>
+                        </table>
+                    </div>
                     <input type="button" class="btn" value="${_('Submit')}"
                                                            id="submitMassRemove">
                 </div>
