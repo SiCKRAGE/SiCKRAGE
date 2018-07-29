@@ -164,11 +164,10 @@ class WebServer(object):
             debug=True,
             autoreload=False,
             gzip=sickrage.app.config.web_use_gzip,
-            xheaders=sickrage.app.config.handle_reverse_proxy,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root)
 
-        self.server = HTTPServer(self.app, no_keep_alive=True)
+        self.server = HTTPServer(self.app, no_keep_alive=True, xheaders=sickrage.app.config.handle_reverse_proxy)
 
         if sickrage.app.config.enable_https: self.server.ssl_options = {
             "certfile": sickrage.app.config.https_cert,
