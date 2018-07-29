@@ -1,6 +1,7 @@
 # Changelog
 
-- * f5984ff - 2018-07-28: Fix for issue #244 - reverse proxy 
+- * 38565ca - 2018-07-28: Reverted text-nowrap class for schedule view table episode name column 
+- * 764a9f1 - 2018-07-28: Fix for issue #244 - reverse proxy 
 - * e588aa6 - 2018-07-27: Pre-Release v9.3.56.dev8 
 - * 33a0a4b - 2018-07-27: Added tablesorter with bootstrap 4 compatibility Case-insensitive sorting fixed for shows view 
 - * d086087 - 2018-07-27: Refactored table show show/episode column for history view Removed table footer from history view 

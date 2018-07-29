@@ -147,7 +147,7 @@
                                                         % endif
                                                     </td>
 
-                                                    <td class="text-nowrap">
+                                                    <td>
                                                         % if cur_result['description']:
                                                             <i class="fas fa-exclamation-circle"
                                                                title="${cur_result["description"]}"
