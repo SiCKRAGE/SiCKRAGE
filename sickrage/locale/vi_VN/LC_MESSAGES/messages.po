@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-07-27 23:38-0700\n"
-"PO-Revision-Date: 2018-07-28 06:40\n"
+"POT-Creation-Date: 2018-07-28 23:37-0700\n"
+"PO-Revision-Date: 2018-07-29 06:38\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -17,319 +17,319 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: vi_VN\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:277
+#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:371
 msgid "Shutdown"
 msgstr "Tắt máy"
 
-#: src/js/core.js:278
+#: src/js/core.js:372
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Bạn có chắc bạn muốn tắt máy SiCKRAGE?"
 
-#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:283
+#: sickrage/core/webserver/views/layouts/main.mako:315 src/js/core.js:377
 msgid "Restart"
 msgstr "Khởi động lại"
 
-#: src/js/core.js:284
+#: src/js/core.js:378
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Bạn có chắc bạn muốn khởi động lại SiCKRAGE?"
 
-#: src/js/core.js:289
+#: src/js/core.js:383
 msgid "Submit Errors"
 msgstr "Gửi lỗi"
 
-#: src/js/core.js:290
+#: src/js/core.js:384
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:290
+#: src/js/core.js:384
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:290
+#: src/js/core.js:384
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:417 src/js/core.js:428 src/js/core.js:449
+#: src/js/core.js:511 src/js/core.js:522 src/js/core.js:543
 msgid "Searching"
 msgstr "Tìm kiếm"
 
-#: src/js/core.js:423 src/js/core.js:454
+#: src/js/core.js:517 src/js/core.js:548
 msgid "Queued"
 msgstr "Xếp hàng"
 
-#: sickrage/core/webserver/views/home/display_show.mako:698
+#: sickrage/core/webserver/views/home/display_show.mako:701
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
-#: sickrage/core/webserver/views/schedule.mako:192 src/js/core.js:458
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:552
 msgid "Manual Search"
 msgstr "Hướng dẫn sử dụng tìm kiếm"
 
-#: sickrage/core/webserver/views/home/index.mako:294 src/js/core.js:483
-#: src/js/core.js:629 src/js/core.js:672
+#: sickrage/core/webserver/views/home/index.mako:301 src/js/core.js:577
+#: src/js/core.js:723 src/js/core.js:766
 msgid "loading"
 msgstr "Đang nạp"
 
-#: src/js/core.js:688
+#: src/js/core.js:782
 msgid "Choose Directory"
 msgstr "Chọn thư mục"
 
-#: sickrage/core/webserver/views.py:3635 src/js/core.js:1215
+#: sickrage/core/webserver/views.py:3635 src/js/core.js:1413
 msgid "Clear History"
 msgstr "Xóa lịch sử"
 
-#: src/js/core.js:1216
+#: src/js/core.js:1414
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Có bạn có chắc bạn muốn xóa tất cả lịch sử tải xuống không?"
 
-#: sickrage/core/webserver/views.py:3637 src/js/core.js:1221
+#: sickrage/core/webserver/views.py:3637 src/js/core.js:1419
 msgid "Trim History"
 msgstr "Trim lịch sử"
 
-#: src/js/core.js:1222
+#: src/js/core.js:1420
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Có chắc chắn muốn cắt tất cả các bạn tải về lịch sử cũ hơn 30 ngày?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:1750
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2118
 msgid "Remove Show"
 msgstr "Loại bỏ các hiển thị"
 
-#: src/js/core.js:1751
+#: src/js/core.js:2119
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:1751
+#: src/js/core.js:2119
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:1751
+#: src/js/core.js:2119
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:1804 src/js/core.js:1836
+#: src/js/core.js:2172 src/js/core.js:2204
 msgid "Update failed."
 msgstr "Cập Nhật không thành công."
 
-#: src/js/core.js:1847
+#: src/js/core.js:2215
 msgid "Select Show Location"
 msgstr "Chọn vị trí Hiển thị"
 
-#: src/js/core.js:1981
+#: src/js/core.js:2349
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:1990
+#: src/js/core.js:2365
 msgid "Select Unprocessed Episode Folder"
 msgstr "Chọn thư mục tập chưa qua chế biến"
 
-#: src/js/core.js:2360
+#: src/js/core.js:2735
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "Tìm hết thời gian, hãy thử tăng thời gian chờ cho chỉ mục"
 
-#: src/js/core.js:2364
+#: src/js/core.js:2739
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2368
+#: src/js/core.js:2743
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2387
+#: src/js/core.js:2762
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2389
+#: src/js/core.js:2764
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2434
+#: src/js/core.js:2809
 msgid "Saved Defaults"
 msgstr "Giá trị mặc định đã lưu"
 
-#: src/js/core.js:2434
+#: src/js/core.js:2809
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Mặc định của bạn \"thêm Hiển thị\" đã được thiết lập để lựa chọn hiện tại của bạn."
 
-#: src/js/core.js:2488
+#: src/js/core.js:2863
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2530
+#: src/js/core.js:2905
 msgid "Reset Config to Defaults"
 msgstr "Đặt lại cấu hình mặc định"
 
-#: src/js/core.js:2531
+#: src/js/core.js:2906
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Bạn có chắc bạn muốn đặt lại cấu hình mặc định không?"
 
-#: src/js/core.js:2623
+#: src/js/core.js:2998
 msgid "Select path to pip"
 msgstr "Chọn đường dẫn đến giá trị pip"
 
-#: src/js/core.js:2629
+#: src/js/core.js:3004
 msgid "Select path to git"
 msgstr "Chọn đường dẫn đến git"
 
-#: src/js/core.js:2637 src/js/core.js:2655 src/js/core.js:3499 src/js/core.js:3517
-#: src/js/core.js:3538 src/js/core.js:3560 src/js/core.js:3583 src/js/core.js:3605
-#: src/js/core.js:3633 src/js/core.js:3650 src/js/core.js:3694 src/js/core.js:3779
-#: src/js/core.js:3837 src/js/core.js:3854 src/js/core.js:3884 src/js/core.js:3941
-#: src/js/core.js:4017 src/js/core.js:4036 src/js/core.js:4052
+#: src/js/core.js:3012 src/js/core.js:3030 src/js/core.js:3874 src/js/core.js:3892
+#: src/js/core.js:3913 src/js/core.js:3935 src/js/core.js:3958 src/js/core.js:3980
+#: src/js/core.js:4008 src/js/core.js:4025 src/js/core.js:4069 src/js/core.js:4154
+#: src/js/core.js:4212 src/js/core.js:4229 src/js/core.js:4259 src/js/core.js:4316
+#: src/js/core.js:4392 src/js/core.js:4411 src/js/core.js:4427
 msgid "Please fill out the necessary fields above."
 msgstr "Vui lòng điền vào các lĩnh vực cần thiết trên."
 
-#: src/js/core.js:2693
+#: src/js/core.js:3068
 msgid "Select Subtitles Download Directory"
 msgstr "Chọn phụ đề Download Directory"
 
-#: src/js/core.js:2809
+#: src/js/core.js:3184
 msgid "Select .nzb blackhole/watch location"
 msgstr "Chọn vị trí blackhole/watch .nzb"
 
-#: src/js/core.js:2810
+#: src/js/core.js:3185
 msgid "Select .torrent blackhole/watch location"
 msgstr "Chọn vị trí blackhole/watch .torrent"
 
-#: src/js/core.js:2811
+#: src/js/core.js:3186
 msgid "Select .torrent download location"
 msgstr "Chọn vị trí tải .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:2878
+#: sickrage/core/webserver/views/config/search.mako:977 src/js/core.js:3253
 msgid "Minimum seeding time is"
 msgstr "Gieo hạt thời gian tối thiểu là"
 
-#: src/js/core.js:2880
+#: src/js/core.js:3255
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL để uTorrent khách hàng của bạn (ví dụ: http://localhost:8000)"
 
-#: src/js/core.js:2883
+#: src/js/core.js:3258
 msgid "Stop seeding when inactive for"
 msgstr "Dừng seeding khi không hoạt động cho"
 
-#: src/js/core.js:2889
+#: src/js/core.js:3264
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL để khách hàng của bạn truyền tải (ví dụ: http://localhost:9091)"
 
-#: src/js/core.js:2899
+#: src/js/core.js:3274
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL để vô số khách hàng của bạn (ví dụ: http://localhost:8112)"
 
-#: src/js/core.js:2908
+#: src/js/core.js:3283
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP hoặc tên máy chủ của bạn vô số Daemon (ví dụ: scgi://localhost:58846)"
 
-#: src/js/core.js:2915
+#: src/js/core.js:3290
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL để khách hàng Synology DS của bạn (ví dụ: http://localhost:5000)"
 
-#: src/js/core.js:2920
+#: src/js/core.js:3295
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:2920
+#: src/js/core.js:3295
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:2930
+#: src/js/core.js:3305
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL để qbittorrent khách hàng của bạn (ví dụ: http://localhost:8080)"
 
-#: src/js/core.js:2940
+#: src/js/core.js:3315
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL của bạn MLDonkey (ví dụ: http://localhost:4080)"
 
-#: src/js/core.js:2951
+#: src/js/core.js:3326
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL để putio khách hàng của bạn (ví dụ: http://localhost:8080)"
 
-#: src/js/core.js:3137
+#: src/js/core.js:3512
 msgid "Select TV Download Directory"
 msgstr "Chọn TV Download Directory"
 
-#: src/js/core.js:3138
+#: src/js/core.js:3513
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3153
+#: src/js/core.js:3528
 msgid "Unrar Executable not found."
 msgstr "Unrar thực thi không tìm thấy."
 
-#: src/js/core.js:3199 src/js/core.js:3243 src/js/core.js:3287 src/js/core.js:3347
+#: src/js/core.js:3574 src/js/core.js:3618 src/js/core.js:3662 src/js/core.js:3722
 msgid "This pattern is invalid."
 msgstr "Mô hình này là không hợp lệ."
 
-#: src/js/core.js:3206 src/js/core.js:3250 src/js/core.js:3294 src/js/core.js:3354
+#: src/js/core.js:3581 src/js/core.js:3625 src/js/core.js:3669 src/js/core.js:3729
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Mô hình này sẽ là không hợp lệ mà không có các thư mục, bằng cách sử dụng nó sẽ buộc \"Phẳng\" ra cho thấy tất cả."
 
-#: src/js/core.js:3213 src/js/core.js:3257 src/js/core.js:3301 src/js/core.js:3361
+#: src/js/core.js:3588 src/js/core.js:3632 src/js/core.js:3676 src/js/core.js:3736
 msgid "This pattern is valid."
 msgstr "Mô hình này là hợp lệ."
 
-#: src/js/core.js:3687
+#: src/js/core.js:4062
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> xác nhận ủy quyền"
 
-#: src/js/core.js:3744 src/js/core.js:3798
+#: src/js/core.js:4119 src/js/core.js:4173
 msgid "Please fill in the Popcorn IP address"
 msgstr "Xin vui lòng điền vào địa chỉ IP bỏng ngô"
 
-#: src/js/core.js:3951
+#: src/js/core.js:4326
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kiểm tra danh sách đen tên; giá trị cần phải là sên trakt"
 
-#: src/js/core.js:3983
+#: src/js/core.js:4358
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:3986
+#: src/js/core.js:4361
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:3988
+#: src/js/core.js:4363
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:3994
+#: src/js/core.js:4369
 msgid "Enter an email address to send the test to:"
 msgstr "Nhập địa chỉ email để gửi bài kiểm tra để:"
 
-#: src/js/core.js:3996
+#: src/js/core.js:4371
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4066
+#: src/js/core.js:4441
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Danh sách thiết bị được Cập Nhật. Hãy chọn một thiết bị để đẩy vào."
 
-#: src/js/core.js:4127
+#: src/js/core.js:4502
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Bạn đã không cung cấp một khóa Pushbullet api"
 
-#: src/js/core.js:4157
+#: src/js/core.js:4532
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Đừng quên để lưu các cài đặt pushbullet mới."
 
-#: src/js/core.js:4229
+#: src/js/core.js:4604
 msgid "Select backup folder to save to"
 msgstr "Chọn thư mục sao lưu để lưu vào"
 
-#: src/js/core.js:4234
+#: src/js/core.js:4609
 msgid "Select backup files to restore"
 msgstr "Chọn các tập tin sao lưu để khôi phục"
 
-#: src/js/core.js:4779
+#: src/js/core.js:5154
 msgid "No providers available to configure."
 msgstr "Không có các nhà cung cấp có sẵn cho cấu hình."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:4941
+#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:5367
 msgid "Mass Delete"
 msgstr "Xóa khối lượng"
 
-#: src/js/core.js:4942
+#: src/js/core.js:5368
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Bạn đã chọn để xoá show(s).  Bạn có chắc bạn muốn tiếp tục không? Tất cả các tập tin sẽ được gỡ bỏ từ hệ thống của bạn."
 
-#: src/js/core.js:5019
+#: src/js/core.js:5445
 msgid "DELETED"
 msgstr ""
 
@@ -350,7 +350,7 @@ msgid "Parameters"
 msgstr "Thông số"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:544
+#: sickrage/core/webserver/views/home/display_show.mako:547
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:25
 #: sickrage/core/webserver/views/home/trakt_shows.mako:19
@@ -460,13 +460,13 @@ msgid "Detailed"
 msgstr "Chi tiết"
 
 #: sickrage/core/webserver/views/history.mako:54
-#: sickrage/core/webserver/views/history.mako:124
+#: sickrage/core/webserver/views/history.mako:118
 msgid "Time"
 msgstr "Thời gian"
 
 #: sickrage/core/webserver/views/history.mako:55
-#: sickrage/core/webserver/views/history.mako:125
-#: sickrage/core/webserver/views/home/display_show.mako:540
+#: sickrage/core/webserver/views/history.mako:119
+#: sickrage/core/webserver/views/home/display_show.mako:543
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
@@ -477,41 +477,46 @@ msgid "Action"
 msgstr "Hành động"
 
 #: sickrage/core/webserver/views/history.mako:57
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:34
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:36
 msgid "Provider"
 msgstr "Nhà cung cấp"
 
 #: sickrage/core/webserver/views/history.mako:58
-#: sickrage/core/webserver/views/history.mako:131
-#: sickrage/core/webserver/views/home/index.mako:281
+#: sickrage/core/webserver/views/history.mako:125
+#: sickrage/core/webserver/views/home/index.mako:288
 #: sickrage/core/webserver/views/manage/mass_update.mako:45
 msgid "Quality"
 msgstr "Chất lượng"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
-#: sickrage/core/webserver/views/history.mako:126
+#: sickrage/core/webserver/views/history.mako:120
 #: sickrage/core/webserver/views/layouts/main.mako:400
 msgid "Snatched"
 msgstr "Snatched"
 
 #: sickrage/core/common.py:185 sickrage/core/common.py:621
-#: sickrage/core/webserver/views/history.mako:127
+#: sickrage/core/webserver/views/history.mako:121
 msgid "Downloaded"
 msgstr "Tải về"
 
 #: sickrage/core/common.py:626
 #: sickrage/core/webserver/views/config/providers.mako:900
-#: sickrage/core/webserver/views/history.mako:129
+#: sickrage/core/webserver/views/history.mako:123
 msgid "Subtitled"
 msgstr "Phụ đề"
 
-#: sickrage/core/webserver/views/history.mako:164
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:59
+#: sickrage/core/webserver/views/history.mako:158
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:61
 msgid "missing provider"
 msgstr "thiếu các nhà cung cấp"
 
-#: sickrage/core/webserver/views/schedule.mako:382
-#: sickrage/core/webserver/views/schedule.mako:390
+#: sickrage/core/webserver/views/home/display_show.mako:444
+#: sickrage/core/webserver/views/schedule.mako:23
+msgid "Select Columns"
+msgstr ""
+
+#: sickrage/core/webserver/views/schedule.mako:386
+#: sickrage/core/webserver/views/schedule.mako:394
 msgid "Toggle Summary"
 msgstr "Bật tắt tóm tắt"
 
@@ -975,7 +980,7 @@ msgstr "Địa phương"
 
 #: sickrage/core/webserver/views/config/general.mako:636
 #: sickrage/core/webserver/views/home/index.mako:33
-#: sickrage/core/webserver/views/home/index.mako:280
+#: sickrage/core/webserver/views/home/index.mako:287
 msgid "Network"
 msgstr "Mạng lưới"
 
@@ -4245,7 +4250,7 @@ msgstr "Kiểm tra kết nối"
 #: sickrage/core/webserver/api.py:966
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:705
+#: sickrage/core/webserver/views/home/display_show.mako:708
 msgid "Subtitles Search"
 msgstr "Tìm kiếm phụ đề"
 
@@ -4318,7 +4323,7 @@ msgid "The directory where SickRage should store your"
 msgstr "Các thư mục nơi SickRage nên lưu trữ của bạn"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:123
-#: sickrage/core/webserver/views/home/display_show.mako:548
+#: sickrage/core/webserver/views/home/display_show.mako:551
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:276
@@ -4442,7 +4447,7 @@ msgid "Prompt me to set settings for each show"
 msgstr "Nhắc tôi để thiết lập các cài đặt cho mỗi hiển thị"
 
 #: sickrage/core/webserver/views/home/add_existing_shows.mako:77
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:70
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:72
 msgid "Submit"
 msgstr "Gửi"
 
@@ -4638,90 +4643,90 @@ msgstr "Bỏ qua:"
 msgid "Snatched:"
 msgstr "Snatched:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:444
+#: sickrage/core/webserver/views/home/display_show.mako:447
 msgid "Select Filtered Episodes"
 msgstr "Chọn lọc các tập phim"
 
-#: sickrage/core/webserver/views/home/display_show.mako:447
+#: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "Xóa tất cả"
 
-#: sickrage/core/webserver/views/home/display_show.mako:514
+#: sickrage/core/webserver/views/home/display_show.mako:517
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:514
+#: sickrage/core/webserver/views/home/display_show.mako:517
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:520
+#: sickrage/core/webserver/views/home/display_show.mako:523
 msgid "Hide Episodes"
 msgstr "Ẩn các tập phim"
 
-#: sickrage/core/webserver/views/home/display_show.mako:524
+#: sickrage/core/webserver/views/home/display_show.mako:527
 msgid "Show Episodes"
 msgstr "Hiển thị tập"
 
-#: sickrage/core/webserver/views/home/display_show.mako:538
+#: sickrage/core/webserver/views/home/display_show.mako:541
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:539
+#: sickrage/core/webserver/views/home/display_show.mako:542
 msgid "TBN"
 msgstr "TBN"
 
-#: sickrage/core/webserver/views/home/display_show.mako:541
+#: sickrage/core/webserver/views/home/display_show.mako:544
 msgid "Absolute"
 msgstr "Tuyệt đối"
 
-#: sickrage/core/webserver/views/home/display_show.mako:542
+#: sickrage/core/webserver/views/home/display_show.mako:545
 #: sickrage/core/webserver/views/manage/mass_update.mako:47
 msgid "Scene"
 msgstr "Cảnh"
 
-#: sickrage/core/webserver/views/home/display_show.mako:543
+#: sickrage/core/webserver/views/home/display_show.mako:546
 msgid "Scene Absolute"
 msgstr "Cảnh tuyệt đối"
 
-#: sickrage/core/webserver/views/home/display_show.mako:545
-#: sickrage/core/webserver/views/home/index.mako:283
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:33
+#: sickrage/core/webserver/views/home/display_show.mako:548
+#: sickrage/core/webserver/views/home/index.mako:290
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "Kích thước"
 
-#: sickrage/core/webserver/views/home/display_show.mako:546
+#: sickrage/core/webserver/views/home/display_show.mako:549
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:81
 msgid "Airdate"
 msgstr "Airdate"
 
-#: sickrage/core/webserver/views/home/display_show.mako:547
-#: sickrage/core/webserver/views/home/display_show.mako:657
+#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/home/display_show.mako:660
 msgid "Download"
 msgstr "Tải về"
 
 #: sickrage/core/webserver/views.py:1055 sickrage/core/webserver/views.py:1056
-#: sickrage/core/webserver/views/home/display_show.mako:549
-#: sickrage/core/webserver/views/home/index.mako:285
+#: sickrage/core/webserver/views/home/display_show.mako:552
+#: sickrage/core/webserver/views/home/index.mako:292
 #: sickrage/core/webserver/views/manage/mass_update.mako:54
 msgid "Status"
 msgstr "Tình trạng"
 
-#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/home/display_show.mako:553
 #: sickrage/core/webserver/views/home/new_show.mako:115
 msgid "Search"
 msgstr "Tìm kiếm"
 
-#: sickrage/core/webserver/views/home/display_show.mako:644
+#: sickrage/core/webserver/views/home/display_show.mako:647
 msgid "Never"
 msgstr "Không bao giờ"
 
 #: sickrage/core/common.py:616
-#: sickrage/core/webserver/views/home/display_show.mako:672
+#: sickrage/core/webserver/views/home/display_show.mako:675
 msgid "Unknown"
 msgstr "Chưa biết"
 
-#: sickrage/core/webserver/views/home/display_show.mako:691
+#: sickrage/core/webserver/views/home/display_show.mako:694
 msgid "Retry Download"
 msgstr "Thử tải về"
 
@@ -4797,7 +4802,7 @@ msgid "use SiCKRAGE metadata when searching for subtitle, this will override the
 msgstr "sử dụng SiCKRAGE siêu dữ liệu khi đang tìm kiếm phụ đề, điều này sẽ ghi đè lên các siêu dữ liệu tự động phát hiện"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:175
-#: sickrage/core/webserver/views/home/index.mako:231
+#: sickrage/core/webserver/views/home/index.mako:238
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
 #: sickrage/core/webserver/views/manage/mass_update.mako:51
 #: sickrage/core/webserver/views/manage/queues.mako:18
@@ -4981,78 +4986,78 @@ msgstr "Tập tiếp theo"
 msgid "Progress"
 msgstr "Tiến độ"
 
-#: sickrage/core/webserver/views/home/index.mako:91
+#: sickrage/core/webserver/views/home/index.mako:98
 msgid "Anime List"
 msgstr "Danh sách anime"
 
-#: sickrage/core/webserver/views/home/index.mako:116
+#: sickrage/core/webserver/views/home/index.mako:123
 msgid "... Loading ..."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:135
-#: sickrage/core/webserver/views/home/index.mako:473
+#: sickrage/core/webserver/views/home/index.mako:142
+#: sickrage/core/webserver/views/home/index.mako:480
 #: sickrage/core/webserver/views/manage/mass_update.mako:27
 msgid "Continuing"
 msgstr "Tiếp tục"
 
-#: sickrage/core/webserver/views/home/index.mako:137
-#: sickrage/core/webserver/views/home/index.mako:475
+#: sickrage/core/webserver/views/home/index.mako:144
+#: sickrage/core/webserver/views/home/index.mako:482
 #: sickrage/core/webserver/views/manage/mass_update.mako:30
 msgid "Ended"
 msgstr "Kết thúc"
 
-#: sickrage/core/webserver/views/home/index.mako:156
-#: sickrage/core/webserver/views/home/index.mako:346
+#: sickrage/core/webserver/views/home/index.mako:163
+#: sickrage/core/webserver/views/home/index.mako:353
 msgid "Downloaded: "
 msgstr "Tải về: "
 
-#: sickrage/core/webserver/views/home/index.mako:159
-#: sickrage/core/webserver/views/home/index.mako:349
+#: sickrage/core/webserver/views/home/index.mako:166
+#: sickrage/core/webserver/views/home/index.mako:356
 msgid "Snatched: "
 msgstr "Snatched: "
 
-#: sickrage/core/webserver/views/home/index.mako:162
-#: sickrage/core/webserver/views/home/index.mako:352
+#: sickrage/core/webserver/views/home/index.mako:169
+#: sickrage/core/webserver/views/home/index.mako:359
 msgid "Total: "
 msgstr "Tổng số: "
 
-#: sickrage/core/webserver/views/home/index.mako:165
-#: sickrage/core/webserver/views/home/index.mako:355
+#: sickrage/core/webserver/views/home/index.mako:172
+#: sickrage/core/webserver/views/home/index.mako:362
 msgid "no data"
 msgstr "không có dữ liệu"
 
-#: sickrage/core/webserver/views/home/index.mako:222
+#: sickrage/core/webserver/views/home/index.mako:229
 msgid "Invalid date"
 msgstr "Ngày không hợp lệ"
 
-#: sickrage/core/webserver/views/home/index.mako:254
-#: sickrage/core/webserver/views/home/index.mako:438
+#: sickrage/core/webserver/views/home/index.mako:261
+#: sickrage/core/webserver/views/home/index.mako:445
 msgid "No Network"
 msgstr "Không có mạng"
 
-#: sickrage/core/webserver/views/home/index.mako:277
+#: sickrage/core/webserver/views/home/index.mako:284
 msgid "Next Ep"
 msgstr "Ep tiếp theo"
 
-#: sickrage/core/webserver/views/home/index.mako:278
+#: sickrage/core/webserver/views/home/index.mako:285
 msgid "Prev Ep"
 msgstr "Prev Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:279
+#: sickrage/core/webserver/views/home/index.mako:286
 msgid "Show"
 msgstr "Hiển thị"
 
-#: sickrage/core/webserver/views/home/index.mako:282
+#: sickrage/core/webserver/views/home/index.mako:289
 msgid "Downloads"
 msgstr "Tải hàng tuần"
 
-#: sickrage/core/webserver/views/home/index.mako:284
+#: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/home/status.mako:42
 #: sickrage/core/webserver/views/layouts/main.mako:393
 msgid "Active"
 msgstr "Hoạt động"
 
-#: sickrage/core/webserver/views/home/index.mako:298
+#: sickrage/core/webserver/views/home/index.mako:305
 msgid "Loading..."
 msgstr "Đang tải..."
 
@@ -5363,7 +5368,7 @@ msgid "Most Collected"
 msgstr "Hầu hết được thu thập"
 
 #: sickrage/core/webserver/views/home/trakt_shows.mako:52
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:19
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:20
 msgid "Limit"
 msgstr ""
 
@@ -5759,7 +5764,7 @@ msgstr "Đi"
 msgid "Expand"
 msgstr "Mở rộng"
 
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:32
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:34
 msgid "Release"
 msgstr "Phát hành"
 
