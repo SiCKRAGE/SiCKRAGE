@@ -5,7 +5,7 @@
 %>
 
 <table id="addRootDirTable" class="table">
-    <thead>
+    <thead class="thead-dark">
     <tr>
         <th class="col-checkbox"><input type="checkbox" id="checkAll" checked=checked></th>
         <th>${_('Directory')}</th>

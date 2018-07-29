@@ -48,8 +48,8 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         % if sickrage.app.config.history_layout == "detailed":
-                            <table id="historyTable" class="table">
-                                <thead>
+                            <table id="historyTable" class="table ">
+                                <thead class="thead-dark">
                                 <tr>
                                     <th>${_('Time')}</th>
                                     <th>${_('Episode')}</th>
@@ -58,12 +58,6 @@
                                     <th>${_('Quality')}</th>
                                 </tr>
                                 </thead>
-
-                                <tfoot>
-                                <tr>
-                                    <th class="text-nowrap" colspan="5">&nbsp;</th>
-                                </tr>
-                                </tfoot>
 
                                 <tbody>
                                     % for hItem in historyResults:
@@ -119,7 +113,7 @@
                             </table>
                         % else:
                             <table id="historyTable" class="table">
-                                <thead>
+                                <thead class="thead-dark">
                                 <tr>
                                     <th class="text-nowrap">${_('Time')}</th>
                                     <th>${_('Episode')}</th>

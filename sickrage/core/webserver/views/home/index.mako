@@ -57,6 +57,13 @@
         </div>
         <div class="col text-right">
             <div class="form-inline d-inline-flex">
+                % if sickrage.app.config.home_layout != 'poster':
+                    <div class="dropdown ml-4">
+                        <button id="popover" type="button" class="btn bg-transparent dropdown-toggle" style="border: none;">
+                            <i class="fas fa-2x fa-columns"></i>
+                        </button>
+                    </div>
+                % endif
                 % if sickrage.app.config.home_layout == 'poster':
                     <div style="width: 100px" id="posterSizeSlider"></div>
                 % endif
@@ -271,7 +278,7 @@
             </div>
         % else:
             <div class="table-responsive">
-                <table class="table tablesorter-bootstrap" id="showListTable${curListType}" data-sortlist="[[2,0]]">
+                <table class="table" id="showListTable${curListType}">
                     <thead class="thead-dark">
                     <tr>
                         <th>${_('Next Ep')}</th>

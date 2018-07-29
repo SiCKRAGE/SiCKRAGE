@@ -18,7 +18,11 @@
                     <h3 class="float-left">${title}</h3>
                     <div class="float-right">
                         <div class="form-inline">
-                            % if layout != 'list':
+                            % if layout == 'list':
+                                <button class="btn btn-dark mr-1" id="popover" type="button">
+                                    ${_('Select Columns')} <b class="fas fa-caret-down"></b>
+                                </button>
+                            % else:
                                 <select id="sortby" name="sort" class="form-control mr-1"
                                         onchange="location = this.options[this.selectedIndex].value;">
                                     <option value="${srWebRoot}/setScheduleSort/?sort=date" ${('', 'selected')[sickrage.app.config.coming_eps_sort == 'date']} >
@@ -82,7 +86,7 @@
 
                             <div class="table-responsive">
                                 <table class="table" id="showListTable">
-                                    <thead>
+                                    <thead class="thead-dark">
                                     <tr>
                                         <th>Airdate
                                             (${('local', 'network')[sickrage.app.config.timezone_display == 'network']})

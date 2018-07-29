@@ -440,6 +440,9 @@
             </div>
             <div class="row">
                 <div class="col text-right">
+                    <button class="btn mt-1 mb-1" id="popover" type="button">
+                        ${_('Select Columns')} <b class="fas fa-caret-down"></b>
+                    </button>
                     <button class="btn mt-1 mb-1 seriesCheck">
                         ${_('Select Filtered Episodes')}
                     </button>
@@ -529,8 +532,8 @@
         <div class="row">
         <div class="col-md-12">
         <div class="table-responsive">
-        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="table display_show" style="opacity: .80">
-            <thead>
+        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="table displayShowTable" style="opacity: .80">
+            <thead class="thead-dark">
             <tr class="seasoncols">
                 <th data-sorter="false" data-priority="critical" class="col-checkbox">
                     <input type="checkbox" class="seasonCheck" id="${epResult["season"]}"/>

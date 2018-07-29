@@ -1,5 +1,6 @@
 import 'bootstrap';
 import 'tablesorter';
+import 'tablesorter/dist/js/widgets/widget-columnSelector.min';
 import 'jquery-form';
 import 'jquery-ui/ui/disable-selection';
 import 'jquery-ui/ui/widgets/slider';
@@ -256,6 +257,99 @@ $(document).ready(function ($) {
                     };
                     $("[datetime]").timeago();
                 }
+
+                $.tablesorter.addParser(
+                    {
+                        id: 'loadingNames',
+                        is: function () {
+                            return false;
+                        },
+                        format: function (s) {
+                            if (0 === s.indexOf('Loading...')) {
+                                return s.replace('Loading...', '000');
+                            } else {
+                                return (SICKRAGE.metaToBool('sickrage.SORT_ARTICLE') ? (s || '') : (s || '').replace(/^(The|A|An)\s/i, ''));
+                            }
+                        },
+                        type: 'text'
+                    }
+                );
+
+                $.tablesorter.addParser(
+                    {
+                        id: 'quality',
+                        is: function () {
+                            return false;
+                        },
+                        format: function (s) {
+                            return s.replace('hd1080p', 5).replace('hd720p', 4).replace('hd', 3).replace('sd', 2).replace('any', 1).replace('best', 0).replace('custom', 7);
+                        },
+                        type: 'numeric'
+                    }
+                );
+
+                $.tablesorter.addParser(
+                    {
+                        id: 'realISODate',
+                        is: function () {
+                            return false;
+                        },
+                        format: function (s) {
+                            return new Date(s).getTime();
+                        },
+                        type: 'numeric'
+                    }
+                );
+
+                $.tablesorter.addParser(
+                    {
+                        id: 'cDate',
+                        is: function () {
+                            return false;
+                        },
+                        format: function (s) {
+                            return s;
+                        },
+                        type: 'numeric'
+                    }
+                );
+
+                $.tablesorter.addParser(
+                    {
+                        id: 'eps',
+                        is: function () {
+                            return false;
+                        },
+                        format: function (s) {
+                            var match = s.match(/^(.*)/);
+
+                            if (match === null || match[1] === "?") {
+                                return -10;
+                            }
+
+                            var nums = match[1].split(" / ");
+                            if (nums[0].indexOf("+") !== -1) {
+                                var numParts = nums[0].split("+");
+                                nums[0] = numParts[0];
+                            }
+
+                            nums[0] = parseInt(nums[0]);
+                            nums[1] = parseInt(nums[1]);
+
+                            if (nums[0] === 0) {
+                                return nums[1];
+                            }
+                            var finalNum = parseInt((SICKRAGE.getMeta('max_download_count')) * nums[0] / nums[1]);
+                            var pct = Math.round((nums[0] / nums[1]) * 100) / 1000;
+                            if (finalNum > 0) {
+                                finalNum += nums[0];
+                            }
+
+                            return finalNum + pct;
+                        },
+                        type: 'numeric'
+                    }
+                );
 
                 jconfirm.defaults = {
                     theme: 'dark',
@@ -1127,6 +1221,51 @@ $(document).ready(function ($) {
 
             schedule: function () {
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['list'])) {
+                    var sortCodes = {'date': 0, 'show': 2, 'network': 5};
+                    var sort = SICKRAGE.getMeta('sickrage.COMING_EPS_SORT');
+                    var sortList = (sort in sortCodes) ? [[sortCodes[sort], 0]] : [[0, 0]];
+
+                    $('#showListTable:has(tbody tr)').tablesorter({
+                        theme: 'bootstrap',
+                        widgets: ['stickyHeaders', 'filter', 'columnSelector', 'saveSort'],
+                        sortList: sortList,
+                        textExtraction: {
+                            0: function (node) {
+                                return $(node).find('time').attr('datetime');
+                            },
+                            1: function (node) {
+                                return $(node).find('time').attr('datetime');
+                            },
+                            7: function (node) {
+                                return $(node).find('span').text().toLowerCase();
+                            }
+                        },
+                        headers: {
+                            0: {sorter: 'realISODate'},
+                            1: {sorter: 'realISODate'},
+                            2: {sorter: 'loadingNames'},
+                            4: {sorter: 'loadingNames'},
+                            7: {sorter: 'quality'},
+                            8: {sorter: false},
+                            9: {sorter: false}
+                        },
+                        widgetOptions: (function () {
+                            if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
+                                return {
+                                    filter_columnFilters: true,
+                                    filter_hideFilters: true,
+                                    filter_saveFilters: true,
+                                    columnSelector_mediaquery: false
+                                };
+                            } else {
+                                return {
+                                    filter_columnFilters: false,
+                                    columnSelector_mediaquery: false
+                                };
+                            }
+                        }())
+                    });
+
                     SICKRAGE.ajax_search.ajaxEpSearch();
                 }
 
@@ -1144,9 +1283,65 @@ $(document).ready(function ($) {
                         });
                     });
                 }
+
+                $('#popover').popover({
+                    placement: 'bottom',
+                    html: true, // required if content has HTML
+                    content: '<div id="popover-target"></div>'
+                }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
+                    // call this function to copy the column selection code into the popover
+                    $.tablesorter.columnSelector.attachTo($('#showListTable'), '#popover-target');
+                });
             },
 
             history: function () {
+                $("#historyTable:has(tbody tr)").tablesorter({
+                    theme: 'bootstrap',
+                    widgets: ['filter'],
+                    sortList: [[0, 1]],
+                    textExtraction: (function () {
+                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
+                            return {
+                                0: function (node) {
+                                    return $(node).find('time').attr('datetime');
+                                },
+                                4: function (node) {
+                                    return $(node).find("span").text().toLowerCase();
+                                }
+                            };
+                        } else {
+                            return {
+                                0: function (node) {
+                                    return $(node).find('time').attr('datetime');
+                                },
+                                1: function (node) {
+                                    return $(node).find("span").text().toLowerCase();
+                                },
+                                2: function (node) {
+                                    return $(node).attr("data-provider").toLowerCase();
+                                },
+                                5: function (node) {
+                                    return $(node).attr("data-quality").toLowerCase();
+                                }
+                            };
+                        }
+                    }()),
+                    headers: (function () {
+                        if (SICKRAGE.isMeta('sickrage.HISTORY_LAYOUT', ['detailed'])) {
+                            return {
+                                0: {sorter: 'realISODate'},
+                                4: {sorter: 'data-quality'}
+                            };
+                        } else {
+                            return {
+                                0: {sorter: 'realISODate'},
+                                4: {sorter: false},
+                                5: {sorter: 'data-quality'}
+                            };
+                        }
+                    }())
+                });
+
                 $('#history_limit').on('change', function () {
                     window.location.href = SICKRAGE.srWebRoot + '/history/?limit=' + $(this).val();
                 });
@@ -1280,6 +1475,19 @@ $(document).ready(function ($) {
                 //    $('[href=#command-' + commandId + ']').click();
                 //}
                 //});
+            },
+
+            status: function () {
+                $("#schedulerStatusTable").tablesorter({
+                    theme: 'bootstrap',
+                    widgets: ['saveSort']
+                });
+
+                $("#queueStatusTable").tablesorter({
+                    theme: 'bootstrap',
+                    sortList: [[3, 0], [4, 0], [2, 1]],
+                    widgets: ['saveSort']
+                });
             }
         },
 
@@ -1290,8 +1498,6 @@ $(document).ready(function ($) {
             },
 
             index: function () {
-                $('table').tablesorter({theme : "bootstrap"});
-
                 function resizePosters(newSize) {
                     var fontSize, spriteScale, borderRadius;
                     if (newSize < 125) { // small
@@ -1353,6 +1559,127 @@ $(document).ready(function ($) {
                     $(this).remove();
                 });
 
+                $("#showListTableShows:has(tbody tr), #showListTableAnime:has(tbody tr)").tablesorter({
+                    theme: 'bootstrap',
+                    sortList: [[7, 1], [2, 0]],
+                    textExtraction: {
+                        0: function (node) {
+                            return $(node).find('time').attr('datetime');
+                        },
+                        1: function (node) {
+                            return $(node).find('time').attr('datetime');
+                        },
+                        3: function (node) {
+                            return $(node).find("span").prop("title").toLowerCase();
+                        },
+                        4: function (node) {
+                            return $(node).find("span").text().toLowerCase();
+                        },
+                        5: function (node) {
+                            return $(node).find("span:first").text();
+                        },
+                        6: function (node) {
+                            return $(node).data('show-size');
+                        },
+                        7: function (node) {
+                            return $(node).find("img").attr("alt");
+                        }
+                    },
+                    widgets: ['saveSort', 'stickyHeaders', 'filter', 'columnSelector'],
+                    headers: (function () {
+                        if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
+                            return {
+                                0: {sorter: 'realISODate'},
+                                1: {sorter: 'realISODate'},
+                                2: {sorter: 'loadingNames'},
+                                4: {sorter: 'quality'},
+                                5: {sorter: 'eps'},
+                                6: {sorter: 'digit'},
+                                7: {filter: 'parsed'}
+                            };
+                        } else {
+                            return {
+                                0: {sorter: 'realISODate'},
+                                1: {sorter: 'realISODate'},
+                                2: {sorter: 'loadingNames'},
+                                4: {sorter: 'quality'},
+                                5: {sorter: 'eps'},
+                                6: {sorter: 'digit'}
+                            };
+                        }
+                    }()),
+                    widgetOptions: (function () {
+                        if (SICKRAGE.metaToBool('sickrage.FILTER_ROW')) {
+                            return {
+                                filter_columnFilters: true,
+                                filter_hideFilters: true,
+                                // filter_saveFilters: true,
+                                filter_functions: {
+                                    5: function (e, n, f) {
+                                        var test = false;
+                                        var pct = Math.floor((n % 1) * 1000);
+                                        if (f === '') {
+                                            test = true;
+                                        } else {
+                                            var result = f.match(/(<|<=|>=|>)\s(\d+)/i);
+                                            if (result) {
+                                                if (result[1] === "<") {
+                                                    if (pct < parseInt(result[2])) {
+                                                        test = true;
+                                                    }
+                                                } else if (result[1] === "<=") {
+                                                    if (pct <= parseInt(result[2])) {
+                                                        test = true;
+                                                    }
+                                                } else if (result[1] === ">=") {
+                                                    if (pct >= parseInt(result[2])) {
+                                                        test = true;
+                                                    }
+                                                } else if (result[1] === ">") {
+                                                    if (pct > parseInt(result[2])) {
+                                                        test = true;
+                                                    }
+                                                }
+                                            }
+
+                                            result = f.match(/(\d+)\s(-|to)\s(\d+)/i);
+                                            if (result) {
+                                                if ((result[2] === "-") || (result[2] === "to")) {
+                                                    if ((pct >= parseInt(result[1])) && (pct <= parseInt(result[3]))) {
+                                                        test = true;
+                                                    }
+                                                }
+                                            }
+
+                                            result = f.match(/(=)?\s?(\d+)\s?(=)?/i);
+                                            if (result) {
+                                                if ((result[1] === "=") || (result[3] === "=")) {
+                                                    if (parseInt(result[2]) === pct) {
+                                                        test = true;
+                                                    }
+                                                }
+                                            }
+
+                                            if (!isNaN(parseFloat(f)) && isFinite(f)) {
+                                                if (parseInt(f) === pct) {
+                                                    test = true;
+                                                }
+                                            }
+                                        }
+                                        return test;
+                                    }
+                                },
+                                columnSelector_mediaquery: false
+                            };
+                        } else {
+                            return {
+                                filter_columnFilters: false
+                            };
+                        }
+                    }()),
+                    sortStable: true,
+                    sortAppend: [[2, 0]]
+                });
 
                 $('.show-grid').imagesLoaded(function () {
                     $('.loading-spinner').hide();
@@ -1459,6 +1786,18 @@ $(document).ready(function ($) {
                     $('.show-grid').isotope({sortAscending: sortDirection});
                     $.post($(this).find('option[value=' + $(this).val() + ']').attr('data-sort'));
                 });
+
+                $('#popover').popover({
+                    placement: 'bottom',
+                    html: true, // required if content has HTML
+                    content: '<div id="popover-target"></div>'
+                }).on('shown.bs.popover', function () { // bootstrap popover event triggered when the popover opens
+                    // call this function to copy the column selection code into the popover
+                    $.tablesorter.columnSelector.attachTo($('#showListTableShows'), '#popover-target');
+                    if ($('#showListTableAnime').length && SICKRAGE.metaToBool('sickrage.ANIME_SPLIT_HOME')) {
+                        $.tablesorter.columnSelector.attachTo($('#showListTableAnime'), '#popover-target');
+                    }
+                });
             },
 
             display_show: {
@@ -1469,6 +1808,27 @@ $(document).ready(function ($) {
                         $.backstretch(SICKRAGE.srWebRoot + '/images/' + $('#showID').attr('value') + '.fanart.jpg');
                         $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
                     }
+
+                    $("#showTable, #animeTable").tablesorter({
+                        theme: 'bootstrap',
+                        widgets: ['saveSort', 'columnSelector'],
+                        widgetOptions: {
+                            columnSelector_saveColumns: true,
+                            columnSelector_layout: '<br><label><input type="checkbox">{name}</label>',
+                            columnSelector_mediaquery: false,
+                            columnSelector_cssChecked: 'checked'
+                        }
+                    });
+
+                    $('#popover').popover({
+                        placement: 'bottom',
+                        html: true, // required if content has HTML
+                        content: '<div id="popover-target"></div>'
+                    }).on('shown.bs.popover', function () {
+                        $('.displayShowTable').each(function (index, item) {
+                            $.tablesorter.columnSelector.attachTo(item, '#popover-target');
+                        });
+                    });
 
                     $('#seasonJump').on('change', function () {
                         var id = $('#seasonJump option:selected').val();
@@ -1889,6 +2249,13 @@ $(document).ready(function ($) {
                     $('#tableDiv').html('<span>' + SICKRAGE.loadingHTML + gt('loading folders...') + '</span>');
                     $.get(SICKRAGE.srWebRoot + '/home/addShows/massAddTable/', url, function (data) {
                         $('#tableDiv').html(data);
+                        $("#addRootDirTable").tablesorter({
+                            theme: 'bootstrap',
+                            sortList: [[1, 0]],
+                            headers: {
+                                0: {sorter: false}
+                            }
+                        });
                     });
                 }
             },
@@ -4740,6 +5107,57 @@ $(document).ready(function ($) {
             },
 
             mass_update: function () {
+                $("#massUpdateTable:has(tbody tr)").tablesorter({
+                    theme: 'bootstrap',
+                    sortList: [[1, 0]],
+                    textExtraction: {
+                        2: function (node) {
+                            return $(node).find("span").text().toLowerCase();
+                        },
+                        3: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        4: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        5: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        6: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        7: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        8: function (node) {
+                            return $(node).find("img").attr("alt");
+                        },
+                        9: function (node) {
+                            return $(node).find("img").attr("alt");
+                        }
+                    },
+                    headers: {
+                        0: {sorter: false},
+                        1: {sorter: 'showNames'},
+                        2: {sorter: 'quality'},
+                        3: {sorter: 'sports'},
+                        4: {sorter: 'scene'},
+                        5: {sorter: 'anime'},
+                        6: {sorter: 'flatten_folders'},
+                        7: {sorter: 'skip_downloaded'},
+                        8: {sorter: 'paused'},
+                        9: {sorter: 'subtitle'},
+                        10: {sorter: 'default_ep_status'},
+                        11: {sorter: 'status'},
+                        12: {sorter: false},
+                        13: {sorter: false},
+                        14: {sorter: false},
+                        15: {sorter: false},
+                        16: {sorter: false},
+                        17: {sorter: false}
+                    }
+                });
+
                 $('#submitMassEdit').on('click', function () {
                     var checkArr = [];
 
@@ -4910,6 +5328,12 @@ $(document).ready(function ($) {
             },
 
             failed_downloads: function () {
+                $("#failedTable:has(tbody tr)").tablesorter({
+                    theme: 'bootstrap',
+                    sortList: [[0, 0]],
+                    headers: {3: {sorter: false}}
+                });
+
                 $('#limit').change(function () {
                     window.location.href = SICKRAGE.srWebRoot + '/manage/failedDownloads/?limit=' + $(this).val();
                 });

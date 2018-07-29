@@ -35,7 +35,7 @@
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="schedulerStatusTable" class="table" width="100%">
-                            <thead>
+                            <thead class="thead-dark">
                             <tr>
                                 <th>${_('Scheduled Job')}</th>
                                 <th>${_('Enabled')}</th>
@@ -111,7 +111,7 @@
                 </div>
                 <div class="card-body">
                     <table id="queueStatusTable" class="table" width="100%">
-                        <thead>
+                        <thead class="thead-dark">
                         <tr>
                             <th>${_('Show ID')}</th>
                             <th>${_('Show Name')}</th>
