@@ -35,7 +35,7 @@ from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
     safe_getattr, make_dirs, moveFile, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.processors.post_processor import PostProcessor
-from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
+from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
@@ -408,8 +408,6 @@ class TVEpisode(object):
             self._is_proper = try_int(dbData[0]["is_proper"], self.is_proper)
             self._version = try_int(dbData[0]["version"], self.version)
 
-            xem_refresh(self.show.indexerid, self.show.indexer)
-
             self.scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
             self.scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
             self.scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
@@ -496,8 +494,6 @@ class TVEpisode(object):
 
         self.season = season
         self.episode = episode
-
-        xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexerid,
@@ -630,8 +626,6 @@ class TVEpisode(object):
                     self.name = epDetails.findtext('title')
                     self.episode = try_int(epDetails.findtext('episode'))
                     self.season = try_int(epDetails.findtext('season'))
-
-                    xem_refresh(self.show.indexerid, self.show.indexer)
 
                     self.scene_absolute_number = get_scene_absolute_numbering(
                         self.show.indexerid,

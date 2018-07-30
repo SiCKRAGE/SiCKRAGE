@@ -65,7 +65,6 @@ from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.imdb_popular import imdbPopular
-from sickrage.core.media.util import showImage
 from sickrage.core.nameparser import validator
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
@@ -73,7 +72,7 @@ from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_ex
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
-    get_xem_numbering_for_show, set_scene_numbering, xem_refresh
+    get_xem_numbering_for_show, set_scene_numbering
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -510,19 +509,8 @@ class WebRoot(WebHandler):
         return self.redirect('/logout/')
 
     def quicksearch_json(self, term):
-        data = []
-
-        for s in sorted(sickrage.app.showlist, key=lambda k: k.name):
-            if term.lower() not in s.name.lower():
-                continue
-
-            data += [{
-                'id': s.indexerid,
-                'name': s.name,
-                'img': sickrage.app.config.web_root + showImage(s.indexerid, 'poster_thumb').url
-            }]
-
-        return json_encode(data)
+        return json_encode(
+            sickrage.app.quicksearch_cache.get_shows(term) + sickrage.app.quicksearch_cache.get_episodes(term))
 
 
 @Route('/ui(/?.*)')
@@ -1517,12 +1505,12 @@ class Home(WebHandler):
             except CantUpdateShowException as e:
                 errors.append(_("Unable to force an update on scene exceptions of the show."))
 
-        if do_update_scene_numbering:
-            try:
-                xem_refresh(showObj.indexerid, showObj.indexer)
-                time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
-            except CantUpdateShowException as e:
-                errors.append(_("Unable to force an update on scene numbering of the show."))
+        # if do_update_scene_numbering:
+        #     try:
+        #         xem_refresh(showObj.indexerid, showObj.indexer)
+        #         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        #     except CantUpdateShowException as e:
+        #         errors.append(_("Unable to force an update on scene numbering of the show."))
 
         if directCall:
             return map(str, errors)
@@ -3834,7 +3822,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
 
-        #sickrage.app.config.change_web_external_port(web_external_port)
+        # sickrage.app.config.change_web_external_port(web_external_port)
 
         if date_preset:
             sickrage.app.config.date_preset = date_preset

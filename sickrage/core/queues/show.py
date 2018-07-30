@@ -457,6 +457,8 @@ class QueueItemAdd(ShowQueueItem):
 
         sickrage.app.name_cache.build(self.show)
 
+        sickrage.app.quicksearch_cache.add_show(self.show.indexerid)
+
         self.finish()
 
         sickrage.app.log.info(
@@ -484,7 +486,7 @@ class QueueItemRefresh(ShowQueueItem):
         self.show.populateCache(force=self.force)
 
         # Load XEM data to DB for show
-        xem_refresh(self.show.indexerid, self.show.indexer)
+        # xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.show.last_refresh = datetime.date.today().toordinal()
 
@@ -608,6 +610,8 @@ class QueueItemUpdate(ShowQueueItem):
         scrub(DBEpList)
         scrub(IndexerEpList)
 
+        sickrage.app.quicksearch_cache.update_show(self.show.indexerid)
+
         sickrage.app.log.info(
             "Finished updates in {}s for show: {}".format(round(time.time() - self.startTime, 2), self.show.name))
 
@@ -638,6 +642,8 @@ class QueueItemRemove(ShowQueueItem):
 
     def run(self):
         sickrage.app.log.info("Removing show: {}".format(self.show.name))
+
+        sickrage.app.quicksearch_cache.del_show(self.show.indexerid)
 
         self.show.deleteShow(full=self.full)
 

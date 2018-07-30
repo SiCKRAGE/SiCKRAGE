@@ -133,6 +133,95 @@ $(document).ready(function ($) {
             return uri + hash;
         },
 
+        quicksearch: function () {
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                        currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category text-warning p-1'><strong class='text-uppercase'>" + item.category + "</strong></li>");
+                            currentCategory = item.category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.category) {
+                            li.attr("aria-label", item.category + " : " + item.name);
+                        }
+                    });
+                },
+                _renderItem: function (ul, item) {
+                    var $li = $('<li class="bg-transparent m-1">'),
+                        $img = $('<img>'),
+                        $a = $('<a>');
+
+                    $li.attr('data-value', item.name);
+
+                    $img.attr({
+                        src: item.img,
+                        alt: item.name,
+                        class: 'img-fluid w-100'
+                    });
+
+                    if (item.category === 'shows') {
+                        $a.attr({
+                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}`,
+                            class: 'btn btn-dark btn-block text-left'
+                        });
+
+                        $li.append($a);
+                        $li.find('a').append($('<div class="row"><div id="show-img" class="col-2"></div><div class="col-10"><div class="row"><strong id="show-name" class="text-white text-truncate"></strong></div><div class="row"><strong id="show-seasons" class="text-secondary"></strong></div></div></div>'));
+                        $li.find('#show-img').append($img);
+                        $li.find('#show-name').append(item.name);
+                        $li.find('#show-seasons').append(item.seasons + ' seasons');
+                    } else {
+                        $a.attr({
+                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#S${item.season}E${item.episode}`,
+                            class: 'btn btn-dark btn-block text-left'
+                        });
+
+                        $li.append($a);
+                        $li.find('a').append($('<div class="row"><div id="show-img" class="col-2"></div><div class="col-10"><div class="row"><strong id="ep-name" class="text-white"></strong></div><div class="row"><strong id="show-name" class="text-secondary text-truncate"></strong></div></div></div>'));
+                        $li.find('#show-img').append($img);
+                        $li.find('#ep-name').append(item.name);
+                        $li.find('#show-name').append(item.showname);
+                    }
+
+                    return $li.appendTo(ul);
+                }
+            });
+
+            $('#quicksearch').catcomplete({
+                minLength: 1,
+                source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
+                // search: function () {
+                //     $("#quicksearch-icon").addClass('fas fa-spinner fa-spin');
+                // },
+                focus: function (event, ui) {
+                    $('#quicksearch').val(ui.item.name);
+                    return false;
+                },
+                open: function () {
+                    //$("#quicksearch-icon").removeClass('fas fa-spinner fa-spin');
+                    $("#quicksearch-icon").addClass('fas fa-times');
+                    $("ul.ui-menu").width($(this).innerWidth());
+                    $("ul.ui-menu").css('border', 'none');
+                    $("ul.ui-menu").css('outline', 'none');
+                    $("ul.ui-menu").addClass('bg-dark shadow rounded');
+
+                }
+            });
+
+            $("#quicksearch-icon").click(function () {
+                $('#quicksearch').catcomplete('close').val('');
+                $("#quicksearch-icon").removeClass();
+            });
+        },
+
         common: {
             init: function () {
                 SICKRAGE.srPID = SICKRAGE.getMeta('srPID');
@@ -149,53 +238,8 @@ $(document).ready(function ($) {
                     }
                 });
 
-                $('#quicksearch').autocomplete({
-                    minLength: 1,
-                    source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
-                    search: function () {
-                        $("#quicksearchcancel").removeClass('d-none');
-                    },
-                    focus: function (event, ui) {
-                        $('#quicksearch').val(ui.item.name);
-                        return false;
-                    },
-                    open: function () {
-                        $("ul.ui-menu").width($(this).innerWidth());
-                        $("ul.ui-menu").css('border', 'none');
-                        $("ul.ui-menu").css('outline', 'none');
-                        $("ul.ui-menu").addClass('bg-dark shadow rounded');
-
-                    }
-                });
-
-                $('#quicksearch').data("ui-autocomplete")._renderItem = function (ul, item) {
-                    var $li = $('<li class="bg-transparent m-1">'),
-                        $img = $('<img>'),
-                        $a = $('<a>');
-
-                    $a.attr({
-                        href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.id}`,
-                        class: 'btn btn-dark btn-block text-left text-white'
-                    });
-
-                    $img.attr({
-                        src: item.img,
-                        alt: item.name,
-                        class: 'm-1',
-                        style: 'width:10%;height:100%'
-                    });
-
-                    $li.attr('data-value', item.name);
-                    $li.append($a);
-                    $li.find('a').append($img).append(item.name);
-
-                    return $li.appendTo(ul);
-                };
-
-                $("#quicksearchcancel").click(function () {
-                    $('#quicksearch').autocomplete('close').val('');
-                    $("#quicksearchcancel").addClass('d-none');
-                });
+                // init quicksearch
+                SICKRAGE.quicksearch();
 
                 $(window).scroll(function () {
                     if ($(this).scrollTop() > 50) {

@@ -43,6 +43,7 @@ import adba
 import sickrage
 from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
+from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
@@ -143,6 +144,7 @@ class Core(object):
         self.auto_postprocessor = None
         self.upnp_client = None
         self.oidc_client = None
+        self.quicksearch_cache = None
 
     def start(self):
         self.started = True
@@ -178,6 +180,7 @@ class Core(object):
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
+        self.quicksearch_cache = QuicksearchCache()
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
@@ -270,7 +273,7 @@ class Core(object):
         # load data for shows from database
         self.load_shows()
 
-        if self.config.default_page not in ('home', 'schedule', 'history', 'news', 'IRC'):
+        if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
 
         # cleanup cache folder
@@ -528,12 +531,15 @@ class Core(object):
 
     def load_shows(self):
         """
-        Populates the showlist with shows from the database
+        Populates the showlist and quicksearch cache with shows and episodes from the database
         """
+
+        self.quicksearch_cache.load()
 
         for dbData in self.main_db.all('tv_shows'):
             try:
                 self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
-                self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
+                self.showlist.append(TVShow(int(dbData['indexer']), int(dbData['indexer_id'])))
+                self.quicksearch_cache.add_show(dbData['indexer_id'])
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (dbData['location'], str(e)))

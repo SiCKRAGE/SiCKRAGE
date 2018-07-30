@@ -118,7 +118,7 @@
                                        style="width:350px;border: none;" type="search">
                                 <div class="input-group-append">
                                     <div class="input-group-text bg-dark" style="border: none">
-                                        <i id="quicksearchcancel" class="fas fa-times d-none"></i>
+                                        <i id="quicksearch-icon"></i>
                                     </div>
                                 </div>
                             </div>

@@ -24,7 +24,8 @@ import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.cache.index import CacheLastUpdateIndex, CacheLastSearchIndex, CacheSceneExceptionsIndex, \
-    CacheSceneNamesIndex, CacheNetworkTimezonesIndex, CacheSceneExceptionsRefreshIndex, CacheProvidersIndex
+    CacheSceneNamesIndex, CacheNetworkTimezonesIndex, CacheSceneExceptionsRefreshIndex, CacheProvidersIndex, \
+    CacheQuicksearchIndex
 from sickrage.core.helpers import validate_url, is_ip_private
 
 
@@ -37,6 +38,7 @@ class CacheDB(srDatabase):
         'network_timezones': CacheNetworkTimezonesIndex,
         'scene_exceptions_refresh': CacheSceneExceptionsRefreshIndex,
         'providers': CacheProvidersIndex,
+        'quicksearch': CacheQuicksearchIndex
     }
 
     _migrate_list = {
