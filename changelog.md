@@ -1,6 +1,7 @@
 # Changelog
 
-- * ba43911 - 2018-07-29: Added categories to quicksearch for both tv shows and tv episodes 
+- * 64f683a - 2018-07-31: Pre-Release v9.3.56.dev10 
+- * 133d2ef - 2018-07-29: Added categories to quicksearch for both tv shows and tv episodes 
 - * f33330a - 2018-07-28: Pre-Release v9.3.56.dev9 
 - * 4088edc - 2018-07-28: Added back table column selection for shows, show, and schedule views Fixed sorting for all tables Fixed filtering for all tables 
 - * 7020ea5 - 2018-07-28: Reverted text-nowrap class for schedule view table episode name column 
