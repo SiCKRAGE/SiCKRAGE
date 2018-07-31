@@ -170,22 +170,22 @@ $(document).ready(function ($) {
                     if (item.category === 'shows') {
                         $a.attr({
                             href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}`,
-                            class: 'btn btn-dark btn-block text-left'
+                            class: 'btn btn-dark btn-block d-inline-block text-left'
                         });
 
                         $li.append($a);
-                        $li.find('a').append($('<div class="row"><div id="show-img" class="col-2"></div><div class="col-10"><div class="row"><strong id="show-name" class="text-white text-truncate"></strong></div><div class="row"><strong id="show-seasons" class="text-secondary"></strong></div></div></div>'));
+                        $li.find('a').append($('<div class="row"><div class="col-2"><div id="show-img"></div></div><div class="col-10"><div class="row"><strong id="show-name" class="text-white text-truncate"></strong></div><div class="row"><strong id="show-seasons" class="text-secondary"></strong></div></div></div>'));
                         $li.find('#show-img').append($img);
                         $li.find('#show-name').append(item.name);
                         $li.find('#show-seasons').append(item.seasons + ' seasons');
                     } else {
                         $a.attr({
                             href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}#S${item.season}E${item.episode}`,
-                            class: 'btn btn-dark btn-block text-left'
+                            class: 'btn btn-dark btn-block d-inline-block text-left'
                         });
 
                         $li.append($a);
-                        $li.find('a').append($('<div class="row"><div id="show-img" class="col-2"></div><div class="col-10"><div class="row"><strong id="ep-name" class="text-white"></strong></div><div class="row"><strong id="show-name" class="text-secondary text-truncate"></strong></div></div></div>'));
+                        $li.find('a').append($('<div class="row"><div class="col-2"><div id="show-img"></div></div><div class="col-10"><div class="row"><strong id="ep-name" class="text-white"></strong></div><div class="row"><strong id="show-name" class="text-secondary text-truncate"></strong></div></div></div>'));
                         $li.find('#show-img').append($img);
                         $li.find('#ep-name').append(item.name);
                         $li.find('#show-name').append(item.showname);

@@ -1,6 +1,7 @@
 # Changelog
 
-- * dbb9e7e - 2018-07-31: Pre-Release v9.3.56.dev11 
+- * 1e6a667 - 2018-07-31: Fixed CSS issue for quicksearch items 
+- * 3acc96b - 2018-07-31: Pre-Release v9.3.56.dev11 
 - * d60e09f - 2018-07-31: Added delay for quicksearch input 
 - * 8c90243 - 2018-07-31: Pre-Release v9.3.56.dev10 
 - * 133d2ef - 2018-07-29: Added categories to quicksearch for both tv shows and tv episodes 
