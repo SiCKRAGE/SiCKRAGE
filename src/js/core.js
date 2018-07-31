@@ -196,6 +196,7 @@ $(document).ready(function ($) {
             });
 
             $('#quicksearch').catcomplete({
+                delay: 1000,
                 minLength: 1,
                 source: `${SICKRAGE.srWebRoot}/quicksearch.json`,
                 // search: function () {

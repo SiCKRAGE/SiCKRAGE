@@ -1,6 +1,7 @@
 # Changelog
 
-- * 64f683a - 2018-07-31: Pre-Release v9.3.56.dev10 
+- * 0535551 - 2018-07-31: Added delay for quicksearch input 
+- * 8c90243 - 2018-07-31: Pre-Release v9.3.56.dev10 
 - * 133d2ef - 2018-07-29: Added categories to quicksearch for both tv shows and tv episodes 
 - * f33330a - 2018-07-28: Pre-Release v9.3.56.dev9 
 - * 4088edc - 2018-07-28: Added back table column selection for shows, show, and schedule views Fixed sorting for all tables Fixed filtering for all tables 
