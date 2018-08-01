@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-01 01:28-0700\n"
-"PO-Revision-Date: 2018-08-01 08:28\n"
+"POT-Creation-Date: 2018-08-01 13:42-0700\n"
+"PO-Revision-Date: 2018-08-01 20:42\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -57,14 +57,14 @@ msgstr "搜索"
 msgid "Queued"
 msgstr "排队"
 
-#: sickrage/core/webserver/views/home/display_show.mako:701
+#: sickrage/core/webserver/views/home/display_show.mako:706
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
 #: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:603
 msgid "Manual Search"
 msgstr "手动搜索"
 
-#: sickrage/core/webserver/views/home/index.mako:301 src/js/core.js:628
+#: sickrage/core/webserver/views/home/index.mako:306 src/js/core.js:628
 #: src/js/core.js:774 src/js/core.js:817
 msgid "loading"
 msgstr "加载"
@@ -73,263 +73,263 @@ msgstr "加载"
 msgid "Choose Directory"
 msgstr "选择目录"
 
-#: sickrage/core/webserver/views.py:3579 src/js/core.js:1464
+#: sickrage/core/webserver/views.py:3579 src/js/core.js:1470
 msgid "Clear History"
 msgstr "清除历史记录"
 
-#: src/js/core.js:1465
+#: src/js/core.js:1471
 msgid "Are you sure you want to clear all download history ?"
 msgstr "你确定你想要清除所有下载历史吗？"
 
-#: sickrage/core/webserver/views.py:3581 src/js/core.js:1470
+#: sickrage/core/webserver/views.py:3581 src/js/core.js:1476
 msgid "Trim History"
 msgstr "修剪的历史"
 
-#: src/js/core.js:1471
+#: src/js/core.js:1477
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "你确定你要修剪所有下载时间超过 30 天的历史吗？"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2169
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2178
 msgid "Remove Show"
 msgstr "删除显示"
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2223 src/js/core.js:2255
+#: src/js/core.js:2232 src/js/core.js:2264
 msgid "Update failed."
 msgstr "更新失败。"
 
-#: src/js/core.js:2266
+#: src/js/core.js:2275
 msgid "Select Show Location"
 msgstr "选择显示位置"
 
-#: src/js/core.js:2400
+#: src/js/core.js:2414
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2416
+#: src/js/core.js:2430
 msgid "Select Unprocessed Episode Folder"
 msgstr "选择未加工的集文件夹"
 
-#: src/js/core.js:2786
+#: src/js/core.js:2800
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "搜索超时，请尝试增加超时为索引器"
 
-#: src/js/core.js:2790
+#: src/js/core.js:2804
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2794
+#: src/js/core.js:2808
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2813
+#: src/js/core.js:2827
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2815
+#: src/js/core.js:2829
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2860
+#: src/js/core.js:2874
 msgid "Saved Defaults"
 msgstr "保存的默认设置"
 
-#: src/js/core.js:2860
+#: src/js/core.js:2874
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "你\"添加节目\"的默认设置已设置为您当前的选择。"
 
-#: src/js/core.js:2914
+#: src/js/core.js:2931
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2956
+#: src/js/core.js:2973
 msgid "Reset Config to Defaults"
 msgstr "将配置重置为默认值"
 
-#: src/js/core.js:2957
+#: src/js/core.js:2974
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "你确定你想要将配置重置为默认值？"
 
-#: src/js/core.js:3049
+#: src/js/core.js:3066
 msgid "Select path to pip"
 msgstr "选择 pip 路径"
 
-#: src/js/core.js:3055
+#: src/js/core.js:3072
 msgid "Select path to git"
 msgstr "选择 git 的路径"
 
-#: src/js/core.js:3063 src/js/core.js:3081 src/js/core.js:3925 src/js/core.js:3943
-#: src/js/core.js:3964 src/js/core.js:3986 src/js/core.js:4009 src/js/core.js:4031
-#: src/js/core.js:4059 src/js/core.js:4076 src/js/core.js:4120 src/js/core.js:4205
-#: src/js/core.js:4263 src/js/core.js:4280 src/js/core.js:4310 src/js/core.js:4367
-#: src/js/core.js:4443 src/js/core.js:4462 src/js/core.js:4478
+#: src/js/core.js:3080 src/js/core.js:3098 src/js/core.js:3942 src/js/core.js:3960
+#: src/js/core.js:3981 src/js/core.js:4003 src/js/core.js:4026 src/js/core.js:4048
+#: src/js/core.js:4076 src/js/core.js:4093 src/js/core.js:4137 src/js/core.js:4222
+#: src/js/core.js:4280 src/js/core.js:4297 src/js/core.js:4327 src/js/core.js:4384
+#: src/js/core.js:4460 src/js/core.js:4479 src/js/core.js:4495
 msgid "Please fill out the necessary fields above."
 msgstr "请填写必要的字段上面。"
 
-#: src/js/core.js:3119
+#: src/js/core.js:3136
 msgid "Select Subtitles Download Directory"
 msgstr "选择字幕下载目录"
 
-#: src/js/core.js:3235
+#: src/js/core.js:3252
 msgid "Select .nzb blackhole/watch location"
 msgstr "选择.nzb 黑洞/监视位置"
 
-#: src/js/core.js:3236
+#: src/js/core.js:3253
 msgid "Select .torrent blackhole/watch location"
 msgstr "选择.torrent 黑洞/监视位置"
 
-#: src/js/core.js:3237
+#: src/js/core.js:3254
 msgid "Select .torrent download location"
 msgstr "选择.torrent 下载位置"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3304
+#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3321
 msgid "Minimum seeding time is"
 msgstr "播种时间的最小值是"
 
-#: src/js/core.js:3306
+#: src/js/core.js:3323
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "您的 uTorrent 客户端 (例如 http://localhost:8000) 的 URL"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3326
 msgid "Stop seeding when inactive for"
 msgstr "停播种时处于非活动状态"
 
-#: src/js/core.js:3315
+#: src/js/core.js:3332
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "你传输客户端 (例如 http://localhost:9091) 的 URL"
 
-#: src/js/core.js:3325
+#: src/js/core.js:3342
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "您的海量客户端 (例如 http://localhost:8112) 的 URL"
 
-#: src/js/core.js:3334
+#: src/js/core.js:3351
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 或主机名的你泛滥的守护进程 (例如 scgi://localhost:58846)"
 
-#: src/js/core.js:3341
+#: src/js/core.js:3358
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "你 Synology DS 客户端 (例如 http://localhost:5000) 的 URL"
 
-#: src/js/core.js:3346
+#: src/js/core.js:3363
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3346
+#: src/js/core.js:3363
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3356
+#: src/js/core.js:3373
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "您的 qbittorrent 客户端 (例如 http://localhost:8080) 的 URL"
 
-#: src/js/core.js:3366
+#: src/js/core.js:3383
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "插件 (例如 http://localhost:4080) 的 URL"
 
-#: src/js/core.js:3377
+#: src/js/core.js:3394
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "您的 putio 客户端 (例如 http://localhost:8080) 的 URL"
 
-#: src/js/core.js:3563
+#: src/js/core.js:3580
 msgid "Select TV Download Directory"
 msgstr "选择电视下载目录"
 
-#: src/js/core.js:3564
+#: src/js/core.js:3581
 msgid "Select UNPACK Directory"
 msgstr "选择解包路径"
 
-#: src/js/core.js:3579
+#: src/js/core.js:3596
 msgid "Unrar Executable not found."
 msgstr "找不到下载的可执行文件。"
 
-#: src/js/core.js:3625 src/js/core.js:3669 src/js/core.js:3713 src/js/core.js:3773
+#: src/js/core.js:3642 src/js/core.js:3686 src/js/core.js:3730 src/js/core.js:3790
 msgid "This pattern is invalid."
 msgstr "这种模式是无效的。"
 
-#: src/js/core.js:3632 src/js/core.js:3676 src/js/core.js:3720 src/js/core.js:3780
+#: src/js/core.js:3649 src/js/core.js:3693 src/js/core.js:3737 src/js/core.js:3797
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "这种模式将无效没有文件夹，使用它将迫使\"扁平化\"关闭所有演出。"
 
-#: src/js/core.js:3639 src/js/core.js:3683 src/js/core.js:3727 src/js/core.js:3787
+#: src/js/core.js:3656 src/js/core.js:3700 src/js/core.js:3744 src/js/core.js:3804
 msgid "This pattern is valid."
 msgstr "这种模式是有效的。"
 
-#: src/js/core.js:4113
+#: src/js/core.js:4130
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 确认授权"
 
-#: src/js/core.js:4170 src/js/core.js:4224
+#: src/js/core.js:4187 src/js/core.js:4241
 msgid "Please fill in the Popcorn IP address"
 msgstr "请填写爆米花 IP 地址"
 
-#: src/js/core.js:4377
+#: src/js/core.js:4394
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "请检查名称黑名单;值必须要 trakt 蛞蝓"
 
-#: src/js/core.js:4409
+#: src/js/core.js:4426
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4412
+#: src/js/core.js:4429
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4414
+#: src/js/core.js:4431
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4420
+#: src/js/core.js:4437
 msgid "Enter an email address to send the test to:"
 msgstr "输入电子邮件地址发送到测试："
 
-#: src/js/core.js:4422
+#: src/js/core.js:4439
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4492
+#: src/js/core.js:4509
 msgid "Device list updated. Please choose a device to push to."
 msgstr "设备列表已更新。请选择一个设备将推到。"
 
-#: src/js/core.js:4553
+#: src/js/core.js:4570
 msgid "You didn't supply a Pushbullet api key"
 msgstr "你没有提供 Pushbullet api 密钥"
 
-#: src/js/core.js:4583
+#: src/js/core.js:4600
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "别忘了保存您新的 pushbullet 设置。"
 
-#: src/js/core.js:4655
+#: src/js/core.js:4672
 msgid "Select backup folder to save to"
 msgstr "选择要保存到备份文件夹"
 
-#: src/js/core.js:4660
+#: src/js/core.js:4677
 msgid "Select backup files to restore"
 msgstr "选择要还原的备份文件"
 
-#: src/js/core.js:5205
+#: src/js/core.js:5222
 msgid "No providers available to configure."
 msgstr "没有可用于配置的提供程序。"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:5418
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5437
 msgid "Mass Delete"
 msgstr "成批删除"
 
-#: src/js/core.js:5419
+#: src/js/core.js:5438
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "您已选择要删除的演出。 你确定要继续吗？所有文件将被都删除从您的系统。"
 
-#: src/js/core.js:5496
+#: src/js/core.js:5515
 msgid "DELETED"
 msgstr ""
 
@@ -350,10 +350,10 @@ msgid "Parameters"
 msgstr "参数"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:547
+#: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:25
-#: sickrage/core/webserver/views/home/trakt_shows.mako:19
+#: sickrage/core/webserver/views/home/trakt_shows.mako:20
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:80
 msgid "Name"
 msgstr "名称"
@@ -466,7 +466,7 @@ msgstr "时间"
 
 #: sickrage/core/webserver/views/history.mako:55
 #: sickrage/core/webserver/views/history.mako:119
-#: sickrage/core/webserver/views/home/display_show.mako:543
+#: sickrage/core/webserver/views/home/display_show.mako:548
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
@@ -483,14 +483,14 @@ msgstr "提供程序"
 
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
-#: sickrage/core/webserver/views/home/index.mako:288
-#: sickrage/core/webserver/views/manage/mass_update.mako:45
+#: sickrage/core/webserver/views/home/index.mako:293
+#: sickrage/core/webserver/views/manage/mass_update.mako:67
 msgid "Quality"
 msgstr "质量"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:120
-#: sickrage/core/webserver/views/layouts/main.mako:400
+#: sickrage/core/webserver/views/layouts/main.mako:382
 msgid "Snatched"
 msgstr "抢走了"
 
@@ -510,7 +510,7 @@ msgstr "正版"
 msgid "missing provider"
 msgstr "缺少供应商"
 
-#: sickrage/core/webserver/views/home/display_show.mako:444
+#: sickrage/core/webserver/views/home/display_show.mako:447
 #: sickrage/core/webserver/views/schedule.mako:23
 msgid "Select Columns"
 msgstr "选择列"
@@ -748,7 +748,7 @@ msgstr "当启动 SickRage 界面"
 
 #: sickrage/core/webserver/views/config/general.mako:142
 #: sickrage/core/webserver/views/layouts/main.mako:134
-#: sickrage/core/webserver/views/layouts/main.mako:392
+#: sickrage/core/webserver/views/layouts/main.mako:374
 msgid "Shows"
 msgstr "显示"
 
@@ -980,7 +980,7 @@ msgstr "本地"
 
 #: sickrage/core/webserver/views/config/general.mako:640
 #: sickrage/core/webserver/views/home/index.mako:33
-#: sickrage/core/webserver/views/home/index.mako:287
+#: sickrage/core/webserver/views/home/index.mako:292
 msgid "Network"
 msgstr "网络"
 
@@ -3134,7 +3134,7 @@ msgstr "显示名称："
 #: sickrage/core/webserver/views/config/postprocessing.mako:971
 #: sickrage/core/webserver/views/config/postprocessing.mako:1191
 #: sickrage/core/webserver/views/home/status.mako:117
-#: sickrage/core/webserver/views/manage/mass_update.mako:44
+#: sickrage/core/webserver/views/manage/mass_update.mako:66
 msgid "Show Name"
 msgstr "显示名称"
 
@@ -3204,7 +3204,7 @@ msgstr "Episode_Name"
 #: sickrage/core/webserver/views/config/postprocessing.mako:805
 #: sickrage/core/webserver/views/config/postprocessing.mako:1019
 #: sickrage/core/webserver/views/config/postprocessing.mako:1259
-#: sickrage/core/webserver/views/home/display_show.mako:139
+#: sickrage/core/webserver/views/home/display_show.mako:142
 msgid "Quality:"
 msgstr "质量："
 
@@ -4250,7 +4250,7 @@ msgstr "测试连接"
 #: sickrage/core/webserver/api.py:966
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:708
+#: sickrage/core/webserver/views/home/display_show.mako:713
 msgid "Subtitles Search"
 msgstr "字幕搜索"
 
@@ -4323,7 +4323,7 @@ msgid "The directory where SickRage should store your"
 msgstr "SickRage 应该在哪里存储的目录你"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:125
-#: sickrage/core/webserver/views/home/display_show.mako:551
+#: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:276
@@ -4451,282 +4451,282 @@ msgstr "提示我要为每个显示设置设置"
 msgid "Submit"
 msgstr "提交"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:15
+#: sickrage/core/webserver/views/home/add_shows.mako:16
 msgid "Add New Show"
 msgstr "添加新节目"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:16
+#: sickrage/core/webserver/views/home/add_shows.mako:17
 msgid "For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a directory for it's episodes and adds it."
 msgstr "您还没有下载的节目，此选项在 theTVDB.com 上找到一个节目，将创建一个目录，因为它是集并将其添加。"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:30
+#: sickrage/core/webserver/views/home/add_shows.mako:31
 msgid "Add from Trakt"
 msgstr "从 Trakt 中添加"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:31
+#: sickrage/core/webserver/views/home/add_shows.mako:32
 msgid "For shows that you haven't downloaded yet, this option lets you choose a show from one of the Trakt lists to add to SiCKRAGE."
 msgstr "您还没有下载的节目，此选项允许您选择显示从 Trakt 列表将添加到 SiCKRAGE 之一。"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:45
+#: sickrage/core/webserver/views/home/add_shows.mako:46
 msgid "Add from IMDB"
 msgstr "从 IMDB 添加"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:46
+#: sickrage/core/webserver/views/home/add_shows.mako:47
 msgid "View IMDB's list of the most popular shows. This feature uses IMDB's MOVIEMeter algorithm to identify popular TV Series."
 msgstr "查看最受欢迎的节目 IMDB 的列表。此功能使用 IMDB 的 MOVIEMeter 算法来找出流行的电视连续剧。"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:60
+#: sickrage/core/webserver/views/home/add_shows.mako:61
 msgid "Add Existing Shows"
 msgstr "添加现有节目"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:61
+#: sickrage/core/webserver/views/home/add_shows.mako:62
 msgid "Use this option to add shows that already have a folder created on your hard drive. SickRage will scan your existing metadata/episodes and add the show accordingly."
 msgstr "使用此选项可以添加显示，已经有在您的硬盘上创建一个文件夹。SickRage 会扫描你现有的元数据： 发作，因此添加放映。"
 
-#: sickrage/core/webserver/views/home/display_show.mako:72
+#: sickrage/core/webserver/views/home/display_show.mako:74
 msgid "Display Specials:"
 msgstr "显示特价："
 
-#: sickrage/core/webserver/views/home/display_show.mako:87
+#: sickrage/core/webserver/views/home/display_show.mako:90
 msgid "Season:"
 msgstr "季节："
 
-#: sickrage/core/webserver/views/home/display_show.mako:128
+#: sickrage/core/webserver/views/home/display_show.mako:131
 msgid "Rating:"
 msgstr "评分："
 
-#: sickrage/core/webserver/views/home/display_show.mako:156
+#: sickrage/core/webserver/views/home/display_show.mako:159
 msgid "Show Status:"
 msgstr "显示状态："
 
-#: sickrage/core/webserver/views/home/display_show.mako:162
-#: sickrage/core/webserver/views/home/display_show.mako:168
-#: sickrage/core/webserver/views/home/display_show.mako:173
+#: sickrage/core/webserver/views/home/display_show.mako:165
+#: sickrage/core/webserver/views/home/display_show.mako:171
+#: sickrage/core/webserver/views/home/display_show.mako:176
 msgid "Originally Airs:"
 msgstr "最初播出："
 
-#: sickrage/core/webserver/views/home/display_show.mako:179
+#: sickrage/core/webserver/views/home/display_show.mako:182
 msgid "Start Year:"
 msgstr "开始的一年："
 
-#: sickrage/core/webserver/views/home/display_show.mako:186
+#: sickrage/core/webserver/views/home/display_show.mako:189
 msgid "Runtime:"
 msgstr "运行时："
 
-#: sickrage/core/webserver/views/home/display_show.mako:190
+#: sickrage/core/webserver/views/home/display_show.mako:193
 msgid "minutes"
 msgstr "分钟"
 
-#: sickrage/core/webserver/views/home/display_show.mako:192
+#: sickrage/core/webserver/views/home/display_show.mako:195
 msgid "UNKNOWN"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:199
+#: sickrage/core/webserver/views/home/display_show.mako:202
 msgid "Info Sites:"
 msgstr "信息网站："
 
-#: sickrage/core/webserver/views/home/display_show.mako:231
+#: sickrage/core/webserver/views/home/display_show.mako:234
 msgid "Genre:"
 msgstr "类型："
 
-#: sickrage/core/webserver/views/home/display_show.mako:257
+#: sickrage/core/webserver/views/home/display_show.mako:260
 msgid "Default EP Status:"
 msgstr "默认 EP 状态："
 
-#: sickrage/core/webserver/views/home/display_show.mako:261
+#: sickrage/core/webserver/views/home/display_show.mako:264
 msgid "Location:"
 msgstr "位置："
 
-#: sickrage/core/webserver/views/home/display_show.mako:265
+#: sickrage/core/webserver/views/home/display_show.mako:268
 #: sickrage/core/webserver/views/home/status.mako:219
 #: sickrage/core/webserver/views/home/status.mako:230
 msgid "Missing"
 msgstr "失踪"
 
-#: sickrage/core/webserver/views/home/display_show.mako:269
+#: sickrage/core/webserver/views/home/display_show.mako:272
 msgid "Size:"
 msgstr "大小："
 
-#: sickrage/core/webserver/views/home/display_show.mako:274
+#: sickrage/core/webserver/views/home/display_show.mako:277
 msgid "Scene Name:"
 msgstr "场景名称："
 
-#: sickrage/core/webserver/views/home/display_show.mako:278
+#: sickrage/core/webserver/views/home/display_show.mako:281
 msgid "Search Delay:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:283
+#: sickrage/core/webserver/views/home/display_show.mako:286
 msgid "Required Words:"
 msgstr "所需的单词："
 
-#: sickrage/core/webserver/views/home/display_show.mako:289
+#: sickrage/core/webserver/views/home/display_show.mako:292
 msgid "Ignored Words:"
 msgstr "被忽略的词："
 
-#: sickrage/core/webserver/views/home/display_show.mako:295
+#: sickrage/core/webserver/views/home/display_show.mako:298
 msgid "Wanted Group"
 msgstr "想要的组"
 
-#: sickrage/core/webserver/views/home/display_show.mako:303
+#: sickrage/core/webserver/views/home/display_show.mako:306
 msgid "Unwanted Group"
 msgstr "不想要的组"
 
-#: sickrage/core/webserver/views/home/display_show.mako:314
+#: sickrage/core/webserver/views/home/display_show.mako:317
 msgid "Info Language:"
 msgstr "信息语言："
 
-#: sickrage/core/webserver/views/home/display_show.mako:321
+#: sickrage/core/webserver/views/home/display_show.mako:324
 msgid "Subtitles:"
 msgstr "字幕："
 
-#: sickrage/core/webserver/views/home/display_show.mako:328
+#: sickrage/core/webserver/views/home/display_show.mako:331
 msgid "Subtitles Metadata:"
 msgstr "字幕的元数据："
 
-#: sickrage/core/webserver/views/home/display_show.mako:334
+#: sickrage/core/webserver/views/home/display_show.mako:337
 msgid "Season Folders:"
 msgstr "季节的文件夹："
 
-#: sickrage/core/webserver/views/home/display_show.mako:340
+#: sickrage/core/webserver/views/home/display_show.mako:343
 msgid "Paused:"
 msgstr "停顿了一下："
 
-#: sickrage/core/webserver/views/home/display_show.mako:346
+#: sickrage/core/webserver/views/home/display_show.mako:349
 msgid "Air-by-Date:"
 msgstr "空气通过日期："
 
-#: sickrage/core/webserver/views/home/display_show.mako:352
+#: sickrage/core/webserver/views/home/display_show.mako:355
 msgid "Sports:"
 msgstr "体育："
 
-#: sickrage/core/webserver/views/home/display_show.mako:358
+#: sickrage/core/webserver/views/home/display_show.mako:361
 msgid "Anime:"
 msgstr "动漫："
 
-#: sickrage/core/webserver/views/home/display_show.mako:364
+#: sickrage/core/webserver/views/home/display_show.mako:367
 msgid "DVD Order:"
 msgstr "DVD 的顺序："
 
-#: sickrage/core/webserver/views/home/display_show.mako:370
+#: sickrage/core/webserver/views/home/display_show.mako:373
 msgid "Scene Numbering:"
 msgstr "现场编号："
 
-#: sickrage/core/webserver/views/home/display_show.mako:376
+#: sickrage/core/webserver/views/home/display_show.mako:379
 msgid "Skip Downloaded:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:415
+#: sickrage/core/webserver/views/home/display_show.mako:418
 msgid "Missed:"
 msgstr "错过:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:419
+#: sickrage/core/webserver/views/home/display_show.mako:422
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:25
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:66
 msgid "Wanted:"
 msgstr "想要："
 
-#: sickrage/core/webserver/views/home/display_show.mako:423
+#: sickrage/core/webserver/views/home/display_show.mako:426
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:26
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:68
 msgid "Low Quality:"
 msgstr "低质量："
 
-#: sickrage/core/webserver/views/home/display_show.mako:427
+#: sickrage/core/webserver/views/home/display_show.mako:430
 msgid "Downloaded:"
 msgstr "下载："
 
-#: sickrage/core/webserver/views/home/display_show.mako:431
+#: sickrage/core/webserver/views/home/display_show.mako:434
 msgid "Skipped:"
 msgstr "跳过："
 
-#: sickrage/core/webserver/views/home/display_show.mako:436
+#: sickrage/core/webserver/views/home/display_show.mako:439
 msgid "Snatched:"
 msgstr "抢："
 
-#: sickrage/core/webserver/views/home/display_show.mako:447
+#: sickrage/core/webserver/views/home/display_show.mako:450
 msgid "Select Filtered Episodes"
 msgstr "选择筛选的剧集"
 
-#: sickrage/core/webserver/views/home/display_show.mako:450
+#: sickrage/core/webserver/views/home/display_show.mako:453
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "全部清除"
 
-#: sickrage/core/webserver/views/home/display_show.mako:517
+#: sickrage/core/webserver/views/home/display_show.mako:520
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:517
+#: sickrage/core/webserver/views/home/display_show.mako:520
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:523
+#: sickrage/core/webserver/views/home/display_show.mako:527
 msgid "Hide Episodes"
 msgstr "隐藏事件"
 
-#: sickrage/core/webserver/views/home/display_show.mako:527
+#: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Show Episodes"
 msgstr "电视剧"
 
-#: sickrage/core/webserver/views/home/display_show.mako:541
+#: sickrage/core/webserver/views/home/display_show.mako:546
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:542
+#: sickrage/core/webserver/views/home/display_show.mako:547
 msgid "TBN"
 msgstr "碱值"
 
-#: sickrage/core/webserver/views/home/display_show.mako:544
+#: sickrage/core/webserver/views/home/display_show.mako:549
 msgid "Absolute"
 msgstr "绝对"
 
-#: sickrage/core/webserver/views/home/display_show.mako:545
-#: sickrage/core/webserver/views/manage/mass_update.mako:47
+#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/manage/mass_update.mako:69
 msgid "Scene"
 msgstr "现场"
 
-#: sickrage/core/webserver/views/home/display_show.mako:546
+#: sickrage/core/webserver/views/home/display_show.mako:551
 msgid "Scene Absolute"
 msgstr "现场绝对"
 
-#: sickrage/core/webserver/views/home/display_show.mako:548
-#: sickrage/core/webserver/views/home/index.mako:290
+#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "大小"
 
-#: sickrage/core/webserver/views/home/display_show.mako:549
+#: sickrage/core/webserver/views/home/display_show.mako:554
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:81
 msgid "Airdate"
 msgstr "播出日期"
 
-#: sickrage/core/webserver/views/home/display_show.mako:550
-#: sickrage/core/webserver/views/home/display_show.mako:660
+#: sickrage/core/webserver/views/home/display_show.mako:555
+#: sickrage/core/webserver/views/home/display_show.mako:665
 msgid "Download"
 msgstr "下载"
 
 #: sickrage/core/webserver/views.py:999 sickrage/core/webserver/views.py:1000
-#: sickrage/core/webserver/views/home/display_show.mako:552
-#: sickrage/core/webserver/views/home/index.mako:292
-#: sickrage/core/webserver/views/manage/mass_update.mako:54
+#: sickrage/core/webserver/views/home/display_show.mako:557
+#: sickrage/core/webserver/views/home/index.mako:297
+#: sickrage/core/webserver/views/manage/mass_update.mako:76
 msgid "Status"
 msgstr "状态"
 
-#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/display_show.mako:558
 #: sickrage/core/webserver/views/home/new_show.mako:115
 msgid "Search"
 msgstr "搜索"
 
-#: sickrage/core/webserver/views/home/display_show.mako:647
+#: sickrage/core/webserver/views/home/display_show.mako:652
 msgid "Never"
 msgstr "永远不会"
 
 #: sickrage/core/common.py:616
-#: sickrage/core/webserver/views/home/display_show.mako:675
+#: sickrage/core/webserver/views/home/display_show.mako:680
 msgid "Unknown"
 msgstr "未知"
 
-#: sickrage/core/webserver/views/home/display_show.mako:694
+#: sickrage/core/webserver/views/home/display_show.mako:699
 msgid "Retry Download"
 msgstr "重试下载"
 
@@ -4781,7 +4781,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:135
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:143
-#: sickrage/core/webserver/views/manage/mass_update.mako:50
+#: sickrage/core/webserver/views/manage/mass_update.mako:72
 msgid "Skip downloaded"
 msgstr ""
 
@@ -4802,9 +4802,9 @@ msgid "use SiCKRAGE metadata when searching for subtitle, this will override the
 msgstr "使用 SiCKRAGE 元数据搜索时字幕，这将重写的自动发现的元数据"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:175
-#: sickrage/core/webserver/views/home/index.mako:238
+#: sickrage/core/webserver/views/home/index.mako:241
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
-#: sickrage/core/webserver/views/manage/mass_update.mako:51
+#: sickrage/core/webserver/views/manage/mass_update.mako:73
 #: sickrage/core/webserver/views/manage/queues.mako:18
 #: sickrage/core/webserver/views/manage/queues.mako:36
 msgid "Paused"
@@ -4836,7 +4836,7 @@ msgstr "如有空气日期冲突之间的定期和特别专题节目，稍后将
 
 #: sickrage/core/webserver/views/home/edit_show.mako:215
 #: sickrage/core/webserver/views/manage/mass_edit.mako:240
-#: sickrage/core/webserver/views/manage/mass_update.mako:46
+#: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Sports"
 msgstr "体育"
 
@@ -4861,7 +4861,7 @@ msgstr "\"力完全更新\"是必要的并且如果您拥有现有的插曲需�
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:263
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
-#: sickrage/core/webserver/views/manage/mass_update.mako:48
+#: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Anime"
 msgstr "动漫"
 
@@ -4871,7 +4871,7 @@ msgstr "检查显示是否为动漫剧集发布 Show.S02E03，不如说是 Show.
 
 #: sickrage/core/webserver/views/home/edit_show.mako:268
 #: sickrage/core/webserver/views/manage/mass_edit.mako:159
-#: sickrage/core/webserver/views/manage/mass_update.mako:49
+#: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Season folders"
 msgstr "季节文件夹"
 
@@ -4930,22 +4930,22 @@ msgid "Show Sort"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:12
-#: sickrage/core/webserver/views/home/trakt_shows.mako:20
+#: sickrage/core/webserver/views/home/trakt_shows.mako:21
 msgid "Original"
 msgstr "源语言"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:13
-#: sickrage/core/webserver/views/home/trakt_shows.mako:21
+#: sickrage/core/webserver/views/home/trakt_shows.mako:22
 msgid "Votes"
 msgstr "选票"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:14
-#: sickrage/core/webserver/views/home/trakt_shows.mako:22
+#: sickrage/core/webserver/views/home/trakt_shows.mako:23
 msgid "% Rating"
 msgstr "%评级"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:15
-#: sickrage/core/webserver/views/home/trakt_shows.mako:23
+#: sickrage/core/webserver/views/home/trakt_shows.mako:24
 msgid "% Rating > Votes"
 msgstr "评级 %> 票"
 
@@ -4955,26 +4955,26 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:19
 #: sickrage/core/webserver/views/home/index.mako:47
-#: sickrage/core/webserver/views/home/trakt_shows.mako:27
+#: sickrage/core/webserver/views/home/trakt_shows.mako:28
 msgid "Asc"
 msgstr "Asc"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:20
 #: sickrage/core/webserver/views/home/index.mako:51
-#: sickrage/core/webserver/views/home/trakt_shows.mako:28
+#: sickrage/core/webserver/views/home/trakt_shows.mako:29
 msgid "Desc"
 msgstr "Desc"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:47
+#: sickrage/core/webserver/views/home/imdb_shows.mako:49
 msgid "Fetching of IMDB Data failed. Are you online?"
 msgstr "提取的 IMDB 数据失败。你是在线吗？"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:48
+#: sickrage/core/webserver/views/home/imdb_shows.mako:50
 msgid "Exception:"
 msgstr "例外："
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:86
-#: sickrage/core/webserver/views/home/trakt_shows.mako:108
+#: sickrage/core/webserver/views/home/imdb_shows.mako:88
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111
 msgid "Add Show"
 msgstr "添加显示"
 
@@ -4986,78 +4986,78 @@ msgstr "下一集"
 msgid "Progress"
 msgstr "进展"
 
-#: sickrage/core/webserver/views/home/index.mako:98
+#: sickrage/core/webserver/views/home/index.mako:101
 msgid "Anime List"
 msgstr "动漫列表"
 
-#: sickrage/core/webserver/views/home/index.mako:123
+#: sickrage/core/webserver/views/home/index.mako:126
 msgid "... Loading ..."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:142
-#: sickrage/core/webserver/views/home/index.mako:480
-#: sickrage/core/webserver/views/manage/mass_update.mako:27
+#: sickrage/core/webserver/views/home/index.mako:145
+#: sickrage/core/webserver/views/home/index.mako:486
+#: sickrage/core/webserver/views/manage/mass_update.mako:33
 msgid "Continuing"
 msgstr "继续"
 
-#: sickrage/core/webserver/views/home/index.mako:144
-#: sickrage/core/webserver/views/home/index.mako:482
-#: sickrage/core/webserver/views/manage/mass_update.mako:30
+#: sickrage/core/webserver/views/home/index.mako:147
+#: sickrage/core/webserver/views/home/index.mako:488
+#: sickrage/core/webserver/views/manage/mass_update.mako:39
 msgid "Ended"
 msgstr "结束"
 
-#: sickrage/core/webserver/views/home/index.mako:163
-#: sickrage/core/webserver/views/home/index.mako:353
+#: sickrage/core/webserver/views/home/index.mako:166
+#: sickrage/core/webserver/views/home/index.mako:358
 msgid "Downloaded: "
 msgstr "下载："
 
-#: sickrage/core/webserver/views/home/index.mako:166
-#: sickrage/core/webserver/views/home/index.mako:356
+#: sickrage/core/webserver/views/home/index.mako:169
+#: sickrage/core/webserver/views/home/index.mako:361
 msgid "Snatched: "
 msgstr "抢："
 
-#: sickrage/core/webserver/views/home/index.mako:169
-#: sickrage/core/webserver/views/home/index.mako:359
+#: sickrage/core/webserver/views/home/index.mako:172
+#: sickrage/core/webserver/views/home/index.mako:364
 msgid "Total: "
 msgstr "总数："
 
-#: sickrage/core/webserver/views/home/index.mako:172
-#: sickrage/core/webserver/views/home/index.mako:362
+#: sickrage/core/webserver/views/home/index.mako:175
+#: sickrage/core/webserver/views/home/index.mako:367
 msgid "no data"
 msgstr "没有数据"
 
-#: sickrage/core/webserver/views/home/index.mako:229
+#: sickrage/core/webserver/views/home/index.mako:232
 msgid "Invalid date"
 msgstr "无效的日期"
 
-#: sickrage/core/webserver/views/home/index.mako:261
-#: sickrage/core/webserver/views/home/index.mako:445
+#: sickrage/core/webserver/views/home/index.mako:264
+#: sickrage/core/webserver/views/home/index.mako:450
 msgid "No Network"
 msgstr "没有网络"
 
-#: sickrage/core/webserver/views/home/index.mako:284
+#: sickrage/core/webserver/views/home/index.mako:289
 msgid "Next Ep"
 msgstr "下一集"
 
-#: sickrage/core/webserver/views/home/index.mako:285
+#: sickrage/core/webserver/views/home/index.mako:290
 msgid "Prev Ep"
 msgstr "上一页 Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:286
+#: sickrage/core/webserver/views/home/index.mako:291
 msgid "Show"
 msgstr "显示"
 
-#: sickrage/core/webserver/views/home/index.mako:289
+#: sickrage/core/webserver/views/home/index.mako:294
 msgid "Downloads"
 msgstr "下载"
 
-#: sickrage/core/webserver/views/home/index.mako:291
+#: sickrage/core/webserver/views/home/index.mako:296
 #: sickrage/core/webserver/views/home/status.mako:42
-#: sickrage/core/webserver/views/layouts/main.mako:393
+#: sickrage/core/webserver/views/layouts/main.mako:375
 msgid "Active"
 msgstr "活动"
 
-#: sickrage/core/webserver/views/home/index.mako:305
+#: sickrage/core/webserver/views/home/index.mako:310
 msgid "Loading..."
 msgstr "正在加载..."
 
@@ -5331,48 +5331,48 @@ msgstr "旧的位置"
 msgid "New Location"
 msgstr "新位置"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:18
+#: sickrage/core/webserver/views/home/trakt_shows.mako:19
 msgid "Sort By"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:26
+#: sickrage/core/webserver/views/home/trakt_shows.mako:27
 msgid "Sort Order"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:31
+#: sickrage/core/webserver/views/home/trakt_shows.mako:32
 msgid "Trakt List Selection"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:33
+#: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Most Anticipated"
 msgstr "最期待"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:36
+#: sickrage/core/webserver/views/home/trakt_shows.mako:37
 msgid "Trending"
 msgstr "趋势分析"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:39
+#: sickrage/core/webserver/views/home/trakt_shows.mako:40
 msgid "Popular"
 msgstr "受欢迎"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:42
+#: sickrage/core/webserver/views/home/trakt_shows.mako:43
 msgid "Most Watched"
 msgstr "最受瞩目"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:45
+#: sickrage/core/webserver/views/home/trakt_shows.mako:46
 msgid "Most Played"
 msgstr "演奏的最"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:48
+#: sickrage/core/webserver/views/home/trakt_shows.mako:49
 msgid "Most Collected"
 msgstr "大部分收集"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:52
+#: sickrage/core/webserver/views/home/trakt_shows.mako:53
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:20
 msgid "Limit"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:76
+#: sickrage/core/webserver/views/home/trakt_shows.mako:79
 msgid "Trakt API did not return any results, please check your config."
 msgstr "Trakt API 未返回任何结果，请检查您的配置。"
 
@@ -5549,7 +5549,7 @@ msgstr "管理"
 
 #: sickrage/core/webserver/views.py:3410 sickrage/core/webserver/views.py:3411
 #: sickrage/core/webserver/views/layouts/main.mako:168
-#: sickrage/core/webserver/views/manage/mass_update.mako:14
+#: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "成批更新"
 
@@ -5680,33 +5680,33 @@ msgstr "注销"
 msgid "Server Status"
 msgstr "服务器状态"
 
-#: sickrage/core/webserver/views/layouts/main.mako:403
+#: sickrage/core/webserver/views/layouts/main.mako:385
 msgid "Episodes Downloaded"
 msgstr "剧集下载"
 
-#: sickrage/core/webserver/views/layouts/main.mako:404
+#: sickrage/core/webserver/views/layouts/main.mako:386
 msgid "Overall Downloaded"
 msgstr "总体下载"
 
-#: sickrage/core/webserver/views/layouts/main.mako:409
+#: sickrage/core/webserver/views/layouts/main.mako:391
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Daily Search:"
 msgstr "每日搜索："
 
-#: sickrage/core/webserver/views/layouts/main.mako:412
+#: sickrage/core/webserver/views/layouts/main.mako:394
 #: sickrage/core/webserver/views/manage/queues.mako:17
 msgid "Backlog Search:"
 msgstr "积压搜索："
 
-#: sickrage/core/webserver/views/layouts/main.mako:415
+#: sickrage/core/webserver/views/layouts/main.mako:397
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:419
+#: sickrage/core/webserver/views/layouts/main.mako:401
 msgid "Load time:"
 msgstr "加载时间："
 
-#: sickrage/core/webserver/views/layouts/main.mako:426
+#: sickrage/core/webserver/views/layouts/main.mako:408
 msgid "Now:"
 msgstr "现在的位置："
 
@@ -5837,31 +5837,31 @@ msgid "Search for subtitles."
 msgstr "搜索字幕。"
 
 #: sickrage/core/webserver/views.py:3168 sickrage/core/webserver/views.py:3169
-#: sickrage/core/webserver/views/manage/mass_update.mako:13
+#: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "批量编辑"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:15
+#: sickrage/core/webserver/views/manage/mass_update.mako:14
 msgid "Mass Rescan"
 msgstr "大规模的重新扫描"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16
+#: sickrage/core/webserver/views/manage/mass_update.mako:15
 msgid "Mass Rename"
 msgstr "批量重命名"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:18
+#: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Remove"
 msgstr "批量删除"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:20
+#: sickrage/core/webserver/views/manage/mass_update.mako:19
 msgid "Mass Subtitle"
 msgstr "大规模的字幕"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:52
+#: sickrage/core/webserver/views/manage/mass_update.mako:74
 msgid "Subtitle"
 msgstr "字幕"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:53
+#: sickrage/core/webserver/views/manage/mass_update.mako:75
 msgid "Default Ep Status"
 msgstr ""
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-01 01:28-0700\n"
-"PO-Revision-Date: 2018-08-01 08:29\n"
+"POT-Creation-Date: 2018-08-01 13:42-0700\n"
+"PO-Revision-Date: 2018-08-01 20:42\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -57,14 +57,14 @@ msgstr "검색"
 msgid "Queued"
 msgstr "대기"
 
-#: sickrage/core/webserver/views/home/display_show.mako:701
+#: sickrage/core/webserver/views/home/display_show.mako:706
 #: sickrage/core/webserver/views/includes/modals.mako:42
 #: sickrage/core/webserver/views/includes/modals.mako:63
 #: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:603
 msgid "Manual Search"
 msgstr "수동 검색"
 
-#: sickrage/core/webserver/views/home/index.mako:301 src/js/core.js:628
+#: sickrage/core/webserver/views/home/index.mako:306 src/js/core.js:628
 #: src/js/core.js:774 src/js/core.js:817
 msgid "loading"
 msgstr "로드"
@@ -73,263 +73,263 @@ msgstr "로드"
 msgid "Choose Directory"
 msgstr "디렉터리 선택"
 
-#: sickrage/core/webserver/views.py:3579 src/js/core.js:1464
+#: sickrage/core/webserver/views.py:3579 src/js/core.js:1470
 msgid "Clear History"
 msgstr "기록 지우기"
 
-#: src/js/core.js:1465
+#: src/js/core.js:1471
 msgid "Are you sure you want to clear all download history ?"
 msgstr "당신은 모두를 다운로드 역사는?"
 
-#: sickrage/core/webserver/views.py:3581 src/js/core.js:1470
+#: sickrage/core/webserver/views.py:3581 src/js/core.js:1476
 msgid "Trim History"
 msgstr "역사를 트림"
 
-#: src/js/core.js:1471
+#: src/js/core.js:1477
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "당신은 모든 트림을 다운로드 30 일 보다 오래 된 역사는?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2169
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2178
 msgid "Remove Show"
 msgstr "표시 제거"
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2170
+#: src/js/core.js:2179
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2223 src/js/core.js:2255
+#: src/js/core.js:2232 src/js/core.js:2264
 msgid "Update failed."
 msgstr "업데이트 하지 못했습니다."
 
-#: src/js/core.js:2266
+#: src/js/core.js:2275
 msgid "Select Show Location"
 msgstr "보기 위치 선택"
 
-#: src/js/core.js:2400
+#: src/js/core.js:2414
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2416
+#: src/js/core.js:2430
 msgid "Select Unprocessed Episode Folder"
 msgstr "처리 되지 않은 에피소드 폴더 선택"
 
-#: src/js/core.js:2786
+#: src/js/core.js:2800
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "검색 시간 초과, 인덱서 증가 시간 제한"
 
-#: src/js/core.js:2790
+#: src/js/core.js:2804
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2794
+#: src/js/core.js:2808
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2813
+#: src/js/core.js:2827
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2815
+#: src/js/core.js:2829
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2860
+#: src/js/core.js:2874
 msgid "Saved Defaults"
 msgstr "저장 된 기본값"
 
-#: src/js/core.js:2860
+#: src/js/core.js:2874
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "현재 선택 항목에 \"쇼를 추가\" 기본값 설정 되었습니다."
 
-#: src/js/core.js:2914
+#: src/js/core.js:2931
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2956
+#: src/js/core.js:2973
 msgid "Reset Config to Defaults"
 msgstr "기본값 설정으로 재설정"
 
-#: src/js/core.js:2957
+#: src/js/core.js:2974
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "당신은 설정 기본값으로 재설정 하 시겠습니까?"
 
-#: src/js/core.js:3049
+#: src/js/core.js:3066
 msgid "Select path to pip"
 msgstr "Pip를 경로 선택"
 
-#: src/js/core.js:3055
+#: src/js/core.js:3072
 msgid "Select path to git"
 msgstr "자식에 대 한 경로 선택"
 
-#: src/js/core.js:3063 src/js/core.js:3081 src/js/core.js:3925 src/js/core.js:3943
-#: src/js/core.js:3964 src/js/core.js:3986 src/js/core.js:4009 src/js/core.js:4031
-#: src/js/core.js:4059 src/js/core.js:4076 src/js/core.js:4120 src/js/core.js:4205
-#: src/js/core.js:4263 src/js/core.js:4280 src/js/core.js:4310 src/js/core.js:4367
-#: src/js/core.js:4443 src/js/core.js:4462 src/js/core.js:4478
+#: src/js/core.js:3080 src/js/core.js:3098 src/js/core.js:3942 src/js/core.js:3960
+#: src/js/core.js:3981 src/js/core.js:4003 src/js/core.js:4026 src/js/core.js:4048
+#: src/js/core.js:4076 src/js/core.js:4093 src/js/core.js:4137 src/js/core.js:4222
+#: src/js/core.js:4280 src/js/core.js:4297 src/js/core.js:4327 src/js/core.js:4384
+#: src/js/core.js:4460 src/js/core.js:4479 src/js/core.js:4495
 msgid "Please fill out the necessary fields above."
 msgstr "위의 필요한 필드를 작성 하십시오."
 
-#: src/js/core.js:3119
+#: src/js/core.js:3136
 msgid "Select Subtitles Download Directory"
 msgstr "선택 자막 다운로드 디렉토리"
 
-#: src/js/core.js:3235
+#: src/js/core.js:3252
 msgid "Select .nzb blackhole/watch location"
 msgstr ".Nzb 블랙홀/시계 위치 선택"
 
-#: src/js/core.js:3236
+#: src/js/core.js:3253
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent blackhole/시계 위치 선택"
 
-#: src/js/core.js:3237
+#: src/js/core.js:3254
 msgid "Select .torrent download location"
 msgstr ".Torrent 다운로드 위치를 선택"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3304
+#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3321
 msgid "Minimum seeding time is"
 msgstr "최소 시간 시드"
 
-#: src/js/core.js:3306
+#: src/js/core.js:3323
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL을 당신의 uTorrent 클라이언트 (예: http://localhost:8000)"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3326
 msgid "Stop seeding when inactive for"
 msgstr "시드 비활성 때 중지"
 
-#: src/js/core.js:3315
+#: src/js/core.js:3332
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL 전송 클라이언트 (예: http://localhost:9091)을"
 
-#: src/js/core.js:3325
+#: src/js/core.js:3342
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL을 당신의 홍수 클라이언트 (예: http://localhost:8112)"
 
-#: src/js/core.js:3334
+#: src/js/core.js:3351
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 또는 호스트 이름 홍수 데몬 (예: scgi://localhost:58846)"
 
-#: src/js/core.js:3341
+#: src/js/core.js:3358
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL을 당신의 Synology DS 클라이언트 (예: http://localhost:5000)"
 
-#: src/js/core.js:3346
+#: src/js/core.js:3363
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3346
+#: src/js/core.js:3363
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3356
+#: src/js/core.js:3373
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:3366
+#: src/js/core.js:3383
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL을 당신의 MLDonkey (예: http://localhost:4080)"
 
-#: src/js/core.js:3377
+#: src/js/core.js:3394
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Putio 클라이언트 (예: http://localhost:8080/) URL"
 
-#: src/js/core.js:3563
+#: src/js/core.js:3580
 msgid "Select TV Download Directory"
 msgstr "TV 다운로드 디렉터리 선택"
 
-#: src/js/core.js:3564
+#: src/js/core.js:3581
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3579
+#: src/js/core.js:3596
 msgid "Unrar Executable not found."
 msgstr "Unrar 실행 파일을 찾을 수 없습니다."
 
-#: src/js/core.js:3625 src/js/core.js:3669 src/js/core.js:3713 src/js/core.js:3773
+#: src/js/core.js:3642 src/js/core.js:3686 src/js/core.js:3730 src/js/core.js:3790
 msgid "This pattern is invalid."
 msgstr "이 패턴 유효 하지 않습니다."
 
-#: src/js/core.js:3632 src/js/core.js:3676 src/js/core.js:3720 src/js/core.js:3780
+#: src/js/core.js:3649 src/js/core.js:3693 src/js/core.js:3737 src/js/core.js:3797
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "이 패턴은 유효한 것 없이 폴더를 그것을 사용 하 여 강제로 \"결합\"에서 모든 프로그램에 대 한."
 
-#: src/js/core.js:3639 src/js/core.js:3683 src/js/core.js:3727 src/js/core.js:3787
+#: src/js/core.js:3656 src/js/core.js:3700 src/js/core.js:3744 src/js/core.js:3804
 msgid "This pattern is valid."
 msgstr "이 패턴은 유효 합니다."
 
-#: src/js/core.js:4113
+#: src/js/core.js:4130
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 권한 부여 확인"
 
-#: src/js/core.js:4170 src/js/core.js:4224
+#: src/js/core.js:4187 src/js/core.js:4241
 msgid "Please fill in the Popcorn IP address"
 msgstr "팝콘 IP 주소를 입력 하시기 바랍니다"
 
-#: src/js/core.js:4377
+#: src/js/core.js:4394
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "체크 블랙 리스트 이름; 값 필요 trakt 슬러그"
 
-#: src/js/core.js:4409
+#: src/js/core.js:4426
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4412
+#: src/js/core.js:4429
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4414
+#: src/js/core.js:4431
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4420
+#: src/js/core.js:4437
 msgid "Enter an email address to send the test to:"
 msgstr "테스트를 보낼 이메일 주소를 입력:"
 
-#: src/js/core.js:4422
+#: src/js/core.js:4439
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4492
+#: src/js/core.js:4509
 msgid "Device list updated. Please choose a device to push to."
 msgstr "장치 목록 업데이트입니다. 장치를 선택 하십시오."
 
-#: src/js/core.js:4553
+#: src/js/core.js:4570
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet api 키를 입력 하지 않은"
 
-#: src/js/core.js:4583
+#: src/js/core.js:4600
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "새로운 pushbullet 설정을 저장 하려면 잊지 마세요."
 
-#: src/js/core.js:4655
+#: src/js/core.js:4672
 msgid "Select backup folder to save to"
 msgstr "백업 폴더에 저장를 선택합니다"
 
-#: src/js/core.js:4660
+#: src/js/core.js:4677
 msgid "Select backup files to restore"
 msgstr "복원할 백업 파일 선택"
 
-#: src/js/core.js:5205
+#: src/js/core.js:5222
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:17 src/js/core.js:5418
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5437
 msgid "Mass Delete"
 msgstr "대량 삭제"
 
-#: src/js/core.js:5419
+#: src/js/core.js:5438
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: src/js/core.js:5496
+#: src/js/core.js:5515
 msgid "DELETED"
 msgstr ""
 
@@ -350,10 +350,10 @@ msgid "Parameters"
 msgstr "매개 변수"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:547
+#: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:25
-#: sickrage/core/webserver/views/home/trakt_shows.mako:19
+#: sickrage/core/webserver/views/home/trakt_shows.mako:20
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:80
 msgid "Name"
 msgstr "이름"
@@ -466,7 +466,7 @@ msgstr "시간"
 
 #: sickrage/core/webserver/views/history.mako:55
 #: sickrage/core/webserver/views/history.mako:119
-#: sickrage/core/webserver/views/home/display_show.mako:543
+#: sickrage/core/webserver/views/home/display_show.mako:548
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
@@ -483,14 +483,14 @@ msgstr "공급자"
 
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
-#: sickrage/core/webserver/views/home/index.mako:288
-#: sickrage/core/webserver/views/manage/mass_update.mako:45
+#: sickrage/core/webserver/views/home/index.mako:293
+#: sickrage/core/webserver/views/manage/mass_update.mako:67
 msgid "Quality"
 msgstr "품질"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:120
-#: sickrage/core/webserver/views/layouts/main.mako:400
+#: sickrage/core/webserver/views/layouts/main.mako:382
 msgid "Snatched"
 msgstr "납치"
 
@@ -510,7 +510,7 @@ msgstr "자막"
 msgid "missing provider"
 msgstr "누락 된 공급자"
 
-#: sickrage/core/webserver/views/home/display_show.mako:444
+#: sickrage/core/webserver/views/home/display_show.mako:447
 #: sickrage/core/webserver/views/schedule.mako:23
 msgid "Select Columns"
 msgstr "열 선택"
@@ -748,7 +748,7 @@ msgstr "SickRage 인터페이스를 시작할 때"
 
 #: sickrage/core/webserver/views/config/general.mako:142
 #: sickrage/core/webserver/views/layouts/main.mako:134
-#: sickrage/core/webserver/views/layouts/main.mako:392
+#: sickrage/core/webserver/views/layouts/main.mako:374
 msgid "Shows"
 msgstr "쇼"
 
@@ -980,7 +980,7 @@ msgstr "지역"
 
 #: sickrage/core/webserver/views/config/general.mako:640
 #: sickrage/core/webserver/views/home/index.mako:33
-#: sickrage/core/webserver/views/home/index.mako:287
+#: sickrage/core/webserver/views/home/index.mako:292
 msgid "Network"
 msgstr "네트워크"
 
@@ -3134,7 +3134,7 @@ msgstr "표시 이름:"
 #: sickrage/core/webserver/views/config/postprocessing.mako:971
 #: sickrage/core/webserver/views/config/postprocessing.mako:1191
 #: sickrage/core/webserver/views/home/status.mako:117
-#: sickrage/core/webserver/views/manage/mass_update.mako:44
+#: sickrage/core/webserver/views/manage/mass_update.mako:66
 msgid "Show Name"
 msgstr "표시 이름"
 
@@ -3204,7 +3204,7 @@ msgstr "Episode_Name"
 #: sickrage/core/webserver/views/config/postprocessing.mako:805
 #: sickrage/core/webserver/views/config/postprocessing.mako:1019
 #: sickrage/core/webserver/views/config/postprocessing.mako:1259
-#: sickrage/core/webserver/views/home/display_show.mako:139
+#: sickrage/core/webserver/views/home/display_show.mako:142
 msgid "Quality:"
 msgstr "품질:"
 
@@ -4250,7 +4250,7 @@ msgstr "연결 테스트"
 #: sickrage/core/webserver/api.py:966
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:708
+#: sickrage/core/webserver/views/home/display_show.mako:713
 msgid "Subtitles Search"
 msgstr "자막 검색"
 
@@ -4323,7 +4323,7 @@ msgid "The directory where SickRage should store your"
 msgstr "SickRage 저장 해야 하는 디렉터리를"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:125
-#: sickrage/core/webserver/views/home/display_show.mako:551
+#: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:276
@@ -4451,282 +4451,282 @@ msgstr "각 보기에 대 한 설정을 지정 하는 방법"
 msgid "Submit"
 msgstr "전송"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:15
+#: sickrage/core/webserver/views/home/add_shows.mako:16
 msgid "Add New Show"
 msgstr "새로운 쇼 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:16
+#: sickrage/core/webserver/views/home/add_shows.mako:17
 msgid "For shows that you haven't downloaded yet, this option finds a show on theTVDB.com, creates a directory for it's episodes and adds it."
 msgstr "아직 다운로드 하지 않은 쇼에 대 한이 옵션, theTVDB.com에는 쇼를 발견 에피소드 이며 추가 대 한 디렉터리를 만듭니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:30
+#: sickrage/core/webserver/views/home/add_shows.mako:31
 msgid "Add from Trakt"
 msgstr "Trakt에서 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:31
+#: sickrage/core/webserver/views/home/add_shows.mako:32
 msgid "For shows that you haven't downloaded yet, this option lets you choose a show from one of the Trakt lists to add to SiCKRAGE."
 msgstr "아직 다운로드 하지 않은 쇼에 대 한이 옵션 SiCKRAGE에 추가할 Trakt 목록 중 하나에서 쇼를 선택할 수 있습니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:45
+#: sickrage/core/webserver/views/home/add_shows.mako:46
 msgid "Add from IMDB"
 msgstr "IMDB에서 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:46
+#: sickrage/core/webserver/views/home/add_shows.mako:47
 msgid "View IMDB's list of the most popular shows. This feature uses IMDB's MOVIEMeter algorithm to identify popular TV Series."
 msgstr "가장 인기 있는 쇼의 IMDB의 목록 보기. 이 기능은 인기 TV 시리즈를 식별 하기 위해 IMDB의 MOVIEMeter 알고리즘을 사용 합니다."
 
-#: sickrage/core/webserver/views/home/add_shows.mako:60
+#: sickrage/core/webserver/views/home/add_shows.mako:61
 msgid "Add Existing Shows"
 msgstr "기존 쇼 추가"
 
-#: sickrage/core/webserver/views/home/add_shows.mako:61
+#: sickrage/core/webserver/views/home/add_shows.mako:62
 msgid "Use this option to add shows that already have a folder created on your hard drive. SickRage will scan your existing metadata/episodes and add the show accordingly."
 msgstr "하드 드라이브에 만든 폴더에 이미 있는 프로그램을 추가 하려면이 옵션을 사용 합니다. SickRage 기존 메타 데이터/에피소드를 검사 하 고 그에 따라 쇼를 추가."
 
-#: sickrage/core/webserver/views/home/display_show.mako:72
+#: sickrage/core/webserver/views/home/display_show.mako:74
 msgid "Display Specials:"
 msgstr "특가 상품 표시:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:87
+#: sickrage/core/webserver/views/home/display_show.mako:90
 msgid "Season:"
 msgstr "시즌:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:128
+#: sickrage/core/webserver/views/home/display_show.mako:131
 msgid "Rating:"
 msgstr "등급:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:156
+#: sickrage/core/webserver/views/home/display_show.mako:159
 msgid "Show Status:"
 msgstr "쇼 상태:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:162
-#: sickrage/core/webserver/views/home/display_show.mako:168
-#: sickrage/core/webserver/views/home/display_show.mako:173
+#: sickrage/core/webserver/views/home/display_show.mako:165
+#: sickrage/core/webserver/views/home/display_show.mako:171
+#: sickrage/core/webserver/views/home/display_show.mako:176
 msgid "Originally Airs:"
 msgstr "원래 방송 해:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:179
+#: sickrage/core/webserver/views/home/display_show.mako:182
 msgid "Start Year:"
 msgstr "시작 연도:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:186
+#: sickrage/core/webserver/views/home/display_show.mako:189
 msgid "Runtime:"
 msgstr "런타임:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:190
+#: sickrage/core/webserver/views/home/display_show.mako:193
 msgid "minutes"
 msgstr "분"
 
-#: sickrage/core/webserver/views/home/display_show.mako:192
+#: sickrage/core/webserver/views/home/display_show.mako:195
 msgid "UNKNOWN"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:199
+#: sickrage/core/webserver/views/home/display_show.mako:202
 msgid "Info Sites:"
 msgstr "정보 사이트:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:231
+#: sickrage/core/webserver/views/home/display_show.mako:234
 msgid "Genre:"
 msgstr "장르:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:257
+#: sickrage/core/webserver/views/home/display_show.mako:260
 msgid "Default EP Status:"
 msgstr "기본 EP 상태:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:261
+#: sickrage/core/webserver/views/home/display_show.mako:264
 msgid "Location:"
 msgstr "위치:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:265
+#: sickrage/core/webserver/views/home/display_show.mako:268
 #: sickrage/core/webserver/views/home/status.mako:219
 #: sickrage/core/webserver/views/home/status.mako:230
 msgid "Missing"
 msgstr "누락"
 
-#: sickrage/core/webserver/views/home/display_show.mako:269
+#: sickrage/core/webserver/views/home/display_show.mako:272
 msgid "Size:"
 msgstr "크기:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:274
+#: sickrage/core/webserver/views/home/display_show.mako:277
 msgid "Scene Name:"
 msgstr "장면 이름:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:278
+#: sickrage/core/webserver/views/home/display_show.mako:281
 msgid "Search Delay:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:283
+#: sickrage/core/webserver/views/home/display_show.mako:286
 msgid "Required Words:"
 msgstr "필요한 단어:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:289
+#: sickrage/core/webserver/views/home/display_show.mako:292
 msgid "Ignored Words:"
 msgstr "단어를 무시:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:295
+#: sickrage/core/webserver/views/home/display_show.mako:298
 msgid "Wanted Group"
 msgstr "원하는 그룹"
 
-#: sickrage/core/webserver/views/home/display_show.mako:303
+#: sickrage/core/webserver/views/home/display_show.mako:306
 msgid "Unwanted Group"
 msgstr "원치 않는 그룹"
 
-#: sickrage/core/webserver/views/home/display_show.mako:314
+#: sickrage/core/webserver/views/home/display_show.mako:317
 msgid "Info Language:"
 msgstr "정보 언어:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:321
+#: sickrage/core/webserver/views/home/display_show.mako:324
 msgid "Subtitles:"
 msgstr "자막:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:328
+#: sickrage/core/webserver/views/home/display_show.mako:331
 msgid "Subtitles Metadata:"
 msgstr "자막 메타 데이터:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:334
+#: sickrage/core/webserver/views/home/display_show.mako:337
 msgid "Season Folders:"
 msgstr "시즌 폴더:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:340
+#: sickrage/core/webserver/views/home/display_show.mako:343
 msgid "Paused:"
 msgstr "일시 중지:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:346
+#: sickrage/core/webserver/views/home/display_show.mako:349
 msgid "Air-by-Date:"
 msgstr "공기-의해-날짜:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:352
+#: sickrage/core/webserver/views/home/display_show.mako:355
 msgid "Sports:"
 msgstr "스포츠:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:358
+#: sickrage/core/webserver/views/home/display_show.mako:361
 msgid "Anime:"
 msgstr "애니메이션:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:364
+#: sickrage/core/webserver/views/home/display_show.mako:367
 msgid "DVD Order:"
 msgstr "DVD 주문:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:370
+#: sickrage/core/webserver/views/home/display_show.mako:373
 msgid "Scene Numbering:"
 msgstr "장면 번호 매기기:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:376
+#: sickrage/core/webserver/views/home/display_show.mako:379
 msgid "Skip Downloaded:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:415
+#: sickrage/core/webserver/views/home/display_show.mako:418
 msgid "Missed:"
 msgstr "보고 싶 었 어:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:419
+#: sickrage/core/webserver/views/home/display_show.mako:422
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:25
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:66
 msgid "Wanted:"
 msgstr "구함:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:423
+#: sickrage/core/webserver/views/home/display_show.mako:426
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:26
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:68
 msgid "Low Quality:"
 msgstr "낮은 품질:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:427
+#: sickrage/core/webserver/views/home/display_show.mako:430
 msgid "Downloaded:"
 msgstr "다운로드:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:431
+#: sickrage/core/webserver/views/home/display_show.mako:434
 msgid "Skipped:"
 msgstr "생략:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:436
+#: sickrage/core/webserver/views/home/display_show.mako:439
 msgid "Snatched:"
 msgstr "납치:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:447
+#: sickrage/core/webserver/views/home/display_show.mako:450
 msgid "Select Filtered Episodes"
 msgstr "필터링 된 에피소드를 선택"
 
-#: sickrage/core/webserver/views/home/display_show.mako:450
+#: sickrage/core/webserver/views/home/display_show.mako:453
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "모두 지우기"
 
-#: sickrage/core/webserver/views/home/display_show.mako:517
+#: sickrage/core/webserver/views/home/display_show.mako:520
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:517
+#: sickrage/core/webserver/views/home/display_show.mako:520
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:523
+#: sickrage/core/webserver/views/home/display_show.mako:527
 msgid "Hide Episodes"
 msgstr "에피소드를 숨기기"
 
-#: sickrage/core/webserver/views/home/display_show.mako:527
+#: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Show Episodes"
 msgstr "쇼 에피소드"
 
-#: sickrage/core/webserver/views/home/display_show.mako:541
+#: sickrage/core/webserver/views/home/display_show.mako:546
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:542
+#: sickrage/core/webserver/views/home/display_show.mako:547
 msgid "TBN"
 msgstr "TBN"
 
-#: sickrage/core/webserver/views/home/display_show.mako:544
+#: sickrage/core/webserver/views/home/display_show.mako:549
 msgid "Absolute"
 msgstr "절대"
 
-#: sickrage/core/webserver/views/home/display_show.mako:545
-#: sickrage/core/webserver/views/manage/mass_update.mako:47
+#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/manage/mass_update.mako:69
 msgid "Scene"
 msgstr "현장"
 
-#: sickrage/core/webserver/views/home/display_show.mako:546
+#: sickrage/core/webserver/views/home/display_show.mako:551
 msgid "Scene Absolute"
 msgstr "장면 절대"
 
-#: sickrage/core/webserver/views/home/display_show.mako:548
-#: sickrage/core/webserver/views/home/index.mako:290
+#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "크기"
 
-#: sickrage/core/webserver/views/home/display_show.mako:549
+#: sickrage/core/webserver/views/home/display_show.mako:554
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:81
 msgid "Airdate"
 msgstr "Airdate"
 
-#: sickrage/core/webserver/views/home/display_show.mako:550
-#: sickrage/core/webserver/views/home/display_show.mako:660
+#: sickrage/core/webserver/views/home/display_show.mako:555
+#: sickrage/core/webserver/views/home/display_show.mako:665
 msgid "Download"
 msgstr "다운로드"
 
 #: sickrage/core/webserver/views.py:999 sickrage/core/webserver/views.py:1000
-#: sickrage/core/webserver/views/home/display_show.mako:552
-#: sickrage/core/webserver/views/home/index.mako:292
-#: sickrage/core/webserver/views/manage/mass_update.mako:54
+#: sickrage/core/webserver/views/home/display_show.mako:557
+#: sickrage/core/webserver/views/home/index.mako:297
+#: sickrage/core/webserver/views/manage/mass_update.mako:76
 msgid "Status"
 msgstr "상태"
 
-#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/display_show.mako:558
 #: sickrage/core/webserver/views/home/new_show.mako:115
 msgid "Search"
 msgstr "검색"
 
-#: sickrage/core/webserver/views/home/display_show.mako:647
+#: sickrage/core/webserver/views/home/display_show.mako:652
 msgid "Never"
 msgstr "결코"
 
 #: sickrage/core/common.py:616
-#: sickrage/core/webserver/views/home/display_show.mako:675
+#: sickrage/core/webserver/views/home/display_show.mako:680
 msgid "Unknown"
 msgstr "알 수 없는"
 
-#: sickrage/core/webserver/views/home/display_show.mako:694
+#: sickrage/core/webserver/views/home/display_show.mako:699
 msgid "Retry Download"
 msgstr "다운로드 다시 시도"
 
@@ -4781,7 +4781,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:135
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:143
-#: sickrage/core/webserver/views/manage/mass_update.mako:50
+#: sickrage/core/webserver/views/manage/mass_update.mako:72
 msgid "Skip downloaded"
 msgstr ""
 
@@ -4802,9 +4802,9 @@ msgid "use SiCKRAGE metadata when searching for subtitle, this will override the
 msgstr "SiCKRAGE 메타 데이터를 사용 하 여 검색할 때 자막,이 자동 발견 메타 데이터를 재정의 합니다"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:175
-#: sickrage/core/webserver/views/home/index.mako:238
+#: sickrage/core/webserver/views/home/index.mako:241
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
-#: sickrage/core/webserver/views/manage/mass_update.mako:51
+#: sickrage/core/webserver/views/manage/mass_update.mako:73
 #: sickrage/core/webserver/views/manage/queues.mako:18
 #: sickrage/core/webserver/views/manage/queues.mako:36
 msgid "Paused"
@@ -4836,7 +4836,7 @@ msgstr "공기 날짜 일정 하 고 특별 한 에피소드 사이 충돌 하�
 
 #: sickrage/core/webserver/views/home/edit_show.mako:215
 #: sickrage/core/webserver/views/manage/mass_edit.mako:240
-#: sickrage/core/webserver/views/manage/mass_update.mako:46
+#: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Sports"
 msgstr "스포츠"
 
@@ -4861,7 +4861,7 @@ msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필�
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:263
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
-#: sickrage/core/webserver/views/manage/mass_update.mako:48
+#: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Anime"
 msgstr "애니메이션"
 
@@ -4871,7 +4871,7 @@ msgstr "쇼는 애니메이션 에피소드 Show.S02E03 보다는 오히려 Show
 
 #: sickrage/core/webserver/views/home/edit_show.mako:268
 #: sickrage/core/webserver/views/manage/mass_edit.mako:159
-#: sickrage/core/webserver/views/manage/mass_update.mako:49
+#: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Season folders"
 msgstr "시즌 폴더"
 
@@ -4930,22 +4930,22 @@ msgid "Show Sort"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:12
-#: sickrage/core/webserver/views/home/trakt_shows.mako:20
+#: sickrage/core/webserver/views/home/trakt_shows.mako:21
 msgid "Original"
 msgstr "원문 언어"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:13
-#: sickrage/core/webserver/views/home/trakt_shows.mako:21
+#: sickrage/core/webserver/views/home/trakt_shows.mako:22
 msgid "Votes"
 msgstr "표"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:14
-#: sickrage/core/webserver/views/home/trakt_shows.mako:22
+#: sickrage/core/webserver/views/home/trakt_shows.mako:23
 msgid "% Rating"
 msgstr "% 등급"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:15
-#: sickrage/core/webserver/views/home/trakt_shows.mako:23
+#: sickrage/core/webserver/views/home/trakt_shows.mako:24
 msgid "% Rating > Votes"
 msgstr "% 등급 > 투표"
 
@@ -4955,26 +4955,26 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:19
 #: sickrage/core/webserver/views/home/index.mako:47
-#: sickrage/core/webserver/views/home/trakt_shows.mako:27
+#: sickrage/core/webserver/views/home/trakt_shows.mako:28
 msgid "Asc"
 msgstr "Asc"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:20
 #: sickrage/core/webserver/views/home/index.mako:51
-#: sickrage/core/webserver/views/home/trakt_shows.mako:28
+#: sickrage/core/webserver/views/home/trakt_shows.mako:29
 msgid "Desc"
 msgstr "Desc"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:47
+#: sickrage/core/webserver/views/home/imdb_shows.mako:49
 msgid "Fetching of IMDB Data failed. Are you online?"
 msgstr "IMDB 데이터의 가져오기에 실패 했습니다. 온라인 당신은?"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:48
+#: sickrage/core/webserver/views/home/imdb_shows.mako:50
 msgid "Exception:"
 msgstr "예외:"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:86
-#: sickrage/core/webserver/views/home/trakt_shows.mako:108
+#: sickrage/core/webserver/views/home/imdb_shows.mako:88
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111
 msgid "Add Show"
 msgstr "보기 추가"
 
@@ -4986,78 +4986,78 @@ msgstr "다음 에피소드"
 msgid "Progress"
 msgstr "진행"
 
-#: sickrage/core/webserver/views/home/index.mako:98
+#: sickrage/core/webserver/views/home/index.mako:101
 msgid "Anime List"
 msgstr "애니메이션 목록"
 
-#: sickrage/core/webserver/views/home/index.mako:123
+#: sickrage/core/webserver/views/home/index.mako:126
 msgid "... Loading ..."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:142
-#: sickrage/core/webserver/views/home/index.mako:480
-#: sickrage/core/webserver/views/manage/mass_update.mako:27
+#: sickrage/core/webserver/views/home/index.mako:145
+#: sickrage/core/webserver/views/home/index.mako:486
+#: sickrage/core/webserver/views/manage/mass_update.mako:33
 msgid "Continuing"
 msgstr "계속"
 
-#: sickrage/core/webserver/views/home/index.mako:144
-#: sickrage/core/webserver/views/home/index.mako:482
-#: sickrage/core/webserver/views/manage/mass_update.mako:30
+#: sickrage/core/webserver/views/home/index.mako:147
+#: sickrage/core/webserver/views/home/index.mako:488
+#: sickrage/core/webserver/views/manage/mass_update.mako:39
 msgid "Ended"
 msgstr "종료"
 
-#: sickrage/core/webserver/views/home/index.mako:163
-#: sickrage/core/webserver/views/home/index.mako:353
+#: sickrage/core/webserver/views/home/index.mako:166
+#: sickrage/core/webserver/views/home/index.mako:358
 msgid "Downloaded: "
 msgstr "다운로드: "
 
-#: sickrage/core/webserver/views/home/index.mako:166
-#: sickrage/core/webserver/views/home/index.mako:356
+#: sickrage/core/webserver/views/home/index.mako:169
+#: sickrage/core/webserver/views/home/index.mako:361
 msgid "Snatched: "
 msgstr "납치: "
 
-#: sickrage/core/webserver/views/home/index.mako:169
-#: sickrage/core/webserver/views/home/index.mako:359
+#: sickrage/core/webserver/views/home/index.mako:172
+#: sickrage/core/webserver/views/home/index.mako:364
 msgid "Total: "
 msgstr "총: "
 
-#: sickrage/core/webserver/views/home/index.mako:172
-#: sickrage/core/webserver/views/home/index.mako:362
+#: sickrage/core/webserver/views/home/index.mako:175
+#: sickrage/core/webserver/views/home/index.mako:367
 msgid "no data"
 msgstr "데이터 없음"
 
-#: sickrage/core/webserver/views/home/index.mako:229
+#: sickrage/core/webserver/views/home/index.mako:232
 msgid "Invalid date"
 msgstr "잘못 된 날짜"
 
-#: sickrage/core/webserver/views/home/index.mako:261
-#: sickrage/core/webserver/views/home/index.mako:445
+#: sickrage/core/webserver/views/home/index.mako:264
+#: sickrage/core/webserver/views/home/index.mako:450
 msgid "No Network"
 msgstr "없음 네트워크"
 
-#: sickrage/core/webserver/views/home/index.mako:284
+#: sickrage/core/webserver/views/home/index.mako:289
 msgid "Next Ep"
 msgstr "다음 Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:285
+#: sickrage/core/webserver/views/home/index.mako:290
 msgid "Prev Ep"
 msgstr "이전 Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:286
+#: sickrage/core/webserver/views/home/index.mako:291
 msgid "Show"
 msgstr "보기"
 
-#: sickrage/core/webserver/views/home/index.mako:289
+#: sickrage/core/webserver/views/home/index.mako:294
 msgid "Downloads"
 msgstr "다운로드"
 
-#: sickrage/core/webserver/views/home/index.mako:291
+#: sickrage/core/webserver/views/home/index.mako:296
 #: sickrage/core/webserver/views/home/status.mako:42
-#: sickrage/core/webserver/views/layouts/main.mako:393
+#: sickrage/core/webserver/views/layouts/main.mako:375
 msgid "Active"
 msgstr "활성"
 
-#: sickrage/core/webserver/views/home/index.mako:305
+#: sickrage/core/webserver/views/home/index.mako:310
 msgid "Loading..."
 msgstr "로드 중입니다..."
 
@@ -5331,48 +5331,48 @@ msgstr "이전 위치"
 msgid "New Location"
 msgstr "새로운 위치"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:18
+#: sickrage/core/webserver/views/home/trakt_shows.mako:19
 msgid "Sort By"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:26
+#: sickrage/core/webserver/views/home/trakt_shows.mako:27
 msgid "Sort Order"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:31
+#: sickrage/core/webserver/views/home/trakt_shows.mako:32
 msgid "Trakt List Selection"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:33
+#: sickrage/core/webserver/views/home/trakt_shows.mako:34
 msgid "Most Anticipated"
 msgstr "가장 예상"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:36
+#: sickrage/core/webserver/views/home/trakt_shows.mako:37
 msgid "Trending"
 msgstr "동향"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:39
+#: sickrage/core/webserver/views/home/trakt_shows.mako:40
 msgid "Popular"
 msgstr "인기 있는"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:42
+#: sickrage/core/webserver/views/home/trakt_shows.mako:43
 msgid "Most Watched"
 msgstr "가장 본"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:45
+#: sickrage/core/webserver/views/home/trakt_shows.mako:46
 msgid "Most Played"
 msgstr "가장 연주"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:48
+#: sickrage/core/webserver/views/home/trakt_shows.mako:49
 msgid "Most Collected"
 msgstr "대부분 수집된"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:52
+#: sickrage/core/webserver/views/home/trakt_shows.mako:53
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:20
 msgid "Limit"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:76
+#: sickrage/core/webserver/views/home/trakt_shows.mako:79
 msgid "Trakt API did not return any results, please check your config."
 msgstr "Trakt API는 어떤 결과 반환 하지 않은, 확인 하십시오 config."
 
@@ -5549,7 +5549,7 @@ msgstr "관리"
 
 #: sickrage/core/webserver/views.py:3410 sickrage/core/webserver/views.py:3411
 #: sickrage/core/webserver/views/layouts/main.mako:168
-#: sickrage/core/webserver/views/manage/mass_update.mako:14
+#: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "대량 업데이트"
 
@@ -5680,33 +5680,33 @@ msgstr "로그 아웃"
 msgid "Server Status"
 msgstr "서버 상태"
 
-#: sickrage/core/webserver/views/layouts/main.mako:403
+#: sickrage/core/webserver/views/layouts/main.mako:385
 msgid "Episodes Downloaded"
 msgstr "에피소드 다운로드"
 
-#: sickrage/core/webserver/views/layouts/main.mako:404
+#: sickrage/core/webserver/views/layouts/main.mako:386
 msgid "Overall Downloaded"
 msgstr "전체 다운로드"
 
-#: sickrage/core/webserver/views/layouts/main.mako:409
+#: sickrage/core/webserver/views/layouts/main.mako:391
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Daily Search:"
 msgstr "매일 검색:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:412
+#: sickrage/core/webserver/views/layouts/main.mako:394
 #: sickrage/core/webserver/views/manage/queues.mako:17
 msgid "Backlog Search:"
 msgstr "백로그 검색:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:415
+#: sickrage/core/webserver/views/layouts/main.mako:397
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:419
+#: sickrage/core/webserver/views/layouts/main.mako:401
 msgid "Load time:"
 msgstr "로드 시간:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:426
+#: sickrage/core/webserver/views/layouts/main.mako:408
 msgid "Now:"
 msgstr "지금:"
 
@@ -5837,31 +5837,31 @@ msgid "Search for subtitles."
 msgstr "자막에 대 한 검색."
 
 #: sickrage/core/webserver/views.py:3168 sickrage/core/webserver/views.py:3169
-#: sickrage/core/webserver/views/manage/mass_update.mako:13
+#: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "대량 편집"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:15
+#: sickrage/core/webserver/views/manage/mass_update.mako:14
 msgid "Mass Rescan"
 msgstr "대량 다시 검색"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16
+#: sickrage/core/webserver/views/manage/mass_update.mako:15
 msgid "Mass Rename"
 msgstr "대량 이름 바꾸기"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:18
+#: sickrage/core/webserver/views/manage/mass_update.mako:17
 msgid "Mass Remove"
 msgstr "대량 제거"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:20
+#: sickrage/core/webserver/views/manage/mass_update.mako:19
 msgid "Mass Subtitle"
 msgstr "대량 자막"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:52
+#: sickrage/core/webserver/views/manage/mass_update.mako:74
 msgid "Subtitle"
 msgstr "자막"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:53
+#: sickrage/core/webserver/views/manage/mass_update.mako:75
 msgid "Default Ep Status"
 msgstr ""
 
