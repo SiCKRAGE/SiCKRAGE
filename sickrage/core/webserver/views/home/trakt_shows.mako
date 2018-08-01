@@ -11,8 +11,9 @@
 <%block name="metas">
     <meta data-var="sickrage.SORT_ARTICLE" data-content="${sickrage.app.config.sort_article}">
 </%block>
-<%block name="content">
-    <div class="row sickrage-submenu">
+
+<%block name="sub_navbar">
+    <div class="row submenu">
         <div class="col text-left">
             <div class="form-inline m-2">
                 <select id="showsort" class="form-control form-control-inline m-1" title="${_('Sort By')}">
@@ -63,10 +64,12 @@
             </div>
         </div>
     </div>
+</%block>
 
+<%block name="content">
     <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card mt-1 mb-3">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
                 <div class="card-header">
                     <h3>${title}</h3>
                 </div>

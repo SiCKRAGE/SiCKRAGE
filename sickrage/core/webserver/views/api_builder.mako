@@ -12,8 +12,8 @@
 
 <%block name="content">
     <div class="row">
-        <div class="col-md-8 mx-auto">
-            <div class="card mt-3 mb-3">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
                 <div class="card-header">
                     <h3>${title}</h3>
                 </div>

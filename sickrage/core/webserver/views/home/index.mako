@@ -11,9 +11,9 @@
 <%block name="metas">
     <meta data-var="max_download_count" data-content="${max_download_count}">
 </%block>
-<%block name="content">
-    <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <div class="row sickrage-submenu mb-3">
+
+<%block name="sub_navbar">
+    <div class="row submenu">
         <div class="col text-left">
             <div class="form-inline m-2">
                 % if sickrage.app.config.home_layout == 'poster':
@@ -90,7 +90,10 @@
             </div>
         </div>
     </div>
+</%block>
 
+<%block name="content">
+    <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
     % for curListType, curShowlist in showlists.items():
         % if curListType == "Anime":
             <div class="row">
@@ -104,7 +107,7 @@
                 <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
             </div>
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
-                 class="show-grid mx-auto clearfix d-none">
+                 class="show-grid clearfix mx-auto d-none">
                 <div class="posterview">
                     % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
                         % if not curLoadingShow.show:

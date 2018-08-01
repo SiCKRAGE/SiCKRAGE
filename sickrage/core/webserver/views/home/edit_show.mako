@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-lg-10 mx-auto">
             <form action="editShow" method="post">
-                <div class="card mt-3 mb-3">
+                <div class="card">
                     <div class="card-header">
                         <h3 class="title float-md-left">${title}</h3>
                         <ul class="nav nav-pills card-header-pills float-md-right">

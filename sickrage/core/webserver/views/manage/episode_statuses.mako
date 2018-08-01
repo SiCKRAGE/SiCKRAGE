@@ -7,7 +7,7 @@
 <%block name="content">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <div class="card mt-3 mb-3">
+            <div class="card">
                 <div class="card-header">
                     <h3>${title}</h3>
                 </div>

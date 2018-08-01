@@ -10,7 +10,7 @@
 <%block name="css" />
 
 <%block name="content">
-    <div class="row mx-autow-100">
+    <div class="row mx-auto w-100">
         <div class="col p-0 text-center">
             <div class="card">
                 <div class="card-header">

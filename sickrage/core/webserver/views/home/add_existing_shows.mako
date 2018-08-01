@@ -4,10 +4,10 @@
 %>
 <%block name="content">
     <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-lg-10 mx-auto">
             <form id="addShowForm" method="post" action="${srWebRoot}/home/addShows/addExistingShows"
                   accept-charset="utf-8">
-                <div class="card mt-3 mb-3">
+                <div class="card">
                     <div class="card-header">
                         <h3>${title}</h3>
                     </div>
