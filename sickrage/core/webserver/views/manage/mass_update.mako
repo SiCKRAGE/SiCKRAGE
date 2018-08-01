@@ -35,7 +35,7 @@
 
     <form name="massUpdateForm" method="post" action="massUpdate">
         <div class="table-responsive">
-            <table id="massUpdateTable" class="table" cellspacing="1" border="0" cellpadding="0">
+            <table id="massUpdateTable" class="table">
                 <thead class="thead-dark">
                 <tr>
                     <th class="col-checkbox">

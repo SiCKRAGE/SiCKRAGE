@@ -1266,6 +1266,9 @@ $(document).ready(function ($) {
             },
 
             schedule: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/schedule.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['list'])) {
                     var sortCodes = {'date': 0, 'show': 2, 'network': 5};
                     var sort = SICKRAGE.getMeta('sickrage.COMING_EPS_SORT');
@@ -1341,6 +1344,9 @@ $(document).ready(function ($) {
             },
 
             history: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/history.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+
                 $("#historyTable:has(tbody tr)").tablesorter({
                     theme: 'bootstrap',
                     widgets: ['filter'],
@@ -5088,6 +5094,8 @@ $(document).ready(function ($) {
 
         manage: {
             init: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/manage.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
             },
 
             episode_statuses: function () {

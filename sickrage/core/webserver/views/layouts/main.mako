@@ -373,7 +373,7 @@
     % endif
 </div>
 
-<div class="container-fluid">
+<div class="container-fluid" style="opacity: .90">
         <%block name="content" />
 </div>
 

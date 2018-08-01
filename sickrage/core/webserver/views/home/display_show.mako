@@ -532,7 +532,7 @@
         <div class="row">
         <div class="col-md-12">
         <div class="table-responsive">
-        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="table displayShowTable" style="opacity: .80">
+        <table id="${("showTable", "animeTable")[bool(show.is_anime)]}" class="table displayShowTable">
             <thead class="thead-dark">
             <tr class="seasoncols">
                 <th data-sorter="false" data-priority="critical" class="col-checkbox">
