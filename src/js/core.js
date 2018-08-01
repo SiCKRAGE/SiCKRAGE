@@ -2220,6 +2220,11 @@ $(document).ready(function ($) {
                 }
             },
 
+            add_shows: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/addshows.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+            },
+
             add_existing_shows: {
                 init: function () {
                     $('#tableDiv').on('click', '#checkAll', function () {
