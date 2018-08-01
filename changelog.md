@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3269e7f - 2018-08-01: Added backdrop for home view 
+- * 3b43805 - 2018-08-01: Added margins for all layouts except poster in home view 
+- * 18c60e7 - 2018-08-01: Added backdrop for home view 
 - * 535cdc1 - 2018-08-01: Added backdrop for schedule view Added backdrop for history view Added opacity style to views with backdrops 
 - * 6533663 - 2018-08-01: Added backdrop for add shows view 
 - * 6279e0c - 2018-08-01: Added backdrop for config menus 

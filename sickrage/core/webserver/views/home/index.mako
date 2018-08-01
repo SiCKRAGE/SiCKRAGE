@@ -277,217 +277,222 @@
                 </div>
             </div>
         % else:
-            <div class="table-responsive">
-                <table class="table" id="showListTable${curListType}">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th>${_('Next Ep')}</th>
-                        <th>${_('Prev Ep')}</th>
-                        <th>${_('Show')}</th>
-                        <th>${_('Network')}</th>
-                        <th>${_('Quality')}</th>
-                        <th>${_('Downloads')}</th>
-                        <th>${_('Size')}</th>
-                        <th>${_('Active')}</th>
-                        <th>${_('Status')}</th>
-                    </tr>
-                    </thead>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="table-responsive">
+                        <table class="table" id="showListTable${curListType}">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>${_('Next Ep')}</th>
+                                <th>${_('Prev Ep')}</th>
+                                <th>${_('Show')}</th>
+                                <th>${_('Network')}</th>
+                                <th>${_('Quality')}</th>
+                                <th>${_('Downloads')}</th>
+                                <th>${_('Size')}</th>
+                                <th>${_('Active')}</th>
+                                <th>${_('Status')}</th>
+                            </tr>
+                            </thead>
 
-                    % if sickrage.app.show_queue.loadingShowList:
-                        <tbody>
-                            % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
-                                % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
+                            % if sickrage.app.show_queue.loadingShowList:
+                                <tbody>
+                                    % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
+                                        % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
+                                            <tr>
+                                                <td class="table-fit">(${_('loading')})</td>
+                                                <td></td>
+                                                <td>
+                                                    % if curLoadingShow.show is None:
+                                                        <span title="">${_('Loading...')} ${curLoadingShow.show_name}</span>
+                                                    % else:
+                                                        <a data-fancybox
+                                                           href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
+                                                    % endif
+                                                </td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        % endif
+                                    % endfor
+                                </tbody>
+                            % endif
+
+                            <tbody class="">
+                                % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
+                                    <%
+                                        cur_airs_next = ''
+                                        cur_airs_prev = ''
+                                        cur_snatched = 0
+                                        cur_downloaded = 0
+                                        cur_total = 0
+                                        show_size = 0
+                                        download_stat_tip = ''
+
+                                        if curShow.indexerid in show_stat:
+                                            cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
+                                            cur_airs_prev = show_stat[curShow.indexerid]['ep_airs_prev']
+
+                                            cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
+                                            if not cur_snatched:
+                                                cur_snatched = 0
+
+                                            cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
+                                            if not cur_downloaded:
+                                                cur_downloaded = 0
+
+                                            cur_total = show_stat[curShow.indexerid]['ep_total']
+                                            if not cur_total:
+                                                cur_total = 0
+
+                                            show_size = get_size(curShow.location.encode('utf-8'))
+
+                                        if cur_total != 0:
+                                            download_stat = str(cur_downloaded)
+                                            download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
+                                            if cur_snatched > 0:
+                                                download_stat = download_stat + "+" + str(cur_snatched)
+                                                download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
+
+                                            download_stat = download_stat + " / " + str(cur_total)
+                                            download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
+                                        else:
+                                            download_stat = '?'
+                                            download_stat_tip = _("no data")
+
+                                        nom = cur_downloaded
+                                        den = cur_total
+                                        if den == 0:
+                                            den = 1
+
+                                        progressbar_percent = nom * 100 / den
+
+                                        network_class_name = None
+                                        if curShow.network:
+                                            network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
+                                            network_class_name = re.sub(r'\s+', '-', network_class_name)
+                                            network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
+                                            network_class_name = network_class_name.lower()
+                                    %>
                                     <tr>
-                                        <td class="table-fit">(${_('loading')})</td>
-                                        <td></td>
+                                        % if cur_airs_next:
+                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                        % try:
+                                            <td class="table-fit">
+                                                <time datetime="${airDate.isoformat()}"
+                                                      class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
+                                            </td>
+                                        % except ValueError:
+                                            <td class="table-fit"></td>
+                                        % endtry
+                                        % else:
+                                            <td class="table-fit"></td>
+                                        % endif
+
+                                        % if cur_airs_prev:
+                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
+                                        % try:
+                                            <td class="table-fit">
+                                                <time datetime="${airDate.isoformat()}" class="date">
+                                                    ${srdatetime.srDateTime(airDate).srfdate()}
+                                                </time>
+                                            </td>
+                                        % except ValueError:
+                                            <td class="table-fit"></td>
+                                        % endtry
+                                        % else:
+                                            <td class="table-fit"></td>
+                                        % endif
+
+                                        % if sickrage.app.config.home_layout == 'small':
+                                            <td class="table-fit tvShow">
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
+                                                   title="${curShow.name}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
+                                                         class="rounded shadow img-fluid"
+                                                         alt="${curShow.indexerid}"/>
+                                                </a>
+                                            </td>
+                                        % elif sickrage.app.config.home_layout == 'banner':
+                                            <td class="table-fit">
+                                                <span style="display: none;">${curShow.name}</span>
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                                    <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
+                                                         class="rounded shadow" alt="${curShow.indexerid}"
+                                                         title="${curShow.name}"/>
+                                                </a>
+                                            </td>
+                                        % elif sickrage.app.config.home_layout == 'simple':
+                                            <td class="tvShow">
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                                    ${curShow.name}
+                                                </a>
+                                            </td>
+                                        % endif
+
+                                        % if sickrage.app.config.home_layout != 'simple':
+                                            <td class="table-fit">
+                                                % if curShow.network:
+                                                    <span>
+                                                        <i class="sickrage-network sickrage-network-${network_class_name}"
+                                                           title="${curShow.network}"></i>
+                                                    </span>
+                                                    <span class="d-none d-print-inline">${curShow.network}</span>
+                                                % else:
+                                                    <span>
+                                                        <i class="sickrage-network sickrage-network-no-network"
+                                                           title="${_('No Network')}"></i>
+                                                    </span>
+                                                    <span class="d-none d-print-inline">No Network</span>
+                                                % endif
+                                            </td>
+                                        % else:
+                                            <td class="table-fit">
+                                                <span title="${curShow.network}">${curShow.network}</span>
+                                            </td>
+                                        % endif
+
+                                        <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+
                                         <td>
-                                            % if curLoadingShow.show is None:
-                                                <span title="">${_('Loading...')} ${curLoadingShow.show_name}</span>
+                                            <span style="display: none;">${download_stat}</span>
+                                            <div class="bg-dark rounded shadow">
+                                                <div class="progress-bar rounded "
+                                                     style="width: ${progressbar_percent}%"
+                                                     data-show-id="${curShow.indexerid}"
+                                                     data-progress-percentage="${progressbar_percent}"
+                                                     data-progress-text="${download_stat}"
+                                                     data-progress-tip="${download_stat_tip}"></div>
+                                            </div>
+                                        </td>
+
+                                        <td class="table-fit" data-show-size="${show_size}">
+                                            ${pretty_filesize(show_size)}
+                                        </td>
+
+                                        <td class="table-fit">
+                                            <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
+                                        </td>
+
+                                        <td class="table-fit">
+                                            % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
+                                                ${_('Continuing')}
+                                            % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
+                                                ${_('Ended')}
                                             % else:
-                                                <a data-fancybox
-                                                   href="displayShow?show=${curLoadingShow.show.indexerid}">${curLoadingShow.show.name}</a>
+                                                ${curShow.status}
                                             % endif
                                         </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
                                     </tr>
-                                % endif
-                            % endfor
-                        </tbody>
-                    % endif
-
-                    <tbody class="">
-                        % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
-                            <%
-                                cur_airs_next = ''
-                                cur_airs_prev = ''
-                                cur_snatched = 0
-                                cur_downloaded = 0
-                                cur_total = 0
-                                show_size = 0
-                                download_stat_tip = ''
-
-                                if curShow.indexerid in show_stat:
-                                    cur_airs_next = show_stat[curShow.indexerid]['ep_airs_next']
-                                    cur_airs_prev = show_stat[curShow.indexerid]['ep_airs_prev']
-
-                                    cur_snatched = show_stat[curShow.indexerid]['ep_snatched']
-                                    if not cur_snatched:
-                                        cur_snatched = 0
-
-                                    cur_downloaded = show_stat[curShow.indexerid]['ep_downloaded']
-                                    if not cur_downloaded:
-                                        cur_downloaded = 0
-
-                                    cur_total = show_stat[curShow.indexerid]['ep_total']
-                                    if not cur_total:
-                                        cur_total = 0
-
-                                    show_size = get_size(curShow.location.encode('utf-8'))
-
-                                if cur_total != 0:
-                                    download_stat = str(cur_downloaded)
-                                    download_stat_tip = _("Downloaded: ") + str(cur_downloaded)
-                                    if cur_snatched > 0:
-                                        download_stat = download_stat + "+" + str(cur_snatched)
-                                        download_stat_tip = download_stat_tip + "&#013;" + _("Snatched: ") + str(cur_snatched)
-
-                                    download_stat = download_stat + " / " + str(cur_total)
-                                    download_stat_tip = download_stat_tip + "&#013;" + _("Total: ") + str(cur_total)
-                                else:
-                                    download_stat = '?'
-                                    download_stat_tip = _("no data")
-
-                                nom = cur_downloaded
-                                den = cur_total
-                                if den == 0:
-                                    den = 1
-
-                                progressbar_percent = nom * 100 / den
-
-                                network_class_name = None
-                                if curShow.network:
-                                    network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
-                                    network_class_name = re.sub(r'\s+', '-', network_class_name)
-                                    network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
-                                    network_class_name = network_class_name.lower()
-                            %>
-                            <tr>
-                                % if cur_airs_next:
-                                <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
-                                % try:
-                                    <td class="table-fit">
-                                        <time datetime="${airDate.isoformat()}"
-                                              class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
-                                    </td>
-                                % except ValueError:
-                                    <td class="table-fit"></td>
-                                % endtry
-                                % else:
-                                    <td class="table-fit"></td>
-                                % endif
-
-                                % if cur_airs_prev:
-                                <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
-                                % try:
-                                    <td class="table-fit">
-                                        <time datetime="${airDate.isoformat()}" class="date">
-                                            ${srdatetime.srDateTime(airDate).srfdate()}
-                                        </time>
-                                    </td>
-                                % except ValueError:
-                                    <td class="table-fit"></td>
-                                % endtry
-                                % else:
-                                    <td class="table-fit"></td>
-                                % endif
-
-                                % if sickrage.app.config.home_layout == 'small':
-                                    <td class="table-fit tvShow">
-                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
-                                           title="${curShow.name}">
-                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                 class="rounded shadow img-fluid"
-                                                 alt="${curShow.indexerid}"/>
-                                        </a>
-                                    </td>
-                                % elif sickrage.app.config.home_layout == 'banner':
-                                    <td class="table-fit">
-                                        <span style="display: none;">${curShow.name}</span>
-                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                            <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
-                                                 class="rounded shadow" alt="${curShow.indexerid}"
-                                                 title="${curShow.name}"/>
-                                        </a>
-                                    </td>
-                                % elif sickrage.app.config.home_layout == 'simple':
-                                    <td class="tvShow">
-                                        <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
-                                            ${curShow.name}
-                                        </a>
-                                    </td>
-                                % endif
-
-                                % if sickrage.app.config.home_layout != 'simple':
-                                    <td class="table-fit">
-                                        % if curShow.network:
-                                            <span>
-                                                <i class="sickrage-network sickrage-network-${network_class_name}"
-                                                   title="${curShow.network}"></i>
-                                            </span>
-                                            <span class="d-none d-print-inline">${curShow.network}</span>
-                                        % else:
-                                            <span>
-                                                <i class="sickrage-network sickrage-network-no-network"
-                                                   title="${_('No Network')}"></i>
-                                            </span>
-                                            <span class="d-none d-print-inline">No Network</span>
-                                        % endif
-                                    </td>
-                                % else:
-                                    <td class="table-fit">
-                                        <span title="${curShow.network}">${curShow.network}</span>
-                                    </td>
-                                % endif
-
-                                <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
-
-                                <td>
-                                    <span style="display: none;">${download_stat}</span>
-                                    <div class="bg-dark rounded shadow">
-                                        <div class="progress-bar rounded " style="width: ${progressbar_percent}%"
-                                             data-show-id="${curShow.indexerid}"
-                                             data-progress-percentage="${progressbar_percent}"
-                                             data-progress-text="${download_stat}"
-                                             data-progress-tip="${download_stat_tip}"></div>
-                                    </div>
-                                </td>
-
-                                <td class="table-fit" data-show-size="${show_size}">
-                                    ${pretty_filesize(show_size)}
-                                </td>
-
-                                <td class="table-fit">
-                                    <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
-                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
-                                </td>
-
-                                <td class="table-fit">
-                                    % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
-                                        ${_('Continuing')}
-                                    % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
-                                        ${_('Ended')}
-                                    % else:
-                                        ${curShow.status}
-                                    % endif
-                                </td>
-                            </tr>
-                        % endfor
-                    </tbody>
-                </table>
+                                % endfor
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         % endif
     % endfor
