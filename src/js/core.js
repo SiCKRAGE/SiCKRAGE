@@ -2793,6 +2793,9 @@ $(document).ready(function ($) {
 
         config: {
             init: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/config.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+
                 $('#configForm').ajaxForm({
                     beforeSubmit: function () {
                         $('.config_submitter .config_submitter_refresh').each(function () {

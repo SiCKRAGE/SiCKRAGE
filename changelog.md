@@ -1,6 +1,7 @@
 # Changelog
 
-- * c707987 - 2018-08-01: Pre-Release v9.3.56.dev13 
+- * 2a2ec62 - 2018-08-01: Added backdrop for config menus 
+- * c6f1503 - 2018-08-01: Pre-Release v9.3.56.dev13 
 - * 6383647 - 2018-08-01: Styling input checkboxes as toggles 
 - * 07e1703 - 2018-07-31: Pre-Release v9.3.56.dev12 
 - * 08cb03c - 2018-07-31: Merged overall_stats and show_stat functions Cut main show view load time down by 6s 
