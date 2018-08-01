@@ -52,7 +52,7 @@
                                 <b>${_('Force already Post Processed Dir/Files:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="force" name="force" type="checkbox" title="">
+                                <input id="force" name="force" type="checkbox" data-toggle="toggle" data-size="small" title="">
                             </div>
                         </div>
                         <div class="row">
@@ -60,7 +60,7 @@
                                 <b>${_('Mark Dir/Files as priority download:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="is_priority" name="is_priority" type="checkbox" title="">
+                                <input id="is_priority" name="is_priority" type="checkbox" data-toggle="toggle" data-size="small" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to replace the file even if it exists at higher quality)')}</i>
                         </span>
@@ -71,7 +71,7 @@
                                 <b>${_('Delete files and folders:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="delete_on" name="delete_on" type="checkbox" title="">
+                                <input id="delete_on" name="delete_on" type="checkbox" data-toggle="toggle" data-size="small" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to delete files and folders like auto processing)')}</i>
                         </span>
@@ -82,7 +82,7 @@
                                 <b>${_('Don\'t use processing queue:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="force_next" name="force_next" type="checkbox" title="">
+                                <input id="force_next" name="force_next" type="checkbox" data-toggle="toggle" data-size="small" title="">
                                 <span style="line-height: 0; font-size: 12px;">
                             <i>${_('(Check it to return the result of the process here, but may be slow!)')}</i>
                         </span>
@@ -93,7 +93,7 @@
                                 <b>${_('Mark download as failed:')}</b>
                             </div>
                             <div class="col-md-6">
-                                <input id="failed" name="failed" type="checkbox" title="">
+                                <input id="failed" name="failed" type="checkbox" data-toggle="toggle" data-size="small" title="">
                             </div>
                         </div>
                     </div>

@@ -360,7 +360,7 @@ class WebRoot(WebHandler):
         super(WebRoot, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def robots_txt(self):
         """ Keep web crawlers out """
@@ -1007,14 +1007,14 @@ class Home(WebHandler):
 
     def shutdown(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.app.shutdown()
 
     def restart(self, pid=None, force=False):
         if str(pid) != str(sickrage.app.pid) and not force:
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         # clear current user to disable header and footer
         self.current_user = None
@@ -1033,17 +1033,17 @@ class Home(WebHandler):
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         # check for new app updates
         if not sickrage.app.version_updater.check_for_new_version(True):
             sickrage.app.alerts.message(_('No new updates!'))
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def update(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         if sickrage.app.version_updater.update():
             sickrage.app.newest_version_string = None
@@ -1051,7 +1051,7 @@ class Home(WebHandler):
         else:
             self._genericMessage(_("Update Failed"),
                                  _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1066,7 +1066,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def branchCheckout(self, branch):
         if branch and sickrage.app.version_updater.updater.current_branch != branch:
@@ -1077,7 +1077,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Already on branch: '), branch)
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def displayShow(self, show=None):
         if show is None:

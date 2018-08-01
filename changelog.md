@@ -1,6 +1,7 @@
 # Changelog
 
-- * e85aa31 - 2018-07-31: Pre-Release v9.3.56.dev12 
+- * 4c77d0d - 2018-08-01: Styling input checkboxes as toggles 
+- * 07e1703 - 2018-07-31: Pre-Release v9.3.56.dev12 
 - * 08cb03c - 2018-07-31: Merged overall_stats and show_stat functions Cut main show view load time down by 6s 
 - * edb99a0 - 2018-07-31: Fixed CSS issue for quicksearch items 
 - * 3acc96b - 2018-07-31: Pre-Release v9.3.56.dev11 

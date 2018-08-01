@@ -35,10 +35,12 @@
                         <label class="component-title">${_('Enabled')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox"
-                               class="enabler" ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
-                               id="use_subtitles" name="use_subtitles">
-                        <label for="use_subtitles">${_('Search Subtitles')}</label>
+                        <label for="use_subtitles">
+                            <input type="checkbox" data-toggle="toggle" data-size="small"
+                                   class="enabler" ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
+                                   id="use_subtitles" name="use_subtitles">
+                            ${_('Search Subtitles')}
+                        </label>
                     </div>
                 </div>
 
@@ -58,10 +60,10 @@
                             <label class="component-title">${_('Subtitles History')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input type="checkbox" name="subtitles_history"
-                                   id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles_history)]}/>
                             <label for="subtitles_history">
-                                <p>${_('Log downloaded Subtitle on History page?')}</p>
+                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_history"
+                                       id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles_history)]}/>
+                                ${_('Log downloaded Subtitle on History page?')}
                             </label>
                         </div>
                     </div>
@@ -70,10 +72,10 @@
                             <label class="component-title">${_('Subtitles Multi-Language')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input type="checkbox" name="subtitles_multi"
-                                   id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles_multi)]}/>
                             <label for="subtitles_multi">
-                                <p>${_('Append language codes to subtitle filenames?')}</p>
+                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_multi"
+                                       id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles_multi)]}/>
+                                ${_('Append language codes to subtitle filenames?')}
                             </label>
                         </div>
                     </div>
@@ -83,7 +85,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label class="form-check-label">
-                                <input type="checkbox" name="embedded_subtitles_all"
+                                <input type="checkbox" data-toggle="toggle" data-size="small" name="embedded_subtitles_all"
                                        id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
                                 ${_('Ignore subtitles embedded inside video file?')}<br/>
                                 <div class="text-info">
@@ -97,10 +99,10 @@
                             <label class="component-title">${_('Hearing Impaired Subtitles')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input type="checkbox" name="subtitles_hearing_impaired"
-                                   id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles_hearing_impaired)]}/>
                             <label for="subtitles_hearing_impaired">
-                                <p>${_('Download hearing impaired style subtitles?')}</p>
+                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_hearing_impaired"
+                                       id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles_hearing_impaired)]}/>
+                                ${_('Download hearing impaired style subtitles?')}
                             </label>
                         </div>
                     </div>
@@ -228,7 +230,7 @@
                                 <div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="${curService['name']}">
                                     <div class="align-middle">
                                         <label class="form-check-label">
-                                            <input type="checkbox" id="enable_${curService['name']}"
+                                            <input type="checkbox" data-toggle="toggle" data-size="small" id="enable_${curService['name']}"
                                                    class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
                                             <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
                                                 <i class="sickrage-subtitles sickrage-subtitles-${curService['name']}"

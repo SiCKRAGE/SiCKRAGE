@@ -52,7 +52,7 @@
                                             'the checkbox below.')}
                                         </p>
                                         <label>
-                                            <input type="checkbox" name="promptForSettings" id="promptForSettings"/>
+                                            <input type="checkbox" data-toggle="toggle" data-size="small" name="promptForSettings" id="promptForSettings"/>
                                             ${_('Prompt me to set settings for each show')}
                                         </label>
                                     </div>

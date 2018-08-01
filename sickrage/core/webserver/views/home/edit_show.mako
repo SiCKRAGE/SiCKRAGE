@@ -135,9 +135,9 @@
                                             <label class="component-title">${_('Skip downloaded')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="skip_downloaded"
-                                                   name="skip_downloaded" ${('', 'checked')[show.skip_downloaded == 1]} />
                                             <label for="skip_downloaded">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="skip_downloaded"
+                                                       name="skip_downloaded" ${('', 'checked')[show.skip_downloaded == 1]} />
                                                 ${_('Skips updating quality of old/new downloaded episodes')}
                                             </label>
                                         </div>
@@ -148,9 +148,9 @@
                                             <label class="component-title">${_('Subtitles')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="subtitles"
-                                                   name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.config.use_subtitles])]}${('disabled="disabled"', '')[bool(sickrage.app.config.use_subtitles)]}/>
                                             <label for="subtitles">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="subtitles"
+                                                       name="subtitles" ${('', 'checked')[all([show.subtitles,sickrage.app.config.use_subtitles])]}${('disabled="disabled"', '')[bool(sickrage.app.config.use_subtitles)]}/>
                                                 ${_('search for subtitles')}
                                             </label>
                                         </div>
@@ -161,9 +161,9 @@
                                             <label class="component-title">${_('Subtitle metdata')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="subtitles_sr_metadata"
-                                                   name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
                                             <label for="subtitles_sr_metadata">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="subtitles_sr_metadata"
+                                                       name="subtitles_sr_metadata" ${('', 'checked')[show.subtitles_sr_metadata == 1]} />
                                                 ${_('use SiCKRAGE metadata when searching for subtitle, this will '
                                                 'override the auto-discovered metadata')}
                                             </label>
@@ -175,9 +175,9 @@
                                             <label class="component-title">${_('Paused')}</label><br/>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="paused"
-                                                   name="paused" ${('', 'checked')[show.paused == 1]} />
                                             <label for="paused">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="paused"
+                                                       name="paused" ${('', 'checked')[show.paused == 1]} />
                                                 ${_('pause this show (SiCKRAGE will not download episodes)')}
                                             </label>
                                         </div>
@@ -198,9 +198,9 @@
                                             <label class="component-title">${_('Air by date')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="airbydate"
-                                                   name="air_by_date" ${('', 'checked')[show.air_by_date == 1]} />
                                             <label class="mb-0" for="airbydate">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="airbydate"
+                                                       name="air_by_date" ${('', 'checked')[show.air_by_date == 1]} />
                                                 ${_('check if the show is released as Show.03.02.2010 rather than Show.S02E03')}
                                             </label>
                                             <div class="text-info">
@@ -215,9 +215,9 @@
                                             <label class="component-title">${_('Sports')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="sports"
-                                                   name="sports" ${('', 'checked')[show.sports == 1]}/>
                                             <label class="mb-0" for="sports">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="sports"
+                                                       name="sports" ${('', 'checked')[show.sports == 1]}/>
                                                 ${_('check if the show is a sporting or MMA event released as '
                                                 'Show.03.02.2010 rather than Show.S02E03')}
                                             </label>
@@ -233,9 +233,9 @@
                                             <label class="component-title">${_('DVD Order')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="dvdorder"
-                                                   name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} />
                                             <label class="mb-0" for="dvdorder">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="dvdorder"
+                                                       name="dvdorder" ${('', 'checked')[show.dvdorder == 1]} />
                                                 ${_('use the DVD order instead of the air order')}
                                             </label>
                                             <div class="text-info">
@@ -250,9 +250,9 @@
                                             <label class="component-title">${_('Anime')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="anime"
-                                                   name="anime" ${('', 'checked')[show.is_anime == 1]}>
                                             <label for="anime">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="anime"
+                                                       name="anime" ${('', 'checked')[show.is_anime == 1]}>
                                                 ${_('check if the show is Anime and episodes are released as Show.265 '
                                                 'rather than Show.S02E03')}
                                             </label>
@@ -268,9 +268,9 @@
                                             <label class="component-title">${_('Season folders')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="season_folders"
-                                                   name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.app.config.naming_force_folders]} ${('', 'disabled="disabled"')[bool(sickrage.app.config.naming_force_folders)]}/>
                                             <label for="season_folders">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="season_folders"
+                                                       name="flatten_folders" ${('checked', '')[show.flatten_folders == 1 and not sickrage.app.config.naming_force_folders]} ${('', 'disabled="disabled"')[bool(sickrage.app.config.naming_force_folders)]}/>
                                                 ${_('group episodes by season folder (uncheck to store in a single folder)')}
                                             </label>
                                         </div>
@@ -281,9 +281,9 @@
                                             <label class="component-title">${_('Scene Numbering')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            <input type="checkbox" id="scene"
-                                                   name="scene" ${('', 'checked')[show.scene == 1]} />
                                             <label for="scene">
+                                                <input type="checkbox" data-toggle="toggle" data-size="small" id="scene"
+                                                       name="scene" ${('', 'checked')[show.scene == 1]} />
                                                 ${_('search by scene numbering (uncheck to search by indexer numbering)')}
                                             </label>
                                         </div>

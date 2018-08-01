@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
-                            <input type="checkbox" name="process_automatically"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="process_automatically"
                                    id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
                             ${_('Enable the automatic post processor to scan and process any files in your')}
                             <i>${_('Post Processing Dir')}</i>?<br>
@@ -133,9 +133,9 @@
                         <label class="component-title">${_('Postpone post processing')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="postpone_if_sync_files"
-                               id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.postpone_if_sync_files)]}/>
                         <label for="postpone_if_sync_files">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="postpone_if_sync_files"
+                                   id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.postpone_if_sync_files)]}/>
                             ${_('Wait to process a folder if sync files are present.')}
                         </label>
                     </div>
@@ -165,7 +165,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
-                            <input type="checkbox" name="rename_episodes"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="rename_episodes"
                                    id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
                             ${_('Rename episode using the Episode Naming settings?')}
                         </label>
@@ -176,9 +176,9 @@
                         <label class="component-title">${_('Create missing show directories')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="create_missing_show_dirs"
-                               id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                         <label for="create_missing_show_dirs">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="create_missing_show_dirs"
+                                   id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                             ${_('Create missing show directories when they get deleted')}
                         </label>
                     </div>
@@ -188,9 +188,9 @@
                         <label class="component-title">${_('Add shows without directory')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="add_shows_wo_dir"
-                               id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                         <label for="add_shows_wo_dir">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="add_shows_wo_dir"
+                                   id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                             ${_('Add shows without creating a directory (not recommended)')}
                         </label>
                     </div>
@@ -200,9 +200,9 @@
                         <label class="component-title">${_('Move Associated Files')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="move_associated_files"
-                               id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                         <label for="move_associated_files">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="move_associated_files"
+                                   id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                             ${_('Move srr/srt/sfv/etc files with the episode when processed?')}
                         </label>
                     </div>
@@ -212,9 +212,9 @@
                         <label class="component-title">${_('Rename .nfo file')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="nfo_rename"
-                               id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                         <label for="nfo_rename">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="nfo_rename"
+                                   id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                             ${_('Rename the original .nfo file to .nfo-orig to avoid conflicts?')}
                         </label>
                     </div>
@@ -248,9 +248,9 @@
                         <label class="component-title">${_('Delete non associated files')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" name="delete_non_associated_files"
-                               id="delete_non_associated_files" ${('', 'checked')[bool(sickrage.app.config.delete_non_associated_files)]}/>
                         <label for="delete_non_associated_files">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="delete_non_associated_files"
+                                   id="delete_non_associated_files" ${('', 'checked')[bool(sickrage.app.config.delete_non_associated_files)]}/>
                             ${_('delete non associated files while post processing?')}
                         </label>
                     </div>
@@ -261,7 +261,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="airdate_episodes">
-                            <input type="checkbox" name="airdate_episodes"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="airdate_episodes"
                                    id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
                             ${_('Set last modified filedate to the date that the episode aired?')}<br/>
                             <div class="text-info"><b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
@@ -296,7 +296,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="unpack">
-                            <input id="unpack" class="enabler" type="checkbox"
+                            <input id="unpack" class="enabler" type="checkbox" data-toggle="toggle" data-size="small"
                                    name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                             ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
                             <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only works with RAR archives')}</div>
@@ -327,9 +327,9 @@
                             <label class="component-title">${_('Delete RAR contents')}</label>
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                            <input type="checkbox" name="del_rar_contents"
-                                   id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
                             <label for="del_rar_contents">
+                                <input type="checkbox" data-toggle="toggle" data-size="small" name="del_rar_contents"
+                                       id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
                                 ${_('Delete content of RAR files, even if Process Method not set to move?')}
                             </label>
                         </div>
@@ -341,7 +341,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="no_delete">
-                            <input type="checkbox" name="no_delete"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="no_delete"
                                    id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
                             ${_('Leave empty folders when Post Processing?')}<br/>
                             <div class="text-info">
@@ -356,7 +356,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="processor_follow_symlinks">
-                            <input type="checkbox" name="processor_follow_symlinks"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" name="processor_follow_symlinks"
                                    id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
                             ${_('Enable only if you know what <b>circular symbolic links</b> are,<br/>'
                             'and can <b>verify that you have none</b>.')}
@@ -368,7 +368,7 @@
                         <label class="component-title">${_('Delete Failed')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input id="delete_failed" type="checkbox"
+                        <input id="delete_failed" type="checkbox" data-toggle="toggle" data-size="small"
                                name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
                         <label for="delete_failed">
                             ${_('Delete files left over from a failed download?')}<br/>
@@ -665,7 +665,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
-                            <input type="checkbox" id="naming_strip_year"
+                            <input type="checkbox" data-toggle="toggle" data-size="small" id="naming_strip_year"
                                    name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
                             ${_('Remove the TV show\'s year when renaming the file?')}<br/>
                             <div class="text-info">
@@ -680,9 +680,9 @@
                         <label class="component-title">${_('Custom Air-By-Date')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" class="enabler" id="naming_custom_abd"
-                               name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.naming_custom_abd)]}/>
                         <label for="naming_custom_abd">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_abd"
+                                   name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.naming_custom_abd)]}/>
                             ${_('Name Air-By-Date shows differently than regular shows?')}
                         </label>
                     </div>
@@ -895,9 +895,9 @@
                         <label class="component-title">${_('Custom Sports')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" class="enabler" id="naming_custom_sports"
-                               name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.naming_custom_sports)]}/>
                         <label for="naming_custom_sports">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_sports"
+                                   name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.naming_custom_sports)]}/>
                             ${_('Name Sports shows differently than regular shows?')}
                         </label>
                     </div>
@@ -1110,9 +1110,9 @@
                         <label class="component-title">${_('Custom Anime')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" class="enabler" id="naming_custom_anime"
-                               name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.naming_custom_anime)]}/>
                         <label for="naming_custom_anime">
+                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_anime"
+                                   name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.naming_custom_anime)]}/>
                             ${_('Name Anime shows differently than regular shows?')}
                         </label>
                     </div>
@@ -1452,7 +1452,7 @@
                             <div class="list-group metadataDiv" id="${cur_id}">
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_show_metadata">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
                                         ${_('Show Metadata')}
                                         <span id="${cur_id}_eg_show_metadata">
@@ -1463,7 +1463,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_episode_metadata">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
                                         ${_('Episode Metadata')}
                                         <span id="${cur_id}_eg_episode_metadata">
@@ -1474,7 +1474,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_fanart">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
                                         ${_('Show Fanart')}
                                         <span id="${cur_id}_eg_fanart">
@@ -1485,7 +1485,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_poster">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
                                         ${_('Show Poster')}
                                         <span id="${cur_id}_eg_poster">
@@ -1496,7 +1496,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_banner">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
                                         ${_('Show Banner')}
                                         <span id="${cur_id}_eg_banner">
@@ -1507,7 +1507,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_episode_thumbnails">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
                                         ${_('Episode Thumbnails')}
                                         <span id="${cur_id}_eg_episode_thumbnails">
@@ -1518,7 +1518,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_posters">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
                                         ${_('Season Posters')}
                                         <span id="${cur_id}_eg_season_posters">
@@ -1529,7 +1529,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_banners">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
                                         ${_('Season Banners')}
                                         <span id="${cur_id}_eg_season_banners">
@@ -1540,7 +1540,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_all_poster">
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
                                         ${_('Season All Poster')}
                                         <span id="${cur_id}_eg_season_all_poster">
@@ -1551,7 +1551,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label>
-                                        <input type="checkbox" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
                                         ${_('Season All Banner')}
                                         <span id="${cur_id}_eg_season_all_banner">

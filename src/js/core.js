@@ -7,6 +7,7 @@ import 'jquery-ui/ui/widgets/slider';
 import 'jquery-ui/ui/widgets/sortable';
 import 'jquery-ui/ui/widgets/dialog';
 import 'jquery-ui/ui/widgets/autocomplete';
+import 'bootstrap-toggle';
 import 'tooltipster';
 import 'jquery-backstretch';
 import 'pnotify/dist/es/PNotifyMobile';

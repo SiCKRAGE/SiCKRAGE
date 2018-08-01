@@ -11,7 +11,7 @@
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
-                <input type="checkbox" name="subtitles"
+                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles"
                        id="subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles_default)]} />
             </label>
         </div>
@@ -23,7 +23,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input class="cb" type="checkbox" name="flatten_folders"
+            <input class="cb" type="checkbox" data-toggle="toggle" data-size="small" name="flatten_folders"
                    id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.flatten_folders_default)]}/>
         </label>
     </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
-                <input type="checkbox" name="anime"
+                <input type="checkbox" data-toggle="toggle" data-size="small" name="anime"
                        id="anime" ${('', 'checked')[bool(sickrage.app.config.anime_default)]} />
             </label>
         </div>
@@ -47,7 +47,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input type="checkbox" name="scene"
+            <input type="checkbox" data-toggle="toggle" data-size="small" name="scene"
                    id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
         </label>
     </div>
@@ -58,7 +58,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input type="checkbox" name="skip_downloaded"
+            <input type="checkbox" data-toggle="toggle" data-size="small" name="skip_downloaded"
                    id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
         </label>
     </div>

@@ -97,7 +97,7 @@
                                  id="${providerID}">
                                 <div class="align-middle">
                                     <label class="form-check-label" for="enable_${providerID}">
-                                        <input type="checkbox" id="enable_${providerID}"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" id="enable_${providerID}"
                                                class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
                                         <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;">
@@ -203,10 +203,10 @@
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_daily"
-                                           id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>${_('enable provider to perform daily searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_daily"
+                                               id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
+                                        ${_('enable provider to perform daily searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -218,10 +218,10 @@
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_backlog"
-                                           id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>${_('enable provider to perform backlog searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_backlog"
+                                               id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                        ${_('enable provider to perform backlog searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                     <label class="form-check-label">
-                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_search_fallback"
                                                id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                         ${_('when searching for a complete season depending on search mode you may')}
                                         <br/>
@@ -328,10 +328,10 @@
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_daily"
-                                           id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>${_('enable provider to perform daily searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_daily"
+                                               id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
+                                        ${_('enable provider to perform daily searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -343,10 +343,10 @@
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_backlog"
-                                           id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>${_('enable provider to perform backlog searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_backlog"
+                                               id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                        ${_('enable provider to perform backlog searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -359,7 +359,7 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                     <label class="form-check-label">
-                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_search_fallback"
                                                id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                         ${_('when searching for a complete season depending on search mode you may '
                                         'return no results, this helps by restarting the search using the opposite '
@@ -677,10 +677,10 @@
                                     <label class="component-title">${_('Confirmed download')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_confirmed"
-                                           id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.confirmed)]}/>
                                     <label for="${providerID}_confirmed">
-                                        <p>${_('only download torrents from trusted or verified uploaders?')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_confirmed"
+                                               id="${providerID}_confirmed" ${('', 'checked')[bool(providerObj.confirmed)]}/>
+                                        ${_('only download torrents from trusted or verified uploaders?')}
                                     </label>
                                 </div>
                             </div>
@@ -692,10 +692,10 @@
                                     <label class="component-title">${_('Ranked torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_ranked"
-                                           id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.ranked)]} />
                                     <label for="${providerID}_ranked">
-                                        <p>${_('only download ranked torrents (internal releases)')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_ranked"
+                                               id="${providerID}_ranked" ${('', 'checked')[bool(providerObj.ranked)]} />
+                                        ${_('only download ranked torrents (internal releases)')}
                                     </label>
                                 </div>
                             </div>
@@ -707,10 +707,10 @@
                                     <label class="component-title">${_('English torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_engrelease"
-                                           id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.engrelease)]} />
                                     <label for="${providerID}_engrelease">
-                                        <p>${_('only download english torrents ,or torrents containing english subtitles')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_engrelease"
+                                               id="${providerID}_engrelease" ${('', 'checked')[bool(providerObj.engrelease)]} />
+                                        ${_('only download english torrents ,or torrents containing english subtitles')}
                                     </label>
                                 </div>
                             </div>
@@ -722,9 +722,9 @@
                                     <label class="component-title">${_('For Spanish torrents')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_onlyspasearch"
-                                           id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.onlyspasearch)]} />
                                     <label for="${providerID}_onlyspasearch">
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_onlyspasearch"
+                                               id="${providerID}_onlyspasearch" ${('', 'checked')[bool(providerObj.onlyspasearch)]} />
                                         <p>
                                             ${_('ONLY search on this provider if show info is defined as "Spanish" '
                                             '(avoid provider\'s use for VOS shows)')}
@@ -763,10 +763,10 @@
                                     <label class="component-title">${_('Freeleech')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_freeleech"
-                                           id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.freeleech)]}/>
                                     <label for="${providerID}_freeleech">
-                                        <p>${_('only download')} <b>[${_('FreeLeech')}]</b> ${_('torrents.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_freeleech"
+                                               id="${providerID}_freeleech" ${('', 'checked')[bool(providerObj.freeleech)]}/>
+                                        ${_('only download')} <b>[${_('FreeLeech')}]</b> ${_('torrents.')}
                                     </label>
                                 </div>
                             </div>
@@ -778,10 +778,10 @@
                                     <label class="component-title">${_('Enable daily searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_daily"
-                                           id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
                                     <label for="${providerID}_enable_daily">
-                                        <p>${_('enable provider to perform daily searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_daily"
+                                               id="${providerID}_enable_daily" ${('', 'checked')[bool(providerObj.enable_daily)]}/>
+                                        ${_('enable provider to perform daily searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -793,10 +793,10 @@
                                     <label class="component-title">${_('Reject Blu-ray M2TS releases')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_reject_m2ts"
-                                           id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.reject_m2ts)]}/>
                                     <label for="${providerID}_reject_m2ts">
-                                        <p>${_('enable to ignore Blu-ray MPEG-2 Transport Stream container releases')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_reject_m2ts"
+                                               id="${providerID}_reject_m2ts" ${('', 'checked')[bool(providerObj.reject_m2ts)]}/>
+                                        ${_('enable to ignore Blu-ray MPEG-2 Transport Stream container releases')}
                                     </label>
                                 </div>
                             </div>
@@ -808,10 +808,10 @@
                                     <label class="component-title">${_('Enable backlog searches')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_enable_backlog"
-                                           id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
                                     <label for="${providerID}_enable_backlog">
-                                        <p>${_('enable provider to perform backlog searches.')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_enable_backlog"
+                                               id="${providerID}_enable_backlog" ${('', 'checked')[bool(providerObj.enable_backlog and providerObj.supports_backlog)]}/>
+                                        ${_('enable provider to perform backlog searches.')}
                                     </label>
                                 </div>
                             </div>
@@ -824,7 +824,7 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                     <label class="form-check-label">
-                                        <input type="checkbox" name="${providerID}_search_fallback"
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_search_fallback"
                                                id="${providerID}_search_fallback" ${('', 'checked')[bool(providerObj.search_fallback)]}/>
                                         ${_('when searching for a complete season depending on search mode you may '
                                         'return no results, this helps by restarting the search using the opposite '
@@ -900,10 +900,10 @@
                                     <label class="component-title">${_('Subtitled')}</label>
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                    <input type="checkbox" name="${providerID}_subtitle"
-                                           id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.subtitle)]}/>
                                     <label for="${providerID}_subtitle">
-                                        <p>${_('select torrent with Italian subtitle')}</p>
+                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="${providerID}_subtitle"
+                                               id="${providerID}_subtitle" ${('', 'checked')[bool(providerObj.subtitle)]}/>
+                                        ${_('select torrent with Italian subtitle')}
                                     </label>
                                 </div>
                             </div>
