@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8ca2dfb - 2018-07-31: Merged overall_stats and show_stat functions Cut main show view load time down by 6s 
+- * e85aa31 - 2018-07-31: Pre-Release v9.3.56.dev12 
+- * 08cb03c - 2018-07-31: Merged overall_stats and show_stat functions Cut main show view load time down by 6s 
 - * edb99a0 - 2018-07-31: Fixed CSS issue for quicksearch items 
 - * 3acc96b - 2018-07-31: Pre-Release v9.3.56.dev11 
 - * d60e09f - 2018-07-31: Added delay for quicksearch input 
