@@ -1545,6 +1545,9 @@ $(document).ready(function ($) {
 
         home: {
             init: function () {
+                $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/home.jpg');
+                $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
+
                 SICKRAGE.home.add_show_options();
                 SICKRAGE.root_dirs.init();
             },

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 86e9b5f - 2018-08-01: Added backdrop for schedule view Added backdrop for history view Added opacity style to views with backdrops 
+- * 3269e7f - 2018-08-01: Added backdrop for home view 
+- * 535cdc1 - 2018-08-01: Added backdrop for schedule view Added backdrop for history view Added opacity style to views with backdrops 
 - * 6533663 - 2018-08-01: Added backdrop for add shows view 
 - * 6279e0c - 2018-08-01: Added backdrop for config menus 
 - * c6f1503 - 2018-08-01: Pre-Release v9.3.56.dev13 
