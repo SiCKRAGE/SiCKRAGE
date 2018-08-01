@@ -48,7 +48,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     timeFormat
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
 from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, overall_stats
+    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, app_statistics
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -2727,12 +2727,12 @@ class CMD_ShowsStats(ApiCall):
 
     def run(self):
         """ Get the global shows and episodes statistics """
-        stats = overall_stats()
+        stats = app_statistics()
 
         return _responds(RESULT_SUCCESS, {
-            'ep_downloaded': stats['episodes']['downloaded'],
-            'ep_snatched': stats['episodes']['snatched'],
-            'ep_total': stats['episodes']['total'],
-            'shows_active': stats['shows']['active'],
-            'shows_total': stats['shows']['total'],
+            'ep_downloaded': stats[2]['episodes']['downloaded'],
+            'ep_snatched': stats[2]['episodes']['snatched'],
+            'ep_total': stats[2]['episodes']['total'],
+            'shows_active': stats[2]['shows']['active'],
+            'shows_total': stats[2]['shows']['total'],
         })

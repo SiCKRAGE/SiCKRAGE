@@ -60,7 +60,7 @@ from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertai
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
-    clean_hosts, overall_stats
+    clean_hosts, app_statistics
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -601,63 +601,19 @@ class Home(WebHandler):
         else:
             showlists['Shows'] = sickrage.app.showlist
 
-        show_stats = self.show_statistics()
+        app_stats = app_statistics()
         return self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stat=show_stats[0],
-            max_download_count=show_stats[1],
-            overall_stats=overall_stats(),
+            show_stat=app_stats[0],
+            overall_stats=app_stats[1],
+            max_download_count=app_stats[2],
             controller='home',
             action='index'
         )
-
-    @staticmethod
-    def show_statistics():
-        show_stat = {}
-
-        today = datetime.date.today().toordinal()
-
-        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
-        status_download = Quality.DOWNLOADED + Quality.ARCHIVED
-
-        max_download_count = 1000
-
-        for epData in sickrage.app.main_db.all('tv_episodes'):
-            showid = epData['showid']
-            if showid not in show_stat:
-                show_stat[showid] = {}
-                show_stat[showid]['ep_snatched'] = 0
-                show_stat[showid]['ep_downloaded'] = 0
-                show_stat[showid]['ep_total'] = 0
-                show_stat[showid]['ep_airs_next'] = None
-                show_stat[showid]['ep_airs_prev'] = None
-
-            season = epData['season']
-            episode = epData['episode']
-            airdate = epData['airdate']
-            status = epData['status']
-
-            if season > 0 and episode > 0 and airdate > 1:
-                if status in status_quality: show_stat[showid]['ep_snatched'] += 1
-                if status in status_download: show_stat[showid]['ep_downloaded'] += 1
-                if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
-                ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
-
-                if show_stat[showid]['ep_total'] > max_download_count:
-                    max_download_count = show_stat[showid]['ep_total']
-
-                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
-                    show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
-                    show_stat[showid]['ep_airs_prev'] = airdate
-
-        max_download_count *= 100
-
-        return show_stat, max_download_count
 
     def is_alive(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
