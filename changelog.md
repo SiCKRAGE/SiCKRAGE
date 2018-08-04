@@ -1,6 +1,7 @@
 # Changelog
 
-- * 705b99c - 2018-08-01: Pre-Release v9.3.56.dev14 
+- * 757abcc - 2018-08-04: Fixed newline issue with error view 
+- * b40951e - 2018-08-01: Pre-Release v9.3.56.dev14 
 - * 0beb0e7 - 2018-08-01: Misc style changes 
 - * 3f0fc47 - 2018-08-01: Added margins to display show view 
 - * 056bf58 - 2018-08-01: Added margins for all layouts except poster in home view 

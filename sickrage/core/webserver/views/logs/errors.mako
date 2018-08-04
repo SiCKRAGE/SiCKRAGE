@@ -17,7 +17,7 @@
             <h3>${title}</h3>
         </div>
         <div class="card-body">
-            <div class="align-left">
+            <div class="text-left" style="white-space: pre-line;">
                 % if errors:
                 % for curError in sorted(errors, key=lambda error: error.time, reverse=True)[:500]:
                                                 ${curError.time} ${curError.message}
