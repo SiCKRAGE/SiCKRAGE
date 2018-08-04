@@ -412,8 +412,8 @@
 
                                         % if sickrage.app.config.home_layout == 'small':
                                             <td class="table-fit tvShow">
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
-                                                   title="${curShow.name}">
+                                                <span class="d-none">${curShow.name}</span>
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                                     <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
                                                          class="rounded shadow img-fluid"
                                                          alt="${curShow.indexerid}"/>
@@ -421,7 +421,7 @@
                                             </td>
                                         % elif sickrage.app.config.home_layout == 'banner':
                                             <td class="table-fit">
-                                                <span style="display: none;">${curShow.name}</span>
+                                                <span class="d-none">${curShow.name}</span>
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                                     <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
                                                          class="rounded shadow" alt="${curShow.indexerid}"
