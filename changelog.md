@@ -1,6 +1,7 @@
 # Changelog
 
-- * ff87522 - 2018-08-04: Fixed case-insensitive sorting for small poster view 
+- * dc13c82 - 2018-08-04: Show size now calculated from show stats 
+- * f52c99b - 2018-08-04: Fixed case-insensitive sorting for small poster view 
 - * 51b6726 - 2018-08-04: Fixed newline issue with error view 
 - * b40951e - 2018-08-01: Pre-Release v9.3.56.dev14 
 - * 0beb0e7 - 2018-08-01: Misc style changes 

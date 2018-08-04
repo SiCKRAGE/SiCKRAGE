@@ -1555,6 +1555,7 @@ def app_statistics():
             show_stat[showid]['ep_total'] = 0
             show_stat[showid]['ep_airs_next'] = None
             show_stat[showid]['ep_airs_prev'] = None
+            show_stat[showid]['total_size'] = 0
 
         season = epData['season']
         episode = epData['episode']
@@ -1583,6 +1584,7 @@ def app_statistics():
             elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
                 show_stat[showid]['ep_airs_prev'] = airdate
 
+            show_stat[showid]['total_size'] += epData['file_size']
             overall_stats['total_size'] += epData['file_size']
 
     max_download_count *= 100

@@ -351,7 +351,7 @@
                                             if not cur_total:
                                                 cur_total = 0
 
-                                            show_size = get_size(curShow.location.encode('utf-8'))
+                                            show_size = show_stat[curShow.indexerid]['total_size']
 
                                         if cur_total != 0:
                                             download_stat = str(cur_downloaded)
@@ -420,7 +420,7 @@
                                                 </a>
                                             </td>
                                         % elif sickrage.app.config.home_layout == 'banner':
-                                            <td class="table-fit">
+                                            <td class="table-fit tvShow">
                                                 <span class="d-none">${curShow.name}</span>
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                                     <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
