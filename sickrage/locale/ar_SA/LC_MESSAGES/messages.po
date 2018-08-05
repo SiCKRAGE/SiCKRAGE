@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-04 16:31-0700\n"
-"PO-Revision-Date: 2018-08-04 23:31\n"
+"POT-Creation-Date: 2018-08-04 18:30-0700\n"
+"PO-Revision-Date: 2018-08-05 01:30\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -64,7 +64,7 @@ msgstr "في قائمة الانتظار"
 msgid "Manual Search"
 msgstr "البحث اليدوي"
 
-#: sickrage/core/webserver/views/home/index.mako:306 src/js/core.js:628
+#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:628
 #: src/js/core.js:774 src/js/core.js:817
 msgid "loading"
 msgstr "تحميل"
@@ -352,7 +352,7 @@ msgstr "معلمات"
 #: sickrage/core/webserver/views/api_builder.mako:72
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
-#: sickrage/core/webserver/views/home/index.mako:25
+#: sickrage/core/webserver/views/home/index.mako:26
 #: sickrage/core/webserver/views/home/trakt_shows.mako:20
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:80
 msgid "Name"
@@ -483,7 +483,7 @@ msgstr "موفر"
 
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
-#: sickrage/core/webserver/views/home/index.mako:293
+#: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/manage/mass_update.mako:67
 msgid "Quality"
 msgstr "جودة"
@@ -979,8 +979,8 @@ msgid "Local"
 msgstr "المحلية"
 
 #: sickrage/core/webserver/views/config/general.mako:640
-#: sickrage/core/webserver/views/home/index.mako:33
-#: sickrage/core/webserver/views/home/index.mako:292
+#: sickrage/core/webserver/views/home/index.mako:34
+#: sickrage/core/webserver/views/home/index.mako:290
 msgid "Network"
 msgstr "شبكة"
 
@@ -4690,7 +4690,7 @@ msgid "Scene Absolute"
 msgstr "المشهد المطلقة"
 
 #: sickrage/core/webserver/views/home/display_show.mako:553
-#: sickrage/core/webserver/views/home/index.mako:295
+#: sickrage/core/webserver/views/home/index.mako:293
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "الحجم"
@@ -4707,7 +4707,7 @@ msgstr "تحميل"
 
 #: sickrage/core/webserver/views.py:999 sickrage/core/webserver/views.py:1000
 #: sickrage/core/webserver/views/home/display_show.mako:557
-#: sickrage/core/webserver/views/home/index.mako:297
+#: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/mass_update.mako:76
 msgid "Status"
 msgstr "مركز"
@@ -4802,7 +4802,7 @@ msgid "use SiCKRAGE metadata when searching for subtitle, this will override the
 msgstr "استخدام بيانات التعريف سيكراجي عند البحث عن الترجمة، ستتجاوز هذا التعريف التلقائي اكتشاف"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:175
-#: sickrage/core/webserver/views/home/index.mako:241
+#: sickrage/core/webserver/views/home/index.mako:243
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
 #: sickrage/core/webserver/views/manage/mass_update.mako:73
 #: sickrage/core/webserver/views/manage/queues.mako:18
@@ -4954,13 +4954,13 @@ msgid "Show Sort Direction"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:19
-#: sickrage/core/webserver/views/home/index.mako:47
+#: sickrage/core/webserver/views/home/index.mako:48
 #: sickrage/core/webserver/views/home/trakt_shows.mako:28
 msgid "Asc"
 msgstr "Asc"
 
 #: sickrage/core/webserver/views/home/imdb_shows.mako:20
-#: sickrage/core/webserver/views/home/index.mako:51
+#: sickrage/core/webserver/views/home/index.mako:52
 #: sickrage/core/webserver/views/home/trakt_shows.mako:29
 msgid "Desc"
 msgstr "تنازلي"
@@ -4978,86 +4978,86 @@ msgstr "استثناء:"
 msgid "Add Show"
 msgstr "إضافة عرض"
 
-#: sickrage/core/webserver/views/home/index.mako:29
+#: sickrage/core/webserver/views/home/index.mako:30
 msgid "Next Episode"
 msgstr "الحلقة القادمة"
 
-#: sickrage/core/webserver/views/home/index.mako:37
+#: sickrage/core/webserver/views/home/index.mako:38
 msgid "Progress"
 msgstr "التقدم المحرز"
 
-#: sickrage/core/webserver/views/home/index.mako:101
+#: sickrage/core/webserver/views/home/index.mako:103
 msgid "Anime List"
 msgstr "قائمة الأنمي"
 
-#: sickrage/core/webserver/views/home/index.mako:126
+#: sickrage/core/webserver/views/home/index.mako:128
 msgid "... Loading ..."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:145
-#: sickrage/core/webserver/views/home/index.mako:486
+#: sickrage/core/webserver/views/home/index.mako:147
+#: sickrage/core/webserver/views/home/index.mako:484
 #: sickrage/core/webserver/views/manage/mass_update.mako:33
 msgid "Continuing"
 msgstr "استمرار"
 
-#: sickrage/core/webserver/views/home/index.mako:147
-#: sickrage/core/webserver/views/home/index.mako:488
+#: sickrage/core/webserver/views/home/index.mako:149
+#: sickrage/core/webserver/views/home/index.mako:486
 #: sickrage/core/webserver/views/manage/mass_update.mako:39
 msgid "Ended"
 msgstr "انتهت"
 
-#: sickrage/core/webserver/views/home/index.mako:166
-#: sickrage/core/webserver/views/home/index.mako:358
+#: sickrage/core/webserver/views/home/index.mako:168
+#: sickrage/core/webserver/views/home/index.mako:356
 msgid "Downloaded: "
 msgstr "تحميل: "
 
-#: sickrage/core/webserver/views/home/index.mako:169
-#: sickrage/core/webserver/views/home/index.mako:361
+#: sickrage/core/webserver/views/home/index.mako:171
+#: sickrage/core/webserver/views/home/index.mako:359
 msgid "Snatched: "
 msgstr "وانتزع: "
 
-#: sickrage/core/webserver/views/home/index.mako:172
-#: sickrage/core/webserver/views/home/index.mako:364
+#: sickrage/core/webserver/views/home/index.mako:174
+#: sickrage/core/webserver/views/home/index.mako:362
 msgid "Total: "
 msgstr "المجموع: "
 
-#: sickrage/core/webserver/views/home/index.mako:175
-#: sickrage/core/webserver/views/home/index.mako:367
+#: sickrage/core/webserver/views/home/index.mako:177
+#: sickrage/core/webserver/views/home/index.mako:365
 msgid "no data"
 msgstr "لا توجد بيانات"
 
-#: sickrage/core/webserver/views/home/index.mako:232
+#: sickrage/core/webserver/views/home/index.mako:234
 msgid "Invalid date"
 msgstr "تاريخ غير صالح"
 
-#: sickrage/core/webserver/views/home/index.mako:264
-#: sickrage/core/webserver/views/home/index.mako:450
+#: sickrage/core/webserver/views/home/index.mako:265
+#: sickrage/core/webserver/views/home/index.mako:448
 msgid "No Network"
 msgstr "لا توجد شبكة"
 
-#: sickrage/core/webserver/views/home/index.mako:289
+#: sickrage/core/webserver/views/home/index.mako:287
 msgid "Next Ep"
 msgstr "الجيش الشعبي القادم"
 
-#: sickrage/core/webserver/views/home/index.mako:290
+#: sickrage/core/webserver/views/home/index.mako:288
 msgid "Prev Ep"
 msgstr "الجيش الشعبي السابق"
 
-#: sickrage/core/webserver/views/home/index.mako:291
+#: sickrage/core/webserver/views/home/index.mako:289
 msgid "Show"
 msgstr "إظهار"
 
-#: sickrage/core/webserver/views/home/index.mako:294
+#: sickrage/core/webserver/views/home/index.mako:292
 msgid "Downloads"
 msgstr "التنزيلات"
 
-#: sickrage/core/webserver/views/home/index.mako:296
+#: sickrage/core/webserver/views/home/index.mako:294
 #: sickrage/core/webserver/views/home/status.mako:42
 #: sickrage/core/webserver/views/layouts/main.mako:375
 msgid "Active"
 msgstr "النشطة"
 
-#: sickrage/core/webserver/views/home/index.mako:310
+#: sickrage/core/webserver/views/home/index.mako:308
 msgid "Loading..."
 msgstr "تحميل..."
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * acb9789 - 2018-08-04: Fixed issue with network logo being off-center Fixed issue with show posters being misaligned 
+- * 8cc5eea - 2018-08-04: Pre-Release v9.3.56.dev16 
+- * ebcd017 - 2018-08-04: Fixed issue with network logo being off-center Fixed issue with show posters being misaligned 
 - * 6004bc4 - 2018-08-04: Fixed issues with displaying show network logo&#x27;s 
 - * 486eb8c - 2018-08-04: Pre-Release v9.3.56.dev15 
 - * 277ba1b - 2018-08-04: Show size now calculated from show stats 
