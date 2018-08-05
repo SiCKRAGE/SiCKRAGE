@@ -2,6 +2,7 @@
 <%!
     import re
     import calendar
+    import unidecode
 
     import sickrage
     from sickrage.core.helpers import srdatetime, pretty_filesize, get_size
@@ -59,7 +60,8 @@
             <div class="form-inline d-inline-flex">
                 % if sickrage.app.config.home_layout != 'poster':
                     <div class="dropdown ml-4">
-                        <button id="popover" type="button" class="btn bg-transparent dropdown-toggle" style="border: none;">
+                        <button id="popover" type="button" class="btn bg-transparent dropdown-toggle"
+                                style="border: none;">
                             <i class="fas fa-2x fa-columns"></i>
                         </button>
                     </div>
@@ -194,7 +196,7 @@
 
                         network_class_name = None
                         if curShow.network:
-                            network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
+                            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
                             network_class_name = re.sub(r'\s+', '-', network_class_name)
                             network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
                             network_class_name = network_class_name.lower()
@@ -260,7 +262,7 @@
                                                         </span>
                                                     % else:
                                                         <span>
-                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-no-network"
+                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-unknown"
                                                                title="${_('No Network')}"></i>
                                                         </span>
                                                     % endif
@@ -375,7 +377,7 @@
 
                                         network_class_name = None
                                         if curShow.network:
-                                            network_class_name = re.sub(r'(?!\w|\s).', '', curShow.network)
+                                            network_class_name = re.sub(r'(?!\w|\s).', '', unidecode.unidecode(curShow.network))
                                             network_class_name = re.sub(r'\s+', '-', network_class_name)
                                             network_class_name = re.sub(r'^(\s*)([\W\w]*)(\b\s*$)', '\\2', network_class_name)
                                             network_class_name = network_class_name.lower()
@@ -384,7 +386,7 @@
                                         % if cur_airs_next:
                                         <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
-                                            <td class="table-fit">
+                                            <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}"
                                                       class="date">${srdatetime.srDateTime(airDate).srfdate()}</time>
                                             </td>
@@ -398,7 +400,7 @@
                                         % if cur_airs_prev:
                                         <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
-                                            <td class="table-fit">
+                                            <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}" class="date">
                                                     ${srdatetime.srDateTime(airDate).srfdate()}
                                                 </time>
@@ -437,7 +439,7 @@
                                         % endif
 
                                         % if sickrage.app.config.home_layout != 'simple':
-                                            <td class="table-fit">
+                                            <td class="table-fit align-middle">
                                                 % if curShow.network:
                                                     <span>
                                                         <i class="sickrage-network sickrage-network-${network_class_name}"
@@ -446,7 +448,7 @@
                                                     <span class="d-none d-print-inline">${curShow.network}</span>
                                                 % else:
                                                     <span>
-                                                        <i class="sickrage-network sickrage-network-no-network"
+                                                        <i class="sickrage-network sickrage-network-unknown"
                                                            title="${_('No Network')}"></i>
                                                     </span>
                                                     <span class="d-none d-print-inline">No Network</span>
@@ -458,9 +460,9 @@
                                             </td>
                                         % endif
 
-                                        <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
+                                        <td class="table-fit align-middle">${renderQualityPill(curShow.quality, showTitle=True)}</td>
 
-                                        <td>
+                                        <td class="align-middle">
                                             <span style="display: none;">${download_stat}</span>
                                             <div class="bg-dark rounded shadow">
                                                 <div class="progress-bar rounded "
@@ -472,16 +474,16 @@
                                             </div>
                                         </td>
 
-                                        <td class="table-fit" data-show-size="${show_size}">
+                                        <td class="table-fit align-middle" data-show-size="${show_size}">
                                             ${pretty_filesize(show_size)}
                                         </td>
 
-                                        <td class="table-fit">
+                                        <td class="table-fit align-middle">
                                             <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
                                         </td>
 
-                                        <td class="table-fit">
+                                        <td class="table-fit align-middle">
                                             % if curShow.status and re.search(r'(?i)(?:new|returning)\s*series', curShow.status):
                                                 ${_('Continuing')}
                                             % elif curShow.status and re.search('(?i)(?:nded)', curShow.status):
