@@ -236,7 +236,7 @@
                                         % else:
                                             <% display_status = curShow.status %>
                                             <%
-                                                out = ''
+                                                out = 'UNKNOWN'
                                                 if display_status:
                                                   out = display_status
                                                   if 'nded' not in display_status and 1 == int(curShow.paused):
@@ -247,30 +247,26 @@
                                     </div>
                                 </div>
                                 <div class="card-footer show-details p-1">
-                                    <table class="show-details text-center w-100">
+                                    <table class="show-details w-100" style="height:40px">
                                         <tr>
-                                            <td class="text-left">
+                                            <td class="text-left align-middle w-25">
                                                 <span class="d-block small show-dlstats"
                                                       title="${download_stat_tip}">${download_stat}</span>
                                             </td>
-                                            <td style="vertical-align: middle">
-                                                % if sickrage.app.config.home_layout != 'simple':
-                                                    % if curShow.network:
-                                                        <span>
-                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-${network_class_name}"
-                                                               title="${curShow.network}"></i>
-                                                        </span>
-                                                    % else:
-                                                        <span>
-                                                            <i class="d-block mx-auto show-network-image sickrage-network sickrage-network-unknown"
-                                                               title="${_('No Network')}"></i>
-                                                        </span>
-                                                    % endif
+                                            <td class="text-center align-middle">
+                                                % if curShow.network:
+                                                    <span>
+                                                        <i class="show-network-image sickrage-network sickrage-network-${network_class_name}"
+                                                           title="${curShow.network}"></i>
+                                                    </span>
                                                 % else:
-                                                    <span title="${curShow.network}">${curShow.network}</span>
+                                                    <span>
+                                                        <i class="show-network-image sickrage-network sickrage-network-unknown"
+                                                           title="${_('No Network')}"></i>
+                                                    </span>
                                                 % endif
                                             </td>
-                                            <td class="text-right">
+                                            <td class="text-right align-middle w-25">
                                                 ${renderQualityPill(curShow.quality, showTitle=True)}
                                             </td>
                                         </tr>
