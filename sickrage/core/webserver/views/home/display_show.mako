@@ -20,7 +20,7 @@
 
     <div class="row">
     <div class="col-lg-10 mx-auto">
-        <div class="row mt-3">
+        <div class="row">
             <!-- Alert -->
             % if show_message:
                 <div class="col-md-12 p-0">
