@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5f61a24 - 2018-08-08: Fixed issue with missing JS import for timeago module 
+- * 050cb71 - 2018-08-08: Pre-Release v9.3.56.dev18 
+- * c775a68 - 2018-08-08: Fixed issue with missing JS import for timeago module 
 - * 9b5ed21 - 2018-08-08: Fixed redirect issue when trying to login to a app thats already linked to another account 
 - * d569f06 - 2018-08-07: Pre-Release v9.3.56.dev17 
 - * 93bd3ce - 2018-08-07: Fixed issues with modals not displaying correctly Fixed issues with episode searches and episode search retries Fixed issue with data retrieval from database files 
