@@ -561,7 +561,7 @@ $(document).ready(function ($) {
                             // Update Status and Quality
                             rSearchTerm = /(\w+)\s\((.+?)\)/;
                             htmlContent = ep.status.replace(rSearchTerm, "$1" + ' <span class="quality ' + ep.quality + '">' + "$2" + '</span>');
-                            parent.closest('tr').prop("class", ep.overview + " season-" + ep.season + " seasonstyle");
+                            parent.closest('tr').prop("class", ep.overview + " season-" + ep.season + " seasonstyle font-weight-bold text-dark");
                         }
                         // update the status column if it exists
                         parent.siblings('.col-status').html(htmlContent);
