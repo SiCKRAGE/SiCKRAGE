@@ -252,11 +252,12 @@ class LoginHandler(BaseHandler):
         if code:
             try:
                 API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
+                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+
                 API().register_appid(sickrage.app.config.app_id)
 
-                self.set_secure_cookie('sr_user', json_encode(user), expires_days=30)
-                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
+                self.set_secure_cookie('sr_user', json_encode(user))
             except Exception as e:
                 return self.redirect('/logout')
 

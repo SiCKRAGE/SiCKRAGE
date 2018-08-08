@@ -28,6 +28,7 @@ class DBBasicTests(SiCKRAGETestDBCase):
     def test_select(self):
         pass
 
+
 if __name__ == '__main__':
     print("==================")
     print("STARTING - DB TESTS")

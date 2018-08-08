@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5e383be - 2018-08-07: Pre-Release v9.3.56.dev17 
+- * 1f33a61 - 2018-08-08: Fixed redirect issue when trying to login to a app thats already linked to another account 
+- * d569f06 - 2018-08-07: Pre-Release v9.3.56.dev17 
 - * 93bd3ce - 2018-08-07: Fixed issues with modals not displaying correctly Fixed issues with episode searches and episode search retries Fixed issue with data retrieval from database files 
 - * 1a7bca1 - 2018-08-05: Removed unrequired top margin spacing 
 - * 096927a - 2018-08-04: Pre-Release v9.3.56.dev16 
