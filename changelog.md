@@ -1,6 +1,7 @@
 # Changelog
 
-- * d8cec02 - 2018-08-07: Fixed issues with modals not displaying correctly Fixed issues with episode searches and episode search retries Fixed issue with data retrieval from database files 
+- * 5e383be - 2018-08-07: Pre-Release v9.3.56.dev17 
+- * 93bd3ce - 2018-08-07: Fixed issues with modals not displaying correctly Fixed issues with episode searches and episode search retries Fixed issue with data retrieval from database files 
 - * 1a7bca1 - 2018-08-05: Removed unrequired top margin spacing 
 - * 096927a - 2018-08-04: Pre-Release v9.3.56.dev16 
 - * ebcd017 - 2018-08-04: Fixed issue with network logo being off-center Fixed issue with show posters being misaligned 
