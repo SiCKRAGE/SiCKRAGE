@@ -485,16 +485,10 @@ $(document).ready(function ($) {
                 SICKRAGE.quality_chooser.init();
                 SICKRAGE.check_notifications();
 
-                $("#changelog").on('click', function () {
-                    $("#mainModal").dialog({
-                        modal: true,
-                        open: function () {
-                            $(this).load(SICKRAGE.srWebRoot + '/changes');
-                        },
-                        height: "800",
-                        width: "800",
-                        title: 'Changelog'
-                    });
+                $("#changelog").on('click', function (event) {
+                    event.preventDefault();
+                    $("#changelogModal").find('.modal-body').load(SICKRAGE.srWebRoot + '/changes');
+                    $("#changelogModal").modal();
                 });
 
                 if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
@@ -703,7 +697,7 @@ $(document).ready(function ($) {
 
                     SICKRAGE.ajax_search.selectedEpisode = $(this);
 
-                    $("#manualSearchModalFailed").modal('show');
+                    $("#manualSearchModalFailed").modal();
                 });
 
                 $('.epSearch').click(function (event) {
@@ -717,7 +711,7 @@ $(document).ready(function ($) {
                     SICKRAGE.ajax_search.selectedEpisode = $(this);
 
                     if ($(this).parent().parent().children(".col-status").children(".quality").length) {
-                        $("#manualSearchModalQuality").modal('show');
+                        $("#manualSearchModalQuality").modal();
                     } else {
                         SICKRAGE.ajax_search.manualSearch(options);
                     }
@@ -725,7 +719,7 @@ $(document).ready(function ($) {
 
                 $('#manualSearchModalFailed .btn').click(function () {
                     SICKRAGE.ajax_search.failedDownload = ($(this).text().toLowerCase() === 'yes');
-                    $("#manualSearchModalQuality").modal('show');
+                    $("#manualSearchModalQuality").modal();
                 });
 
                 $('#manualSearchModalQuality .btn').click(function () {
@@ -914,7 +908,7 @@ $(document).ready(function ($) {
                 }
 
                 SICKRAGE.browser.browse(initialDir, options.url, options.includeFiles, options.fileTypes);
-                SICKRAGE.browser.fileBrowserDialog.modal('show');
+                SICKRAGE.browser.fileBrowserDialog.modal();
 
                 return false;
             },

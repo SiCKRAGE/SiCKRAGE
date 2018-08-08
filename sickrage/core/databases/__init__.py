@@ -315,17 +315,14 @@ class srDatabase(object):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
     def all(self, *args, **kwargs):
-        for x in self.db.all(*args, **kwargs):
-            yield self.db.get('id', x['_id'])
+        return [x['doc'] for x in self.db.all(with_doc=True, *args, **kwargs)]
 
     def get_many(self, *args, **kwargs):
-        for x in self.db.get_many(*args, **kwargs):
-            yield self.db.get('id', x['_id'])
+        return [x['doc'] for x in self.db.get_many(with_doc=True, *args, **kwargs)]
 
     def get(self, *args, **kwargs):
-        kwargs['with_doc'] = True
-        data = self.db.get(*args, **kwargs)
-        return data.get('doc', data)
+        x = self.db.get(with_doc=True, *args, **kwargs)
+        return x.get('doc', x)
 
     def delete(self, *args):
         return self.db.delete(*args)

@@ -1,6 +1,18 @@
 <!-- Main Modals -->
 <%def name="mainModals()">
-    <div class="modal fade" id="fileBrowserDialog">
+    <div class="modal fade" id="changelogModal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark">
+                <div class="modal-header bg-secondary">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="fileBrowserDialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content bg-dark">
                 <div class="modal-header bg-secondary">
@@ -35,7 +47,7 @@
 
 <!-- displayShow Modals -->
 <%def name="displayShowModals()">
-    <div id="manualSearchModalFailed" class="modal fade">
+    <div id="manualSearchModalFailed" class="modal fade" data-backdrop="false" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
                 <div class="modal-header bg-secondary">
@@ -56,7 +68,7 @@
         </div>
     </div>
 
-    <div id="manualSearchModalQuality" class="modal fade">
+    <div id="manualSearchModalQuality" class="modal fade" data-backdrop="false" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
                 <div class="modal-header bg-secondary">

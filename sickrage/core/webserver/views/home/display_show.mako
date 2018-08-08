@@ -14,10 +14,15 @@
     from sickrage.core.media.util import showImage
     from sickrage.indexers import IndexerApi
 %>
-<%block name="content">
-    <%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
-    <%namespace file="../includes/modals.mako" import="displayShowModals"/>
 
+<%namespace file="../includes/modals.mako" import="displayShowModals"/>
+<%namespace file="../includes/quality_defaults.mako" import="renderQualityPill"/>
+
+<%block name="modals">
+    ${displayShowModals()}
+</%block>
+
+<%block name="content">
     <div class="row">
     <div class="col-lg-10 mx-auto">
         <div class="row">
@@ -723,5 +728,4 @@
     </div>
     </div>
     </div>
-    ${displayShowModals()}
 </%block>

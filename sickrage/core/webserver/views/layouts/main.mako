@@ -67,8 +67,12 @@
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <%block name="css" />
+
 </head>
 <body data-controller="${controller}" data-action="${action}">
+    ${mainModals()}
+    <%block name="modals" />
+
     % if current_user:
         <%
             numCombined = numErrors + numWarnings
@@ -415,9 +419,6 @@
 
     <script src="${srWebRoot}/js/core.min.js"></script>
     <%block name="scripts" />
-
-    <div id="mainModal"></div>
-    ${mainModals()}
 </div>
 
 <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button"
