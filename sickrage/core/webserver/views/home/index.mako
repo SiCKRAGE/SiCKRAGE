@@ -409,12 +409,13 @@
                                         % endif
 
                                         % if sickrage.app.config.home_layout == 'small':
-                                            <td class="table-fit tvShow">
-                                                <span class="d-none">${curShow.name}</span>
-                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
+                                            <td class="tvShow">
+                                                <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}"
+                                                   title="${curShow.name}">
                                                     <img src="${srWebRoot}${showImage(curShow.indexerid, 'poster_thumb').url}"
-                                                         class="rounded shadow img-fluid"
+                                                         class="img-smallposter rounded shadow"
                                                          alt="${curShow.indexerid}"/>
+                                                    ${curShow.name}
                                                 </a>
                                             </td>
                                         % elif sickrage.app.config.home_layout == 'banner':
@@ -422,7 +423,7 @@
                                                 <span class="d-none">${curShow.name}</span>
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">
                                                     <img src="${srWebRoot}${showImage(curShow.indexerid, 'banner').url}"
-                                                         class="rounded shadow" alt="${curShow.indexerid}"
+                                                         class="img-banner rounded shadow" alt="${curShow.indexerid}"
                                                          title="${curShow.name}"/>
                                                 </a>
                                             </td>
@@ -437,15 +438,13 @@
                                         % if sickrage.app.config.home_layout != 'simple':
                                             <td class="table-fit align-middle">
                                                 % if curShow.network:
-                                                    <span>
-                                                        <i class="sickrage-network sickrage-network-${network_class_name}"
-                                                           title="${curShow.network}"></i>
+                                                    <span title="${curShow.network}">
+                                                        <i class="sickrage-network sickrage-network-${network_class_name}"></i>
                                                     </span>
                                                     <span class="d-none d-print-inline">${curShow.network}</span>
                                                 % else:
-                                                    <span>
-                                                        <i class="sickrage-network sickrage-network-unknown"
-                                                           title="${_('No Network')}"></i>
+                                                    <span title="${_('No Network')}">
+                                                        <i class="sickrage-network sickrage-network-unknown"></i>
                                                     </span>
                                                     <span class="d-none d-print-inline">No Network</span>
                                                 % endif
@@ -477,6 +476,7 @@
                                         <td class="table-fit align-middle">
                                             <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
                                             <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
+                                            <span class="d-none d-print-inline">${bool(paused)}</span>
                                         </td>
 
                                         <td class="table-fit align-middle">

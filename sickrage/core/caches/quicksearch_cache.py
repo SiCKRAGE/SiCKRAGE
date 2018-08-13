@@ -59,7 +59,7 @@ class QuicksearchCache(object):
                 '_t': 'quicksearch',
                 'category': 'shows',
                 'showid': indexerid,
-                'seasons': len(set([e['season'] for e in sickrage.app.main_db.get_many('tv_episodes', indexerid)])),
+                'seasons': len(set([e['season'] for e in sickrage.app.main_db.get_many('tv_episodes', indexerid) if e['season'] != 0])),
                 'name': show_name,
                 'img': sickrage.app.config.web_root + showImage(indexerid, 'poster_thumb').url
             }

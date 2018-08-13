@@ -64,6 +64,7 @@
                                         <input type="checkbox" class="bulkCheck" id="checkAll"/>
                                     </th>
                                     <th>${_('Show Name')}</th>
+                                    <th>${_('Show Directory')}</th>
                                     <th class="col-quality">${_('Quality')}</th>
                                     <th class="col-legend">${_('Sports')}</th>
                                     <th class="col-legend">${_('Scene')}</th>
@@ -90,30 +91,46 @@
                                             <td class="tvShow">
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                                             </td>
+                                            <td class="table-fit tvShow">
+                                                <div class="text-left">
+                                                    ${curShow.location}
+                                                </div>
+                                            </td>
                                             <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_sports)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.is_sports)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_scene)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.is_scene)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.is_anime)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.is_anime)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.flatten_folders)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.flatten_folders)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.skip_downloaded)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.skip_downloaded)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.paused)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.paused)}</span>
                                             </td>
                                             <td class="table-fit">
                                                 <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(curShow.subtitles)]}"></i>
+                                                <span class="d-none d-print-inline">${bool(curShow.subtitles)}</span>
                                             </td>
-                                            <td class="table-fit">${statusStrings[curShow.default_ep_status]}</td>
-                                            <td class="table-fit">${curShow.status}</td>
+                                            <td class="table-fit">
+                                                ${statusStrings[curShow.default_ep_status]}
+                                            </td>
+                                            <td class="table-fit">
+                                                ${curShow.status}
+                                            </td>
                                         </tr>
                                     % endfor
                                 </tbody>
