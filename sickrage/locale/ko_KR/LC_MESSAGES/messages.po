@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-08 12:36-0700\n"
-"PO-Revision-Date: 2018-08-08 19:37\n"
+"POT-Creation-Date: 2018-08-13 14:05-0700\n"
+"PO-Revision-Date: 2018-08-13 21:06\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -321,15 +321,15 @@ msgstr "복원할 백업 파일 선택"
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5432
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5433
 msgid "Mass Delete"
 msgstr "대량 삭제"
 
-#: src/js/core.js:5433
+#: src/js/core.js:5434
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: src/js/core.js:5510
+#: src/js/core.js:5511
 msgid "DELETED"
 msgstr ""
 
@@ -484,7 +484,7 @@ msgstr "공급자"
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
 #: sickrage/core/webserver/views/home/index.mako:291
-#: sickrage/core/webserver/views/manage/mass_update.mako:67
+#: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Quality"
 msgstr "품질"
 
@@ -4681,7 +4681,7 @@ msgid "Absolute"
 msgstr "절대"
 
 #: sickrage/core/webserver/views/home/display_show.mako:555
-#: sickrage/core/webserver/views/manage/mass_update.mako:69
+#: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Scene"
 msgstr "현장"
 
@@ -4708,7 +4708,7 @@ msgstr "다운로드"
 #: sickrage/core/webserver/views.py:1000 sickrage/core/webserver/views.py:1001
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/index.mako:295
-#: sickrage/core/webserver/views/manage/mass_update.mako:76
+#: sickrage/core/webserver/views/manage/mass_update.mako:77
 msgid "Status"
 msgstr "상태"
 
@@ -4781,7 +4781,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:135
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:143
-#: sickrage/core/webserver/views/manage/mass_update.mako:72
+#: sickrage/core/webserver/views/manage/mass_update.mako:73
 msgid "Skip downloaded"
 msgstr ""
 
@@ -4804,7 +4804,7 @@ msgstr "SiCKRAGE 메타 데이터를 사용 하 여 검색할 때 자막,이 자
 #: sickrage/core/webserver/views/home/edit_show.mako:175
 #: sickrage/core/webserver/views/home/index.mako:243
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
-#: sickrage/core/webserver/views/manage/mass_update.mako:73
+#: sickrage/core/webserver/views/manage/mass_update.mako:74
 #: sickrage/core/webserver/views/manage/queues.mako:18
 #: sickrage/core/webserver/views/manage/queues.mako:36
 msgid "Paused"
@@ -4836,7 +4836,7 @@ msgstr "공기 날짜 일정 하 고 특별 한 에피소드 사이 충돌 하�
 
 #: sickrage/core/webserver/views/home/edit_show.mako:215
 #: sickrage/core/webserver/views/manage/mass_edit.mako:240
-#: sickrage/core/webserver/views/manage/mass_update.mako:68
+#: sickrage/core/webserver/views/manage/mass_update.mako:69
 msgid "Sports"
 msgstr "스포츠"
 
@@ -4861,7 +4861,7 @@ msgstr "\"힘 전체 업데이트\" 필요한 이며 수동으로 정렬할 필�
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
-#: sickrage/core/webserver/views/manage/mass_update.mako:70
+#: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Anime"
 msgstr "애니메이션"
 
@@ -4871,7 +4871,7 @@ msgstr "쇼는 애니메이션 에피소드 Show.S02E03 보다는 오히려 Show
 
 #: sickrage/core/webserver/views/home/edit_show.mako:268
 #: sickrage/core/webserver/views/manage/mass_edit.mako:159
-#: sickrage/core/webserver/views/manage/mass_update.mako:71
+#: sickrage/core/webserver/views/manage/mass_update.mako:72
 msgid "Season folders"
 msgstr "시즌 폴더"
 
@@ -5031,7 +5031,7 @@ msgid "Invalid date"
 msgstr "잘못 된 날짜"
 
 #: sickrage/core/webserver/views/home/index.mako:265
-#: sickrage/core/webserver/views/home/index.mako:448
+#: sickrage/core/webserver/views/home/index.mako:446
 msgid "No Network"
 msgstr "없음 네트워크"
 
@@ -5857,11 +5857,15 @@ msgstr "대량 제거"
 msgid "Mass Subtitle"
 msgstr "대량 자막"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:74
+#: sickrage/core/webserver/views/manage/mass_update.mako:67
+msgid "Show Directory"
+msgstr ""
+
+#: sickrage/core/webserver/views/manage/mass_update.mako:75
 msgid "Subtitle"
 msgstr "자막"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:75
+#: sickrage/core/webserver/views/manage/mass_update.mako:76
 msgid "Default Ep Status"
 msgstr ""
 

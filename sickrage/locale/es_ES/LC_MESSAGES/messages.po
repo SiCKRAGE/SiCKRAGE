@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-08 12:36-0700\n"
-"PO-Revision-Date: 2018-08-08 19:38\n"
+"POT-Creation-Date: 2018-08-13 14:05-0700\n"
+"PO-Revision-Date: 2018-08-13 21:06\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
@@ -321,15 +321,15 @@ msgstr "Seleccionar archivos de backup para restaurar"
 msgid "No providers available to configure."
 msgstr "No hay proveedores disponibles para configurar."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5432
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5433
 msgid "Mass Delete"
 msgstr "Eliminar masa"
 
-#: src/js/core.js:5433
+#: src/js/core.js:5434
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Has seleccionado para eliminar espectáculos.  ¿Está seguro que desea continuar? Se eliminarán todos los archivos de su sistema."
 
-#: src/js/core.js:5510
+#: src/js/core.js:5511
 msgid "DELETED"
 msgstr ""
 
@@ -484,7 +484,7 @@ msgstr "Proveedor"
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
 #: sickrage/core/webserver/views/home/index.mako:291
-#: sickrage/core/webserver/views/manage/mass_update.mako:67
+#: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Quality"
 msgstr "Calidad"
 
@@ -4681,7 +4681,7 @@ msgid "Absolute"
 msgstr "Absoluta"
 
 #: sickrage/core/webserver/views/home/display_show.mako:555
-#: sickrage/core/webserver/views/manage/mass_update.mako:69
+#: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Scene"
 msgstr "Escena"
 
@@ -4708,7 +4708,7 @@ msgstr "Descargar"
 #: sickrage/core/webserver/views.py:1000 sickrage/core/webserver/views.py:1001
 #: sickrage/core/webserver/views/home/display_show.mako:562
 #: sickrage/core/webserver/views/home/index.mako:295
-#: sickrage/core/webserver/views/manage/mass_update.mako:76
+#: sickrage/core/webserver/views/manage/mass_update.mako:77
 msgid "Status"
 msgstr "Estado"
 
@@ -4781,7 +4781,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:135
 #: sickrage/core/webserver/views/includes/add_show_options.mako:57
 #: sickrage/core/webserver/views/manage/mass_edit.mako:143
-#: sickrage/core/webserver/views/manage/mass_update.mako:72
+#: sickrage/core/webserver/views/manage/mass_update.mako:73
 msgid "Skip downloaded"
 msgstr ""
 
@@ -4804,7 +4804,7 @@ msgstr "usar metadatos de SiCKRAGE en la búsqueda de subtítulos, esto anulará
 #: sickrage/core/webserver/views/home/edit_show.mako:175
 #: sickrage/core/webserver/views/home/index.mako:243
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
-#: sickrage/core/webserver/views/manage/mass_update.mako:73
+#: sickrage/core/webserver/views/manage/mass_update.mako:74
 #: sickrage/core/webserver/views/manage/queues.mako:18
 #: sickrage/core/webserver/views/manage/queues.mako:36
 msgid "Paused"
@@ -4836,7 +4836,7 @@ msgstr "En caso de un conflicto de la fecha del aire entre los episodios regular
 
 #: sickrage/core/webserver/views/home/edit_show.mako:215
 #: sickrage/core/webserver/views/manage/mass_edit.mako:240
-#: sickrage/core/webserver/views/manage/mass_update.mako:68
+#: sickrage/core/webserver/views/manage/mass_update.mako:69
 msgid "Sports"
 msgstr "Deportes"
 
@@ -4861,7 +4861,7 @@ msgstr "Una \"actualización completa de la fuerza\" es necesaria, y si tienes e
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
-#: sickrage/core/webserver/views/manage/mass_update.mako:70
+#: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Anime"
 msgstr "Anime"
 
@@ -4871,7 +4871,7 @@ msgstr "Compruebe si el programa es Anime y episodios salen como Show.265 en lug
 
 #: sickrage/core/webserver/views/home/edit_show.mako:268
 #: sickrage/core/webserver/views/manage/mass_edit.mako:159
-#: sickrage/core/webserver/views/manage/mass_update.mako:71
+#: sickrage/core/webserver/views/manage/mass_update.mako:72
 msgid "Season folders"
 msgstr "Carpetas de temporada"
 
@@ -5031,7 +5031,7 @@ msgid "Invalid date"
 msgstr "Fecha no válida"
 
 #: sickrage/core/webserver/views/home/index.mako:265
-#: sickrage/core/webserver/views/home/index.mako:448
+#: sickrage/core/webserver/views/home/index.mako:446
 msgid "No Network"
 msgstr "Sin red"
 
@@ -5857,11 +5857,15 @@ msgstr "Quitar masa"
 msgid "Mass Subtitle"
 msgstr "Subtítulos totales"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:74
+#: sickrage/core/webserver/views/manage/mass_update.mako:67
+msgid "Show Directory"
+msgstr ""
+
+#: sickrage/core/webserver/views/manage/mass_update.mako:75
 msgid "Subtitle"
 msgstr "Subtítulos"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:75
+#: sickrage/core/webserver/views/manage/mass_update.mako:76
 msgid "Default Ep Status"
 msgstr ""
 
