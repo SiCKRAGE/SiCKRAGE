@@ -1,6 +1,7 @@
 # Changelog
 
-- * 461550d - 2018-08-13: Pre-Release v9.3.56.dev19 
+- * d0a49bd - 2018-08-13: Disabled closing database on shutdown/restart of app 
+- * e69a0e5 - 2018-08-13: Pre-Release v9.3.56.dev19 
 - * 1dc0171 - 2018-08-13: Added show directory column to mass update view Fixed table sorting issues for mass update and main shows views 
 - * 479026c - 2018-08-08: Fixed status text styling issues for episode rows in display show view 
 - * d6b5a4a - 2018-08-08: Pre-Release v9.3.56.dev18 
