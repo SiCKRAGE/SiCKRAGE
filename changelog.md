@@ -1,6 +1,7 @@
 # Changelog
 
-- * 35102b2 - 2018-08-13: Migrated mediaToSiCKRAGE script to use API calls 
+- * f607e54 - 2018-08-13: Improved pager code for getting episode data from theTVDB 
+- * 777692f - 2018-08-13: Migrated mediaToSiCKRAGE script to use API calls 
 - * bbce5f4 - 2018-08-13: Migrated autoProcessTV script to use API calls 
 - * b8c4de7 - 2018-08-13: Pre-Release v9.3.56.dev21 
 - * af4abb6 - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
