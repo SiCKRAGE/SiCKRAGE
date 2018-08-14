@@ -1,6 +1,7 @@
 # Changelog
 
-- * f607e54 - 2018-08-13: Improved pager code for getting episode data from theTVDB 
+- * c68579c - 2018-08-13: Pre-Release v9.3.56.dev22 
+- * 55d5abd - 2018-08-13: Improved pager code for getting episode data from theTVDB 
 - * 777692f - 2018-08-13: Migrated mediaToSiCKRAGE script to use API calls 
 - * bbce5f4 - 2018-08-13: Migrated autoProcessTV script to use API calls 
 - * b8c4de7 - 2018-08-13: Pre-Release v9.3.56.dev21 
