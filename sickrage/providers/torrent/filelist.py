@@ -32,7 +32,7 @@ from sickrage.providers import TorrentProvider
 
 class FileListProvider(TorrentProvider):
     def __init__(self):
-        super(FileListProvider, self).__init__('FileList', 'http://filelist.ro', True)
+        super(FileListProvider, self).__init__('FileList', 'https://filelist.ro', True)
         # Credentials
         self.username = None
         self.password = None

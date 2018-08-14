@@ -35,6 +35,10 @@ DEBUG = VERBOSE = False
 
 simple_test_cases = {
     'standard': {
+        'Mr Show Name.S00E01E02E03E04E05E06E07E08.Source.Quality.Etc-Group': ParseResult(None, 'Mr Show Name', 0,
+                                                                                         [1, 2, 3, 4, 5, 6, 7, 8],
+                                                                                         'Source.Quality.Etc',
+                                                                                         'Group'),
         'Mr.Show.Name.S01E02.Source.Quality.Etc-Group': ParseResult(None, 'Mr Show Name', 1, [2], 'Source.Quality.Etc',
                                                                     'Group'),
         'Show.Name.S01E02': ParseResult(None, 'Show Name', 1, [2]),
@@ -175,9 +179,9 @@ combination_test_cases = [
      {'standard'}),
 
     (
-    '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
-    ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short', version=-1),
-    {'standard', 'season_only'}),
+        '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
+        ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short', version=-1),
+        {'standard', 'season_only'}),
 
     (r'/Test/TV/Jimmy Fallon/Season 2/Jimmy Fallon - 2010-12-15 - blah.avi',
      ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=date(2010, 12, 15), version=-1),
@@ -317,7 +321,8 @@ class AnimeTests(SiCKRAGETestDBCase):
                 print(test_result)
                 print(result)
 
-            self.assertEqual(test_result.which_regex, {section}, '{} : {} != {}'.format(cur_test, test_result.which_regex, {section}))
+            self.assertEqual(test_result.which_regex, {section},
+                             '{} : {} != {}'.format(cur_test, test_result.which_regex, {section}))
             self.assertEqual(test_result, result, '{} : {} != {}'.format(cur_test, test_result, result))
 
     def test_anime_sxxexx_file_names(self):

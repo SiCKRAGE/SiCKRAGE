@@ -27,7 +27,7 @@ from sickrage.providers import TorrentProvider
 class HorribleSubsProvider(TorrentProvider):
     def __init__(self):
 
-        super(HorribleSubsProvider, self).__init__("HorribleSubs", 'http://horriblesubs.info', False)
+        super(HorribleSubsProvider, self).__init__("HorribleSubs", 'https://horriblesubs.info', False)
 
         self.supports_absolute_numbering = True
         self.anime_only = True
