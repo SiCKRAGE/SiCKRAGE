@@ -747,7 +747,9 @@ class CMD_Episode(ApiCall):
 
         # convert stuff to human form
         if try_int(episode['airdate'], 1) > 693595:  # 1900
-            episode['airdate'] = srdatetime.srDateTime(srdatetime.srDateTime(tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network), convert=True).dt).srfdate(d_preset=dateFormat)
+            episode['airdate'] = srdatetime.srDateTime(srdatetime.srDateTime(
+                tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network),
+                convert=True).dt).srfdate(d_preset=dateFormat)
         else:
             episode['airdate'] = 'Never'
 
@@ -1447,6 +1449,7 @@ class CMD_SiCKRAGEGetRootDirs(ApiCall):
 
         return _responds(RESULT_SUCCESS, _getRootDirs())
 
+
 class CMD_SiCKRAGEPauseDaily(ApiCall):
     _cmd = "sr.pausedaily"
     _help = {
@@ -1468,6 +1471,7 @@ class CMD_SiCKRAGEPauseDaily(ApiCall):
         else:
             sickrage.app.search_queue.unpause_daily_searcher()
             return _responds(RESULT_SUCCESS, msg="Daily searcher unpaused")
+
 
 class CMD_SiCKRAGEPauseBacklog(ApiCall):
     _cmd = "sr.pausebacklog"
@@ -1977,8 +1981,8 @@ class CMD_ShowAddNew(ApiCall):
         self.future_status, args = self.check_params("future_status", None, False, "string",
                                                      ["wanted", "skipped", "ignored"], *args, **kwargs)
         self.skip_downloaded, args = self.check_params("skip_downloaded",
-                                                          bool(sickrage.app.config.skip_downloaded_default), False, "bool",
-                                                          [], *args, **kwargs)
+                                                       bool(sickrage.app.config.skip_downloaded_default), False, "bool",
+                                                       [], *args, **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """
@@ -2423,7 +2427,8 @@ class CMD_ShowSeasons(ApiCall):
                 row["quality"] = get_quality_string(quality)
 
                 if try_int(row['airdate'], 1) > 693595:  # 1900
-                    dtEpisodeAirs = srdatetime.srDateTime(tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
+                    dtEpisodeAirs = srdatetime.srDateTime(
+                        tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
                     row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2561,21 +2566,27 @@ class CMD_ShowStats(ApiCall):
         # add all the downloaded qualities
         episode_qualities_counts_download = {"total": 0}
         for statusCode in Quality.DOWNLOADED + Quality.ARCHIVED:
-            status, quality = Quality.splitCompositeStatus(statusCode)
-            if not quality == Quality.NONE:
-                episode_qualities_counts_download[statusCode] = 0
+            __, quality = Quality.splitCompositeStatus(statusCode)
+            if quality in [Quality.NONE]:
+                continue
+            episode_qualities_counts_download[statusCode] = 0
 
         # add all snatched qualities
         episode_qualities_counts_snatch = {"total": 0}
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
-            status, quality = Quality.splitCompositeStatus(statusCode)
-            if not quality == Quality.NONE:
-                episode_qualities_counts_snatch[statusCode] = 0
+            __, quality = Quality.splitCompositeStatus(statusCode)
+            if quality in [Quality.NONE]:
+                continue
+            episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in (x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid) if x['season'] != 0):
-            status, quality = Quality.splitCompositeStatus(int(row["status"]))
+        for row in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            if row['season'] == 0:
+                continue
 
+            status, quality = Quality.splitCompositeStatus(int(row["status"]))
+            if quality in [Quality.NONE]:
+                continue
             episode_status_counts_total["total"] += 1
 
             if status in Quality.DOWNLOADED + Quality.ARCHIVED:
@@ -2590,41 +2601,37 @@ class CMD_ShowStats(ApiCall):
                 episode_status_counts_total[status] += 1
 
         # the outgoing container
-        episodes_stats = {"downloaded": {}}
-        # turning codes into strings
+        episodes_stats = {
+            "total": 0,
+            "downloaded": {},
+            "snatched": {}
+        }
+
         for statusCode in episode_qualities_counts_download:
             if statusCode == "total":
                 episodes_stats["downloaded"]["total"] = episode_qualities_counts_download[statusCode]
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
-            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(
-                ")", "")
+            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats["downloaded"][statusString] = episode_qualities_counts_download[statusCode]
 
-        episodes_stats["snatched"] = {}
-        # truning codes into strings
-        # and combining proper and normal
         for statusCode in episode_qualities_counts_snatch:
             if statusCode == "total":
                 episodes_stats["snatched"]["total"] = episode_qualities_counts_snatch[statusCode]
                 continue
             status, quality = Quality.splitCompositeStatus(int(statusCode))
-            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(
-                ")", "")
+            statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             if Quality.qualityStrings[quality] in episodes_stats["snatched"]:
                 episodes_stats["snatched"][statusString] += episode_qualities_counts_snatch[statusCode]
             else:
                 episodes_stats["snatched"][statusString] = episode_qualities_counts_snatch[statusCode]
 
-        # episodes_stats["total"] = {}
         for statusCode in episode_status_counts_total:
             if statusCode == "total":
                 episodes_stats["total"] = episode_status_counts_total[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
-            statusString = statusStrings.statusStrings[statusCode].lower().replace(" ", "_").replace("(",
-                                                                                                     "").replace(
-                ")", "")
+            statusString = statusStrings.statusStrings[statusCode]
+            statusString = statusString.lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]
 
         return _responds(RESULT_SUCCESS, episodes_stats)

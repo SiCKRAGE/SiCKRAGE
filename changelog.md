@@ -1,6 +1,7 @@
 # Changelog
 
-- * f43b9db - 2018-08-13: Fixed issue with displaying overall stats using API 
+- * 81d9804 - 2018-08-13: Fixed KeyError for Show Stats API call 
+- * c30f21b - 2018-08-13: Fixed issue with displaying overall stats using API 
 - * fdeaf28 - 2018-08-13: Pre-Release v9.3.56.dev20 
 - * e6f1422 - 2018-08-13: Disabled closing database on shutdown/restart of app 
 - * e69a0e5 - 2018-08-13: Pre-Release v9.3.56.dev19 
