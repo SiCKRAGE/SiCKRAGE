@@ -1,6 +1,7 @@
 # Changelog
 
-- * 81d9804 - 2018-08-13: Fixed KeyError for Show Stats API call 
+- * afa3c2c - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
+- * beba691 - 2018-08-13: Fixed KeyError for Show Stats API call 
 - * c30f21b - 2018-08-13: Fixed issue with displaying overall stats using API 
 - * fdeaf28 - 2018-08-13: Pre-Release v9.3.56.dev20 
 - * e6f1422 - 2018-08-13: Disabled closing database on shutdown/restart of app 

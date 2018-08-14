@@ -497,15 +497,15 @@ class Core(object):
             # save all show and config settings
             self.save_all()
 
-            # # close databases
-            # for db in [self.main_db, self.cache_db]:
-            #     if db.opened:
-            #         self.log.debug("Shutting down {} database connection".format(db.name))
-            #         db.close()
+            # close databases
+            for db in [self.main_db, self.cache_db]:
+                if db.opened:
+                    self.log.debug("Shutting down {} database connection".format(db.name))
+                    db.close()
 
             # shutdown logging
-            if self.log:
-                self.log.close()
+            # if self.log:
+            #     self.log.close()
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)
