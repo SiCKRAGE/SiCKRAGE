@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1557a32 - 2018-08-13: Fixed issues with multi-episode search results with more then 6 episodes in result. Misc provider URL updates. Misc fixes for tests. 
+- * e9f2e06 - 2018-08-13: Pre-Release v9.3.56.dev23 
+- * 9cba816 - 2018-08-13: Fixed issues with multi-episode search results with more then 6 episodes in result. Misc provider URL updates. Misc fixes for tests. 
 - * 908bb53 - 2018-08-13: Pre-Release v9.3.56.dev22 
 - * 55d5abd - 2018-08-13: Improved pager code for getting episode data from theTVDB 
 - * 777692f - 2018-08-13: Migrated mediaToSiCKRAGE script to use API calls 
