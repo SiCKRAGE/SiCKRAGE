@@ -1,7 +1,6 @@
 [sickrage]
 host=localhost
 port=8081
-username=
-password=
+api_key=
 web_root=
 ssl=0

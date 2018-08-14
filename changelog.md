@@ -1,6 +1,7 @@
 # Changelog
 
-- * 78829f1 - 2018-08-13: Pre-Release v9.3.56.dev21 
+- * 9e0c144 - 2018-08-13: Migrated autoProcessTV script to use API calls 
+- * b8c4de7 - 2018-08-13: Pre-Release v9.3.56.dev21 
 - * af4abb6 - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
 - * beba691 - 2018-08-13: Fixed KeyError for Show Stats API call 
 - * c30f21b - 2018-08-13: Fixed issue with displaying overall stats using API 
