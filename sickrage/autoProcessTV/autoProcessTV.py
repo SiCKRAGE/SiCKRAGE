@@ -23,7 +23,6 @@ import io
 import os.path
 import sys
 from ConfigParser import RawConfigParser, NoOptionError
-from urllib import urlencode
 
 import requests
 
@@ -86,7 +85,7 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
         'path': dir_to_process
     }
 
-    #if org_nzb_name is not None:
+    # if org_nzb_name is not None:
     #    params['nzbName'] = org_nzb_name
 
     if status is not None:
@@ -97,12 +96,12 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
     else:
         protocol = "http://"
 
-    url = "{}{}:{}{}api/{}/?{}".format(protocol, host, port, web_root, api_key, urlencode(params))
+    url = "{}{}:{}{}api/{}/".format(protocol, host, port, web_root, api_key)
 
     print ("Opening URL: " + url)
 
     try:
-        r = requests.get(url, stream=True)
+        r = requests.get(url, params=params, verify=False, allow_redirects=False, stream=True)
         for line in r.iter_lines():
             if not line:
                 continue
