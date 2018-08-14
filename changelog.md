@@ -1,6 +1,7 @@
 # Changelog
 
-- * afa3c2c - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
+- * 78829f1 - 2018-08-13: Pre-Release v9.3.56.dev21 
+- * af4abb6 - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
 - * beba691 - 2018-08-13: Fixed KeyError for Show Stats API call 
 - * c30f21b - 2018-08-13: Fixed issue with displaying overall stats using API 
 - * fdeaf28 - 2018-08-13: Pre-Release v9.3.56.dev20 

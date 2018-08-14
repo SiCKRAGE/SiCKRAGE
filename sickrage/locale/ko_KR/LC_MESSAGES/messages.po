@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-13 14:42-0700\n"
-"PO-Revision-Date: 2018-08-13 21:42\n"
+"POT-Creation-Date: 2018-08-13 19:54-0700\n"
+"PO-Revision-Date: 2018-08-14 02:55\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -4247,7 +4247,7 @@ msgstr "높은 대역폭 할당을 사용 하 여 우선 순위가 높은 경우
 msgid "Test Connection"
 msgstr "연결 테스트"
 
-#: sickrage/core/webserver/api.py:966
+#: sickrage/core/webserver/api.py:968
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:718
