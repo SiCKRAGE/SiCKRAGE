@@ -2730,9 +2730,9 @@ class CMD_ShowsStats(ApiCall):
         stats = app_statistics()
 
         return _responds(RESULT_SUCCESS, {
-            'ep_downloaded': stats[2]['episodes']['downloaded'],
-            'ep_snatched': stats[2]['episodes']['snatched'],
-            'ep_total': stats[2]['episodes']['total'],
-            'shows_active': stats[2]['shows']['active'],
-            'shows_total': stats[2]['shows']['total'],
+            'ep_downloaded': stats[1]['episodes']['downloaded'],
+            'ep_snatched': stats[1]['episodes']['snatched'],
+            'ep_total': stats[1]['episodes']['total'],
+            'shows_active': stats[1]['shows']['active'],
+            'shows_total': stats[1]['shows']['total'],
         })

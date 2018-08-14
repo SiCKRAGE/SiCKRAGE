@@ -1,6 +1,7 @@
 # Changelog
 
-- * 72fde6b - 2018-08-13: Pre-Release v9.3.56.dev20 
+- * f43b9db - 2018-08-13: Fixed issue with displaying overall stats using API 
+- * fdeaf28 - 2018-08-13: Pre-Release v9.3.56.dev20 
 - * e6f1422 - 2018-08-13: Disabled closing database on shutdown/restart of app 
 - * e69a0e5 - 2018-08-13: Pre-Release v9.3.56.dev19 
 - * 1dc0171 - 2018-08-13: Added show directory column to mass update view Fixed table sorting issues for mass update and main shows views 
