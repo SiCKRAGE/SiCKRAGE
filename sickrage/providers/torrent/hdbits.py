@@ -88,7 +88,7 @@ class HDBitsProvider(TorrentProvider):
                 for item in parsedJSON['data']:
                     results.append(item)
             else:
-                sickrage.app.log.error("Resulting JSON from provider isn't correct, not parsing it")
+                sickrage.app.log.warning("Resulting JSON from provider isn't correct, not parsing it")
 
         # sort by number of seeders
         results.sort(key=lambda k: try_int(k.get('seeders', 0)), reverse=True)

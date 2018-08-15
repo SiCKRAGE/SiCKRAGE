@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-13 22:22-0700\n"
-"PO-Revision-Date: 2018-08-14 05:22\n"
+"POT-Creation-Date: 2018-08-14 23:13-0700\n"
+"PO-Revision-Date: 2018-08-15 06:14\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Hledání"
 msgid "Queued"
 msgstr "Ve frontě"
 
-#: sickrage/core/webserver/views/home/display_show.mako:711
+#: sickrage/core/webserver/views/home/display_show.mako:709
 #: sickrage/core/webserver/views/includes/modals.mako:54
 #: sickrage/core/webserver/views/includes/modals.mako:75
 #: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:598
@@ -350,7 +350,7 @@ msgid "Parameters"
 msgstr "Parametry"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:557
+#: sickrage/core/webserver/views/home/display_show.mako:555
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:26
 #: sickrage/core/webserver/views/home/trakt_shows.mako:20
@@ -466,7 +466,7 @@ msgstr "Čas"
 
 #: sickrage/core/webserver/views/history.mako:55
 #: sickrage/core/webserver/views/history.mako:119
-#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/display_show.mako:551
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
@@ -510,7 +510,7 @@ msgstr "S podtitulem"
 msgid "missing provider"
 msgstr "chybějící poskytovatel"
 
-#: sickrage/core/webserver/views/home/display_show.mako:452
+#: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/schedule.mako:23
 msgid "Select Columns"
 msgstr "Vybrat sloupce"
@@ -4250,7 +4250,7 @@ msgstr "Testovat připojení"
 #: sickrage/core/webserver/api.py:968
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:718
+#: sickrage/core/webserver/views/home/display_show.mako:716
 msgid "Subtitles Search"
 msgstr "Hledat titulky"
 
@@ -4323,7 +4323,7 @@ msgid "The directory where SickRage should store your"
 msgstr "Adresář, kde SickRage by měl ukládat vaše"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:125
-#: sickrage/core/webserver/views/home/display_show.mako:561
+#: sickrage/core/webserver/views/home/display_show.mako:559
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:276
@@ -4543,190 +4543,190 @@ msgstr "Umístění:"
 msgid "Missing"
 msgstr "Chybí"
 
-#: sickrage/core/webserver/views/home/display_show.mako:277
+#: sickrage/core/webserver/views/home/display_show.mako:276
 msgid "Size:"
 msgstr "Velikost:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:282
+#: sickrage/core/webserver/views/home/display_show.mako:280
 msgid "Scene Name:"
 msgstr "Název scény:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:286
+#: sickrage/core/webserver/views/home/display_show.mako:284
 msgid "Search Delay:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:291
+#: sickrage/core/webserver/views/home/display_show.mako:289
 msgid "Required Words:"
 msgstr "Požadovaná slova:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:297
+#: sickrage/core/webserver/views/home/display_show.mako:295
 msgid "Ignored Words:"
 msgstr "Ignorovaná slova:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:303
+#: sickrage/core/webserver/views/home/display_show.mako:301
 msgid "Wanted Group"
 msgstr "Vybráním skupiny"
 
-#: sickrage/core/webserver/views/home/display_show.mako:311
+#: sickrage/core/webserver/views/home/display_show.mako:309
 msgid "Unwanted Group"
 msgstr "Nechtěné skupina"
 
-#: sickrage/core/webserver/views/home/display_show.mako:322
+#: sickrage/core/webserver/views/home/display_show.mako:320
 msgid "Info Language:"
 msgstr "Informace o jazyk:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:329
+#: sickrage/core/webserver/views/home/display_show.mako:327
 msgid "Subtitles:"
 msgstr "Titulky:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:336
+#: sickrage/core/webserver/views/home/display_show.mako:334
 msgid "Subtitles Metadata:"
 msgstr "Titulky Metadata:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:342
+#: sickrage/core/webserver/views/home/display_show.mako:340
 msgid "Season Folders:"
 msgstr "Sezóny složky:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:348
+#: sickrage/core/webserver/views/home/display_show.mako:346
 msgid "Paused:"
 msgstr "Pozastaveno:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:354
+#: sickrage/core/webserver/views/home/display_show.mako:352
 msgid "Air-by-Date:"
 msgstr "Datum vysílání:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:360
+#: sickrage/core/webserver/views/home/display_show.mako:358
 msgid "Sports:"
 msgstr "Sport:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:366
+#: sickrage/core/webserver/views/home/display_show.mako:364
 msgid "Anime:"
 msgstr "Anime:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:372
+#: sickrage/core/webserver/views/home/display_show.mako:370
 msgid "DVD Order:"
 msgstr "Objednávka DVD:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:378
+#: sickrage/core/webserver/views/home/display_show.mako:376
 msgid "Scene Numbering:"
 msgstr "Scénu číslování:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:384
+#: sickrage/core/webserver/views/home/display_show.mako:382
 msgid "Skip Downloaded:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:423
+#: sickrage/core/webserver/views/home/display_show.mako:421
 msgid "Missed:"
 msgstr "Minul:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:427
+#: sickrage/core/webserver/views/home/display_show.mako:425
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:25
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:66
 msgid "Wanted:"
 msgstr "Hledá se:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:431
+#: sickrage/core/webserver/views/home/display_show.mako:429
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:26
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:68
 msgid "Low Quality:"
 msgstr "Nízká kvalita:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:435
+#: sickrage/core/webserver/views/home/display_show.mako:433
 msgid "Downloaded:"
 msgstr "Stáhnout:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:439
+#: sickrage/core/webserver/views/home/display_show.mako:437
 msgid "Skipped:"
 msgstr "Vynecháno:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:444
+#: sickrage/core/webserver/views/home/display_show.mako:442
 msgid "Snatched:"
 msgstr "Vytrhla:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:455
+#: sickrage/core/webserver/views/home/display_show.mako:453
 msgid "Select Filtered Episodes"
 msgstr "Vyberte filtrované epizody"
 
-#: sickrage/core/webserver/views/home/display_show.mako:458
+#: sickrage/core/webserver/views/home/display_show.mako:456
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "Vymazat vše"
 
-#: sickrage/core/webserver/views/home/display_show.mako:525
+#: sickrage/core/webserver/views/home/display_show.mako:523
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:525
+#: sickrage/core/webserver/views/home/display_show.mako:523
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:532
+#: sickrage/core/webserver/views/home/display_show.mako:530
 msgid "Hide Episodes"
 msgstr "Skrýt epizody"
 
-#: sickrage/core/webserver/views/home/display_show.mako:537
+#: sickrage/core/webserver/views/home/display_show.mako:535
 msgid "Show Episodes"
 msgstr "Zobrazit epizody"
 
-#: sickrage/core/webserver/views/home/display_show.mako:551
+#: sickrage/core/webserver/views/home/display_show.mako:549
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:552
+#: sickrage/core/webserver/views/home/display_show.mako:550
 msgid "TBN"
 msgstr "TBN"
 
-#: sickrage/core/webserver/views/home/display_show.mako:554
+#: sickrage/core/webserver/views/home/display_show.mako:552
 msgid "Absolute"
 msgstr "Absolutní"
 
-#: sickrage/core/webserver/views/home/display_show.mako:555
+#: sickrage/core/webserver/views/home/display_show.mako:553
 #: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Scene"
 msgstr "Scene"
 
-#: sickrage/core/webserver/views/home/display_show.mako:556
+#: sickrage/core/webserver/views/home/display_show.mako:554
 msgid "Scene Absolute"
 msgstr "Scény absolutní"
 
-#: sickrage/core/webserver/views/home/display_show.mako:558
+#: sickrage/core/webserver/views/home/display_show.mako:556
 #: sickrage/core/webserver/views/home/index.mako:293
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "Velikost"
 
-#: sickrage/core/webserver/views/home/display_show.mako:559
+#: sickrage/core/webserver/views/home/display_show.mako:557
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:81
 msgid "Airdate"
 msgstr "Metropolisu"
 
-#: sickrage/core/webserver/views/home/display_show.mako:560
-#: sickrage/core/webserver/views/home/display_show.mako:670
+#: sickrage/core/webserver/views/home/display_show.mako:558
+#: sickrage/core/webserver/views/home/display_show.mako:667
 msgid "Download"
 msgstr "Stáhnout"
 
 #: sickrage/core/webserver/views.py:1000 sickrage/core/webserver/views.py:1001
-#: sickrage/core/webserver/views/home/display_show.mako:562
+#: sickrage/core/webserver/views/home/display_show.mako:560
 #: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
 msgid "Status"
 msgstr "Stav"
 
-#: sickrage/core/webserver/views/home/display_show.mako:563
+#: sickrage/core/webserver/views/home/display_show.mako:561
 #: sickrage/core/webserver/views/home/new_show.mako:115
 msgid "Search"
 msgstr "Hledat"
 
-#: sickrage/core/webserver/views/home/display_show.mako:657
+#: sickrage/core/webserver/views/home/display_show.mako:653
 msgid "Never"
 msgstr "Nikdy"
 
 #: sickrage/core/common.py:616
-#: sickrage/core/webserver/views/home/display_show.mako:685
+#: sickrage/core/webserver/views/home/display_show.mako:683
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: sickrage/core/webserver/views/home/display_show.mako:704
+#: sickrage/core/webserver/views/home/display_show.mako:702
 msgid "Retry Download"
 msgstr "Opakovat stahování"
 
