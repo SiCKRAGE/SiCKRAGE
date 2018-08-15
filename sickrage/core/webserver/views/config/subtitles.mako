@@ -230,7 +230,7 @@
                                 <div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="${curService['name']}">
                                     <div class="align-middle">
                                         <label class="form-check-label">
-                                            <input type="checkbox" data-toggle="toggle" data-size="small" id="enable_${curService['name']}"
+                                            <input type="checkbox" id="enable_${curService['name']}"
                                                    class="service_enabler" ${('', 'checked')[curService['enabled'] == True]}/>
                                             <a href="${anon_url(curService['url'])}" class="imgLink" target="_new">
                                                 <i class="sickrage-subtitles sickrage-subtitles-${curService['name']}"

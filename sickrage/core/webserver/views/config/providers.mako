@@ -97,7 +97,7 @@
                                  id="${providerID}">
                                 <div class="align-middle">
                                     <label class="form-check-label" for="enable_${providerID}">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" id="enable_${providerID}"
+                                        <input type="checkbox" id="enable_${providerID}"
                                                class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
                                         <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;">

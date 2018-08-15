@@ -1452,7 +1452,7 @@
                             <div class="list-group metadataDiv" id="${cur_id}">
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_show_metadata">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_show_metadata" ${('', 'checked')[bool(cur_generator.show_metadata)]}/>
                                         ${_('Show Metadata')}
                                         <span id="${cur_id}_eg_show_metadata">
@@ -1463,7 +1463,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_episode_metadata">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_episode_metadata" ${('', 'checked')[bool(cur_generator.episode_metadata)]}/>
                                         ${_('Episode Metadata')}
                                         <span id="${cur_id}_eg_episode_metadata">
@@ -1474,7 +1474,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_fanart">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_fanart" ${('', 'checked')[bool(cur_generator.fanart)]}/>
                                         ${_('Show Fanart')}
                                         <span id="${cur_id}_eg_fanart">
@@ -1485,7 +1485,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_poster">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_poster" ${('', 'checked')[bool(cur_generator.poster)]}/>
                                         ${_('Show Poster')}
                                         <span id="${cur_id}_eg_poster">
@@ -1496,7 +1496,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_banner">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_banner" ${('', 'checked')[bool(cur_generator.banner)]}/>
                                         ${_('Show Banner')}
                                         <span id="${cur_id}_eg_banner">
@@ -1507,7 +1507,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_episode_thumbnails">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_episode_thumbnails" ${('', 'checked')[bool(cur_generator.episode_thumbnails)]}/>
                                         ${_('Episode Thumbnails')}
                                         <span id="${cur_id}_eg_episode_thumbnails">
@@ -1518,7 +1518,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_posters">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_posters" ${('', 'checked')[bool(cur_generator.season_posters)]}/>
                                         ${_('Season Posters')}
                                         <span id="${cur_id}_eg_season_posters">
@@ -1529,7 +1529,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_banners">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_banners" ${('', 'checked')[bool(cur_generator.season_banners)]}/>
                                         ${_('Season Banners')}
                                         <span id="${cur_id}_eg_season_banners">
@@ -1540,7 +1540,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label for="${cur_id}_season_all_poster">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_all_poster" ${('', 'checked')[bool(cur_generator.season_all_poster)]}/>
                                         ${_('Season All Poster')}
                                         <span id="${cur_id}_eg_season_all_poster">
@@ -1551,7 +1551,7 @@
 
                                 <div class="list-group-item-dark rounded mb-1">
                                     <label>
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" class="metadata_checkbox ml-1"
+                                        <input type="checkbox" class="metadata_checkbox ml-1"
                                                id="${cur_id}_season_all_banner" ${('', 'checked')[bool(cur_generator.season_all_banner)]}/>
                                         ${_('Season All Banner')}
                                         <span id="${cur_id}_eg_season_all_banner">

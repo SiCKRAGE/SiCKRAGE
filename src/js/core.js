@@ -4814,7 +4814,7 @@ $(document).ready(function ($) {
                     SICKRAGE.config.providers.newznabProviders[id] = [isDefault, [name, url, key, cat]];
 
                     if (isDefault !== 'true') {
-                        $('#editANewznabProvider').addOption(id, name);
+                        $('#editANewznabProvider').append($("<option></option>").attr("value", id).text(name));
                         SICKRAGE.config.providers.populateNewznabSection();
                     }
 
@@ -4955,7 +4955,7 @@ $(document).ready(function ($) {
                     SICKRAGE.config.providers.torrentRssProviders[id] = [name, url, cookies, titleTAG];
 
                     if (isDefault !== 'true') {
-                        $('#editATorrentRssProvider').addOption(id, name);
+                        $('#editATorrentRssProvider').append($("<option></option>").attr("value", id).text(name));
                         SICKRAGE.config.providers.populateTorrentRssSection();
                     }
 
