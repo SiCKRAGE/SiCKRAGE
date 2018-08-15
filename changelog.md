@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0aa95f6 - 2018-08-14: Fixed issue with saving provider settings Reverted toggles for provider priorities, subtitle plugins, and post-processor metadata choices 
+- * a56a5cd - 2018-08-14: Fixed AttributeError with Tokyotoshokan provider 
+- * 332017d - 2018-08-14: Fixed issue with saving provider settings Reverted toggles for provider priorities, subtitle plugins, and post-processor metadata choices 
 - * ea140ab - 2018-08-14: individual shows view now gathers total show size from episode file sizes in database 
 - * 3ae007d - 2018-08-13: Pre-Release v9.3.56.dev23 
 - * 9cba816 - 2018-08-13: Fixed issues with multi-episode search results with more then 6 episodes in result. Misc provider URL updates. Misc fixes for tests. 

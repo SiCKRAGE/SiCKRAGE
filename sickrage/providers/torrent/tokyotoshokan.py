@@ -47,9 +47,6 @@ class TokyoToshokanProvider(TorrentProvider):
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
 
-        if not ep_obj.show or not ep_obj.show.is_anime:
-            return results
-
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: {}".format(mode))
             for search_string in search_strings[mode]:
@@ -92,9 +89,12 @@ class TokyoToshokanProvider(TorrentProvider):
 
             for top, bot in zip(torrent_rows[a::2], torrent_rows[a + 1::2]):
                 try:
+                    title = download_url = ""
                     desc_top = top.find('td', class_='desc-top')
-                    title = desc_top.get_text(strip=True)
-                    download_url = desc_top.find('a')['href']
+                    if desc_top:
+                        title = desc_top.get_text(strip=True)
+                        download_url = desc_top.find('a')['href']
+
                     if not all([title, download_url]):
                         continue
 

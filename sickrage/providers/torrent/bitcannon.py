@@ -55,7 +55,7 @@ class BitCannonProvider(TorrentProvider):
 
         # Search Params
         search_params = {
-            'category': 'anime' if ep_obj and ep_obj.show and ep_obj.show.anime else 'tv',
+            'category': ("tv", "anime")[bool(ep_obj and ep_obj.show and ep_obj.show.anime)],
             'apiKey': self.api_key,
         }
 
