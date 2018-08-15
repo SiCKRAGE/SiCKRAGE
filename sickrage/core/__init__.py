@@ -504,8 +504,8 @@ class Core(object):
                     db.close()
 
             # shutdown logging
-            # if self.log:
-            #     self.log.close()
+            if self.log:
+                self.log.close()
 
         if restart:
             os.execl(sys.executable, sys.executable, *sys.argv)

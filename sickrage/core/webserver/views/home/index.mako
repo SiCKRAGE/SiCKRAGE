@@ -5,7 +5,7 @@
     import unidecode
 
     import sickrage
-    from sickrage.core.helpers import srdatetime, pretty_filesize, get_size
+    from sickrage.core.helpers import srdatetime, pretty_filesize
     from sickrage.core.updaters import tz_updater
     from sickrage.core.media.util import showImage
 %>

@@ -272,12 +272,10 @@
                                 % else:
                                     <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
                                 % endif
-                                % if os.path.isdir(showLoc):
-                                    <tr>
-                                        <td class="showLegend">${_('Size:')}</td>
-                                        <td>${pretty_filesize(get_size(showLoc.encode('utf-8')))}</td>
-                                    </tr>
-                                % endif
+                                <tr>
+                                    <td class="showLegend">${_('Size:')}</td>
+                                    <td>${pretty_filesize(show.show_size)}</td>
+                                </tr>
                                 <tr>
                                     <td class="showLegend">${_('Scene Name:')}</td>
                                     <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
@@ -638,10 +636,7 @@
                 </td>
 
                 <td class="table-fit text-nowrap col-ep">
-                    % if epResult["file_size"]:
-                            <% file_size = pretty_filesize(epResult["file_size"]) %>
-                    ${file_size}
-                    % endif
+                    ${pretty_filesize(epResult["file_size"])}
                 </td>
 
                 <td class="table-fit col-airdate">
@@ -651,8 +646,9 @@
                     % if airDate.year >= 1970 or show.network:
                         <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
                     % endif
-                        <time datetime="${airDate.isoformat()}"
-                              class="date text-nowrap">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
+                        <time datetime="${airDate.isoformat()}" class="date text-nowrap">
+                            ${srdatetime.srDateTime(airDate).srfdatetime()}
+                        </time>
                     % else:
                         ${_('Never')}
                     % endif
@@ -667,7 +663,9 @@
                                                     filename = filename.replace(rootDir, "")
                         filename = sickrage.app.config.download_url + urllib.quote(filename.encode('utf8'))
                     %>
-                        <div style="text-align: center;"><a href="${filename}">${_('Download')}</a></div>
+                        <div style="text-align: center;">
+                            <a href="${filename}">${_('Download')}</a>
+                        </div>
                     % endif
                 </td>
 
