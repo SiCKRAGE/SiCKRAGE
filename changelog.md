@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2837010 - 2018-08-14: Pre-Release v9.3.56.dev24 
+- * 6a37df4 - 2018-08-15: Made quicksearch content easier to read 
+- * 26635da - 2018-08-14: Pre-Release v9.3.56.dev24 
 - * 676065a - 2018-08-14: Fixed AttributeError with Tokyotoshokan provider 
 - * 332017d - 2018-08-14: Fixed issue with saving provider settings Reverted toggles for provider priorities, subtitle plugins, and post-processor metadata choices 
 - * ea140ab - 2018-08-14: individual shows view now gathers total show size from episode file sizes in database 

@@ -114,14 +114,14 @@
                         <li>
                             <div class="input-group input-group-lg">
                                 <div class="input-group-prepend">
-                                    <div class="input-group-text bg-dark" style="border: none">
+                                    <div class="input-group-text bg-dark text-white-50" style="border: none">
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
-                                <input id="quicksearch" class="form-control bg-dark"
+                                <input id="quicksearch" class="form-control bg-dark text-white-50"
                                        style="width:350px;border: none;" type="search">
                                 <div class="input-group-append">
-                                    <div class="input-group-text bg-dark" style="border: none">
+                                    <div class="input-group-text bg-dark text-white-50" style="border: none">
                                         <i id="quicksearch-icon"></i>
                                     </div>
                                 </div>
