@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 import unittest
 
-from tests import SiCKRAGETestCase
+import tests
 
 test_result = 'Show.Name.S01E01.HDTV.x264-RLSGROUP'
 test_cases = {
@@ -66,7 +66,7 @@ test_cases = {
 }
 
 
-class HelpersTests(SiCKRAGETestCase):
+class HelpersTests(tests.SiCKRAGETestCase):
     pass
 
 

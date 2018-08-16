@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6a37df4 - 2018-08-15: Made quicksearch content easier to read 
+- * 2f4e8f1 - 2018-08-15: Misc updates to tests 
+- * d56b876 - 2018-08-15: Made quicksearch content easier to read 
 - * 26635da - 2018-08-14: Pre-Release v9.3.56.dev24 
 - * 676065a - 2018-08-14: Fixed AttributeError with Tokyotoshokan provider 
 - * 332017d - 2018-08-14: Fixed issue with saving provider settings Reverted toggles for provider priorities, subtitle plugins, and post-processor metadata choices 

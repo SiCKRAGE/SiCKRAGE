@@ -24,14 +24,18 @@ import os
 import unittest
 
 import sickrage
+import tests
 from sickrage.core.helpers import make_dirs
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
-from tests import SiCKRAGETestCase, SiCKRAGETestDBCase
 
 
-class PPInitTests(SiCKRAGETestCase):
+def _log(message, level=None):
+    sickrage.app.log.info(message)
+
+
+class PPInitTests(tests.SiCKRAGETestCase):
     def setUp(self, **kwargs):
         super(PPInitTests, self).setUp()
         self.pp = PostProcessor(self.FILEPATH)
@@ -43,7 +47,7 @@ class PPInitTests(SiCKRAGETestCase):
         self.assertEqual(self.pp.folder_name, self.SHOWNAME)
 
 
-class PPBasicTests(SiCKRAGETestDBCase):
+class PPBasicTests(tests.SiCKRAGETestDBCase):
     def test_process(self):
         show = TVShow(1, 3)
         show.name = self.SHOWNAME
@@ -55,11 +59,30 @@ class PPBasicTests(SiCKRAGETestDBCase):
         ep.saveToDB()
 
         sickrage.app.name_cache.put('show name', 3)
-        self.pp = PostProcessor(self.FILEPATH, process_method='move')
-        self.assertTrue(self.pp.process)
+        self.post_processor = PostProcessor(self.FILEPATH, process_method='move')
+        self.post_processor._log = _log
+        self.assertTrue(self.post_processor.process)
 
 
-class ListAssociatedFiles(SiCKRAGETestCase):
+class PPMultiEPTests(tests.SiCKRAGETestDBCase):
+    def setUp(self):
+        self.FILEPATH = os.path.join(self.FILEDIR, 'show name.S01E01E02E03E04E05E06E07E08.Flight.462.Part.1-8.mkv')
+        super(PPMultiEPTests, self).setUp()
+
+    def test_process(self):
+        show = TVShow(1, 3)
+        show.name = self.SHOWNAME
+        show.location = self.SHOWDIR
+        show.saveToDB()
+        sickrage.app.showlist = [show]
+
+        sickrage.app.name_cache.put('show name', 3)
+        self.post_processor = PostProcessor(self.FILEPATH, process_method='move')
+        self.post_processor._log = _log
+        self.assertTrue(self.post_processor.process)
+
+
+class ListAssociatedFiles(tests.SiCKRAGETestCase):
     def setUp(self):
         super(ListAssociatedFiles, self).setUp()
         self.test_tree = os.path.join(self.FILEDIR, 'associated_files', 'random', 'recursive', 'subdir')
@@ -75,8 +98,9 @@ class ListAssociatedFiles(SiCKRAGETestCase):
             'Show [SickRage] Non-Associated.srt',
         ]
         self.file_list = [os.path.join(self.FILEDIR, f) for f in file_names] + [os.path.join(self.test_tree, f) for f in
-                                                                               file_names]
+                                                                                file_names]
         self.post_processor = PostProcessor('Show Name')
+        self.post_processor._log = _log
         self.maxDiff = None
         sickrage.app.config.move_associated_files = True
         sickrage.app.config.allowed_extensions = ''

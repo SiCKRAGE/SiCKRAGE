@@ -25,9 +25,9 @@ import unittest
 from datetime import date
 
 import sickrage
+import tests
 from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.show import TVShow
-from tests import SiCKRAGETestDBCase
 
 sickrage.app.sys_encoding = 'UTF-8'
 
@@ -214,7 +214,7 @@ unicode_test_cases = [
 failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
 
 
-class UnicodeTests(SiCKRAGETestDBCase):
+class UnicodeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(UnicodeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
@@ -234,7 +234,7 @@ class UnicodeTests(SiCKRAGETestDBCase):
             self._test_unicode(name, result)
 
 
-class FailureCaseTests(SiCKRAGETestDBCase):
+class FailureCaseTests(tests.SiCKRAGETestDBCase):
     @staticmethod
     def _test_name(name):
         np = NameParser(True)
@@ -252,7 +252,7 @@ class FailureCaseTests(SiCKRAGETestDBCase):
             self.assertTrue(self._test_name(name))
 
 
-class ComboTests(SiCKRAGETestDBCase):
+class ComboTests(tests.SiCKRAGETestDBCase):
     def _test_combo(self, name, result, which_regexes):
         if VERBOSE:
             print()
@@ -277,7 +277,7 @@ class ComboTests(SiCKRAGETestDBCase):
             self._test_combo(os.path.normpath(name), result, which_regexes)
 
 
-class AnimeTests(SiCKRAGETestDBCase):
+class AnimeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(AnimeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
@@ -333,7 +333,7 @@ class AnimeTests(SiCKRAGETestDBCase):
         self._test_names(np, 'anime_SxxExx', lambda x: x + '.avi')
 
 
-class BasicTests(SiCKRAGETestDBCase):
+class BasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(BasicTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
