@@ -81,12 +81,10 @@ class SiCKRAGETestCase(unittest.TestCase):
         sickrage.app.data_dir = self.TESTDIR
         sickrage.app.config_file = self.TEST_CONFIG
 
-        sickrage.app.config.load(True)
+        sickrage.app.config.load()
 
-        sickrage.app.config.quality_default = 4  # hdtv
-        sickrage.app.config.naming_multi_ep = True
+        sickrage.app.config.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
         sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
-        sickrage.app.config.ignore_words = "German,Core2HD"
 
         episode.TVEpisode.populateEpisode = self._fake_specify_ep
 

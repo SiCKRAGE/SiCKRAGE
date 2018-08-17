@@ -979,34 +979,32 @@ class TVEpisode(object):
             "Ep Name" and "Other Ep Name" becomes "Ep Name & Other Ep Name"
         """
 
-        multiNameRegex = r"(.*) \(\d{1,2}\)"
+        multi_name_regex = r"(.*) \(\d{1,2}\)"
 
-        self.relatedEps = sorted(self.relatedEps, key=lambda x: x.episode)
+        single_name = True
+        cur_good_name = None
 
-        singleName = True
-        curGoodName = None
-
-        for curName in [self.name] + [x.name for x in self.relatedEps]:
-            match = re.match(multiNameRegex, curName)
-
+        for curName in [self.name] + [x.name for x in sorted(self.relatedEps, key=lambda k: k.episode)]:
+            match = re.match(multi_name_regex, curName)
             if not match:
-                singleName = False
+                single_name = False
                 break
 
-            if curGoodName is None:
-                curGoodName = match.group(1)
-            elif curGoodName != match.group(1):
-                singleName = False
+            if cur_good_name is None:
+                cur_good_name = match.group(1)
+            elif cur_good_name != match.group(1):
+                single_name = False
                 break
 
-        if singleName:
-            goodName = curGoodName
+        if single_name:
+            good_name = cur_good_name or self.name
         else:
-            goodName = self.name
-            for relEp in self.relatedEps:
-                goodName += " & " + relEp.name
+            good_name = "MultiPartEpisode"
+            # good_name = self.name
+            # for relEp in self.relatedEps:
+            #     good_name += " & " + relEp.name
 
-        return goodName
+        return good_name
 
     def _replace_map(self):
         """
