@@ -109,10 +109,10 @@ class ShowQueue(srQueue):
         if (self.isBeingRefreshed(show) or self.isInRefreshQueue(show)) and not force:
             raise CantRefreshShowException("This show is already being refreshed or queued to be refreshed, skipping "
                                            "this request.")
-        elif (self.isBeingUpdated(show) or self.isInUpdateQueue(show)) and not force:
-            raise CantRefreshShowException("A refresh was attempted but there is already an update queued or in "
-                                           "progress. Since updates do a refresh at the end anyway I'm skipping this "
-                                           "request.")
+
+        if show.paused and not force:
+            sickrage.app.log.debug('Skipping show [{}] because it is paused.'.format(show.name))
+            return
 
         sickrage.app.log.debug("Queueing show refresh for {}".format(show.name))
 
@@ -221,7 +221,8 @@ class ShowQueueItem(srQueueItem):
 
 class QueueItemAdd(ShowQueueItem):
     def __init__(self, indexer, indexer_id, showDir, default_status, quality, flatten_folders, lang, subtitles,
-                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after, skip_downloaded):
+                 subtitles_sr_metadata, anime, scene, paused, blacklist, whitelist, default_status_after,
+                 skip_downloaded):
         super(QueueItemAdd, self).__init__(None, ShowQueueActions.ADD)
 
         self.indexer = indexer

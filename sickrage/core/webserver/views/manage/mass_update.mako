@@ -91,7 +91,7 @@
                                             <td class="tvShow">
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                                             </td>
-                                            <td class="table-fit tvShow">
+                                            <td class="table-fit">
                                                 <div class="text-left">
                                                     ${curShow.location}
                                                 </div>

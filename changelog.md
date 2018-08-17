@@ -1,6 +1,7 @@
 # Changelog
 
-- * e59f37a - 2018-08-16: Misc changes to package tests. Multi-EP episode names are no longer appended to form one giant filename but instead &#x27;MultiPartEpisode&#x27; is tacked on. 
+- * 7a888c8 - 2018-08-17: Removed code that was preventing show refreshes from happening due to show updates being in queue. 
+- * 46f21f5 - 2018-08-16: Misc changes to package tests. Multi-EP episode names are no longer appended to form one giant filename but instead &#x27;MultiPartEpisode&#x27; is tacked on. 
 - * b9bbb26 - 2018-08-15: Misc updates to tests 
 - * d56b876 - 2018-08-15: Made quicksearch content easier to read 
 - * 26635da - 2018-08-14: Pre-Release v9.3.56.dev24 
