@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5a8f470 - 2018-08-17: Pre-Release v9.3.56.dev26 
+- * 1aa4f7c - 2018-08-18: Fixed gaierror&#x27;s for ssdp Fixed WebHandler routing errors 
+- * c60cbb3 - 2018-08-17: Pre-Release v9.3.56.dev26 
 - * 1cfa2f9 - 2018-08-17: Fixed issue where MultiPartEpisode was being appended to all episodes and not just multi-part episodes. 
 - * c9367a6 - 2018-08-17: Pre-Release v9.3.56.dev25 
 - * 481f291 - 2018-08-17: Removed code that was preventing show refreshes from happening due to show updates being in queue. 

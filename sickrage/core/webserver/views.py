@@ -228,7 +228,8 @@ class WebHandler(BaseHandler):
 
         if method:
             result = yield self.route(method, **self.request.arguments)
-            self.finish(result)
+            if self.request.method == 'GET' or result:
+                self.finish(result)
 
     def _genericMessage(self, subject, message):
         return self.render(
@@ -537,8 +538,7 @@ class UI(WebHandler):
                 'type': cur_notification.type
             }
 
-        if messages:
-            return json_encode(messages)
+        return json_encode(messages)
 
 
 @Route('/browser(/?.*)')
