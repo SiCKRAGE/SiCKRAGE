@@ -999,8 +999,9 @@ class TVEpisode(object):
         if single_name:
             good_name = cur_good_name or self.name
         else:
-            good_name = "MultiPartEpisode"
-            # good_name = self.name
+            good_name = self.name
+            if len(self.relatedEps):
+                good_name = "MultiPartEpisode"
             # for relEp in self.relatedEps:
             #     good_name += " & " + relEp.name
 
