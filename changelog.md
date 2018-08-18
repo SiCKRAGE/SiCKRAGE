@@ -1,6 +1,7 @@
 # Changelog
 
-- * 35c61f9 - 2018-08-17: Fixed issue where MultiPartEpisode was being appended to all episodes and not just multi-part episodes. 
+- * 5a8f470 - 2018-08-17: Pre-Release v9.3.56.dev26 
+- * 1cfa2f9 - 2018-08-17: Fixed issue where MultiPartEpisode was being appended to all episodes and not just multi-part episodes. 
 - * c9367a6 - 2018-08-17: Pre-Release v9.3.56.dev25 
 - * 481f291 - 2018-08-17: Removed code that was preventing show refreshes from happening due to show updates being in queue. 
 - * 46f21f5 - 2018-08-16: Misc changes to package tests. Multi-EP episode names are no longer appended to form one giant filename but instead &#x27;MultiPartEpisode&#x27; is tacked on. 
