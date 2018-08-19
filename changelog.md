@@ -1,6 +1,7 @@
 # Changelog
 
-- * 85f4ff8 - 2018-08-19: Migrated upnp client from threaded object to scheduler job, resolves shutdown/restart problems 
+- * fdf7d3a - 2018-08-19: Pre-Release v9.3.56.dev29 
+- * d590b01 - 2018-08-19: Migrated upnp client from threaded object to scheduler job, resolves shutdown/restart problems 
 - * 69cee25 - 2018-08-19: Misc code cleanup 
 - * a2aa340 - 2018-08-18: Pre-Release v9.3.56.dev28 
 - * 10de224 - 2018-08-18: Pre-Release v9.3.56.dev27 
