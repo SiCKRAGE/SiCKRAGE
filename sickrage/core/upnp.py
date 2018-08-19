@@ -18,7 +18,6 @@
 
 from __future__ import print_function, unicode_literals, with_statement
 
-import threading
 import time
 from urlparse import urlparse
 
@@ -29,33 +28,22 @@ import upnpclient
 from sickrage.core.helpers import get_lan_ip
 
 
-class UPNPClient(threading.Thread):
+class UPNPClient(object):
     _nat_portmap_lifetime = 30 * 60
 
-    def __init__(self):
-        super(UPNPClient, self).__init__(name='UPNP')
-        self.stop = threading.Event()
+    def __init__(self, *args, **kwargs):
+        self.name = "UPNP"
 
     def run(self):
-        upnp_dev = self._discover_upnp_device()
-        if upnp_dev is not None:
+        if sickrage.app.config.enable_upnp:
             self.add_nat_portmap()
-
-        self.refresh_nat_portmap()
-
-    def shutdown(self):
-        self.stop.set()
-        try:
-            self.join(1)
-        except:
-            pass
 
     def refresh_nat_portmap(self):
         """Run an infinite loop refreshing our NAT port mapping.
         On every iteration we configure the port mapping with a lifetime of 30 minutes and then
         sleep for that long as well.
         """
-        while not self.stop.is_set():
+        while True:
             time.sleep(self._nat_portmap_lifetime)
             self.add_nat_portmap()
 

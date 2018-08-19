@@ -441,6 +441,16 @@ class Core(object):
             id=self.subtitle_searcher.name
         )
 
+        # add upnp client job
+        self.scheduler.add_job(
+            self.upnp_client.run,
+            IntervalTrigger(
+                seconds=self.upnp_client._nat_portmap_lifetime
+            ),
+            name=self.upnp_client.name,
+            id=self.upnp_client.name
+        )
+
         # start scheduler service
         self.scheduler.start()
 
@@ -448,10 +458,6 @@ class Core(object):
         self.search_queue.start()
         self.show_queue.start()
         self.postprocessor_queue.start()
-
-        # start upnp client
-        if self.config.enable_upnp:
-            self.upnp_client.start()
 
         # start webserver
         self.wserver.start()
@@ -466,10 +472,6 @@ class Core(object):
             # shutdown webserver
             if self.wserver:
                 self.wserver.shutdown()
-
-            # shutdown upnp client
-            if self.upnp_client:
-                self.upnp_client.shutdown()
 
             # shutdown show queue
             if self.show_queue:
