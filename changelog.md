@@ -1,6 +1,7 @@
 # Changelog
 
-- * 22fca80 - 2018-08-18: Fixed broken toggle buttons 
+- * acffb62 - 2018-08-18: Pre-Release v9.3.56.dev27 
+- * 8efa7cb - 2018-08-18: Fixed broken toggle buttons 
 - * e27a959 - 2018-08-18: Fixed gaierror&#x27;s for ssdp Fixed WebHandler routing errors 
 - * c60cbb3 - 2018-08-17: Pre-Release v9.3.56.dev26 
 - * 1cfa2f9 - 2018-08-17: Fixed issue where MultiPartEpisode was being appended to all episodes and not just multi-part episodes. 

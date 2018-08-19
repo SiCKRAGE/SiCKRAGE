@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-17 19:30-0700\n"
-"PO-Revision-Date: 2018-08-18 02:31\n"
+"POT-Creation-Date: 2018-08-18 19:15-0700\n"
+"PO-Revision-Date: 2018-08-19 02:16\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,319 +17,323 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: el_GR\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:323 src/js/core.js:423
+#: sickrage/core/webserver/views/layouts/main.mako:323 src/js/core.js:422
 msgid "Shutdown"
 msgstr "Τερματισμός λειτουργίας"
 
-#: src/js/core.js:424
+#: src/js/core.js:423
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κλείσει SiCKRAGE;"
 
-#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:429
+#: sickrage/core/webserver/views/layouts/main.mako:319 src/js/core.js:428
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: src/js/core.js:430
+#: src/js/core.js:429
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κάνετε επανεκκίνηση του SiCKRAGE;"
 
-#: src/js/core.js:435
+#: src/js/core.js:434
 msgid "Submit Errors"
 msgstr "Υποβολή σφάλματα"
 
-#: src/js/core.js:436
+#: src/js/core.js:435
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:436
+#: src/js/core.js:435
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:436
+#: src/js/core.js:435
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:557 src/js/core.js:568 src/js/core.js:589
+#: src/js/core.js:558 src/js/core.js:569 src/js/core.js:590
 msgid "Searching"
 msgstr "Αναζήτηση"
 
-#: src/js/core.js:563 src/js/core.js:594
+#: src/js/core.js:564 src/js/core.js:595
 msgid "Queued"
 msgstr "Στην ουρά"
 
 #: sickrage/core/webserver/views/home/display_show.mako:709
 #: sickrage/core/webserver/views/includes/modals.mako:54
 #: sickrage/core/webserver/views/includes/modals.mako:75
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:598
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:599
 msgid "Manual Search"
 msgstr "Χειροκίνητη αναζήτηση"
 
-#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:623
-#: src/js/core.js:769 src/js/core.js:812
+#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:624
+#: src/js/core.js:770 src/js/core.js:813
 msgid "loading"
 msgstr "φόρτωση"
 
-#: src/js/core.js:828
+#: src/js/core.js:829
 msgid "Choose Directory"
 msgstr "Επιλέξτε κατάλογο"
 
-#: sickrage/core/webserver/views.py:3580 src/js/core.js:1465
+#: sickrage/core/webserver/views.py:3580 src/js/core.js:1466
 msgid "Clear History"
 msgstr "Εκκαθάριση ιστορικού"
 
-#: src/js/core.js:1466
+#: src/js/core.js:1467
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να καταργήσετε την επιλογή όλων κατεβάσετε ιστορία;"
 
-#: sickrage/core/webserver/views.py:3582 src/js/core.js:1471
+#: sickrage/core/webserver/views.py:3582 src/js/core.js:1472
 msgid "Trim History"
 msgstr "Τελειώματα ιστορία"
 
-#: src/js/core.js:1472
+#: src/js/core.js:1473
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να τακτοποιήσει όλων κατεβάσετε ιστορία που είναι παλαιότερες από 30 ημέρες;"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2173
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2174
 msgid "Remove Show"
 msgstr "Καταργήσετε Show"
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2227 src/js/core.js:2259
+#: src/js/core.js:2228 src/js/core.js:2260
 msgid "Update failed."
 msgstr "Η ενημέρωση απέτυχε."
 
-#: src/js/core.js:2270
+#: src/js/core.js:2271
 msgid "Select Show Location"
 msgstr "Επιλέξτε Εμφάνιση της θέσης"
 
-#: src/js/core.js:2409
+#: src/js/core.js:2410
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2425
+#: src/js/core.js:2426
 msgid "Select Unprocessed Episode Folder"
 msgstr "Επιλέξτε φάκελο αμεταποίητα επεισόδιο"
 
-#: src/js/core.js:2795
+#: src/js/core.js:2796
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "έληξε το χρονικό όριο της αναζήτησης, δοκιμάστε αυξανόμενη χρονικού ορίου για δεικτοδότη"
 
-#: src/js/core.js:2799
+#: src/js/core.js:2800
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2803
+#: src/js/core.js:2804
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2822
+#: src/js/core.js:2823
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2824
+#: src/js/core.js:2825
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2869
+#: src/js/core.js:2870
 msgid "Saved Defaults"
 msgstr "Αποθηκευμένες προεπιλογές"
 
-#: src/js/core.js:2869
+#: src/js/core.js:2870
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "«Προσθέστε Εμφάνιση» προεπιλογές σας έχουν οριστεί σε τρέχουσες επιλογές σας."
 
-#: src/js/core.js:2926
+#: src/js/core.js:2927
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2968
+#: src/js/core.js:2969
 msgid "Reset Config to Defaults"
 msgstr "Config επαναφορά στις προεπιλογές"
 
-#: src/js/core.js:2969
+#: src/js/core.js:2970
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Είστε βέβαιοι ότι θέλετε να επαναφέρετε config προεπιλογές;"
 
-#: src/js/core.js:3061
+#: src/js/core.js:3062
 msgid "Select path to pip"
 msgstr "Επιλέξτε διαδρομή pip"
 
-#: src/js/core.js:3067
+#: src/js/core.js:3068
 msgid "Select path to git"
 msgstr "Επιλέξτε διαδρομή git"
 
-#: src/js/core.js:3075 src/js/core.js:3093 src/js/core.js:3937 src/js/core.js:3955
-#: src/js/core.js:3976 src/js/core.js:3998 src/js/core.js:4021 src/js/core.js:4043
-#: src/js/core.js:4071 src/js/core.js:4088 src/js/core.js:4132 src/js/core.js:4217
-#: src/js/core.js:4275 src/js/core.js:4292 src/js/core.js:4322 src/js/core.js:4379
-#: src/js/core.js:4455 src/js/core.js:4474 src/js/core.js:4490
+#: src/js/core.js:3076 src/js/core.js:3094 src/js/core.js:3884 src/js/core.js:3902
+#: src/js/core.js:3923 src/js/core.js:3945 src/js/core.js:3968 src/js/core.js:3990
+#: src/js/core.js:4018 src/js/core.js:4035 src/js/core.js:4079 src/js/core.js:4164
+#: src/js/core.js:4222 src/js/core.js:4239 src/js/core.js:4269 src/js/core.js:4326
+#: src/js/core.js:4402 src/js/core.js:4421 src/js/core.js:4437
 msgid "Please fill out the necessary fields above."
 msgstr "Παρακαλούμε συμπληρώστε τα απαραίτητα πεδία παραπάνω."
 
-#: src/js/core.js:3131
+#: src/js/core.js:3132
 msgid "Select Subtitles Download Directory"
 msgstr "Επιλέξτε υπότιτλοι Κατέβασμα καταλόγου"
 
-#: src/js/core.js:3247
+#: src/js/core.js:3248
 msgid "Select .nzb blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία blackhole/ρολόι .nzb"
 
-#: src/js/core.js:3248
+#: src/js/core.js:3249
 msgid "Select .torrent blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία .torrent blackhole/ρολόι"
 
-#: src/js/core.js:3249
+#: src/js/core.js:3250
 msgid "Select .torrent download location"
 msgstr "Επιλέξτε θέση λήψης .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3316
+#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3317
 msgid "Minimum seeding time is"
 msgstr "Ελάχιστο σπορά χρόνος είναι"
 
-#: src/js/core.js:3318
+#: src/js/core.js:3319
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "Διεύθυνση URL για το uTorrent πρόγραμμα-πελάτη (π.χ. http://localhost:8000)"
 
-#: src/js/core.js:3321
+#: src/js/core.js:3322
 msgid "Stop seeding when inactive for"
 msgstr "Σταματήσω σπορά όταν ανενεργός για"
 
-#: src/js/core.js:3327
+#: src/js/core.js:3328
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας μετάδοσης (π.χ. http://localhost:9091)"
 
-#: src/js/core.js:3337
+#: src/js/core.js:3338
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "Διεύθυνση URL για το χείμαρρο πελάτη σας (π.χ. http://localhost:8112)"
 
-#: src/js/core.js:3346
+#: src/js/core.js:3347
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "Διεύθυνση IP ή όνομα κεντρικού υπολογιστή του σας κατακλύζω δαίμονα (π.χ. scgi://localhost:58846)"
 
-#: src/js/core.js:3353
+#: src/js/core.js:3354
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας Synology DS (π.χ. http://localhost:5000)"
 
-#: src/js/core.js:3358
+#: src/js/core.js:3359
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3358
+#: src/js/core.js:3359
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3368
+#: src/js/core.js:3369
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας qbittorrent (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:3378
+#: src/js/core.js:3379
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "Διεύθυνση URL για να σας: MLDonkey (π.χ. http://localhost:4080)"
 
-#: src/js/core.js:3389
+#: src/js/core.js:3390
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να σας putio προγράμματος-πελάτη (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:3575
+#: src/js/core.js:3559
+msgid "validating..."
+msgstr ""
+
+#: src/js/core.js:3560
 msgid "Select TV Download Directory"
 msgstr "Επιλέξτε κατάλογο λήψης Τηλεόρασης"
 
-#: src/js/core.js:3576
+#: src/js/core.js:3561
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3591
+#: src/js/core.js:3575
 msgid "Unrar Executable not found."
 msgstr "Unrar εκτελέσιμο αρχείο δεν βρέθηκε."
 
-#: src/js/core.js:3637 src/js/core.js:3681 src/js/core.js:3725 src/js/core.js:3785
+#: src/js/core.js:3618 src/js/core.js:3653 src/js/core.js:3688 src/js/core.js:3739
 msgid "This pattern is invalid."
 msgstr "Αυτό το πρότυπο δεν είναι έγκυρη."
 
-#: src/js/core.js:3644 src/js/core.js:3688 src/js/core.js:3732 src/js/core.js:3792
+#: src/js/core.js:3622 src/js/core.js:3657 src/js/core.js:3692 src/js/core.js:3743
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Αυτό το μοτίβο θα είναι άκυρη χωρίς τους φακέλους, χρησιμοποιώντας το θα αναγκάσει «Ισιώστε» για όλες τις παραστάσεις."
 
-#: src/js/core.js:3651 src/js/core.js:3695 src/js/core.js:3739 src/js/core.js:3799
+#: src/js/core.js:3626 src/js/core.js:3661 src/js/core.js:3696 src/js/core.js:3748
 msgid "This pattern is valid."
 msgstr "Αυτό το μοτίβο είναι έγκυρη."
 
-#: src/js/core.js:4125
+#: src/js/core.js:4072
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> επιβεβαιώστε εξουσιοδότησης"
 
-#: src/js/core.js:4182 src/js/core.js:4236
+#: src/js/core.js:4129 src/js/core.js:4183
 msgid "Please fill in the Popcorn IP address"
 msgstr "Παρακαλούμε συμπληρώστε τη διεύθυνση IP του ποπ κορν"
 
-#: src/js/core.js:4389
+#: src/js/core.js:4336
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Ελέγξτε το όνομα μαύρη λίστα? η τιμή πρέπει να είναι ένα γυμνοσάλιαγκα trakt"
 
-#: src/js/core.js:4421
+#: src/js/core.js:4368
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4424
+#: src/js/core.js:4371
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4426
+#: src/js/core.js:4373
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4432
+#: src/js/core.js:4379
 msgid "Enter an email address to send the test to:"
 msgstr "Πληκτρολογήστε μια διεύθυνση ηλεκτρονικού ταχυδρομείου για να στείλετε το τεστ για να:"
 
-#: src/js/core.js:4434
+#: src/js/core.js:4381
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4504
+#: src/js/core.js:4451
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Λίστα συσκευών ενημερώνεται. Παρακαλώ επιλέξτε μια συσκευή για να ωθήσει."
 
-#: src/js/core.js:4565
+#: src/js/core.js:4512
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Δεν μπορείτε να δώσετε ένα κλειδί Pushbullet api"
 
-#: src/js/core.js:4595
+#: src/js/core.js:4542
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Μην ξεχάσετε να αποθηκεύσετε τις ρυθμίσεις σας με τη νέα pushbullet."
 
-#: src/js/core.js:4667
+#: src/js/core.js:4614
 msgid "Select backup folder to save to"
 msgstr "Επιλέξτε το φάκελο αντιγράφων ασφαλείας για να αποθηκεύσετε"
 
-#: src/js/core.js:4672
+#: src/js/core.js:4619
 msgid "Select backup files to restore"
 msgstr "Επιλέξτε τα αρχεία αντιγράφων ασφαλείας για επαναφορά"
 
-#: src/js/core.js:5217
+#: src/js/core.js:5164
 msgid "No providers available to configure."
 msgstr "Υπάρχουν διαθέσιμες για να ρυθμίσετε παροχείς."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5433
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5380
 msgid "Mass Delete"
 msgstr "Μαζική διαγραφή"
 
-#: src/js/core.js:5434
+#: src/js/core.js:5381
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Έχετε επιλέξει να διαγράψετε παρουσίαζει(-ουν).  Είστε βέβαιοι ότι θέλετε να συνεχίσετε; Όλα τα αρχεία θα αφαιρεθεί από το σύστημά σας."
 
-#: src/js/core.js:5511
+#: src/js/core.js:5458
 msgid "DELETED"
 msgstr ""
 
@@ -586,25 +590,25 @@ msgstr "Θέλετε να προσθέσετε τα PostProcessed επεισόδ
 #: sickrage/core/webserver/views/config/notifications.mako:859
 #: sickrage/core/webserver/views/config/notifications.mako:902
 #: sickrage/core/webserver/views/config/notifications.mako:979
-#: sickrage/core/webserver/views/config/notifications.mako:1079
-#: sickrage/core/webserver/views/config/notifications.mako:1199
-#: sickrage/core/webserver/views/config/notifications.mako:1341
-#: sickrage/core/webserver/views/config/notifications.mako:1430
-#: sickrage/core/webserver/views/config/notifications.mako:1658
-#: sickrage/core/webserver/views/config/notifications.mako:1762
-#: sickrage/core/webserver/views/config/notifications.mako:1898
-#: sickrage/core/webserver/views/config/notifications.mako:2005
-#: sickrage/core/webserver/views/config/notifications.mako:2140
-#: sickrage/core/webserver/views/config/notifications.mako:2261
-#: sickrage/core/webserver/views/config/notifications.mako:2400
-#: sickrage/core/webserver/views/config/notifications.mako:2584
-#: sickrage/core/webserver/views/config/notifications.mako:2743
-#: sickrage/core/webserver/views/config/notifications.mako:3020
-#: sickrage/core/webserver/views/config/notifications.mako:3262
-#: sickrage/core/webserver/views/config/notifications.mako:3366
-#: sickrage/core/webserver/views/config/notifications.mako:3541
+#: sickrage/core/webserver/views/config/notifications.mako:1077
+#: sickrage/core/webserver/views/config/notifications.mako:1197
+#: sickrage/core/webserver/views/config/notifications.mako:1339
+#: sickrage/core/webserver/views/config/notifications.mako:1428
+#: sickrage/core/webserver/views/config/notifications.mako:1656
+#: sickrage/core/webserver/views/config/notifications.mako:1760
+#: sickrage/core/webserver/views/config/notifications.mako:1896
+#: sickrage/core/webserver/views/config/notifications.mako:2003
+#: sickrage/core/webserver/views/config/notifications.mako:2138
+#: sickrage/core/webserver/views/config/notifications.mako:2259
+#: sickrage/core/webserver/views/config/notifications.mako:2398
+#: sickrage/core/webserver/views/config/notifications.mako:2582
+#: sickrage/core/webserver/views/config/notifications.mako:2741
+#: sickrage/core/webserver/views/config/notifications.mako:3018
+#: sickrage/core/webserver/views/config/notifications.mako:3260
+#: sickrage/core/webserver/views/config/notifications.mako:3364
+#: sickrage/core/webserver/views/config/notifications.mako:3539
 #: sickrage/core/webserver/views/config/postprocessing.mako:401
-#: sickrage/core/webserver/views/config/postprocessing.mako:1404
+#: sickrage/core/webserver/views/config/postprocessing.mako:1403
 #: sickrage/core/webserver/views/config/providers.mako:120
 #: sickrage/core/webserver/views/config/providers.mako:916
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
@@ -752,7 +756,7 @@ msgstr "κατά την εκκίνηση του SickRage διασύνδεση"
 msgid "Shows"
 msgstr "Δείχνει"
 
-#: sickrage/core/webserver/views.py:501 sickrage/core/webserver/views.py:502
+#: sickrage/core/webserver/views.py:502 sickrage/core/webserver/views.py:503
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "Schedule"
@@ -993,9 +997,9 @@ msgstr "εμφανίζετε ημερομηνίες και ώρες σε ζών�
 #: sickrage/core/webserver/views/config/general.mako:1195
 #: sickrage/core/webserver/views/config/notifications.mako:894
 #: sickrage/core/webserver/views/config/notifications.mako:936
-#: sickrage/core/webserver/views/config/notifications.mako:1014
-#: sickrage/core/webserver/views/config/notifications.mako:2616
-#: sickrage/core/webserver/views/config/notifications.mako:2704
+#: sickrage/core/webserver/views/config/notifications.mako:1012
+#: sickrage/core/webserver/views/config/notifications.mako:2614
+#: sickrage/core/webserver/views/config/notifications.mako:2702
 #: sickrage/core/webserver/views/config/postprocessing.mako:42
 #: sickrage/core/webserver/views/config/postprocessing.mako:101
 #: sickrage/core/webserver/views/config/postprocessing.mako:267
@@ -1003,9 +1007,9 @@ msgstr "εμφανίζετε ημερομηνίες και ώρες σε ζών�
 #: sickrage/core/webserver/views/config/postprocessing.mako:348
 #: sickrage/core/webserver/views/config/postprocessing.mako:459
 #: sickrage/core/webserver/views/config/postprocessing.mako:672
-#: sickrage/core/webserver/views/config/postprocessing.mako:1366
-#: sickrage/core/webserver/views/config/postprocessing.mako:1381
-#: sickrage/core/webserver/views/config/postprocessing.mako:1395
+#: sickrage/core/webserver/views/config/postprocessing.mako:1365
+#: sickrage/core/webserver/views/config/postprocessing.mako:1380
+#: sickrage/core/webserver/views/config/postprocessing.mako:1394
 #: sickrage/core/webserver/views/config/search.mako:973
 #: sickrage/core/webserver/views/config/subtitles.mako:126
 #: sickrage/core/webserver/views/config/subtitles.mako:170
@@ -1426,23 +1430,23 @@ msgstr "Μια ελεύθερη και ανοικτή πηγή πολυμέσω�
 #: sickrage/core/webserver/views/config/notifications.mako:743
 #: sickrage/core/webserver/views/config/notifications.mako:886
 #: sickrage/core/webserver/views/config/notifications.mako:928
-#: sickrage/core/webserver/views/config/notifications.mako:1006
-#: sickrage/core/webserver/views/config/notifications.mako:1104
-#: sickrage/core/webserver/views/config/notifications.mako:1226
-#: sickrage/core/webserver/views/config/notifications.mako:1369
-#: sickrage/core/webserver/views/config/notifications.mako:1455
-#: sickrage/core/webserver/views/config/notifications.mako:1684
-#: sickrage/core/webserver/views/config/notifications.mako:1789
-#: sickrage/core/webserver/views/config/notifications.mako:1925
-#: sickrage/core/webserver/views/config/notifications.mako:2032
-#: sickrage/core/webserver/views/config/notifications.mako:2165
-#: sickrage/core/webserver/views/config/notifications.mako:2286
-#: sickrage/core/webserver/views/config/notifications.mako:2425
-#: sickrage/core/webserver/views/config/notifications.mako:2609
-#: sickrage/core/webserver/views/config/notifications.mako:2770
-#: sickrage/core/webserver/views/config/notifications.mako:3045
-#: sickrage/core/webserver/views/config/notifications.mako:3287
-#: sickrage/core/webserver/views/config/notifications.mako:3391
+#: sickrage/core/webserver/views/config/notifications.mako:1004
+#: sickrage/core/webserver/views/config/notifications.mako:1102
+#: sickrage/core/webserver/views/config/notifications.mako:1224
+#: sickrage/core/webserver/views/config/notifications.mako:1367
+#: sickrage/core/webserver/views/config/notifications.mako:1453
+#: sickrage/core/webserver/views/config/notifications.mako:1682
+#: sickrage/core/webserver/views/config/notifications.mako:1787
+#: sickrage/core/webserver/views/config/notifications.mako:1923
+#: sickrage/core/webserver/views/config/notifications.mako:2030
+#: sickrage/core/webserver/views/config/notifications.mako:2163
+#: sickrage/core/webserver/views/config/notifications.mako:2284
+#: sickrage/core/webserver/views/config/notifications.mako:2423
+#: sickrage/core/webserver/views/config/notifications.mako:2607
+#: sickrage/core/webserver/views/config/notifications.mako:2768
+#: sickrage/core/webserver/views/config/notifications.mako:3043
+#: sickrage/core/webserver/views/config/notifications.mako:3285
+#: sickrage/core/webserver/views/config/notifications.mako:3389
 msgid "Enable"
 msgstr "Ενεργοποίηση"
 
@@ -1462,21 +1466,21 @@ msgstr "συνδεθείτε σφάλματα όταν απρόσιτο;"
 #: sickrage/core/webserver/views/config/notifications.mako:392
 #: sickrage/core/webserver/views/config/notifications.mako:559
 #: sickrage/core/webserver/views/config/notifications.mako:943
-#: sickrage/core/webserver/views/config/notifications.mako:1118
-#: sickrage/core/webserver/views/config/notifications.mako:1240
-#: sickrage/core/webserver/views/config/notifications.mako:1383
-#: sickrage/core/webserver/views/config/notifications.mako:1469
-#: sickrage/core/webserver/views/config/notifications.mako:1698
-#: sickrage/core/webserver/views/config/notifications.mako:1803
-#: sickrage/core/webserver/views/config/notifications.mako:1939
-#: sickrage/core/webserver/views/config/notifications.mako:2046
-#: sickrage/core/webserver/views/config/notifications.mako:2179
-#: sickrage/core/webserver/views/config/notifications.mako:2300
-#: sickrage/core/webserver/views/config/notifications.mako:2439
-#: sickrage/core/webserver/views/config/notifications.mako:2625
-#: sickrage/core/webserver/views/config/notifications.mako:3059
-#: sickrage/core/webserver/views/config/notifications.mako:3301
-#: sickrage/core/webserver/views/config/notifications.mako:3405
+#: sickrage/core/webserver/views/config/notifications.mako:1116
+#: sickrage/core/webserver/views/config/notifications.mako:1238
+#: sickrage/core/webserver/views/config/notifications.mako:1381
+#: sickrage/core/webserver/views/config/notifications.mako:1467
+#: sickrage/core/webserver/views/config/notifications.mako:1696
+#: sickrage/core/webserver/views/config/notifications.mako:1801
+#: sickrage/core/webserver/views/config/notifications.mako:1937
+#: sickrage/core/webserver/views/config/notifications.mako:2044
+#: sickrage/core/webserver/views/config/notifications.mako:2177
+#: sickrage/core/webserver/views/config/notifications.mako:2298
+#: sickrage/core/webserver/views/config/notifications.mako:2437
+#: sickrage/core/webserver/views/config/notifications.mako:2623
+#: sickrage/core/webserver/views/config/notifications.mako:3057
+#: sickrage/core/webserver/views/config/notifications.mako:3299
+#: sickrage/core/webserver/views/config/notifications.mako:3403
 msgid "Notify on snatch"
 msgstr "Κοινοποιεί στο αρασέ"
 
@@ -1484,18 +1488,18 @@ msgstr "Κοινοποιεί στο αρασέ"
 #: sickrage/core/webserver/views/config/notifications.mako:398
 #: sickrage/core/webserver/views/config/notifications.mako:565
 #: sickrage/core/webserver/views/config/notifications.mako:949
-#: sickrage/core/webserver/views/config/notifications.mako:1124
-#: sickrage/core/webserver/views/config/notifications.mako:1246
-#: sickrage/core/webserver/views/config/notifications.mako:1389
-#: sickrage/core/webserver/views/config/notifications.mako:1475
-#: sickrage/core/webserver/views/config/notifications.mako:1704
-#: sickrage/core/webserver/views/config/notifications.mako:1809
-#: sickrage/core/webserver/views/config/notifications.mako:1945
-#: sickrage/core/webserver/views/config/notifications.mako:2052
-#: sickrage/core/webserver/views/config/notifications.mako:2631
-#: sickrage/core/webserver/views/config/notifications.mako:3065
-#: sickrage/core/webserver/views/config/notifications.mako:3307
-#: sickrage/core/webserver/views/config/notifications.mako:3411
+#: sickrage/core/webserver/views/config/notifications.mako:1122
+#: sickrage/core/webserver/views/config/notifications.mako:1244
+#: sickrage/core/webserver/views/config/notifications.mako:1387
+#: sickrage/core/webserver/views/config/notifications.mako:1473
+#: sickrage/core/webserver/views/config/notifications.mako:1702
+#: sickrage/core/webserver/views/config/notifications.mako:1807
+#: sickrage/core/webserver/views/config/notifications.mako:1943
+#: sickrage/core/webserver/views/config/notifications.mako:2050
+#: sickrage/core/webserver/views/config/notifications.mako:2629
+#: sickrage/core/webserver/views/config/notifications.mako:3063
+#: sickrage/core/webserver/views/config/notifications.mako:3305
+#: sickrage/core/webserver/views/config/notifications.mako:3409
 msgid "send a notification when a download starts?"
 msgstr "Αποστολή ειδοποίησης όταν μια λήψη ξεκινά;"
 
@@ -1503,21 +1507,21 @@ msgstr "Αποστολή ειδοποίησης όταν μια λήψη ξεκ�
 #: sickrage/core/webserver/views/config/notifications.mako:404
 #: sickrage/core/webserver/views/config/notifications.mako:572
 #: sickrage/core/webserver/views/config/notifications.mako:955
-#: sickrage/core/webserver/views/config/notifications.mako:1130
-#: sickrage/core/webserver/views/config/notifications.mako:1252
-#: sickrage/core/webserver/views/config/notifications.mako:1395
-#: sickrage/core/webserver/views/config/notifications.mako:1481
-#: sickrage/core/webserver/views/config/notifications.mako:1710
-#: sickrage/core/webserver/views/config/notifications.mako:1815
-#: sickrage/core/webserver/views/config/notifications.mako:1951
-#: sickrage/core/webserver/views/config/notifications.mako:2058
-#: sickrage/core/webserver/views/config/notifications.mako:2191
-#: sickrage/core/webserver/views/config/notifications.mako:2312
-#: sickrage/core/webserver/views/config/notifications.mako:2451
-#: sickrage/core/webserver/views/config/notifications.mako:2637
-#: sickrage/core/webserver/views/config/notifications.mako:3071
-#: sickrage/core/webserver/views/config/notifications.mako:3313
-#: sickrage/core/webserver/views/config/notifications.mako:3418
+#: sickrage/core/webserver/views/config/notifications.mako:1128
+#: sickrage/core/webserver/views/config/notifications.mako:1250
+#: sickrage/core/webserver/views/config/notifications.mako:1393
+#: sickrage/core/webserver/views/config/notifications.mako:1479
+#: sickrage/core/webserver/views/config/notifications.mako:1708
+#: sickrage/core/webserver/views/config/notifications.mako:1813
+#: sickrage/core/webserver/views/config/notifications.mako:1949
+#: sickrage/core/webserver/views/config/notifications.mako:2056
+#: sickrage/core/webserver/views/config/notifications.mako:2189
+#: sickrage/core/webserver/views/config/notifications.mako:2310
+#: sickrage/core/webserver/views/config/notifications.mako:2449
+#: sickrage/core/webserver/views/config/notifications.mako:2635
+#: sickrage/core/webserver/views/config/notifications.mako:3069
+#: sickrage/core/webserver/views/config/notifications.mako:3311
+#: sickrage/core/webserver/views/config/notifications.mako:3416
 msgid "Notify on download"
 msgstr "Ειδοποιήσει για την λήψη"
 
@@ -1525,18 +1529,18 @@ msgstr "Ειδοποιήσει για την λήψη"
 #: sickrage/core/webserver/views/config/notifications.mako:410
 #: sickrage/core/webserver/views/config/notifications.mako:578
 #: sickrage/core/webserver/views/config/notifications.mako:961
-#: sickrage/core/webserver/views/config/notifications.mako:1136
-#: sickrage/core/webserver/views/config/notifications.mako:1258
-#: sickrage/core/webserver/views/config/notifications.mako:1401
-#: sickrage/core/webserver/views/config/notifications.mako:1487
-#: sickrage/core/webserver/views/config/notifications.mako:1716
-#: sickrage/core/webserver/views/config/notifications.mako:1821
-#: sickrage/core/webserver/views/config/notifications.mako:1957
-#: sickrage/core/webserver/views/config/notifications.mako:2064
-#: sickrage/core/webserver/views/config/notifications.mako:2643
-#: sickrage/core/webserver/views/config/notifications.mako:3077
-#: sickrage/core/webserver/views/config/notifications.mako:3319
-#: sickrage/core/webserver/views/config/notifications.mako:3424
+#: sickrage/core/webserver/views/config/notifications.mako:1134
+#: sickrage/core/webserver/views/config/notifications.mako:1256
+#: sickrage/core/webserver/views/config/notifications.mako:1399
+#: sickrage/core/webserver/views/config/notifications.mako:1485
+#: sickrage/core/webserver/views/config/notifications.mako:1714
+#: sickrage/core/webserver/views/config/notifications.mako:1819
+#: sickrage/core/webserver/views/config/notifications.mako:1955
+#: sickrage/core/webserver/views/config/notifications.mako:2062
+#: sickrage/core/webserver/views/config/notifications.mako:2641
+#: sickrage/core/webserver/views/config/notifications.mako:3075
+#: sickrage/core/webserver/views/config/notifications.mako:3317
+#: sickrage/core/webserver/views/config/notifications.mako:3422
 msgid "send a notification when a download finishes?"
 msgstr "Στείλτε μια ειδοποίηση, όταν ολοκληρωθεί η λήψη;"
 
@@ -1544,21 +1548,21 @@ msgstr "Στείλτε μια ειδοποίηση, όταν ολοκληρωθ�
 #: sickrage/core/webserver/views/config/notifications.mako:416
 #: sickrage/core/webserver/views/config/notifications.mako:585
 #: sickrage/core/webserver/views/config/notifications.mako:967
-#: sickrage/core/webserver/views/config/notifications.mako:1142
-#: sickrage/core/webserver/views/config/notifications.mako:1264
-#: sickrage/core/webserver/views/config/notifications.mako:1407
-#: sickrage/core/webserver/views/config/notifications.mako:1493
-#: sickrage/core/webserver/views/config/notifications.mako:1722
-#: sickrage/core/webserver/views/config/notifications.mako:1827
-#: sickrage/core/webserver/views/config/notifications.mako:1963
-#: sickrage/core/webserver/views/config/notifications.mako:2070
-#: sickrage/core/webserver/views/config/notifications.mako:2203
-#: sickrage/core/webserver/views/config/notifications.mako:2324
-#: sickrage/core/webserver/views/config/notifications.mako:2463
-#: sickrage/core/webserver/views/config/notifications.mako:2649
-#: sickrage/core/webserver/views/config/notifications.mako:3083
-#: sickrage/core/webserver/views/config/notifications.mako:3325
-#: sickrage/core/webserver/views/config/notifications.mako:3431
+#: sickrage/core/webserver/views/config/notifications.mako:1140
+#: sickrage/core/webserver/views/config/notifications.mako:1262
+#: sickrage/core/webserver/views/config/notifications.mako:1405
+#: sickrage/core/webserver/views/config/notifications.mako:1491
+#: sickrage/core/webserver/views/config/notifications.mako:1720
+#: sickrage/core/webserver/views/config/notifications.mako:1825
+#: sickrage/core/webserver/views/config/notifications.mako:1961
+#: sickrage/core/webserver/views/config/notifications.mako:2068
+#: sickrage/core/webserver/views/config/notifications.mako:2201
+#: sickrage/core/webserver/views/config/notifications.mako:2322
+#: sickrage/core/webserver/views/config/notifications.mako:2461
+#: sickrage/core/webserver/views/config/notifications.mako:2647
+#: sickrage/core/webserver/views/config/notifications.mako:3081
+#: sickrage/core/webserver/views/config/notifications.mako:3323
+#: sickrage/core/webserver/views/config/notifications.mako:3429
 msgid "Notify on subtitle download"
 msgstr "Ειδοποιήσει για την λήψη υπότιτλος"
 
@@ -1566,18 +1570,18 @@ msgstr "Ειδοποιήσει για την λήψη υπότιτλος"
 #: sickrage/core/webserver/views/config/notifications.mako:422
 #: sickrage/core/webserver/views/config/notifications.mako:591
 #: sickrage/core/webserver/views/config/notifications.mako:973
-#: sickrage/core/webserver/views/config/notifications.mako:1148
-#: sickrage/core/webserver/views/config/notifications.mako:1270
-#: sickrage/core/webserver/views/config/notifications.mako:1413
-#: sickrage/core/webserver/views/config/notifications.mako:1499
-#: sickrage/core/webserver/views/config/notifications.mako:1728
-#: sickrage/core/webserver/views/config/notifications.mako:1833
-#: sickrage/core/webserver/views/config/notifications.mako:1969
-#: sickrage/core/webserver/views/config/notifications.mako:2076
-#: sickrage/core/webserver/views/config/notifications.mako:2655
-#: sickrage/core/webserver/views/config/notifications.mako:3089
-#: sickrage/core/webserver/views/config/notifications.mako:3331
-#: sickrage/core/webserver/views/config/notifications.mako:3437
+#: sickrage/core/webserver/views/config/notifications.mako:1146
+#: sickrage/core/webserver/views/config/notifications.mako:1268
+#: sickrage/core/webserver/views/config/notifications.mako:1411
+#: sickrage/core/webserver/views/config/notifications.mako:1497
+#: sickrage/core/webserver/views/config/notifications.mako:1726
+#: sickrage/core/webserver/views/config/notifications.mako:1831
+#: sickrage/core/webserver/views/config/notifications.mako:1967
+#: sickrage/core/webserver/views/config/notifications.mako:2074
+#: sickrage/core/webserver/views/config/notifications.mako:2653
+#: sickrage/core/webserver/views/config/notifications.mako:3087
+#: sickrage/core/webserver/views/config/notifications.mako:3329
+#: sickrage/core/webserver/views/config/notifications.mako:3435
 msgid "send a notification when subtitles are downloaded?"
 msgstr "Στείλτε μια ειδοποίηση κατά τη λήψη υπότιτλους;"
 
@@ -1623,7 +1627,7 @@ msgstr "KODI όνομα χρήστη"
 #: sickrage/core/webserver/views/config/notifications.mako:303
 #: sickrage/core/webserver/views/config/notifications.mako:454
 #: sickrage/core/webserver/views/config/notifications.mako:470
-#: sickrage/core/webserver/views/config/notifications.mako:1180
+#: sickrage/core/webserver/views/config/notifications.mako:1178
 #: sickrage/core/webserver/views/config/search.mako:407
 #: sickrage/core/webserver/views/config/search.mako:425
 #: sickrage/core/webserver/views/config/search.mako:900
@@ -1641,21 +1645,21 @@ msgstr "KODI κωδικού πρόσβασης"
 #: sickrage/core/webserver/views/config/notifications.mako:600
 #: sickrage/core/webserver/views/config/notifications.mako:709
 #: sickrage/core/webserver/views/config/notifications.mako:851
-#: sickrage/core/webserver/views/config/notifications.mako:1332
-#: sickrage/core/webserver/views/config/notifications.mako:1421
-#: sickrage/core/webserver/views/config/notifications.mako:1649
-#: sickrage/core/webserver/views/config/notifications.mako:1752
-#: sickrage/core/webserver/views/config/notifications.mako:1889
-#: sickrage/core/webserver/views/config/notifications.mako:1994
-#: sickrage/core/webserver/views/config/notifications.mako:2129
-#: sickrage/core/webserver/views/config/notifications.mako:2251
-#: sickrage/core/webserver/views/config/notifications.mako:2390
-#: sickrage/core/webserver/views/config/notifications.mako:2575
-#: sickrage/core/webserver/views/config/notifications.mako:2733
-#: sickrage/core/webserver/views/config/notifications.mako:3010
-#: sickrage/core/webserver/views/config/notifications.mako:3252
-#: sickrage/core/webserver/views/config/notifications.mako:3356
-#: sickrage/core/webserver/views/config/notifications.mako:3530
+#: sickrage/core/webserver/views/config/notifications.mako:1330
+#: sickrage/core/webserver/views/config/notifications.mako:1419
+#: sickrage/core/webserver/views/config/notifications.mako:1647
+#: sickrage/core/webserver/views/config/notifications.mako:1750
+#: sickrage/core/webserver/views/config/notifications.mako:1887
+#: sickrage/core/webserver/views/config/notifications.mako:1992
+#: sickrage/core/webserver/views/config/notifications.mako:2127
+#: sickrage/core/webserver/views/config/notifications.mako:2249
+#: sickrage/core/webserver/views/config/notifications.mako:2388
+#: sickrage/core/webserver/views/config/notifications.mako:2573
+#: sickrage/core/webserver/views/config/notifications.mako:2731
+#: sickrage/core/webserver/views/config/notifications.mako:3008
+#: sickrage/core/webserver/views/config/notifications.mako:3250
+#: sickrage/core/webserver/views/config/notifications.mako:3354
+#: sickrage/core/webserver/views/config/notifications.mako:3528
 #: sickrage/core/webserver/views/config/search.mako:722
 #: sickrage/core/webserver/views/config/search.mako:1028
 msgid "Click below to test"
@@ -1899,937 +1903,937 @@ msgstr "στέλνετε ειδοποιήσεις στον κοινοποιού�
 msgid "requires SickRage to be running on your Synology DSM."
 msgstr "απαιτεί SickRage να εκτελείται σε σας Synology DSM."
 
-#: sickrage/core/webserver/views/config/notifications.mako:996
+#: sickrage/core/webserver/views/config/notifications.mako:994
 msgid "pyTivo"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1000
+#: sickrage/core/webserver/views/config/notifications.mako:998
 msgid "pyTivo is both an HMO and GoBack server. This notifier will load the completed downloads to your Tivo."
 msgstr "pyTivo είναι τόσο HMO και GoBack διακομιστή. Αυτό κοινοποιών θα φορτώσει τις ολοκληρωμένες λήψεις στο Tivo σας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1012
+#: sickrage/core/webserver/views/config/notifications.mako:1010
 msgid "send notifications to pyTivo?"
 msgstr "στέλνετε ειδοποιήσεις για να pyTivo;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1014
+#: sickrage/core/webserver/views/config/notifications.mako:1012
 msgid "requires the downloaded files to be accessible by pyTivo."
 msgstr "απαιτεί το κατεβάσει τα αρχεία να είναι προσβάσιμα από pyTivo."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1024
+#: sickrage/core/webserver/views/config/notifications.mako:1022
 msgid "pyTivo IP:Port"
 msgstr "pyTivo IP: Port"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1034
+#: sickrage/core/webserver/views/config/notifications.mako:1032
 msgid "ex. 192.168.1.1:9032"
 msgstr "π.χ. 192.168.1.1:9032"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1041
+#: sickrage/core/webserver/views/config/notifications.mako:1039
 msgid "pyTivo share name"
 msgstr "όνομα κοινόχρηστου στοιχείου pyTivo"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1054
+#: sickrage/core/webserver/views/config/notifications.mako:1052
 msgid "value used in pyTivo Web Configuration to name the share."
 msgstr "τιμή χρησιμοποιείται σε pyTivo ρύθμισης παραμέτρων Web για όνομα του μεριδίου."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1060
+#: sickrage/core/webserver/views/config/notifications.mako:1058
 msgid "Tivo name"
 msgstr "TiVo όνομα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1073
+#: sickrage/core/webserver/views/config/notifications.mako:1071
 msgid "(Messages and Settings > Account and System Information > System Information > DVR name)"
 msgstr "(Μηνύματα και ρυθμίσεις > υπόψη και τις πληροφορίες συστήματος > πληροφορίες συστήματος > όνομα DVR)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1094
+#: sickrage/core/webserver/views/config/notifications.mako:1092
 msgid "Growl"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1098
+#: sickrage/core/webserver/views/config/notifications.mako:1096
 msgid "A cross-platform unobtrusive global notification system."
 msgstr "Σύστημα διαγώνιος-πλατφορμών διακριτικές παγκόσμια κοινοποίησης."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1110
+#: sickrage/core/webserver/views/config/notifications.mako:1108
 msgid "send Growl notifications?"
 msgstr "στέλνω μεγαλώνω γνωστοποιήσεις;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1154
+#: sickrage/core/webserver/views/config/notifications.mako:1152
 msgid "Growl IP:Port"
 msgstr "IP: Port γκρινιάζω"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1163
+#: sickrage/core/webserver/views/config/notifications.mako:1161
 msgid "ex. 192.168.1.100:23053"
 msgstr "π.χ. 192.168.1.100:23053"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1170
+#: sickrage/core/webserver/views/config/notifications.mako:1168
 msgid "Growl password"
 msgstr "Γκρινιάζω κωδικού πρόσβασης"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1189
+#: sickrage/core/webserver/views/config/notifications.mako:1187
 msgid "Click below to register and test Growl, this is required for Growl notifications to work."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1197
+#: sickrage/core/webserver/views/config/notifications.mako:1195
 msgid "Register Growl"
 msgstr "Μητρώο γκρινιάζω"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1216
+#: sickrage/core/webserver/views/config/notifications.mako:1214
 msgid "Prowl"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1220
+#: sickrage/core/webserver/views/config/notifications.mako:1218
 msgid "A Growl client for iOS."
 msgstr "Ένας πελάτης γκρινιάζω για iOS."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1232
+#: sickrage/core/webserver/views/config/notifications.mako:1230
 msgid "send Prowl notifications?"
 msgstr "στέλνετε ειδοποιήσεις Prowl;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1276
+#: sickrage/core/webserver/views/config/notifications.mako:1274
 msgid "Prowl API key"
 msgstr "Τριγυρίζω API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1288
+#: sickrage/core/webserver/views/config/notifications.mako:1286
 msgid "get your key at:"
 msgstr "για να πάρετε το κλειδί σας στο:"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1296
+#: sickrage/core/webserver/views/config/notifications.mako:1294
 msgid "Prowl priority"
 msgstr "Τριγυρίζω προτεραιότητα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1324
+#: sickrage/core/webserver/views/config/notifications.mako:1322
 msgid "priority of Prowl messages from SiCKRAGE."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1340
+#: sickrage/core/webserver/views/config/notifications.mako:1338
 msgid "Test Prowl"
 msgstr "Δοκιμή τριγυρίζω"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1358
+#: sickrage/core/webserver/views/config/notifications.mako:1356
 msgid "Libnotify"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1362
+#: sickrage/core/webserver/views/config/notifications.mako:1360
 msgid "The standard desktop notification API for Linux/*nix systems. This notifier will only function if the pynotify module is installed"
 msgstr "Το Στάνταρ desktop κοινοποίησης API για Linux / * nix συστήματα. Κοινοποιών αυτό θα λειτουργήσει μόνο εάν είναι εγκατεστημένη η λειτουργική μονάδα pynotify"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1375
+#: sickrage/core/webserver/views/config/notifications.mako:1373
 msgid "send Libnotify notifications?"
 msgstr "στέλνετε ειδοποιήσεις Libnotify;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1428
+#: sickrage/core/webserver/views/config/notifications.mako:1426
 msgid "Test Libnotify"
 msgstr "Τεστ Libnotify"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1445
-#: sickrage/core/webserver/views/config/notifications.mako:1570
+#: sickrage/core/webserver/views/config/notifications.mako:1443
+#: sickrage/core/webserver/views/config/notifications.mako:1568
 msgid "Pushover"
 msgstr "Pushover"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1449
+#: sickrage/core/webserver/views/config/notifications.mako:1447
 msgid "Pushover makes it easy to send real-time notifications to your Android and iOS devices."
 msgstr "Pushover καθιστά εύκολο να στείλετε ειδοποιήσεις σε πραγματικό χρόνο σε Android και iOS συσκευές σας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1461
+#: sickrage/core/webserver/views/config/notifications.mako:1459
 msgid "send Pushover notifications?"
 msgstr "στέλνετε ειδοποιήσεις Pushover;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1506
+#: sickrage/core/webserver/views/config/notifications.mako:1504
 msgid "Pushover key"
 msgstr "Pushover κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1516
+#: sickrage/core/webserver/views/config/notifications.mako:1514
 msgid "user key of your Pushover account"
 msgstr "κλειδί του χρήστη του λογαριασμού σας Pushover"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1523
+#: sickrage/core/webserver/views/config/notifications.mako:1521
 msgid "Pushover API key"
 msgstr "Pushover API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1538
+#: sickrage/core/webserver/views/config/notifications.mako:1536
 msgid "Click here"
 msgstr "Κάντε κλικ εδώ"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1538
+#: sickrage/core/webserver/views/config/notifications.mako:1536
 msgid "to create a Pushover API key"
 msgstr "για να δημιουργήσετε ένα Pushover API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1544
+#: sickrage/core/webserver/views/config/notifications.mako:1542
 msgid "Pushover devices"
 msgstr "Pushover συσκευές"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1553
+#: sickrage/core/webserver/views/config/notifications.mako:1551
 msgid "ex. device1,device2"
 msgstr "π.χ. device1, συσκευές2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1561
+#: sickrage/core/webserver/views/config/notifications.mako:1559
 msgid "Pushover notification sound"
 msgstr "Pushover ήχο ειδοποίησης"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1573
+#: sickrage/core/webserver/views/config/notifications.mako:1571
 msgid "Bike"
 msgstr "Ποδήλατο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1576
+#: sickrage/core/webserver/views/config/notifications.mako:1574
 msgid "Bugle"
 msgstr "Σάλπιγγα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1579
+#: sickrage/core/webserver/views/config/notifications.mako:1577
 msgid "Cash Register"
 msgstr "Ταμειακή μηχανή"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1582
+#: sickrage/core/webserver/views/config/notifications.mako:1580
 msgid "Classical"
 msgstr "Κλασική"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1585
+#: sickrage/core/webserver/views/config/notifications.mako:1583
 msgid "Cosmic"
 msgstr "Κοσμική"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1588
+#: sickrage/core/webserver/views/config/notifications.mako:1586
 msgid "Falling"
 msgstr "Που υπάγονται"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1591
+#: sickrage/core/webserver/views/config/notifications.mako:1589
 msgid "Gamelan"
 msgstr "Gamelan"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1594
+#: sickrage/core/webserver/views/config/notifications.mako:1592
 msgid "Incoming"
 msgstr "Εισερχόμενες"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1597
+#: sickrage/core/webserver/views/config/notifications.mako:1595
 msgid "Intermission"
 msgstr "Διάλειμμα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1600
+#: sickrage/core/webserver/views/config/notifications.mako:1598
 msgid "Magic"
 msgstr "Μαγεία"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1603
+#: sickrage/core/webserver/views/config/notifications.mako:1601
 msgid "Mechanical"
 msgstr "Μηχανική"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1606
+#: sickrage/core/webserver/views/config/notifications.mako:1604
 msgid "Piano Bar"
 msgstr "Πιάνο μπαρ"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1609
+#: sickrage/core/webserver/views/config/notifications.mako:1607
 msgid "Siren"
 msgstr "Σειρήνα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1612
+#: sickrage/core/webserver/views/config/notifications.mako:1610
 msgid "Space Alarm"
 msgstr "Χώρος αφύπνιση"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1615
+#: sickrage/core/webserver/views/config/notifications.mako:1613
 msgid "Tug Boat"
 msgstr "Ρυμουλκό"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1618
+#: sickrage/core/webserver/views/config/notifications.mako:1616
 msgid "Alien Alarm (long)"
 msgstr "Αλλοδαπός συναγερμού (μακρύ)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1621
+#: sickrage/core/webserver/views/config/notifications.mako:1619
 msgid "Climb (long)"
 msgstr "Ανάβαση (μακρύ)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1624
+#: sickrage/core/webserver/views/config/notifications.mako:1622
 msgid "Persistent (long)"
 msgstr "Μόνιμο (μακρύ)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1627
+#: sickrage/core/webserver/views/config/notifications.mako:1625
 msgid "Pushover Echo (long)"
 msgstr "Pushover Echo (μακρύ)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1630
+#: sickrage/core/webserver/views/config/notifications.mako:1628
 msgid "Up Down (long)"
 msgstr "Πάνω κάτω (long)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1633
+#: sickrage/core/webserver/views/config/notifications.mako:1631
 msgid "None (silent)"
 msgstr "Κανένας (αθόρυβο)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1636
+#: sickrage/core/webserver/views/config/notifications.mako:1634
 msgid "Device specific"
 msgstr "Συσκευή ειδικά"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1641
+#: sickrage/core/webserver/views/config/notifications.mako:1639
 msgid "Choose notification sound to use"
 msgstr "Επιλέξτε Ήχος ειδοποίησης για να χρησιμοποιήσετε"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1656
+#: sickrage/core/webserver/views/config/notifications.mako:1654
 msgid "Test Pushover"
 msgstr "Δοκιμή Pushover"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1674
+#: sickrage/core/webserver/views/config/notifications.mako:1672
 msgid "Boxcar2"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1678
+#: sickrage/core/webserver/views/config/notifications.mako:1676
 msgid "Read your messages where and when you want them!"
 msgstr "Διαβάζετε τα μηνύματά σας όπου και όποτε θέλεις!"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1690
+#: sickrage/core/webserver/views/config/notifications.mako:1688
 msgid "send Boxcar2 notifications?"
 msgstr "στέλνετε ειδοποιήσεις Boxcar2;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1734
+#: sickrage/core/webserver/views/config/notifications.mako:1732
 msgid "Boxcar2 access token"
 msgstr "Διακριτικό πρόσβασης Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1743
+#: sickrage/core/webserver/views/config/notifications.mako:1741
 msgid "access token for your Boxcar2 account"
 msgstr "διακριτικό πρόσβασης για το λογαριασμό σας Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1760
+#: sickrage/core/webserver/views/config/notifications.mako:1758
 msgid "Test Boxcar2"
 msgstr "Τεστ Boxcar2"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1779
+#: sickrage/core/webserver/views/config/notifications.mako:1777
 msgid "Notify My Android"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1783
+#: sickrage/core/webserver/views/config/notifications.mako:1781
 msgid "Notify My Android is a Prowl-like Android App and API that offers an easy way to send notifications from your application directly to your Android device."
 msgstr "Ειδοποιήσει μου Android είναι μια Android App Prowl-όπως και το API που προσφέρει έναν εύκολο τρόπο για την αποστολή ειδοποιήσεων από την εφαρμογή σας απευθείας στο Android συσκευή σας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1795
+#: sickrage/core/webserver/views/config/notifications.mako:1793
 msgid "send NMA notifications?"
 msgstr "στέλνετε ειδοποιήσεις NMA;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1839
+#: sickrage/core/webserver/views/config/notifications.mako:1837
 msgid "NMA API key"
 msgstr "NMA API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1848
+#: sickrage/core/webserver/views/config/notifications.mako:1846
 msgid "ex. key1,key2 (max 5)"
 msgstr "ex. key1, key2 (max 5)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1855
+#: sickrage/core/webserver/views/config/notifications.mako:1853
 msgid "NMA priority"
 msgstr "NMA προτεραιότητα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1864
+#: sickrage/core/webserver/views/config/notifications.mako:1862
 msgid "Very Low"
 msgstr "Πολύ χαμηλή"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1867
+#: sickrage/core/webserver/views/config/notifications.mako:1865
 msgid "Moderate"
 msgstr "Μέτρια"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1870
+#: sickrage/core/webserver/views/config/notifications.mako:1868
 #: sickrage/core/webserver/views/config/search.mako:703
 msgid "Normal"
 msgstr "Κανονική λειτουργία"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1873
+#: sickrage/core/webserver/views/config/notifications.mako:1871
 #: sickrage/core/webserver/views/config/search.mako:706
 msgid "High"
 msgstr "Υψηλή"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1876
+#: sickrage/core/webserver/views/config/notifications.mako:1874
 msgid "Emergency"
 msgstr "Έκτακτης ανάγκης"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1881
+#: sickrage/core/webserver/views/config/notifications.mako:1879
 msgid "priority of NMA messages from SiCKRAGE."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1897
+#: sickrage/core/webserver/views/config/notifications.mako:1895
 msgid "Test NMA"
 msgstr "Δοκιμή ΝΜΑ"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1915
+#: sickrage/core/webserver/views/config/notifications.mako:1913
 msgid "Pushalot"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:1919
+#: sickrage/core/webserver/views/config/notifications.mako:1917
 msgid "Pushalot is a platform for receiving custom push notifications to connected devices running Windows Phone or Windows 8."
 msgstr "Pushalot είναι μια πλατφόρμα για τη λήψη προσαρμοσμένες ειδοποιήσεις σε συνδεδεμένες συσκευές που λειτουργούν με Windows Phone ή Windows 8."
 
-#: sickrage/core/webserver/views/config/notifications.mako:1931
+#: sickrage/core/webserver/views/config/notifications.mako:1929
 msgid "send Pushalot notifications?"
 msgstr "στέλνετε ειδοποιήσεις Pushalot;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1975
+#: sickrage/core/webserver/views/config/notifications.mako:1973
 msgid "Pushalot authorization token"
 msgstr "Pushalot έγκριση διακριτικού"
 
-#: sickrage/core/webserver/views/config/notifications.mako:1985
+#: sickrage/core/webserver/views/config/notifications.mako:1983
 msgid "authorization token of your Pushalot account."
 msgstr "άδεια το διακριτικό του λογαριασμού Pushalot."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2002
+#: sickrage/core/webserver/views/config/notifications.mako:2000
 msgid "Test Pushalot"
 msgstr "Τεστ Pushalot"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2022
+#: sickrage/core/webserver/views/config/notifications.mako:2020
 msgid "Pushbullet"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2026
+#: sickrage/core/webserver/views/config/notifications.mako:2024
 msgid "Pushbullet is a platform for receiving custom push notifications to connected devices running Android and desktop Chrome browsers."
 msgstr "Pushbullet είναι μια πλατφόρμα για τη λήψη προσαρμοσμένες ειδοποιήσεις σε συνδεδεμένες συσκευές που τρέχουν Android και επιφάνειας εργασίας προγράμματα περιήγησης Chrome."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2038
+#: sickrage/core/webserver/views/config/notifications.mako:2036
 msgid "send Pushbullet notifications?"
 msgstr "στέλνετε ειδοποιήσεις Pushbullet;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2082
+#: sickrage/core/webserver/views/config/notifications.mako:2080
 msgid "Pushbullet API key"
 msgstr "Pushbullet API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2092
+#: sickrage/core/webserver/views/config/notifications.mako:2090
 msgid "API key of your Pushbullet account"
 msgstr "API κλειδί του λογαριασμού σας Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2099
+#: sickrage/core/webserver/views/config/notifications.mako:2097
 msgid "Pushbullet devices"
 msgstr "Pushbullet συσκευές"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2114
+#: sickrage/core/webserver/views/config/notifications.mako:2112
 msgid "Update device list"
 msgstr "Η ενημερωμένη έκδοση λίστα συσκευών"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2119
+#: sickrage/core/webserver/views/config/notifications.mako:2117
 msgid "select device you wish to push to."
 msgstr "Επιλέξτε τη συσκευή που θέλετε να ωθήσει."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2137
+#: sickrage/core/webserver/views/config/notifications.mako:2135
 msgid "Test Pushbullet"
 msgstr "Τεστ Pushbullet"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2155
+#: sickrage/core/webserver/views/config/notifications.mako:2153
 msgid "Free Mobile"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2159
+#: sickrage/core/webserver/views/config/notifications.mako:2157
 msgid "Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API."
 msgstr "Δωρεάν Mobile είναι ένα διάσημο γαλλικό δίκτυο κινητής τηλεφωνίας provider.<br> που παρέχει στον πελάτη τους μια δωρεάν SMS API."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2171
+#: sickrage/core/webserver/views/config/notifications.mako:2169
 msgid "send SMS notifications?"
 msgstr "στέλνετε ειδοποιήσεις μέσω SMS;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2185
+#: sickrage/core/webserver/views/config/notifications.mako:2183
 msgid "send a SMS when a download starts?"
 msgstr "Στείλτε ένα SMS όταν μια λήψη ξεκινά;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2197
+#: sickrage/core/webserver/views/config/notifications.mako:2195
 msgid "send a SMS when a download finishes?"
 msgstr "Όταν ολοκληρωθεί η λήψη, να στείλει ένα SMS;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2209
+#: sickrage/core/webserver/views/config/notifications.mako:2207
 msgid "send a SMS when subtitles are downloaded?"
 msgstr "Στείλτε ένα SMS κατά τη λήψη υπότιτλους;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2215
+#: sickrage/core/webserver/views/config/notifications.mako:2213
 msgid "Free Mobile customer ID"
 msgstr "Δωρεάν κινητά customer ID"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2225
-#: sickrage/core/webserver/views/config/notifications.mako:2348
-#: sickrage/core/webserver/views/config/notifications.mako:2488
-#: sickrage/core/webserver/views/config/notifications.mako:2533
+#: sickrage/core/webserver/views/config/notifications.mako:2223
+#: sickrage/core/webserver/views/config/notifications.mako:2346
+#: sickrage/core/webserver/views/config/notifications.mako:2486
+#: sickrage/core/webserver/views/config/notifications.mako:2531
 msgid "ex. 12345678"
 msgstr "π.χ. 12345678"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2232
+#: sickrage/core/webserver/views/config/notifications.mako:2230
 msgid "Free Mobile API Key"
 msgstr "Δωρεάν κινητά API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2242
-#: sickrage/core/webserver/views/config/notifications.mako:2375
+#: sickrage/core/webserver/views/config/notifications.mako:2240
+#: sickrage/core/webserver/views/config/notifications.mako:2373
 msgid "enter yourt API key"
 msgstr "Εισάγετε το κλειδί API yourt"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2259
+#: sickrage/core/webserver/views/config/notifications.mako:2257
 msgid "Test SMS"
 msgstr "Δοκιμαστικό μήνυμα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2276
+#: sickrage/core/webserver/views/config/notifications.mako:2274
 msgid "Telegram"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2280
+#: sickrage/core/webserver/views/config/notifications.mako:2278
 msgid "Telegram is a cloud-based instant messaging service"
 msgstr "Τηλεγράφημα είναι μια cloud-based υπηρεσία ανταλλαγής άμεσων μηνυμάτων"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2292
+#: sickrage/core/webserver/views/config/notifications.mako:2290
 msgid "send Telegram notifications?"
 msgstr "στέλνετε ειδοποιήσεις τηλεγράφημα;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2306
-#: sickrage/core/webserver/views/config/notifications.mako:2445
+#: sickrage/core/webserver/views/config/notifications.mako:2304
+#: sickrage/core/webserver/views/config/notifications.mako:2443
 msgid "send a message when a download starts?"
 msgstr "Στείλτε ένα μήνυμα όταν μια λήψη ξεκινά;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2318
-#: sickrage/core/webserver/views/config/notifications.mako:2457
+#: sickrage/core/webserver/views/config/notifications.mako:2316
+#: sickrage/core/webserver/views/config/notifications.mako:2455
 msgid "send a message when a download finishes?"
 msgstr "Στείλτε ένα μήνυμα όταν ολοκληρωθεί μια λήψη;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2330
-#: sickrage/core/webserver/views/config/notifications.mako:2469
+#: sickrage/core/webserver/views/config/notifications.mako:2328
+#: sickrage/core/webserver/views/config/notifications.mako:2467
 msgid "send a message when subtitles are downloaded?"
 msgstr "Στείλτε ένα μήνυμα κατά τη λήψη υπότιτλους;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2336
+#: sickrage/core/webserver/views/config/notifications.mako:2334
 msgid "User/Group ID"
 msgstr "Αναγνωριστικό χρήστη/ομάδας"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2352
+#: sickrage/core/webserver/views/config/notifications.mako:2350
 msgid "contact @myidbot on Telegram to get an ID"
 msgstr "Επικοινωνήστε με την @myidbot στο τηλεγράφημα να πάρει ένα Αναγνωριστικό"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2353
+#: sickrage/core/webserver/views/config/notifications.mako:2351
 #: sickrage/core/webserver/views/config/postprocessing.mako:69
 msgid "NOTE"
 msgstr "ΣΗΜΕΊΩΣΗ"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2354
+#: sickrage/core/webserver/views/config/notifications.mako:2352
 msgid "Don't forget to talk with your bot at least one time if you get a 403 error."
 msgstr "Μην ξεχάσετε να μιλήσει με το bot σας τουλάχιστον μία φορά αν μπορείτε να πάρετε ένα 403 σφάλμα."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2363
+#: sickrage/core/webserver/views/config/notifications.mako:2361
 msgid "Bot API Key"
 msgstr "Bot API κλειδί"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2379
+#: sickrage/core/webserver/views/config/notifications.mako:2377
 msgid "contact @BotFather on Telegram to set up one"
 msgstr "Επικοινωνήστε με την @BotFather στο τηλεγράφημα για να ρυθμίσετε ένα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2398
+#: sickrage/core/webserver/views/config/notifications.mako:2396
 msgid "Test Telegram"
 msgstr "Δοκιμή τηλεγράφημα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2415
+#: sickrage/core/webserver/views/config/notifications.mako:2413
 msgid "Twilio"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2419
+#: sickrage/core/webserver/views/config/notifications.mako:2417
 msgid "Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device."
 msgstr "Twilio είναι ένα webservice API που σας επιτρέπει να επικοινωνείτε απευθείας με έναν αριθμό κινητού τηλεφώνου. Κοινοποιών αυτό θα στείλει ένα κείμενο απευθείας στη φορητή συσκευή σας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2431
+#: sickrage/core/webserver/views/config/notifications.mako:2429
 msgid "text your mobile device?"
 msgstr "κείμενο την κινητή συσκευή σας;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2476
+#: sickrage/core/webserver/views/config/notifications.mako:2474
 msgid "Twilio Account SID"
 msgstr "Twilio λογαριασμού SID"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2492
+#: sickrage/core/webserver/views/config/notifications.mako:2490
 msgid "account SID of your Twilio account."
 msgstr "λογαριασμού SID του λογαριασμού Twilio."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2501
+#: sickrage/core/webserver/views/config/notifications.mako:2499
 msgid "Twilio Auth Token"
 msgstr "Twilio έλεγχος ταυτότητας διακριτικού"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2511
+#: sickrage/core/webserver/views/config/notifications.mako:2509
 msgid "enter your auth token"
 msgstr "Εισάγετε το διακριτικό σας ΑΠΘ"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2519
+#: sickrage/core/webserver/views/config/notifications.mako:2517
 msgid "Twilio Phone SID"
 msgstr "Twilio τηλέφωνο SID"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2537
+#: sickrage/core/webserver/views/config/notifications.mako:2535
 msgid "phone SID that you would like to send the sms from."
 msgstr "SID που θα επιθυμούσατε να στείλετε το sms από το τηλέφωνο."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2546
+#: sickrage/core/webserver/views/config/notifications.mako:2544
 msgid "Your phone number"
 msgstr "Τον αριθμό τηλεφώνου σας"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2560
+#: sickrage/core/webserver/views/config/notifications.mako:2558
 msgid "ex. +1-###-###-####"
 msgstr "ex. + 1-###-###-###"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2564
+#: sickrage/core/webserver/views/config/notifications.mako:2562
 msgid "phone number that will receive the sms."
 msgstr "Αριθμός τηλεφώνου που θα λάβει το sms."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2583
+#: sickrage/core/webserver/views/config/notifications.mako:2581
 msgid "Test Twilio"
 msgstr "Τεστ Twilio"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2599
+#: sickrage/core/webserver/views/config/notifications.mako:2597
 msgid "Twitter"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2603
+#: sickrage/core/webserver/views/config/notifications.mako:2601
 msgid "A social networking and microblogging service, enabling its users to send and read other users messages called tweets."
 msgstr "Μια κοινωνική δικτύωση και το microblogging υπηρεσία, επιτρέποντας στους χρήστες να στέλνουν και να διαβάσετε άλλα μηνύματα χρηστών που ονομάζεται tweets."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2615
+#: sickrage/core/webserver/views/config/notifications.mako:2613
 msgid "post tweets on Twitter?"
 msgstr "θέση tweets στο Twitter;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2616
+#: sickrage/core/webserver/views/config/notifications.mako:2614
 msgid "you may want to use a secondary account."
 msgstr "μπορεί να θέλετε να χρησιμοποιήσετε ένα δευτερεύοντα λογαριασμό."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2661
+#: sickrage/core/webserver/views/config/notifications.mako:2659
 msgid "Send direct message"
 msgstr "Στείλτε απευθείας μήνυμα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2667
+#: sickrage/core/webserver/views/config/notifications.mako:2665
 msgid "send a notification via Direct Message, not via status update"
 msgstr "Στείλτε μια ειδοποίηση μέσω άμεσων μηνυμάτων, όχι μέσω ενημέρωση κατάστασης"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2673
+#: sickrage/core/webserver/views/config/notifications.mako:2671
 msgid "Send DM to"
 msgstr "Αποστολή DM να"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2683
+#: sickrage/core/webserver/views/config/notifications.mako:2681
 msgid "Twitter account to send messages to"
 msgstr "Twitter λογαριασμό για να στείλετε μηνύματα σε"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2690
+#: sickrage/core/webserver/views/config/notifications.mako:2688
 msgid "Step One"
 msgstr "Βήμα πρώτο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2695
+#: sickrage/core/webserver/views/config/notifications.mako:2693
 msgid "Request Authorization"
 msgstr "Ζητήσει την άδεια"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2702
+#: sickrage/core/webserver/views/config/notifications.mako:2700
 msgid "Click the \"Request Authorization\" button."
 msgstr "Κάντε κλικ στο κουμπί «Αίτηση εξουσιοδότησης»."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2703
+#: sickrage/core/webserver/views/config/notifications.mako:2701
 msgid "This will open a new page containing an auth key."
 msgstr "Αυτό θα ανοίξει μια νέα σελίδα που περιέχει ένα κλειδί ελέγχου ταυτότητας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2704
+#: sickrage/core/webserver/views/config/notifications.mako:2702
 msgid "if nothing happens check your popup blocker."
 msgstr "Αν δεν συμβαίνει τίποτα, ελέγξτε αναδυόμενων παραθύρων σας."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2712
+#: sickrage/core/webserver/views/config/notifications.mako:2710
 msgid "Step Two"
 msgstr "Βήμα δύο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2721
+#: sickrage/core/webserver/views/config/notifications.mako:2719
 msgid "Enter the key Twitter gave you"
 msgstr "Εισάγετε το κλειδί σας έδωσε το Twitter"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2741
+#: sickrage/core/webserver/views/config/notifications.mako:2739
 msgid "Test Twitter"
 msgstr "Δοκιμή Twitter"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2760
+#: sickrage/core/webserver/views/config/notifications.mako:2758
 msgid "Trakt"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:2764
+#: sickrage/core/webserver/views/config/notifications.mako:2762
 msgid "Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you'll enjoy!"
 msgstr "Trakt σας βοηθά να καταγράψετε ό, τι δείχνει η τηλεόραση και είστε βλέποντας ταινίες. Με βάση τα αγαπημένα σας, trakt συστήνει πρόσθετες εκπομπές και ταινίες που θα απολαύσετε!"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2776
+#: sickrage/core/webserver/views/config/notifications.mako:2774
 msgid "send Trakt.tv notifications?"
 msgstr "στέλνετε ειδοποιήσεις Trakt.tv;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2784
+#: sickrage/core/webserver/views/config/notifications.mako:2782
 msgid "Trakt username"
 msgstr "Όνομα χρήστη Trakt"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2794
+#: sickrage/core/webserver/views/config/notifications.mako:2792
 msgid "username"
 msgstr "όνομα χρήστη"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2803
+#: sickrage/core/webserver/views/config/notifications.mako:2801
 msgid "Trakt PIN"
 msgstr "Trakt PIN"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2811
+#: sickrage/core/webserver/views/config/notifications.mako:2809
 msgid "authorization PIN code"
 msgstr "άδεια κωδικός PIN"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2815
+#: sickrage/core/webserver/views/config/notifications.mako:2813
 msgid "Authorize"
 msgstr "Εξουσιοδότηση"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2821
+#: sickrage/core/webserver/views/config/notifications.mako:2819
 msgid "Authorize SiCKRAGE"
 msgstr "Επιτρέπουν την SiCKRAGE"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2825
+#: sickrage/core/webserver/views/config/notifications.mako:2823
 msgid "API Timeout"
 msgstr "API χρονικού ορίου"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2844
+#: sickrage/core/webserver/views/config/notifications.mako:2842
 msgid "Seconds to wait for Trakt API to respond. (Use 0 to wait forever)"
 msgstr "Δευτερόλεπτα αναμονής για Trakt API να ανταποκριθεί. (Χρήση 0 να περιμένω για πάντα)"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2850
+#: sickrage/core/webserver/views/config/notifications.mako:2848
 msgid "Default indexer"
 msgstr "Προεπιλεγμένο ευρετήριο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2870
+#: sickrage/core/webserver/views/config/notifications.mako:2868
 msgid "Sync libraries"
 msgstr "Συγχρονισμό βιβλιοθήκες"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2876
+#: sickrage/core/webserver/views/config/notifications.mako:2874
 msgid "sync your SickRage show library with your trakt show library."
 msgstr "συγχρονίσετε τη βιβλιοθήκη εμφάνιση σας SickRage με τη βιβλιοθήκη σας trakt εμφάνιση."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2883
+#: sickrage/core/webserver/views/config/notifications.mako:2881
 msgid "Remove Episodes From Collection"
 msgstr "Αφαιρέστε τα επεισόδια από τη συλλογή"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2889
+#: sickrage/core/webserver/views/config/notifications.mako:2887
 msgid "Remove an episode from your Trakt collection if it is not in your SickRage library."
 msgstr "Αφαιρέστε ένα επεισόδιο από τη συλλογή σας Trakt, αν δεν είναι στη βιβλιοθήκη SickRage."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2896
+#: sickrage/core/webserver/views/config/notifications.mako:2894
 msgid "Sync watchlist"
 msgstr "Συγχρονισμός λίστας παρακολούθησης"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2902
+#: sickrage/core/webserver/views/config/notifications.mako:2900
 msgid "sync your SickRage show watchlist with your trakt show watchlist (either Show and Episode)."
 msgstr "για να συγχρονίσετε τη λίστα παρακολούθησής σας SickRage εμφάνιση με τη λίστα παρακολούθησης εμφάνιση trakt (είτε εμφάνιση και επεισόδιο)."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2904
+#: sickrage/core/webserver/views/config/notifications.mako:2902
 msgid "Episode will be added on watch list when wanted or snatched and will be removed when downloaded"
 msgstr "Το επεισόδιο θα προστεθεί στη λίστα ρολόι όταν ήθελε ή ξεριζώνονται και θα καταργηθεί κατά τη λήψη"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2912
+#: sickrage/core/webserver/views/config/notifications.mako:2910
 msgid "Watchlist add method"
 msgstr "Λίστα παρακολούθησης προσθέστε μέθοδο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2924
+#: sickrage/core/webserver/views/config/notifications.mako:2922
 msgid "Skip All"
 msgstr "Παράβλεψη όλων"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2927
+#: sickrage/core/webserver/views/config/notifications.mako:2925
 msgid "Download Pilot Only"
 msgstr "Μόνο λήψη πιλότος"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2930
+#: sickrage/core/webserver/views/config/notifications.mako:2928
 msgid "Get whole show"
 msgstr "Αποκτήστε όλη παράσταση"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2935
+#: sickrage/core/webserver/views/config/notifications.mako:2933
 msgid "method in which to download episodes for new show's."
 msgstr "η μέθοδος στην οποία θέλετε να κατεβάσετε επεισόδια για τη νέα εμφάνιση του."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2941
+#: sickrage/core/webserver/views/config/notifications.mako:2939
 msgid "Remove episode"
 msgstr "Αφαιρέστε το επεισόδιο"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2947
+#: sickrage/core/webserver/views/config/notifications.mako:2945
 msgid "remove an episode from your watchlist after it is downloaded."
 msgstr "Αφαιρέστε ένα επεισόδιο από τη λίστα παρακολούθησής σας μετά τη λήψη."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2953
+#: sickrage/core/webserver/views/config/notifications.mako:2951
 msgid "Remove series"
 msgstr "Κατάργηση σειράς"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2959
+#: sickrage/core/webserver/views/config/notifications.mako:2957
 msgid "remove the whole series from your watchlist after any download."
 msgstr "Αφαιρέστε όλη τη σειρά από τη λίστα παρακολούθησής σας μετά από κάθε λήψη."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2965
+#: sickrage/core/webserver/views/config/notifications.mako:2963
 msgid "Remove watched show"
 msgstr "Κατάργηση παρακολούθησαν επίδειξη"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2971
+#: sickrage/core/webserver/views/config/notifications.mako:2969
 msgid "remove the show from sickrage if it's ended and completely watched"
 msgstr "καταργήσετε την εμφάνιση από το sickrage εάν έχει λήξει και εντελώς παρακολούθησαν"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2977
+#: sickrage/core/webserver/views/config/notifications.mako:2975
 msgid "Start paused"
 msgstr "Ξεκινήστε σε παύση"
 
-#: sickrage/core/webserver/views/config/notifications.mako:2983
+#: sickrage/core/webserver/views/config/notifications.mako:2981
 msgid "show's grabbed from your trakt watchlist start paused."
 msgstr "Εμφάνιση του άρπαξε από τη λίστα παρακολούθησής σας trakt έναρξη έχει διακοπεί."
 
-#: sickrage/core/webserver/views/config/notifications.mako:2990
+#: sickrage/core/webserver/views/config/notifications.mako:2988
 msgid "Trakt blackList name"
 msgstr "Trakt μαύρη λίστα όνομα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3002
+#: sickrage/core/webserver/views/config/notifications.mako:3000
 msgid "Name(slug) of list on Trakt for blacklisting show on 'Add from Trakt' page"
 msgstr "Name(Slug) της λίστας στο Trakt για μαύρη λίστα Εμφάνιση στη σελίδα 'Προσθήκη από Trakt'"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3018
+#: sickrage/core/webserver/views/config/notifications.mako:3016
 msgid "Test Trakt"
 msgstr "Δοκιμή Trakt"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3035
+#: sickrage/core/webserver/views/config/notifications.mako:3033
 msgid "Email"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:3039
+#: sickrage/core/webserver/views/config/notifications.mako:3037
 msgid "Allows configuration of email notifications on a per show basis."
 msgstr "Επιτρέπει τη ρύθμιση παραμέτρων των ειδοποιήσεων ηλεκτρονικού ταχυδρομείου σε βάση ανά εμφάνιση."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3051
+#: sickrage/core/webserver/views/config/notifications.mako:3049
 msgid "send email notifications?"
 msgstr "στείλετε ειδοποιήσεις ηλεκτρονικού ταχυδρομείου;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3095
+#: sickrage/core/webserver/views/config/notifications.mako:3093
 msgid "SMTP host"
 msgstr "Κεντρικό υπολογιστή SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3104
+#: sickrage/core/webserver/views/config/notifications.mako:3102
 msgid "SMTP server address"
 msgstr "Διεύθυνση του διακομιστή SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3111
+#: sickrage/core/webserver/views/config/notifications.mako:3109
 msgid "SMTP port"
 msgstr "Θύρα SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3120
+#: sickrage/core/webserver/views/config/notifications.mako:3118
 msgid "SMTP server port number"
 msgstr "Αριθμό θύρας διακομιστή SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3127
+#: sickrage/core/webserver/views/config/notifications.mako:3125
 msgid "SMTP from"
 msgstr "SMTP από"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3136
+#: sickrage/core/webserver/views/config/notifications.mako:3134
 msgid "sender email address"
 msgstr "διεύθυνση ηλεκτρονικού ταχυδρομείου αποστολέα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3143
+#: sickrage/core/webserver/views/config/notifications.mako:3141
 msgid "Use TLS"
 msgstr "Χρήση TLS"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3149
+#: sickrage/core/webserver/views/config/notifications.mako:3147
 msgid "check to use TLS encryption."
 msgstr "ελέγχου για να χρησιμοποιήσετε κρυπτογράφηση TLS."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3155
+#: sickrage/core/webserver/views/config/notifications.mako:3153
 msgid "SMTP user"
 msgstr "SMTP χρήστη"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3164
-#: sickrage/core/webserver/views/config/notifications.mako:3180
+#: sickrage/core/webserver/views/config/notifications.mako:3162
+#: sickrage/core/webserver/views/config/notifications.mako:3178
 msgid "optional"
 msgstr "προαιρετικά"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3171
+#: sickrage/core/webserver/views/config/notifications.mako:3169
 msgid "SMTP password"
 msgstr "Πρόσβασης SMTP"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3188
+#: sickrage/core/webserver/views/config/notifications.mako:3186
 msgid "Global email list"
 msgstr "Παγκόσμια email λίστα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3200
+#: sickrage/core/webserver/views/config/notifications.mako:3198
 msgid "all emails here receive notifications for"
 msgstr "όλα τα ηλεκτρονικά ταχυδρομεία εδώ λαμβάνετε ειδοποιήσεις για"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3200
+#: sickrage/core/webserver/views/config/notifications.mako:3198
 msgid "all"
 msgstr "όλα τα"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3200
+#: sickrage/core/webserver/views/config/notifications.mako:3198
 msgid "shows."
 msgstr "δείχνει."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3206
+#: sickrage/core/webserver/views/config/notifications.mako:3204
 msgid "Show notification list"
 msgstr "Λίστα Εμφάνιση ειδοποιήσεων"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3216
+#: sickrage/core/webserver/views/config/notifications.mako:3214
 msgid "Select a Show"
 msgstr "Επιλέξτε μία εμφάνιση"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3220
+#: sickrage/core/webserver/views/config/notifications.mako:3218
 msgid "configure per show notifications here."
 msgstr "Ρυθμίστε τις παραμέτρους ανά εμφάνιση ειδοποιήσεων εδώ."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3235
+#: sickrage/core/webserver/views/config/notifications.mako:3233
 msgid "configure per-show notifications here by entering email addresses, separated by commas, after selecting a show in the drop-down box. Be sure to activate the Save for this show button below after each entry."
 msgstr "Μπορείτε να ρυθμίσετε ανά-εμφάνιση ειδοποιήσεων εδώ, εισάγοντας τις διευθύνσεις ηλεκτρονικού ταχυδρομείου, διαχωρίζοντάς τις με κόμματα, αφού επιλέξετε ένα show στο αναπτυσσόμενο πλαίσιο. Να είστε βέβαιος να ενεργοποιήσετε την αποθήκευση για αυτό το κουμπί Εμφάνιση κάτω μετά από κάθε εγγραφή."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3242
+#: sickrage/core/webserver/views/config/notifications.mako:3240
 msgid "Save for this show"
 msgstr "Αποθήκευση για αυτό το δείχνουν"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3260
+#: sickrage/core/webserver/views/config/notifications.mako:3258
 msgid "Test Email"
 msgstr "Δοκιμαστικό μήνυμα ηλεκτρονικού ταχυδρομείου"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3277
+#: sickrage/core/webserver/views/config/notifications.mako:3275
 msgid "Slack"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:3281
+#: sickrage/core/webserver/views/config/notifications.mako:3279
 msgid "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams."
 msgstr "Αδράνεια συγκεντρώνει όλη την επικοινωνία σου σε ένα μέρος. Είναι σε πραγματικό χρόνο μηνυμάτων, την αρχειοθέτησης και αναζήτησης για τις σύγχρονες ομάδες."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3293
+#: sickrage/core/webserver/views/config/notifications.mako:3291
 msgid "send slack notifications?"
 msgstr "στέλνετε ειδοποιήσεις αδράνειας;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3337
+#: sickrage/core/webserver/views/config/notifications.mako:3335
 msgid "Slack Incoming Webhook"
 msgstr "Νωθρό εισερχόμενων Webhook"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3346
+#: sickrage/core/webserver/views/config/notifications.mako:3344
 msgid "Slack webhook"
 msgstr "Νωθρό webhook"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3364
+#: sickrage/core/webserver/views/config/notifications.mako:3362
 msgid "Test Slack"
 msgstr "Δοκιμή Slack"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3381
+#: sickrage/core/webserver/views/config/notifications.mako:3379
 msgid "Discord"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/notifications.mako:3385
+#: sickrage/core/webserver/views/config/notifications.mako:3383
 msgid "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone."
 msgstr "Όλα-σε-ένα φωνή και κείμενο συνομιλίας για τα gamers που είναι δωρεάν, ασφαλής και λειτουργεί τόσο σας επιφάνεια εργασίας και τηλέφωνο."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3397
+#: sickrage/core/webserver/views/config/notifications.mako:3395
 msgid "send discord notifications?"
 msgstr "στέλνετε ειδοποιήσεις διχόνοια;"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3444
+#: sickrage/core/webserver/views/config/notifications.mako:3442
 msgid "Discord Incoming Webhook"
 msgstr "Διχόνοια εισερχόμενων Webhook"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3455
+#: sickrage/core/webserver/views/config/notifications.mako:3453
 msgid "Discord webhook"
 msgstr "Webhook διχόνοια"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3459
+#: sickrage/core/webserver/views/config/notifications.mako:3457
 msgid "Create webhook under channel settings."
 msgstr "Για να δημιουργήσετε webhook στην ενότητα Ρυθμίσεις καναλιού."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3468
-#: sickrage/core/webserver/views/config/notifications.mako:3479
+#: sickrage/core/webserver/views/config/notifications.mako:3466
+#: sickrage/core/webserver/views/config/notifications.mako:3477
 msgid "Discord Bot Name"
 msgstr "Όνομα Bot διχόνοια"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3483
+#: sickrage/core/webserver/views/config/notifications.mako:3481
 msgid "Blank will use webhook default name."
 msgstr "Κενό θα χρησιμοποιήσει το προεπιλεγμένο όνομα webhook."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3491
-#: sickrage/core/webserver/views/config/notifications.mako:3502
+#: sickrage/core/webserver/views/config/notifications.mako:3489
+#: sickrage/core/webserver/views/config/notifications.mako:3500
 msgid "Discord Avatar URL"
 msgstr "Διχόνοια Avatar URL"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3506
+#: sickrage/core/webserver/views/config/notifications.mako:3504
 msgid "Blank will use webhook default avatar."
 msgstr "Κενό θα χρησιμοποιήσει το avatar προεπιλογή webhook."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3514
+#: sickrage/core/webserver/views/config/notifications.mako:3512
 msgid "Discord TTS"
 msgstr "Διχόνοια TTS"
 
-#: sickrage/core/webserver/views/config/notifications.mako:3520
+#: sickrage/core/webserver/views/config/notifications.mako:3518
 msgid "Send notifications using text-to-speech."
 msgstr "Αποστολή ειδοποιήσεων χρησιμοποιώντας κείμενο σε ομιλία."
 
-#: sickrage/core/webserver/views/config/notifications.mako:3538
+#: sickrage/core/webserver/views/config/notifications.mako:3536
 msgid "Test Discord"
 msgstr "Δοκιμή διχόνοια"
 
@@ -2844,7 +2848,7 @@ msgid "Episode Naming"
 msgstr "Επεισόδιο ονομασίας"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:19
-#: sickrage/core/webserver/views/config/postprocessing.mako:1414
+#: sickrage/core/webserver/views/config/postprocessing.mako:1413
 msgid "Metadata"
 msgstr "Μετα-δεδομένα"
 
@@ -3095,44 +3099,44 @@ msgstr "Μην ξεχάσετε να προσθέσετε μοτίβο ποιό�
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:468
 #: sickrage/core/webserver/views/config/postprocessing.mako:741
-#: sickrage/core/webserver/views/config/postprocessing.mako:955
-#: sickrage/core/webserver/views/config/postprocessing.mako:1175
+#: sickrage/core/webserver/views/config/postprocessing.mako:954
+#: sickrage/core/webserver/views/config/postprocessing.mako:1174
 msgid "Meaning"
 msgstr "Έννοια"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:469
 #: sickrage/core/webserver/views/config/postprocessing.mako:742
-#: sickrage/core/webserver/views/config/postprocessing.mako:956
-#: sickrage/core/webserver/views/config/postprocessing.mako:1176
+#: sickrage/core/webserver/views/config/postprocessing.mako:955
+#: sickrage/core/webserver/views/config/postprocessing.mako:1175
 msgid "Pattern"
 msgstr "Μοτίβο"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:470
 #: sickrage/core/webserver/views/config/postprocessing.mako:743
-#: sickrage/core/webserver/views/config/postprocessing.mako:957
-#: sickrage/core/webserver/views/config/postprocessing.mako:1177
+#: sickrage/core/webserver/views/config/postprocessing.mako:956
+#: sickrage/core/webserver/views/config/postprocessing.mako:1176
 msgid "Result"
 msgstr "Αποτέλεσμα"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:476
 #: sickrage/core/webserver/views/config/postprocessing.mako:749
-#: sickrage/core/webserver/views/config/postprocessing.mako:963
-#: sickrage/core/webserver/views/config/postprocessing.mako:1183
+#: sickrage/core/webserver/views/config/postprocessing.mako:962
+#: sickrage/core/webserver/views/config/postprocessing.mako:1182
 #, python-format
 msgid "Use lower case if you want lower case names (eg. %sn, %e.n, %q_n etc)"
 msgstr "Χρήση πεζών αν θέλετε πεζά ονομάτων (π.χ. %sn, %e.n, %q_n κλπ)"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:482
 #: sickrage/core/webserver/views/config/postprocessing.mako:755
-#: sickrage/core/webserver/views/config/postprocessing.mako:969
-#: sickrage/core/webserver/views/config/postprocessing.mako:1189
+#: sickrage/core/webserver/views/config/postprocessing.mako:968
+#: sickrage/core/webserver/views/config/postprocessing.mako:1188
 msgid "Show Name:"
 msgstr "Εμφάνιση όνομα:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:484
 #: sickrage/core/webserver/views/config/postprocessing.mako:757
-#: sickrage/core/webserver/views/config/postprocessing.mako:971
-#: sickrage/core/webserver/views/config/postprocessing.mako:1191
+#: sickrage/core/webserver/views/config/postprocessing.mako:970
+#: sickrage/core/webserver/views/config/postprocessing.mako:1190
 #: sickrage/core/webserver/views/home/status.mako:117
 #: sickrage/core/webserver/views/manage/mass_update.mako:66
 msgid "Show Name"
@@ -3140,70 +3144,70 @@ msgstr "Εμφάνιση ονόματος"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:489
 #: sickrage/core/webserver/views/config/postprocessing.mako:762
-#: sickrage/core/webserver/views/config/postprocessing.mako:976
-#: sickrage/core/webserver/views/config/postprocessing.mako:1196
+#: sickrage/core/webserver/views/config/postprocessing.mako:975
+#: sickrage/core/webserver/views/config/postprocessing.mako:1195
 msgid "Show.Name"
 msgstr "Show.Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:494
 #: sickrage/core/webserver/views/config/postprocessing.mako:767
-#: sickrage/core/webserver/views/config/postprocessing.mako:981
-#: sickrage/core/webserver/views/config/postprocessing.mako:1201
+#: sickrage/core/webserver/views/config/postprocessing.mako:980
+#: sickrage/core/webserver/views/config/postprocessing.mako:1200
 msgid "Show_Name"
 msgstr "Show_Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:497
-#: sickrage/core/webserver/views/config/postprocessing.mako:1204
+#: sickrage/core/webserver/views/config/postprocessing.mako:1203
 msgid "Season Number:"
 msgstr "Αριθμός σεζόν:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:507
-#: sickrage/core/webserver/views/config/postprocessing.mako:1214
+#: sickrage/core/webserver/views/config/postprocessing.mako:1213
 msgid "XEM Season Number:"
 msgstr "XEM εποχή αριθμός:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:517
-#: sickrage/core/webserver/views/config/postprocessing.mako:1224
+#: sickrage/core/webserver/views/config/postprocessing.mako:1223
 msgid "Episode Number:"
 msgstr "Επεισόδιο στον αριθμό:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:527
-#: sickrage/core/webserver/views/config/postprocessing.mako:1234
+#: sickrage/core/webserver/views/config/postprocessing.mako:1233
 msgid "XEM Episode Number:"
 msgstr "XEM επεισόδιο αριθμός:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:537
 #: sickrage/core/webserver/views/config/postprocessing.mako:790
-#: sickrage/core/webserver/views/config/postprocessing.mako:1004
-#: sickrage/core/webserver/views/config/postprocessing.mako:1244
+#: sickrage/core/webserver/views/config/postprocessing.mako:1003
+#: sickrage/core/webserver/views/config/postprocessing.mako:1243
 msgid "Episode Name:"
 msgstr "Επεισόδιο όνομα:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:539
 #: sickrage/core/webserver/views/config/postprocessing.mako:792
-#: sickrage/core/webserver/views/config/postprocessing.mako:1006
-#: sickrage/core/webserver/views/config/postprocessing.mako:1246
+#: sickrage/core/webserver/views/config/postprocessing.mako:1005
+#: sickrage/core/webserver/views/config/postprocessing.mako:1245
 msgid "Episode Name"
 msgstr "Επεισόδιο όνομα"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:544
 #: sickrage/core/webserver/views/config/postprocessing.mako:797
-#: sickrage/core/webserver/views/config/postprocessing.mako:1011
-#: sickrage/core/webserver/views/config/postprocessing.mako:1251
+#: sickrage/core/webserver/views/config/postprocessing.mako:1010
+#: sickrage/core/webserver/views/config/postprocessing.mako:1250
 msgid "Episode.Name"
 msgstr "Episode.Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:549
 #: sickrage/core/webserver/views/config/postprocessing.mako:802
-#: sickrage/core/webserver/views/config/postprocessing.mako:1016
-#: sickrage/core/webserver/views/config/postprocessing.mako:1256
+#: sickrage/core/webserver/views/config/postprocessing.mako:1015
+#: sickrage/core/webserver/views/config/postprocessing.mako:1255
 msgid "Episode_Name"
 msgstr "Episode_Name"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:552
 #: sickrage/core/webserver/views/config/postprocessing.mako:805
-#: sickrage/core/webserver/views/config/postprocessing.mako:1019
-#: sickrage/core/webserver/views/config/postprocessing.mako:1259
+#: sickrage/core/webserver/views/config/postprocessing.mako:1018
+#: sickrage/core/webserver/views/config/postprocessing.mako:1258
 #: sickrage/core/webserver/views/home/display_show.mako:147
 msgid "Quality:"
 msgstr "Ποιότητα:"
@@ -3226,32 +3230,32 @@ msgstr "720p_HDTV_x264"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:584
 #: sickrage/core/webserver/views/config/postprocessing.mako:848
-#: sickrage/core/webserver/views/config/postprocessing.mako:1062
-#: sickrage/core/webserver/views/config/postprocessing.mako:1277
+#: sickrage/core/webserver/views/config/postprocessing.mako:1061
+#: sickrage/core/webserver/views/config/postprocessing.mako:1276
 msgid "Release Name:"
 msgstr "Όνομα κυκλοφορίας:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:587
-#: sickrage/core/webserver/views/config/postprocessing.mako:1280
+#: sickrage/core/webserver/views/config/postprocessing.mako:1279
 msgid "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 msgstr "Show.Name.S02E03.HDTV.XviD-RLSGROUP"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:593
 #: sickrage/core/webserver/views/config/postprocessing.mako:857
-#: sickrage/core/webserver/views/config/postprocessing.mako:1071
-#: sickrage/core/webserver/views/config/postprocessing.mako:1286
+#: sickrage/core/webserver/views/config/postprocessing.mako:1070
+#: sickrage/core/webserver/views/config/postprocessing.mako:1285
 msgid "Release Group:"
 msgstr "Ομάδα κυκλοφορίας:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:602
 #: sickrage/core/webserver/views/config/postprocessing.mako:866
-#: sickrage/core/webserver/views/config/postprocessing.mako:1081
-#: sickrage/core/webserver/views/config/postprocessing.mako:1295
+#: sickrage/core/webserver/views/config/postprocessing.mako:1080
+#: sickrage/core/webserver/views/config/postprocessing.mako:1294
 msgid "Release Type:"
 msgstr "Τύπος κυκλοφορίας:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:615
-#: sickrage/core/webserver/views/config/postprocessing.mako:1308
+#: sickrage/core/webserver/views/config/postprocessing.mako:1307
 msgid "Multi-Episode Style:"
 msgstr "Multi-επεισόδιο στυλ:"
 
@@ -3292,17 +3296,17 @@ msgid "Regular Air Date:"
 msgstr "Τακτική Air ημερομηνία:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:820
-#: sickrage/core/webserver/views/config/postprocessing.mako:1034
+#: sickrage/core/webserver/views/config/postprocessing.mako:1033
 msgid "Year:"
 msgstr "Έτος:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:825
-#: sickrage/core/webserver/views/config/postprocessing.mako:1039
+#: sickrage/core/webserver/views/config/postprocessing.mako:1038
 msgid "Month:"
 msgstr "Μήνας:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:835
-#: sickrage/core/webserver/views/config/postprocessing.mako:1049
+#: sickrage/core/webserver/views/config/postprocessing.mako:1048
 msgid "Day:"
 msgstr "Ημέρα:"
 
@@ -3327,139 +3331,139 @@ msgid "Sports Name Pattern:"
 msgstr "Σπορ όνομα μοτίβο:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:926
-#: sickrage/core/webserver/views/config/postprocessing.mako:1141
+#: sickrage/core/webserver/views/config/postprocessing.mako:1140
 msgid "Custom..."
 msgstr "Προσαρμοσμένη..."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:984
+#: sickrage/core/webserver/views/config/postprocessing.mako:983
 msgid "Sports Air Date:"
 msgstr "Αθλήματα αέρα ημερομηνία:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:986
-#: sickrage/core/webserver/views/config/postprocessing.mako:991
-#: sickrage/core/webserver/views/config/postprocessing.mako:996
-#: sickrage/core/webserver/views/config/postprocessing.mako:1001
+#: sickrage/core/webserver/views/config/postprocessing.mako:985
+#: sickrage/core/webserver/views/config/postprocessing.mako:990
+#: sickrage/core/webserver/views/config/postprocessing.mako:995
+#: sickrage/core/webserver/views/config/postprocessing.mako:1000
 msgid "Mar"
 msgstr "Μαρ"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1065
+#: sickrage/core/webserver/views/config/postprocessing.mako:1064
 msgid "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
 msgstr "Show.Name.9th.Mar.2011.HDTV.XviD-RLSGROUP"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1093
+#: sickrage/core/webserver/views/config/postprocessing.mako:1092
 msgid "Sports Sample:"
 msgstr "Σπορ δείγμα:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1110
+#: sickrage/core/webserver/views/config/postprocessing.mako:1109
 msgid "Custom Anime"
 msgstr "Προσαρμοσμένο κινούμενο σχέδιο"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1116
+#: sickrage/core/webserver/views/config/postprocessing.mako:1115
 msgid "Name Anime shows differently than regular shows?"
 msgstr "Όνομα Anime δείχνει με διαφορετικό τρόπο από ό, τι τακτική δείχνει;"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1124
+#: sickrage/core/webserver/views/config/postprocessing.mako:1123
 msgid "Anime Name Pattern:"
 msgstr "Κινούμενο σχέδιο όνομα μοτίβο:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1328
+#: sickrage/core/webserver/views/config/postprocessing.mako:1327
 msgid "Single-EP Anime Sample:"
 msgstr "Single-EP Anime δείγμα:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1343
+#: sickrage/core/webserver/views/config/postprocessing.mako:1342
 msgid "Multi-EP Anime sample:"
 msgstr "Multi-EP Anime δείγμα:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1358
+#: sickrage/core/webserver/views/config/postprocessing.mako:1357
 msgid "Add Absolute Number"
 msgstr "Προσθέστε απόλυτος αριθμός"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1364
+#: sickrage/core/webserver/views/config/postprocessing.mako:1363
 msgid "Add the absolute number to the season/episode format?"
 msgstr "Προσθέστε τον απόλυτο αριθμό σε μορφή/επεισόδιο;"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1366
+#: sickrage/core/webserver/views/config/postprocessing.mako:1365
 msgid "Only applies to animes. (eg. S15E45 - 310 vs S15E45)"
 msgstr "Ισχύει μόνο για animes. (πχ.) S15E45 - 310 vs S15E45)"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1374
+#: sickrage/core/webserver/views/config/postprocessing.mako:1373
 msgid "Only Absolute Number"
 msgstr "Μόνο απόλυτος αριθμός"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1380
+#: sickrage/core/webserver/views/config/postprocessing.mako:1379
 msgid "Replace season/episode format with absolute number"
 msgstr "Αντικατάσταση/επεισόδιο μορφή με απόλυτο αριθμό"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1381
-#: sickrage/core/webserver/views/config/postprocessing.mako:1395
+#: sickrage/core/webserver/views/config/postprocessing.mako:1380
+#: sickrage/core/webserver/views/config/postprocessing.mako:1394
 msgid "Only applies to animes."
 msgstr "Ισχύει μόνο για animes."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1388
+#: sickrage/core/webserver/views/config/postprocessing.mako:1387
 msgid "No Absolute Number"
 msgstr "Δεν υπάρχει απόλυτος αριθμός"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1394
+#: sickrage/core/webserver/views/config/postprocessing.mako:1393
 msgid "Dont include the absolute number"
 msgstr "Dont περιλαμβάνουν τον απόλυτο αριθμό"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1416
+#: sickrage/core/webserver/views/config/postprocessing.mako:1415
 msgid "The data associated to the data. These are files associated to a TV show in the form of images and text that, when supported, will enhance the viewing experience."
 msgstr "Τα δεδομένα που σχετίζονται με τα δεδομένα. Αυτά είναι τα αρχεία που σχετίζονται με μια Τηλεοπτική εκπομπή με τη μορφή των εικόνων και του κειμένου που, όταν υποστήριξε, θα βελτιώνουν την εμπειρία θέασης."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1424
+#: sickrage/core/webserver/views/config/postprocessing.mako:1423
 msgid "Metadata Type:"
 msgstr "Τύπος μετα-δεδομένων:"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1440
+#: sickrage/core/webserver/views/config/postprocessing.mako:1439
 msgid "Toggle the metadata options that you wish to be created."
 msgstr "Ενεργοποιήστε τις επιλογές μεταδεδομένων που επιθυμείτε να δημιουργηθεί."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1441
+#: sickrage/core/webserver/views/config/postprocessing.mako:1440
 msgid "Multiple targets may be used."
 msgstr "Πολλαπλοί στόχοι μπορούν να χρησιμοποιηθούν."
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1448
+#: sickrage/core/webserver/views/config/postprocessing.mako:1447
 msgid "Select Metadata"
 msgstr "Επιλέξτε μετα-δεδομένων"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1457
+#: sickrage/core/webserver/views/config/postprocessing.mako:1456
 msgid "Show Metadata"
 msgstr "Εμφάνιση μετα-δεδομένων"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1468
+#: sickrage/core/webserver/views/config/postprocessing.mako:1467
 msgid "Episode Metadata"
 msgstr "Επεισόδιο μετα-δεδομένων"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1479
+#: sickrage/core/webserver/views/config/postprocessing.mako:1478
 msgid "Show Fanart"
 msgstr "Εμφάνιση Fanart"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1490
+#: sickrage/core/webserver/views/config/postprocessing.mako:1489
 msgid "Show Poster"
 msgstr "Δείτε την αφίσα"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1501
+#: sickrage/core/webserver/views/config/postprocessing.mako:1500
 msgid "Show Banner"
 msgstr "Εμφάνιση Banner"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1512
+#: sickrage/core/webserver/views/config/postprocessing.mako:1511
 msgid "Episode Thumbnails"
 msgstr "Επεισόδιο μικρογραφίες"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1523
+#: sickrage/core/webserver/views/config/postprocessing.mako:1522
 msgid "Season Posters"
 msgstr "Σεζόν αφίσες"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1534
+#: sickrage/core/webserver/views/config/postprocessing.mako:1533
 msgid "Season Banners"
 msgstr "Σεζόν πανό"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1545
+#: sickrage/core/webserver/views/config/postprocessing.mako:1544
 msgid "Season All Poster"
 msgstr "Σεζόν όλα αφίσα"
 
-#: sickrage/core/webserver/views/config/postprocessing.mako:1556
+#: sickrage/core/webserver/views/config/postprocessing.mako:1555
 msgid "Season All Banner"
 msgstr "Όλα τα Banner την εποχή"
 
@@ -6149,11 +6153,11 @@ msgstr "Σφάλμα HTTP 404"
 msgid "HTTP Error 500"
 msgstr "Σφάλμα HTTP 500"
 
-#: sickrage/core/webserver/views.py:399
+#: sickrage/core/webserver/views.py:400
 msgid "API Key not generated"
 msgstr "API κλειδί δεν δημιουργείται"
 
-#: sickrage/core/webserver/views.py:403 sickrage/core/webserver/views.py:404
+#: sickrage/core/webserver/views.py:404 sickrage/core/webserver/views.py:405
 msgid "API Builder"
 msgstr "API οικοδόμος"
 
