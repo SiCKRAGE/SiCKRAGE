@@ -5,11 +5,11 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         webpack: {
-          options: {
-            stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-          },
-          prod: webpackConfig,
-          dev: webpackConfig
+            options: {
+                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+            },
+            prod: webpackConfig,
+            dev: webpackConfig
         },
         changelog: {
             release: {
@@ -91,6 +91,7 @@ module.exports = function (grunt) {
                     return 'git log --oneline --pretty=format:%s ' + grunt.config('last_tag') + '..HEAD';
                 },
                 stdout: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout) {
                     const commits = stdout.trim()
                         .replace(/`/gm, '').replace(/^\([\w\d\s,.\-+_/>]+\)\s/gm, '');  // removes ` and tag information
@@ -113,6 +114,7 @@ module.exports = function (grunt) {
                     return 'git flow bugfix start ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -122,6 +124,7 @@ module.exports = function (grunt) {
                     return 'git flow bugfix finish ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -131,6 +134,7 @@ module.exports = function (grunt) {
                     return 'git flow release start ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -140,6 +144,7 @@ module.exports = function (grunt) {
                     return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
