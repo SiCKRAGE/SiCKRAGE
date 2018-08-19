@@ -1020,7 +1020,9 @@ class Home(WebHandler):
         # clear current user to disable header and footer
         self.current_user = None
 
-        if not force: self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
+        if not force:
+            self._genericMessage(_("Restarting"), _("SiCKRAGE is restarting"))
+
         sickrage.app.io_loop.add_timeout(datetime.timedelta(seconds=5), sickrage.app.shutdown, restart=True)
 
         return self.render(
@@ -1030,7 +1032,7 @@ class Home(WebHandler):
             topmenu="system",
             controller='home',
             action="restart",
-        ) if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
+        )# if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
