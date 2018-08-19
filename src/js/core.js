@@ -1,7 +1,6 @@
 import 'bootstrap';
 import 'tablesorter';
 import 'tablesorter/dist/js/widgets/widget-columnSelector.min';
-import 'bootstrap-toggle';
 import 'tooltipster';
 import 'timeago';
 import 'jquery-form';
@@ -467,13 +466,15 @@ $(document).ready(function ($) {
                     }
                 });
 
-                $(".enabler").each(function () {
+                $("input:checkbox.enabler").each(function () {
                     if (!$(this).prop('checked')) {
                         $('#content_' + $(this).attr('id')).hide();
+                    } else {
+                        $('#content_' + $(this).attr('id')).show();
                     }
                 });
 
-                $(".enabler").on('click', function () {
+                $("input:checkbox.enabler").on('click', function () {
                     if ($(this).prop('checked')) {
                         $('#content_' + $(this).attr('id')).fadeIn("fast", "linear");
                     } else {
@@ -3308,7 +3309,7 @@ $(document).ready(function ($) {
                         if ($(this).prop('checked')) {
                             SICKRAGE.config.postprocessing.israr_supported();
                         } else {
-                            $('#unpack').tooltipster('toggle', false);
+                            $('#unpack').tooltipster('close');
                         }
                     });
 
@@ -3382,16 +3383,16 @@ $(document).ready(function ($) {
                     });
 
                     $('#show_naming_key').on('click', function () {
-                        $('#naming_key').toggle();
+                        $('#naming_key').toggleClass('d-none');
                     });
                     $('#show_naming_abd_key').on('click', function () {
-                        $('#naming_abd_key').toggle();
+                        $('#naming_abd_key').toggleClass('d-none');
                     });
                     $('#show_naming_sports_key').on('click', function () {
-                        $('#naming_sports_key').toggle();
+                        $('#naming_sports_key').toggleClass('d-none');
                     });
                     $('#show_naming_anime_key').on('click', function () {
-                        $('#naming_anime_key').toggle();
+                        $('#naming_anime_key').toggleClass('d-none');
                     });
                     $('#do_custom').on('click', function () {
                         $('#naming_pattern').val($('#name_presets :selected').attr('id'));
@@ -3416,7 +3417,9 @@ $(document).ready(function ($) {
                     $('.metadata_checkbox').on('click', function () {
                         SICKRAGE.config.postprocessing.refreshMetadataConfig(false);
                     });
+
                     SICKRAGE.config.postprocessing.refreshMetadataConfig(true);
+
                     $('img[title]').tooltipster({
                         position: {
                             viewport: $(window),
@@ -3424,6 +3427,7 @@ $(document).ready(function ($) {
                             my: 'top right'
                         }
                     });
+
                     $('i[title]').tooltipster({
                         position: {
                             viewport: $(window),
@@ -3431,27 +3435,8 @@ $(document).ready(function ($) {
                             my: 'bottom center'
                         }
                     });
-                    $('.custom-pattern,#unpack').tooltipster({
-                        content: 'validating...',
-                        show: {
-                            event: false,
-                            ready: false
-                        },
-                        hide: false,
-                        position: {
-                            viewport: $(window),
-                            at: 'center left',
-                            my: 'center right'
-                        },
-                        style: {
-                            tip: {
-                                corner: true,
-                                method: 'polygon'
-                            },
-                            classes: 'qtip-rounded qtip-shadow qtip-red'
-                        }
-                    });
 
+                    $('.custom-pattern,#unpack').tooltipster('content', gt('validating...'));
                     $('#tv_download_dir').fileBrowser({title: gt('Select TV Download Directory')});
                     $('#unpack_dir').fileBrowser({title: gt('Select UNPACK Directory')});
                 },
@@ -3467,11 +3452,8 @@ $(document).ready(function ($) {
                 israr_supported: function () {
                     $.get(SICKRAGE.srWebRoot + '/config/postProcessing/isRarSupported', function (data) {
                         if (data !== "supported") {
-                            $('#unpack').tooltipster({
-                                'content': gt('Unrar Executable not found.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#unpack').tooltipster('toggle', true);
+                            $('#unpack').tooltipster('content', gt('Unrar Executable not found.'));
+                            $('#unpack').tooltipster('open');
                             $('#unpack').css('background-color', '#FFFFDD');
                         }
                     });
@@ -3513,25 +3495,16 @@ $(document).ready(function ($) {
                         anime_type: anime_type
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern is invalid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', true);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern is invalid.'));
+                            $('#naming_pattern').tooltipster('open');
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', true);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'));
+                            $('#naming_pattern').tooltipster('open');
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern is valid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-green'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', false);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern is valid.'));
+                            $('#naming_pattern').tooltipster('close');
                             $('#naming_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3557,25 +3530,16 @@ $(document).ready(function ($) {
                         abd: 'True'
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_abd_pattern').tooltipster({
-                                'content': gt('This pattern is invalid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_abd_pattern').tooltipster('toggle', true);
+                            $('#naming_abd_pattern').tooltipster('content', gt('This pattern is invalid.'));
+                            $('#naming_abd_pattern').tooltipster('open');
                             $('#naming_abd_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_abd_pattern').tooltipster({
-                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_abd_pattern').tooltipster('toggle', true);
+                            $('#naming_abd_pattern').tooltipster('content', gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'));
+                            $('#naming_abd_pattern').tooltipster('open');
                             $('#naming_abd_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_abd_pattern').tooltipster({
-                                'content': gt('This pattern is valid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-green'
-                            });
-                            $('#naming_abd_pattern').tooltipster('toggle', false);
+                            $('#naming_abd_pattern').tooltipster('content', gt('This pattern is valid.'));
+                            $('#naming_abd_pattern').tooltipster('close');
                             $('#naming_abd_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3601,25 +3565,16 @@ $(document).ready(function ($) {
                         sports: 'True'
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_sports_pattern').tooltipster({
-                                'content': gt('This pattern is invalid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_sports_pattern').tooltipster('toggle', true);
+                            $('#naming_sports_pattern').tooltipster('content', gt('This pattern is invalid.'));
+                            $('#naming_sports_pattern').tooltipster('open');
                             $('#naming_sports_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_sports_pattern').tooltipster({
-                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_sports_pattern').tooltipster('toggle', true);
+                            $('#naming_sports_pattern').tooltipster('content', gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'));
+                            $('#naming_sports_pattern').tooltipster('open');
                             $('#naming_sports_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_sports_pattern').tooltipster({
-                                'content': gt('This pattern is valid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-green'
-                            });
-                            $('#naming_sports_pattern').tooltipster('toggle', false);
+                            $('#naming_sports_pattern').tooltipster('content', gt('This pattern is valid.'));
+                            $('#naming_sports_pattern').tooltipster('close');
                             $('#naming_sports_pattern').css('background-color', '#FFFFFF');
                         }
                     });
@@ -3661,25 +3616,16 @@ $(document).ready(function ($) {
                         anime_type: anime_type
                     }, function (data) {
                         if (data === "invalid") {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern is invalid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', true);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern is invalid.'));
+                            $('#naming_pattern').tooltipster('open');
                             $('#naming_pattern').css('background-color', '#FFDDDD');
                         } else if (data === "seasonfolders") {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-red'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', true);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern would be invalid without the folders, using it will force "Flatten" off for all shows.'));
+                            //$('#naming_pattern').tooltipster('open');
                             $('#naming_pattern').css('background-color', '#FFFFDD');
                         } else {
-                            $('#naming_pattern').tooltipster({
-                                'content': gt('This pattern is valid.'),
-                                'theme': 'qtip-rounded qtip-shadow qtip-green'
-                            });
-                            $('#naming_pattern').tooltipster('toggle', false);
+                            $('#naming_pattern').tooltipster('content', gt('This pattern is valid.'));
+                            $('#naming_pattern').tooltipster('close');
                             $('#naming_pattern').css('background-color', '#FFFFFF');
                         }
                     });

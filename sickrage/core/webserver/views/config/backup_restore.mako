@@ -69,7 +69,7 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <label for="restore_database">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="restore_database" id="restore_database" checked/>
+                                    <input type="checkbox" class="toggle color-primary is-material" name="restore_database" id="restore_database" checked/>
                                     ${_('Restore database files')}
                                 </label>
                             </div>
@@ -78,7 +78,7 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <label for="restore_config">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="restore_config" id="restore_config" checked/>
+                                    <input type="checkbox" class="toggle color-primary is-material" name="restore_config" id="restore_config" checked/>
                                     ${_('Restore configuration file')}
                                 </label>
                             </div>
@@ -87,7 +87,7 @@
                         <div class="form-row">
                             <div class="col-md-12">
                                 <label for="restore_cache">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="restore_cache" id="restore_cache" checked/>
+                                    <input type="checkbox" class="toggle color-primary is-material" name="restore_cache" id="restore_cache" checked/>
                                     ${_('Restore cache files')}
                                 </label>
                                 <div class="checkbox"></div>

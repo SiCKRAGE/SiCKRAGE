@@ -36,8 +36,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_subtitles">
-                            <input type="checkbox" data-toggle="toggle" data-size="small"
-                                   class="enabler" ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   ${('', ' checked="checked"')[bool(sickrage.app.config.use_subtitles)]}
                                    id="use_subtitles" name="use_subtitles">
                             ${_('Search Subtitles')}
                         </label>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_history">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_history"
+                                <input type="checkbox" class="toggle color-primary is-material" name="subtitles_history"
                                        id="subtitles_history" ${('', 'checked')[bool(sickrage.app.config.subtitles_history)]}/>
                                 ${_('Log downloaded Subtitle on History page?')}
                             </label>
@@ -73,7 +73,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_multi">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_multi"
+                                <input type="checkbox" class="toggle color-primary is-material" name="subtitles_multi"
                                        id="subtitles_multi" ${('', 'checked')[bool(sickrage.app.config.subtitles_multi)]}/>
                                 ${_('Append language codes to subtitle filenames?')}
                             </label>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label class="form-check-label">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="embedded_subtitles_all"
+                                <input type="checkbox" class="toggle color-primary is-material" name="embedded_subtitles_all"
                                        id="embedded_subtitles_all" ${('', 'checked')[bool(sickrage.app.config.embedded_subtitles_all)]}/>
                                 ${_('Ignore subtitles embedded inside video file?')}<br/>
                                 <div class="text-info">
@@ -100,7 +100,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="subtitles_hearing_impaired">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles_hearing_impaired"
+                                <input type="checkbox" class="toggle color-primary is-material" name="subtitles_hearing_impaired"
                                        id="subtitles_hearing_impaired" ${('', 'checked')[bool(sickrage.app.config.subtitles_hearing_impaired)]}/>
                                 ${_('Download hearing impaired style subtitles?')}
                             </label>

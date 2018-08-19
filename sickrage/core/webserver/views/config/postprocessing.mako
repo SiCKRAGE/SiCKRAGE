@@ -34,7 +34,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="process_automatically"
+                            <input type="checkbox" class="toggle color-primary is-material" name="process_automatically"
                                    id="process_automatically" ${('', 'checked')[bool(sickrage.app.config.process_automatically)]}/>
                             ${_('Enable the automatic post processor to scan and process any files in your')}
                             <i>${_('Post Processing Dir')}</i>?<br>
@@ -134,7 +134,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="postpone_if_sync_files">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="postpone_if_sync_files"
+                            <input type="checkbox" class="toggle color-primary is-material" name="postpone_if_sync_files"
                                    id="postpone_if_sync_files" ${('', 'checked')[bool(sickrage.app.config.postpone_if_sync_files)]}/>
                             ${_('Wait to process a folder if sync files are present.')}
                         </label>
@@ -165,7 +165,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="rename_episodes"
+                            <input type="checkbox" class="toggle color-primary is-material" name="rename_episodes"
                                    id="rename_episodes" ${('', 'checked')[bool(sickrage.app.config.rename_episodes)]}/>
                             ${_('Rename episode using the Episode Naming settings?')}
                         </label>
@@ -177,7 +177,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="create_missing_show_dirs">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="create_missing_show_dirs"
+                            <input type="checkbox" class="toggle color-primary is-material" name="create_missing_show_dirs"
                                    id="create_missing_show_dirs" ${('', 'checked')[bool(sickrage.app.config.create_missing_show_dirs)]}/>
                             ${_('Create missing show directories when they get deleted')}
                         </label>
@@ -189,7 +189,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="add_shows_wo_dir">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="add_shows_wo_dir"
+                            <input type="checkbox" class="toggle color-primary is-material" name="add_shows_wo_dir"
                                    id="add_shows_wo_dir" ${('', 'checked')[bool(sickrage.app.config.add_shows_wo_dir)]}/>
                             ${_('Add shows without creating a directory (not recommended)')}
                         </label>
@@ -201,7 +201,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="move_associated_files">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="move_associated_files"
+                            <input type="checkbox" class="toggle color-primary is-material" name="move_associated_files"
                                    id="move_associated_files" ${('', 'checked')[bool(sickrage.app.config.move_associated_files)]}/>
                             ${_('Move srr/srt/sfv/etc files with the episode when processed?')}
                         </label>
@@ -213,7 +213,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="nfo_rename">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="nfo_rename"
+                            <input type="checkbox" class="toggle color-primary is-material" name="nfo_rename"
                                    id="nfo_rename" ${('', 'checked')[bool(sickrage.app.config.nfo_rename)]}/>
                             ${_('Rename the original .nfo file to .nfo-orig to avoid conflicts?')}
                         </label>
@@ -249,7 +249,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="delete_non_associated_files">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="delete_non_associated_files"
+                            <input type="checkbox" class="toggle color-primary is-material" name="delete_non_associated_files"
                                    id="delete_non_associated_files" ${('', 'checked')[bool(sickrage.app.config.delete_non_associated_files)]}/>
                             ${_('delete non associated files while post processing?')}
                         </label>
@@ -261,7 +261,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="airdate_episodes">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="airdate_episodes"
+                            <input type="checkbox" class="toggle color-primary is-material" name="airdate_episodes"
                                    id="airdate_episodes" ${('', 'checked')[bool(sickrage.app.config.airdate_episodes)]}/>
                             ${_('Set last modified filedate to the date that the episode aired?')}<br/>
                             <div class="text-info"><b>${_('NOTE:')}</b> ${_('Some systems may ignore this feature.')}
@@ -296,7 +296,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="unpack">
-                            <input id="unpack" class="enabler" type="checkbox" data-toggle="toggle" data-size="small"
+                            <input id="unpack" type="checkbox" class="enabler toggle color-primary is-material"
                                    name="unpack" ${('', 'checked')[bool(sickrage.app.config.unpack)]} />
                             ${_('Unpack any TV releases in your')} <i>${_('TV Download Dir')}</i>?<br/>
                             <div class="text-info"><b>${_('NOTE:')}</b> ${_('Only works with RAR archives')}</div>
@@ -328,7 +328,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="del_rar_contents">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="del_rar_contents"
+                                <input type="checkbox" class="toggle color-primary is-material" name="del_rar_contents"
                                        id="del_rar_contents" ${('', 'checked')[bool(sickrage.app.config.delrarcontents)]}/>
                                 ${_('Delete content of RAR files, even if Process Method not set to move?')}
                             </label>
@@ -341,7 +341,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="no_delete">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="no_delete"
+                            <input type="checkbox" class="toggle color-primary is-material" name="no_delete"
                                    id="no_delete" ${('', 'checked')[bool(sickrage.app.config.no_delete)]}/>
                             ${_('Leave empty folders when Post Processing?')}<br/>
                             <div class="text-info">
@@ -356,7 +356,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="processor_follow_symlinks">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="processor_follow_symlinks"
+                            <input type="checkbox" class="toggle color-primary is-material" name="processor_follow_symlinks"
                                    id="processor_follow_symlinks" ${('', 'checked')[bool(sickrage.app.config.processor_follow_symlinks)]}/>
                             ${_('Enable only if you know what <b>circular symbolic links</b> are,<br/>'
                             'and can <b>verify that you have none</b>.')}
@@ -368,7 +368,7 @@
                         <label class="component-title">${_('Delete Failed')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input id="delete_failed" type="checkbox" data-toggle="toggle" data-size="small"
+                        <input id="delete_failed" type="checkbox" class="toggle color-primary is-material"
                                name="delete_failed" ${('', 'checked')[bool(sickrage.app.config.delete_failed)]}/>
                         <label for="delete_failed">
                             ${_('Delete files left over from a failed download?')}<br/>
@@ -461,7 +461,7 @@
                         </div>
                     </div>
 
-                    <div id="naming_key" class="nocheck" style="display: none;">
+                    <div id="naming_key" class="nocheck d-none">
                         <table class="table">
                             <thead class="table-secondary text-black-50">
                             <tr>
@@ -665,7 +665,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label>
-                            <input type="checkbox" data-toggle="toggle" data-size="small" id="naming_strip_year"
+                            <input type="checkbox" class="toggle color-primary is-material" id="naming_strip_year"
                                    name="naming_strip_year" ${('', 'checked')[bool(sickrage.app.config.naming_strip_year)]}/>
                             ${_('Remove the TV show\'s year when renaming the file?')}<br/>
                             <div class="text-info">
@@ -681,7 +681,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="naming_custom_abd">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_abd"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" id="naming_custom_abd"
                                    name="naming_custom_abd" ${('', 'checked')[bool(sickrage.app.config.naming_custom_abd)]}/>
                             ${_('Name Air-By-Date shows differently than regular shows?')}
                         </label>
@@ -734,7 +734,7 @@
                             </div>
                         </div>
 
-                        <div id="naming_abd_key" class="nocheck" style="display: none;">
+                        <div id="naming_abd_key" class="nocheck d-none">
                             <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>
@@ -896,7 +896,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="naming_custom_sports">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_sports"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" id="naming_custom_sports"
                                    name="naming_custom_sports" ${('', 'checked')[bool(sickrage.app.config.naming_custom_sports)]}/>
                             ${_('Name Sports shows differently than regular shows?')}
                         </label>
@@ -936,9 +936,8 @@
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <img src="${srWebRoot}/images/legend16.png" width="16" height="16"
-                                             alt="[Toggle Key]" id="show_naming_sports_key"
-                                             title="Toggle Sports Naming Legend" class="legend"/>
+                                        <i class="fas fa-eye" id="show_naming_sports_key"
+                                           title="Toggle Sports Naming Legend"></i>
                                     </div>
                                     <input name="naming_sports_pattern" id="naming_sports_pattern"
                                            value="${sickrage.app.config.naming_sports_pattern}"
@@ -948,7 +947,7 @@
                             </div>
                         </div>
 
-                        <div id="naming_sports_key" class="nocheck" style="display: none;">
+                        <div id="naming_sports_key" class="nocheck d-none">
                             <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>
@@ -1111,7 +1110,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="naming_custom_anime">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" id="naming_custom_anime"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" id="naming_custom_anime"
                                    name="naming_custom_anime" ${('', 'checked')[bool(sickrage.app.config.naming_custom_anime)]}/>
                             ${_('Name Anime shows differently than regular shows?')}
                         </label>
@@ -1168,7 +1167,7 @@
                             </div>
                         </div>
 
-                        <div id="naming_anime_key" class="nocheck" style="display: none;">
+                        <div id="naming_anime_key" class="nocheck d-none">
                             <table class="table">
                                 <thead class="table-secondary text-black-50">
                                 <tr>

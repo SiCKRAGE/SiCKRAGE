@@ -27,8 +27,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="randomize_providers">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="randomize_providers" id="randomize_providers"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.randomize_providers)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="randomize_providers" id="randomize_providers"
+                                   ${('', 'checked')[bool(sickrage.app.config.randomize_providers)]}/>
                             ${_('randomize the provider search order')}
                         </label>
                     </div>
@@ -39,8 +39,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="download_propers">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="download_propers" id="download_propers"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.download_propers)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="download_propers" id="download_propers"
+                                   ${('', 'checked')[bool(sickrage.app.config.download_propers)]}/>
                             ${_('replace original download with "Proper" or "Repack" if nuked')}
                         </label>
                     </div>
@@ -51,8 +51,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="enable_rss_cache">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="enable_rss_cache" id="enable_rss_cache"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_rss_cache" id="enable_rss_cache"
+                                   ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache)]}/>
                             ${_('enables/disables provider RSS feed caching')}
                         </label>
                     </div>
@@ -63,8 +63,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="enable_rss_cache_valid_shows">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="enable_rss_cache_valid_shows" id="enable_rss_cache_valid_shows"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache_valid_shows)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_rss_cache_valid_shows" id="enable_rss_cache_valid_shows"
+                                   ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache_valid_shows)]}/>
                             ${_('enables/disables caching of shows already added to SiCKRAGE, speeds up searches')}
                         </label>
                     </div>
@@ -76,9 +76,9 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="download_unverified_magnet_link">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="download_unverified_magnet_link"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="download_unverified_magnet_link"
                                    id="download_unverified_magnet_link"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.download_unverified_magnet_link)]}/>
+                                   ${('', 'checked')[bool(sickrage.app.config.download_unverified_magnet_link)]}/>
                             ${_('enables/disables downloading of unverified torrent magnet links via clients')}
                         </label>
                     </div>
@@ -90,8 +90,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="torrent_file_to_magnet">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="torrent_file_to_magnet" id="torrent_file_to_magnet"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.torrent_file_to_magnet)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="torrent_file_to_magnet" id="torrent_file_to_magnet"
+                                   ${('', 'checked')[bool(sickrage.app.config.torrent_file_to_magnet)]}/>
                             ${_('enables/disables converting of public torrent provider file links to magnetic links')}
                         </label>
                     </div>
@@ -103,8 +103,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_failed_snatcher">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="use_failed_snatcher" id="use_failed_snatcher"
-                                   class="enabler" ${('', 'checked')[bool(sickrage.app.config.use_failed_snatcher)]}/>
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_failed_snatcher" id="use_failed_snatcher"
+                                   ${('', 'checked')[bool(sickrage.app.config.use_failed_snatcher)]}/>
                             ${_('enables/disables failed snatch handling, automatically retries failed snatches')}
                         </label>
                     </div>
@@ -294,7 +294,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="allow_high_priority">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="allow_high_priority"
+                            <input type="checkbox" class="toggle color-primary is-material" name="allow_high_priority"
                                    id="allow_high_priority" ${('', 'checked')[bool(sickrage.app.config.allow_high_priority)]}/>
                             ${_('Set downloads of recently aired episodes to high priority')}
                         </label>
@@ -328,7 +328,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_nzbs">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="use_nzbs" class="enabler" title="Enable NZB searches"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_nzbs" title="Enable NZB searches"
                                    id="use_nzbs" ${('', 'checked')[bool(sickrage.app.config.use_nzbs)]}/>
                             ${_('enable NZB searches')}
                         </label>
@@ -528,7 +528,7 @@
                                 </div>
                                 <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                     <label for="sab_forced">
-                                        <input type="checkbox" data-toggle="toggle" data-size="small" name="sab_forced" class="enabler"
+                                        <input type="checkbox" class="enabler toggle color-primary is-material" name="sab_forced"
                                                id="sab_forced" ${('', 'selected')[bool(sickrage.app.config.sab_forced)]}/>
                                         ${_('enable to change priority from HIGH to FORCED')}
                                     </label>
@@ -544,7 +544,7 @@
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <label for="nzbget_use_https">
-                                    <input id="nzbget_use_https" type="checkbox" data-toggle="toggle" data-size="small" class="enabler"
+                                    <input id="nzbget_use_https" type="checkbox" class="enabler toggle color-primary is-material"
                                            name="nzbget_use_https" ${('', 'selected')[bool(sickrage.app.config.nzbget_use_https)]}/>
                                     ${_('enable secure control')}
                                 </label>
@@ -755,7 +755,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_torrents">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" name="use_torrents" class="enabler"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_torrents"
                                    id="use_torrents" ${('', 'checked')[bool(sickrage.app.config.use_torrents)]}/>
                             ${_('Enable torrent searches')}
                         </label>
@@ -874,7 +874,7 @@
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <label for="torrent_verify_cert">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="torrent_verify_cert" class="enabler"
+                                    <input type="checkbox" class="enabler toggle color-primary is-material" name="torrent_verify_cert"
                                            id="torrent_verify_cert" ${('', 'checked')[bool(sickrage.app.config.torrent_verify_cert)]}/>
                                     <p id="torrent_verify_deluge">
                                         ${_('disable if you get "Deluge: Authentication Error" in your log')}
@@ -1003,7 +1003,7 @@
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <label for="torrent_paused">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="torrent_paused" class="enabler"
+                                    <input type="checkbox" class="enabler toggle color-primary is-material" name="torrent_paused"
                                            id="torrent_paused" ${('', 'checked')[bool(sickrage.app.config.torrent_paused)]}/>
                                     ${_('add .torrent to client but do <b>not</b> start downloading')}
                                 </label>
@@ -1016,7 +1016,7 @@
                             </div>
                             <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                                 <label for="torrent_high_bandwidth">
-                                    <input type="checkbox" data-toggle="toggle" data-size="small" name="torrent_high_bandwidth" class="enabler"
+                                    <input type="checkbox" class="enabler toggle color-primary is-material" name="torrent_high_bandwidth"
                                            id="torrent_high_bandwidth" ${('', 'checked')[bool(sickrage.app.config.torrent_high_bandwidth)]}/>
                                     ${_('use high bandwidth allocation if priority is high')}
                                 </label>

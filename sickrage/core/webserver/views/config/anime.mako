@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="use_anidb">
-                            <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" name="use_anidb"
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_anidb"
                                    id="use_anidb" ${('', 'checked')[bool(sickrage.app.config.use_anidb)]} />
                             ${_('Enable AniDB')}
                         </label>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                             <label for="anidb_use_mylist">
-                                <input type="checkbox" data-toggle="toggle" data-size="small" name="anidb_use_mylist"
+                                <input type="checkbox" class="toggle color-primary is-material" name="anidb_use_mylist"
                                        id="anidb_use_mylist" ${('', 'checked')[bool(sickrage.app.config.anidb_use_mylist)]}/>
                                 ${_('Do you want to add the PostProcessed Episodes to the MyList ?')}
                             </label>
@@ -110,7 +110,7 @@
                         <label class="component-title">${_('Split show lists')}</label>
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <input type="checkbox" data-toggle="toggle" data-size="small" class="enabler" name="split_home"
+                        <input type="checkbox" class="enabler toggle color-primary is-material" name="split_home"
                                id="split_home" ${('', 'checked')[bool(sickrage.app.config.anime_split_home)]}/>
                         <label for="split_home">
                             ${_('Separate anime and normal shows in groups')}

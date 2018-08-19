@@ -11,7 +11,7 @@
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
-                <input type="checkbox" data-toggle="toggle" data-size="small" name="subtitles"
+                <input type="checkbox" class="toggle color-primary is-material" name="subtitles"
                        id="subtitles" ${('', 'checked')[bool(sickrage.app.config.subtitles_default)]} />
             </label>
         </div>
@@ -23,7 +23,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input class="cb" type="checkbox" data-toggle="toggle" data-size="small" name="flatten_folders"
+            <input class="cb" type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
                    id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.flatten_folders_default)]}/>
         </label>
     </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
             <label>
-                <input type="checkbox" data-toggle="toggle" data-size="small" name="anime"
+                <input type="checkbox" class="toggle color-primary is-material" name="anime"
                        id="anime" ${('', 'checked')[bool(sickrage.app.config.anime_default)]} />
             </label>
         </div>
@@ -47,7 +47,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input type="checkbox" data-toggle="toggle" data-size="small" name="scene"
+            <input type="checkbox" class="toggle color-primary is-material" name="scene"
                    id="scene" ${('', 'checked')[bool(sickrage.app.config.scene_default)]} />
         </label>
     </div>
@@ -58,7 +58,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input type="checkbox" data-toggle="toggle" data-size="small" name="skip_downloaded"
+            <input type="checkbox" class="toggle color-primary is-material" name="skip_downloaded"
                    id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
         </label>
     </div>
