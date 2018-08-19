@@ -1102,29 +1102,29 @@ class Home(WebHandler):
 
         show_message = ''
 
-        if sickrage.app.show_queue.isBeingAdded(showObj):
+        if sickrage.app.show_queue.is_being_added(showObj):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.app.show_queue.isBeingUpdated(showObj):
+        elif sickrage.app.show_queue.is_being_updated(showObj):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.app.show_queue.isBeingRefreshed(showObj):
+        elif sickrage.app.show_queue.is_being_refreshed(showObj):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.app.show_queue.isBeingSubtitled(showObj):
+        elif sickrage.app.show_queue.is_being_subtitled(showObj):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.isInRefreshQueue(showObj):
+        elif sickrage.app.show_queue.is_in_refresh_queue(showObj):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.isInUpdateQueue(showObj):
+        elif sickrage.app.show_queue.is_in_update_queue(showObj):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.isInSubtitleQueue(showObj):
+        elif sickrage.app.show_queue.is_in_subtitle_queue(showObj):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.app.show_queue.isBeingAdded(showObj):
-            if not sickrage.app.show_queue.isBeingUpdated(showObj):
+        if not sickrage.app.show_queue.is_being_added(showObj):
+            if not sickrage.app.show_queue.is_being_updated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
                                     'icon': 'fas fa-play'})
@@ -1148,7 +1148,7 @@ class Home(WebHandler):
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
                                 'icon': 'fas fa-tag'})
 
-                if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.isBeingSubtitled(
+                if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.is_being_subtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,

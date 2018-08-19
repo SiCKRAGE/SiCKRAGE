@@ -111,7 +111,7 @@
             <div id="${('container', 'container-anime')[curListType == 'Anime' and sickrage.app.config.home_layout == 'poster']}"
                  class="show-grid clearfix mx-auto d-none">
                 <div class="posterview">
-                    % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
+                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
                         % if not curLoadingShow.show:
                             <div class="show-container" data-name="0" data-date="010101" data-network="0"
                                  data-progress="101">
@@ -296,9 +296,9 @@
                             </tr>
                             </thead>
 
-                            % if sickrage.app.show_queue.loadingShowList:
+                            % if sickrage.app.show_queue.loading_show_list:
                                 <tbody>
-                                    % for curLoadingShow in sickrage.app.show_queue.loadingShowList:
+                                    % for curLoadingShow in sickrage.app.show_queue.loading_show_list:
                                         % if not curLoadingShow.show or curLoadingShow.show not in sickrage.app.showlist:
                                             <tr>
                                                 <td class="table-fit">(${_('loading')})</td>
