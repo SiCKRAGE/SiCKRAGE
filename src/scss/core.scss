@@ -239,6 +239,11 @@ span.snatched b {
   display: none;
 }
 
+input[type=checkbox].toggle {
+  border-color: darkgrey;
+  background-color: darkgrey;
+}
+
 // Stepper
 .sickrage-stepper {
   .stepwizard-step p {
@@ -326,9 +331,9 @@ span.snatched b {
   }
 
   .table-fit {
+    @extend .text-center;
     white-space: nowrap;
     width: 1%;
-    @extend .text-center;
   }
 }
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * acffb62 - 2018-08-18: Pre-Release v9.3.56.dev27 
+- * 4de0cac - 2018-08-18: Pre-Release v9.3.56.dev28 
+- * 10de224 - 2018-08-18: Pre-Release v9.3.56.dev27 
 - * 8efa7cb - 2018-08-18: Fixed broken toggle buttons 
 - * e27a959 - 2018-08-18: Fixed gaierror&#x27;s for ssdp Fixed WebHandler routing errors 
 - * c60cbb3 - 2018-08-17: Pre-Release v9.3.56.dev26 

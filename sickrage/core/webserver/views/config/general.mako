@@ -1313,7 +1313,7 @@
                                     % if not git_branch:
                                         <input class="btn btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch" disabled>
-                                        <label for="branchCheckout">${_('Error: No branches found.')}</label>>
+                                        <label for="branchCheckout">${_('Error: No branches found.')}</label>
                                     % else:
                                         <input class="btn btn-inline" type="button" id="branchCheckout"
                                                value="Checkout Branch">

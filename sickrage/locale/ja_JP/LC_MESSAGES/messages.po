@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-18 19:15-0700\n"
-"PO-Revision-Date: 2018-08-19 02:16\n"
+"POT-Creation-Date: 2018-08-18 22:52-0700\n"
+"PO-Revision-Date: 2018-08-19 05:53\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -325,15 +325,15 @@ msgstr "復元するバックアップ ファイルを選択します。"
 msgid "No providers available to configure."
 msgstr "構成する使用可能なプロバイダーがありません。"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5380
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5374
 msgid "Mass Delete"
 msgstr "一括削除します。"
 
-#: src/js/core.js:5381
+#: src/js/core.js:5375
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "ショーの詳細を削除するを選択しました。 続行するよろしいですか。すべてのファイルは、あなたのシステムから削除されます。"
 
-#: src/js/core.js:5458
+#: src/js/core.js:5452
 msgid "DELETED"
 msgstr ""
 

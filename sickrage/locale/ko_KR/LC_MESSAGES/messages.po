@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-18 19:15-0700\n"
-"PO-Revision-Date: 2018-08-19 02:16\n"
+"POT-Creation-Date: 2018-08-18 22:52-0700\n"
+"PO-Revision-Date: 2018-08-19 05:53\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -325,15 +325,15 @@ msgstr "복원할 백업 파일 선택"
 msgid "No providers available to configure."
 msgstr "제공 업체 구성할입니다."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5380
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5374
 msgid "Mass Delete"
 msgstr "대량 삭제"
 
-#: src/js/core.js:5381
+#: src/js/core.js:5375
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) 삭제을 선택 했습니다.  당신은 계속 하 시겠습니까? 모든 파일 시스템에서 제거 됩니다."
 
-#: src/js/core.js:5458
+#: src/js/core.js:5452
 msgid "DELETED"
 msgstr ""
 

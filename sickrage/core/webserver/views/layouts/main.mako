@@ -79,11 +79,11 @@
             if numCombined:
                 toolsBadgeClass = ''
                 if numErrors:
-                    toolsBadgeClass = ' btn-danger'
+                    toolsBadgeClass = 'badge-danger'
                 elif numWarnings:
-                    toolsBadgeClass = ' btn-warning'
+                    toolsBadgeClass = 'badge-warning'
 
-                toolsBadge = ' <span class="badge'+toolsBadgeClass+'">'+str(numCombined)+'</span>'
+                toolsBadge = '<span class="badge badge-pill ' + toolsBadgeClass + '" style="float:right;margin-bottom:-10px;">' + str(numCombined) + '</span>'
             else:
                 toolsBadge = ''
         %>

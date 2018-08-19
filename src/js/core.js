@@ -5155,13 +5155,7 @@ $(document).ready(function ($) {
                         9: {sorter: 'paused'},
                         10: {sorter: 'subtitle'},
                         11: {sorter: 'default_ep_status'},
-                        12: {sorter: 'status'},
-                        13: {sorter: false},
-                        14: {sorter: false},
-                        15: {sorter: false},
-                        16: {sorter: false},
-                        17: {sorter: false},
-                        18: {sorter: false}
+                        12: {sorter: 'status'}
                     }
                 });
 

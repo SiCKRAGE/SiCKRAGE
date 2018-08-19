@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-18 19:15-0700\n"
-"PO-Revision-Date: 2018-08-19 02:16\n"
+"POT-Creation-Date: 2018-08-18 22:52-0700\n"
+"PO-Revision-Date: 2018-08-19 05:53\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Norwegian\n"
 "MIME-Version: 1.0\n"
@@ -325,15 +325,15 @@ msgstr "Velg sikkerhetskopifiler for gjenoppretting"
 msgid "No providers available to configure."
 msgstr "Ingen leverandører tilgjengelig for å konfigurere."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5380
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5374
 msgid "Mass Delete"
 msgstr "Masseslette"
 
-#: src/js/core.js:5381
+#: src/js/core.js:5375
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Du har valgt for å slette show (s).  Er du sikker på at du vil fortsette? Alle filer fjernes fra systemet."
 
-#: src/js/core.js:5458
+#: src/js/core.js:5452
 msgid "DELETED"
 msgstr ""
 

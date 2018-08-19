@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.56.dev27\n"
+"Project-Id-Version: sickrage 9.3.56.dev28\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-18 19:15-0700\n"
+"POT-Creation-Date: 2018-08-18 22:52-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -327,17 +327,17 @@ msgstr ""
 msgid "No providers available to configure."
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5380
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5374
 msgid "Mass Delete"
 msgstr ""
 
-#: src/js/core.js:5381
+#: src/js/core.js:5375
 msgid ""
 "You have selected to delete  show(s).  Are you sure you wish to continue? All"
 " files will be removed from your system."
 msgstr ""
 
-#: src/js/core.js:5458
+#: src/js/core.js:5452
 msgid "DELETED"
 msgstr ""
 

@@ -91,10 +91,8 @@
                                             <td class="tvShow">
                                                 <a href="${srWebRoot}/home/displayShow?show=${curShow.indexerid}">${curShow.name}</a>
                                             </td>
-                                            <td class="table-fit">
-                                                <div class="text-left">
-                                                    ${curShow.location}
-                                                </div>
+                                            <td>
+                                                ${curShow.location}
                                             </td>
                                             <td class="table-fit">${renderQualityPill(curShow.quality, showTitle=True)}</td>
                                             <td class="table-fit">
