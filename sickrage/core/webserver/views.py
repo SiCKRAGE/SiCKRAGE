@@ -60,12 +60,11 @@ from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertai
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
-    clean_hosts, overall_stats
+    clean_hosts, app_statistics
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.imdb_popular import imdbPopular
-from sickrage.core.media.util import indexerImage
 from sickrage.core.nameparser import validator
 from sickrage.core.queues.search import BacklogQueueItem, FailedQueueItem, \
     MANUAL_SEARCH_HISTORY, ManualSearchQueueItem
@@ -73,7 +72,7 @@ from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_ex
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
-    get_xem_numbering_for_show, set_scene_numbering, xem_refresh
+    get_xem_numbering_for_show, set_scene_numbering
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -170,6 +169,8 @@ class BaseHandler(RequestHandler):
             'srThemeName': sickrage.app.config.theme_name,
             'srDefaultPage': sickrage.app.config.default_page,
             'srWebRoot': sickrage.app.config.web_root,
+            'srLocale': self.get_user_locale().code,
+            'srLocaleDir': sickrage.LOCALE_DIR,
             'numErrors': len(ErrorViewer.errors),
             'numWarnings': len(WarningViewer.errors),
             'srStartTime': self.startTime,
@@ -227,7 +228,8 @@ class WebHandler(BaseHandler):
 
         if method:
             result = yield self.route(method, **self.request.arguments)
-            self.finish(result)
+            if self.request.method == 'GET' or result:
+                self.finish(result)
 
     def _genericMessage(self, subject, message):
         return self.render(
@@ -251,11 +253,12 @@ class LoginHandler(BaseHandler):
         if code:
             try:
                 API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
+                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+
                 API().register_appid(sickrage.app.config.app_id)
 
-                self.set_secure_cookie('sr_user', json_encode(user), expires_days=30)
-                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
+                self.set_secure_cookie('sr_user', json_encode(user))
             except Exception as e:
                 return self.redirect('/logout')
 
@@ -359,20 +362,20 @@ class WebRoot(WebHandler):
         super(WebRoot, self).__init__(*args, **kwargs)
 
     def index(self):
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def robots_txt(self):
         """ Keep web crawlers out """
         self.set_header('Content-Type', 'text/plain')
         return "User-agent: *\nDisallow: /"
 
-    def messages_json(self):
-        """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.json """
-        locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.json')
-        if os.path.isfile(locale_file):
-            self.set_header('Content-Type', 'application/json')
-            with io.open(locale_file, 'r', encoding='utf8') as f:
-                return f.read()
+    def messages_po(self):
+        """ Get /sickrage/locale/{lang_code}/LC_MESSAGES/messages.po """
+        if sickrage.app.config.gui_lang:
+            locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.po')
+            if os.path.isfile(locale_file):
+                with io.open(locale_file, 'r', encoding='utf8') as f:
+                    return f.read()
 
     def apibuilder(self):
         def titler(x):
@@ -503,12 +506,13 @@ class WebRoot(WebHandler):
             action='schedule'
         )
 
-    def getIndexerImage(self, indexerid):
-        return indexerImage(id=indexerid, which="poster_thumb")
-
     def unlink(self):
         API().unregister_appid(sickrage.app.config.app_id)
         return self.redirect('/logout/')
+
+    def quicksearch_json(self, term):
+        return json_encode(
+            sickrage.app.quicksearch_cache.get_shows(term) + sickrage.app.quicksearch_cache.get_episodes(term))
 
 
 @Route('/ui(/?.*)')
@@ -534,8 +538,7 @@ class UI(WebHandler):
                 'type': cur_notification.type
             }
 
-        if messages:
-            return json_encode(messages)
+        return json_encode(messages)
 
 
 @Route('/browser(/?.*)')
@@ -599,63 +602,19 @@ class Home(WebHandler):
         else:
             showlists['Shows'] = sickrage.app.showlist
 
-        show_stats = self.show_statistics()
+        app_stats = app_statistics()
         return self.render(
             "/home/index.mako",
             title="Home",
             header="Show List",
             topmenu="home",
             showlists=showlists,
-            show_stat=show_stats[0],
-            max_download_count=show_stats[1],
-            overall_stats=overall_stats(),
+            show_stat=app_stats[0],
+            overall_stats=app_stats[1],
+            max_download_count=app_stats[2],
             controller='home',
             action='index'
         )
-
-    @staticmethod
-    def show_statistics():
-        show_stat = {}
-
-        today = datetime.date.today().toordinal()
-
-        status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
-        status_download = Quality.DOWNLOADED + Quality.ARCHIVED
-
-        max_download_count = 1000
-
-        for epData in sickrage.app.main_db.all('tv_episodes'):
-            showid = epData['showid']
-            if showid not in show_stat:
-                show_stat[showid] = {}
-                show_stat[showid]['ep_snatched'] = 0
-                show_stat[showid]['ep_downloaded'] = 0
-                show_stat[showid]['ep_total'] = 0
-                show_stat[showid]['ep_airs_next'] = None
-                show_stat[showid]['ep_airs_prev'] = None
-
-            season = epData['season']
-            episode = epData['episode']
-            airdate = epData['airdate']
-            status = epData['status']
-
-            if season > 0 and episode > 0 and airdate > 1:
-                if status in status_quality: show_stat[showid]['ep_snatched'] += 1
-                if status in status_download: show_stat[showid]['ep_downloaded'] += 1
-                if (airdate <= today and status in [SKIPPED, WANTED, FAILED]
-                ) or (status in status_quality + status_download): show_stat[showid]['ep_total'] += 1
-
-                if show_stat[showid]['ep_total'] > max_download_count:
-                    max_download_count = show_stat[showid]['ep_total']
-
-                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
-                    show_stat[showid]['ep_airs_next'] = airdate
-                elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
-                    show_stat[showid]['ep_airs_prev'] = airdate
-
-        max_download_count *= 100
-
-        return show_stat, max_download_count
 
     def is_alive(self, *args, **kwargs):
         self.set_header('Content-Type', 'text/javascript')
@@ -1049,14 +1008,14 @@ class Home(WebHandler):
 
     def shutdown(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         self._genericMessage(_("Shutting down"), _("SiCKRAGE is shutting down"))
         sickrage.app.shutdown()
 
     def restart(self, pid=None, force=False):
         if str(pid) != str(sickrage.app.pid) and not force:
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         # clear current user to disable header and footer
         self.current_user = None
@@ -1075,17 +1034,17 @@ class Home(WebHandler):
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         # check for new app updates
         if not sickrage.app.version_updater.check_for_new_version(True):
             sickrage.app.alerts.message(_('No new updates!'))
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def update(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         if sickrage.app.version_updater.update():
             sickrage.app.newest_version_string = None
@@ -1093,7 +1052,7 @@ class Home(WebHandler):
         else:
             self._genericMessage(_("Update Failed"),
                                  _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect('/' + sickrage.app.config.default_page + '/')
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1108,7 +1067,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def branchCheckout(self, branch):
         if branch and sickrage.app.version_updater.updater.current_branch != branch:
@@ -1119,7 +1078,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Already on branch: '), branch)
 
-        return self.redirect('/' + sickrage.app.config.default_page + '/')
+        return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
     def displayShow(self, show=None):
         if show is None:
@@ -1137,63 +1096,63 @@ class Home(WebHandler):
 
         submenu = [
             {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
-             'icon': 'ui-icon ui-icon-pencil'}]
+             'icon': 'fas fa-edit'}]
 
         showLoc = showObj.location
 
         show_message = ''
 
-        if sickrage.app.show_queue.isBeingAdded(showObj):
+        if sickrage.app.show_queue.is_being_added(showObj):
             show_message = _('This show is in the process of being downloaded - the info below is incomplete.')
 
-        elif sickrage.app.show_queue.isBeingUpdated(showObj):
+        elif sickrage.app.show_queue.is_being_updated(showObj):
             show_message = _('The information on this page is in the process of being updated.')
 
-        elif sickrage.app.show_queue.isBeingRefreshed(showObj):
+        elif sickrage.app.show_queue.is_being_refreshed(showObj):
             show_message = _('The episodes below are currently being refreshed from disk')
 
-        elif sickrage.app.show_queue.isBeingSubtitled(showObj):
+        elif sickrage.app.show_queue.is_being_subtitled(showObj):
             show_message = _('Currently downloading subtitles for this show')
 
-        elif sickrage.app.show_queue.isInRefreshQueue(showObj):
+        elif sickrage.app.show_queue.is_in_refresh_queue(showObj):
             show_message = _('This show is queued to be refreshed.')
 
-        elif sickrage.app.show_queue.isInUpdateQueue(showObj):
+        elif sickrage.app.show_queue.is_in_update_queue(showObj):
             show_message = _('This show is queued and awaiting an update.')
 
-        elif sickrage.app.show_queue.isInSubtitleQueue(showObj):
+        elif sickrage.app.show_queue.is_in_subtitle_queue(showObj):
             show_message = _('This show is queued and awaiting subtitles download.')
 
-        if not sickrage.app.show_queue.isBeingAdded(showObj):
-            if not sickrage.app.show_queue.isBeingUpdated(showObj):
+        if not sickrage.app.show_queue.is_being_added(showObj):
+            if not sickrage.app.show_queue.is_being_updated(showObj):
                 if showObj.paused:
                     submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'ui-icon ui-icon-play'})
+                                    'icon': 'fas fa-play'})
                 else:
                     submenu.append({'title': _('Pause'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'ui-icon ui-icon-pause'})
+                                    'icon': 'fas fa-pause'})
 
                 submenu.append({'title': _('Remove'), 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
-                                'class': 'removeshow', 'confirm': True, 'icon': 'ui-icon ui-icon-trash'})
+                                'class': 'removeshow', 'confirm': True, 'icon': 'fas fa-trash'})
                 submenu.append({'title': _('Re-scan files'), 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-refresh'})
+                                'icon': 'fas fa-compass'})
                 submenu.append({'title': _('Full Update'),
                                 'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-transfer-e-w'})
+                                'icon': 'fas fa-sync'})
                 submenu.append(
                     {'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
-                     'requires': self.haveKODI(), 'icon': 'submenu-icon-kodi'})
+                     'requires': self.haveKODI(), 'icon': 'fas fa-tv'})
                 submenu.append(
                     {'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
-                     'requires': self.haveEMBY(), 'icon': 'ui-icon ui-icon-refresh'})
+                     'requires': self.haveEMBY(), 'icon': 'fas fa-tv'})
                 submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
-                                'icon': 'ui-icon ui-icon-tag'})
+                                'icon': 'fas fa-tag'})
 
-                if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.isBeingSubtitled(
+                if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.is_being_subtitled(
                         showObj) and showObj.subtitles:
                     submenu.append(
                         {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
-                         'icon': 'ui-icon ui-icon-comment'})
+                         'icon': 'fas fa-comment'})
 
         epCats = {}
         epCounts = {
@@ -1503,12 +1462,12 @@ class Home(WebHandler):
             except CantUpdateShowException as e:
                 errors.append(_("Unable to force an update on scene exceptions of the show."))
 
-        if do_update_scene_numbering:
-            try:
-                xem_refresh(showObj.indexerid, showObj.indexer)
-                time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
-            except CantUpdateShowException as e:
-                errors.append(_("Unable to force an update on scene numbering of the show."))
+        # if do_update_scene_numbering:
+        #     try:
+        #         xem_refresh(showObj.indexerid, showObj.indexer)
+        #         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+        #     except CantUpdateShowException as e:
+        #         errors.append(_("Unable to force an update on scene numbering of the show."))
 
         if directCall:
             return map(str, errors)
@@ -3660,16 +3619,16 @@ class Config(WebHandler):
     @staticmethod
     def ConfigMenu():
         menu = [
-            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fa fa-info'},
-            {'title': _('General'), 'path': '/config/general/', 'icon': 'fa fa-cogs'},
-            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fa fa-upload'},
-            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fa fa-binoculars'},
-            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fa fa-share-alt'},
-            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fa fa-cc'},
-            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fa fa-wrench'},
-            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fa fa-refresh'},
-            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fa fa-bell'},
-            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fa fa-eye'},
+            {'title': _('Help and Info'), 'path': '/config/', 'icon': 'fas fa-info'},
+            {'title': _('General'), 'path': '/config/general/', 'icon': 'fas fa-cogs'},
+            {'title': _('Backup/Restore'), 'path': '/config/backuprestore/', 'icon': 'fas fa-upload'},
+            {'title': _('Search Clients'), 'path': '/config/search/', 'icon': 'fas fa-binoculars'},
+            {'title': _('Search Providers'), 'path': '/config/providers/', 'icon': 'fas fa-share-alt'},
+            {'title': _('Subtitles Settings'), 'path': '/config/subtitles/', 'icon': 'fas fa-cc'},
+            {'title': _('Quality Settings'), 'path': '/config/qualitySettings/', 'icon': 'fas fa-wrench'},
+            {'title': _('Post Processing'), 'path': '/config/postProcessing/', 'icon': 'fas fa-refresh'},
+            {'title': _('Notifications'), 'path': '/config/notifications/', 'icon': 'fas fa-bell'},
+            {'title': _('Anime'), 'path': '/config/anime/', 'icon': 'fas fa-eye'},
         ]
 
         return menu
@@ -3820,7 +3779,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
 
-        sickrage.app.config.change_web_external_port(web_external_port)
+        # sickrage.app.config.change_web_external_port(web_external_port)
 
         if date_preset:
             sickrage.app.config.date_preset = date_preset
@@ -4731,34 +4690,37 @@ class ConfigSubtitles(Config):
             action='subtitles'
         )
 
-    def get_code(self, q=None):
-        codes = [{"value": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+    def get_code(self, q=None, **kwargs):
+        codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 
         codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
 
         return json_encode(codes)
 
-    def saveSubtitles(self, use_subtitles=None, subtitles_plugins=None, subtitles_languages=None, subtitles_dir=None,
-                      service_order=None, subtitles_history=None, subtitles_finder_frequency=None,
-                      subtitles_multi=None, embedded_subtitles_all=None, subtitles_extra_scripts=None,
-                      subtitles_hearing_impaired=None, itasa_user=None, itasa_pass=None,
+    def wanted_languages(self):
+        codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
+                 sickrage.subtitles.subtitle_code_filter()]
+
+        codes = filter(lambda code: code['id'] in sickrage.subtitles.wanted_languages(), codes)
+
+        return json_encode(codes)
+
+    def saveSubtitles(self, use_subtitles=None, subtitles_dir=None, service_order=None, subtitles_history=None,
+                      subtitles_finder_frequency=None, subtitles_multi=None, embedded_subtitles_all=None,
+                      subtitles_extra_scripts=None, subtitles_hearing_impaired=None, itasa_user=None, itasa_pass=None,
                       addic7ed_user=None, addic7ed_pass=None, legendastv_user=None, legendastv_pass=None,
-                      opensubtitles_user=None, opensubtitles_pass=None):
+                      opensubtitles_user=None, opensubtitles_pass=None, **kwargs):
 
         results = []
 
         sickrage.app.config.change_subtitle_searcher_freq(subtitles_finder_frequency)
         sickrage.app.config.use_subtitles = checkbox_to_value(use_subtitles)
-
-        sickrage.app.config.subtitles_languages = [code.strip() for code in subtitles_languages.split(',') if
-                                                   code.strip() in sickrage.subtitles.subtitle_code_filter()] if subtitles_languages else []
+        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
         sickrage.app.config.subtitles_dir = subtitles_dir
         sickrage.app.config.subtitles_history = checkbox_to_value(subtitles_history)
-        sickrage.app.config.embedded_subtitles_all = checkbox_to_value(
-            embedded_subtitles_all)
-        sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(
-            subtitles_hearing_impaired)
+        sickrage.app.config.embedded_subtitles_all = checkbox_to_value(embedded_subtitles_all)
+        sickrage.app.config.subtitles_hearing_impaired = checkbox_to_value(subtitles_hearing_impaired)
         sickrage.app.config.subtitles_multi = checkbox_to_value(subtitles_multi)
         sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if
                                                        x.strip()]

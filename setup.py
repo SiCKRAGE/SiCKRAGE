@@ -76,7 +76,7 @@ setup(
         'sickrage': [
             ('**.py', 'python', None)
         ],
-        'dist': [
+        'src': [
             ('**/js/*.min.js', 'ignore', None),
             ('**/js/*.js', 'javascript', {'input_encoding': 'utf-8'})
         ],

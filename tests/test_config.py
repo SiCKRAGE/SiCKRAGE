@@ -22,11 +22,11 @@ from __future__ import print_function, unicode_literals
 import unittest
 from collections import namedtuple
 
+import tests
 from sickrage.core.helpers import clean_url
-from tests import SiCKRAGETestCase
 
 
-class ConfigTestBasic(SiCKRAGETestCase):
+class ConfigTestBasic(tests.SiCKRAGETestCase):
     """Test basic methods."""
 
     def test_clean_url(self):

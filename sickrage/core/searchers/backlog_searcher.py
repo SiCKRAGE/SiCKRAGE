@@ -24,6 +24,7 @@ import threading
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
 from sickrage.core.queues.search import BacklogQueueItem
+from sickrage.core.searchers import new_episode_finder
 
 
 class BacklogSearcher(object):
@@ -84,6 +85,9 @@ class BacklogSearcher(object):
             from_date = datetime.date.today() - datetime.timedelta(days=sickrage.app.config.backlog_days)
         else:
             sickrage.app.log.info('Running full backlog search on missed episodes for selected shows')
+
+        # find new released episodes and update their statuses
+        new_episode_finder()
 
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:

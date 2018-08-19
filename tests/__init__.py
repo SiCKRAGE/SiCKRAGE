@@ -21,13 +21,12 @@ from __future__ import print_function, unicode_literals
 import gettext
 import io
 import os
+import os.path
 import shutil
 import site
 import sys
 import threading
 import unittest
-
-import os.path
 
 PROG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'sickrage'))
 if not (PROG_DIR in sys.path):
@@ -63,6 +62,7 @@ class SiCKRAGETestCase(unittest.TestCase):
         self.TESTDIR = os.path.abspath(os.path.dirname(__file__))
         self.TESTDB_DIR = os.path.join(self.TESTDIR, 'database')
         self.TESTDBBACKUP_DIR = os.path.join(self.TESTDIR, 'db_backup')
+        self.TEST_CONFIG = os.path.join(self.TESTDIR, 'config.ini')
 
         self.SHOWNAME = "show name"
         self.SEASON = 4
@@ -73,19 +73,19 @@ class SiCKRAGETestCase(unittest.TestCase):
         self.SHOWDIR = os.path.join(self.TESTDIR, self.SHOWNAME + " final")
 
         sickrage.app = Core()
-        sickrage.app.log = Logger()
-        sickrage.app.data_dir = self.TESTDIR
-
-        sickrage.app.config = Config()
-        sickrage.app.config.quality_default = 4  # hdtv
-        sickrage.app.config.naming_multi_ep = True
-        sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
-        sickrage.app.config.ignore_words = "German,Core2HD"
-
         sickrage.app.search_providers = SearchProviders()
         sickrage.app.name_cache = NameCache()
+        sickrage.app.log = Logger()
+        sickrage.app.config = Config()
 
-        sickrage.app.search_providers.load()
+        sickrage.app.data_dir = self.TESTDIR
+        sickrage.app.config_file = self.TEST_CONFIG
+
+        sickrage.app.config.load()
+
+        sickrage.app.config.naming_pattern = 'Season.%0S/%S.N.S%0SE%0E.%E.N'
+        sickrage.app.config.tv_download_dir = os.path.join(self.TESTDIR, 'Downloads')
+
         episode.TVEpisode.populateEpisode = self._fake_specify_ep
 
     def setUp(self, **kwargs):
@@ -109,6 +109,9 @@ class SiCKRAGETestCase(unittest.TestCase):
 
     def tearDown(self):
         sickrage.app.log.close()
+
+        if os.path.exists(self.TEST_CONFIG):
+            os.remove(self.TEST_CONFIG)
 
         if os.path.exists(self.FILEDIR):
             shutil.rmtree(self.FILEDIR)

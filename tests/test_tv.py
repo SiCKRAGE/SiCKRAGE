@@ -22,12 +22,12 @@ from __future__ import unicode_literals
 import unittest
 
 import sickrage
+import tests
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
-from tests import SiCKRAGETestDBCase
 
 
-class TVShowTests(SiCKRAGETestDBCase):
+class TVShowTests(tests.SiCKRAGETestDBCase):
     def test_init_indexerid(self):
         show = TVShow(1, 0001, "en")
         show.saveToDB()
@@ -54,7 +54,7 @@ class TVShowTests(SiCKRAGETestDBCase):
         self.assertEqual(show.name, "newName")
 
 
-class TVEpisodeTests(SiCKRAGETestDBCase):
+class TVEpisodeTests(tests.SiCKRAGETestDBCase):
     def test_init_empty_db(self):
         show = TVShow(1, 0001, "en")
         show.saveToDB()
@@ -65,7 +65,7 @@ class TVEpisodeTests(SiCKRAGETestDBCase):
         self.assertEqual(ep.name, "asdasdasdajkaj")
 
 
-class TVTests(SiCKRAGETestDBCase):
+class TVTests(tests.SiCKRAGETestDBCase):
     def test_getEpisode(self):
         show = TVShow(1, 0001, "en")
         show.name = "show name"

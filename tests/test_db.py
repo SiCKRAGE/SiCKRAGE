@@ -21,12 +21,13 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from tests import SiCKRAGETestDBCase
+import tests
 
 
-class DBBasicTests(SiCKRAGETestDBCase):
+class DBBasicTests(tests.SiCKRAGETestDBCase):
     def test_select(self):
         pass
+
 
 if __name__ == '__main__':
     print("==================")

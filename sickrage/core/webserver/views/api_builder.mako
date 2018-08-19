@@ -12,132 +12,142 @@
 
 <%block name="content">
     <div class="row">
-        <div class="col-md-12">
-            <h1 class="title">${title}</h1>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="btn-group navbar-btn" data-toggle="buttons">
-                <label class="btn btn-primary">
-                    <input autocomplete="off" id="option-profile" type="checkbox"/> ${_('Profile')}
-                </label>
-                <label class="btn btn-primary">
-                    <input autocomplete="off" id="option-jsonp" type="checkbox"/> ${_('JSONP')}
-                </label>
-            </div>
-
-            <form class="navbar-form navbar-right">
-                <div class="form-group">
-                    <input autocomplete="off" class="form-control" id="command-search" placeholder="${_('Command name')}"
-                           type="search"/>
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>${title}</h3>
                 </div>
-            </form>
-        </div>
-    </div>
-
-
-    <div class="panel-group" id="commands_list">
-        % for command in sorted(commands):
-        <%
-            command_id = command.replace('.', '-')
-            help = commands[command](application, request, **{'help':1}).run()
-        %>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#commands_list"
-                           href="#command-${command_id}">${command}</a>
-                    </h4>
-                </div>
-                <div class="panel-collapse collapse" id="command-${command_id}">
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <blockquote>${help['message']}</blockquote>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="btn-group navbar-btn" data-toggle="buttons">
+                                <label class="btn btn-primary">
+                                    <input autocomplete="off" id="option-profile" type="checkbox"/> ${_('Profile')}
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input autocomplete="off" id="option-jsonp" type="checkbox"/> ${_('JSONP')}
+                                </label>
                             </div>
-                        </div>
-                        % if help['data']['optionalParameters'] or help['data']['requiredParameters']:
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h4>${_('Parameters')}</h4>
 
-                                    <div class="horizontal-scroll">
-                                        <table class="tablesorter">
-                                            <thead>
-                                            <tr>
-                                                <th>${_('Name')}</th>
-                                                <th>${_('Required')}</th>
-                                                <th>${_('Description')}</th>
-                                                <th>${_('Type')}</th>
-                                                <th>${_('Default value')}</th>
-                                                <th>${_('Allowed values')}</th>
-                                            </tr>
-                                            </thead>
-                                            ${display_parameters_doc(help['data']['requiredParameters'], True)}
-                                            ${display_parameters_doc(help['data']['optionalParameters'], False)}
-                                        </table>
+                            <form class="navbar-form navbar-right">
+                                <div class="form-group">
+                                    <input autocomplete="off" class="form-control" id="command-search"
+                                           placeholder="${_('Command name')}"
+                                           type="search"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <div id="commands_list">
+                        % for command in sorted(commands):
+                        <%
+                            command_id = command.replace('.', '-')
+                            help = commands[command](application, request, **{'help':1}).run()
+                        %>
+                            <div class="card mt-1 mb-3">
+                                <div class="card-header">
+                                    <h4 class="card-title">
+                                        <a data-toggle="collapse" data-parent="#commands_list"
+                                           href="#command-${command_id}">${command}</a>
+                                    </h4>
+                                </div>
+                                <div class="collapse" id="command-${command_id}">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <blockquote>${help['message']}</blockquote>
+                                            </div>
+                                        </div>
+                                        % if help['data']['optionalParameters'] or help['data']['requiredParameters']:
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <h4>${_('Parameters')}</h4>
+
+                                                    <div class="table-responsive">
+                                                        <table class="table">
+                                                            <thead>
+                                                            <tr>
+                                                                <th>${_('Name')}</th>
+                                                                <th>${_('Required')}</th>
+                                                                <th>${_('Description')}</th>
+                                                                <th>${_('Type')}</th>
+                                                                <th>${_('Default value')}</th>
+                                                                <th>${_('Allowed values')}</th>
+                                                            </tr>
+                                                            </thead>
+                                                            ${display_parameters_doc(help['data']['requiredParameters'], True)}
+                                                            ${display_parameters_doc(help['data']['optionalParameters'], False)}
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        % endif
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h4>${_('Playground')}</h4>
+                                                <span>
+                                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${srWebRoot}
+                                                    /api/${apikey}/?cmd=${command}</kbd>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        % if help['data']['requiredParameters']:
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>${_('Required parameters')}</label>
+                                                    ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}
+                                                </div>
+                                            </div>
+                                        % endif
+                                        % if help['data']['optionalParameters']:
+                                            <br/>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>${_('Optional parameters')}</label>
+                                                    ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}
+                                                </div>
+                                            </div>
+                                        % endif
+                                        <br/>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-primary shadow" data-action="api-call"
+                                                        data-command-name="${command_id}"
+                                                        data-base-url="command-${command_id}-base-url"
+                                                        data-target="#command-${command_id}-response"
+                                                        data-time="#command-${command_id}-time"
+                                                        data-url="#command-${command_id}-url">
+                                                    ${_('Call API')}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="result-wrapper d-none">
+                                            <div class="clearfix">
+                                                <span class="float-left">
+                                                    ${_('Response:')} <strong
+                                                        id="command-${command_id}-time"></strong><br/>
+                                                    ${_('URL:')} <kbd id="command-${command_id}-url"></kbd>
+                                                </span>
+                                                <span class="float-right">
+                                                    <button class="btn" data-action="clear-result"
+                                                            data-target="#command-${command_id}-response">${_('Clear')}</button>
+                                                </span>
+                                            </div>
+
+                                            <pre><code class="text-white" id="command-${command_id}-response"></code></pre>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        % endif
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h4>${_('Playground')}</h4>
-                                <span>
-                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
-                                </span>
-                            </div>
-                        </div>
-                        % if help['data']['requiredParameters']:
-                            <br/>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label>${_('Required parameters')}</label>
-                                    ${display_parameters_playground(help['data']['requiredParameters'], True, command_id)}
-                                </div>
-                            </div>
-                        % endif
-                        % if help['data']['optionalParameters']:
-                            <br/>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label>${_('Optional parameters')}</label>
-                                    ${display_parameters_playground(help['data']['optionalParameters'], False, command_id)}
-                                </div>
-                            </div>
-                        % endif
-                        <br/>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button class="btn btn-primary" data-action="api-call" data-command-name="${command_id}"
-                                        data-base-url="command-${command_id}-base-url"
-                                        data-target="#command-${command_id}-response"
-                                        data-time="#command-${command_id}-time" data-url="#command-${command_id}-url">
-                                    ${_('Call API')}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="result-wrapper hidden">
-                            <div class="clearfix">
-                                <span class="pull-left">
-                                    ${_('Response:')} <strong id="command-${command_id}-time"></strong><br>
-                                    ${_('URL:')} <kbd id="command-${command_id}-url"></kbd>
-                                </span>
-                                <span class="pull-right">
-                                    <button class="btn btn-default" data-action="clear-result"
-                                            data-target="#command-${command_id}-response">${_('Clear')}</button>
-                                </span>
-                            </div>
-
-                            <pre><code id="command-${command_id}-response"></code></pre>
-                        </div>
+                        % endfor
                     </div>
                 </div>
             </div>
-        % endfor
+        </div>
     </div>
 </%block>
 
@@ -153,11 +163,11 @@
                         ${parameter}
                     % endif
                 </td>
-                <td class="text-center">
+                <td class="table-fit">
                     % if required:
-                        <span class="glyphicon glyphicon-ok text-success" title="${_('Yes')}"></span>
+                        <span class="fas fa-check text-success" title="${_('Yes')}"></span>
                     % else:
-                        <span class="glyphicon glyphicon-remove text-muted" title="${_('No')}"></span>
+                        <span class="fas fa-times text-muted" title="${_('No')}"></span>
                     % endif
                 </td>
                 <td>${parameter_help.get('desc', '')}</td>
@@ -202,14 +212,14 @@
                 </select>
 
             % if 'season' in parameters:
-                <select class="form-control hidden" name="season" data-action="update-episodes"
+                <select class="form-control d-none" name="season" data-action="update-episodes"
                         data-command="${command}">
                     <option>${_('season')}</option>
                 </select>
             % endif
 
             % if 'episode' in parameters:
-                <select class="form-control hidden" name="episode" data-command="${command}">
+                <select class="form-control d-none" name="episode" data-command="${command}">
                     <option>${_('episode')}</option>
                 </select>
             % endif

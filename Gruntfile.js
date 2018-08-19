@@ -1,241 +1,15 @@
+const webpackConfig = require('./webpack.config');
+
 module.exports = function (grunt) {
     require('load-grunt-tasks')(grunt);
 
     grunt.initConfig({
-        clean: {
-            bower_components: 'bower_components',
+        webpack: {
             options: {
-                force: true
-            }
-        },
-        bower: {
-            install: {
-                options: {
-                    copy: false
-                }
-            }
-        },
-        bower_concat: {
-            all: {
-                dest: {
-                    js: 'dist/js/bower.js',
-                    css: 'dist/css/bower.css'
-                },
-                callback: function (mainFiles) {
-                    return mainFiles.map(function (filepath) {
-                        var min = filepath.replace(/\.js$/, '.min.js');
-                        return grunt.file.exists(min) ? min : filepath;
-                    });
-                },
-                mainFiles: {
-                    'bootstrap': [
-                        'dist/css/bootstrap.min.css',
-                        'dist/js/bootstrap.min.js'
-                    ],
-                    'bootstrap-formhelpers': [
-                        'dist/js/bootstrap-formhelpers.min.js',
-                        'dist/css/bootstrap-formhelpers.min.css'
-                    ],
-                    'jquery-ui': [
-                        'jquery-ui.min.js',
-                        'themes/base/jquery-ui.min.css'
-                    ],
-                    'jquery.tablesorter': [
-                        'dist/js/jquery.tablesorter.js',
-                        'dist/js/widgets/widget-columnSelector.min.js',
-                        'dist/js/widgets/widget-stickyHeaders.min.js',
-                        'dist/js/widgets/widget-reflow.min.js',
-                        'dist/js/widgets/widget-filter.min.js',
-                        'dist/js/widgets/widget-saveSort.min.js',
-                        'dist/js/widgets/widget-storage.min.js',
-                        'dist/css/theme.blue.css'
-                    ],
-                    'isotope': [
-                        "dist/isotope.pkgd.min.js"
-                    ],
-                    'jquery-json': [
-                        'dist/jquery.json.min.js'
-                    ],
-                    'pnotify': [
-                        'dist/pnotify.js',
-                        'dist/pnotify.desktop.js',
-                        'dist/pnotify.nonblock.js',
-                        'dist/pnotify.css'
-                    ],
-                    "outlayer": [
-                        "item.js",
-                        "outlayer.js"
-                    ],
-                    "bootstrap-tokenfield": [
-                        "dist/bootstrap-tokenfield.js",
-                        "dist/css/tokenfield-typeahead.css",
-                        "dist/css/bootstrap-tokenfield.css"
-                    ]
-                },
-                bowerOptions: {
-                    relative: false
-                },
-                dependencies: {
-                    'selectboxes': 'jquery',
-                    'bookmarkscroll': 'jquery'
-                }
-            }
-        },
-        googlefonts: {
-            build: {
-                options: {
-                    fontPath: 'sickrage/core/webserver/static/fonts/',
-                    cssFile: 'dist/css/fonts.css',
-                    httpPath: '../fonts/',
-                    formats: {
-                        eot: true,
-                        ttf: true,
-                        woff: true,
-                        woff2: true,
-                        svg: true
-                    },
-                    fonts: [
-                        {
-                            family: 'Open Sans',
-                            styles: [
-                                300, '300italic',
-                                400, '400italic',
-                                600, '600italic',
-                                700, '700italic',
-                                800, '800italic'
-                            ]
-                        },
-                        {
-                            family: 'Droid Sans',
-                            styles: [
-                                400, 700
-                            ]
-                        },
-                        {
-                            family: 'Roboto',
-                            styles: [
-                                400, 700
-                            ]
-                        }
-                    ]
-                }
-            }
-        },
-        copy: {
-            glyphicon: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/bootstrap/fonts/',
-                    src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/static/fonts/'
-                }]
+                stats: !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
             },
-            fontawesome: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/components-font-awesome/fonts/',
-                    src: ['**/*.{eot,svg,ttf,woff,woff2}'],
-                    dest: 'sickrage/core/webserver/static/fonts/'
-                }]
-            }
-        },
-        imagemin: {
-            jquery_ui: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/jquery-ui/themes/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/'
-                }]
-            },
-            tablesorter: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/jquery.tablesorter/dist/css/images/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/tablesorter/'
-                }]
-            },
-            boostrap_formhelpers: {
-                files: [{
-                    expand: true,
-                    flatten: true,
-                    cwd: 'bower_components/bootstrap-formhelpers/img/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: 'sickrage/core/webserver/static/images/bootstrap-formhelpers/'
-                }]
-            }
-        },
-        sprite: {
-            icons_sickrage: {
-                src: 'dist/images/icons/sickrage/*.png',
-                dest: 'sickrage/core/webserver/static/images/icons-sickrage.png',
-                destCss: 'dist/css/icons-sickrage.css',
-                imgPath: '../images/icons-sickrage.png',
-                cssTemplate: 'dist/css/icons-sickrage.css.handlebars',
-                padding: 2
-            }
-        },
-        uglify: {
-            bower: {
-                files: {
-                    'sickrage/core/webserver/static/js/bower.min.js': ['dist/js/bower.js']
-                }
-            },
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/js/core.min.js': ['dist/js/core.js']
-                }
-            }
-        },
-        cssmin: {
-            options: {
-                shorthandCompacting: false,
-                roundingPrecision: -1
-            },
-            bower: {
-                files: {
-                    'sickrage/core/webserver/static/css/bower.min.css': ['dist/css/bower.css']
-                }
-            },
-            core: {
-                files: {
-                    'sickrage/core/webserver/static/css/core.min.css': [
-                        'dist/css/core.css',
-                        'dist/css/fonts.css',
-                        'dist/css/icons-sickrage.css'
-                    ],
-                    'sickrage/core/webserver/static/css/themes/dark.min.css': [
-                        'dist/css/themes/dark.css'
-                    ],
-                    'sickrage/core/webserver/static/css/themes/light.min.css': [
-                        'dist/css/themes/light.css'
-                    ]
-                }
-            }
-        },
-        jshint: {
-            options: {
-                jshintrc: '.jshintrc'
-            },
-            all: ['dist/js/core.js']
-        },
-        po2json: {
-            messages: {
-                options: {
-                    singleFile: true
-                },
-                files: [{
-                    expand: true,
-                    src: 'sickrage/locale/*/LC_MESSAGES/messages.po',
-                    dest: '',
-                    ext: ''
-                }]
-            }
+            prod: webpackConfig,
+            dev: webpackConfig
         },
         changelog: {
             release: {
@@ -280,7 +54,7 @@ module.exports = function (grunt) {
             },
             'git_push': {
                 cmd: function (remote, branch, tags) {
-                    var pushCmd = 'git push ' + remote + ' ' + branch;
+                    let pushCmd = 'git push ' + remote + ' ' + branch;
                     if (tags) {
                         pushCmd += ' --tags';
                     }
@@ -317,8 +91,9 @@ module.exports = function (grunt) {
                     return 'git log --oneline --pretty=format:%s ' + grunt.config('last_tag') + '..HEAD';
                 },
                 stdout: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout) {
-                    var commits = stdout.trim()
+                    const commits = stdout.trim()
                         .replace(/`/gm, '').replace(/^\([\w\d\s,.\-+_/>]+\)\s/gm, '');  // removes ` and tag information
                     if (commits) {
                         grunt.config('commits', commits);
@@ -339,6 +114,7 @@ module.exports = function (grunt) {
                     return 'git flow bugfix start ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -348,6 +124,7 @@ module.exports = function (grunt) {
                     return 'git flow bugfix finish ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -357,6 +134,7 @@ module.exports = function (grunt) {
                     return 'git flow release start ' + version;
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -366,6 +144,7 @@ module.exports = function (grunt) {
                     return 'git flow release finish ' + version + ' -m "' + message + '"';
                 },
                 stderr: false,
+                maxBuffer: 500 * 1024,
                 callback: function (err, stdout, stderr) {
                     grunt.log.write(stderr);
                 }
@@ -373,31 +152,10 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask(
-        'default', [
-            'clean',
-            'bower',
-            'bower_concat',
-            'googlefonts',
-            'copy',
-            'imagemin',
-            'uglify',
-            'sprite',
-            'cssmin',
-            'jshint'
-        ]
-    );
-
-    grunt.registerTask(
-        'css', [
-            'cssmin'
-        ]
-    );
-
     grunt.registerTask('upload_trans', 'Upload translations', function () {
         grunt.log.writeln('Extracting and uploading translations to Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'exec:babel_extract',
             'exec:crowdin_upload_sources'
         ];
@@ -412,10 +170,9 @@ module.exports = function (grunt) {
     grunt.registerTask('download_trans', 'Download translations', function () {
         grunt.log.writeln('Downloading and compiling translations from Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'exec:crowdin_download_translations',
-            'exec:babel_compile',
-            'po2json'
+            'exec:babel_compile'
         ];
 
         if (process.env.CROWDIN_API_KEY) {
@@ -428,7 +185,7 @@ module.exports = function (grunt) {
     grunt.registerTask('sync_trans', 'Sync translations with Crowdin', function () {
         grunt.log.writeln('Syncing translations with Crowdin...'.magenta);
 
-        var tasks = [
+        const tasks = [
             'upload_trans',
             'download_trans'
         ];
@@ -443,11 +200,11 @@ module.exports = function (grunt) {
     grunt.registerTask('pre-release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
 
-        var vFile = 'sickrage/version.txt';
+        const vFile = 'sickrage/version.txt';
 
-        var version = grunt.file.read(vFile);
-        var versionParts = version.split('.');
-        var vArray = {
+        const version = grunt.file.read(vFile);
+        const versionParts = version.split('.');
+        const vArray = {
             vMajor: versionParts[0],
             vMinor: versionParts[1],
             vPatch: versionParts[2],
@@ -464,18 +221,18 @@ module.exports = function (grunt) {
 
         vArray.vPre = parseFloat(vArray.vPre) + 1;
 
-        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch + '.dev' + vArray.vPre;
         grunt.config('new_version', newVersion);
 
         grunt.file.write(vFile, newVersion);
 
         grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
 
-        var tasks = [
-            'default',
+        const tasks = [
+            'webpack:dev',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
-            'exec:git_last_tag','exec:git_list_changes','exec:git_tag',
+            'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
             'exec:pypi_publish'
         ];
@@ -486,10 +243,10 @@ module.exports = function (grunt) {
     grunt.registerTask('release', function () {
         grunt.task.run(['exec:git:checkout:develop']);
 
-        var vFile = 'sickrage/version.txt';
-        var version = grunt.file.read(vFile);
-        var versionParts = version.split('.');
-        var vArray = {
+        const vFile = 'sickrage/version.txt';
+        const version = grunt.file.read(vFile);
+        const versionParts = version.split('.');
+        const vArray = {
             vMajor: versionParts[0],
             vMinor: versionParts[1],
             vPatch: versionParts[2],
@@ -500,15 +257,15 @@ module.exports = function (grunt) {
             vArray.vPatch = parseFloat(vArray.vPatch) + 1;
         }
 
-        var newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
+        const newVersion = vArray.vMajor + '.' + vArray.vMinor + '.' + vArray.vPatch;
 
         grunt.config('new_version', newVersion);
         grunt.file.write(vFile, newVersion);
 
         grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
-        var tasks = [
-            'default',
+        const tasks = [
+            'webpack:prod',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_release_start:' + newVersion,

@@ -76,11 +76,11 @@ def indexerImage(id=None, which=None):
             return
 
         if image_type == 'banner':
-            return Banner(int(id), media_format).url
+            return Banner(int(id), media_format)
         elif image_type == 'fanart':
-            return FanArt(int(id), media_format).url
+            return FanArt(int(id), media_format)
         elif image_type == 'poster':
-            return Poster(int(id), media_format).url
+            return Poster(int(id), media_format)
     except (indexer_error, IOError) as e:
         sickrage.app.log.warning("{}: Unable to look up show on ".format(id) + IndexerApi(
             INDEXER_TVDB).name + ", not downloading images: {}".format(e))

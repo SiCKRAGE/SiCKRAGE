@@ -36,11 +36,11 @@ import six
 from vcr_unittest import VCRMixin
 
 import sickrage
+import tests
 from sickrage.core.helpers import validate_url
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show import TVShow
 from sickrage.core.websession import WebSession
-from tests import SiCKRAGETestDBCase
 
 overwrite_cassettes = False
 
@@ -74,7 +74,7 @@ magnet_regex = re.compile(r'magnet:\?xt=urn:btih:\w{32,40}(:?&dn=[\w. %+-]+)*(:?
 
 
 class ProviderTests(type):
-    class ProviderTest(VCRMixin, SiCKRAGETestDBCase):
+    class ProviderTest(VCRMixin, tests.SiCKRAGETestDBCase):
         provider = None
 
         def setUp(self):
@@ -106,7 +106,7 @@ class ProviderTests(type):
 
         def search_strings(self, mode):
             _search_strings = {
-                'RSS': self.provider.cache.search_params['RSS'],
+                'RSS': self.provider.cache.search_strings['RSS'],
                 'Episode': self.provider._get_episode_search_strings(self.ep)[0]['Episode'],
                 'Season': self.provider._get_season_search_strings(self.ep)[0]['Season']
             }

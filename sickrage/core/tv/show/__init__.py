@@ -445,6 +445,13 @@ class TVShow(object):
         return self._next_aired
 
     @property
+    def show_size(self):
+        total_size = 0
+        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+            total_size += x['file_size']
+        return total_size
+
+    @property
     def location(self):
         return self._location
 

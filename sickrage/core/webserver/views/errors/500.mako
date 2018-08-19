@@ -6,12 +6,12 @@
         ${_('Mako errors that happen during updates may be a one time error if there were significant ui changes.')}
     </p>
     <hr>
-    <a href="#mako-error" class="btn btn-default" data-toggle="collapse">${_('Show/Hide Error')}</a>
+    <a href="#mako-error" class="btn" data-toggle="collapse">${_('Show/Hide Error')}</a>
     <div id="mako-error" class="collapse">
         <br>
-        <div class="align-center">
+        <div class="text-left">
             <% filename, lineno, function, line = backtrace.traceback[-1] %>
-            <pre>
+            <pre class="text-white">
                 ${_('File')} ${filename}:${lineno}, ${_('in')} ${function}:
                 % if line:
                     ${line}

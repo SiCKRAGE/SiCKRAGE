@@ -25,9 +25,9 @@ import unittest
 from datetime import date
 
 import sickrage
+import tests
 from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.show import TVShow
-from tests import SiCKRAGETestDBCase
 
 sickrage.app.sys_encoding = 'UTF-8'
 
@@ -35,6 +35,10 @@ DEBUG = VERBOSE = False
 
 simple_test_cases = {
     'standard': {
+        'Mr Show Name.S00E01E02E03E04E05E06E07E08.Source.Quality.Etc-Group': ParseResult(None, 'Mr Show Name', 0,
+                                                                                         [1, 2, 3, 4, 5, 6, 7, 8],
+                                                                                         'Source.Quality.Etc',
+                                                                                         'Group'),
         'Mr.Show.Name.S01E02.Source.Quality.Etc-Group': ParseResult(None, 'Mr Show Name', 1, [2], 'Source.Quality.Etc',
                                                                     'Group'),
         'Show.Name.S01E02': ParseResult(None, 'Show Name', 1, [2]),
@@ -175,9 +179,9 @@ combination_test_cases = [
      {'standard'}),
 
     (
-    '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
-    ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short', version=-1),
-    {'standard', 'season_only'}),
+        '/home/drop/storage/TV/Terminator The Sarah Connor Chronicles/Season 2/S02E06 The Tower is Tall, But the Fall is Short.mkv',
+        ParseResult(None, None, 2, [6], 'The Tower is Tall, But the Fall is Short', version=-1),
+        {'standard', 'season_only'}),
 
     (r'/Test/TV/Jimmy Fallon/Season 2/Jimmy Fallon - 2010-12-15 - blah.avi',
      ParseResult(None, 'Jimmy Fallon', extra_info='blah', air_date=date(2010, 12, 15), version=-1),
@@ -210,7 +214,7 @@ unicode_test_cases = [
 failure_cases = ['7sins-jfcs01e09-720p-bluray-x264']
 
 
-class UnicodeTests(SiCKRAGETestDBCase):
+class UnicodeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(UnicodeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
@@ -230,7 +234,7 @@ class UnicodeTests(SiCKRAGETestDBCase):
             self._test_unicode(name, result)
 
 
-class FailureCaseTests(SiCKRAGETestDBCase):
+class FailureCaseTests(tests.SiCKRAGETestDBCase):
     @staticmethod
     def _test_name(name):
         np = NameParser(True)
@@ -248,7 +252,7 @@ class FailureCaseTests(SiCKRAGETestDBCase):
             self.assertTrue(self._test_name(name))
 
 
-class ComboTests(SiCKRAGETestDBCase):
+class ComboTests(tests.SiCKRAGETestDBCase):
     def _test_combo(self, name, result, which_regexes):
         if VERBOSE:
             print()
@@ -273,7 +277,7 @@ class ComboTests(SiCKRAGETestDBCase):
             self._test_combo(os.path.normpath(name), result, which_regexes)
 
 
-class AnimeTests(SiCKRAGETestDBCase):
+class AnimeTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(AnimeTests, self).setUp()
         self.show = TVShow(1, 1, 'en')
@@ -317,7 +321,8 @@ class AnimeTests(SiCKRAGETestDBCase):
                 print(test_result)
                 print(result)
 
-            self.assertEqual(test_result.which_regex, {section}, '{} : {} != {}'.format(cur_test, test_result.which_regex, {section}))
+            self.assertEqual(test_result.which_regex, {section},
+                             '{} : {} != {}'.format(cur_test, test_result.which_regex, {section}))
             self.assertEqual(test_result, result, '{} : {} != {}'.format(cur_test, test_result, result))
 
     def test_anime_sxxexx_file_names(self):
@@ -328,7 +333,7 @@ class AnimeTests(SiCKRAGETestDBCase):
         self._test_names(np, 'anime_SxxExx', lambda x: x + '.avi')
 
 
-class BasicTests(SiCKRAGETestDBCase):
+class BasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(BasicTests, self).setUp()
         self.show = TVShow(1, 1, 'en')

@@ -1,0 +1,21 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jquery": true
+  },
+  "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+          "jsx": false
+      }
+  },
+  "parser": "babel-eslint",
+  "plugins": [],
+  "extends": "eslint:recommended",
+  "rules": {
+    //
+  }
+}

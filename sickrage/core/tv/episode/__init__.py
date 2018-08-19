@@ -35,7 +35,7 @@ from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
     safe_getattr, make_dirs, moveFile, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.processors.post_processor import PostProcessor
-from sickrage.core.scene_numbering import xem_refresh, get_scene_absolute_numbering, get_scene_numbering
+from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
 from sickrage.core.updaters import tz_updater
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
@@ -408,8 +408,6 @@ class TVEpisode(object):
             self._is_proper = try_int(dbData[0]["is_proper"], self.is_proper)
             self._version = try_int(dbData[0]["version"], self.version)
 
-            xem_refresh(self.show.indexerid, self.show.indexer)
-
             self.scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
             self.scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
             self.scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
@@ -496,8 +494,6 @@ class TVEpisode(object):
 
         self.season = season
         self.episode = episode
-
-        xem_refresh(self.show.indexerid, self.show.indexer)
 
         self.scene_absolute_number = get_scene_absolute_numbering(
             self.show.indexerid,
@@ -630,8 +626,6 @@ class TVEpisode(object):
                     self.name = epDetails.findtext('title')
                     self.episode = try_int(epDetails.findtext('episode'))
                     self.season = try_int(epDetails.findtext('season'))
-
-                    xem_refresh(self.show.indexerid, self.show.indexer)
 
                     self.scene_absolute_number = get_scene_absolute_numbering(
                         self.show.indexerid,
@@ -985,34 +979,33 @@ class TVEpisode(object):
             "Ep Name" and "Other Ep Name" becomes "Ep Name & Other Ep Name"
         """
 
-        multiNameRegex = r"(.*) \(\d{1,2}\)"
+        multi_name_regex = r"(.*) \(\d{1,2}\)"
 
-        self.relatedEps = sorted(self.relatedEps, key=lambda x: x.episode)
+        single_name = True
+        cur_good_name = None
 
-        singleName = True
-        curGoodName = None
-
-        for curName in [self.name] + [x.name for x in self.relatedEps]:
-            match = re.match(multiNameRegex, curName)
-
+        for curName in [self.name] + [x.name for x in sorted(self.relatedEps, key=lambda k: k.episode)]:
+            match = re.match(multi_name_regex, curName)
             if not match:
-                singleName = False
+                single_name = False
                 break
 
-            if curGoodName is None:
-                curGoodName = match.group(1)
-            elif curGoodName != match.group(1):
-                singleName = False
+            if cur_good_name is None:
+                cur_good_name = match.group(1)
+            elif cur_good_name != match.group(1):
+                single_name = False
                 break
 
-        if singleName:
-            goodName = curGoodName
+        if single_name:
+            good_name = cur_good_name or self.name
         else:
-            goodName = self.name
-            for relEp in self.relatedEps:
-                goodName += " & " + relEp.name
+            good_name = self.name
+            if len(self.relatedEps):
+                good_name = "MultiPartEpisode"
+            # for relEp in self.relatedEps:
+            #     good_name += " & " + relEp.name
 
-        return goodName
+        return good_name
 
     def _replace_map(self):
         """

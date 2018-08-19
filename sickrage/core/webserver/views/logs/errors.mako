@@ -7,29 +7,24 @@
     <%
         if logLevel == sickrage.app.log.logLevels['WARNING']:
             errors = WarningViewer.errors
-            title = _('WARNING logs')
+            title = _('WARNING Logs')
         else:
             errors = ErrorViewer.errors
-            title = _('ERROR logs')
+            title = _('ERROR Logs')
     %>
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="header">${title}</h1>
+    <div class="card">
+        <div class="card-header">
+            <h3>${title}</h3>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="align-left">
-                <pre>
-                    % if errors:
-                        % for curError in sorted(errors, key=lambda error: error.time, reverse=True)[:500]:
-                            ${curError.time} ${curError.message}
-                        % endfor
-                    % else:
-                        ${_('There are no events to display.')}
-                    % endif
-                </pre>
+        <div class="card-body">
+            <div class="text-left" style="white-space: pre-line;">
+                % if errors:
+                % for curError in sorted(errors, key=lambda error: error.time, reverse=True)[:500]:
+                                                ${curError.time} ${curError.message}
+                % endfor
+                % else:
+                ${_('There are no events to display.')}
+                % endif
             </div>
         </div>
     </div>

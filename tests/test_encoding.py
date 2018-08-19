@@ -25,11 +25,11 @@ import os.path
 import unittest
 
 import sickrage
+import tests
 from sickrage.core.helpers import sanitizeFileName
-from tests import SiCKRAGETestCase
 
 
-class EncodingTests(SiCKRAGETestCase):
+class EncodingTests(tests.SiCKRAGETestCase):
     def test_encoding(self):
         rootDir = 'C:\\Temp\\TV'
         strings = ['Les Enfants De La T\xe9l\xe9', 'RT� One']

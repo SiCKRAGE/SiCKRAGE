@@ -119,13 +119,14 @@ def blackhole():
 
     return (dirName, nzbName)
 
+
 def main():
     scriptlogger.info('Starting external PostProcess script ' + __file__)
 
     host = config.get("General", "web_host")
     port = config.get("General", "web_port")
-    username = config.get("General", "web_username")
-    password = config.get("General", "web_password")
+    api_key = config.get("General", "api_key")
+
     try:
         ssl = int(config.get("General", "enable_https"))
     except (ConfigParser.NoOptionError, ValueError):
@@ -169,10 +170,14 @@ def main():
     if nzbName and os.path.isdir(os.path.join(dirName, nzbName)):
         dirName = os.path.join(dirName, nzbName)
 
-    params = {'quiet': 1, 'dir': dirName}
+    params = {
+        'cmd': 'postprocess',
+        'return_data': 0,
+        'path': dirName
+    }
 
-    if nzbName is not None:
-        params['nzbName'] = nzbName
+    # if nzbName is not None:
+    #     params['nzbName'] = nzbName
 
     if ssl:
         protocol = "https://"
@@ -182,25 +187,22 @@ def main():
     if host == '0.0.0.0':
         host = 'localhost'
 
-    url = protocol + host + ":" + port + web_root + "/home/postprocess/processEpisode"
-    login_url = protocol + host + ':' + port + web_root + '/login'
+    url = "{}{}:{}{}api/{}/".format(protocol, host, port, web_root, api_key)
 
     scriptlogger.debug("Opening URL: " + url + ' with params=' + str(params))
     print("Opening URL: " + url + ' with params=' + str(params))
 
     try:
-        sess = requests.Session()
-        sess.post(login_url, data={'username': username, 'password': password}, stream=True, verify=False)
-        response = sess.get(url, auth=(username, password), params=params, verify=False,  allow_redirects=False)
+        response = requests.get(url, params=params, verify=False, allow_redirects=False)
     except Exception as err:
         scriptlogger.error(': Unknown exception raised when opening url: ' + str(err))
         time.sleep(3)
         sys.exit('Unknown exception raised when opening url: ' + str(err))
 
     if response.status_code == 401:
-        scriptlogger.error('Invalid SiCKRAGE Username or Password, check your config')
+        scriptlogger.error('Invalid SiCKRAGE API key, check your config')
         time.sleep(3)
-        sys.exit('Invalid SiCKRAGE Username or Password, check your config')
+        sys.exit('Invalid SiCKRAGE API key, check your config')
 
     if response.ok:
         scriptlogger.info('Script ' + __file__ + ' Succesfull')

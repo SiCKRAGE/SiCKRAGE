@@ -21,10 +21,10 @@ from __future__ import print_function, unicode_literals
 
 import unittest
 
-from tests import SiCKRAGETestCase
+import tests
 
 
-class QualityTests(SiCKRAGETestCase):
+class QualityTests(tests.SiCKRAGETestCase):
     # TODO: repack / proper ? air-by-date ? season rip? multi-ep?
 
     def test_SDTV(self):

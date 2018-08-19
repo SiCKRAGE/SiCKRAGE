@@ -154,10 +154,10 @@ class QueueProgressIndicator():
         return len(self.queueItemList)
 
     def numFinished(self):
-        return len([x for x in self.queueItemList if not x.isInQueue()])
+        return len([x for x in self.queueItemList if not x.is_in_queue()])
 
     def numRemaining(self):
-        return len([x for x in self.queueItemList if x.isInQueue()])
+        return len([x for x in self.queueItemList if x.is_in_queue()])
 
     def nextName(self):
         for curItem in [sickrage.app.show_queue.currentItem] + sickrage.app.show_queue.queue:

@@ -61,15 +61,8 @@ Thumbs.db
 /.directory
 /.DS_Store
 
-# GruntJS Files      #
+# Build Files       #
 ######################
-/.sass-cache
-
-# NodeJS Files       #
-######################
-/node_modules/
-
-# Bower Files        #
-######################
-_bower.js
 /bower_components/
+/node_modules/
+/src/spritesmith-generated/

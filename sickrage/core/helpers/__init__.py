@@ -47,7 +47,7 @@ import six
 from bs4 import BeautifulSoup
 
 import sickrage
-from sickrage.core.common import Quality, SKIPPED, WANTED
+from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
 from sickrage.core.exceptions import MultipleShowObjectsException
 
 mediaExtensions = [
@@ -1522,14 +1522,10 @@ def clean_url(url):
     return cleaned_url
 
 
-def overall_stats():
-    today = str(datetime.date.today().toordinal())
+def app_statistics():
+    show_stat = {}
 
-    downloaded_status = Quality.DOWNLOADED + Quality.ARCHIVED
-    snatched_status = Quality.SNATCHED + Quality.SNATCHED_PROPER
-    total_status = [SKIPPED, WANTED]
-
-    stats = {
+    overall_stats = {
         'episodes': {
             'downloaded': 0,
             'snatched': 0,
@@ -1543,22 +1539,57 @@ def overall_stats():
         'total_size': 0
     }
 
-    for result in sickrage.app.main_db.all('tv_episodes'):
-        if not (result['season'] > 0 and result['episode'] > 0 and result['airdate'] > 1):
-            continue
+    today = datetime.date.today().toordinal()
 
-        if result['status'] in downloaded_status:
-            stats['episodes']['downloaded'] += 1
-            stats['episodes']['total'] += 1
-        elif result['status'] in snatched_status:
-            stats['episodes']['snatched'] += 1
-            stats['episodes']['total'] += 1
-        elif result['airdate'] <= today and result['status'] in total_status:
-            stats['episodes']['total'] += 1
+    status_quality = Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST
+    status_download = Quality.DOWNLOADED + Quality.ARCHIVED
 
-        stats['total_size'] += result['file_size']
+    max_download_count = 1000
 
-    return stats
+    for epData in sickrage.app.main_db.all('tv_episodes'):
+        showid = epData['showid']
+        if showid not in show_stat:
+            show_stat[showid] = {}
+            show_stat[showid]['ep_snatched'] = 0
+            show_stat[showid]['ep_downloaded'] = 0
+            show_stat[showid]['ep_total'] = 0
+            show_stat[showid]['ep_airs_next'] = None
+            show_stat[showid]['ep_airs_prev'] = None
+            show_stat[showid]['total_size'] = 0
+
+        season = epData['season']
+        episode = epData['episode']
+        airdate = epData['airdate']
+        status = epData['status']
+
+        if season > 0 and episode > 0 and airdate > 1:
+            if status in status_quality:
+                show_stat[showid]['ep_snatched'] += 1
+                overall_stats['episodes']['snatched'] += 1
+                overall_stats['episodes']['total'] += 1
+            if status in status_download:
+                show_stat[showid]['ep_downloaded'] += 1
+                overall_stats['episodes']['downloaded'] += 1
+                overall_stats['episodes']['total'] += 1
+            if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
+                    status in status_quality + status_download):
+                show_stat[showid]['ep_total'] += 1
+                overall_stats['episodes']['total'] += 1
+
+            if show_stat[showid]['ep_total'] > max_download_count:
+                max_download_count = show_stat[showid]['ep_total']
+
+            if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
+                show_stat[showid]['ep_airs_next'] = airdate
+            elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
+                show_stat[showid]['ep_airs_prev'] = airdate
+
+            show_stat[showid]['total_size'] += epData['file_size']
+            overall_stats['total_size'] += epData['file_size']
+
+    max_download_count *= 100
+
+    return show_stat, overall_stats, max_download_count
 
 
 def launch_browser(protocol=None, host=None, startport=None):

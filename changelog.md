@@ -1,19 +1,179 @@
 # Changelog
 
-- * 0e66278 - 2018-07-08: Release v9.3.54 
+- * 67c814b - 2018-08-19: Release v9.3.56 
+- * e26fd2e - 2018-08-19: Pre-Release v9.3.56.dev29 
+- * d590b01 - 2018-08-19: Migrated upnp client from threaded object to scheduler job, resolves shutdown/restart problems 
+- * 69cee25 - 2018-08-19: Misc code cleanup 
+- * a2aa340 - 2018-08-18: Pre-Release v9.3.56.dev28 
+- * 10de224 - 2018-08-18: Pre-Release v9.3.56.dev27 
+- * 8efa7cb - 2018-08-18: Fixed broken toggle buttons 
+- * e27a959 - 2018-08-18: Fixed gaierror&#x27;s for ssdp Fixed WebHandler routing errors 
+- * c60cbb3 - 2018-08-17: Pre-Release v9.3.56.dev26 
+- * 1cfa2f9 - 2018-08-17: Fixed issue where MultiPartEpisode was being appended to all episodes and not just multi-part episodes. 
+- * c9367a6 - 2018-08-17: Pre-Release v9.3.56.dev25 
+- * 481f291 - 2018-08-17: Removed code that was preventing show refreshes from happening due to show updates being in queue. 
+- * 46f21f5 - 2018-08-16: Misc changes to package tests. Multi-EP episode names are no longer appended to form one giant filename but instead &#x27;MultiPartEpisode&#x27; is tacked on. 
+- * b9bbb26 - 2018-08-15: Misc updates to tests 
+- * d56b876 - 2018-08-15: Made quicksearch content easier to read 
+- * 26635da - 2018-08-14: Pre-Release v9.3.56.dev24 
+- * 676065a - 2018-08-14: Fixed AttributeError with Tokyotoshokan provider 
+- * 332017d - 2018-08-14: Fixed issue with saving provider settings Reverted toggles for provider priorities, subtitle plugins, and post-processor metadata choices 
+- * ea140ab - 2018-08-14: individual shows view now gathers total show size from episode file sizes in database 
+- * 3ae007d - 2018-08-13: Pre-Release v9.3.56.dev23 
+- * 9cba816 - 2018-08-13: Fixed issues with multi-episode search results with more then 6 episodes in result. Misc provider URL updates. Misc fixes for tests. 
+- * 908bb53 - 2018-08-13: Pre-Release v9.3.56.dev22 
+- * 55d5abd - 2018-08-13: Improved pager code for getting episode data from theTVDB 
+- * 777692f - 2018-08-13: Migrated mediaToSiCKRAGE script to use API calls 
+- * bbce5f4 - 2018-08-13: Migrated autoProcessTV script to use API calls 
+- * b8c4de7 - 2018-08-13: Pre-Release v9.3.56.dev21 
+- * af4abb6 - 2018-08-13: Re-enabled closing of databases on shutdown/restart Disabled closing of logger on shutdown/restart 
+- * beba691 - 2018-08-13: Fixed KeyError for Show Stats API call 
+- * c30f21b - 2018-08-13: Fixed issue with displaying overall stats using API 
+- * fdeaf28 - 2018-08-13: Pre-Release v9.3.56.dev20 
+- * e6f1422 - 2018-08-13: Disabled closing database on shutdown/restart of app 
+- * e69a0e5 - 2018-08-13: Pre-Release v9.3.56.dev19 
+- * 1dc0171 - 2018-08-13: Added show directory column to mass update view Fixed table sorting issues for mass update and main shows views 
+- * 479026c - 2018-08-08: Fixed status text styling issues for episode rows in display show view 
+- * d6b5a4a - 2018-08-08: Pre-Release v9.3.56.dev18 
+- * c775a68 - 2018-08-08: Fixed issue with missing JS import for timeago module 
+- * 9b5ed21 - 2018-08-08: Fixed redirect issue when trying to login to a app thats already linked to another account 
+- * d569f06 - 2018-08-07: Pre-Release v9.3.56.dev17 
+- * 93bd3ce - 2018-08-07: Fixed issues with modals not displaying correctly Fixed issues with episode searches and episode search retries Fixed issue with data retrieval from database files 
+- * 1a7bca1 - 2018-08-05: Removed unrequired top margin spacing 
+- * 096927a - 2018-08-04: Pre-Release v9.3.56.dev16 
+- * ebcd017 - 2018-08-04: Fixed issue with network logo being off-center Fixed issue with show posters being misaligned 
+- * 6004bc4 - 2018-08-04: Fixed issues with displaying show network logo&#x27;s 
+- * 486eb8c - 2018-08-04: Pre-Release v9.3.56.dev15 
+- * 277ba1b - 2018-08-04: Show size now calculated from show stats 
+- * f52c99b - 2018-08-04: Fixed case-insensitive sorting for small poster view 
+- * 51b6726 - 2018-08-04: Fixed newline issue with error view 
+- * b40951e - 2018-08-01: Pre-Release v9.3.56.dev14 
+- * 0beb0e7 - 2018-08-01: Misc style changes 
+- * 3f0fc47 - 2018-08-01: Added margins to display show view 
+- * 056bf58 - 2018-08-01: Added margins for all layouts except poster in home view 
+- * 18c60e7 - 2018-08-01: Added backdrop for home view 
+- * 535cdc1 - 2018-08-01: Added backdrop for schedule view Added backdrop for history view Added opacity style to views with backdrops 
+- * 6533663 - 2018-08-01: Added backdrop for add shows view 
+- * 6279e0c - 2018-08-01: Added backdrop for config menus 
+- * c6f1503 - 2018-08-01: Pre-Release v9.3.56.dev13 
+- * 6383647 - 2018-08-01: Styling input checkboxes as toggles 
+- * 07e1703 - 2018-07-31: Pre-Release v9.3.56.dev12 
+- * 08cb03c - 2018-07-31: Merged overall_stats and show_stat functions Cut main show view load time down by 6s 
+- * edb99a0 - 2018-07-31: Fixed CSS issue for quicksearch items 
+- * 3acc96b - 2018-07-31: Pre-Release v9.3.56.dev11 
+- * d60e09f - 2018-07-31: Added delay for quicksearch input 
+- * 8c90243 - 2018-07-31: Pre-Release v9.3.56.dev10 
+- * 133d2ef - 2018-07-29: Added categories to quicksearch for both tv shows and tv episodes 
+- * f33330a - 2018-07-28: Pre-Release v9.3.56.dev9 
+- * 4088edc - 2018-07-28: Added back table column selection for shows, show, and schedule views Fixed sorting for all tables Fixed filtering for all tables 
+- * 7020ea5 - 2018-07-28: Reverted text-nowrap class for schedule view table episode name column 
+- * 764a9f1 - 2018-07-28: Fix for issue #244 - reverse proxy 
+- * e588aa6 - 2018-07-27: Pre-Release v9.3.56.dev8 
+- * 33a0a4b - 2018-07-27: Added tablesorter with bootstrap 4 compatibility Case-insensitive sorting fixed for shows view 
+- * d086087 - 2018-07-27: Refactored table show show/episode column for history view Removed table footer from history view 
+- * 876ddfc - 2018-07-27: Pre-Release v9.3.56.dev7 
+- * 19cb817 - 2018-07-27: Refactored table class spacing/padding and column widths 
+- * 5a27b14 - 2018-07-27: Pre-Release v9.3.56.dev6 
+- * 76afe3b - 2018-07-27: Refactored content column size for large devices, small to medium devices are now full-width 
+- * 9f09e96 - 2018-07-27: Refactored preview rename view CSS 
+- * e39068a - 2018-07-27: Pre-Release v9.3.56.dev5 
+- * 169b960 - 2018-07-27: Refactored list group in subtitles config view 
+- * 1867aaf - 2018-07-27: Fixed provider view list items 
+- * 1243962 - 2018-07-27: Fixed file browser modal 
+- * 24b4751 - 2018-07-26: Pre-Release v9.3.56.dev4 
+- * 334b7c7 - 2018-07-26: Misc JS code fixes 
+- * 96a1978 - 2018-07-26: Fixed IMDb star ratings for display show view 
+- * 9c41f4b - 2018-07-26: Fixed genre row alignment for display show view Fixed small poster sizing for shows view 
+- * c702306 - 2018-07-26: Fixed missing icons in navbar Migrated misc css classes to bootstrap 4 
+- * 45d2074 - 2018-07-26: Pre-Release v9.3.56.dev3 
+- * e12e04f - 2018-07-26: Removed bootbox jquery package Fixed confirmation dialog boxes for history and mass update views Changed text color from white to dark for episode statuses view Added css for jquery confirm package 
+- * 5ac6bac - 2018-07-26: Pre-Release v9.3.56.dev2 
+- * 1f9d56a - 2018-07-26: Fixed issue with retrieving image thumbnails from Fanart.tv 
+- * b96888a - 2018-07-26: Removed focus box shadow for quick search form control 
+- * 900b680 - 2018-07-26: Pre-Release v9.3.56.dev1 
+- * 6afa4c2 - 2018-07-26: Updated grunt tasks 
+- * 3a87793 - 2018-07-26: Removed select column control from shows view 
+- * d5f8615 - 2018-07-26: Refactored restart view page 
+- * efff7db - 2018-07-26: Fixed logs view 
+- * dfb4f99 - 2018-07-26: Refactored mass update view and manage queues view 
+- * b0e6922 - 2018-07-26: Fixed table text wraps 
+- * fb7255b - 2018-07-26: Added thumbs for default poster and banners Fixed margins for add shows view 
+- * 524cb0a - 2018-07-26: Misc style changes 
+- * 7d1e3f3 - 2018-07-26: Added updates alert above navbar 
+- * 2fb8d02 - 2018-07-26: Added clear button to quick show search 
+- * 11ddcd3 - 2018-07-26: Added quick show search to navbar 
+- * dcad4d1 - 2018-07-25: Refactoring SCSS theme styles 
+- * 97b4239 - 2018-07-24: Misc code corrections and cleanups 
+- * e1ea56c - 2018-07-24: Migrated add existing shows view to bootstrap 4 
+- * 71b4cfa - 2018-07-23: Misc code cleanup 
+- * 2fa2261 - 2018-07-23: Migrated imdb popular shows view to bootstrap 4 
+- * 7abe9f9 - 2018-07-22: Migrated add trakt show view to bootstrap 4 Added pre-loading div for main show and trakt show views 
+- * 476f90a - 2018-07-22: Misc code migrates to bootstrap 4 
+- * 9abbba8 - 2018-07-22: Migrated API builder to bootstrap 4 
+- * d115e61 - 2018-07-21: Misc code cleanup 
+- * 2742737 - 2018-07-21: Refactored manual post-processing view responsiveness 
+- * 2466e65 - 2018-07-21: Refactored edit show view responsiveness 
+- * fbc0c9e - 2018-07-21: Refactored responsive column for views 
+- * bc2a0f2 - 2018-07-21: Migrated status view to bootstrap 4 
+- * a3ff9ab - 2018-07-21: Refactored add new show view to bootstrap 4 
+- * 03c08d7 - 2018-07-18: Fixed main shows page show details footer 
+- * 453ca1a - 2018-07-17: Refactored schedule view 
+- * 0fdb6df - 2018-07-16: Refactored history view 
+- * 427b651 - 2018-07-16: Refactored missing subtitles view 
+- * 6727208 - 2018-07-16: Refactored failed history view 
+- * b24cc27 - 2018-07-16: Refactored display show view 
+- * e61f206 - 2018-07-16: Refactored layouts for main shows view 
+- * 605eee5 - 2018-07-16: Added shadowing for theme classes 
+- * 6cd3963 - 2018-07-16: Created themed scss classes Migrated manage queues view 
+- * bce28bd - 2018-07-15: Migrated file browser modal to bootstrap 4 
+- * 1df34fa - 2018-07-15: Refactored mass update view 
+- * ef5ceee - 2018-07-15: Refactored all config views Refactored manual post-processing view Refactored edit show view Refactored main layout Refactored config layout 
+- * 085af56 - 2018-07-15: Refactored notifications config view 
+- * 22d3071 - 2018-07-15: Refactored metadata config view 
+- * 8b4add8 - 2018-07-15: Refactored episode naming view and misc config views 
+- * df9b9e3 - 2018-07-15: Updated notifications view 
+- * 9dad99d - 2018-07-15: Themed main modal 
+- * c334f29 - 2018-07-15: Themed display show modals 
+- * fe6e1f0 - 2018-07-15: Migrated more icons to font awesome 
+- * 1e21e2d - 2018-07-15: Migrated loading, queued, searching icons to font awesome icons 
+- * 736d021 - 2018-07-14: Re-sized buttons bar for main view 
+- * 961b90c - 2018-07-14: Migrated home view network logo&#x27;s from images to sprites Fixed display show view responsiveness Added subtitle and flag sprites to webpack 
+- * 6f84b0d - 2018-07-14: Updated gitignore file 
+- * b3107c2 - 2018-07-14: Migrated provider and subtitle image references to sprite references 
+- * 901a870 - 2018-07-14: Updated gitignore file 
+- * f94568a - 2018-07-14: Converted provider icons to sprites Converted subtitle icons to sprites Converted network icons to sprites Converted notifier icons to sprites Converted core icons to sprites 
+- * f626619 - 2018-07-14: Converted provider icons to sprites Converted subtitle icons to sprites Converted network icons to sprites Converted notifier icons to sprites Converted core icons to sprites 
+- * 0672255 - 2018-07-14: Converted all glyphicons icons to fontawesome icons 
+- * fd36e3d - 2018-07-13: Release v9.3.55 
+- * a60f7af - 2018-07-13: Updated gruntfile 
+- * 2f5ba4a - 2018-07-13: Updated Yggtorrent provider base url Update Torrent9 provider base url 
+- * d2cea58 - 2018-07-13: Migrated config providers view to bootstrap 4 
+- * d73439e - 2018-07-09: Migrating away from Bower to NPM/WebPack 
+- * a4b58c9 - 2018-07-09: Migrating away from Bower to NPM/WebPack 
+- * 86021ad - 2018-07-09: Compiled all CSS/SCSS into 1 core file 
+- * b912b2e - 2018-07-08: Refactored config views to Bootstrap 4.x 
+- * ae015ef - 2018-07-08: Release v9.3.54 
 - * afa499a - 2018-07-08: Set secure cookie to expire after 30 days 
+- * 443ec81 - 2018-07-08: Changed table text color to dark for display show view 
 - * 2923c07 - 2018-07-08: Pre-Release v9.3.54.dev1 
 - * adba6a8 - 2018-07-08: Fixed logging format error for NyaaTorrents search provider 
 - * e666331 - 2018-07-08: Fixed getEpisode function to handle absolute episode numbers of zero 
 - * 00f48ae - 2018-07-08: Fixed bug in AniDB NZB provider 
+- * 8aefe4c - 2018-07-08: Fixed progressbar backgrounds and misc margin tweaks 
 - * dc3cc1c - 2018-07-07: Release v9.3.53 
 - * 7b9aac5 - 2018-07-07: Fixed client errors for SSO logins Added timeout for logins to match expire_in of tokens Fixed resetting of app_id when resetting config to defaults 
+- * fd227d5 - 2018-07-07: Refactored edit show view to Bootstrap 4.x 
+- * a4fa4da - 2018-07-07: Refactored display show view to Bootstrap 4.x 
 - * f3b315e - 2018-07-06: Release v9.3.52 
 - * 302fbe2 - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
 - * 9d335cb - 2018-07-06: Release v9.3.51 
 - * 55167ba - 2018-07-06: Updated requirements.txt to be more compatible with Synology devices 
+- * 9f14867 - 2018-07-05: Migrated tablesorter theme to bootstrap 4.x for home view 
+- * fc2ec2b - 2018-07-05: Upgraded tablesorter to use bootstrap 4.x 
+- * e8d562b - 2018-07-04: Fixed responsiveness for add shows template Main shows page posters migrated to bootstrap 4 cards 
 - * 591578b - 2018-07-04: Release v9.3.50 
 - * 88a93b5 - 2018-07-04: Added missing requirements to requirements.txt 
+- * 729f8dc - 2018-07-02: Refactoring WebUI CSS Upgraded to Bootstrap 4.x Merged misc icons into core icon pack 
 - * 867b799 - 2018-06-29: Release v9.3.49 
 - * 47ac908 - 2018-06-29: Fixed issue with token not being refreshed correctly for API usage 
 - * 3d27b4e - 2018-06-28: Release v9.3.48 

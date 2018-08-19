@@ -1,0 +1,412 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~tablesorter/dist/css/theme.bootstrap_4.min.css";
+@import "~tokenfield/dist/tokenfield.css";
+@import "~jquery-ui/themes/base/all.css";
+@import "~tooltipster/dist/css/tooltipster.bundle.css";
+@import "~pnotify/dist/PNotifyBrightTheme.css";
+@import "~jquery-confirm/css/jquery-confirm.css";
+@import "~toggle-checkbox-radio/dist/toggle-checkbox-radio.css";
+
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/fa-regular";
+@import "~@fortawesome/fontawesome-free/scss/fa-brands";
+@import "~@fortawesome/fontawesome-free/scss/fa-solid";
+
+body {
+  color: #fff;
+  background-color: #222;
+}
+
+.navbar-default {
+  background-color: #15528F;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#297AB8', endColorstr='#15528F');
+  background: -webkit-gradient(linear, left top, left bottom, from(#297AB8), to(#15528F));
+  background: -moz-linear-gradient(top, #297AB8, #15528F);
+  border-color: #3E3F3A;
+}
+
+.progress-100 {
+  background-image: -moz-linear-gradient(#395f07, #2a4705) !important;
+  background-image: linear-gradient(#395f07, #2a4705) !important;
+  background-image: -webkit-linear-gradient(#395f07, #2a4705) !important;
+  background-image: -o-linear-gradient(#395f07, #2a4705) !important;
+}
+
+.progress-80 {
+  background-image: -moz-linear-gradient(#a6cf41, #5b990d) !important;
+  background-image: linear-gradient(#a6cf41, #5b990d) !important;
+  background-image: -webkit-linear-gradient(#a6cf41, #5b990d) !important;
+  background-image: -o-linear-gradient(#a6cf41, #5b990d) !important;
+}
+
+.progress-60 {
+  background-image: -moz-linear-gradient(#fad440, #f2a70d) !important;
+  background-image: linear-gradient(#fad440, #f2a70d) !important;
+  background-image: -webkit-linear-gradient(#fad440, #f2a70d) !important;
+  background-image: -o-linear-gradient(#fad440, #f2a70d) !important;
+}
+
+.progress-40 {
+  background-image: -moz-linear-gradient(#fab543, #f2700d) !important;
+  background-image: linear-gradient(#fab543, #f2700d) !important;
+  background-image: -webkit-linear-gradient(#fab543, #f2700d) !important;
+  background-image: -o-linear-gradient(#fab543, #f2700d) !important;
+}
+
+.progress-20 {
+  background-image: -moz-linear-gradient(#da5945, #b11a10) !important;
+  background-image: linear-gradient(#da5945, #b11a10) !important;
+  background-image: -webkit-linear-gradient(#da5945, #b11a10) !important;
+  background-image: -o-linear-gradient(#da5945, #b11a10) !important;
+}
+
+.listing-default {
+  background-color: #f5f1e4;
+}
+
+.listing-current {
+  background-color: #ffb65e;
+}
+
+.listing-overdue {
+  background-color: #ffb0b0;
+}
+
+.listing-toofar {
+  background-color: #bedeed;
+}
+
+span.any-hd {
+  background: #2672b6 repeating-linear-gradient(
+                  -45deg,
+                  #2672b6,
+                  #2672b6 10px,
+                  #5b990d 10px,
+                  #5b990d 20px
+  );
+}
+
+span.Custom {
+  background-color: #621993;
+}
+
+span.HD {
+  background-color: #2672B6;
+}
+
+span.HDTV {
+  background-color: #2672B6;
+}
+
+span.HD720p {
+  background-color: #5b990d;
+}
+
+span.HD1080p {
+  background-color: #2672B6;
+}
+
+span.UHD-4K {
+  background-color: #7500FF;
+}
+
+span.UHD-8K {
+  background-color: #410077;
+}
+
+span.RawHD {
+  background-color: #cd7300;
+}
+
+span.RawHDTV {
+  background-color: #cd7300;
+}
+
+span.SD {
+  background-color: #BE2625;
+}
+
+span.SDTV {
+  background-color: #BE2625;
+}
+
+span.SDDVD {
+  background-color: #BE2625;
+}
+
+span.Any {
+  background-color: #666;
+}
+
+span.Unknown {
+  background-color: #999;
+}
+
+span.Proper {
+  background-color: #3F7F00;
+}
+
+.unaired {
+  background-color: #f5f1e4;
+}
+
+.skipped {
+  background-color: #bedeed;
+}
+
+.good {
+  background-color: #c3e3c8;
+}
+
+.qual {
+  background-color: #ffda8a;
+}
+
+.wanted {
+  background-color: #ffb65e;
+}
+
+.snatched {
+  background-color: #ebc1ea;
+}
+
+.missed {
+  background-color: #ffb0b0;
+}
+
+span.unaired {
+  color: #584b20;
+  border: 1px solid #584b20;
+}
+
+span.skipped {
+  color: #1d5068;
+  border: 1px solid #1d5068;
+}
+
+span.good {
+  color: #295730;
+  border: 1px solid #295730;
+}
+
+span.qual {
+  color: #765100;
+  border: 1px solid #765100;
+}
+
+span.wanted {
+  color: #894305;
+  border: 1px solid #894305;
+}
+
+span.snatched {
+  color: #652164;
+  border: 1px solid #652164;
+}
+
+span.missed {
+  color: #890000;
+  border: 1px solid #890000;
+}
+
+span.unaired b,
+span.skipped b,
+span.good b,
+span.qual b,
+span.wanted b,
+span.missed b,
+span.snatched b {
+  color: #000000;
+  font-weight: 800;
+}
+
+.img-banner {
+  width: 360px;
+  height: 66px;
+}
+
+.img-smallposter {
+  width: 45px;
+  height: 66px;
+}
+
+.back-to-top {
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+
+input[type=checkbox].toggle {
+  border-color: darkgrey;
+  background-color: darkgrey;
+}
+
+// Stepper
+.sickrage-stepper {
+  .stepwizard-step p {
+    margin-top: 0;
+    color: #666;
+  }
+
+  .stepwizard-row {
+    display: table-row;
+  }
+
+  .stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+  }
+
+  .stepwizard-step button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+  }
+
+  .stepwizard .btn.disabled, .stepwizard .btn[disabled], .stepwizard fieldset[disabled] .btn {
+    opacity: 1 !important;
+    color: #bbb;
+  }
+
+  .stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+  }
+
+  .stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+  }
+
+  .btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+  }
+}
+
+#quicksearch:focus {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+.btn {
+  @extend .btn-primary;
+  @extend .shadow;
+}
+
+.input-group-append, .input-group-prepend {
+  .btn {
+    @extend .btn-secondary;
+  }
+}
+
+.table {
+  @extend .table-bordered;
+  @extend .table-dark;
+  @extend .shadow;
+
+  th {
+    @extend .text-center;
+    @extend .text-nowrap;
+  }
+
+  th, td {
+    @extend .p-1;
+  }
+
+  .table-fit {
+    @extend .text-center;
+    white-space: nowrap;
+    width: 1%;
+  }
+}
+
+.card {
+  @extend .bg-dark;
+  @extend .shadow;
+
+  .form-control {
+    @extend .bg-light;
+    @extend .border-0;
+    @extend .shadow;
+  }
+}
+
+.card-header {
+  @extend .bg-secondary;
+  @extend .shadow;
+
+  .nav-link {
+    @extend .bg-dark;
+    @extend .text-white;
+    @extend .shadow;
+  }
+
+  .form-control {
+    @extend .bg-dark;
+    @extend .text-white;
+    @extend .border-0;
+    @extend .shadow;
+  }
+}
+
+.ui-autocomplete {
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+* html .ui-autocomplete {
+  height: 500px;
+}
+
+#popover-target label {
+  margin: 0 5px;
+  display: block;
+}
+
+#popover-target input {
+  margin-right: 5px;
+}
+
+#popover-target .disabled {
+  color: #ddd;
+}
+
+.dropdown-menu {
+  @extend .bg-dark;
+  .dropdown-item {
+    @extend .text-white;
+  }
+  .dropdown-item:hover {
+    @extend .bg-dark;
+  }
+}
+
+.submenu {
+  @extend .bg-dark;
+  @extend .p-1;
+
+  .btn {
+    @extend .btn-secondary;
+    @extend .shadow;
+    @extend .mt-1;
+    @extend .mb-1;
+  }
+}

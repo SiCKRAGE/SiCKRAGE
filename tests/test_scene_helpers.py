@@ -22,16 +22,16 @@ from __future__ import print_function, unicode_literals
 import unittest
 
 import sickrage
+import tests
 from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
 from sickrage.core.tv.show import TVShow
-from tests import SiCKRAGETestDBCase
 
 
-class SceneTests(SiCKRAGETestDBCase):
+class SceneTests(tests.SiCKRAGETestDBCase):
     def _test_sceneToNormalShowNames(self, name, expected):
         result = show_names.sceneToNormalShowNames(name)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
@@ -59,16 +59,15 @@ class SceneTests(SiCKRAGETestDBCase):
         self.assertTrue(show_names.isGoodResult(name, show))
 
     def test_isGoodName(self):
-        listOfcases = [('Show.Name.S01E02.Test-Test', 'Show/Name'),
-                       ('Show.Name.S01E02.Test-Test', 'Show. Name'),
-                       ('Show.Name.S01E02.Test-Test', 'Show- Name'),
-                       ('Show.Name.Part.IV.Test-Test', 'Show Name'),
-                       ('Show.Name.S01.Test-Test', 'Show Name'),
-                       ('Show.Name.E02.Test-Test', 'Show: Name'),
-                       ('Show Name Season 2 Test', 'Show: Name'),
-                       ]
+        list_of_cases = [('Show.Name.S01E02.Test-Test', 'Show/Name'),
+                         ('Show.Name.S01E02.Test-Test', 'Show. Name'),
+                         ('Show.Name.S01E02.Test-Test', 'Show- Name'),
+                         ('Show.Name.Part.IV.Test-Test', 'Show Name'),
+                         ('Show.Name.S01.Test-Test', 'Show Name'),
+                         ('Show.Name.E02.Test-Test', 'Show: Name'),
+                         ('Show Name Season 2 Test', 'Show: Name')]
 
-        for testCase in listOfcases:
+        for testCase in list_of_cases:
             scene_name, show_name = testCase
             s = TVShow(1, 0)
             s.name = show_name
@@ -119,7 +118,7 @@ class SceneTests(SiCKRAGETestDBCase):
         self._test_filterBadReleases('Show.S02.This.Is.German', False)
 
 
-class SceneExceptionTestCase(SiCKRAGETestDBCase):
+class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(SceneExceptionTestCase, self).setUp()
         scene_exceptions.retrieve_exceptions()

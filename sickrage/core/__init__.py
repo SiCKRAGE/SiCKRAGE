@@ -43,6 +43,7 @@ import adba
 import sickrage
 from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
+from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
@@ -143,6 +144,7 @@ class Core(object):
         self.auto_postprocessor = None
         self.upnp_client = None
         self.oidc_client = None
+        self.quicksearch_cache = None
 
     def start(self):
         self.started = True
@@ -178,6 +180,7 @@ class Core(object):
         self.subtitle_searcher = SubtitleSearcher()
         self.auto_postprocessor = AutoPostProcessor()
         self.upnp_client = UPNPClient()
+        self.quicksearch_cache = QuicksearchCache()
 
         # setup oidc client
         realm = KeycloakRealm(server_url='https://auth.sickrage.ca', realm_name='sickrage')
@@ -270,7 +273,7 @@ class Core(object):
         # load data for shows from database
         self.load_shows()
 
-        if self.config.default_page not in ('home', 'schedule', 'history', 'news', 'IRC'):
+        if self.config.default_page not in ('schedule', 'history', 'IRC'):
             self.config.default_page = 'home'
 
         # cleanup cache folder
@@ -438,6 +441,16 @@ class Core(object):
             id=self.subtitle_searcher.name
         )
 
+        # add upnp client job
+        self.scheduler.add_job(
+            self.upnp_client.run,
+            IntervalTrigger(
+                seconds=self.upnp_client._nat_portmap_lifetime
+            ),
+            name=self.upnp_client.name,
+            id=self.upnp_client.name
+        )
+
         # start scheduler service
         self.scheduler.start()
 
@@ -445,10 +458,6 @@ class Core(object):
         self.search_queue.start()
         self.show_queue.start()
         self.postprocessor_queue.start()
-
-        # start upnp client
-        if self.config.enable_upnp:
-            self.upnp_client.start()
 
         # start webserver
         self.wserver.start()
@@ -463,10 +472,6 @@ class Core(object):
             # shutdown webserver
             if self.wserver:
                 self.wserver.shutdown()
-
-            # shutdown upnp client
-            if self.upnp_client:
-                self.upnp_client.shutdown()
 
             # shutdown show queue
             if self.show_queue:
@@ -528,12 +533,15 @@ class Core(object):
 
     def load_shows(self):
         """
-        Populates the showlist with shows from the database
+        Populates the showlist and quicksearch cache with shows and episodes from the database
         """
+
+        self.quicksearch_cache.load()
 
         for dbData in self.main_db.all('tv_shows'):
             try:
                 self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
-                self.showlist += [TVShow(int(dbData['indexer']), int(dbData['indexer_id']))]
+                self.showlist.append(TVShow(int(dbData['indexer']), int(dbData['indexer_id'])))
+                self.quicksearch_cache.add_show(dbData['indexer_id'])
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (dbData['location'], str(e)))

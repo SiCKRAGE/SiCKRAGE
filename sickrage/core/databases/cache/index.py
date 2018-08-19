@@ -126,3 +126,18 @@ class CacheProvidersIndex(HashIndex):
 
     def make_key(self, key):
         return md5(key.encode('utf-8')).hexdigest()
+
+
+class CacheQuicksearchIndex(HashIndex):
+    _version = 1
+
+    def __init__(self, *args, **kwargs):
+        kwargs['key_format'] = 'I'
+        super(CacheQuicksearchIndex, self).__init__(*args, **kwargs)
+
+    def make_key_value(self, data):
+        if data.get('_t') == 'quicksearch' and data.get('showid'):
+            return data.get('showid'), None
+
+    def make_key(self, key):
+        return key

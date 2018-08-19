@@ -13,9 +13,11 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="input-group input350">
-                <div class="input-group-addon">
-                    <span class="glyphicon glyphicon-sunglasses"></span>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="fas fa-glasses"></span>
+                    </span>
                 </div>
                 <select id="qualityPreset" name="quality_preset" class="form-control" title="qualityPreset">
                     <option value="0">Custom</option>
@@ -25,8 +27,8 @@
                 </select>
             </div>
             <div id="qualityPreset_label">
-                <label for="qualityPreset">
-                    <p>${_('Preferred qualities replace existing downloads till highest quality is met')}</p>
+                <label class="text-info" for="qualityPreset">
+                    ${_('Preferred qualities replace existing downloads till highest quality is met')}
                 </label>
             </div>
         </div>
@@ -40,11 +42,13 @@
                     <b style="text-decoration: underline;">${_('Allowed')}</b>, ${_('even if they are lower.')}
                 </p>
 
-                <div style="padding-right: 40px; text-align: left; float: left;">
+                <div class="float-left mx-1">
                     <h5>${_('Allowed')}</h5>
-                    <div class="input-group input350">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-sunglasses"></span>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-glasses"></span>
+                            </span>
                         </div>
                         <% anyQualityList = filter(lambda x: x > Quality.NONE, Quality.qualityStrings) %>
                         <select id="anyQualities" name="anyQualities" multiple="multiple" size="${len(anyQualityList)}"
@@ -56,15 +60,17 @@
                     </div>
                 </div>
 
-                <div style="text-align: left; float: left;">
+                <div class="float-left">
                     <h5>${_('Preferred')}</h5>
-                    <div class="input-group input350">
-                        <div class="input-group-addon">
-                            <span class="glyphicon glyphicon-sunglasses"></span>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="fas fa-glasses"></span>
+                            </span>
                         </div>
                         <% bestQualityList = filter(lambda x: Quality.SDTV <= x < Quality.UNKNOWN, Quality.qualityStrings) %>
                         <select id="bestQualities" name="bestQualities" multiple="multiple"
-                                size="${len(bestQualityList)}" class="form-control form-control-inline input-sm"
+                                size="${len(bestQualityList)}" class="form-control form-control-inline"
                                 title="bestQualities">
                             % for curQuality in sorted(bestQualityList):
                                 <option value="${curQuality}" ${('', 'selected="selected"')[curQuality in bestQualities]}>${Quality.qualityStrings[curQuality]}</option>

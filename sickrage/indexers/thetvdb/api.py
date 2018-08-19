@@ -296,9 +296,6 @@ class Actor(dict):
 
 class Tvdb:
     """Create easy-to-use interface to name of season/episode name
-    >>> t = Tvdb()
-    >>> t['Scrubs'][1][24]['episodename']
-    'My Last Day'
     """
 
     def __init__(self,
@@ -348,7 +345,7 @@ class Tvdb:
         self.config['api']['images']['series'] = "/series/{id}/images/query?keyType=series"
         self.config['api']['images']['season'] = "/series/{id}/images/query?keyType=season&subKey={season}"
         self.config['api']['images']['seasonwide'] = "/series/{id}/images/query?keyType=seasonwide&subKey={season}"
-        self.config['api']['images']['prefix'] = "http://thetvdb.com/banners/{value}"
+        self.config['api']['images']['prefix'] = "https://thetvdb.com/banners/{value}"
 
         # api-v2 language
         self.config['api']['lang'] = 'en'
@@ -390,7 +387,8 @@ class Tvdb:
         self.jwt_token = self._request('get', self.config['api']['refresh'])['token']
 
     def _login(self):
-        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})['token']
+        self.jwt_token = self._request('post', self.config['api']['login'], json={'apikey': self.config['apikey']})[
+            'token']
 
     def authenticate(self):
         try:
@@ -586,21 +584,26 @@ class Tvdb:
         # Parse episode data
         sickrage.app.log.debug('Getting all episode data for {}'.format(sid))
 
-        p = 1
         episodes = []
+        page = pages = 1
+
         while True:
+            if page > pages:
+                break
+
+            r = self._request('get', self.config['api']['episodes'].format(id=sid),
+                              lang=self.config['api']['lang'],
+                              params={'page': page})
+
+            pages = r['links']['last']
+
             try:
-                episode_info = self._request('get',
-                                             self.config['api']['episodes'].format(id=sid),
-                                             lang=self.config['api']['lang'],
-                                             params={'page': p}
-                                             )['data']
+                episode_info = r['data']
 
                 # translate if required to provided language
                 if not self.config['language'] == self.config['api']['lang']:
-                    intl_episode_info = self._request('get',
-                                                      self.config['api']['episodes'].format(id=sid),
-                                                      params={'page': p})
+                    intl_episode_info = self._request('get', self.config['api']['episodes'].format(id=sid),
+                                                      params={'page': page})
 
                     for i, x in enumerate(episode_info):
                         x.update((k, v) for k, v in intl_episode_info['data'][i].iteritems() if v)
@@ -608,7 +611,7 @@ class Tvdb:
 
                 episodes += episode_info
 
-                p += 1
+                page += 1
             except tvdb_error:
                 break
 

@@ -3,49 +3,56 @@
     import sickrage
     from sickrage.core.helpers import anon_url
 %>
-<%block name="content">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-lg-8 col-md-7 col-sm-7 col-xs-12 pull-right">
-                <div class="pull-right">
-                    <label>
-                        <span>${_('Sort By:')}</span>
-                        <select id="showsort" class="form-control form-control-inline input-sm" title="Show Sort">
-                            <option value="name">${_('Name')}</option>
-                            <option value="original" selected="selected">Original</option>
-                            <option value="votes">${_('Votes')}</option>
-                            <option value="rating">${_('% Rating')}</option>
-                            <option value="rating_votes">${_('% Rating > Votes')}</option>
-                        </select>
-                        &nbsp;
-                    </label>
-                    <label>
-                        <span>Sort Order:</span>
-                        <select id="showsortdirection" class="form-control form-control-inline input-sm"
-                                title="Show Sort Direction">
-                            <option value="asc" selected="selected">${_('Asc')}</option>
-                            <option value="desc">${_('Desc')}</option>
-                        </select>
-                    </label>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-5 col-sm-5 col-xs-12">
-                <h1 class="title">${title}</h1>
+<%block name="sub_navbar">
+    <div class="row submenu">
+        <div class="col text-left">
+            <div class="form-inline m-2">
+                <select id="showsort" class="form-control form-control-inline m-1" title="${_('Show Sort')}">
+                    <option value="name">${_('Name')}</option>
+                    <option value="original" selected="selected">${_('Original')}</option>
+                    <option value="votes">${_('Votes')}</option>
+                    <option value="rating">${_('% Rating')}</option>
+                    <option value="rating_votes">${_('% Rating > Votes')}</option>
+                </select>
+                &nbsp;
+                <select id="showsortdirection" class="form-control form-control-inline m-1" title="${_('Show Sort Direction')}">
+                    <option value="asc" selected="selected">${_('Asc')}</option>
+                    <option value="desc">${_('Desc')}</option>
+                </select>
             </div>
         </div>
-        <div class="row">
-            <% imdb_tt = {show.imdbid for show in sickrage.app.showlist if show.imdbid} %>
-            <div id="popularShows">
-                <div id="container">
-                    % if not popular_shows:
-                        <div class="trakt_show" style="width:100%; margin-top:20px">
-                            <p class="red-text">
-                                ${_('Fetching of IMDB Data failed. Are you online?')} <strong>${_('Exception:')}</strong>
-                            <p>${imdb_exception}</p>
-                        </div>
-                    % else:
-                        % for cur_result in popular_shows:
-                            % if not cur_result['imdb_tt'] in imdb_tt:
+
+        <div class="text-right pr-3">
+            <div class="form-inline d-inline m-1">
+                <div style="width: 100px" id="posterSizeSlider"></div>
+            </div>
+        </div>
+    </div>
+</%block>
+
+<%block name="content">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h3>${title}</h3>
+                </div>
+                <div class="card-body">
+                    <% imdb_tt = {show.imdbid for show in sickrage.app.showlist if show.imdbid} %>
+                    <div class="loading-spinner text-center">
+                        <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
+                    </div>
+                    <div class="show-grid mx-auto d-none">
+                        % if not popular_shows:
+                            <div class="trakt_show" style="width:100%; margin-top:20px">
+                                <p class="red-text">
+                                    ${_('Fetching of IMDB Data failed. Are you online?')}
+                                    <strong>${_('Exception:')}</strong>
+                                <p>${imdb_exception}</p>
+                            </div>
+                        % else:
+                            % for cur_result in popular_shows:
+                                % if not cur_result['imdb_tt'] in imdb_tt:
                                 % if 'rating' in cur_result and cur_result['rating']:
                                     <% cur_rating = cur_result['rating'] %>
                                     <% cur_votes = cur_result['votes'] %>
@@ -54,38 +61,38 @@
                                     <% cur_votes = '0' %>
                                 % endif
 
-                                <div class="trakt_show" data-name="${cur_result['name']}" data-rating="${cur_rating}"
-                                     data-votes="${cur_votes.replace(',', '')}">
-                                    <div class="traktContainer">
-                                        <div class="trakt-image">
-                                            <a class="trakt-image" href="${anon_url(cur_result['imdb_url'])}"
-                                               target="_blank">
-                                                <img alt="" class="trakt-image"
-                                                     src="${srWebRoot}/${cur_result['image_path']}"
-                                                     height="273px" width="186px"/>
-                                            </a>
-                                        </div>
-
-                                        <div class="show-title">
-                                            ${(cur_result['name'], '<span>&nbsp;</span>')['' == cur_result['name']]}
-                                        </div>
-
-                                        <div class="clearfix">
-                                            <p>
-                                                ${int(float(cur_rating)*10)}%
-                                                <span class="fa fa-heart red-text"></span>
-                                            </p>
-                                            <i>${cur_votes}</i>
-                                            <div class="traktShowTitleIcons">
+                                    <div class="show-container" data-name="${cur_result['name']}"
+                                         data-rating="${cur_rating}"
+                                         data-votes="${cur_votes.replace(',', '')}">
+                                        <div class="card card-block text-white bg-dark m-1 shadow">
+                                            <div class="card-header p-0">
+                                                <a class="trakt-image" href="${anon_url(cur_result['imdb_url'])}"
+                                                   target="_blank">
+                                                    <img class="card-img-top"
+                                                         src="${srWebRoot}/${cur_result['image_path']}"/>
+                                                </a>
+                                            </div>
+                                            <div class="card-body text-truncate py-1 px-1 small">
+                                                <div class="show-title">
+                                                    ${(cur_result['name'], '<span>&nbsp;</span>')['' == cur_result['name']]}
+                                                </div>
+                                                <div class="show-votes">
+                                                    ${cur_votes} <i class="fas fa-thumbs-up text-success"></i>
+                                                </div>
+                                                <div class="show-ratings">
+                                                    ${int(float(cur_rating)*10)}% <i class="fas fa-heart text-danger"></i>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer show-details p-1">
                                                 <a href="${srWebRoot}/home/addShows/addShowByID/?indexer_id=${cur_result['imdb_tt']}&showName=${cur_result['name']}"
-                                                   class="btn btn-xs" data-no-redirect>${_('Add Show')}</a>
+                                                   class="btn btn-sm" data-no-redirect>${_('Add Show')}</a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            % endif
-                        % endfor
-                    % endif
+                                % endif
+                            % endfor
+                        % endif
+                    </div>
                 </div>
             </div>
         </div>
