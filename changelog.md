@@ -1,6 +1,7 @@
 # Changelog
 
-- * 16b6fa0 - 2018-08-19: Release v9.3.57 
+- * c0e5add - 2018-08-20: Fixed issue #253 - Provider Option Missing Cookie Field 
+- * e5b5706 - 2018-08-19: Release v9.3.57 
 - * b1dc06d - 2018-08-19: Release v9.3.56 
 - * e26fd2e - 2018-08-19: Pre-Release v9.3.56.dev29 
 - * d590b01 - 2018-08-19: Migrated upnp client from threaded object to scheduler job, resolves shutdown/restart problems 
