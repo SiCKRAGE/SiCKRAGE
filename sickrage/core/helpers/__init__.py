@@ -1813,3 +1813,22 @@ def total_seconds(td):
     Python 2.7's :meth:`datetime.timdelta.total_seconds`.
     """
     return (td.microseconds + (td.seconds + td.days * 24 * 3600) * 10 ** 6) / 10 ** 6
+
+
+def episode_num(season=None, episode=None, **kwargs):
+    """
+    Convert season and episode into string
+    :param season: Season number
+    :param episode: Episode Number
+    :keyword numbering: Absolute for absolute numbering
+    :returns: a string in s01e01 format or absolute numbering
+    """
+
+    numbering = kwargs.pop('numbering', 'standard')
+
+    if numbering == 'standard':
+        if season is not None and episode:
+            return 'S{0:0>2}E{1:02}'.format(season, episode)
+    elif numbering == 'absolute':
+        if not (season and episode) and (season or episode):
+            return '{0:0>3}'.format(season or episode)
