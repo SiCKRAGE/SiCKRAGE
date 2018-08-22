@@ -1,6 +1,7 @@
 # Changelog
 
-- * 90a1547 - 2018-08-22: Fixed issue #256 - unable to search BTN 
+- * 63b24b5 - 2018-08-22: Pre-Release v9.3.58.dev1 
+- * 9010755 - 2018-08-22: Fixed issue #256 - unable to search BTN 
 - * 5f0e3bf - 2018-08-20: Fixed issue #253 - Provider Option Missing Cookie Field 
 - * e5b5706 - 2018-08-19: Release v9.3.57 
 - * b1dc06d - 2018-08-19: Release v9.3.56 

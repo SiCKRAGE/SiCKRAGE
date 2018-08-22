@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-19 13:03-0700\n"
-"PO-Revision-Date: 2018-08-19 20:04\n"
+"POT-Creation-Date: 2018-08-22 09:50-0700\n"
+"PO-Revision-Date: 2018-08-22 16:50\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -504,7 +504,7 @@ msgid "Downloaded"
 msgstr "下载"
 
 #: sickrage/core/common.py:626
-#: sickrage/core/webserver/views/config/providers.mako:900
+#: sickrage/core/webserver/views/config/providers.mako:915
 #: sickrage/core/webserver/views/history.mako:123
 msgid "Subtitled"
 msgstr "正版"
@@ -610,7 +610,7 @@ msgstr "你想要添加 MyList 爲发作吗？"
 #: sickrage/core/webserver/views/config/postprocessing.mako:401
 #: sickrage/core/webserver/views/config/postprocessing.mako:1403
 #: sickrage/core/webserver/views/config/providers.mako:120
-#: sickrage/core/webserver/views/config/providers.mako:916
+#: sickrage/core/webserver/views/config/providers.mako:932
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
 #: sickrage/core/webserver/views/config/search.mako:306
 #: sickrage/core/webserver/views/config/search.mako:731
@@ -3524,299 +3524,331 @@ msgid "Configure provider:"
 msgstr "配置提供程序："
 
 #: sickrage/core/webserver/views/config/providers.mako:181
-#: sickrage/core/webserver/views/config/providers.mako:308
-#: sickrage/core/webserver/views/config/providers.mako:985
+#: sickrage/core/webserver/views/config/providers.mako:311
+#: sickrage/core/webserver/views/config/providers.mako:1001
 msgid "API key:"
 msgstr "API 密钥："
 
 #: sickrage/core/webserver/views/config/providers.mako:203
-#: sickrage/core/webserver/views/config/providers.mako:328
-#: sickrage/core/webserver/views/config/providers.mako:778
+#: sickrage/core/webserver/views/config/providers.mako:331
+#: sickrage/core/webserver/views/config/providers.mako:789
 msgid "Enable daily searches"
 msgstr "使每日搜索"
 
-#: sickrage/core/webserver/views/config/providers.mako:209
-#: sickrage/core/webserver/views/config/providers.mako:334
-#: sickrage/core/webserver/views/config/providers.mako:784
+#: sickrage/core/webserver/views/config/providers.mako:210
+#: sickrage/core/webserver/views/config/providers.mako:338
+#: sickrage/core/webserver/views/config/providers.mako:796
 msgid "enable provider to perform daily searches."
 msgstr "使提供程序可以执行日常的搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:218
-#: sickrage/core/webserver/views/config/providers.mako:343
-#: sickrage/core/webserver/views/config/providers.mako:808
+#: sickrage/core/webserver/views/config/providers.mako:219
+#: sickrage/core/webserver/views/config/providers.mako:347
+#: sickrage/core/webserver/views/config/providers.mako:821
 msgid "Enable backlog searches"
 msgstr "使积压搜索"
 
-#: sickrage/core/webserver/views/config/providers.mako:224
-#: sickrage/core/webserver/views/config/providers.mako:349
-#: sickrage/core/webserver/views/config/providers.mako:814
+#: sickrage/core/webserver/views/config/providers.mako:226
+#: sickrage/core/webserver/views/config/providers.mako:354
+#: sickrage/core/webserver/views/config/providers.mako:828
 msgid "enable provider to perform backlog searches."
 msgstr "使提供程序可以执行积压搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:233
-#: sickrage/core/webserver/views/config/providers.mako:358
-#: sickrage/core/webserver/views/config/providers.mako:823
+#: sickrage/core/webserver/views/config/providers.mako:235
+#: sickrage/core/webserver/views/config/providers.mako:363
+#: sickrage/core/webserver/views/config/providers.mako:837
 msgid "Search mode fallback"
 msgstr "搜索模式回退"
 
-#: sickrage/core/webserver/views/config/providers.mako:239
+#: sickrage/core/webserver/views/config/providers.mako:242
 msgid "when searching for a complete season depending on search mode you may"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:241
+#: sickrage/core/webserver/views/config/providers.mako:244
 msgid "return no results, this helps by restarting the search using the opposite"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:243
+#: sickrage/core/webserver/views/config/providers.mako:246
 msgid "search mode."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:252
-#: sickrage/core/webserver/views/config/providers.mako:375
-#: sickrage/core/webserver/views/config/providers.mako:840
+#: sickrage/core/webserver/views/config/providers.mako:255
+#: sickrage/core/webserver/views/config/providers.mako:381
+#: sickrage/core/webserver/views/config/providers.mako:855
 msgid "Season search mode"
 msgstr "季节搜索模式"
 
-#: sickrage/core/webserver/views/config/providers.mako:261
-#: sickrage/core/webserver/views/config/providers.mako:395
-#: sickrage/core/webserver/views/config/providers.mako:849
+#: sickrage/core/webserver/views/config/providers.mako:264
+#: sickrage/core/webserver/views/config/providers.mako:401
+#: sickrage/core/webserver/views/config/providers.mako:864
 msgid "season packs only."
 msgstr "只有季节包。"
 
-#: sickrage/core/webserver/views/config/providers.mako:269
-#: sickrage/core/webserver/views/config/providers.mako:384
-#: sickrage/core/webserver/views/config/providers.mako:861
+#: sickrage/core/webserver/views/config/providers.mako:272
+#: sickrage/core/webserver/views/config/providers.mako:390
+#: sickrage/core/webserver/views/config/providers.mako:876
 msgid "episodes only."
 msgstr "只有情节。"
 
-#: sickrage/core/webserver/views/config/providers.mako:272
-#: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:867
+#: sickrage/core/webserver/views/config/providers.mako:275
+#: sickrage/core/webserver/views/config/providers.mako:407
+#: sickrage/core/webserver/views/config/providers.mako:882
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "在寻找完整的季节的时候你可以选择让它寻找季节包只，或选择要生成一个完整赛季从只是单一的情节。"
 
-#: sickrage/core/webserver/views/config/providers.mako:289
-#: sickrage/core/webserver/views/config/providers.mako:500
+#: sickrage/core/webserver/views/config/providers.mako:292
+#: sickrage/core/webserver/views/config/providers.mako:506
 msgid "Username:"
 msgstr "用户名："
 
-#: sickrage/core/webserver/views/config/providers.mako:364
-#: sickrage/core/webserver/views/config/providers.mako:829
+#: sickrage/core/webserver/views/config/providers.mako:370
+#: sickrage/core/webserver/views/config/providers.mako:844
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "当寻找一个完整的赛季根据搜索模式，你可能会不返回任何结果，这有助于通过重新启动使用相反的搜索模式进行搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:416
+#: sickrage/core/webserver/views/config/providers.mako:422
 msgid "Custom URL:"
 msgstr "自定义的 URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:437
+#: sickrage/core/webserver/views/config/providers.mako:432
+msgid "Provider custom url"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:443
 msgid "Api key:"
 msgstr "Api 密钥："
 
-#: sickrage/core/webserver/views/config/providers.mako:458
+#: sickrage/core/webserver/views/config/providers.mako:453
+msgid "Provider API key"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:464
 msgid "Digest:"
 msgstr "摘要："
 
-#: sickrage/core/webserver/views/config/providers.mako:478
+#: sickrage/core/webserver/views/config/providers.mako:473
+msgid "Provider digest"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:484
 msgid "Hash:"
 msgstr "哈希："
 
-#: sickrage/core/webserver/views/config/providers.mako:521
+#: sickrage/core/webserver/views/config/providers.mako:495
+msgid "Provider hash"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:516
+msgid "Provider username"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:527
 msgid "Password:"
 msgstr "密码："
 
-#: sickrage/core/webserver/views/config/providers.mako:540
+#: sickrage/core/webserver/views/config/providers.mako:536
+msgid "Provider password"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:546
 msgid "Passkey:"
 msgstr "密钥："
 
-#: sickrage/core/webserver/views/config/providers.mako:561
-#: sickrage/core/webserver/views/config/providers.mako:1114
+#: sickrage/core/webserver/views/config/providers.mako:556
+msgid "Provider PassKey"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:567
+#: sickrage/core/webserver/views/config/providers.mako:1130
 msgid "Cookies:"
 msgstr "饼干："
 
-#: sickrage/core/webserver/views/config/providers.mako:579
+#: sickrage/core/webserver/views/config/providers.mako:585
 msgid "this provider requires the following cookies: "
 msgstr "此提供程序需要以下 cookie:"
 
-#: sickrage/core/webserver/views/config/providers.mako:590
+#: sickrage/core/webserver/views/config/providers.mako:596
 msgid "Pin:"
 msgstr "Pin:"
 
-#: sickrage/core/webserver/views/config/providers.mako:600
+#: sickrage/core/webserver/views/config/providers.mako:606
 msgid "Provider PIN#"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:611
+#: sickrage/core/webserver/views/config/providers.mako:617
 msgid "Seed ratio:"
 msgstr "种子的比率："
 
-#: sickrage/core/webserver/views/config/providers.mako:623
+#: sickrage/core/webserver/views/config/providers.mako:630
 msgid "stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:633
+#: sickrage/core/webserver/views/config/providers.mako:639
 msgid "Minimum seeders:"
 msgstr "最低的播种机："
 
-#: sickrage/core/webserver/views/config/providers.mako:645
+#: sickrage/core/webserver/views/config/providers.mako:651
 msgid "Minimum allowed seeders"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:655
+#: sickrage/core/webserver/views/config/providers.mako:661
 msgid "Minimum leechers:"
 msgstr "最小懒鬼："
 
-#: sickrage/core/webserver/views/config/providers.mako:667
+#: sickrage/core/webserver/views/config/providers.mako:673
 msgid "Minimum allowed leechers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:677
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "Confirmed download"
 msgstr "确认的下载"
 
-#: sickrage/core/webserver/views/config/providers.mako:683
+#: sickrage/core/webserver/views/config/providers.mako:690
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "仅从受信任或验证上传者下载种子吗？"
 
-#: sickrage/core/webserver/views/config/providers.mako:692
+#: sickrage/core/webserver/views/config/providers.mako:699
 msgid "Ranked torrents"
 msgstr "排名的山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:698
+#: sickrage/core/webserver/views/config/providers.mako:706
 msgid "only download ranked torrents (internal releases)"
 msgstr "只下载排名的种子 （内部发行）"
 
-#: sickrage/core/webserver/views/config/providers.mako:707
+#: sickrage/core/webserver/views/config/providers.mako:715
 msgid "English torrents"
 msgstr "英语山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:713
+#: sickrage/core/webserver/views/config/providers.mako:722
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "只下载英语山洪或山洪包含英文字幕"
 
-#: sickrage/core/webserver/views/config/providers.mako:722
+#: sickrage/core/webserver/views/config/providers.mako:731
 msgid "For Spanish torrents"
 msgstr "对西班牙山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:729
+#: sickrage/core/webserver/views/config/providers.mako:739
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "只搜索此提供程序如果显示信息定义为\"西班牙\"（避免 VOS 节目提供商的使用）"
 
-#: sickrage/core/webserver/views/config/providers.mako:740
+#: sickrage/core/webserver/views/config/providers.mako:750
 msgid "Sort results by"
 msgstr "通过对结果进行排序"
 
-#: sickrage/core/webserver/views/config/providers.mako:763
+#: sickrage/core/webserver/views/config/providers.mako:759
+msgid "Sort search results"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:773
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "only download"
 msgstr "仅下载"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "torrents."
 msgstr "山洪。"
 
-#: sickrage/core/webserver/views/config/providers.mako:793
+#: sickrage/core/webserver/views/config/providers.mako:805
 msgid "Reject Blu-ray M2TS releases"
 msgstr "蓝光蓝光原版 M2TS 拒绝释放"
 
-#: sickrage/core/webserver/views/config/providers.mako:799
+#: sickrage/core/webserver/views/config/providers.mako:812
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "启用要忽略蓝光 MPEG-2 传输流容器发布"
 
-#: sickrage/core/webserver/views/config/providers.mako:878
+#: sickrage/core/webserver/views/config/providers.mako:893
 msgid "Category:"
 msgstr "类别："
 
-#: sickrage/core/webserver/views/config/providers.mako:906
+#: sickrage/core/webserver/views/config/providers.mako:922
 msgid "select torrent with Italian subtitle"
 msgstr "选择与意大利字幕的洪流"
 
-#: sickrage/core/webserver/views/config/providers.mako:928
-#: sickrage/core/webserver/views/config/providers.mako:1055
+#: sickrage/core/webserver/views/config/providers.mako:944
+#: sickrage/core/webserver/views/config/providers.mako:1071
 msgid "Configure Custom"
 msgstr "配置自定义"
 
-#: sickrage/core/webserver/views/config/providers.mako:929
+#: sickrage/core/webserver/views/config/providers.mako:945
 msgid "Newznab Providers"
 msgstr "Newznab 提供商"
 
-#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:948
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "添加、 设置或删除自定义 Newznab 提供。"
 
-#: sickrage/core/webserver/views/config/providers.mako:939
-#: sickrage/core/webserver/views/config/providers.mako:1066
+#: sickrage/core/webserver/views/config/providers.mako:955
+#: sickrage/core/webserver/views/config/providers.mako:1082
 msgid "Select provider:"
 msgstr "选择供应商："
 
-#: sickrage/core/webserver/views/config/providers.mako:947
-#: sickrage/core/webserver/views/config/providers.mako:1074
+#: sickrage/core/webserver/views/config/providers.mako:963
+#: sickrage/core/webserver/views/config/providers.mako:1090
 msgid "add new provider"
 msgstr "添加新的提供程序"
 
-#: sickrage/core/webserver/views/config/providers.mako:956
-#: sickrage/core/webserver/views/config/providers.mako:1083
+#: sickrage/core/webserver/views/config/providers.mako:972
+#: sickrage/core/webserver/views/config/providers.mako:1099
 msgid "Provider name:"
 msgstr "提供程序名称："
 
-#: sickrage/core/webserver/views/config/providers.mako:971
+#: sickrage/core/webserver/views/config/providers.mako:987
 msgid "Site URL:"
 msgstr "网址："
 
-#: sickrage/core/webserver/views/config/providers.mako:1000
+#: sickrage/core/webserver/views/config/providers.mako:1016
 msgid "Newznab search categories:"
 msgstr "Newznab 搜索类别："
 
-#: sickrage/core/webserver/views/config/providers.mako:1010
+#: sickrage/core/webserver/views/config/providers.mako:1026
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "（选择在左边，你 Newznab 类别并单击\"更新类别\"按钮，用于搜索）。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1012
+#: sickrage/core/webserver/views/config/providers.mako:1028
 msgid "Don't forget to save changes!"
 msgstr "别忘了保存更改 ！"
 
-#: sickrage/core/webserver/views/config/providers.mako:1022
+#: sickrage/core/webserver/views/config/providers.mako:1038
 msgid "Update Categories"
 msgstr "更新类别"
 
-#: sickrage/core/webserver/views/config/providers.mako:1032
+#: sickrage/core/webserver/views/config/providers.mako:1048
 msgid "Add"
 msgstr "添加"
 
-#: sickrage/core/webserver/views/config/providers.mako:1040
+#: sickrage/core/webserver/views/config/providers.mako:1056
 #: sickrage/core/webserver/views/includes/root_dirs.mako:39
 #: sickrage/core/webserver/views/manage/mass_edit.mako:78
 msgid "Delete"
 msgstr "删除"
 
-#: sickrage/core/webserver/views/config/providers.mako:1056
+#: sickrage/core/webserver/views/config/providers.mako:1072
 msgid "Torrent Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:1059
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "Add and setup or remove custom RSS providers."
 msgstr "添加、 设置或删除自定义 RSS 提供商。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1100
+#: sickrage/core/webserver/views/config/providers.mako:1116
 msgid "RSS URL:"
 msgstr "RSS 的 URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1121
+#: sickrage/core/webserver/views/config/providers.mako:1137
 msgid "ex. uid=xx;pass=yy"
 msgstr "如： uid = xx; 通过 = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1128
+#: sickrage/core/webserver/views/config/providers.mako:1144
 msgid "Search element:"
 msgstr "搜索元素："
 
-#: sickrage/core/webserver/views/config/providers.mako:1135
+#: sickrage/core/webserver/views/config/providers.mako:1151
 msgid "ex. title"
 msgstr "如： 标题"
 
