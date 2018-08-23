@@ -20,8 +20,6 @@ from __future__ import unicode_literals
 
 from urlparse import urljoin
 
-from requests.utils import dict_from_cookiejar
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, convert_size, try_int
@@ -33,12 +31,15 @@ class TorrentLeechProvider(TorrentProvider):
         super(TorrentLeechProvider, self).__init__("TorrentLeech", 'https://www.torrentleech.org', True)
 
         self.urls.update({
-            'login': '{base_url}/user/account/login/'.format(**self.urls),
+            'login': '{base_url}/user/account/login'.format(**self.urls),
             'search': '{base_url}/torrents/browse'.format(**self.urls),
         })
 
         self.username = None
         self.password = None
+
+        self.enable_cookies = True
+        self.required_cookies = ('tluid', 'tlpass')
 
         self.minseed = None
         self.minleech = None
@@ -48,28 +49,31 @@ class TorrentLeechProvider(TorrentProvider):
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        cookies = dict_from_cookiejar(self.session.cookies)
-        if any(cookies.values()) and cookies.get('member_id'):
-            return True
+        return self.cookie_login('log in')
 
-        login_params = {
-            'username': self.username,
-            'password': self.password,
-            'login': 'submit',
-            'remember_me': 'on',
-        }
-
-        try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
-        except Exception:
-            sickrage.app.log.warning("Unable to connect to provider")
-            return False
-
-        if '<title>Login :: TorrentLeech.org</title>' in response:
-            sickrage.app.log.warning("Invalid username or password. Check your settings")
-            return False
-
-        return True
+    # def login(self):
+    #     cookies = dict_from_cookiejar(self.session.cookies)
+    #     if any(cookies.values()) and cookies.get('member_id'):
+    #         return True
+    #
+    #     login_params = {
+    #         'username': self.username,
+    #         'password': self.password,
+    #         'login': 'submit',
+    #         'remember_me': 'on',
+    #     }
+    #
+    #     try:
+    #         response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+    #     except Exception:
+    #         sickrage.app.log.warning("Unable to connect to provider")
+    #         return False
+    #
+    #     if '<title>Login :: TorrentLeech.org</title>' in response:
+    #         sickrage.app.log.warning("Invalid username or password. Check your settings")
+    #         return False
+    #
+    #     return True
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
