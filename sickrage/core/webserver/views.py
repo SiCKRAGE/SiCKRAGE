@@ -27,6 +27,7 @@ import time
 import traceback
 import urllib
 from collections import OrderedDict
+from urlparse import urlparse
 
 import dateutil.tz
 import markdown2
@@ -211,6 +212,15 @@ class BaseHandler(RequestHandler):
         self.set_header("Access-Control-Allow-Headers", "x-requested-with")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
+
+    def redirect(self, url, permanent=True, status=None):
+        m = re.search(r'(?!%s)/(.*)' % sickrage.app.config.web_root, url)
+        if m: url = "{}/{}".format(sickrage.app.config.web_root, m.group(0).lstrip('/'))
+        super(BaseHandler, self).redirect(url, permanent, status)
+
+    def previous_url(self):
+        url = urlparse(self.request.headers.get("referer", "/{}/".format(sickrage.app.config.default_page)))
+        return url._replace(scheme="", netloc="").geturl()
 
 
 class WebHandler(BaseHandler):
@@ -1032,7 +1042,7 @@ class Home(WebHandler):
             topmenu="system",
             controller='home',
             action="restart",
-        )# if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
+        )  # if not force else 'SiCKRAGE is now restarting, please wait a minute then manually go back to the main page'
 
     def updateCheck(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
@@ -1042,7 +1052,7 @@ class Home(WebHandler):
         if not sickrage.app.version_updater.check_for_new_version(True):
             sickrage.app.alerts.message(_('No new updates!'))
 
-        return self.redirect("/{}/".format(sickrage.app.config.default_page))
+        return self.redirect(self.previous_url())
 
     def update(self, pid=None):
         if str(pid) != str(sickrage.app.pid):
@@ -1054,7 +1064,7 @@ class Home(WebHandler):
         else:
             self._genericMessage(_("Update Failed"),
                                  _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+            return self.redirect(self.previous_url())
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1069,7 +1079,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
 
-        return self.redirect("/{}/".format(sickrage.app.config.default_page))
+        return self.redirect(self.previous_url())
 
     def branchCheckout(self, branch):
         if branch and sickrage.app.version_updater.updater.current_branch != branch:
@@ -1080,7 +1090,7 @@ class Home(WebHandler):
         else:
             sickrage.app.alerts.message(_('Already on branch: '), branch)
 
-        return self.redirect("/{}/".format(sickrage.app.config.default_page))
+        return self.redirect(self.previous_url())
 
     def displayShow(self, show=None):
         if show is None:

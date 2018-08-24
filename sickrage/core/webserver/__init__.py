@@ -109,13 +109,9 @@ class WebServer(object):
                 # api
                 (r'%s(/?.*)' % self.api_root, ApiHandler),
 
-                # redirect to web root to home
+                # redirect to home
                 (r"(%s)" % sickrage.app.config.web_root, RedirectHandler,
                  {"url": "%s/home" % sickrage.app.config.web_root}),
-
-                # redirect to add in missing web root
-                (r"(?!%s)/(.*)" % sickrage.app.config.web_root, RedirectHandler,
-                 {"url": "%s/{0}" % sickrage.app.config.web_root}),
 
                 # api key
                 (r'%s/getkey(/?.*)' % sickrage.app.config.web_root, KeyHandler),
