@@ -35,7 +35,7 @@ class Notifications(object):
         self._messages = []
         self._errors = []
 
-    def message(self, title, message=None):
+    def message(self, title, message=""):
         """
         Add a regular notification to the queue
 
@@ -45,7 +45,7 @@ class Notifications(object):
 
         self._messages.append(Notification(title, message, MESSAGE))
 
-    def error(self, title, message=None):
+    def error(self, title, message=""):
         """
         Add an error notification to the queue
 

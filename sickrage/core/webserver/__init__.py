@@ -31,7 +31,7 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates, launch_browser
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
-from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler, WebSocketUIHandler
 
 
 class StaticImageHandler(StaticFileHandler):
@@ -81,7 +81,8 @@ class WebServer(object):
 
         # web root
         if sickrage.app.config.web_root:
-            sickrage.app.config.web_root = sickrage.app.config.web_root = ('/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
+            sickrage.app.config.web_root = sickrage.app.config.web_root = (
+                    '/' + sickrage.app.config.web_root.lstrip('/').strip('/'))
 
         # api root
         self.api_root = r'%s/api/%s' % (sickrage.app.config.web_root, sickrage.app.config.api_key)
@@ -105,73 +106,82 @@ class WebServer(object):
 
         # Load the app
         self.app = Application(
-            [
-                # api
-                (r'%s(/?.*)' % self.api_root, ApiHandler),
-
-                # redirect to home
-                (r"(%s)" % sickrage.app.config.web_root, RedirectHandler,
-                 {"url": "%s/home" % sickrage.app.config.web_root}),
-
-                # api key
-                (r'%s/getkey(/?.*)' % sickrage.app.config.web_root, KeyHandler),
-
-                # api builder
-                (r'%s/api/builder' % sickrage.app.config.web_root, RedirectHandler,
-                 {"url": sickrage.app.config.web_root + '/apibuilder/'}),
-
-                # login
-                (r'%s/login(/?)' % sickrage.app.config.web_root, LoginHandler),
-
-                # logout
-                (r'%s/logout(/?)' % sickrage.app.config.web_root, LogoutHandler),
-
-                # calendar
-                (r'%s/calendar' % sickrage.app.config.web_root, CalendarHandler),
-
-                # favicon
-                (r'%s/(favicon\.ico)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images/favicon.ico')}),
-
-                # images
-                (r'%s/images/(.*)' % sickrage.app.config.web_root, StaticImageHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images')}),
-
-                # css
-                (r'%s/css/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'css')}),
-
-                # scss
-                (r'%s/scss/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'scss')}),
-
-                # fonts
-                (r'%s/fonts/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'fonts')}),
-
-                # javascript
-                (r'%s/js/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": os.path.join(sickrage.app.config.gui_static_dir, 'js')}),
-
-                # videos
-                (r'%s/videos/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
-                 {"path": self.video_root}),
-            ] + Route.get_routes(sickrage.app.config.web_root),
             debug=True,
             autoreload=False,
             gzip=sickrage.app.config.web_use_gzip,
             cookie_secret=sickrage.app.config.web_cookie_secret,
             login_url='%s/login/' % sickrage.app.config.web_root)
 
-        self.server = HTTPServer(self.app, no_keep_alive=True, xheaders=sickrage.app.config.handle_reverse_proxy)
+        # Websocket handler
+        self.app.add_handlers(".*$", [
+            (r'%s/ws/ui' % sickrage.app.config.web_root, WebSocketUIHandler)
+        ])
 
+        # Static File Handlers
+        self.app.add_handlers('.*$', [
+            # api
+            (r'%s(/?.*)' % self.api_root, ApiHandler),
+
+            # redirect to home
+            (r"(%s)" % sickrage.app.config.web_root, RedirectHandler,
+             {"url": "%s/home" % sickrage.app.config.web_root}),
+
+            # api key
+            (r'%s/getkey(/?.*)' % sickrage.app.config.web_root, KeyHandler),
+
+            # api builder
+            (r'%s/api/builder' % sickrage.app.config.web_root, RedirectHandler,
+             {"url": sickrage.app.config.web_root + '/apibuilder/'}),
+
+            # login
+            (r'%s/login(/?)' % sickrage.app.config.web_root, LoginHandler),
+
+            # logout
+            (r'%s/logout(/?)' % sickrage.app.config.web_root, LogoutHandler),
+
+            # calendar
+            (r'%s/calendar' % sickrage.app.config.web_root, CalendarHandler),
+
+            # favicon
+            (r'%s/(favicon\.ico)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images/favicon.ico')}),
+
+            # images
+            (r'%s/images/(.*)' % sickrage.app.config.web_root, StaticImageHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'images')}),
+
+            # css
+            (r'%s/css/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'css')}),
+
+            # scss
+            (r'%s/scss/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'scss')}),
+
+            # fonts
+            (r'%s/fonts/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'fonts')}),
+
+            # javascript
+            (r'%s/js/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": os.path.join(sickrage.app.config.gui_static_dir, 'js')}),
+
+            # videos
+            (r'%s/videos/(.*)' % sickrage.app.config.web_root, StaticNoCacheFileHandler,
+             {"path": self.video_root}),
+        ])
+
+        # Web Handlers
+        self.app.add_handlers('.*$', Route.get_routes(sickrage.app.config.web_root))
+
+        self.server = HTTPServer(self.app, xheaders=sickrage.app.config.handle_reverse_proxy)
         if sickrage.app.config.enable_https: self.server.ssl_options = {
             "certfile": sickrage.app.config.https_cert,
             "keyfile": sickrage.app.config.https_key
         }
 
         try:
-            self.server.listen(sickrage.app.config.web_port, None)
+            self.server.listen(sickrage.app.config.web_port)
 
             sickrage.app.log.info(
                 "SiCKRAGE :: STARTED")
@@ -183,7 +193,8 @@ class WebServer(object):
                 "SiCKRAGE :: DATABASE:[v{}]".format(sickrage.app.main_db.version))
             sickrage.app.log.info(
                 "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
-                    sickrage.app.config.web_host, sickrage.app.config.web_port, sickrage.app.config.web_root))
+                                                        sickrage.app.config.web_host, sickrage.app.config.web_port,
+                                                        sickrage.app.config.web_root))
 
             # launch browser window
             if all([not sickrage.app.no_launch,
