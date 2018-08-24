@@ -1844,7 +1844,7 @@ class Config(object):
         provider_keys = ['enabled', 'confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
+                         'passkey', 'pin', 'reject_m2ts', 'cookies', 'custom_url']
 
         new_config = ConfigObj(sickrage.app.config_file, indent_type='  ', encoding='utf8')
         new_config.clear()
@@ -2466,7 +2466,7 @@ class ConfigMigrator(Config):
         provider_keys = ['confirmed', 'ranked', 'engrelease', 'onlyspasearch', 'sorting', 'options', 'ratio',
                          'minseed', 'minleech', 'freeleech', 'search_mode', 'search_fallback', 'enable_daily', 'key',
                          'enable_backlog', 'cat', 'subtitle', 'api_key', 'hash', 'digest', 'username', 'password',
-                         'passkey', 'pin', 'reject_m2ts', 'enable_cookies', 'cookies', 'custom_url']
+                         'passkey', 'pin', 'reject_m2ts', 'cookies', 'custom_url']
 
         self.config_obj['Providers'] = {'providers_order': self.check_setting_str('General', 'provider_order', '')}
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-19 13:03-0700\n"
-"PO-Revision-Date: 2018-08-19 20:04\n"
+"POT-Creation-Date: 2018-08-23 22:54-0700\n"
+"PO-Revision-Date: 2018-08-24 06:34\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "加载"
 msgid "Choose Directory"
 msgstr "选择目录"
 
-#: sickrage/core/webserver/views.py:3582 src/js/core.js:1466
+#: sickrage/core/webserver/views.py:3592 src/js/core.js:1466
 msgid "Clear History"
 msgstr "清除历史记录"
 
@@ -81,7 +81,7 @@ msgstr "清除历史记录"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "你确定你想要清除所有下载历史吗？"
 
-#: sickrage/core/webserver/views.py:3584 src/js/core.js:1472
+#: sickrage/core/webserver/views.py:3594 src/js/core.js:1472
 msgid "Trim History"
 msgstr "修剪的历史"
 
@@ -504,7 +504,7 @@ msgid "Downloaded"
 msgstr "下载"
 
 #: sickrage/core/common.py:626
-#: sickrage/core/webserver/views/config/providers.mako:900
+#: sickrage/core/webserver/views/config/providers.mako:915
 #: sickrage/core/webserver/views/history.mako:123
 msgid "Subtitled"
 msgstr "正版"
@@ -610,7 +610,7 @@ msgstr "你想要添加 MyList 爲发作吗？"
 #: sickrage/core/webserver/views/config/postprocessing.mako:401
 #: sickrage/core/webserver/views/config/postprocessing.mako:1403
 #: sickrage/core/webserver/views/config/providers.mako:120
-#: sickrage/core/webserver/views/config/providers.mako:916
+#: sickrage/core/webserver/views/config/providers.mako:932
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
 #: sickrage/core/webserver/views/config/search.mako:306
 #: sickrage/core/webserver/views/config/search.mako:731
@@ -756,13 +756,13 @@ msgstr "当启动 SickRage 界面"
 msgid "Shows"
 msgstr "显示"
 
-#: sickrage/core/webserver/views.py:502 sickrage/core/webserver/views.py:503
+#: sickrage/core/webserver/views.py:512 sickrage/core/webserver/views.py:513
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "Schedule"
 msgstr "附表"
 
-#: sickrage/core/webserver/views.py:3594 sickrage/core/webserver/views.py:3595
+#: sickrage/core/webserver/views.py:3604 sickrage/core/webserver/views.py:3605
 #: sickrage/core/webserver/views/config/general.mako:148
 #: sickrage/core/webserver/views/layouts/main.mako:224
 msgid "History"
@@ -3497,7 +3497,7 @@ msgstr "需要至少一个提供程序，但两个建议。"
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/洪流供应商可以在进行切换"
 
-#: sickrage/core/webserver/views.py:3627 sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3637 sickrage/core/webserver/views.py:3908
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Search Clients"
@@ -3524,299 +3524,331 @@ msgid "Configure provider:"
 msgstr "配置提供程序："
 
 #: sickrage/core/webserver/views/config/providers.mako:181
-#: sickrage/core/webserver/views/config/providers.mako:308
-#: sickrage/core/webserver/views/config/providers.mako:985
+#: sickrage/core/webserver/views/config/providers.mako:311
+#: sickrage/core/webserver/views/config/providers.mako:1001
 msgid "API key:"
 msgstr "API 密钥："
 
 #: sickrage/core/webserver/views/config/providers.mako:203
-#: sickrage/core/webserver/views/config/providers.mako:328
-#: sickrage/core/webserver/views/config/providers.mako:778
+#: sickrage/core/webserver/views/config/providers.mako:331
+#: sickrage/core/webserver/views/config/providers.mako:789
 msgid "Enable daily searches"
 msgstr "使每日搜索"
 
-#: sickrage/core/webserver/views/config/providers.mako:209
-#: sickrage/core/webserver/views/config/providers.mako:334
-#: sickrage/core/webserver/views/config/providers.mako:784
+#: sickrage/core/webserver/views/config/providers.mako:210
+#: sickrage/core/webserver/views/config/providers.mako:338
+#: sickrage/core/webserver/views/config/providers.mako:796
 msgid "enable provider to perform daily searches."
 msgstr "使提供程序可以执行日常的搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:218
-#: sickrage/core/webserver/views/config/providers.mako:343
-#: sickrage/core/webserver/views/config/providers.mako:808
+#: sickrage/core/webserver/views/config/providers.mako:219
+#: sickrage/core/webserver/views/config/providers.mako:347
+#: sickrage/core/webserver/views/config/providers.mako:821
 msgid "Enable backlog searches"
 msgstr "使积压搜索"
 
-#: sickrage/core/webserver/views/config/providers.mako:224
-#: sickrage/core/webserver/views/config/providers.mako:349
-#: sickrage/core/webserver/views/config/providers.mako:814
+#: sickrage/core/webserver/views/config/providers.mako:226
+#: sickrage/core/webserver/views/config/providers.mako:354
+#: sickrage/core/webserver/views/config/providers.mako:828
 msgid "enable provider to perform backlog searches."
 msgstr "使提供程序可以执行积压搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:233
-#: sickrage/core/webserver/views/config/providers.mako:358
-#: sickrage/core/webserver/views/config/providers.mako:823
+#: sickrage/core/webserver/views/config/providers.mako:235
+#: sickrage/core/webserver/views/config/providers.mako:363
+#: sickrage/core/webserver/views/config/providers.mako:837
 msgid "Search mode fallback"
 msgstr "搜索模式回退"
 
-#: sickrage/core/webserver/views/config/providers.mako:239
+#: sickrage/core/webserver/views/config/providers.mako:242
 msgid "when searching for a complete season depending on search mode you may"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:241
+#: sickrage/core/webserver/views/config/providers.mako:244
 msgid "return no results, this helps by restarting the search using the opposite"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:243
+#: sickrage/core/webserver/views/config/providers.mako:246
 msgid "search mode."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:252
-#: sickrage/core/webserver/views/config/providers.mako:375
-#: sickrage/core/webserver/views/config/providers.mako:840
+#: sickrage/core/webserver/views/config/providers.mako:255
+#: sickrage/core/webserver/views/config/providers.mako:381
+#: sickrage/core/webserver/views/config/providers.mako:855
 msgid "Season search mode"
 msgstr "季节搜索模式"
 
-#: sickrage/core/webserver/views/config/providers.mako:261
-#: sickrage/core/webserver/views/config/providers.mako:395
-#: sickrage/core/webserver/views/config/providers.mako:849
+#: sickrage/core/webserver/views/config/providers.mako:264
+#: sickrage/core/webserver/views/config/providers.mako:401
+#: sickrage/core/webserver/views/config/providers.mako:864
 msgid "season packs only."
 msgstr "只有季节包。"
 
-#: sickrage/core/webserver/views/config/providers.mako:269
-#: sickrage/core/webserver/views/config/providers.mako:384
-#: sickrage/core/webserver/views/config/providers.mako:861
+#: sickrage/core/webserver/views/config/providers.mako:272
+#: sickrage/core/webserver/views/config/providers.mako:390
+#: sickrage/core/webserver/views/config/providers.mako:876
 msgid "episodes only."
 msgstr "只有情节。"
 
-#: sickrage/core/webserver/views/config/providers.mako:272
-#: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:867
+#: sickrage/core/webserver/views/config/providers.mako:275
+#: sickrage/core/webserver/views/config/providers.mako:407
+#: sickrage/core/webserver/views/config/providers.mako:882
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "在寻找完整的季节的时候你可以选择让它寻找季节包只，或选择要生成一个完整赛季从只是单一的情节。"
 
-#: sickrage/core/webserver/views/config/providers.mako:289
-#: sickrage/core/webserver/views/config/providers.mako:500
+#: sickrage/core/webserver/views/config/providers.mako:292
+#: sickrage/core/webserver/views/config/providers.mako:506
 msgid "Username:"
 msgstr "用户名："
 
-#: sickrage/core/webserver/views/config/providers.mako:364
-#: sickrage/core/webserver/views/config/providers.mako:829
+#: sickrage/core/webserver/views/config/providers.mako:370
+#: sickrage/core/webserver/views/config/providers.mako:844
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "当寻找一个完整的赛季根据搜索模式，你可能会不返回任何结果，这有助于通过重新启动使用相反的搜索模式进行搜索。"
 
-#: sickrage/core/webserver/views/config/providers.mako:416
+#: sickrage/core/webserver/views/config/providers.mako:422
 msgid "Custom URL:"
 msgstr "自定义的 URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:437
+#: sickrage/core/webserver/views/config/providers.mako:432
+msgid "Provider custom url"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:443
 msgid "Api key:"
 msgstr "Api 密钥："
 
-#: sickrage/core/webserver/views/config/providers.mako:458
+#: sickrage/core/webserver/views/config/providers.mako:453
+msgid "Provider API key"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:464
 msgid "Digest:"
 msgstr "摘要："
 
-#: sickrage/core/webserver/views/config/providers.mako:478
+#: sickrage/core/webserver/views/config/providers.mako:473
+msgid "Provider digest"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:484
 msgid "Hash:"
 msgstr "哈希："
 
-#: sickrage/core/webserver/views/config/providers.mako:521
+#: sickrage/core/webserver/views/config/providers.mako:495
+msgid "Provider hash"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:516
+msgid "Provider username"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:527
 msgid "Password:"
 msgstr "密码："
 
-#: sickrage/core/webserver/views/config/providers.mako:540
+#: sickrage/core/webserver/views/config/providers.mako:536
+msgid "Provider password"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:546
 msgid "Passkey:"
 msgstr "密钥："
 
-#: sickrage/core/webserver/views/config/providers.mako:561
-#: sickrage/core/webserver/views/config/providers.mako:1114
+#: sickrage/core/webserver/views/config/providers.mako:556
+msgid "Provider PassKey"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:567
+#: sickrage/core/webserver/views/config/providers.mako:1130
 msgid "Cookies:"
 msgstr "饼干："
 
-#: sickrage/core/webserver/views/config/providers.mako:579
+#: sickrage/core/webserver/views/config/providers.mako:585
 msgid "this provider requires the following cookies: "
 msgstr "此提供程序需要以下 cookie:"
 
-#: sickrage/core/webserver/views/config/providers.mako:590
+#: sickrage/core/webserver/views/config/providers.mako:596
 msgid "Pin:"
 msgstr "Pin:"
 
-#: sickrage/core/webserver/views/config/providers.mako:600
+#: sickrage/core/webserver/views/config/providers.mako:606
 msgid "Provider PIN#"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:611
+#: sickrage/core/webserver/views/config/providers.mako:617
 msgid "Seed ratio:"
 msgstr "种子的比率："
 
-#: sickrage/core/webserver/views/config/providers.mako:623
+#: sickrage/core/webserver/views/config/providers.mako:630
 msgid "stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:633
+#: sickrage/core/webserver/views/config/providers.mako:639
 msgid "Minimum seeders:"
 msgstr "最低的播种机："
 
-#: sickrage/core/webserver/views/config/providers.mako:645
+#: sickrage/core/webserver/views/config/providers.mako:651
 msgid "Minimum allowed seeders"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:655
+#: sickrage/core/webserver/views/config/providers.mako:661
 msgid "Minimum leechers:"
 msgstr "最小懒鬼："
 
-#: sickrage/core/webserver/views/config/providers.mako:667
+#: sickrage/core/webserver/views/config/providers.mako:673
 msgid "Minimum allowed leechers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:677
+#: sickrage/core/webserver/views/config/providers.mako:683
 msgid "Confirmed download"
 msgstr "确认的下载"
 
-#: sickrage/core/webserver/views/config/providers.mako:683
+#: sickrage/core/webserver/views/config/providers.mako:690
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "仅从受信任或验证上传者下载种子吗？"
 
-#: sickrage/core/webserver/views/config/providers.mako:692
+#: sickrage/core/webserver/views/config/providers.mako:699
 msgid "Ranked torrents"
 msgstr "排名的山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:698
+#: sickrage/core/webserver/views/config/providers.mako:706
 msgid "only download ranked torrents (internal releases)"
 msgstr "只下载排名的种子 （内部发行）"
 
-#: sickrage/core/webserver/views/config/providers.mako:707
+#: sickrage/core/webserver/views/config/providers.mako:715
 msgid "English torrents"
 msgstr "英语山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:713
+#: sickrage/core/webserver/views/config/providers.mako:722
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "只下载英语山洪或山洪包含英文字幕"
 
-#: sickrage/core/webserver/views/config/providers.mako:722
+#: sickrage/core/webserver/views/config/providers.mako:731
 msgid "For Spanish torrents"
 msgstr "对西班牙山洪"
 
-#: sickrage/core/webserver/views/config/providers.mako:729
+#: sickrage/core/webserver/views/config/providers.mako:739
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "只搜索此提供程序如果显示信息定义为\"西班牙\"（避免 VOS 节目提供商的使用）"
 
-#: sickrage/core/webserver/views/config/providers.mako:740
+#: sickrage/core/webserver/views/config/providers.mako:750
 msgid "Sort results by"
 msgstr "通过对结果进行排序"
 
-#: sickrage/core/webserver/views/config/providers.mako:763
+#: sickrage/core/webserver/views/config/providers.mako:759
+msgid "Sort search results"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/providers.mako:773
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "only download"
 msgstr "仅下载"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:769
+#: sickrage/core/webserver/views/config/providers.mako:780
 msgid "torrents."
 msgstr "山洪。"
 
-#: sickrage/core/webserver/views/config/providers.mako:793
+#: sickrage/core/webserver/views/config/providers.mako:805
 msgid "Reject Blu-ray M2TS releases"
 msgstr "蓝光蓝光原版 M2TS 拒绝释放"
 
-#: sickrage/core/webserver/views/config/providers.mako:799
+#: sickrage/core/webserver/views/config/providers.mako:812
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "启用要忽略蓝光 MPEG-2 传输流容器发布"
 
-#: sickrage/core/webserver/views/config/providers.mako:878
+#: sickrage/core/webserver/views/config/providers.mako:893
 msgid "Category:"
 msgstr "类别："
 
-#: sickrage/core/webserver/views/config/providers.mako:906
+#: sickrage/core/webserver/views/config/providers.mako:922
 msgid "select torrent with Italian subtitle"
 msgstr "选择与意大利字幕的洪流"
 
-#: sickrage/core/webserver/views/config/providers.mako:928
-#: sickrage/core/webserver/views/config/providers.mako:1055
+#: sickrage/core/webserver/views/config/providers.mako:944
+#: sickrage/core/webserver/views/config/providers.mako:1071
 msgid "Configure Custom"
 msgstr "配置自定义"
 
-#: sickrage/core/webserver/views/config/providers.mako:929
+#: sickrage/core/webserver/views/config/providers.mako:945
 msgid "Newznab Providers"
 msgstr "Newznab 提供商"
 
-#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:948
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "添加、 设置或删除自定义 Newznab 提供。"
 
-#: sickrage/core/webserver/views/config/providers.mako:939
-#: sickrage/core/webserver/views/config/providers.mako:1066
+#: sickrage/core/webserver/views/config/providers.mako:955
+#: sickrage/core/webserver/views/config/providers.mako:1082
 msgid "Select provider:"
 msgstr "选择供应商："
 
-#: sickrage/core/webserver/views/config/providers.mako:947
-#: sickrage/core/webserver/views/config/providers.mako:1074
+#: sickrage/core/webserver/views/config/providers.mako:963
+#: sickrage/core/webserver/views/config/providers.mako:1090
 msgid "add new provider"
 msgstr "添加新的提供程序"
 
-#: sickrage/core/webserver/views/config/providers.mako:956
-#: sickrage/core/webserver/views/config/providers.mako:1083
+#: sickrage/core/webserver/views/config/providers.mako:972
+#: sickrage/core/webserver/views/config/providers.mako:1099
 msgid "Provider name:"
 msgstr "提供程序名称："
 
-#: sickrage/core/webserver/views/config/providers.mako:971
+#: sickrage/core/webserver/views/config/providers.mako:987
 msgid "Site URL:"
 msgstr "网址："
 
-#: sickrage/core/webserver/views/config/providers.mako:1000
+#: sickrage/core/webserver/views/config/providers.mako:1016
 msgid "Newznab search categories:"
 msgstr "Newznab 搜索类别："
 
-#: sickrage/core/webserver/views/config/providers.mako:1010
+#: sickrage/core/webserver/views/config/providers.mako:1026
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "（选择在左边，你 Newznab 类别并单击\"更新类别\"按钮，用于搜索）。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1012
+#: sickrage/core/webserver/views/config/providers.mako:1028
 msgid "Don't forget to save changes!"
 msgstr "别忘了保存更改 ！"
 
-#: sickrage/core/webserver/views/config/providers.mako:1022
+#: sickrage/core/webserver/views/config/providers.mako:1038
 msgid "Update Categories"
 msgstr "更新类别"
 
-#: sickrage/core/webserver/views/config/providers.mako:1032
+#: sickrage/core/webserver/views/config/providers.mako:1048
 msgid "Add"
 msgstr "添加"
 
-#: sickrage/core/webserver/views/config/providers.mako:1040
+#: sickrage/core/webserver/views/config/providers.mako:1056
 #: sickrage/core/webserver/views/includes/root_dirs.mako:39
 #: sickrage/core/webserver/views/manage/mass_edit.mako:78
 msgid "Delete"
 msgstr "删除"
 
-#: sickrage/core/webserver/views/config/providers.mako:1056
+#: sickrage/core/webserver/views/config/providers.mako:1072
 msgid "Torrent Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:1059
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "Add and setup or remove custom RSS providers."
 msgstr "添加、 设置或删除自定义 RSS 提供商。"
 
-#: sickrage/core/webserver/views/config/providers.mako:1100
+#: sickrage/core/webserver/views/config/providers.mako:1116
 msgid "RSS URL:"
 msgstr "RSS 的 URL:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1121
+#: sickrage/core/webserver/views/config/providers.mako:1137
 msgid "ex. uid=xx;pass=yy"
 msgstr "如： uid = xx; 通过 = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1128
+#: sickrage/core/webserver/views/config/providers.mako:1144
 msgid "Search element:"
 msgstr "搜索元素："
 
-#: sickrage/core/webserver/views/config/providers.mako:1135
+#: sickrage/core/webserver/views/config/providers.mako:1151
 msgid "ex. title"
 msgstr "如： 标题"
 
@@ -4709,7 +4741,7 @@ msgstr "播出日期"
 msgid "Download"
 msgstr "下载"
 
-#: sickrage/core/webserver/views.py:1000 sickrage/core/webserver/views.py:1001
+#: sickrage/core/webserver/views.py:1010 sickrage/core/webserver/views.py:1011
 #: sickrage/core/webserver/views/home/display_show.mako:560
 #: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4734,7 +4766,7 @@ msgstr "未知"
 msgid "Retry Download"
 msgstr "重试下载"
 
-#: sickrage/core/webserver/views.py:4894
+#: sickrage/core/webserver/views.py:4904
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "主要"
@@ -4860,7 +4892,7 @@ msgstr "使用 DVD 顺序而不是空气顺序"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"力完全更新\"是必要的并且如果您拥有现有的插曲需要手动对它们进行排序。"
 
-#: sickrage/core/webserver/views.py:3633 sickrage/core/webserver/views.py:4773
+#: sickrage/core/webserver/views.py:3643 sickrage/core/webserver/views.py:4783
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5182,7 +5214,7 @@ msgstr "执行重新启动"
 msgid "Daily Search"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4891
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "积压"
@@ -5207,7 +5239,7 @@ msgstr "开机自检过程"
 msgid "Subtitles Finder"
 msgstr "字幕 Finder"
 
-#: sickrage/core/webserver/views.py:4889
+#: sickrage/core/webserver/views.py:4899
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt 检查器"
@@ -5240,7 +5272,7 @@ msgstr "不"
 msgid "True"
 msgstr "真正"
 
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:4894
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "显示队列"
@@ -5418,7 +5450,7 @@ msgstr "<p>Select 您首选的字幕组从 <b>Available Groups</b>，并将它�
 msgid "Whitelist"
 msgstr "白名单"
 
-#: sickrage/core/webserver/views.py:1137
+#: sickrage/core/webserver/views.py:1147
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5510,7 +5542,7 @@ msgstr "根目录"
 msgid "New"
 msgstr "新增功能"
 
-#: sickrage/core/webserver/views.py:1100 sickrage/core/webserver/views.py:1877
+#: sickrage/core/webserver/views.py:1110 sickrage/core/webserver/views.py:1887
 #: sickrage/core/webserver/views/includes/root_dirs.mako:38
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5536,7 +5568,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "显示列表"
 
-#: sickrage/core/webserver/views.py:2242 sickrage/core/webserver/views.py:2243
+#: sickrage/core/webserver/views.py:2252 sickrage/core/webserver/views.py:2253
 #: sickrage/core/webserver/views/layouts/main.mako:146
 msgid "Add Shows"
 msgstr "添加显示"
@@ -5551,18 +5583,18 @@ msgstr "手动后处理"
 msgid "Manage"
 msgstr "管理"
 
-#: sickrage/core/webserver/views.py:3413 sickrage/core/webserver/views.py:3414
+#: sickrage/core/webserver/views.py:3423 sickrage/core/webserver/views.py:3424
 #: sickrage/core/webserver/views/layouts/main.mako:172
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "成批更新"
 
-#: sickrage/core/webserver/views.py:3021 sickrage/core/webserver/views.py:3022
+#: sickrage/core/webserver/views.py:3031 sickrage/core/webserver/views.py:3032
 #: sickrage/core/webserver/views/layouts/main.mako:175
 msgid "Backlog Overview"
 msgstr "积压工作概述"
 
-#: sickrage/core/webserver/views.py:3466 sickrage/core/webserver/views.py:3467
+#: sickrage/core/webserver/views.py:3476 sickrage/core/webserver/views.py:3477
 #: sickrage/core/webserver/views/layouts/main.mako:178
 msgid "Manage Queues"
 msgstr "管理队列"
@@ -5591,7 +5623,7 @@ msgstr "更新 Emby"
 msgid "Manage Torrents"
 msgstr "管理山洪"
 
-#: sickrage/core/webserver/views.py:3441 sickrage/core/webserver/views.py:3442
+#: sickrage/core/webserver/views.py:3451 sickrage/core/webserver/views.py:3452
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Failed Downloads"
 msgstr "失败的下载"
@@ -5604,12 +5636,12 @@ msgstr "错过了的字幕管理"
 msgid "Config"
 msgstr "配置"
 
-#: sickrage/core/webserver/views.py:3624
+#: sickrage/core/webserver/views.py:3634
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Help and Info"
 msgstr "帮助和信息"
 
-#: sickrage/core/webserver/views.py:3625
+#: sickrage/core/webserver/views.py:3635
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "General"
 msgstr "一般"
@@ -5618,28 +5650,28 @@ msgstr "一般"
 msgid "Backup and Restore"
 msgstr "备份和还原"
 
-#: sickrage/core/webserver/views.py:3628 sickrage/core/webserver/views.py:4198
+#: sickrage/core/webserver/views.py:3638 sickrage/core/webserver/views.py:4208
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "搜索提供程序"
 
-#: sickrage/core/webserver/views.py:3629 sickrage/core/webserver/views.py:4689
+#: sickrage/core/webserver/views.py:3639 sickrage/core/webserver/views.py:4699
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "字幕设置"
 
-#: sickrage/core/webserver/views.py:3630 sickrage/core/webserver/views.py:4812
+#: sickrage/core/webserver/views.py:3640 sickrage/core/webserver/views.py:4822
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "质量设置"
 
-#: sickrage/core/webserver/views.py:2206 sickrage/core/webserver/views.py:2207
-#: sickrage/core/webserver/views.py:3631 sickrage/core/webserver/views.py:4003
+#: sickrage/core/webserver/views.py:2216 sickrage/core/webserver/views.py:2217
+#: sickrage/core/webserver/views.py:3641 sickrage/core/webserver/views.py:4013
 #: sickrage/core/webserver/views/layouts/main.mako:261
 msgid "Post Processing"
 msgstr "后置处理"
 
-#: sickrage/core/webserver/views.py:3632 sickrage/core/webserver/views.py:4355
+#: sickrage/core/webserver/views.py:3642 sickrage/core/webserver/views.py:4365
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "通知"
@@ -5840,7 +5872,7 @@ msgstr "如果这些节目的发行是 Show.03.02.2010，而不是 Show.S02E03�
 msgid "Search for subtitles."
 msgstr "搜索字幕。"
 
-#: sickrage/core/webserver/views.py:3171 sickrage/core/webserver/views.py:3172
+#: sickrage/core/webserver/views.py:3181 sickrage/core/webserver/views.py:3182
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "批量编辑"
@@ -5880,7 +5912,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "未在进行中"
 
-#: sickrage/core/webserver/views.py:1134
+#: sickrage/core/webserver/views.py:1144
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5905,7 +5937,7 @@ msgstr "已禁用的国际音标搜索"
 msgid "Post-Processor:"
 msgstr "后处理器："
 
-#: sickrage/core/webserver/views.py:4885
+#: sickrage/core/webserver/views.py:4895
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "搜索队列"
@@ -6096,8 +6128,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "找不到下载的 <i>%s</i>"
 
 #: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2611
-#: sickrage/core/webserver/views.py:2623
+#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2621
+#: sickrage/core/webserver/views.py:2633
 msgid "Unable to add show"
 msgstr "无法添加显示"
 
@@ -6145,918 +6177,918 @@ msgstr "在显示"
 msgid " is already in your show list"
 msgstr "已在你显示列表中"
 
-#: sickrage/core/webserver/views.py:118 sickrage/core/webserver/views.py:119
+#: sickrage/core/webserver/views.py:119 sickrage/core/webserver/views.py:120
 msgid "HTTP Error 404"
 msgstr "HTTP 错误 404"
 
-#: sickrage/core/webserver/views.py:190 sickrage/core/webserver/views.py:191
+#: sickrage/core/webserver/views.py:191 sickrage/core/webserver/views.py:192
 msgid "HTTP Error 500"
 msgstr "HTTP 错误 500"
 
-#: sickrage/core/webserver/views.py:400
+#: sickrage/core/webserver/views.py:410
 msgid "API Key not generated"
 msgstr "不生成 API 密钥"
 
-#: sickrage/core/webserver/views.py:404 sickrage/core/webserver/views.py:405
+#: sickrage/core/webserver/views.py:414 sickrage/core/webserver/views.py:415
 msgid "API Builder"
 msgstr "API 生成器"
 
-#: sickrage/core/webserver/views.py:570
+#: sickrage/core/webserver/views.py:580
 msgid "Invalid show parameters"
 msgstr "无效的显示参数"
 
-#: sickrage/core/webserver/views.py:575
+#: sickrage/core/webserver/views.py:585
 msgid "Invalid show paramaters"
 msgstr "无效的显示参数"
 
-#: sickrage/core/webserver/views.py:582
+#: sickrage/core/webserver/views.py:592
 msgid "Invalid paramaters"
 msgstr "无效的参数"
 
-#: sickrage/core/webserver/views.py:585 sickrage/core/webserver/views.py:1680
-#: sickrage/core/webserver/views.py:1742
+#: sickrage/core/webserver/views.py:595 sickrage/core/webserver/views.py:1690
+#: sickrage/core/webserver/views.py:1752
 msgid "Episode couldn't be retrieved"
 msgstr "无法检索插曲"
 
-#: sickrage/core/webserver/views.py:623
+#: sickrage/core/webserver/views.py:633
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "错误： 不支持的请求。在查询字符串中发送 jsonp 请求与 'srcallback' 变量。"
 
-#: sickrage/core/webserver/views.py:659
+#: sickrage/core/webserver/views.py:669
 msgid "Success. Connected and authenticated"
 msgstr "成功。连接和身份验证"
 
-#: sickrage/core/webserver/views.py:661
+#: sickrage/core/webserver/views.py:671
 msgid "Authentication failed. SABnzbd expects "
 msgstr "身份验证失败。SABnzbd 预计"
 
-#: sickrage/core/webserver/views.py:661
+#: sickrage/core/webserver/views.py:671
 msgid " as authentication method, "
 msgstr "作为身份验证方法"
 
-#: sickrage/core/webserver/views.py:664
+#: sickrage/core/webserver/views.py:674
 msgid "Unable to connect to host"
 msgstr "无法连接到主机"
 
-#: sickrage/core/webserver/views.py:682
+#: sickrage/core/webserver/views.py:692
 msgid "SMS sent successfully"
 msgstr "短信发送成功"
 
-#: sickrage/core/webserver/views.py:684
+#: sickrage/core/webserver/views.py:694
 msgid "Problem sending SMS: "
 msgstr "发送短信的问题："
 
-#: sickrage/core/webserver/views.py:691
+#: sickrage/core/webserver/views.py:701
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "成功的电报通知。检查您的电报客户端，以确保它工作"
 
-#: sickrage/core/webserver/views.py:693
+#: sickrage/core/webserver/views.py:703
 msgid "Error sending Telegram notification: {message}"
 msgstr "发送电报通知时出错： {message}"
 
-#: sickrage/core/webserver/views.py:703
+#: sickrage/core/webserver/views.py:713
 msgid " with password: "
 msgstr "密码："
 
-#: sickrage/core/webserver/views.py:706
+#: sickrage/core/webserver/views.py:716
 msgid "Registered and Tested growl successfully "
 msgstr "注册和测试成功地咆哮"
 
-#: sickrage/core/webserver/views.py:708
+#: sickrage/core/webserver/views.py:718
 msgid "Registration and Testing of growl failed "
 msgstr "注册和咆哮测试失败"
 
-#: sickrage/core/webserver/views.py:715
+#: sickrage/core/webserver/views.py:725
 msgid "Test prowl notice sent successfully"
 msgstr "成功发送的测试徘徊通知书"
 
-#: sickrage/core/webserver/views.py:717
+#: sickrage/core/webserver/views.py:727
 msgid "Test prowl notice failed"
 msgstr "失败的测试徘徊通知书"
 
-#: sickrage/core/webserver/views.py:724
+#: sickrage/core/webserver/views.py:734
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 通知成功。检查您的 Boxcar2 客户端，以确保它工作"
 
-#: sickrage/core/webserver/views.py:726
+#: sickrage/core/webserver/views.py:736
 msgid "Error sending Boxcar2 notification"
 msgstr "发送 Boxcar2 通知时出错"
 
-#: sickrage/core/webserver/views.py:733
+#: sickrage/core/webserver/views.py:743
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "静力弹塑性通知成功。检查您的静力弹塑性客户端，以确保它工作"
 
-#: sickrage/core/webserver/views.py:735
+#: sickrage/core/webserver/views.py:745
 msgid "Error sending Pushover notification"
 msgstr "错误发送的静力弹塑性通知"
 
-#: sickrage/core/webserver/views.py:747
+#: sickrage/core/webserver/views.py:757
 msgid "Key verification successful"
 msgstr "关键验证成功"
 
-#: sickrage/core/webserver/views.py:749
+#: sickrage/core/webserver/views.py:759
 msgid "Unable to verify key"
 msgstr "无法验证密钥"
 
-#: sickrage/core/webserver/views.py:756
+#: sickrage/core/webserver/views.py:766
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "发微博成功，请检查你的 twitter 以确保它工作"
 
-#: sickrage/core/webserver/views.py:758
+#: sickrage/core/webserver/views.py:768
 msgid "Error sending tweet"
 msgstr "错误发送 tweet"
 
-#: sickrage/core/webserver/views.py:763
+#: sickrage/core/webserver/views.py:773
 msgid "Please enter a valid account sid"
 msgstr "请输入一个有效帐户 sid"
 
-#: sickrage/core/webserver/views.py:766
+#: sickrage/core/webserver/views.py:776
 msgid "Please enter a valid auth token"
 msgstr "请输入一个有效的身份验证令牌"
 
-#: sickrage/core/webserver/views.py:769
+#: sickrage/core/webserver/views.py:779
 msgid "Please enter a valid phone sid"
 msgstr "请输入有效的电话 sid"
 
-#: sickrage/core/webserver/views.py:772
+#: sickrage/core/webserver/views.py:782
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "请设置格式的电话号码为\"+ 1-# # #-# # #-# # #\""
 
-#: sickrage/core/webserver/views.py:776
+#: sickrage/core/webserver/views.py:786
 msgid "Authorization successful and number ownership verified"
 msgstr "授权成功和号码所有权验证"
 
-#: sickrage/core/webserver/views.py:778
+#: sickrage/core/webserver/views.py:788
 msgid "Error sending sms"
 msgstr "发送短信时出错"
 
-#: sickrage/core/webserver/views.py:784
+#: sickrage/core/webserver/views.py:794
 msgid "Slack message successful"
 msgstr "可宽延时间消息成功"
 
-#: sickrage/core/webserver/views.py:786
+#: sickrage/core/webserver/views.py:796
 msgid "Slack message failed"
 msgstr "可宽延时间消息失败"
 
-#: sickrage/core/webserver/views.py:792
+#: sickrage/core/webserver/views.py:802
 msgid "Discord message successful"
 msgstr "不和谐的消息成功"
 
-#: sickrage/core/webserver/views.py:794
+#: sickrage/core/webserver/views.py:804
 msgid "Discord message failed"
 msgstr "不和谐消息失败"
 
-#: sickrage/core/webserver/views.py:805
+#: sickrage/core/webserver/views.py:815
 msgid "Test KODI notice sent successfully to "
 msgstr "成功发送到测试科迪通知书"
 
-#: sickrage/core/webserver/views.py:807
+#: sickrage/core/webserver/views.py:817
 msgid "Test KODI notice failed to "
 msgstr "对失败的测试科迪通知书"
 
-#: sickrage/core/webserver/views.py:822
+#: sickrage/core/webserver/views.py:832
 msgid "Successful test notice sent to Plex client ... "
 msgstr "成功的测试通知发送到客户端丛..."
 
-#: sickrage/core/webserver/views.py:824
+#: sickrage/core/webserver/views.py:834
 msgid "Test failed for Plex client ... "
 msgstr "测试失败，丛客户端..."
 
-#: sickrage/core/webserver/views.py:827
+#: sickrage/core/webserver/views.py:837
 msgid "Tested Plex client(s): "
 msgstr "测试的丛客户端："
 
-#: sickrage/core/webserver/views.py:842
+#: sickrage/core/webserver/views.py:852
 msgid "Successful test of Plex server(s) ... "
 msgstr "成功的测试的丛服务器..."
 
-#: sickrage/core/webserver/views.py:845
+#: sickrage/core/webserver/views.py:855
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "测试失败，无丛媒体服务器主机指定"
 
-#: sickrage/core/webserver/views.py:847
+#: sickrage/core/webserver/views.py:857
 msgid "Test failed for Plex server(s) ... "
 msgstr "测试失败丛服务器..."
 
-#: sickrage/core/webserver/views.py:851
+#: sickrage/core/webserver/views.py:861
 msgid "Tested Plex Media Server host(s): "
 msgstr "测试的丛媒体服务器主机："
 
-#: sickrage/core/webserver/views.py:859
+#: sickrage/core/webserver/views.py:869
 msgid "Tried sending desktop notification via libnotify"
 msgstr "试着给送通过 libnotify 桌面通知"
 
-#: sickrage/core/webserver/views.py:868 sickrage/core/webserver/views.py:901
+#: sickrage/core/webserver/views.py:878 sickrage/core/webserver/views.py:911
 msgid "Test notice sent successfully to "
 msgstr "成功发送到测试通知书"
 
-#: sickrage/core/webserver/views.py:870 sickrage/core/webserver/views.py:903
+#: sickrage/core/webserver/views.py:880 sickrage/core/webserver/views.py:913
 msgid "Test notice failed to "
 msgstr "测试失败的通知"
 
-#: sickrage/core/webserver/views.py:877
+#: sickrage/core/webserver/views.py:887
 msgid "Successfully started the scan update"
 msgstr "成功启动扫描更新"
 
-#: sickrage/core/webserver/views.py:879
+#: sickrage/core/webserver/views.py:889
 msgid "Test failed to start the scan update"
 msgstr "启动扫描更新测试失败"
 
-#: sickrage/core/webserver/views.py:887
+#: sickrage/core/webserver/views.py:897
 msgid "Got settings from"
 msgstr "得到了从设置"
 
-#: sickrage/core/webserver/views.py:892
+#: sickrage/core/webserver/views.py:902
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "失败 ！请确保你的爆米花正在运行和诸多正在运行。（请参阅-> 调试日志 & 错误详细信息）"
 
-#: sickrage/core/webserver/views.py:920
+#: sickrage/core/webserver/views.py:930
 msgid "Trakt Authorized"
 msgstr "Trakt 授权"
 
-#: sickrage/core/webserver/views.py:921
+#: sickrage/core/webserver/views.py:931
 msgid "Trakt Not Authorized!"
 msgstr "Trakt 未授权 ！"
 
-#: sickrage/core/webserver/views.py:948
+#: sickrage/core/webserver/views.py:958
 msgid "Test email sent successfully! Check inbox."
 msgstr "测试电子邮件发送成功 ！检查收件箱。"
 
-#: sickrage/core/webserver/views.py:950
+#: sickrage/core/webserver/views.py:960
 #, python-format
 msgid "ERROR: %s"
 msgstr "错误： %s"
 
-#: sickrage/core/webserver/views.py:957
+#: sickrage/core/webserver/views.py:967
 msgid "Test NMA notice sent successfully"
 msgstr "成功发送的测试 NMA 通知书"
 
-#: sickrage/core/webserver/views.py:959
+#: sickrage/core/webserver/views.py:969
 msgid "Test NMA notice failed"
 msgstr "失败的测试 NMA 通知书"
 
-#: sickrage/core/webserver/views.py:965
+#: sickrage/core/webserver/views.py:975
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot 通知成功。检查您的 Pushalot 客户端，以确保它工作"
 
-#: sickrage/core/webserver/views.py:967
+#: sickrage/core/webserver/views.py:977
 msgid "Error sending Pushalot notification"
 msgstr "发送 Pushalot 通知时出错"
 
-#: sickrage/core/webserver/views.py:973
+#: sickrage/core/webserver/views.py:983
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet 通知成功。检查您的设备，以确保它工作"
 
-#: sickrage/core/webserver/views.py:975
+#: sickrage/core/webserver/views.py:985
 msgid "Error sending Pushbullet notification"
 msgstr "发送 Pushbullet 通知时出错"
 
-#: sickrage/core/webserver/views.py:983
+#: sickrage/core/webserver/views.py:993
 msgid "Error getting Pushbullet devices"
 msgstr "Pushbullet 设备时出错"
 
-#: sickrage/core/webserver/views.py:1013
+#: sickrage/core/webserver/views.py:1023
 msgid "Shutting down"
 msgstr "关闭"
 
-#: sickrage/core/webserver/views.py:1013
+#: sickrage/core/webserver/views.py:1023
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE 正在关闭"
 
-#: sickrage/core/webserver/views.py:1024
+#: sickrage/core/webserver/views.py:1034
 msgid "Restarting"
 msgstr "重新启动"
 
-#: sickrage/core/webserver/views.py:1024
+#: sickrage/core/webserver/views.py:1034
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE 正在重新启动"
 
-#: sickrage/core/webserver/views.py:1043
+#: sickrage/core/webserver/views.py:1053
 msgid "No new updates!"
 msgstr "没有新的更新 ！"
 
-#: sickrage/core/webserver/views.py:1055
+#: sickrage/core/webserver/views.py:1065
 msgid "Update Failed"
 msgstr "更新失败"
 
-#: sickrage/core/webserver/views.py:1056
+#: sickrage/core/webserver/views.py:1066
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "更新不成功，不重新启动。请检查您的日志以了解更多信息。"
 
-#: sickrage/core/webserver/views.py:1061
+#: sickrage/core/webserver/views.py:1071
 msgid "Successfully found {path}"
 msgstr "成功找到{path}"
 
-#: sickrage/core/webserver/views.py:1063
+#: sickrage/core/webserver/views.py:1073
 msgid "Failed to find {path}"
 msgstr "未能找到{path}"
 
-#: sickrage/core/webserver/views.py:1066
+#: sickrage/core/webserver/views.py:1076
 msgid "Installing SiCKRAGE requirements"
 msgstr "安装 SiCKRAGE 要求"
 
-#: sickrage/core/webserver/views.py:1068
+#: sickrage/core/webserver/views.py:1078
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "未能安装 SiCKRAGE 要求"
 
-#: sickrage/core/webserver/views.py:1070
+#: sickrage/core/webserver/views.py:1080
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "已成功安装 SiCKRAGE 要求!"
 
-#: sickrage/core/webserver/views.py:1076
+#: sickrage/core/webserver/views.py:1086
 msgid "Checking out branch: "
 msgstr "签出分支："
 
-#: sickrage/core/webserver/views.py:1078
+#: sickrage/core/webserver/views.py:1088
 msgid "Branch checkout successful, restarting: "
 msgstr "分支签出成功，重新启动："
 
-#: sickrage/core/webserver/views.py:1081
+#: sickrage/core/webserver/views.py:1091
 msgid "Already on branch: "
 msgstr "已经在分支："
 
-#: sickrage/core/webserver/views.py:1087 sickrage/core/webserver/views.py:1092
-#: sickrage/core/webserver/views.py:1273 sickrage/core/webserver/views.py:1282
-#: sickrage/core/webserver/views.py:1487 sickrage/core/webserver/views.py:1492
-#: sickrage/core/webserver/views.py:1505 sickrage/core/webserver/views.py:1510
-#: sickrage/core/webserver/views.py:1532 sickrage/core/webserver/views.py:1537
-#: sickrage/core/webserver/views.py:1550 sickrage/core/webserver/views.py:1555
-#: sickrage/core/webserver/views.py:1571 sickrage/core/webserver/views.py:1576
-#: sickrage/core/webserver/views.py:1649 sickrage/core/webserver/views.py:1652
-#: sickrage/core/webserver/views.py:1656 sickrage/core/webserver/views.py:1658
-#: sickrage/core/webserver/views.py:1661 sickrage/core/webserver/views.py:1680
-#: sickrage/core/webserver/views.py:1698 sickrage/core/webserver/views.py:1701
-#: sickrage/core/webserver/views.py:1706 sickrage/core/webserver/views.py:1709
-#: sickrage/core/webserver/views.py:1714 sickrage/core/webserver/views.py:1716
-#: sickrage/core/webserver/views.py:1719 sickrage/core/webserver/views.py:1742
-#: sickrage/core/webserver/views.py:1843 sickrage/core/webserver/views.py:1848
-#: sickrage/core/webserver/views.py:1851 sickrage/core/webserver/views.py:1894
-#: sickrage/core/webserver/views.py:1900 sickrage/core/webserver/views.py:1903
-#: sickrage/core/webserver/views.py:4891
+#: sickrage/core/webserver/views.py:1097 sickrage/core/webserver/views.py:1102
+#: sickrage/core/webserver/views.py:1283 sickrage/core/webserver/views.py:1292
+#: sickrage/core/webserver/views.py:1497 sickrage/core/webserver/views.py:1502
+#: sickrage/core/webserver/views.py:1515 sickrage/core/webserver/views.py:1520
+#: sickrage/core/webserver/views.py:1542 sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1560 sickrage/core/webserver/views.py:1565
+#: sickrage/core/webserver/views.py:1581 sickrage/core/webserver/views.py:1586
+#: sickrage/core/webserver/views.py:1659 sickrage/core/webserver/views.py:1662
+#: sickrage/core/webserver/views.py:1666 sickrage/core/webserver/views.py:1668
+#: sickrage/core/webserver/views.py:1671 sickrage/core/webserver/views.py:1690
+#: sickrage/core/webserver/views.py:1708 sickrage/core/webserver/views.py:1711
+#: sickrage/core/webserver/views.py:1716 sickrage/core/webserver/views.py:1719
+#: sickrage/core/webserver/views.py:1724 sickrage/core/webserver/views.py:1726
+#: sickrage/core/webserver/views.py:1729 sickrage/core/webserver/views.py:1752
+#: sickrage/core/webserver/views.py:1853 sickrage/core/webserver/views.py:1858
+#: sickrage/core/webserver/views.py:1861 sickrage/core/webserver/views.py:1904
+#: sickrage/core/webserver/views.py:1910 sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:4901
 msgid "Error"
 msgstr "错误"
 
-#: sickrage/core/webserver/views.py:1087 sickrage/core/webserver/views.py:1487
-#: sickrage/core/webserver/views.py:1505 sickrage/core/webserver/views.py:1532
-#: sickrage/core/webserver/views.py:1550 sickrage/core/webserver/views.py:1571
+#: sickrage/core/webserver/views.py:1097 sickrage/core/webserver/views.py:1497
+#: sickrage/core/webserver/views.py:1515 sickrage/core/webserver/views.py:1542
+#: sickrage/core/webserver/views.py:1560 sickrage/core/webserver/views.py:1581
 msgid "Invalid show ID"
 msgstr "无效的节目 ID"
 
-#: sickrage/core/webserver/views.py:1092 sickrage/core/webserver/views.py:1848
-#: sickrage/core/webserver/views.py:1899
+#: sickrage/core/webserver/views.py:1102 sickrage/core/webserver/views.py:1858
+#: sickrage/core/webserver/views.py:1909
 msgid "Show not in show list"
 msgstr "不在显示列表中显示"
 
-#: sickrage/core/webserver/views.py:1108
+#: sickrage/core/webserver/views.py:1118
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "这次展览是正在下载的过程中 — — 下面的信息是不完整。"
 
-#: sickrage/core/webserver/views.py:1111
+#: sickrage/core/webserver/views.py:1121
 msgid "The information on this page is in the process of being updated."
 msgstr "此页上的信息是正在进行更新。"
 
-#: sickrage/core/webserver/views.py:1114
+#: sickrage/core/webserver/views.py:1124
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "当前正在刷新下面的情节，使其从磁盘"
 
-#: sickrage/core/webserver/views.py:1117
+#: sickrage/core/webserver/views.py:1127
 msgid "Currently downloading subtitles for this show"
 msgstr "当前正在下载这个节目的字幕"
 
-#: sickrage/core/webserver/views.py:1120
+#: sickrage/core/webserver/views.py:1130
 msgid "This show is queued to be refreshed."
 msgstr "这个节目被排队要刷新。"
 
-#: sickrage/core/webserver/views.py:1123
+#: sickrage/core/webserver/views.py:1133
 msgid "This show is queued and awaiting an update."
 msgstr "这个节目排队和等待更新。"
 
-#: sickrage/core/webserver/views.py:1126
+#: sickrage/core/webserver/views.py:1136
 msgid "This show is queued and awaiting subtitles download."
 msgstr "这个节目排队和等待字幕下载。"
 
-#: sickrage/core/webserver/views.py:1131
+#: sickrage/core/webserver/views.py:1141
 msgid "Resume"
 msgstr "简历"
 
-#: sickrage/core/webserver/views.py:1139
+#: sickrage/core/webserver/views.py:1149
 msgid "Re-scan files"
 msgstr "重新扫描文件"
 
-#: sickrage/core/webserver/views.py:1141
+#: sickrage/core/webserver/views.py:1151
 msgid "Full Update"
 msgstr "完全更新"
 
-#: sickrage/core/webserver/views.py:1145
+#: sickrage/core/webserver/views.py:1155
 msgid "Update show in KODI"
 msgstr "更新显示在科迪"
 
-#: sickrage/core/webserver/views.py:1148
+#: sickrage/core/webserver/views.py:1158
 msgid "Update show in Emby"
 msgstr "更新显示在 Emby"
 
-#: sickrage/core/webserver/views.py:1150 sickrage/core/webserver/views.py:1885
-#: sickrage/core/webserver/views.py:1886
+#: sickrage/core/webserver/views.py:1160 sickrage/core/webserver/views.py:1895
+#: sickrage/core/webserver/views.py:1896
 msgid "Preview Rename"
 msgstr "预览重命名"
 
-#: sickrage/core/webserver/views.py:1156
+#: sickrage/core/webserver/views.py:1166
 msgid "Download Subtitles"
 msgstr "下载字幕"
 
-#: sickrage/core/webserver/views.py:1269
+#: sickrage/core/webserver/views.py:1279
 msgid "Invalid show ID: "
 msgstr "无效的节目 ID:"
 
-#: sickrage/core/webserver/views.py:1278
+#: sickrage/core/webserver/views.py:1288
 msgid "Unable to find the specified show: "
 msgstr "无法找到指定的显示："
 
-#: sickrage/core/webserver/views.py:1298
+#: sickrage/core/webserver/views.py:1308
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "无法检索字幕组从 AniDB。"
 
-#: sickrage/core/webserver/views.py:1314 sickrage/core/webserver/views.py:1315
-#: sickrage/core/webserver/views.py:1325 sickrage/core/webserver/views.py:1326
+#: sickrage/core/webserver/views.py:1324 sickrage/core/webserver/views.py:1325
+#: sickrage/core/webserver/views.py:1335 sickrage/core/webserver/views.py:1336
 msgid "Edit Show"
 msgstr "编辑显示"
 
-#: sickrage/core/webserver/views.py:1408
+#: sickrage/core/webserver/views.py:1418
 msgid "Unable to refresh this show: {}"
 msgstr "无法刷新这个节目: {}"
 
-#: sickrage/core/webserver/views.py:1440
+#: sickrage/core/webserver/views.py:1450
 msgid "Unable to refresh this show:{}"
 msgstr "无法刷新这个节目:{}"
 
-#: sickrage/core/webserver/views.py:1446
+#: sickrage/core/webserver/views.py:1456
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "在 %s 文件夹中不包含 tvshow.nfo-您的文件复制到这个文件夹，更改在 SiCKRAGE 目录之前。"
 
-#: sickrage/core/webserver/views.py:1458 sickrage/core/webserver/views.py:3363
+#: sickrage/core/webserver/views.py:1468 sickrage/core/webserver/views.py:3373
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1465
+#: sickrage/core/webserver/views.py:1475
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "无法强制更新现场异常时的显示。"
 
-#: sickrage/core/webserver/views.py:1479 sickrage/core/webserver/views.py:3288
+#: sickrage/core/webserver/views.py:1489 sickrage/core/webserver/views.py:3298
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} 保存更改时："
 
-#: sickrage/core/webserver/views.py:1492 sickrage/core/webserver/views.py:1510
-#: sickrage/core/webserver/views.py:1537 sickrage/core/webserver/views.py:1555
-#: sickrage/core/webserver/views.py:1576
+#: sickrage/core/webserver/views.py:1502 sickrage/core/webserver/views.py:1520
+#: sickrage/core/webserver/views.py:1547 sickrage/core/webserver/views.py:1565
+#: sickrage/core/webserver/views.py:1586
 msgid "Unable to find the specified show"
 msgstr "无法找到指定的放映"
 
-#: sickrage/core/webserver/views.py:1499
+#: sickrage/core/webserver/views.py:1509
 #, python-format
 msgid "%s has been %s"
 msgstr "%s 已经 %s"
 
-#: sickrage/core/webserver/views.py:1499
+#: sickrage/core/webserver/views.py:1509
 msgid "resumed"
 msgstr "恢复"
 
-#: sickrage/core/webserver/views.py:1499
+#: sickrage/core/webserver/views.py:1509
 msgid "paused"
 msgstr "暂停"
 
-#: sickrage/core/webserver/views.py:1515
+#: sickrage/core/webserver/views.py:1525
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s 已 %s %s"
 
-#: sickrage/core/webserver/views.py:1518
+#: sickrage/core/webserver/views.py:1528
 msgid "deleted"
 msgstr "删除"
 
-#: sickrage/core/webserver/views.py:1518
+#: sickrage/core/webserver/views.py:1528
 msgid "trashed"
 msgstr "丢弃"
 
-#: sickrage/core/webserver/views.py:1519
+#: sickrage/core/webserver/views.py:1529
 msgid "(media untouched)"
 msgstr "（媒体非接触式）"
 
-#: sickrage/core/webserver/views.py:1519
+#: sickrage/core/webserver/views.py:1529
 msgid "(with all related media)"
 msgstr "（与所有相关的媒体）"
 
-#: sickrage/core/webserver/views.py:1523
+#: sickrage/core/webserver/views.py:1533
 msgid "Unable to delete this show."
 msgstr "不能删除这个节目。"
 
-#: sickrage/core/webserver/views.py:1542
+#: sickrage/core/webserver/views.py:1552
 msgid "Unable to refresh this show."
 msgstr "无法刷新这个节目。"
 
-#: sickrage/core/webserver/views.py:1561
+#: sickrage/core/webserver/views.py:1571
 msgid "Unable to update this show."
 msgstr "无法更新这个节目。"
 
-#: sickrage/core/webserver/views.py:1600
+#: sickrage/core/webserver/views.py:1610
 msgid "Library update command sent to KODI host(s): "
 msgstr "库更新命令发送到科迪主机："
 
-#: sickrage/core/webserver/views.py:1602
+#: sickrage/core/webserver/views.py:1612
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "无法联系一个或多个科迪主机："
 
-#: sickrage/core/webserver/views.py:1612
+#: sickrage/core/webserver/views.py:1622
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "库更新命令发送到丛媒体服务器主机："
 
-#: sickrage/core/webserver/views.py:1616
+#: sickrage/core/webserver/views.py:1626
 msgid "Unable to contact Plex Media Server host: "
 msgstr "无法联系丛媒体服务器的主机："
 
-#: sickrage/core/webserver/views.py:1628
+#: sickrage/core/webserver/views.py:1638
 msgid "Library update command sent to Emby host: "
 msgstr "库更新命令发送到 Emby 主机："
 
-#: sickrage/core/webserver/views.py:1631
+#: sickrage/core/webserver/views.py:1641
 msgid "Unable to contact Emby host: "
 msgstr "无法联系 Emby 的主机："
 
-#: sickrage/core/webserver/views.py:1641
+#: sickrage/core/webserver/views.py:1651
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "同步 Trakt 与 SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1647 sickrage/core/webserver/views.py:1696
-#: sickrage/core/webserver/views.py:1893
+#: sickrage/core/webserver/views.py:1657 sickrage/core/webserver/views.py:1706
+#: sickrage/core/webserver/views.py:1903
 msgid "You must specify a show and at least one episode"
 msgstr "您必须指定一个节目和至少一次"
 
-#: sickrage/core/webserver/views.py:1704
+#: sickrage/core/webserver/views.py:1714
 msgid "Invalid status"
 msgstr "无效的状态"
 
-#: sickrage/core/webserver/views.py:1799
+#: sickrage/core/webserver/views.py:1809
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "积压是自动启动的以下季节"
 
-#: sickrage/core/webserver/views.py:1806 sickrage/core/webserver/views.py:1826
+#: sickrage/core/webserver/views.py:1816 sickrage/core/webserver/views.py:1836
 msgid "Season "
 msgstr "赛季"
 
-#: sickrage/core/webserver/views.py:1813
+#: sickrage/core/webserver/views.py:1823
 msgid "Backlog started"
 msgstr "开始的积压"
 
-#: sickrage/core/webserver/views.py:1819
+#: sickrage/core/webserver/views.py:1829
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "重试搜索是自动开始的下个季节"
 
-#: sickrage/core/webserver/views.py:1833
+#: sickrage/core/webserver/views.py:1843
 msgid "Retry Search started"
 msgstr "重试搜索开始"
 
-#: sickrage/core/webserver/views.py:1843
+#: sickrage/core/webserver/views.py:1853
 msgid "You must specify a show"
 msgstr "您必须指定一个节目"
 
-#: sickrage/core/webserver/views.py:1851 sickrage/core/webserver/views.py:1903
+#: sickrage/core/webserver/views.py:1861 sickrage/core/webserver/views.py:1913
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "无法重命名集，显示 dir 时失踪。"
 
-#: sickrage/core/webserver/views.py:2038
+#: sickrage/core/webserver/views.py:2048
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "新字幕下载： %s"
 
-#: sickrage/core/webserver/views.py:2040
+#: sickrage/core/webserver/views.py:2050
 msgid "No subtitles downloaded"
 msgstr "没有字幕下载"
 
-#: sickrage/core/webserver/views.py:2162 sickrage/core/webserver/views.py:2166
+#: sickrage/core/webserver/views.py:2172 sickrage/core/webserver/views.py:2176
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2162
+#: sickrage/core/webserver/views.py:2172
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2166
+#: sickrage/core/webserver/views.py:2176
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2231
+#: sickrage/core/webserver/views.py:2241
 msgid "Postprocessing results"
 msgstr "后处理结果"
 
-#: sickrage/core/webserver/views.py:2291
+#: sickrage/core/webserver/views.py:2301
 msgid "No folders selected."
 msgstr "没有选择的文件夹。"
 
-#: sickrage/core/webserver/views.py:2427 sickrage/core/webserver/views.py:2428
+#: sickrage/core/webserver/views.py:2437 sickrage/core/webserver/views.py:2438
 msgid "New Show"
 msgstr "新节目"
 
-#: sickrage/core/webserver/views.py:2492 sickrage/core/webserver/views.py:2493
+#: sickrage/core/webserver/views.py:2502 sickrage/core/webserver/views.py:2503
 msgid "Existing Show"
 msgstr "现有的展示"
 
-#: sickrage/core/webserver/views.py:2534 sickrage/core/webserver/views.py:2676
+#: sickrage/core/webserver/views.py:2544 sickrage/core/webserver/views.py:2686
 msgid "Adding Show"
 msgstr "添加显示"
 
-#: sickrage/core/webserver/views.py:2534 sickrage/core/webserver/views.py:2676
+#: sickrage/core/webserver/views.py:2544 sickrage/core/webserver/views.py:2686
 msgid "Adding the specified show into "
 msgstr "添加到指定的放映"
 
-#: sickrage/core/webserver/views.py:2537
+#: sickrage/core/webserver/views.py:2547
 msgid "No root directories setup, please go back and add one."
 msgstr "没有根的目录设置，请返回并添加一个。"
 
-#: sickrage/core/webserver/views.py:2588
+#: sickrage/core/webserver/views.py:2598
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "出现未知的错误。无法添加显示由于显示选择的问题。"
 
-#: sickrage/core/webserver/views.py:2612
+#: sickrage/core/webserver/views.py:2622
 msgid "Folder "
 msgstr "文件夹"
 
-#: sickrage/core/webserver/views.py:2612
+#: sickrage/core/webserver/views.py:2622
 msgid " exists already"
 msgstr "已经存在"
 
-#: sickrage/core/webserver/views.py:2624
+#: sickrage/core/webserver/views.py:2634
 msgid "Unable to create the folder , can't add the show"
 msgstr "无法创建该文件夹，不能添加显示"
 
-#: sickrage/core/webserver/views.py:2751
+#: sickrage/core/webserver/views.py:2761
 msgid "Shows Added"
 msgstr "显示添加"
 
-#: sickrage/core/webserver/views.py:2752
+#: sickrage/core/webserver/views.py:2762
 msgid "Automatically added "
 msgstr "自动添加"
 
-#: sickrage/core/webserver/views.py:2753
+#: sickrage/core/webserver/views.py:2763
 msgid " from their existing metadata files"
 msgstr "从他们现有的元数据文件"
 
-#: sickrage/core/webserver/views.py:2935 sickrage/core/webserver/views.py:2936
+#: sickrage/core/webserver/views.py:2945 sickrage/core/webserver/views.py:2946
 msgid "Missing Subtitles"
 msgstr "缺少字幕"
 
-#: sickrage/core/webserver/views.py:3371
+#: sickrage/core/webserver/views.py:3381
 msgid "Unable to refresh show "
 msgstr "无法刷新显示"
 
-#: sickrage/core/webserver/views.py:3382
+#: sickrage/core/webserver/views.py:3392
 msgid "Errors encountered"
 msgstr "遇到错误"
 
-#: sickrage/core/webserver/views.py:3388
+#: sickrage/core/webserver/views.py:3398
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3393
+#: sickrage/core/webserver/views.py:3403
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3398
+#: sickrage/core/webserver/views.py:3408
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3403
+#: sickrage/core/webserver/views.py:3413
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3408
+#: sickrage/core/webserver/views.py:3418
 msgid "The following actions were queued:"
 msgstr "排队进行以下操作："
 
-#: sickrage/core/webserver/views.py:3477
+#: sickrage/core/webserver/views.py:3487
 msgid "Backlog search started"
 msgstr "开始的积压搜索"
 
-#: sickrage/core/webserver/views.py:3485
+#: sickrage/core/webserver/views.py:3495
 msgid "Daily search started"
 msgstr "开始的每日搜索"
 
-#: sickrage/core/webserver/views.py:3493
+#: sickrage/core/webserver/views.py:3503
 msgid "Find propers search started"
 msgstr "找到开始的国际音标搜索"
 
-#: sickrage/core/webserver/views.py:3604
+#: sickrage/core/webserver/views.py:3614
 msgid "History cleared"
 msgstr "历史记录清除"
 
-#: sickrage/core/webserver/views.py:3611
+#: sickrage/core/webserver/views.py:3621
 msgid "Removed history entries older than 30 days"
 msgstr "删除的历史条目超过 30 天"
 
-#: sickrage/core/webserver/views.py:3626 sickrage/core/webserver/views.py:3841
+#: sickrage/core/webserver/views.py:3636 sickrage/core/webserver/views.py:3851
 msgid "Backup/Restore"
 msgstr "备份/恢复"
 
-#: sickrage/core/webserver/views.py:3642 sickrage/core/webserver/views.py:3643
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
 msgid "Configuration"
 msgstr "配置"
 
-#: sickrage/core/webserver/views.py:3651
+#: sickrage/core/webserver/views.py:3661
 msgid "Configuration Reset to Defaults"
 msgstr "配置重置为默认值"
 
-#: sickrage/core/webserver/views.py:3664
+#: sickrage/core/webserver/views.py:3674
 msgid "Config - General"
 msgstr "配置-一般"
 
-#: sickrage/core/webserver/views.py:3665
+#: sickrage/core/webserver/views.py:3675
 msgid "General Configuration"
 msgstr "常规配置"
 
-#: sickrage/core/webserver/views.py:3823 sickrage/core/webserver/views.py:3985
-#: sickrage/core/webserver/views.py:4116 sickrage/core/webserver/views.py:4337
-#: sickrage/core/webserver/views.py:4671 sickrage/core/webserver/views.py:4755
-#: sickrage/core/webserver/views.py:4794
+#: sickrage/core/webserver/views.py:3833 sickrage/core/webserver/views.py:3995
+#: sickrage/core/webserver/views.py:4126 sickrage/core/webserver/views.py:4347
+#: sickrage/core/webserver/views.py:4681 sickrage/core/webserver/views.py:4765
+#: sickrage/core/webserver/views.py:4804
 msgid "Error(s) Saving Configuration"
 msgstr "保存配置错误"
 
-#: sickrage/core/webserver/views.py:3825
+#: sickrage/core/webserver/views.py:3835
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] 保存配置"
 
-#: sickrage/core/webserver/views.py:3840
+#: sickrage/core/webserver/views.py:3850
 msgid "Config - Backup/Restore"
 msgstr "配置-备份/恢复"
 
-#: sickrage/core/webserver/views.py:3853
+#: sickrage/core/webserver/views.py:3863
 msgid "Backup SUCCESSFUL"
 msgstr "备份成功"
 
-#: sickrage/core/webserver/views.py:3855
+#: sickrage/core/webserver/views.py:3865
 msgid "Backup FAILED!"
 msgstr "备份失败 ！"
 
-#: sickrage/core/webserver/views.py:3857
+#: sickrage/core/webserver/views.py:3867
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "你需要选择一个文件夹以保存您的备份到第一 ！"
 
-#: sickrage/core/webserver/views.py:3876
+#: sickrage/core/webserver/views.py:3886
 msgid "Successfully extracted restore files to "
 msgstr "成功地提取的还原文件到"
 
-#: sickrage/core/webserver/views.py:3877
+#: sickrage/core/webserver/views.py:3887
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage 来完成恢复。"
 
-#: sickrage/core/webserver/views.py:3879
+#: sickrage/core/webserver/views.py:3889
 msgid "Restore FAILED"
 msgstr "恢复失败"
 
-#: sickrage/core/webserver/views.py:3881
+#: sickrage/core/webserver/views.py:3891
 msgid "You need to select a backup file to restore!"
 msgstr "您需要选择要还原的备份文件 ！"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3907
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3923 sickrage/core/webserver/views.py:3926
-#: sickrage/core/webserver/views.py:4031
+#: sickrage/core/webserver/views.py:3933 sickrage/core/webserver/views.py:3936
+#: sickrage/core/webserver/views.py:4041
 msgid "Unable to create directory "
 msgstr "无法创建目录"
 
-#: sickrage/core/webserver/views.py:3923 sickrage/core/webserver/views.py:3926
-#: sickrage/core/webserver/views.py:4031
+#: sickrage/core/webserver/views.py:3933 sickrage/core/webserver/views.py:3936
+#: sickrage/core/webserver/views.py:4041
 msgid ", dir not changed."
 msgstr "dir 没有改变。"
 
-#: sickrage/core/webserver/views.py:3987
+#: sickrage/core/webserver/views.py:3997
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 保存配置"
 
-#: sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4012
 msgid "Config - Post Processing"
 msgstr "配置-后置处理"
 
-#: sickrage/core/webserver/views.py:4042
+#: sickrage/core/webserver/views.py:4052
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "拆包不支持，禁用解压缩设置"
 
-#: sickrage/core/webserver/views.py:4077 sickrage/core/webserver/views.py:4088
+#: sickrage/core/webserver/views.py:4087 sickrage/core/webserver/views.py:4098
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "你试着保存无效的动漫命名配置，不保存设置命名"
 
-#: sickrage/core/webserver/views.py:4079 sickrage/core/webserver/views.py:4090
+#: sickrage/core/webserver/views.py:4089 sickrage/core/webserver/views.py:4100
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "你试着保存无效的命名配置，不保存设置命名"
 
-#: sickrage/core/webserver/views.py:4096
+#: sickrage/core/webserver/views.py:4106
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "你试着保存无效的空气通过日期命名配置，不保存您的空气通过日期设置"
 
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:4112
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "你试着保存无效的体育命名配置，不保存设置体育"
 
-#: sickrage/core/webserver/views.py:4118
+#: sickrage/core/webserver/views.py:4128
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 保存配置"
 
-#: sickrage/core/webserver/views.py:4197
+#: sickrage/core/webserver/views.py:4207
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4238
+#: sickrage/core/webserver/views.py:4248
 msgid "\n"
 "No Provider Name specified"
 msgstr "没有指定的提供程序名称"
 
-#: sickrage/core/webserver/views.py:4240
+#: sickrage/core/webserver/views.py:4250
 msgid "\n"
 "No Provider Url specified"
 msgstr "没有指定的提供程序 Url"
 
-#: sickrage/core/webserver/views.py:4242
+#: sickrage/core/webserver/views.py:4252
 msgid "\n"
 "No Provider Api key specified"
 msgstr "没有指定的提供程序 Api 键"
 
-#: sickrage/core/webserver/views.py:4339
+#: sickrage/core/webserver/views.py:4349
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4354
+#: sickrage/core/webserver/views.py:4364
 msgid "Config - Notifications"
 msgstr "配置-通知"
 
-#: sickrage/core/webserver/views.py:4673
+#: sickrage/core/webserver/views.py:4683
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4688
+#: sickrage/core/webserver/views.py:4698
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4757
+#: sickrage/core/webserver/views.py:4767
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 保存配置"
 
-#: sickrage/core/webserver/views.py:4772
+#: sickrage/core/webserver/views.py:4782
 msgid "Config - Anime"
 msgstr "配置-动漫"
 
-#: sickrage/core/webserver/views.py:4796
+#: sickrage/core/webserver/views.py:4806
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 保存配置"
 
-#: sickrage/core/webserver/views.py:4811
+#: sickrage/core/webserver/views.py:4821
 msgid "Config - Quality Settings"
 msgstr "配置-质量设置"
 
-#: sickrage/core/webserver/views.py:4823
+#: sickrage/core/webserver/views.py:4833
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[质量设置]保存配置"
 
-#: sickrage/core/webserver/views.py:4836
+#: sickrage/core/webserver/views.py:4846
 msgid "Clear Errors"
 msgstr "清除错误"
 
-#: sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:4849
 msgid "Clear Warnings"
 msgstr "明确的警告"
 
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4890
 msgid "Daily Searcher"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4882
+#: sickrage/core/webserver/views.py:4892
 msgid "Show Updater"
 msgstr "显示更新程序"
 
-#: sickrage/core/webserver/views.py:4883
+#: sickrage/core/webserver/views.py:4893
 msgid "Check Version"
 msgstr "检查版本"
 
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:4896
 msgid "Find Propers"
 msgstr "找到国际音标"
 
-#: sickrage/core/webserver/views.py:4887
+#: sickrage/core/webserver/views.py:4897
 msgid "Postprocessor"
 msgstr "后处理"
 
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:4898
 msgid "Find Subtitles"
 msgstr "找字幕"
 
-#: sickrage/core/webserver/views.py:4890
+#: sickrage/core/webserver/views.py:4900
 msgid "Event"
 msgstr "事件"
 
-#: sickrage/core/webserver/views.py:4892
+#: sickrage/core/webserver/views.py:4902
 msgid "Tornado"
 msgstr "龙卷风"
 
-#: sickrage/core/webserver/views.py:4893
+#: sickrage/core/webserver/views.py:4903
 msgid "Thread"
 msgstr "线程"
 

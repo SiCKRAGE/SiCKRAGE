@@ -1,6 +1,14 @@
 # Changelog
 
-- * 16b6fa0 - 2018-08-19: Release v9.3.57 
+- * 68b3fea - 2018-08-23: Release v9.3.58 
+- * 0366d15 - 2018-08-23: Changed the way TheTVDB cache&#x27;s its shows, improved performance of app 
+- * faefa9d - 2018-08-23: Fixed issues with custom web roots and redirects Checking for updates now redirects back to referrer url 
+- * bd35aae - 2018-08-23: Pre-Release v9.3.58.dev2 
+- * 45d0b32 - 2018-08-23: Switch TorrentLeech provider to login via cookies due to reCAPTCHA 
+- * 2f40c76 - 2018-08-22: Pre-Release v9.3.58.dev1 
+- * 9010755 - 2018-08-22: Fixed issue #256 - unable to search BTN 
+- * 5f0e3bf - 2018-08-20: Fixed issue #253 - Provider Option Missing Cookie Field 
+- * e5b5706 - 2018-08-19: Release v9.3.57 
 - * b1dc06d - 2018-08-19: Release v9.3.56 
 - * e26fd2e - 2018-08-19: Pre-Release v9.3.56.dev29 
 - * d590b01 - 2018-08-19: Migrated upnp client from threaded object to scheduler job, resolves shutdown/restart problems 

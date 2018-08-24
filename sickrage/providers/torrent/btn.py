@@ -18,107 +18,192 @@
 
 from __future__ import unicode_literals
 
-import math
-import re
 import socket
 import time
 
 import jsonrpclib
 
 import sickrage
+from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import sanitizeSceneName
-from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.core.helpers import sanitizeSceneName, episode_num
 from sickrage.providers import TorrentProvider
 
 
 class BTNProvider(TorrentProvider):
     def __init__(self):
-        super(BTNProvider, self).__init__("BTN", 'http://api.broadcasthe.net', True)
+        super(BTNProvider, self).__init__("BTN", 'https://broadcasthe.net', True)
+
+        self.urls.update({
+            'api': 'https://api.broadcasthe.net',
+        })
 
         self.supports_absolute_numbering = True
         self.api_key = None
         self.reject_m2ts = False
 
-        self.cache = BTNCache(self, min_time=15)
+        self.minseed = None
+        self.minleech = None
+
+        self.cache = TVCache(self, min_time=10)
 
     def _check_auth(self):
         if not self.api_key:
-            sickrage.app.log.warning("Invalid api key. Check your settings")
-
-        return True
-
-    def _check_auth_from_data(self, parsedJSON):
-        if parsedJSON is None:
-            return self._check_auth()
-
+            sickrage.app.log.warning("Missing/Invalid API key. Check your settings")
+            return False
         return True
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
-
-        self._check_auth()
-
+        """
+        Search a provider and parse the results.
+        :param search_strings: A dict with {mode: search value}
+        :param age: Not used
+        :param ep_obj: Not used
+        :returns: A list of search results (structure)
+        """
         results = []
-        params = {}
-        apikey = self.api_key
-
-        # age in seconds
-        if age:
-            params['age'] = "<=" + str(int(age))
-
-        if search_strings:
-            params.update(search_strings)
-            sickrage.app.log.debug("Search string: %s" % search_strings)
-
-        parsedJSON = self._api_call(apikey, params)
-        if not parsedJSON:
-            sickrage.app.log.debug("No data returned from provider")
+        if not self._check_auth():
             return results
 
-        if self._check_auth_from_data(parsedJSON):
+        # Search Params
+        search_params = {
+            'age': '<=10800',  # Results from the past 3 hours
+        }
 
-            found_torrents = {}
-            if 'torrents' in parsedJSON:
-                found_torrents = parsedJSON['torrents']
+        for mode in search_strings:
+            sickrage.app.log.debug('Search mode: {}'.format(mode))
 
-            # We got something, we know the API sends max 1000 results at a time.
-            # See if there are more than 1000 results for our query, if not we
-            # keep requesting until we've got everything.
-            # max 150 requests per hour so limit at that. Scan every 15 minutes. 60 / 15 = 4.
-            max_pages = 150
-            results_per_page = 1000
+            if mode != 'RSS':
+                searches = self._search_params(ep_obj, mode)
+            else:
+                searches = [search_params]
 
-            if 'results' in parsedJSON and int(parsedJSON['results']) >= results_per_page:
-                pages_needed = int(math.ceil(int(parsedJSON['results']) / results_per_page))
-                if pages_needed > max_pages:
-                    pages_needed = max_pages
+            for search_params in searches:
+                if mode != 'RSS':
+                    sickrage.app.log.debug('Search string: {}'.format(search_params))
 
-                # +1 because range(1,4) = 1, 2, 3
-                for page in xrange(1, pages_needed + 1):
-                    parsedJSON = self._api_call(apikey, params, results_per_page, page * results_per_page)
-                    # Note that this these are individual requests and might time out individually. This would result in 'gaps'
-                    # in the results. There is no way to fix this though.
-                    if 'torrents' in parsedJSON:
-                        found_torrents.update(parsedJSON['torrents'])
-
-            for torrentid, torrent_info in found_torrents.items():
-                if self.reject_m2ts and re.match(r'(?i)m2?ts', torrent_info.get('Container', '')):
+                response = self._api_call(search_params)
+                if not response or response.get('results') == '0':
+                    sickrage.app.log.debug('No data returned from provider')
                     continue
 
-                (title, url) = self._get_title_and_url(torrent_info)
-                if title and url:
-                    sickrage.app.log.debug("Found result: {}".format(title))
-                    results.append(torrent_info)
+                results += self.parse(response.get('torrents', {}), mode)
 
-        # FIXME SORT RESULTS
         return results
 
-    def _api_call(self, apikey, params=None, results_per_page=300, offset=0):
-        parsedJSON = {}
+    def parse(self, data, mode, **kwargs):
+        """
+        Parse search results for items.
+        :param data: The raw response from a search
+        :param mode: The current mode used to search, e.g. RSS
+        :return: A list of items found
+        """
+        results = []
+
+        torrent_rows = data.values()
+
+        for row in torrent_rows:
+            title, download_url = self._process_title_and_url(row)
+            if not all([title, download_url]):
+                continue
+
+            seeders = row.get('Seeders', 1)
+            leechers = row.get('Leechers', 0)
+            size = row.get('Size') or -1
+
+            results += [
+                {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+            ]
+
+            sickrage.app.log.debug("Found result: {}".format(title))
+
+        return results
+
+    @staticmethod
+    def _process_title_and_url(parsed_json, **kwargs):
+        # The BTN API gives a lot of information in response,
+        # however SickRage is built mostly around Scene or
+        # release names, which is why we are using them here.
+
+        if 'ReleaseName' in parsed_json and parsed_json['ReleaseName']:
+            title = parsed_json['ReleaseName']
+
+        else:
+            # If we don't have a release name we need to get creative
+            title = ''
+            if 'Series' in parsed_json:
+                title += parsed_json['Series']
+            if 'GroupName' in parsed_json:
+                title += '.' + parsed_json['GroupName']
+            if 'Resolution' in parsed_json:
+                title += '.' + parsed_json['Resolution']
+            if 'Source' in parsed_json:
+                title += '.' + parsed_json['Source']
+            if 'Codec' in parsed_json:
+                title += '.' + parsed_json['Codec']
+            if title:
+                title = title.replace(' ', '.')
+
+        url = parsed_json.get('DownloadURL')
+        if not url:
+            sickrage.app.log.debug('Download URL is missing from response for release "{}"'.format(title))
+        else:
+            url = url.replace('\\/', '/')
+
+        return title, url
+
+    def _search_params(self, ep_obj, mode, season_numbering=None):
+        if not ep_obj:
+            return []
+
+        searches = []
+        season = 'Season' if mode == 'Season' else ''
+
+        air_by_date = ep_obj.show.air_by_date
+        sports = ep_obj.show.sports
+
+        if not season_numbering and (air_by_date or sports):
+            date_fmt = '%Y' if season else '%Y.%m.%d'
+            search_name = ep_obj.airdate.strftime(date_fmt)
+        else:
+            search_name = '{type} {number}'.format(
+                type=season,
+                number=ep_obj.season if season else episode_num(
+                    ep_obj.season, ep_obj.episode
+                ),
+            ).strip()
+
+        params = {
+            'category': season or 'Episode',
+            'name': search_name,
+        }
+
+        # Search
+        if ep_obj.show.indexer == 1:
+            params['tvdb'] = ep_obj.show.indexerid
+            searches.append(params)
+        else:
+            name_exceptions = list(
+                set(scene_exceptions.get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
+            for name in name_exceptions:
+                # Search by name if we don't have tvdb id
+                params['series'] = sanitizeSceneName(name)
+                searches.append(params)
+
+        # extend air by date searches to include season numbering
+        if air_by_date and not season_numbering:
+            searches.extend(
+                self._search_params(ep_obj, mode, season_numbering=True)
+            )
+
+        return searches
+
+    def _api_call(self, params=None, results_per_page=300, offset=0):
+        parsed_json = {}
 
         try:
-            api = jsonrpclib.Server('http://' + self.urls['base_url'])
-            parsedJSON = api.getTorrents(apikey, params or {}, int(results_per_page), int(offset))
+            api = jsonrpclib.Server(self.urls['api'])
+            parsed_json = api.getTorrents(self.api_key, params or {}, int(results_per_page), int(offset))
             time.sleep(5)
         except jsonrpclib.jsonrpc.ProtocolError as e:
             if e.message[1] == 'Call Limit Exceeded':
@@ -131,127 +216,4 @@ class BTNProvider(TorrentProvider):
         except (socket.error, socket.timeout, ValueError) as e:
             sickrage.app.log.warning("Error while accessing provider. Error: {}".format(e))
 
-        return parsedJSON
-
-    @staticmethod
-    def _get_title_and_url(parsedJSON, **kwargs):
-
-        # The BTN API gives a lot of information in response,
-        # however SickRage is built mostly around Scene or
-        # release names, which is why we are using them here.
-
-        if 'ReleaseName' in parsedJSON and parsedJSON['ReleaseName']:
-            title = parsedJSON['ReleaseName']
-
-        else:
-            # If we don't have a release name we need to get creative
-            title = ''
-            if 'Series' in parsedJSON:
-                title += parsedJSON['Series']
-            if 'GroupName' in parsedJSON:
-                title += '.' + parsedJSON['GroupName'] if title else parsedJSON['GroupName']
-            if 'Resolution' in parsedJSON:
-                title += '.' + parsedJSON['Resolution'] if title else parsedJSON['Resolution']
-            if 'Source' in parsedJSON:
-                title += '.' + parsedJSON['Source'] if title else parsedJSON['Source']
-            if 'Codec' in parsedJSON:
-                title += '.' + parsedJSON['Codec'] if title else parsedJSON['Codec']
-            if title:
-                title = title.replace(' ', '.')
-
-        url = ''
-        if 'DownloadURL' in parsedJSON:
-            url = parsedJSON['DownloadURL']
-            if url:
-                # unescaped / is valid in JSON, but it can be escaped
-                url = url.replace("\\/", "/")
-
-        return title, url
-
-    @staticmethod
-    def _get_season_search_strings(ep_obj, **kwargs):
-        search_params = []
-        current_params = {'category': 'Season'}
-
-        # Search for entire seasons: no need to do special things for air by date or sports shows
-        if ep_obj.show.air_by_date or ep_obj.show.sports:
-            # Search for the year of the air by date show
-            current_params['name'] = str(ep_obj.airdate).split('-')[0]
-        elif ep_obj.show.is_anime:
-            current_params['name'] = "%d" % ep_obj.scene_absolute_number
-        else:
-            current_params['name'] = 'Season ' + str(ep_obj.scene_season)
-
-        # search
-        if ep_obj.show.indexer == 1:
-            current_params['tvdb'] = ep_obj.show.indexerid
-            search_params.append(current_params)
-        else:
-            name_exceptions = list(
-                set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
-            for name in name_exceptions:
-                # Search by name if we don't have tvdb id
-                current_params['series'] = sanitizeSceneName(name)
-                search_params.append(current_params)
-
-        return search_params
-
-    @staticmethod
-    def _get_episode_search_strings(ep_obj, add_string='', **kwargs):
-
-        if not ep_obj:
-            return [{}]
-
-        to_return = []
-        search_params = {'category': 'Episode'}
-
-        # episode
-        if ep_obj.show.air_by_date or ep_obj.show.sports:
-            date_str = str(ep_obj.airdate)
-
-            # BTN uses dots in dates, we just search for the date since that
-            # combined with the series identifier should result in just one episode
-            search_params['name'] = date_str.replace('-', '.')
-        elif ep_obj.show.anime:
-            search_params['name'] = "%i" % int(ep_obj.scene_absolute_number)
-        else:
-            # Do a general name search for the episode, formatted like SXXEYY
-            search_params['name'] = "S%02dE%02d" % (ep_obj.scene_season, ep_obj.scene_episode)
-
-        # search
-        if ep_obj.show.indexer == 1:
-            search_params['tvdb'] = ep_obj.show.indexerid
-            to_return.append(search_params)
-        else:
-            # add new query string for every exception
-            name_exceptions = list(
-                set(get_scene_exceptions(ep_obj.show.indexerid) + [ep_obj.show.name]))
-            for cur_exception in name_exceptions:
-                search_params['series'] = sanitizeSceneName(cur_exception)
-                to_return.append(search_params)
-
-        return to_return
-
-    def _doGeneralSearch(self, search_string):
-        # 'search' looks as broad is it can find. Can contain episode overview and title for example,
-        # use with caution!
-        return self.search({'search': search_string})
-
-
-class BTNCache(TVCache):
-    def _get_rss_data(self):
-        # Get the torrents uploaded since last check.
-        seconds_since_last_update = math.ceil(time.time() - time.mktime(self.last_update.timetuple()))
-
-        # default to 15 minutes
-        seconds_minTime = self.min_time * 60
-        if seconds_since_last_update < seconds_minTime:
-            seconds_since_last_update = seconds_minTime
-
-        # Set maximum to 24 hours (24 * 60 * 60 = 86400 seconds) of "RSS" data search, older things will need to be done through backlog
-        if seconds_since_last_update > 86400:
-            sickrage.app.log.debug(
-                "The last known successful update was more than 24 hours ago, only trying to fetch the last 24 hours!")
-            seconds_since_last_update = 86400
-
-        return {'entries': self.provider.search(search_params=None, age=seconds_since_last_update)}
+        return parsed_json
