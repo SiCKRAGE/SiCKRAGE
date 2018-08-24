@@ -1,6 +1,7 @@
 # Changelog
 
-- * 68b3fea - 2018-08-23: Release v9.3.58 
+- * a264515 - 2018-08-24: Improvements made to tornado web handler code 
+- * a7f3541 - 2018-08-23: Release v9.3.58 
 - * 0366d15 - 2018-08-23: Changed the way TheTVDB cache&#x27;s its shows, improved performance of app 
 - * faefa9d - 2018-08-23: Fixed issues with custom web roots and redirects Checking for updates now redirects back to referrer url 
 - * bd35aae - 2018-08-23: Pre-Release v9.3.58.dev2 

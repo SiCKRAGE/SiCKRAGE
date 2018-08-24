@@ -114,14 +114,12 @@ class BaseHandler(RequestHandler):
                 url = url[len(sickrage.app.config.web_root) + 1:]
 
             if url[:3] != 'api':
-                return self.finish(self.render(
+                self.write(self.render(
                     '/errors/404.mako',
                     title=_('HTTP Error 404'),
-                    header=_('HTTP Error 404'))
-                )
+                    header=_('HTTP Error 404')))
             else:
                 self.write('Wrong API key used')
-
         elif self.settings.get("debug") and "exc_info" in kwargs:
             exc_info = kwargs["exc_info"]
             trace_info = ''.join(["%s<br>" % line for line in traceback.format_exception(*exc_info)])
@@ -131,21 +129,21 @@ class BaseHandler(RequestHandler):
 
             self.set_header('Content-Type', 'text/html')
             self.write("""<html>
-                                 <title>{error}</title>
-                                 <body>
-                                    <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
-                                    <button onclick="window.location='{webroot}/home/restart?force=1';">Restart SiCKRAGE</button>
-                                    <h2>Error</h2>
-                                    <p>{error}</p>
-                                    <h2>Traceback</h2>
-                                    <p>{traceback}</p>
-                                    <h2>Request Info</h2>
-                                    <p>{request}</p>
-                                 </body>
-                               </html>""".format(error=error,
-                                                 traceback=trace_info,
-                                                 request=request_info,
-                                                 webroot=sickrage.app.config.web_root))
+                             <title>{error}</title>
+                             <body>
+                                <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
+                                <button onclick="window.location='{webroot}/home/restart?force=1';">Restart SiCKRAGE</button>
+                                <h2>Error</h2>
+                                <p>{error}</p>
+                                <h2>Traceback</h2>
+                                <p>{traceback}</p>
+                                <h2>Request Info</h2>
+                                <p>{request}</p>
+                             </body>
+                           </html>""".format(error=error,
+                                             traceback=trace_info,
+                                             request=request_info,
+                                             webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
         user = self.get_secure_cookie('sr_user')
@@ -198,7 +196,7 @@ class BaseHandler(RequestHandler):
         return self.render_string(template_name, **kwargs)
 
     @run_on_executor
-    def route(self, function, **kwargs):
+    def worker(self, function, **kwargs):
         threading.currentThread().setName("TORNADO")
         kwargs = recursive_unicode(kwargs)
         for arg, value in kwargs.items():
@@ -229,17 +227,25 @@ class WebHandler(BaseHandler):
 
     @coroutine
     @authenticated
-    def prepare(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
+        result = yield self.route()
+        if result: self.write(result)
+
+
+    @coroutine
+    @authenticated
+    def post(self, *args, **kwargs):
+        result = yield self.route()
+        if result: self.write(result)
+
+    def route(self):
         # route -> method obj
         method = getattr(
             self, self.request.path.strip('/').split('/')[::-1][0].replace('.', '_'),
             getattr(self, 'index', None)
         )
 
-        if method:
-            result = yield self.route(method, **self.request.arguments)
-            if self.request.method == 'GET' or result:
-                self.finish(result)
+        if method: return self.worker(method, **self.request.arguments)
 
     def _genericMessage(self, subject, message):
         return self.render(
@@ -548,7 +554,7 @@ class UI(WebHandler):
                 'type': cur_notification.type
             }
 
-        return json_encode(messages)
+        if messages: return json_encode(messages)
 
 
 @Route('/browser(/?.*)')
