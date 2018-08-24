@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7e11f4e - 2018-08-24: Added websockets support for ui messages 
+- * b9f9a48 - 2018-08-24: Pre-Release v9.3.59.dev1 
+- * c0b6be8 - 2018-08-24: Added websockets support for ui messages 
 - * 096b055 - 2018-08-24: Improvements made to tornado web handler code 
 - * a7f3541 - 2018-08-23: Release v9.3.58 
 - * 0366d15 - 2018-08-23: Changed the way TheTVDB cache&#x27;s its shows, improved performance of app 
