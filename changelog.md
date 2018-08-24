@@ -1,6 +1,7 @@
 # Changelog
 
-- * c27cc36 - 2018-08-23: Fixed issues with custom web roots and redirects Checking for updates now redirects back to referrer url 
+- * 7a1a457 - 2018-08-23: Changed the way TheTVDB cache&#x27;s its shows, improved performance of app 
+- * faefa9d - 2018-08-23: Fixed issues with custom web roots and redirects Checking for updates now redirects back to referrer url 
 - * bd35aae - 2018-08-23: Pre-Release v9.3.58.dev2 
 - * 45d0b32 - 2018-08-23: Switch TorrentLeech provider to login via cookies due to reCAPTCHA 
 - * 2f40c76 - 2018-08-22: Pre-Release v9.3.58.dev1 
