@@ -1,6 +1,7 @@
 # Changelog
 
-- * deb8d00 - 2018-08-24: Pre-Release v9.3.59.dev2 
+- * 90fdc1e - 2018-08-24: Misc improvements made to websockets code 
+- * a1cc57d - 2018-08-24: Pre-Release v9.3.59.dev2 
 - * 30e4803 - 2018-08-24: Misc improvements made to websockets code 
 - * 5ddb5de - 2018-08-24: Pre-Release v9.3.59.dev1 
 - * c0b6be8 - 2018-08-24: Added websockets support for ui messages 

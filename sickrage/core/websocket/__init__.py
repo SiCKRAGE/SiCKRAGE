@@ -19,7 +19,7 @@ class WebSocketUIHandler(WebSocketHandler):
         clients.add(self)
 
         for n in sickrage.app.alerts.get_notifications(self.request.remote_ip):
-            self.write_message(n)
+            self.write_message(WebSocketMessage('notification', n.data).json())
 
     def on_message(self, message):
         """Received a message from the client."""
@@ -58,11 +58,14 @@ class WebSocketMessage(object):
             'data': self.data
         }
 
+    def json(self):
+        """Return the message content as a JSON-serialized string."""
+        return json.dumps(self.content)
+
     def push(self):
         """Push the message to all connected WebSocket clients."""
         if not clients:
             return
 
-        msg = json.dumps(self.content)
         for client in clients:
-            sickrage.app.io_loop.add_callback(client.write_message, msg)
+            sickrage.app.io_loop.add_callback(client.write_message, self.json())
