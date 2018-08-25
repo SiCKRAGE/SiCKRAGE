@@ -1,6 +1,7 @@
 # Changelog
 
-- * 69ef0c5 - 2018-08-25: Fixed unicode issues with timezone updater 
+- * 0144134 - 2018-08-25: Suppressed InsecureRequestWarnings 
+- * 8b6981b - 2018-08-25: Fixed unicode issues with timezone updater 
 - * 9797220 - 2018-08-25: Fixed spacing for status view 
 - * 8279ece - 2018-08-24: Fixed quality badge for manual searches 
 - * fb31d87 - 2018-08-24: Release v9.3.59 
