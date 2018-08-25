@@ -467,7 +467,7 @@ class Action(object):
         # Marshall the response to python data types
         out = {}
         for name, statevar in self.argsdef_out:
-            _, value = marshal_value(statevar['datatype'], soap_response[name])
+            __, value = marshal_value(statevar['datatype'], soap_response[name])
             out[name] = value
 
         return out
