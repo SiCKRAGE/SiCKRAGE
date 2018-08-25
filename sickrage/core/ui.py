@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import datetime
 
 import sickrage
+from sickrage.core.websocket import WebSocketMessage
 
 MESSAGE = 'notice'
 ERROR = 'error'
@@ -43,7 +44,9 @@ class Notifications(object):
         message: The message portion of the notification
         """
 
-        self._messages.append(Notification(title, message, MESSAGE))
+        n = Notification(title, message, MESSAGE)
+        if not WebSocketMessage('notification', n.data).push():
+            self._messages.append(n)
 
     def error(self, title, message=""):
         """
@@ -53,7 +56,9 @@ class Notifications(object):
         message: The message portion of the notification
         """
 
-        self._errors.append(Notification(title, message, ERROR))
+        n = Notification(title, message, ERROR)
+        if not WebSocketMessage('notification', n.data).push():
+            self._errors.append(n)
 
     def get_notifications(self, remote_ip='127.0.0.1'):
         """
@@ -86,8 +91,16 @@ class Notification(object):
 
         self._when = datetime.datetime.now()
         self._seen = []
-        self.type = type or MESSAGE
+        self._type = type or MESSAGE
         self._timeout = timeout or datetime.timedelta(minutes=1)
+
+    @property
+    def data(self):
+        return {
+            'title': self.title,
+            'body': self.message,
+            'type': self._type
+        }
 
     def is_new(self, remote_ip='127.0.0.1'):
         """

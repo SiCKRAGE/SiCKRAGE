@@ -41,7 +41,6 @@ from tornado.escape import json_encode, recursive_unicode, json_decode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
-from tornado.websocket import WebSocketHandler, WebSocketClosedError
 
 import sickrage
 import sickrage.subtitles
@@ -296,43 +295,6 @@ class LogoutHandler(BaseHandler):
 
         self.clear_all_cookies()
         return self.redirect('/login/')
-
-
-class WebSocketUIHandler(WebSocketHandler):
-    """WebSocket handler to send and receive data to and from a web client."""
-
-    clients = set()
-
-    def check_origin(self, origin):
-        """Allow alternate origins."""
-        return True
-
-    def open(self, *args, **kwargs):
-        """Client connected to the WebSocket."""
-        self.clients.add(self)
-
-        # If we have pending messages send them to the new client
-        for cur_notification in sickrage.app.alerts.get_notifications(self.request.remote_ip):
-            try:
-                self.write_message(json_encode({'event': 'notification',
-                                                'data': {'title': cur_notification.title,
-                                                         'message': cur_notification.message,
-                                                         'type': cur_notification.type}}))
-            except WebSocketClosedError:
-                pass
-
-    def on_message(self, message):
-        """Received a message from the client."""
-        sickrage.app.log.debug('WebSocket received message from {}: {}'.format(self.request.remote_ip, message))
-
-    def on_close(self):
-        """Client disconnected from the WebSocket."""
-        self.clients.remove(self)
-
-    def __repr__(self):
-        """Client representation."""
-        return '<{} Client: {}>'.format(type(self).__name__, self.request.remote_ip)
-
 
 class CalendarHandler(BaseHandler):
     def prepare(self, *args, **kwargs):

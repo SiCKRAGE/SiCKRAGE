@@ -31,7 +31,8 @@ import sickrage
 from sickrage.core.helpers import create_https_certificates, launch_browser
 from sickrage.core.webserver.api import ApiHandler, KeyHandler
 from sickrage.core.webserver.routes import Route
-from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler, WebSocketUIHandler
+from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
+from sickrage.core.websocket import WebSocketUIHandler
 
 
 class StaticImageHandler(StaticFileHandler):
