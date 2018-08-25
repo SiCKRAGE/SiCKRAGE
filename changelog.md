@@ -1,6 +1,7 @@
 # Changelog
 
-- * eee4815 - 2018-08-24: Misc improvements made to websockets code 
+- * deb8d00 - 2018-08-24: Pre-Release v9.3.59.dev2 
+- * 30e4803 - 2018-08-24: Misc improvements made to websockets code 
 - * 5ddb5de - 2018-08-24: Pre-Release v9.3.59.dev1 
 - * c0b6be8 - 2018-08-24: Added websockets support for ui messages 
 - * 096b055 - 2018-08-24: Improvements made to tornado web handler code 
