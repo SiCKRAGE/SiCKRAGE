@@ -133,8 +133,7 @@ class ProgressIndicator:
 class ProgressIndicators():
     _pi = {'massUpdate': [],
            'massAdd': [],
-           'dailyShowUpdates': []
-           }
+           'dailyShowUpdates': []}
 
     @staticmethod
     def getIndicator(name):

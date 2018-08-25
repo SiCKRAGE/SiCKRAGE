@@ -27,6 +27,7 @@ from dateutil import tz
 
 import sickrage
 from sickrage.core.helpers import try_int
+from sickrage.core.helpers.encoding import ss
 from sickrage.core.websession import WebSession
 
 network_dict = {}
@@ -65,7 +66,7 @@ def update_network_dict():
             except RecordNotFound:
                 sickrage.app.cache_db.insert({
                     '_t': 'network_timezones',
-                    'network_name': network,
+                    'network_name': ss(network),
                     'timezone': timezone
                 })
         elif network_dict[network] is not timezone:

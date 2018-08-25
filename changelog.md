@@ -1,6 +1,7 @@
 # Changelog
 
-- * a3e88ad - 2018-08-25: Fixed spacing for status view 
+- * 69ef0c5 - 2018-08-25: Fixed unicode issues with timezone updater 
+- * 9797220 - 2018-08-25: Fixed spacing for status view 
 - * 8279ece - 2018-08-24: Fixed quality badge for manual searches 
 - * fb31d87 - 2018-08-24: Release v9.3.59 
 - * 2a1d2ce - 2018-08-24: Pre-Release v9.3.59.dev3 
