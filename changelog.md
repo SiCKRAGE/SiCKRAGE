@@ -1,6 +1,7 @@
 # Changelog
 
-- * ec22b6d - 2018-08-24: Pre-Release v9.3.59.dev3 
+- * ba44b3c - 2018-08-24: Release v9.3.59 
+- * 2a1d2ce - 2018-08-24: Pre-Release v9.3.59.dev3 
 - * b18bd58 - 2018-08-24: Misc improvements made to websockets code 
 - * a1cc57d - 2018-08-24: Pre-Release v9.3.59.dev2 
 - * 30e4803 - 2018-08-24: Misc improvements made to websockets code 
