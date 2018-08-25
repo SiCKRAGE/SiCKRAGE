@@ -32,19 +32,18 @@ var gt = function (msgid) {
 
 $(document).ready(function ($) {
     var SICKRAGE = {
-        check_notifications: function () {
-            var message_url = SICKRAGE.srWebRoot + '/ui/get_messages';
-            if ('visible' === document.visibilityState) {
-                $.getJSON(message_url, function (data) {
-                    $.each(data, function (name, data) {
-                        SICKRAGE.notify(data.type, data.title, data.message);
-                    });
-                });
-            }
-            setTimeout(function () {
-                "use strict";
-                SICKRAGE.check_notifications();
-            }, 3000);
+        ws_notifications: function () {
+            const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            var ws = new WebSocket(proto + '//' + window.location.hostname + ':' + window.location.port + SICKRAGE.srWebRoot + '/ws/ui');
+
+            ws.onmessage = function (evt) {
+                var msg = JSON.parse(evt.data);
+
+                // Add handling for different kinds of events. For ex: {"event": "notification", "data": {"title": ..}}
+                if (msg.event === 'notification') {
+                    SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
+                }
+            };
         },
 
         notify: function (type, title, message) {
@@ -231,6 +230,8 @@ $(document).ready(function ($) {
                 SICKRAGE.srDefaultPage = SICKRAGE.getMeta('srDefaultPage');
                 SICKRAGE.loadingHTML = '<i class="fas fa-spinner fa-spin fa-fw"></i>';
                 SICKRAGE.anonURL = SICKRAGE.getMeta('anonURL');
+
+                SICKRAGE.ws_notifications();
 
                 // add locale translation
                 $.get(`${SICKRAGE.srWebRoot}/messages.po`, function (data) {
@@ -485,7 +486,6 @@ $(document).ready(function ($) {
                 SICKRAGE.browser.init();
                 SICKRAGE.root_dirs.init();
                 SICKRAGE.quality_chooser.init();
-                SICKRAGE.check_notifications();
 
                 $("#changelog").on('click', function (event) {
                     event.preventDefault();

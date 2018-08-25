@@ -67,7 +67,6 @@
 
     <link rel="stylesheet" type="text/css" href="${srWebRoot}/css/core.min.css"/>
     <%block name="css" />
-
 </head>
 <body data-controller="${controller}" data-action="${action}">
     ${mainModals()}

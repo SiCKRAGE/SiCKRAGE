@@ -1,6 +1,14 @@
 # Changelog
 
-- * 68b3fea - 2018-08-23: Release v9.3.58 
+- * ba44b3c - 2018-08-24: Release v9.3.59 
+- * 2a1d2ce - 2018-08-24: Pre-Release v9.3.59.dev3 
+- * b18bd58 - 2018-08-24: Misc improvements made to websockets code 
+- * a1cc57d - 2018-08-24: Pre-Release v9.3.59.dev2 
+- * 30e4803 - 2018-08-24: Misc improvements made to websockets code 
+- * 5ddb5de - 2018-08-24: Pre-Release v9.3.59.dev1 
+- * c0b6be8 - 2018-08-24: Added websockets support for ui messages 
+- * 096b055 - 2018-08-24: Improvements made to tornado web handler code 
+- * a7f3541 - 2018-08-23: Release v9.3.58 
 - * 0366d15 - 2018-08-23: Changed the way TheTVDB cache&#x27;s its shows, improved performance of app 
 - * faefa9d - 2018-08-23: Fixed issues with custom web roots and redirects Checking for updates now redirects back to referrer url 
 - * bd35aae - 2018-08-23: Pre-Release v9.3.58.dev2 
