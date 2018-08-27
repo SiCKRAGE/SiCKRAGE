@@ -1,6 +1,7 @@
 # Changelog
 
-- * b9fdaee - 2018-08-26: Fixed issue with TheTVDB cache storing dict keys as strings instead of integer 
+- * a3cfd56 - 2018-08-26: Release v9.3.60 
+- * a92e6b5 - 2018-08-26: Fixed issue with TheTVDB cache storing dict keys as strings instead of integer 
 - * 1b42b83 - 2018-08-26: Pre-Release v9.3.60.dev1 
 - * 55e4104 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 
 - * ec16f20 - 2018-08-25: Suppressed InsecureRequestWarnings 
