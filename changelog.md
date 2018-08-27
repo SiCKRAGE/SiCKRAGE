@@ -1,6 +1,14 @@
 # Changelog
 
-- * ba44b3c - 2018-08-24: Release v9.3.59 
+- * a3cfd56 - 2018-08-26: Release v9.3.60 
+- * a92e6b5 - 2018-08-26: Fixed issue with TheTVDB cache storing dict keys as strings instead of integer 
+- * 1b42b83 - 2018-08-26: Pre-Release v9.3.60.dev1 
+- * 55e4104 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 
+- * ec16f20 - 2018-08-25: Suppressed InsecureRequestWarnings 
+- * 8b6981b - 2018-08-25: Fixed unicode issues with timezone updater 
+- * 9797220 - 2018-08-25: Fixed spacing for status view 
+- * 8279ece - 2018-08-24: Fixed quality badge for manual searches 
+- * fb31d87 - 2018-08-24: Release v9.3.59 
 - * 2a1d2ce - 2018-08-24: Pre-Release v9.3.59.dev3 
 - * b18bd58 - 2018-08-24: Misc improvements made to websockets code 
 - * a1cc57d - 2018-08-24: Pre-Release v9.3.59.dev2 

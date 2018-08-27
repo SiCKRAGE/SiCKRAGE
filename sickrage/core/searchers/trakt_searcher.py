@@ -97,20 +97,19 @@ class TraktSearcher(object):
         self.amActive = False
 
     def syncWatchlist(self):
-        if sickrage.app.config.trakt_sync_watchlist and sickrage.app.config.use_trakt:
-            sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")
+        sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Watchlist")
 
-            self.removeShowFromSickRage()
+        self.removeShowFromSickRage()
 
-            if self._getShowWatchlist():
-                self.addShowToTraktWatchList()
-                self.updateShows()
+        if self._getShowWatchlist():
+            self.addShowToTraktWatchList()
+            self.updateShows()
 
-            if self._getEpisodeWatchlist():
-                self.addEpisodesToTraktWatchList()
-                if sickrage.app.config.trakt_remove_show_from_sickrage:
-                    self.removeEpisodesFromTraktWatchList()
-                self.updateEpisodes()
+        if self._getEpisodeWatchlist():
+            self.addEpisodesToTraktWatchList()
+            if sickrage.app.config.trakt_remove_show_from_sickrage:
+                self.removeEpisodesFromTraktWatchList()
+            self.updateEpisodes()
 
     def syncCollection(self):
         sickrage.app.log.debug("Syncing SiCKRAGE with Trakt Collection")

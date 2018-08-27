@@ -23,12 +23,13 @@ import ssl
 import urllib2
 
 import certifi
-import cfscrape as cfscrape
+import cfscrape
 import requests
 from cachecontrol import CacheControlAdapter
 from fake_useragent import UserAgent
 from requests import Session
 from requests.utils import dict_from_cookiejar
+from urllib3 import disable_warnings
 
 import sickrage
 from sickrage.core.helpers import chmodAsParent, remove_file_failed
@@ -73,6 +74,8 @@ class WebSession(Session):
     def request(self, method, url, verify=False, random_ua=False, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
+
+        if not verify: disable_warnings()
 
         response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
 

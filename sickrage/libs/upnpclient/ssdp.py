@@ -26,7 +26,7 @@ from .util import _getLogger
 
 def interface_addresses(family=socket.AF_INET):
     try:
-        for fam, _, _, _, sockaddr in socket.getaddrinfo('', None):
+        for fam, __, __, __, sockaddr in socket.getaddrinfo('', None):
             if family == fam:
                 yield sockaddr[0]
     except socket.gaierror:

@@ -484,7 +484,6 @@ $(document).ready(function ($) {
                 });
 
                 SICKRAGE.browser.init();
-                SICKRAGE.root_dirs.init();
                 SICKRAGE.quality_chooser.init();
 
                 $("#changelog").on('click', function (event) {
@@ -561,7 +560,7 @@ $(document).ready(function ($) {
 
                             // Update Status and Quality
                             rSearchTerm = /(\w+)\s\((.+?)\)/;
-                            htmlContent = ep.status.replace(rSearchTerm, "$1" + ' <span class="quality ' + ep.quality + '">' + "$2" + '</span>');
+                            htmlContent = ep.status.replace(rSearchTerm, "$1" + ' <span class="badge text-white ' + ep.quality + '">' + "$2" + '</span>');
                             parent.closest('tr').prop("class", ep.overview + " season-" + ep.season + " seasonstyle font-weight-bold text-dark");
                         }
                         // update the status column if it exists
@@ -632,7 +631,7 @@ $(document).ready(function ($) {
                         }
                         // applying the quality class
                         var rSearchTerm = /(\w+)\s\((.+?)\)/;
-                        htmlContent = data.result.replace(rSearchTerm, "$1" + ' <span class="quality ' + data.quality + '">' + "$2" + '</span>');
+                        htmlContent = data.result.replace(rSearchTerm, "$1" + ' <span class="badge text-white ' + data.quality + '">' + "$2" + '</span>');
                         // update the status column if it exists
                         parent.siblings('.col-status').html(htmlContent);
                         // Only if the queuing was successful, disable the onClick event of the loading image
@@ -893,15 +892,14 @@ $(document).ready(function ($) {
                     SICKRAGE.browser.fileBrowserDialog = $('#fileBrowserDialog').modal();
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-body').addClass('ui-front');
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click(function () {
+                        callback(SICKRAGE.browser.currentBrowserPath, options);
+                        SICKRAGE.browser.fileBrowserDialog.modal('hide');
+                    });
                 } else {
                     // The title may change, even if fileBrowserDialog already exists
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
                 }
-
-                SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click(function () {
-                    callback(SICKRAGE.browser.currentBrowserPath, options);
-                    SICKRAGE.browser.fileBrowserDialog.modal('hide');
-                });
 
                 // set up the browser and launch the dialog
                 var initialDir = '';
@@ -1118,6 +1116,8 @@ $(document).ready(function ($) {
 
                 SICKRAGE.root_dirs.refreshRootDirs();
                 $.get(SICKRAGE.srWebRoot + '/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
+
+                return false;
             },
 
             editRootDir: function (path) {
@@ -1214,7 +1214,7 @@ $(document).ready(function ($) {
                 //logString += 'def: ' + $('#whichDefaultRootDir').val();
 
                 $('#rootDirText').val(dirString);
-                $('#rootDirText').change();
+                //$('#rootDirText').change();
             }
         },
 
@@ -1543,9 +1543,6 @@ $(document).ready(function ($) {
             init: function () {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/home.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
-
-                SICKRAGE.home.add_show_options();
-                SICKRAGE.root_dirs.init();
             },
 
             index: function () {
@@ -2232,6 +2229,9 @@ $(document).ready(function ($) {
 
             add_existing_shows: {
                 init: function () {
+                    SICKRAGE.home.add_show_options();
+                    SICKRAGE.root_dirs.init();
+
                     $('#tableDiv').on('click', '#checkAll', function () {
                         $('.dirCheck').not(this).prop('checked', this.checked);
                     });
@@ -2748,7 +2748,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         scene: $('#scene').prop('checked'),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
-                        archive: $('#archive').prop('checked')
+                        archive: $('#skip_downloaded').prop('checked')
                     });
 
                     $(this).attr('disabled', true);
@@ -2756,7 +2756,7 @@ $(document).ready(function ($) {
                     SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
-                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #archive').change(function () {
+                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #skip_downloaded').change(function () {
                     $('#saveDefaultsButton').attr('disabled', false);
                 });
             },
@@ -2856,6 +2856,8 @@ $(document).ready(function ($) {
             },
 
             general: function () {
+                SICKRAGE.root_dirs.init();
+
                 if ($("input[name='proxy_setting']").val().length === 0) {
                     $("input[id='proxy_indexers']").prop('checked', false);
                     $("label[for='proxy_indexers']").hide();

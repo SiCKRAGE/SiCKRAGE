@@ -44,10 +44,9 @@
             cssClass = "Custom"
             qualityString = "Custom"
 
-        if overrideClass is None:
-            cssClass = "badge " + cssClass
-        else:
+        cssClass = "badge text-white " + cssClass
+        if overrideClass:
             cssClass = overrideClass
     %>
-    <span ${title} class="${cssClass} text-white">${qualityString}</span>
+    <span ${title} class="${cssClass}">${qualityString}</span>
 </%def>
