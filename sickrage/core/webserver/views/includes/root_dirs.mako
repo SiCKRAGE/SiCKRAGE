@@ -21,8 +21,7 @@
                         <span class="fas fa-folder-open"></span>
                     </span>
                 </div>
-                <select name="rootDir" id="rootDirs" size="6" class="form-control"
-                        title="${_('Root Directories')}">
+                <select name="rootDir" id="rootDirs" size="6" class="form-control" title="${_('Root Directories')}">
                     % for cur_dir in backend_dirs:
                         <option value="${cur_dir}">${cur_dir}</option>
                     % endfor

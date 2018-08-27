@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0144134 - 2018-08-25: Suppressed InsecureRequestWarnings 
+- * c28d0b8 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 
+- * ec16f20 - 2018-08-25: Suppressed InsecureRequestWarnings 
 - * 8b6981b - 2018-08-25: Fixed unicode issues with timezone updater 
 - * 9797220 - 2018-08-25: Fixed spacing for status view 
 - * 8279ece - 2018-08-24: Fixed quality badge for manual searches 

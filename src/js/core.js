@@ -1038,7 +1038,8 @@ $(document).ready(function ($) {
                     }
                 }
 
-                $('#addRootDir').click(function () {
+                $('#addRootDir').click(function (e) {
+                    e.stopImmediatePropagation();
                     $(this).nFileBrowser(SICKRAGE.root_dirs.addRootDir);
                 });
 
@@ -1118,6 +1119,8 @@ $(document).ready(function ($) {
 
                 SICKRAGE.root_dirs.refreshRootDirs();
                 $.get(SICKRAGE.srWebRoot + '/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
+
+                location.reload();
             },
 
             editRootDir: function (path) {
@@ -1214,7 +1217,7 @@ $(document).ready(function ($) {
                 //logString += 'def: ' + $('#whichDefaultRootDir').val();
 
                 $('#rootDirText').val(dirString);
-                $('#rootDirText').change();
+                //$('#rootDirText').change();
             }
         },
 
@@ -2748,7 +2751,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         scene: $('#scene').prop('checked'),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
-                        archive: $('#archive').prop('checked')
+                        archive: $('#skip_downloaded').prop('checked')
                     });
 
                     $(this).attr('disabled', true);
@@ -2756,7 +2759,7 @@ $(document).ready(function ($) {
                     SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
-                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #archive').change(function () {
+                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #skip_downloaded').change(function () {
                     $('#saveDefaultsButton').attr('disabled', false);
                 });
             },
