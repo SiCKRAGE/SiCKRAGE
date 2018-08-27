@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-26 18:52-0700\n"
-"PO-Revision-Date: 2018-08-27 01:54\n"
+"POT-Creation-Date: 2018-08-27 11:14-0700\n"
+"PO-Revision-Date: 2018-08-27 18:15\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "завантаження"
 msgid "Choose Directory"
 msgstr "Оберіть каталог"
 
-#: sickrage/core/webserver/views.py:3570 src/js/core.js:1468
+#: sickrage/core/webserver/views.py:3571 src/js/core.js:1468
 msgid "Clear History"
 msgstr "Очищення історії"
 
@@ -81,7 +81,7 @@ msgstr "Очищення історії"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Чи ви впевнені, що хочете очистити всі завантажити історії?"
 
-#: sickrage/core/webserver/views.py:3572 src/js/core.js:1474
+#: sickrage/core/webserver/views.py:3573 src/js/core.js:1474
 msgid "Trim History"
 msgstr "Подрежьте історії"
 
@@ -121,219 +121,223 @@ msgstr ""
 msgid "Select Unprocessed Episode Folder"
 msgstr "Виберіть папку, необроблені епізод"
 
-#: src/js/core.js:2798
+#: src/js/core.js:2797
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "Пошук тайм-аут, спробуйте збільшення тайм-аут для програми індексування"
 
-#: src/js/core.js:2802
+#: src/js/core.js:2801
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2806
+#: src/js/core.js:2805
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2825
+#: src/js/core.js:2824
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2827
+#: src/js/core.js:2826
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2872
+#: src/js/core.js:2835
+msgid " already exists in show library"
+msgstr ""
+
+#: src/js/core.js:2875
 msgid "Saved Defaults"
 msgstr "Збережене значення за промовчанням"
 
-#: src/js/core.js:2872
+#: src/js/core.js:2875
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Ваш \"Додати шоу\" за замовчуванням були створені для вашого поточного виділення."
 
-#: src/js/core.js:2929
+#: src/js/core.js:2932
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2971
+#: src/js/core.js:2974
 msgid "Reset Config to Defaults"
 msgstr "Скидання налаштувань за замовчуванням"
 
-#: src/js/core.js:2972
+#: src/js/core.js:2975
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Ви дійсно бажаєте відновити параметри конфігурації за замовчуванням?"
 
-#: src/js/core.js:3066
+#: src/js/core.js:3069
 msgid "Select path to pip"
 msgstr "Виділіть контур Піп"
 
-#: src/js/core.js:3072
+#: src/js/core.js:3075
 msgid "Select path to git"
 msgstr "Виділіть контур, щоб git"
 
-#: src/js/core.js:3080 src/js/core.js:3098 src/js/core.js:3888 src/js/core.js:3906
-#: src/js/core.js:3927 src/js/core.js:3949 src/js/core.js:3972 src/js/core.js:3994
-#: src/js/core.js:4022 src/js/core.js:4039 src/js/core.js:4083 src/js/core.js:4168
-#: src/js/core.js:4226 src/js/core.js:4243 src/js/core.js:4273 src/js/core.js:4330
-#: src/js/core.js:4406 src/js/core.js:4425 src/js/core.js:4441
+#: src/js/core.js:3083 src/js/core.js:3101 src/js/core.js:3891 src/js/core.js:3909
+#: src/js/core.js:3930 src/js/core.js:3952 src/js/core.js:3975 src/js/core.js:3997
+#: src/js/core.js:4025 src/js/core.js:4042 src/js/core.js:4086 src/js/core.js:4171
+#: src/js/core.js:4229 src/js/core.js:4246 src/js/core.js:4276 src/js/core.js:4333
+#: src/js/core.js:4409 src/js/core.js:4428 src/js/core.js:4444
 msgid "Please fill out the necessary fields above."
 msgstr "Будь ласка, заповніть необхідні поля вище."
 
-#: src/js/core.js:3136
+#: src/js/core.js:3139
 msgid "Select Subtitles Download Directory"
 msgstr "Виберіть субтитри завантаження каталогу"
 
-#: src/js/core.js:3252
+#: src/js/core.js:3255
 msgid "Select .nzb blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .nzb"
 
-#: src/js/core.js:3253
+#: src/js/core.js:3256
 msgid "Select .torrent blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .torrent"
 
-#: src/js/core.js:3254
+#: src/js/core.js:3257
 msgid "Select .torrent download location"
 msgstr "Виберіть розташування для завантаження .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3321
+#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3324
 msgid "Minimum seeding time is"
 msgstr "Мінімум посіву час"
 
-#: src/js/core.js:3323
+#: src/js/core.js:3326
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL до uTorrent клієнта (наприклад, http://localhost:8000)"
 
-#: src/js/core.js:3326
+#: src/js/core.js:3329
 msgid "Stop seeding when inactive for"
 msgstr "Зупинити посіву, коли вона неактивна для"
 
-#: src/js/core.js:3332
+#: src/js/core.js:3335
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL на ваш клієнт передачі (наприклад, http://localhost:9091)"
 
-#: src/js/core.js:3342
+#: src/js/core.js:3345
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL на ваш клієнт потоп (наприклад, http://localhost:8112)"
 
-#: src/js/core.js:3351
+#: src/js/core.js:3354
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP або ім'я хоста потоп Daemon (наприклад, scgi://localhost:58846)"
 
-#: src/js/core.js:3358
+#: src/js/core.js:3361
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL на ваш клієнт Synology DS (наприклад, http://localhost:5000)"
 
-#: src/js/core.js:3363
+#: src/js/core.js:3366
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3363
+#: src/js/core.js:3366
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3373
+#: src/js/core.js:3376
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт контроль комп'ютера віддалено (наприклад, http://localhost:8080)"
 
-#: src/js/core.js:3383
+#: src/js/core.js:3386
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL для вашого MLDonkey (наприклад, http://localhost:4080)"
 
-#: src/js/core.js:3394
+#: src/js/core.js:3397
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт putio (наприклад, http://localhost:8080)"
 
-#: src/js/core.js:3563
+#: src/js/core.js:3566
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3564
+#: src/js/core.js:3567
 msgid "Select TV Download Directory"
 msgstr "Виберіть теки звантаження телевізор"
 
-#: src/js/core.js:3565
+#: src/js/core.js:3568
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3579
+#: src/js/core.js:3582
 msgid "Unrar Executable not found."
 msgstr "UnRAR виконуваний файл не знайдено."
 
-#: src/js/core.js:3622 src/js/core.js:3657 src/js/core.js:3692 src/js/core.js:3743
+#: src/js/core.js:3625 src/js/core.js:3660 src/js/core.js:3695 src/js/core.js:3746
 msgid "This pattern is invalid."
 msgstr "Ця модель є неприпустимим."
 
-#: src/js/core.js:3626 src/js/core.js:3661 src/js/core.js:3696 src/js/core.js:3747
+#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3750
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Цей шаблон буде неправильний без папок, використовуючи це змусить \"Згладжуються\" off для всіх шоу."
 
-#: src/js/core.js:3630 src/js/core.js:3665 src/js/core.js:3700 src/js/core.js:3752
+#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3755
 msgid "This pattern is valid."
 msgstr "Ця модель є дійсним."
 
-#: src/js/core.js:4076
+#: src/js/core.js:4079
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> підтвердити авторизацію"
 
-#: src/js/core.js:4133 src/js/core.js:4187
+#: src/js/core.js:4136 src/js/core.js:4190
 msgid "Please fill in the Popcorn IP address"
 msgstr "Будь ласка, заповніть попкорн IP-адреса"
 
-#: src/js/core.js:4340
+#: src/js/core.js:4343
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Перевірте чорний список ім'я; значення повинні бути кулі trakt"
 
-#: src/js/core.js:4372
+#: src/js/core.js:4375
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4375
+#: src/js/core.js:4378
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4377
+#: src/js/core.js:4380
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4383
+#: src/js/core.js:4386
 msgid "Enter an email address to send the test to:"
 msgstr "Введіть адресу електронної пошти відправити тест, щоб:"
 
-#: src/js/core.js:4385
+#: src/js/core.js:4388
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4455
+#: src/js/core.js:4458
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Оновлений список пристроїв. Будь ласка виберіть пристрій просунутися до."
 
-#: src/js/core.js:4516
+#: src/js/core.js:4519
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Ви не надаєте ключ Pushbullet api"
 
-#: src/js/core.js:4546
+#: src/js/core.js:4549
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Не забудьте зберегти настройки pushbullet."
 
-#: src/js/core.js:4618
+#: src/js/core.js:4621
 msgid "Select backup folder to save to"
 msgstr "Виберіть папку з резервною копією зберегти"
 
-#: src/js/core.js:4623
+#: src/js/core.js:4626
 msgid "Select backup files to restore"
 msgstr "Виберіть відновлення резервної копії файлів"
 
-#: src/js/core.js:5168
+#: src/js/core.js:5171
 msgid "No providers available to configure."
 msgstr "Немає доступних для налаштування провайдерів."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5378
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5381
 msgid "Mass Delete"
 msgstr "Масове вилучення"
 
-#: src/js/core.js:5379
+#: src/js/core.js:5382
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Вибрано видалити show(s).  Ви впевнені, що бажаєте продовжити? Буде видалено всі файли з вашої системи."
 
-#: src/js/core.js:5456
+#: src/js/core.js:5459
 msgid "DELETED"
 msgstr ""
 
@@ -756,13 +760,13 @@ msgstr "під час запуску SickRage інтерфейс"
 msgid "Shows"
 msgstr "Показує"
 
-#: sickrage/core/webserver/views.py:516 sickrage/core/webserver/views.py:517
+#: sickrage/core/webserver/views.py:517 sickrage/core/webserver/views.py:518
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:219
 msgid "Schedule"
 msgstr "Розклад"
 
-#: sickrage/core/webserver/views.py:3582 sickrage/core/webserver/views.py:3583
+#: sickrage/core/webserver/views.py:3583 sickrage/core/webserver/views.py:3584
 #: sickrage/core/webserver/views/config/general.mako:148
 #: sickrage/core/webserver/views/layouts/main.mako:223
 msgid "History"
@@ -3497,7 +3501,7 @@ msgstr "Принаймні одного постачальника не потр
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent провайдери можуть бути переведені в"
 
-#: sickrage/core/webserver/views.py:3615 sickrage/core/webserver/views.py:3886
+#: sickrage/core/webserver/views.py:3616 sickrage/core/webserver/views.py:3887
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:248
 msgid "Search Clients"
@@ -4741,7 +4745,7 @@ msgstr "ВО ефір"
 msgid "Download"
 msgstr "Завантажити"
 
-#: sickrage/core/webserver/views.py:988 sickrage/core/webserver/views.py:989
+#: sickrage/core/webserver/views.py:989 sickrage/core/webserver/views.py:990
 #: sickrage/core/webserver/views/home/display_show.mako:560
 #: sickrage/core/webserver/views/home/index.mako:295
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4766,7 +4770,7 @@ msgstr "Невідомо"
 msgid "Retry Download"
 msgstr "Повторити завантаження"
 
-#: sickrage/core/webserver/views.py:4882
+#: sickrage/core/webserver/views.py:4883
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Головна"
@@ -4892,7 +4896,7 @@ msgstr "використовувати замовлення DVD-ДИСКА, а �
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Сила повного оновлення\" є необхідним, а за наявності існуючих епізодів потрібно сортувати їх вручну."
 
-#: sickrage/core/webserver/views.py:3621 sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:3622 sickrage/core/webserver/views.py:4762
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:266
@@ -5214,7 +5218,7 @@ msgstr "Виконання перезавантаження"
 msgid "Daily Search"
 msgstr "Щоденний пошук"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4870
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Відставання"
@@ -5239,7 +5243,7 @@ msgstr "Пост процес"
 msgid "Subtitles Finder"
 msgstr "Субтитри Finder"
 
-#: sickrage/core/webserver/views.py:4877
+#: sickrage/core/webserver/views.py:4878
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt перевірки"
@@ -5272,7 +5276,7 @@ msgstr "Ні"
 msgid "True"
 msgstr "Правда"
 
-#: sickrage/core/webserver/views.py:4872
+#: sickrage/core/webserver/views.py:4873
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Показати черги"
@@ -5450,7 +5454,7 @@ msgstr "<p>Select ваших бажаних fansub групи зі <b>Available 
 msgid "Whitelist"
 msgstr "Білий список"
 
-#: sickrage/core/webserver/views.py:1125
+#: sickrage/core/webserver/views.py:1126
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5542,7 +5546,7 @@ msgstr "Кореневої директорії"
 msgid "New"
 msgstr "Нові"
 
-#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1865
+#: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1866
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5568,7 +5572,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "Відобразити список"
 
-#: sickrage/core/webserver/views.py:2230 sickrage/core/webserver/views.py:2231
+#: sickrage/core/webserver/views.py:2231 sickrage/core/webserver/views.py:2232
 #: sickrage/core/webserver/views/layouts/main.mako:145
 msgid "Add Shows"
 msgstr "Додати шоу"
@@ -5583,18 +5587,18 @@ msgstr "Ручний пост-обробки"
 msgid "Manage"
 msgstr "Керування"
 
-#: sickrage/core/webserver/views.py:3401 sickrage/core/webserver/views.py:3402
+#: sickrage/core/webserver/views.py:3402 sickrage/core/webserver/views.py:3403
 #: sickrage/core/webserver/views/layouts/main.mako:171
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Масове оновлення"
 
-#: sickrage/core/webserver/views.py:3009 sickrage/core/webserver/views.py:3010
+#: sickrage/core/webserver/views.py:3010 sickrage/core/webserver/views.py:3011
 #: sickrage/core/webserver/views/layouts/main.mako:174
 msgid "Backlog Overview"
 msgstr "Відставання огляд"
 
-#: sickrage/core/webserver/views.py:3454 sickrage/core/webserver/views.py:3455
+#: sickrage/core/webserver/views.py:3455 sickrage/core/webserver/views.py:3456
 #: sickrage/core/webserver/views/layouts/main.mako:177
 msgid "Manage Queues"
 msgstr "Керувати черг"
@@ -5623,7 +5627,7 @@ msgstr "Оновити Емби"
 msgid "Manage Torrents"
 msgstr "Керувати торренти"
 
-#: sickrage/core/webserver/views.py:3429 sickrage/core/webserver/views.py:3430
+#: sickrage/core/webserver/views.py:3430 sickrage/core/webserver/views.py:3431
 #: sickrage/core/webserver/views/layouts/main.mako:208
 msgid "Failed Downloads"
 msgstr "Невдалого завантаження"
@@ -5636,12 +5640,12 @@ msgstr "Пропущені субтитрів управління"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3612
+#: sickrage/core/webserver/views.py:3613
 #: sickrage/core/webserver/views/layouts/main.mako:239
 msgid "Help and Info"
 msgstr "Довідки та інформації"
 
-#: sickrage/core/webserver/views.py:3613
+#: sickrage/core/webserver/views.py:3614
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "General"
 msgstr "Загальні"
@@ -5650,28 +5654,28 @@ msgstr "Загальні"
 msgid "Backup and Restore"
 msgstr "Резервне копіювання та відновлення"
 
-#: sickrage/core/webserver/views.py:3616 sickrage/core/webserver/views.py:4186
+#: sickrage/core/webserver/views.py:3617 sickrage/core/webserver/views.py:4187
 #: sickrage/core/webserver/views/layouts/main.mako:251
 msgid "Search Providers"
 msgstr "Пошукових служб"
 
-#: sickrage/core/webserver/views.py:3617 sickrage/core/webserver/views.py:4677
+#: sickrage/core/webserver/views.py:3618 sickrage/core/webserver/views.py:4678
 #: sickrage/core/webserver/views/layouts/main.mako:254
 msgid "Subtitles Settings"
 msgstr "Параметри субтитрів"
 
-#: sickrage/core/webserver/views.py:3618 sickrage/core/webserver/views.py:4800
+#: sickrage/core/webserver/views.py:3619 sickrage/core/webserver/views.py:4801
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Quality Settings"
 msgstr "Параметри якості"
 
-#: sickrage/core/webserver/views.py:2194 sickrage/core/webserver/views.py:2195
-#: sickrage/core/webserver/views.py:3619 sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:2195 sickrage/core/webserver/views.py:2196
+#: sickrage/core/webserver/views.py:3620 sickrage/core/webserver/views.py:3992
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Пост-обробка"
 
-#: sickrage/core/webserver/views.py:3620 sickrage/core/webserver/views.py:4343
+#: sickrage/core/webserver/views.py:3621 sickrage/core/webserver/views.py:4344
 #: sickrage/core/webserver/views/layouts/main.mako:263
 msgid "Notifications"
 msgstr "Сповіщення"
@@ -5872,7 +5876,7 @@ msgstr "Встановити, якщо ці шоу випущений як Show.
 msgid "Search for subtitles."
 msgstr "Пошук для субтитрів."
 
-#: sickrage/core/webserver/views.py:3159 sickrage/core/webserver/views.py:3160
+#: sickrage/core/webserver/views.py:3160 sickrage/core/webserver/views.py:3161
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Масова редагування"
@@ -5912,7 +5916,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "Не в прогрес"
 
-#: sickrage/core/webserver/views.py:1122
+#: sickrage/core/webserver/views.py:1123
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5937,7 +5941,7 @@ msgstr "Propers пошуку вимкнуто"
 msgid "Post-Processor:"
 msgstr "Постпроцесору:"
 
-#: sickrage/core/webserver/views.py:4873
+#: sickrage/core/webserver/views.py:4874
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Пошук черги"
@@ -6128,8 +6132,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Не міг знайти завантаження для <i>%s</i>"
 
 #: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2599
-#: sickrage/core/webserver/views.py:2611
+#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2600
+#: sickrage/core/webserver/views.py:2612
 msgid "Unable to add show"
 msgstr "Не вдалося додати шоу"
 
@@ -6185,913 +6189,913 @@ msgstr "Помилки 404"
 msgid "HTTP Error 500"
 msgstr "Помилка HTTP 500"
 
-#: sickrage/core/webserver/views.py:414
+#: sickrage/core/webserver/views.py:415
 msgid "API Key not generated"
 msgstr "Не генерується ключ API"
 
-#: sickrage/core/webserver/views.py:418 sickrage/core/webserver/views.py:419
+#: sickrage/core/webserver/views.py:419 sickrage/core/webserver/views.py:420
 msgid "API Builder"
 msgstr "API будівельника"
 
-#: sickrage/core/webserver/views.py:558
+#: sickrage/core/webserver/views.py:559
 msgid "Invalid show parameters"
 msgstr "Неприпустимий Показати параметри"
 
-#: sickrage/core/webserver/views.py:563
+#: sickrage/core/webserver/views.py:564
 msgid "Invalid show paramaters"
 msgstr "Неприпустимий Показати paramaters"
 
-#: sickrage/core/webserver/views.py:570
+#: sickrage/core/webserver/views.py:571
 msgid "Invalid paramaters"
 msgstr "Неприпустимий paramaters"
 
-#: sickrage/core/webserver/views.py:573 sickrage/core/webserver/views.py:1668
-#: sickrage/core/webserver/views.py:1730
+#: sickrage/core/webserver/views.py:574 sickrage/core/webserver/views.py:1669
+#: sickrage/core/webserver/views.py:1731
 msgid "Episode couldn't be retrieved"
 msgstr "Не вдається отримати епізод"
 
-#: sickrage/core/webserver/views.py:611
+#: sickrage/core/webserver/views.py:612
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Помилка: Непідтримуваний. Надішліть запит jsonp з 'srcallback' змінної в рядку запиту."
 
-#: sickrage/core/webserver/views.py:647
+#: sickrage/core/webserver/views.py:648
 msgid "Success. Connected and authenticated"
 msgstr "Успіх. Підключення та автентифіковано"
 
-#: sickrage/core/webserver/views.py:649
+#: sickrage/core/webserver/views.py:650
 msgid "Authentication failed. SABnzbd expects "
 msgstr "Не вдалося виконати автентифікацію. Очікує, що SABnzbd "
 
-#: sickrage/core/webserver/views.py:649
+#: sickrage/core/webserver/views.py:650
 msgid " as authentication method, "
 msgstr " як метод автентифікації, "
 
-#: sickrage/core/webserver/views.py:652
+#: sickrage/core/webserver/views.py:653
 msgid "Unable to connect to host"
 msgstr "Не вдалося підключитись до хосту"
 
-#: sickrage/core/webserver/views.py:670
+#: sickrage/core/webserver/views.py:671
 msgid "SMS sent successfully"
 msgstr "SMS-повідомлення успішно відправлено"
 
-#: sickrage/core/webserver/views.py:672
+#: sickrage/core/webserver/views.py:673
 msgid "Problem sending SMS: "
 msgstr "Проблема відправки SMS: "
 
-#: sickrage/core/webserver/views.py:679
+#: sickrage/core/webserver/views.py:680
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Телеграма сповіщень успіху. Перевірте Телеграма клієнтів, щоб переконатися, що вона працювала"
 
-#: sickrage/core/webserver/views.py:681
+#: sickrage/core/webserver/views.py:682
 msgid "Error sending Telegram notification: {message}"
 msgstr "Помилка під час надсилання повідомлення телеграмою: {message}"
 
-#: sickrage/core/webserver/views.py:691
+#: sickrage/core/webserver/views.py:692
 msgid " with password: "
 msgstr " за допомогою пароля: "
 
-#: sickrage/core/webserver/views.py:694
+#: sickrage/core/webserver/views.py:695
 msgid "Registered and Tested growl successfully "
 msgstr "Зареєстровані і протестовані growl успішно "
 
-#: sickrage/core/webserver/views.py:696
+#: sickrage/core/webserver/views.py:697
 msgid "Registration and Testing of growl failed "
 msgstr "Реєстрацію і тестування growl не вдалося "
 
-#: sickrage/core/webserver/views.py:703
+#: sickrage/core/webserver/views.py:704
 msgid "Test prowl notice sent successfully"
 msgstr "Тест бродінні повідомлення успішно відправлено"
 
-#: sickrage/core/webserver/views.py:705
+#: sickrage/core/webserver/views.py:706
 msgid "Test prowl notice failed"
 msgstr "Тест бродінні повідомлення не вдалося"
 
-#: sickrage/core/webserver/views.py:712
+#: sickrage/core/webserver/views.py:713
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 повідомлення успішно. Перевірити Boxcar2 клієнтів, щоб переконатися, що вона працювала"
 
-#: sickrage/core/webserver/views.py:714
+#: sickrage/core/webserver/views.py:715
 msgid "Error sending Boxcar2 notification"
 msgstr "Помилка під час надсилання повідомлення Boxcar2"
 
-#: sickrage/core/webserver/views.py:721
+#: sickrage/core/webserver/views.py:722
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Слабовільний повідомлення успішно. Перевірити слабовільний клієнтів, щоб переконатися, що вона працювала"
 
-#: sickrage/core/webserver/views.py:723
+#: sickrage/core/webserver/views.py:724
 msgid "Error sending Pushover notification"
 msgstr "Помилка надсилання повідомлення слабовільний"
 
-#: sickrage/core/webserver/views.py:735
+#: sickrage/core/webserver/views.py:736
 msgid "Key verification successful"
 msgstr "Ключові перевірку успішного"
 
-#: sickrage/core/webserver/views.py:737
+#: sickrage/core/webserver/views.py:738
 msgid "Unable to verify key"
 msgstr "Не вдалося перевірити ключ"
 
-#: sickrage/core/webserver/views.py:744
+#: sickrage/core/webserver/views.py:745
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Чірікать успішним, перевірте ваш twitter, щоб переконатися, що він працював"
 
-#: sickrage/core/webserver/views.py:746
+#: sickrage/core/webserver/views.py:747
 msgid "Error sending tweet"
 msgstr "Помилка надсилання tweet"
 
-#: sickrage/core/webserver/views.py:751
+#: sickrage/core/webserver/views.py:752
 msgid "Please enter a valid account sid"
 msgstr "Будь ласка, введіть припустиме облікового запису sid"
 
-#: sickrage/core/webserver/views.py:754
+#: sickrage/core/webserver/views.py:755
 msgid "Please enter a valid auth token"
 msgstr "Будь ласка, Введіть припустимий auth маркер"
 
-#: sickrage/core/webserver/views.py:757
+#: sickrage/core/webserver/views.py:758
 msgid "Please enter a valid phone sid"
 msgstr "Будь ласка, введіть припустиме телефон sid"
 
-#: sickrage/core/webserver/views.py:760
+#: sickrage/core/webserver/views.py:761
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Будь ласка, форматувати номер телефону як \"+ 1-# # #-# # #-# # #\""
 
-#: sickrage/core/webserver/views.py:764
+#: sickrage/core/webserver/views.py:765
 msgid "Authorization successful and number ownership verified"
 msgstr "Авторизація успішного та № права власності перевірено"
 
-#: sickrage/core/webserver/views.py:766
+#: sickrage/core/webserver/views.py:767
 msgid "Error sending sms"
 msgstr "Помилка під час надсилання sms"
 
-#: sickrage/core/webserver/views.py:772
+#: sickrage/core/webserver/views.py:773
 msgid "Slack message successful"
 msgstr "Сирий повідомлення успішної"
 
-#: sickrage/core/webserver/views.py:774
+#: sickrage/core/webserver/views.py:775
 msgid "Slack message failed"
 msgstr "Не вдалося завантажити млявий повідомлення"
 
-#: sickrage/core/webserver/views.py:780
+#: sickrage/core/webserver/views.py:781
 msgid "Discord message successful"
 msgstr "Розбрату повідомлення успішної"
 
-#: sickrage/core/webserver/views.py:782
+#: sickrage/core/webserver/views.py:783
 msgid "Discord message failed"
 msgstr "Не вдалося завантажити повідомлення розбрату"
 
-#: sickrage/core/webserver/views.py:793
+#: sickrage/core/webserver/views.py:794
 msgid "Test KODI notice sent successfully to "
 msgstr "Тест-KODI повідомлення успішно відправлено до "
 
-#: sickrage/core/webserver/views.py:795
+#: sickrage/core/webserver/views.py:796
 msgid "Test KODI notice failed to "
 msgstr "Тест-KODI повідомлення не вдалося "
 
-#: sickrage/core/webserver/views.py:810
+#: sickrage/core/webserver/views.py:811
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Успішних випробувань повідомлення надсилається Plex клієнта... "
 
-#: sickrage/core/webserver/views.py:812
+#: sickrage/core/webserver/views.py:813
 msgid "Test failed for Plex client ... "
 msgstr "Не вдалося виконати тест для Plex клієнта... "
 
-#: sickrage/core/webserver/views.py:815
+#: sickrage/core/webserver/views.py:816
 msgid "Tested Plex client(s): "
 msgstr "Протестовані клієнтами Plex: "
 
-#: sickrage/core/webserver/views.py:830
+#: sickrage/core/webserver/views.py:831
 msgid "Successful test of Plex server(s) ... "
 msgstr "Успішних випробувань Plex сервери... "
 
-#: sickrage/core/webserver/views.py:833
+#: sickrage/core/webserver/views.py:834
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Тест не вдалося ні Plex медіасервера хост вказаний"
 
-#: sickrage/core/webserver/views.py:835
+#: sickrage/core/webserver/views.py:836
 msgid "Test failed for Plex server(s) ... "
 msgstr "Не вдалося виконати тест для Plex сервери... "
 
-#: sickrage/core/webserver/views.py:839
+#: sickrage/core/webserver/views.py:840
 msgid "Tested Plex Media Server host(s): "
 msgstr "Протестовані Plex медіасервера вузлів: "
 
-#: sickrage/core/webserver/views.py:847
+#: sickrage/core/webserver/views.py:848
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Спробував відправлення робочого стола сповіщення через libnotify"
 
-#: sickrage/core/webserver/views.py:856 sickrage/core/webserver/views.py:889
+#: sickrage/core/webserver/views.py:857 sickrage/core/webserver/views.py:890
 msgid "Test notice sent successfully to "
 msgstr "Тест повідомлення успішно відправлено до "
 
-#: sickrage/core/webserver/views.py:858 sickrage/core/webserver/views.py:891
+#: sickrage/core/webserver/views.py:859 sickrage/core/webserver/views.py:892
 msgid "Test notice failed to "
 msgstr "Тест повідомлення не вдалося "
 
-#: sickrage/core/webserver/views.py:865
+#: sickrage/core/webserver/views.py:866
 msgid "Successfully started the scan update"
 msgstr "Вдало стартувала сканування оновлення"
 
-#: sickrage/core/webserver/views.py:867
+#: sickrage/core/webserver/views.py:868
 msgid "Test failed to start the scan update"
 msgstr "Тест не вдалося запустити сканування оновлення"
 
-#: sickrage/core/webserver/views.py:875
+#: sickrage/core/webserver/views.py:876
 msgid "Got settings from"
 msgstr "Отримав настройки від"
 
-#: sickrage/core/webserver/views.py:880
+#: sickrage/core/webserver/views.py:881
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Не вдалося! Переконайтеся, що ваш Popcorn увімкнено, NMJ працює. (див. журнал & помилки-> налагодження для докладна інформація)"
 
-#: sickrage/core/webserver/views.py:908
+#: sickrage/core/webserver/views.py:909
 msgid "Trakt Authorized"
 msgstr "Авторизовані Trakt"
 
-#: sickrage/core/webserver/views.py:909
+#: sickrage/core/webserver/views.py:910
 msgid "Trakt Not Authorized!"
 msgstr "Trakt не затверджені!"
 
-#: sickrage/core/webserver/views.py:936
+#: sickrage/core/webserver/views.py:937
 msgid "Test email sent successfully! Check inbox."
 msgstr "Перевірте повідомлення електронної пошти надіслано успішно! Перевірте папки \"Вхідні\"."
 
-#: sickrage/core/webserver/views.py:938
+#: sickrage/core/webserver/views.py:939
 #, python-format
 msgid "ERROR: %s"
 msgstr "ПОМИЛКА: %s"
 
-#: sickrage/core/webserver/views.py:945
+#: sickrage/core/webserver/views.py:946
 msgid "Test NMA notice sent successfully"
 msgstr "Тест NMA повідомлення успішно відправлено"
 
-#: sickrage/core/webserver/views.py:947
+#: sickrage/core/webserver/views.py:948
 msgid "Test NMA notice failed"
 msgstr "Тест NMA повідомлення не вдалося"
 
-#: sickrage/core/webserver/views.py:953
+#: sickrage/core/webserver/views.py:954
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot повідомлення успішно. Перевірити Pushalot клієнтів, щоб переконатися, що вона працювала"
 
-#: sickrage/core/webserver/views.py:955
+#: sickrage/core/webserver/views.py:956
 msgid "Error sending Pushalot notification"
 msgstr "Помилка під час надсилання повідомлення Pushalot"
 
-#: sickrage/core/webserver/views.py:961
+#: sickrage/core/webserver/views.py:962
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet повідомлення успішно. Перевірте ваш пристрій, щоб переконатися, що вона працювала"
 
-#: sickrage/core/webserver/views.py:963
+#: sickrage/core/webserver/views.py:964
 msgid "Error sending Pushbullet notification"
 msgstr "Помилка під час надсилання повідомлення Pushbullet"
 
-#: sickrage/core/webserver/views.py:971
+#: sickrage/core/webserver/views.py:972
 msgid "Error getting Pushbullet devices"
 msgstr "Помилка отримання Pushbullet пристрої"
 
-#: sickrage/core/webserver/views.py:1001
+#: sickrage/core/webserver/views.py:1002
 msgid "Shutting down"
 msgstr "Завершення роботи"
 
-#: sickrage/core/webserver/views.py:1001
+#: sickrage/core/webserver/views.py:1002
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE завершення роботи"
 
-#: sickrage/core/webserver/views.py:1012
+#: sickrage/core/webserver/views.py:1013
 msgid "Restarting"
 msgstr "Перезавантаження"
 
-#: sickrage/core/webserver/views.py:1012
+#: sickrage/core/webserver/views.py:1013
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE перезавантаження"
 
-#: sickrage/core/webserver/views.py:1031
+#: sickrage/core/webserver/views.py:1032
 msgid "No new updates!"
 msgstr "Немає нових оновлень!"
 
-#: sickrage/core/webserver/views.py:1043
+#: sickrage/core/webserver/views.py:1044
 msgid "Update Failed"
 msgstr "Оновлення не вдалося"
 
-#: sickrage/core/webserver/views.py:1044
+#: sickrage/core/webserver/views.py:1045
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Оновлення не був успішним, не перезавантаження. Перегляньте журнал для отримання додаткової інформації."
 
-#: sickrage/core/webserver/views.py:1049
+#: sickrage/core/webserver/views.py:1050
 msgid "Successfully found {path}"
 msgstr "Успішно знайдено {path}"
 
-#: sickrage/core/webserver/views.py:1051
+#: sickrage/core/webserver/views.py:1052
 msgid "Failed to find {path}"
 msgstr "Не вдалося знайти {path}"
 
-#: sickrage/core/webserver/views.py:1054
+#: sickrage/core/webserver/views.py:1055
 msgid "Installing SiCKRAGE requirements"
 msgstr "Встановлення вимоги SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1056
+#: sickrage/core/webserver/views.py:1057
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "Не вдалося інсталювати SiCKRAGE вимог"
 
-#: sickrage/core/webserver/views.py:1058
+#: sickrage/core/webserver/views.py:1059
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "Успішно інстальовано SiCKRAGE вимоги!"
 
-#: sickrage/core/webserver/views.py:1064
+#: sickrage/core/webserver/views.py:1065
 msgid "Checking out branch: "
 msgstr "Перевірити відділення: "
 
-#: sickrage/core/webserver/views.py:1066
+#: sickrage/core/webserver/views.py:1067
 msgid "Branch checkout successful, restarting: "
 msgstr "Відділення оформити замовлення успішний, перезавантаження: "
 
-#: sickrage/core/webserver/views.py:1069
+#: sickrage/core/webserver/views.py:1070
 msgid "Already on branch: "
 msgstr "Вже на філії: "
 
-#: sickrage/core/webserver/views.py:1075 sickrage/core/webserver/views.py:1080
-#: sickrage/core/webserver/views.py:1261 sickrage/core/webserver/views.py:1270
-#: sickrage/core/webserver/views.py:1475 sickrage/core/webserver/views.py:1480
-#: sickrage/core/webserver/views.py:1493 sickrage/core/webserver/views.py:1498
-#: sickrage/core/webserver/views.py:1520 sickrage/core/webserver/views.py:1525
-#: sickrage/core/webserver/views.py:1538 sickrage/core/webserver/views.py:1543
-#: sickrage/core/webserver/views.py:1559 sickrage/core/webserver/views.py:1564
-#: sickrage/core/webserver/views.py:1637 sickrage/core/webserver/views.py:1640
-#: sickrage/core/webserver/views.py:1644 sickrage/core/webserver/views.py:1646
-#: sickrage/core/webserver/views.py:1649 sickrage/core/webserver/views.py:1668
-#: sickrage/core/webserver/views.py:1686 sickrage/core/webserver/views.py:1689
-#: sickrage/core/webserver/views.py:1694 sickrage/core/webserver/views.py:1697
-#: sickrage/core/webserver/views.py:1702 sickrage/core/webserver/views.py:1704
-#: sickrage/core/webserver/views.py:1707 sickrage/core/webserver/views.py:1730
-#: sickrage/core/webserver/views.py:1831 sickrage/core/webserver/views.py:1836
-#: sickrage/core/webserver/views.py:1839 sickrage/core/webserver/views.py:1882
-#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1891
-#: sickrage/core/webserver/views.py:4879
+#: sickrage/core/webserver/views.py:1076 sickrage/core/webserver/views.py:1081
+#: sickrage/core/webserver/views.py:1262 sickrage/core/webserver/views.py:1271
+#: sickrage/core/webserver/views.py:1476 sickrage/core/webserver/views.py:1481
+#: sickrage/core/webserver/views.py:1494 sickrage/core/webserver/views.py:1499
+#: sickrage/core/webserver/views.py:1521 sickrage/core/webserver/views.py:1526
+#: sickrage/core/webserver/views.py:1539 sickrage/core/webserver/views.py:1544
+#: sickrage/core/webserver/views.py:1560 sickrage/core/webserver/views.py:1565
+#: sickrage/core/webserver/views.py:1638 sickrage/core/webserver/views.py:1641
+#: sickrage/core/webserver/views.py:1645 sickrage/core/webserver/views.py:1647
+#: sickrage/core/webserver/views.py:1650 sickrage/core/webserver/views.py:1669
+#: sickrage/core/webserver/views.py:1687 sickrage/core/webserver/views.py:1690
+#: sickrage/core/webserver/views.py:1695 sickrage/core/webserver/views.py:1698
+#: sickrage/core/webserver/views.py:1703 sickrage/core/webserver/views.py:1705
+#: sickrage/core/webserver/views.py:1708 sickrage/core/webserver/views.py:1731
+#: sickrage/core/webserver/views.py:1832 sickrage/core/webserver/views.py:1837
+#: sickrage/core/webserver/views.py:1840 sickrage/core/webserver/views.py:1883
+#: sickrage/core/webserver/views.py:1889 sickrage/core/webserver/views.py:1892
+#: sickrage/core/webserver/views.py:4880
 msgid "Error"
 msgstr "Помилка"
 
-#: sickrage/core/webserver/views.py:1075 sickrage/core/webserver/views.py:1475
-#: sickrage/core/webserver/views.py:1493 sickrage/core/webserver/views.py:1520
-#: sickrage/core/webserver/views.py:1538 sickrage/core/webserver/views.py:1559
+#: sickrage/core/webserver/views.py:1076 sickrage/core/webserver/views.py:1476
+#: sickrage/core/webserver/views.py:1494 sickrage/core/webserver/views.py:1521
+#: sickrage/core/webserver/views.py:1539 sickrage/core/webserver/views.py:1560
 msgid "Invalid show ID"
 msgstr "Показати неприпустимий Ідентифікатор"
 
-#: sickrage/core/webserver/views.py:1080 sickrage/core/webserver/views.py:1836
-#: sickrage/core/webserver/views.py:1887
+#: sickrage/core/webserver/views.py:1081 sickrage/core/webserver/views.py:1837
+#: sickrage/core/webserver/views.py:1888
 msgid "Show not in show list"
 msgstr "Показати немає у списку Показати"
 
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/webserver/views.py:1097
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Це шоу в процесі завантаження - нижче інформація є неповною."
 
-#: sickrage/core/webserver/views.py:1099
+#: sickrage/core/webserver/views.py:1100
 msgid "The information on this page is in the process of being updated."
 msgstr "Інформація на цій сторінці знаходиться в процесі оновлення."
 
-#: sickrage/core/webserver/views.py:1102
+#: sickrage/core/webserver/views.py:1103
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Нижче епізодів в даний час знаходяться під час оновлення з диска"
 
-#: sickrage/core/webserver/views.py:1105
+#: sickrage/core/webserver/views.py:1106
 msgid "Currently downloading subtitles for this show"
 msgstr "В даний час завантаживши субтитрами для цього шоу"
 
-#: sickrage/core/webserver/views.py:1108
+#: sickrage/core/webserver/views.py:1109
 msgid "This show is queued to be refreshed."
 msgstr "Це шоу в чергу бути оновилася."
 
-#: sickrage/core/webserver/views.py:1111
+#: sickrage/core/webserver/views.py:1112
 msgid "This show is queued and awaiting an update."
 msgstr "Це шоу в черзі і очікує на оновлення."
 
-#: sickrage/core/webserver/views.py:1114
+#: sickrage/core/webserver/views.py:1115
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Це шоу в черзі і завантажити очікує субтитри."
 
-#: sickrage/core/webserver/views.py:1119
+#: sickrage/core/webserver/views.py:1120
 msgid "Resume"
 msgstr "Резюме"
 
-#: sickrage/core/webserver/views.py:1127
+#: sickrage/core/webserver/views.py:1128
 msgid "Re-scan files"
 msgstr "Повторне сканування файлів"
 
-#: sickrage/core/webserver/views.py:1129
+#: sickrage/core/webserver/views.py:1130
 msgid "Full Update"
 msgstr "Повне оновлення"
 
-#: sickrage/core/webserver/views.py:1133
+#: sickrage/core/webserver/views.py:1134
 msgid "Update show in KODI"
 msgstr "Оновлення шоу в KODI"
 
-#: sickrage/core/webserver/views.py:1136
+#: sickrage/core/webserver/views.py:1137
 msgid "Update show in Emby"
 msgstr "Оновлення шоу в Емби"
 
-#: sickrage/core/webserver/views.py:1138 sickrage/core/webserver/views.py:1873
-#: sickrage/core/webserver/views.py:1874
+#: sickrage/core/webserver/views.py:1139 sickrage/core/webserver/views.py:1874
+#: sickrage/core/webserver/views.py:1875
 msgid "Preview Rename"
 msgstr "Попередній перегляд перейменувати"
 
-#: sickrage/core/webserver/views.py:1144
+#: sickrage/core/webserver/views.py:1145
 msgid "Download Subtitles"
 msgstr "Завантажити субтитри"
 
-#: sickrage/core/webserver/views.py:1257
+#: sickrage/core/webserver/views.py:1258
 msgid "Invalid show ID: "
 msgstr "Показати неприпустимий Ідентифікатор: "
 
-#: sickrage/core/webserver/views.py:1266
+#: sickrage/core/webserver/views.py:1267
 msgid "Unable to find the specified show: "
 msgstr "Не вдалося знайти вказаний шоу: "
 
-#: sickrage/core/webserver/views.py:1286
+#: sickrage/core/webserver/views.py:1287
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "Не вдається витягти Fansub групи від AniDB."
 
-#: sickrage/core/webserver/views.py:1302 sickrage/core/webserver/views.py:1303
-#: sickrage/core/webserver/views.py:1313 sickrage/core/webserver/views.py:1314
+#: sickrage/core/webserver/views.py:1303 sickrage/core/webserver/views.py:1304
+#: sickrage/core/webserver/views.py:1314 sickrage/core/webserver/views.py:1315
 msgid "Edit Show"
 msgstr "Редагувати шоу"
 
-#: sickrage/core/webserver/views.py:1396
+#: sickrage/core/webserver/views.py:1397
 msgid "Unable to refresh this show: {}"
 msgstr "Не вдалося оновити це шоу: {}"
 
-#: sickrage/core/webserver/views.py:1428
+#: sickrage/core/webserver/views.py:1429
 msgid "Unable to refresh this show:{}"
 msgstr "Не вдалося оновити це шоу :{}"
 
-#: sickrage/core/webserver/views.py:1434
+#: sickrage/core/webserver/views.py:1435
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Папки на %s не містить на tvshow.nfo - копіювати файли до папки перед зміненням каталогу в SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1446 sickrage/core/webserver/views.py:3351
+#: sickrage/core/webserver/views.py:1447 sickrage/core/webserver/views.py:3352
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1453
+#: sickrage/core/webserver/views.py:1454
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Не в змозі Примусово оновити сцени винятки шоу."
 
-#: sickrage/core/webserver/views.py:1467 sickrage/core/webserver/views.py:3276
+#: sickrage/core/webserver/views.py:1468 sickrage/core/webserver/views.py:3277
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} під час збереження змін:"
 
-#: sickrage/core/webserver/views.py:1480 sickrage/core/webserver/views.py:1498
-#: sickrage/core/webserver/views.py:1525 sickrage/core/webserver/views.py:1543
-#: sickrage/core/webserver/views.py:1564
+#: sickrage/core/webserver/views.py:1481 sickrage/core/webserver/views.py:1499
+#: sickrage/core/webserver/views.py:1526 sickrage/core/webserver/views.py:1544
+#: sickrage/core/webserver/views.py:1565
 msgid "Unable to find the specified show"
 msgstr "Не вдалося знайти вказаний шоу"
 
-#: sickrage/core/webserver/views.py:1487
+#: sickrage/core/webserver/views.py:1488
 #, python-format
 msgid "%s has been %s"
 msgstr "%s був %s"
 
-#: sickrage/core/webserver/views.py:1487
+#: sickrage/core/webserver/views.py:1488
 msgid "resumed"
 msgstr "відновив"
 
-#: sickrage/core/webserver/views.py:1487
+#: sickrage/core/webserver/views.py:1488
 msgid "paused"
 msgstr "призупинено"
 
-#: sickrage/core/webserver/views.py:1503
+#: sickrage/core/webserver/views.py:1504
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s був %s %s"
 
-#: sickrage/core/webserver/views.py:1506
+#: sickrage/core/webserver/views.py:1507
 msgid "deleted"
 msgstr "видалено"
 
-#: sickrage/core/webserver/views.py:1506
+#: sickrage/core/webserver/views.py:1507
 msgid "trashed"
 msgstr "Trashed"
 
-#: sickrage/core/webserver/views.py:1507
+#: sickrage/core/webserver/views.py:1508
 msgid "(media untouched)"
 msgstr "(медіа недоторканою)"
 
-#: sickrage/core/webserver/views.py:1507
+#: sickrage/core/webserver/views.py:1508
 msgid "(with all related media)"
 msgstr "(з усіма пов'язані ЗМІ)"
 
-#: sickrage/core/webserver/views.py:1511
+#: sickrage/core/webserver/views.py:1512
 msgid "Unable to delete this show."
 msgstr "Не вдалося видалити це шоу."
 
-#: sickrage/core/webserver/views.py:1530
+#: sickrage/core/webserver/views.py:1531
 msgid "Unable to refresh this show."
 msgstr "Не вдалося оновити це шоу."
 
-#: sickrage/core/webserver/views.py:1549
+#: sickrage/core/webserver/views.py:1550
 msgid "Unable to update this show."
 msgstr "Не вдалося оновити це шоу."
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1589
 msgid "Library update command sent to KODI host(s): "
 msgstr "Бібліотека команду оновлення надіслано KODI вузлів: "
 
-#: sickrage/core/webserver/views.py:1590
+#: sickrage/core/webserver/views.py:1591
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Не вдалося підключитися до одного або кількох-KODI вузлів: "
 
-#: sickrage/core/webserver/views.py:1600
+#: sickrage/core/webserver/views.py:1601
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Бібліотека команду оновлення надіслано до медіасервера Plex хоста: "
 
-#: sickrage/core/webserver/views.py:1604
+#: sickrage/core/webserver/views.py:1605
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Не вдалося підключитися до медіа-сервер Plex хост: "
 
-#: sickrage/core/webserver/views.py:1616
+#: sickrage/core/webserver/views.py:1617
 msgid "Library update command sent to Emby host: "
 msgstr "Бібліотека команду оновлення надіслано до Емби хоста: "
 
-#: sickrage/core/webserver/views.py:1619
+#: sickrage/core/webserver/views.py:1620
 msgid "Unable to contact Emby host: "
 msgstr "Не вдалося підключитися до Емби хост: "
 
-#: sickrage/core/webserver/views.py:1629
+#: sickrage/core/webserver/views.py:1630
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Синхронізація Trakt з SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1635 sickrage/core/webserver/views.py:1684
-#: sickrage/core/webserver/views.py:1881
+#: sickrage/core/webserver/views.py:1636 sickrage/core/webserver/views.py:1685
+#: sickrage/core/webserver/views.py:1882
 msgid "You must specify a show and at least one episode"
 msgstr "Потрібно вказати шоу і принаймні один епізод"
 
-#: sickrage/core/webserver/views.py:1692
+#: sickrage/core/webserver/views.py:1693
 msgid "Invalid status"
 msgstr "Неприпустимий статус"
 
-#: sickrage/core/webserver/views.py:1787
+#: sickrage/core/webserver/views.py:1788
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Відставання автоматично було розпочато протягом наступних сезонів з "
 
-#: sickrage/core/webserver/views.py:1794 sickrage/core/webserver/views.py:1814
+#: sickrage/core/webserver/views.py:1795 sickrage/core/webserver/views.py:1815
 msgid "Season "
 msgstr "Сезон "
 
-#: sickrage/core/webserver/views.py:1801
+#: sickrage/core/webserver/views.py:1802
 msgid "Backlog started"
 msgstr "Відставання почав"
 
-#: sickrage/core/webserver/views.py:1807
+#: sickrage/core/webserver/views.py:1808
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "Повторна спроба пошук був запускається автоматично на наступний сезон з "
 
-#: sickrage/core/webserver/views.py:1821
+#: sickrage/core/webserver/views.py:1822
 msgid "Retry Search started"
 msgstr "Повторити пошук роботи"
 
-#: sickrage/core/webserver/views.py:1831
+#: sickrage/core/webserver/views.py:1832
 msgid "You must specify a show"
 msgstr "Потрібно вказати шоу"
 
-#: sickrage/core/webserver/views.py:1839 sickrage/core/webserver/views.py:1891
+#: sickrage/core/webserver/views.py:1840 sickrage/core/webserver/views.py:1892
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "Не вдається перейменувати епізодів, коли рубриці Показати відсутній."
 
-#: sickrage/core/webserver/views.py:2026
+#: sickrage/core/webserver/views.py:2027
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Нові субтитри завантажено: %s"
 
-#: sickrage/core/webserver/views.py:2028
+#: sickrage/core/webserver/views.py:2029
 msgid "No subtitles downloaded"
 msgstr "Без субтитрів, скачав"
 
-#: sickrage/core/webserver/views.py:2150 sickrage/core/webserver/views.py:2154
+#: sickrage/core/webserver/views.py:2151 sickrage/core/webserver/views.py:2155
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2150
+#: sickrage/core/webserver/views.py:2151
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2154
+#: sickrage/core/webserver/views.py:2155
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2219
+#: sickrage/core/webserver/views.py:2220
 msgid "Postprocessing results"
 msgstr "Після-обробки результатів"
 
-#: sickrage/core/webserver/views.py:2279
+#: sickrage/core/webserver/views.py:2280
 msgid "No folders selected."
 msgstr "Жодна папка вибрані."
 
-#: sickrage/core/webserver/views.py:2415 sickrage/core/webserver/views.py:2416
+#: sickrage/core/webserver/views.py:2416 sickrage/core/webserver/views.py:2417
 msgid "New Show"
 msgstr "Нове шоу"
 
-#: sickrage/core/webserver/views.py:2480 sickrage/core/webserver/views.py:2481
+#: sickrage/core/webserver/views.py:2481 sickrage/core/webserver/views.py:2482
 msgid "Existing Show"
 msgstr "Існуючі шоу"
 
-#: sickrage/core/webserver/views.py:2522 sickrage/core/webserver/views.py:2664
+#: sickrage/core/webserver/views.py:2523 sickrage/core/webserver/views.py:2665
 msgid "Adding Show"
 msgstr "Додавання шоу"
 
-#: sickrage/core/webserver/views.py:2522 sickrage/core/webserver/views.py:2664
+#: sickrage/core/webserver/views.py:2523 sickrage/core/webserver/views.py:2665
 msgid "Adding the specified show into "
 msgstr "Додавання вказаного шоу в "
 
-#: sickrage/core/webserver/views.py:2525
+#: sickrage/core/webserver/views.py:2526
 msgid "No root directories setup, please go back and add one."
 msgstr "Немає кореневої директорії установки, поверніться назад і додати один."
 
-#: sickrage/core/webserver/views.py:2576
+#: sickrage/core/webserver/views.py:2577
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Невідома помилка. Не вдалося додати шоу через проблеми з вибором шоу."
 
-#: sickrage/core/webserver/views.py:2600
+#: sickrage/core/webserver/views.py:2601
 msgid "Folder "
 msgstr "Папка "
 
-#: sickrage/core/webserver/views.py:2600
+#: sickrage/core/webserver/views.py:2601
 msgid " exists already"
 msgstr " Існує вже"
 
-#: sickrage/core/webserver/views.py:2612
+#: sickrage/core/webserver/views.py:2613
 msgid "Unable to create the folder , can't add the show"
 msgstr "Не вдається створити папку, не можна додавати шоу"
 
-#: sickrage/core/webserver/views.py:2739
+#: sickrage/core/webserver/views.py:2740
 msgid "Shows Added"
 msgstr "Показує додано"
 
-#: sickrage/core/webserver/views.py:2740
+#: sickrage/core/webserver/views.py:2741
 msgid "Automatically added "
 msgstr "Автоматично додається "
 
-#: sickrage/core/webserver/views.py:2741
+#: sickrage/core/webserver/views.py:2742
 msgid " from their existing metadata files"
 msgstr " від їх існуючі файли метаданих"
 
-#: sickrage/core/webserver/views.py:2923 sickrage/core/webserver/views.py:2924
+#: sickrage/core/webserver/views.py:2924 sickrage/core/webserver/views.py:2925
 msgid "Missing Subtitles"
 msgstr "Зниклі без вести субтитри"
 
-#: sickrage/core/webserver/views.py:3359
+#: sickrage/core/webserver/views.py:3360
 msgid "Unable to refresh show "
 msgstr "Не вдалося оновити зв'язки із шоу "
 
-#: sickrage/core/webserver/views.py:3370
+#: sickrage/core/webserver/views.py:3371
 msgid "Errors encountered"
 msgstr "Помилок, які сталися"
 
-#: sickrage/core/webserver/views.py:3376
+#: sickrage/core/webserver/views.py:3377
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3381
+#: sickrage/core/webserver/views.py:3382
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3386
+#: sickrage/core/webserver/views.py:3387
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3391
+#: sickrage/core/webserver/views.py:3392
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3396
+#: sickrage/core/webserver/views.py:3397
 msgid "The following actions were queued:"
 msgstr "Було поставлено наступні дії:"
 
-#: sickrage/core/webserver/views.py:3465
+#: sickrage/core/webserver/views.py:3466
 msgid "Backlog search started"
 msgstr "Відставання пошук роботи"
 
-#: sickrage/core/webserver/views.py:3473
+#: sickrage/core/webserver/views.py:3474
 msgid "Daily search started"
 msgstr "Щоденний почав пошук"
 
-#: sickrage/core/webserver/views.py:3481
+#: sickrage/core/webserver/views.py:3482
 msgid "Find propers search started"
 msgstr "Знайти propers пошук роботи"
 
-#: sickrage/core/webserver/views.py:3592
+#: sickrage/core/webserver/views.py:3593
 msgid "History cleared"
 msgstr "Історії очищено"
 
-#: sickrage/core/webserver/views.py:3599
+#: sickrage/core/webserver/views.py:3600
 msgid "Removed history entries older than 30 days"
 msgstr "Вилучений історію записів старше, ніж 30 днів"
 
-#: sickrage/core/webserver/views.py:3614 sickrage/core/webserver/views.py:3829
+#: sickrage/core/webserver/views.py:3615 sickrage/core/webserver/views.py:3830
 msgid "Backup/Restore"
 msgstr "Резервне копіювання/відновлення"
 
-#: sickrage/core/webserver/views.py:3630 sickrage/core/webserver/views.py:3631
+#: sickrage/core/webserver/views.py:3631 sickrage/core/webserver/views.py:3632
 msgid "Configuration"
 msgstr "Конфігурації"
 
-#: sickrage/core/webserver/views.py:3639
+#: sickrage/core/webserver/views.py:3640
 msgid "Configuration Reset to Defaults"
 msgstr "Конфігурація повернути значення за замовчуванням"
 
-#: sickrage/core/webserver/views.py:3652
+#: sickrage/core/webserver/views.py:3653
 msgid "Config - General"
 msgstr "Config - Генеральний"
 
-#: sickrage/core/webserver/views.py:3653
+#: sickrage/core/webserver/views.py:3654
 msgid "General Configuration"
 msgstr "Загальні конфігурація"
 
-#: sickrage/core/webserver/views.py:3811 sickrage/core/webserver/views.py:3973
-#: sickrage/core/webserver/views.py:4104 sickrage/core/webserver/views.py:4325
-#: sickrage/core/webserver/views.py:4659 sickrage/core/webserver/views.py:4743
-#: sickrage/core/webserver/views.py:4782
+#: sickrage/core/webserver/views.py:3812 sickrage/core/webserver/views.py:3974
+#: sickrage/core/webserver/views.py:4105 sickrage/core/webserver/views.py:4326
+#: sickrage/core/webserver/views.py:4660 sickrage/core/webserver/views.py:4744
+#: sickrage/core/webserver/views.py:4783
 msgid "Error(s) Saving Configuration"
 msgstr "Помилки збереження конфігурації"
 
-#: sickrage/core/webserver/views.py:3813
+#: sickrage/core/webserver/views.py:3814
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:3828
+#: sickrage/core/webserver/views.py:3829
 msgid "Config - Backup/Restore"
 msgstr "Config - резервне копіювання/відновлення"
 
-#: sickrage/core/webserver/views.py:3841
+#: sickrage/core/webserver/views.py:3842
 msgid "Backup SUCCESSFUL"
 msgstr "УСПІШНЕ резервне копіювання"
 
-#: sickrage/core/webserver/views.py:3843
+#: sickrage/core/webserver/views.py:3844
 msgid "Backup FAILED!"
 msgstr "Помилка резервного копіювання!"
 
-#: sickrage/core/webserver/views.py:3845
+#: sickrage/core/webserver/views.py:3846
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Потрібно вибрати папку для збереження резервної копії на перший!"
 
-#: sickrage/core/webserver/views.py:3864
+#: sickrage/core/webserver/views.py:3865
 msgid "Successfully extracted restore files to "
 msgstr "Файли успішно витягнуті відновлення до "
 
-#: sickrage/core/webserver/views.py:3865
+#: sickrage/core/webserver/views.py:3866
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage для завершення відновлення."
 
-#: sickrage/core/webserver/views.py:3867
+#: sickrage/core/webserver/views.py:3868
 msgid "Restore FAILED"
 msgstr "Не вдалося відновити"
 
-#: sickrage/core/webserver/views.py:3869
+#: sickrage/core/webserver/views.py:3870
 msgid "You need to select a backup file to restore!"
 msgstr "Слід вибрати файл резервної копії для відновлення!"
 
-#: sickrage/core/webserver/views.py:3885
+#: sickrage/core/webserver/views.py:3886
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3911 sickrage/core/webserver/views.py:3914
-#: sickrage/core/webserver/views.py:4019
+#: sickrage/core/webserver/views.py:3912 sickrage/core/webserver/views.py:3915
+#: sickrage/core/webserver/views.py:4020
 msgid "Unable to create directory "
 msgstr "Не вдається створити каталог "
 
-#: sickrage/core/webserver/views.py:3911 sickrage/core/webserver/views.py:3914
-#: sickrage/core/webserver/views.py:4019
+#: sickrage/core/webserver/views.py:3912 sickrage/core/webserver/views.py:3915
+#: sickrage/core/webserver/views.py:4020
 msgid ", dir not changed."
 msgstr ", dir не змінюється."
 
-#: sickrage/core/webserver/views.py:3975
+#: sickrage/core/webserver/views.py:3976
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:3990
+#: sickrage/core/webserver/views.py:3991
 msgid "Config - Post Processing"
 msgstr "Config - пост-обробки"
 
-#: sickrage/core/webserver/views.py:4030
+#: sickrage/core/webserver/views.py:4031
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Розпакування не підтримуються, відключивши розпакувати налаштування"
 
-#: sickrage/core/webserver/views.py:4065 sickrage/core/webserver/views.py:4076
+#: sickrage/core/webserver/views.py:4066 sickrage/core/webserver/views.py:4077
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Ви пробували збереження неприпустимий аніме іменування config, не збереження настройок іменування"
 
-#: sickrage/core/webserver/views.py:4067 sickrage/core/webserver/views.py:4078
+#: sickrage/core/webserver/views.py:4068 sickrage/core/webserver/views.py:4079
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Ви пробували збереження неприпустимий іменування config, не збереження настройок іменування"
 
-#: sickrage/core/webserver/views.py:4084
+#: sickrage/core/webserver/views.py:4085
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Ви пробували збереження є неприпустимим повітря за датою іменування config не збереження настройок повітря за датою"
 
-#: sickrage/core/webserver/views.py:4090
+#: sickrage/core/webserver/views.py:4091
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Ви пробували збереження неприпустимий спорт іменування config, не збереження настройок спорт"
 
-#: sickrage/core/webserver/views.py:4106
+#: sickrage/core/webserver/views.py:4107
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4185
+#: sickrage/core/webserver/views.py:4186
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4226
+#: sickrage/core/webserver/views.py:4227
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Ні постачальник, указані"
 
-#: sickrage/core/webserver/views.py:4228
+#: sickrage/core/webserver/views.py:4229
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ні постачальник Указана URL-адреса"
 
-#: sickrage/core/webserver/views.py:4230
+#: sickrage/core/webserver/views.py:4231
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Немає постачальника послуг Api ключ вказано"
 
-#: sickrage/core/webserver/views.py:4327
+#: sickrage/core/webserver/views.py:4328
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4342
+#: sickrage/core/webserver/views.py:4343
 msgid "Config - Notifications"
 msgstr "Config - сповіщення"
 
-#: sickrage/core/webserver/views.py:4661
+#: sickrage/core/webserver/views.py:4662
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4676
+#: sickrage/core/webserver/views.py:4677
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4745
+#: sickrage/core/webserver/views.py:4746
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4760
+#: sickrage/core/webserver/views.py:4761
 msgid "Config - Anime"
 msgstr "Config - аніме"
 
-#: sickrage/core/webserver/views.py:4784
+#: sickrage/core/webserver/views.py:4785
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4799
+#: sickrage/core/webserver/views.py:4800
 msgid "Config - Quality Settings"
 msgstr "Config - параметри якості"
 
-#: sickrage/core/webserver/views.py:4811
+#: sickrage/core/webserver/views.py:4812
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[УСТАНОВКИ ЯКОСТІ] Конфігурації зберігаються"
 
-#: sickrage/core/webserver/views.py:4824
+#: sickrage/core/webserver/views.py:4825
 msgid "Clear Errors"
 msgstr "Зніміть помилки"
 
-#: sickrage/core/webserver/views.py:4827
+#: sickrage/core/webserver/views.py:4828
 msgid "Clear Warnings"
 msgstr "Зніміть попередження"
 
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:4869
 msgid "Daily Searcher"
 msgstr "Щоденний шукача"
 
-#: sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:4871
 msgid "Show Updater"
 msgstr "Показати Updater"
 
-#: sickrage/core/webserver/views.py:4871
+#: sickrage/core/webserver/views.py:4872
 msgid "Check Version"
 msgstr "Перевірте версію"
 
-#: sickrage/core/webserver/views.py:4874
+#: sickrage/core/webserver/views.py:4875
 msgid "Find Propers"
 msgstr "Знайти Propers"
 
-#: sickrage/core/webserver/views.py:4875
+#: sickrage/core/webserver/views.py:4876
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:4877
 msgid "Find Subtitles"
 msgstr "Знайти субтитри"
 
-#: sickrage/core/webserver/views.py:4878
+#: sickrage/core/webserver/views.py:4879
 msgid "Event"
 msgstr "Подія"
 
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4881
 msgid "Tornado"
 msgstr "\"Торнадо\""
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4882
 msgid "Thread"
 msgstr "Нитка"
 

@@ -2575,6 +2575,10 @@ $(document).ready(function ($) {
 
                     allWells.hide();
 
+                    SICKRAGE.root_dirs.init();
+                    SICKRAGE.home.add_show_options();
+                    SICKRAGE.quality_chooser.init();
+
                     if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
                         $('.setup-content #step-1').hide();
                         $('.setup-content #step-2').show();
@@ -2627,11 +2631,6 @@ $(document).ready(function ($) {
                             } else {
                                 isValid = false;
                             }
-                        } else if (curStepID == 'step-2') {
-                            SICKRAGE.root_dirs.init();
-                        } else if (curStepID == 'step-3') {
-                            SICKRAGE.home.add_show_options();
-                            SICKRAGE.quality_chooser.init();
                         }
 
                         if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
@@ -2752,7 +2751,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         scene: $('#scene').prop('checked'),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
-                        archive: $('#skip_downloaded').prop('checked')
+                        skip_downloaded: $('#skip_downloaded').prop('checked')
                     });
 
                     $(this).attr('disabled', true);
