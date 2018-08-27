@@ -484,7 +484,6 @@ $(document).ready(function ($) {
                 });
 
                 SICKRAGE.browser.init();
-                SICKRAGE.root_dirs.init();
                 SICKRAGE.quality_chooser.init();
 
                 $("#changelog").on('click', function (event) {
@@ -893,15 +892,14 @@ $(document).ready(function ($) {
                     SICKRAGE.browser.fileBrowserDialog = $('#fileBrowserDialog').modal();
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-body').addClass('ui-front');
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
+                    SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click(function () {
+                        callback(SICKRAGE.browser.currentBrowserPath, options);
+                        SICKRAGE.browser.fileBrowserDialog.modal('hide');
+                    });
                 } else {
                     // The title may change, even if fileBrowserDialog already exists
                     SICKRAGE.browser.fileBrowserDialog.find('.modal-title').text(options.title);
                 }
-
-                SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click(function () {
-                    callback(SICKRAGE.browser.currentBrowserPath, options);
-                    SICKRAGE.browser.fileBrowserDialog.modal('hide');
-                });
 
                 // set up the browser and launch the dialog
                 var initialDir = '';
@@ -1038,8 +1036,7 @@ $(document).ready(function ($) {
                     }
                 }
 
-                $('#addRootDir').click(function (e) {
-                    e.stopImmediatePropagation();
+                $('#addRootDir').click(function () {
                     $(this).nFileBrowser(SICKRAGE.root_dirs.addRootDir);
                 });
 
@@ -1120,7 +1117,7 @@ $(document).ready(function ($) {
                 SICKRAGE.root_dirs.refreshRootDirs();
                 $.get(SICKRAGE.srWebRoot + '/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
 
-                location.reload();
+                return false;
             },
 
             editRootDir: function (path) {
@@ -1546,9 +1543,6 @@ $(document).ready(function ($) {
             init: function () {
                 $.backstretch(SICKRAGE.srWebRoot + '/images/backdrops/home.jpg');
                 $('.backstretch').css("opacity", SICKRAGE.getMeta('sickrage.FANART_BACKGROUND_OPACITY')).fadeIn("500");
-
-                SICKRAGE.home.add_show_options();
-                SICKRAGE.root_dirs.init();
             },
 
             index: function () {
@@ -2235,6 +2229,9 @@ $(document).ready(function ($) {
 
             add_existing_shows: {
                 init: function () {
+                    SICKRAGE.home.add_show_options();
+                    SICKRAGE.root_dirs.init();
+
                     $('#tableDiv').on('click', '#checkAll', function () {
                         $('.dirCheck').not(this).prop('checked', this.checked);
                     });
@@ -2859,6 +2856,8 @@ $(document).ready(function ($) {
             },
 
             general: function () {
+                SICKRAGE.root_dirs.init();
+
                 if ($("input[name='proxy_setting']").val().length === 0) {
                     $("input[id='proxy_indexers']").prop('checked', false);
                     $("label[for='proxy_indexers']").hide();

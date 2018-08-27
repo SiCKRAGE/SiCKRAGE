@@ -19,19 +19,19 @@
                         <div class="stepwizard-step col-auto">
                             <a href="#step-1" class="btn btn-success btn-circle">1</a>
                             <p>
-                                <small>${_('Find A Show')}</small>
+                                <small class="text-white">${_('Find A Show')}</small>
                             </p>
                         </div>
                         <div class="stepwizard-step col-auto">
                             <a href="#step-2" class="btn btn-dark btn-circle disabled">2</a>
                             <p>
-                                <small>${_('Pick A Folder')}</small>
+                                <small class="text-white">${_('Pick A Folder')}</small>
                             </p>
                         </div>
                         <div class="stepwizard-step col-auto">
                             <a href="#step-3" class="btn btn-dark btn-circle disabled">3</a>
                             <p>
-                                <small>${_('Custom Options')}</small>
+                                <small class="text-white">${_('Custom Options')}</small>
                             </p>
                         </div>
                     </div>

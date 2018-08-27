@@ -314,7 +314,15 @@ class Tvdb:
         if os.path.isfile(os.path.join(sickrage.app.data_dir, 'thetvdb.json')):
             with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.json'), 'rb') as fp:
                 try:
-                    self.shows = ShowCache(json.load(fp))
+                    def json_keys2int(x):
+                        if isinstance(x, dict):
+                            try:
+                                return {int(k): v for k, v in x.items()}
+                            except ValueError:
+                                pass
+                        return x
+
+                    self.shows = ShowCache(json.load(fp, object_hook=json_keys2int))
                 except:
                     pass
 
