@@ -23,7 +23,7 @@
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
-            <input class="cb" type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
+            <input type="checkbox" class="toggle color-primary is-material" name="flatten_folders"
                    id="flatten_folders" ${('', 'checked')[bool(sickrage.app.config.flatten_folders_default)]}/>
         </label>
     </div>

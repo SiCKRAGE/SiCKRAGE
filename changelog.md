@@ -1,6 +1,7 @@
 # Changelog
 
-- * c28d0b8 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 
+- * 6bb7044 - 2018-08-26: Pre-Release v9.3.60.dev1 
+- * 55e4104 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 
 - * ec16f20 - 2018-08-25: Suppressed InsecureRequestWarnings 
 - * 8b6981b - 2018-08-25: Fixed unicode issues with timezone updater 
 - * 9797220 - 2018-08-25: Fixed spacing for status view 
