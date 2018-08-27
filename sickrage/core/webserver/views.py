@@ -296,6 +296,7 @@ class LogoutHandler(BaseHandler):
         self.clear_all_cookies()
         return self.redirect('/login/')
 
+
 class CalendarHandler(BaseHandler):
     def prepare(self, *args, **kwargs):
         if sickrage.app.config.calendar_unprotected:
@@ -2267,9 +2268,9 @@ class HomeAddShows(Home):
                 continue
 
         for i, shows in results.items():
-            final_results.extend(
-                [[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
-                  int(show['id']), show['seriesname'], show['firstaired']] for show in shows])
+            final_results.extend([[IndexerApi(i).name, i, IndexerApi(i).config["show_url"],
+                                   int(show['id']), show['seriesname'], show['firstaired'],
+                                   ('', 'disabled')[bool(findCertainShow(show['id'], False))]] for show in shows])
 
         lang_id = IndexerApi().indexer().languages[lang] or 7
         return json_encode({'results': final_results, 'langid': lang_id})

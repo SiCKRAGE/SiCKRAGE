@@ -2575,6 +2575,10 @@ $(document).ready(function ($) {
 
                     allWells.hide();
 
+                    SICKRAGE.root_dirs.init();
+                    SICKRAGE.home.add_show_options();
+                    SICKRAGE.quality_chooser.init();
+
                     if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
                         $('.setup-content #step-1').hide();
                         $('.setup-content #step-2').show();
@@ -2627,11 +2631,6 @@ $(document).ready(function ($) {
                             } else {
                                 isValid = false;
                             }
-                        } else if (curStepID == 'step-2') {
-                            SICKRAGE.root_dirs.init();
-                        } else if (curStepID == 'step-3') {
-                            SICKRAGE.home.add_show_options();
-                            SICKRAGE.quality_chooser.init();
                         }
 
                         if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
@@ -2699,7 +2698,7 @@ $(document).ready(function ($) {
 
                                     var whichSeries = obj.join('|');
 
-                                    resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' /> ';
+                                    resultStr += '<input type="radio" class="pull-left" id="whichSeries" name="whichSeries" value="' + whichSeries.replace(/"/g, "") + '"' + checked + ' ' + obj[6] + ' /> ';
                                     resultStr += '<a href="' + SICKRAGE.anonURL + obj[2] + obj[3] + '&lid=' + data.langid + '" onclick="window.open(this.href, \'_blank\'); return false;" ><b>' + obj[4] + '</b></a>';
 
                                     if (obj[5] !== null) {
@@ -2714,6 +2713,10 @@ $(document).ready(function ($) {
 
                                     if (obj[0] !== null) {
                                         resultStr += ' [' + obj[0] + ']';
+                                    }
+
+                                    if (obj[6] == 'disabled') {
+                                        resultStr += '<div class="d-inline text-danger font-weight-bold">' + gt(' already exists in show library') + '</div>';
                                     }
 
                                     resultStr += '<br/>';
@@ -2748,7 +2751,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         scene: $('#scene').prop('checked'),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
-                        archive: $('#skip_downloaded').prop('checked')
+                        skip_downloaded: $('#skip_downloaded').prop('checked')
                     });
 
                     $(this).attr('disabled', true);
