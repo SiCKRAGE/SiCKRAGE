@@ -1,6 +1,7 @@
 # Changelog
 
-- * a3cfd56 - 2018-08-26: Release v9.3.60 
+- * 7ca3b86 - 2018-08-26: Shows returned from search filtered if show in library 
+- * ebd6252 - 2018-08-26: Release v9.3.60 
 - * a92e6b5 - 2018-08-26: Fixed issue with TheTVDB cache storing dict keys as strings instead of integer 
 - * 1b42b83 - 2018-08-26: Pre-Release v9.3.60.dev1 
 - * 55e4104 - 2018-08-26: Fixed issue where click event for adding root folders was being fired more then twice. 

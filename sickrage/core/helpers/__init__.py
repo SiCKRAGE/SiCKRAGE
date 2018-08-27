@@ -374,7 +374,7 @@ def remove_file_failed(failed_file):
         pass
 
 
-def findCertainShow(indexerid):
+def findCertainShow(indexerid, return_show_object=True):
     """
     Find a show by indexer ID in the show list
 
@@ -393,7 +393,10 @@ def findCertainShow(indexerid):
         return None
 
     if len(results) == 1:
-        return results[0]
+        if return_show_object:
+            return results[0]
+        else:
+            return True
 
     raise MultipleShowObjectsException()
 
