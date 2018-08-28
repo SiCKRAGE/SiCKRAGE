@@ -22,6 +22,7 @@ import functools
 import io
 import json
 import os
+import pickle
 import re
 import time
 import urlparse
@@ -311,18 +312,10 @@ class Tvdb:
             headers = {}
 
         self.shows = ShowCache()
-        if os.path.isfile(os.path.join(sickrage.app.data_dir, 'thetvdb.json')):
-            with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.json'), 'rb') as fp:
+        if os.path.isfile(os.path.join(sickrage.app.data_dir, 'thetvdb.db')):
+            with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.db'), 'rb') as fp:
                 try:
-                    def json_keys2int(x):
-                        if isinstance(x, dict):
-                            try:
-                                return {int(k): v for k, v in x.items()}
-                            except ValueError:
-                                pass
-                        return x
-
-                    self.shows = ShowCache(json.load(fp, object_hook=json_keys2int))
+                    self.shows = ShowCache(pickle.load(fp))
                 except:
                     pass
 
@@ -662,8 +655,8 @@ class Tvdb:
         self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
 
         # save show cache
-        with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.json'), 'wb') as fp:
-            json.dump(self.shows, fp)
+        with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.db'), 'wb') as fp:
+            pickle.dump(self.shows, fp)
 
         return self.shows[int(sid)]
 
