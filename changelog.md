@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ce28be - 2018-08-27: Fixed issue with TheTVDB indexer cache 
+- * 26cd567 - 2018-08-27: Release v9.3.62 
+- * c831b4d - 2018-08-27: Fixed issue with TheTVDB indexer cache 
 - * c4c732f - 2018-08-27: Release v9.3.61 
 - * 085b442 - 2018-08-26: Shows returned from search filtered if show in library 
 - * ebd6252 - 2018-08-26: Release v9.3.60 
