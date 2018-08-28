@@ -117,6 +117,9 @@
                             <button class="btn btn-primary nextBtn disabled pull-right" type="button">
                                 ${_('Next')}
                             </button>
+                            % if provided_show_dir:
+                                <input class="btn float-right" type="button" id="skipShowButton" value="${_('Skip Show')}"/>
+                            % endif
                         </div>
                     </div>
 
@@ -164,11 +167,6 @@
                     % endfor
                     <input type="hidden" name="skipShow" id="skipShow" value=""/>
                 </form>
-                <div style="width: 100%; text-align: center;">
-                    % if provided_show_dir:
-                        <input class="btn" type="button" id="skipShowButton" value="${_('Skip Show')}"/>
-                    % endif
-                </div>
             </div>
         </div>
     </div>
