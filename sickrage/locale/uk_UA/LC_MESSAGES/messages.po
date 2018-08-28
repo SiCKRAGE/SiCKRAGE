@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-27 22:01-0700\n"
-"PO-Revision-Date: 2018-08-28 05:02\n"
+"POT-Creation-Date: 2018-08-27 22:35-0700\n"
+"PO-Revision-Date: 2018-08-28 05:37\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -73,271 +73,271 @@ msgstr "завантаження"
 msgid "Choose Directory"
 msgstr "Оберіть каталог"
 
-#: sickrage/core/webserver/views.py:3571 src/js/core.js:1468
+#: sickrage/core/webserver/views.py:3571 src/js/core.js:1469
 msgid "Clear History"
 msgstr "Очищення історії"
 
-#: src/js/core.js:1469
+#: src/js/core.js:1470
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Чи ви впевнені, що хочете очистити всі завантажити історії?"
 
-#: sickrage/core/webserver/views.py:3573 src/js/core.js:1474
+#: sickrage/core/webserver/views.py:3573 src/js/core.js:1475
 msgid "Trim History"
 msgstr "Подрежьте історії"
 
-#: src/js/core.js:1475
+#: src/js/core.js:1476
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Чи ви справді бажаєте Подрежьте всі завантажити, старіші за 30 днів?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2173
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2174
 msgid "Remove Show"
 msgstr "Видалити шоу"
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2174
+#: src/js/core.js:2175
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2227 src/js/core.js:2259
+#: src/js/core.js:2228 src/js/core.js:2260
 msgid "Update failed."
 msgstr "Не вдалося оновити."
 
-#: src/js/core.js:2270
+#: src/js/core.js:2271
 msgid "Select Show Location"
 msgstr "Виберіть розташування, шоу"
 
-#: src/js/core.js:2412
+#: src/js/core.js:2413
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2428
+#: src/js/core.js:2429
 msgid "Select Unprocessed Episode Folder"
 msgstr "Виберіть папку, необроблені епізод"
 
-#: src/js/core.js:2797
+#: src/js/core.js:2798
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "Пошук тайм-аут, спробуйте збільшення тайм-аут для програми індексування"
 
-#: src/js/core.js:2801
+#: src/js/core.js:2802
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2805
+#: src/js/core.js:2806
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2824
+#: src/js/core.js:2825
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2826
+#: src/js/core.js:2827
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2835
+#: src/js/core.js:2836
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2875
+#: src/js/core.js:2876
 msgid "Saved Defaults"
 msgstr "Збережене значення за промовчанням"
 
-#: src/js/core.js:2875
+#: src/js/core.js:2876
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Ваш \"Додати шоу\" за замовчуванням були створені для вашого поточного виділення."
 
-#: src/js/core.js:2932
+#: src/js/core.js:2933
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2974
+#: src/js/core.js:2975
 msgid "Reset Config to Defaults"
 msgstr "Скидання налаштувань за замовчуванням"
 
-#: src/js/core.js:2975
+#: src/js/core.js:2976
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Ви дійсно бажаєте відновити параметри конфігурації за замовчуванням?"
 
-#: src/js/core.js:3069
+#: src/js/core.js:3070
 msgid "Select path to pip"
 msgstr "Виділіть контур Піп"
 
-#: src/js/core.js:3075
+#: src/js/core.js:3076
 msgid "Select path to git"
 msgstr "Виділіть контур, щоб git"
 
-#: src/js/core.js:3083 src/js/core.js:3101 src/js/core.js:3891 src/js/core.js:3909
-#: src/js/core.js:3930 src/js/core.js:3952 src/js/core.js:3975 src/js/core.js:3997
-#: src/js/core.js:4025 src/js/core.js:4042 src/js/core.js:4086 src/js/core.js:4171
-#: src/js/core.js:4229 src/js/core.js:4246 src/js/core.js:4276 src/js/core.js:4333
-#: src/js/core.js:4409 src/js/core.js:4428 src/js/core.js:4444
+#: src/js/core.js:3084 src/js/core.js:3102 src/js/core.js:3892 src/js/core.js:3910
+#: src/js/core.js:3931 src/js/core.js:3953 src/js/core.js:3976 src/js/core.js:3998
+#: src/js/core.js:4026 src/js/core.js:4043 src/js/core.js:4087 src/js/core.js:4172
+#: src/js/core.js:4230 src/js/core.js:4247 src/js/core.js:4277 src/js/core.js:4334
+#: src/js/core.js:4410 src/js/core.js:4429 src/js/core.js:4445
 msgid "Please fill out the necessary fields above."
 msgstr "Будь ласка, заповніть необхідні поля вище."
 
-#: src/js/core.js:3139
+#: src/js/core.js:3140
 msgid "Select Subtitles Download Directory"
 msgstr "Виберіть субтитри завантаження каталогу"
 
-#: src/js/core.js:3255
+#: src/js/core.js:3256
 msgid "Select .nzb blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .nzb"
 
-#: src/js/core.js:3256
+#: src/js/core.js:3257
 msgid "Select .torrent blackhole/watch location"
 msgstr "Виберіть розташування, blackhole/годинники .torrent"
 
-#: src/js/core.js:3257
+#: src/js/core.js:3258
 msgid "Select .torrent download location"
 msgstr "Виберіть розташування для завантаження .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3324
+#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3325
 msgid "Minimum seeding time is"
 msgstr "Мінімум посіву час"
 
-#: src/js/core.js:3326
+#: src/js/core.js:3327
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL до uTorrent клієнта (наприклад, http://localhost:8000)"
 
-#: src/js/core.js:3329
+#: src/js/core.js:3330
 msgid "Stop seeding when inactive for"
 msgstr "Зупинити посіву, коли вона неактивна для"
 
-#: src/js/core.js:3335
+#: src/js/core.js:3336
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL на ваш клієнт передачі (наприклад, http://localhost:9091)"
 
-#: src/js/core.js:3345
+#: src/js/core.js:3346
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL на ваш клієнт потоп (наприклад, http://localhost:8112)"
 
-#: src/js/core.js:3354
+#: src/js/core.js:3355
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP або ім'я хоста потоп Daemon (наприклад, scgi://localhost:58846)"
 
-#: src/js/core.js:3361
+#: src/js/core.js:3362
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL на ваш клієнт Synology DS (наприклад, http://localhost:5000)"
 
-#: src/js/core.js:3366
+#: src/js/core.js:3367
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3366
+#: src/js/core.js:3367
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3376
+#: src/js/core.js:3377
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт контроль комп'ютера віддалено (наприклад, http://localhost:8080)"
 
-#: src/js/core.js:3386
+#: src/js/core.js:3387
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL для вашого MLDonkey (наприклад, http://localhost:4080)"
 
-#: src/js/core.js:3397
+#: src/js/core.js:3398
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL на ваш клієнт putio (наприклад, http://localhost:8080)"
 
-#: src/js/core.js:3566
+#: src/js/core.js:3567
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3567
+#: src/js/core.js:3568
 msgid "Select TV Download Directory"
 msgstr "Виберіть теки звантаження телевізор"
 
-#: src/js/core.js:3568
+#: src/js/core.js:3569
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3582
+#: src/js/core.js:3583
 msgid "Unrar Executable not found."
 msgstr "UnRAR виконуваний файл не знайдено."
 
-#: src/js/core.js:3625 src/js/core.js:3660 src/js/core.js:3695 src/js/core.js:3746
+#: src/js/core.js:3626 src/js/core.js:3661 src/js/core.js:3696 src/js/core.js:3747
 msgid "This pattern is invalid."
 msgstr "Ця модель є неприпустимим."
 
-#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3750
+#: src/js/core.js:3630 src/js/core.js:3665 src/js/core.js:3700 src/js/core.js:3751
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Цей шаблон буде неправильний без папок, використовуючи це змусить \"Згладжуються\" off для всіх шоу."
 
-#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3755
+#: src/js/core.js:3634 src/js/core.js:3669 src/js/core.js:3704 src/js/core.js:3756
 msgid "This pattern is valid."
 msgstr "Ця модель є дійсним."
 
-#: src/js/core.js:4079
+#: src/js/core.js:4080
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> підтвердити авторизацію"
 
-#: src/js/core.js:4136 src/js/core.js:4190
+#: src/js/core.js:4137 src/js/core.js:4191
 msgid "Please fill in the Popcorn IP address"
 msgstr "Будь ласка, заповніть попкорн IP-адреса"
 
-#: src/js/core.js:4343
+#: src/js/core.js:4344
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Перевірте чорний список ім'я; значення повинні бути кулі trakt"
 
-#: src/js/core.js:4375
+#: src/js/core.js:4376
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4378
+#: src/js/core.js:4379
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4380
+#: src/js/core.js:4381
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4386
+#: src/js/core.js:4387
 msgid "Enter an email address to send the test to:"
 msgstr "Введіть адресу електронної пошти відправити тест, щоб:"
 
-#: src/js/core.js:4388
+#: src/js/core.js:4389
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4458
+#: src/js/core.js:4459
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Оновлений список пристроїв. Будь ласка виберіть пристрій просунутися до."
 
-#: src/js/core.js:4519
+#: src/js/core.js:4520
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Ви не надаєте ключ Pushbullet api"
 
-#: src/js/core.js:4549
+#: src/js/core.js:4550
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Не забудьте зберегти настройки pushbullet."
 
-#: src/js/core.js:4621
+#: src/js/core.js:4622
 msgid "Select backup folder to save to"
 msgstr "Виберіть папку з резервною копією зберегти"
 
-#: src/js/core.js:4626
+#: src/js/core.js:4627
 msgid "Select backup files to restore"
 msgstr "Виберіть відновлення резервної копії файлів"
 
-#: src/js/core.js:5171
+#: src/js/core.js:5172
 msgid "No providers available to configure."
 msgstr "Немає доступних для налаштування провайдерів."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5381
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5382
 msgid "Mass Delete"
 msgstr "Масове вилучення"
 
-#: src/js/core.js:5382
+#: src/js/core.js:5383
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Вибрано видалити show(s).  Ви впевнені, що бажаєте продовжити? Буде видалено всі файли з вашої системи."
 
-#: src/js/core.js:5459
+#: src/js/core.js:5460
 msgid "DELETED"
 msgstr ""
 
@@ -5142,29 +5142,29 @@ msgid "Choose language"
 msgstr "Вибрати мову"
 
 #: sickrage/core/webserver/views/home/new_show.mako:118
-#: sickrage/core/webserver/views/home/new_show.mako:141
+#: sickrage/core/webserver/views/home/new_show.mako:144
 msgid "Next"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/new_show.mako:125
+#: sickrage/core/webserver/views/home/new_show.mako:121
+msgid "Skip Show"
+msgstr "Пропустити шоу"
+
+#: sickrage/core/webserver/views/home/new_show.mako:128
 msgid "Pick a folder"
 msgstr "Вибрати папку"
 
-#: sickrage/core/webserver/views/home/new_show.mako:130
+#: sickrage/core/webserver/views/home/new_show.mako:133
 msgid "Pre-chosen Destination Folder:"
 msgstr "Попередньо обраного призначення папки:"
 
-#: sickrage/core/webserver/views/home/new_show.mako:148
+#: sickrage/core/webserver/views/home/new_show.mako:151
 msgid "Custom options"
 msgstr "Користувацькі параметри"
 
-#: sickrage/core/webserver/views/home/new_show.mako:157
+#: sickrage/core/webserver/views/home/new_show.mako:160
 msgid "Finish!"
 msgstr ""
-
-#: sickrage/core/webserver/views/home/new_show.mako:169
-msgid "Skip Show"
-msgstr "Пропустити шоу"
 
 #: sickrage/core/webserver/views/home/postprocess.mako:18
 msgid "Enter the folder containing the episode"
