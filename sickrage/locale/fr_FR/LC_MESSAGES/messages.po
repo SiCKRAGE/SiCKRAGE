@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-27 11:14-0700\n"
-"PO-Revision-Date: 2018-08-27 18:14\n"
+"POT-Creation-Date: 2018-08-27 22:01-0700\n"
+"PO-Revision-Date: 2018-08-28 05:01\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,7 @@ msgstr "Présenter des erreurs"
 
 #: src/js/core.js:437
 msgid "Are you sure you want to submit these errors ?"
-msgstr ""
+msgstr "Êtes-vous sûr que vous voulez soumettre ces erreurs ?"
 
 #: src/js/core.js:437
 msgid "Make sure SiCKRAGE is updated and trigger"
@@ -95,7 +95,7 @@ msgstr "Supprimer le spectacle"
 
 #: src/js/core.js:2174
 msgid "Are you sure you want to remove"
-msgstr ""
+msgstr "Êtes-vous sûr que vous voulez supprimer"
 
 #: src/js/core.js:2174
 msgid " from the database?"
@@ -339,7 +339,7 @@ msgstr "Vous avez choisi de supprimer les spectacles.  Êtes-vous sûr de que vo
 
 #: src/js/core.js:5459
 msgid "DELETED"
-msgstr ""
+msgstr "SUPPRIMÉ"
 
 #: sickrage/core/webserver/views/api_builder.mako:25
 msgid "Profile"
@@ -712,11 +712,11 @@ msgstr "Activer le cache de fournisseur ?"
 
 #: sickrage/core/webserver/views/config/general.mako:55
 msgid "Google Drive"
-msgstr ""
+msgstr "Google Drive"
 
 #: sickrage/core/webserver/views/config/general.mako:68
 msgid "Sync To Google Drive"
-msgstr ""
+msgstr "Synchronisation Avec Google Drive"
 
 #: sickrage/core/webserver/views/config/general.mako:70
 msgid "Sync To Local Drive"
@@ -2308,7 +2308,7 @@ msgstr "Test Pushbullet"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2153
 msgid "Free Mobile"
-msgstr ""
+msgstr "Free Mobile"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2157
 msgid "Free Mobile is a famous French cellular network provider.<br> It provides to their customer a free SMS API."
@@ -2356,7 +2356,7 @@ msgstr "Test SMS"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2274
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2278
 msgid "Telegram is a cloud-based instant messaging service"
@@ -2412,7 +2412,7 @@ msgstr "Télégramme de test"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2413
 msgid "Twilio"
-msgstr ""
+msgstr "Twilio"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2417
 msgid "Twilio is a webservice API that allows you to communicate directly with a mobile number. This notifier will send a text directly to your mobile device."
@@ -2464,7 +2464,7 @@ msgstr "Test Twilio"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2597
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2601
 msgid "A social networking and microblogging service, enabling its users to send and read other users messages called tweets."
@@ -2528,7 +2528,7 @@ msgstr "Test Twitter"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2758
 msgid "Trakt"
-msgstr ""
+msgstr "Trakt"
 
 #: sickrage/core/webserver/views/config/notifications.mako:2762
 msgid "Trakt helps keep a record of what TV shows and movies you are watching. Based on your favorites, trakt recommends additional shows and movies you'll enjoy!"
@@ -2668,7 +2668,7 @@ msgstr "Trakt test"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3033
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3037
 msgid "Allows configuration of email notifications on a per show basis."
@@ -2765,7 +2765,7 @@ msgstr "Courriel test"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3275
 msgid "Slack"
-msgstr ""
+msgstr "Slack"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3279
 msgid "Slack brings all your communication together in one place. It's real-time messaging, archiving and search for modern teams."
@@ -2789,7 +2789,7 @@ msgstr "Jeu de test"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3379
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: sickrage/core/webserver/views/config/notifications.mako:3383
 msgid "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone."
