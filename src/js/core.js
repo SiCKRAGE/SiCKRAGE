@@ -1088,7 +1088,9 @@ $(document).ready(function ($) {
                     $.get(SICKRAGE.srWebRoot + '/config/general/saveRootDirs', {rootDirString: $('#rootDirText').val()});
                 });
 
-                $('#rootDirs').click(SICKRAGE.root_dirs.refreshRootDirs);
+                $('#rootDirs').click(function () {
+                    SICKRAGE.root_dirs.refreshRootDirs();
+                });
 
                 SICKRAGE.root_dirs.syncOptionIDs();
                 SICKRAGE.root_dirs.setDefault($('#whichDefaultRootDir').val(), true);
@@ -1214,7 +1216,7 @@ $(document).ready(function ($) {
                 //logString += 'def: ' + $('#whichDefaultRootDir').val();
 
                 $('#rootDirText').val(dirString);
-                //$('#rootDirText').change();
+                $('#rootDirText').change();
             }
         },
 
