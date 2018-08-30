@@ -147,7 +147,6 @@ class Connection(threading.Thread):
 
     def _reAuthenticate(self):
         if self._username and self._password:
-            self.log("auto re authenticating !")
             resp = self.auth(self._username, self._password)
             if resp.rescode not in ('500'):
                 return True
@@ -156,11 +155,9 @@ class Connection(threading.Thread):
 
     def _keep_alive(self):
         self.lastKeepAliveCheck = time()
-        self.log("auto check !")
         # check every 30 minutes if the session is still valid
         # if not reauthenticate 
         if self.lastAuth and time() - self.lastAuth > 1800:
-            self.log("auto uptime !")
             self.uptime() # this will update the self.link.session and will refresh the session if it is still alive
 
             if self.authed(): # if we are authed we set the time
@@ -171,7 +168,6 @@ class Connection(threading.Thread):
         # issue a ping every 20 minutes after the last package
         # this ensures the connection will be kept alive
         if self.link.lastpacket and time() - self.link.lastpacket > 1200:
-            self.log("auto ping !")
             self.ping()
 
 
@@ -192,20 +188,13 @@ class Connection(threading.Thread):
         mtu     - maximum transmission unit (max packet size) (default: 1400)
         
         """
-        self.log("ok1")
         if self.keepAlive:
-            self.log("ok2")
             self._username = username
             self._password = password
             if self.is_alive() == False:
-                self.log("You wanted to keep this thing alive!")
                 if self._iamALIVE == False:
-                    self.log("Starting thread now...")
                     self.start()
                     self._iamALIVE = True
-                else:
-                    self.log("not starting thread seams like it is already running. this must be a _reAuthenticate")
-
 
         self.lastAuth = time()
         return self.handle(AuthCommand(username, password, 3, self.clientname, self.clientver, nat, 1, 'utf8', mtu), callback)
