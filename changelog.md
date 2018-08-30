@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9fcb64f - 2018-08-30: Pre-Release v9.3.65.dev1 
+- * bc7246e - 2018-08-30: Pre-Release v9.3.65.dev2 
+- * a534896 - 2018-08-30: Pre-Release v9.3.65.dev1 
 - * 9d880bd - 2018-08-30: Failed processing skips paused shows and archived episodes. 
 - * fbc8814 - 2018-08-30: Removed unrequired logging from AniDB module 
 - * dc90396 - 2018-08-29: Release v9.3.64 

@@ -19,7 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import sickrage
-from sickrage.core.common import Quality
+from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
 from sickrage.core.exceptions import FailedPostProcessingFailedException
 from sickrage.core.helpers import show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -78,7 +78,9 @@ class FailedProcessor(object):
 
         for episode in parsed.episode_numbers:
             segment = parsed.show.getEpisode(parsed.season_number, episode)
-            if segment.status in Quality.ARCHIVED:
+
+            curStatus, curQuality = Quality.splitCompositeStatus(segment.status)
+            if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
             sickrage.app.search_queue.put(FailedQueueItem(parsed.show, [segment]))
