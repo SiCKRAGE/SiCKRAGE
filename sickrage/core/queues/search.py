@@ -235,26 +235,25 @@ class BacklogQueueItem(srQueueItem):
     def run(self):
         self.started = True
 
-        if not self.show.paused:
-            try:
-                sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
+        try:
+            sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
 
-                search_result = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
-                if search_result:
-                    for result in search_result:
-                        # just use the first result for now
-                        sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
-                        snatchEpisode(result)
+            search_result = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
+            if search_result:
+                for result in search_result:
+                    # just use the first result for now
+                    sickrage.app.log.info("Downloading " + result.name + " from " + result.provider.name)
+                    snatchEpisode(result)
 
-                        # give the CPU a break
-                        time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
-                else:
-                    sickrage.app.log.info(
-                        "No needed episodes found during backlog search for: [" + self.show.name + "]")
-            except Exception:
-                sickrage.app.log.debug(traceback.format_exc())
-            finally:
-                sickrage.app.log.info("Finished backlog search for: [" + self.show.name + "]")
+                    # give the CPU a break
+                    time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+            else:
+                sickrage.app.log.info(
+                    "No needed episodes found during backlog search for: [" + self.show.name + "]")
+        except Exception:
+            sickrage.app.log.debug(traceback.format_exc())
+        finally:
+            sickrage.app.log.info("Finished backlog search for: [" + self.show.name + "]")
 
 
 class FailedQueueItem(srQueueItem):
@@ -278,6 +277,7 @@ class FailedQueueItem(srQueueItem):
                 sickrage.app.log.info("Marking episode as bad: [" + epObj.pretty_name() + "]")
 
                 FailedHistory.markFailed(epObj)
+
                 (release, provider) = FailedHistory.findFailedRelease(epObj)
                 if release:
                     FailedHistory.logFailed(release)
