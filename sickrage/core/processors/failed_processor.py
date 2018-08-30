@@ -80,7 +80,7 @@ class FailedProcessor(object):
             segment = parsed.show.getEpisode(parsed.season_number, episode)
 
             curStatus, curQuality = Quality.splitCompositeStatus(segment.status)
-            if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+            if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 
             sickrage.app.search_queue.put(FailedQueueItem(parsed.show, [segment]))
