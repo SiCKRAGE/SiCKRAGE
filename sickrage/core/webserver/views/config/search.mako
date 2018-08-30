@@ -179,6 +179,11 @@
                                    placeholder="${_('time in minutes')}"
                                    title="minimum allowed time ${sickrage.app.config.min_backlog_searcher_freq} minutes"
                                    class="form-control"/>
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    min
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>

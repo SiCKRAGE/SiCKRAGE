@@ -1,6 +1,7 @@
 # Changelog
 
-- * cb6a83b - 2018-08-27: Release v9.3.63 
+- * 1ad5bd8 - 2018-08-29: Release v9.3.64 
+- * 0c2e95d - 2018-08-27: Release v9.3.63 
 - * 9e66cf5 - 2018-08-27: Fixed javascript issue when adding existing shows 
 - * 6b01822 - 2018-08-27: Release v9.3.62 
 - * c831b4d - 2018-08-27: Fixed issue with TheTVDB indexer cache 

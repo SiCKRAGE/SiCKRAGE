@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-27 22:35-0700\n"
-"PO-Revision-Date: 2018-08-28 05:36\n"
+"POT-Creation-Date: 2018-08-29 22:35-0700\n"
+"PO-Revision-Date: 2018-08-30 05:36\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -197,7 +197,7 @@ msgstr ".Torrent ブラック ホール/時計の場所を選択します。"
 msgid "Select .torrent download location"
 msgstr ".Torrent のダウンロードの場所を選択します。"
 
-#: sickrage/core/webserver/views/config/search.mako:981 src/js/core.js:3325
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3325
 msgid "Minimum seeding time is"
 msgstr "播種最低です。"
 
@@ -548,8 +548,8 @@ msgstr "AniDB は公衆に自由に開いているキャラクター情報の非
 
 #: sickrage/core/webserver/views/config/anime.mako:30
 #: sickrage/core/webserver/views/config/postprocessing.mako:33
-#: sickrage/core/webserver/views/config/search.mako:327
-#: sickrage/core/webserver/views/config/search.mako:754
+#: sickrage/core/webserver/views/config/search.mako:332
+#: sickrage/core/webserver/views/config/search.mako:759
 #: sickrage/core/webserver/views/config/subtitles.mako:35
 #: sickrage/core/webserver/views/home/status.mako:41
 msgid "Enabled"
@@ -616,10 +616,10 @@ msgstr "MyList にポストプロセッシング エピソードを追加しま�
 #: sickrage/core/webserver/views/config/providers.mako:120
 #: sickrage/core/webserver/views/config/providers.mako:932
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
-#: sickrage/core/webserver/views/config/search.mako:306
-#: sickrage/core/webserver/views/config/search.mako:731
-#: sickrage/core/webserver/views/config/search.mako:808
-#: sickrage/core/webserver/views/config/search.mako:1038
+#: sickrage/core/webserver/views/config/search.mako:311
+#: sickrage/core/webserver/views/config/search.mako:736
+#: sickrage/core/webserver/views/config/search.mako:813
+#: sickrage/core/webserver/views/config/search.mako:1043
 #: sickrage/core/webserver/views/config/subtitles.mako:206
 #: sickrage/core/webserver/views/config/subtitles.mako:256
 #: sickrage/core/webserver/views/config/subtitles.mako:313
@@ -1014,7 +1014,7 @@ msgstr "タイムゾーンまたはショー ネットワーク タイム ゾー
 #: sickrage/core/webserver/views/config/postprocessing.mako:1365
 #: sickrage/core/webserver/views/config/postprocessing.mako:1380
 #: sickrage/core/webserver/views/config/postprocessing.mako:1394
-#: sickrage/core/webserver/views/config/search.mako:973
+#: sickrage/core/webserver/views/config/search.mako:978
 #: sickrage/core/webserver/views/config/subtitles.mako:126
 #: sickrage/core/webserver/views/config/subtitles.mako:170
 msgid "NOTE:"
@@ -1632,10 +1632,10 @@ msgstr "KODI ユーザー名"
 #: sickrage/core/webserver/views/config/notifications.mako:454
 #: sickrage/core/webserver/views/config/notifications.mako:470
 #: sickrage/core/webserver/views/config/notifications.mako:1178
-#: sickrage/core/webserver/views/config/search.mako:407
-#: sickrage/core/webserver/views/config/search.mako:425
-#: sickrage/core/webserver/views/config/search.mako:900
-#: sickrage/core/webserver/views/config/search.mako:917
+#: sickrage/core/webserver/views/config/search.mako:412
+#: sickrage/core/webserver/views/config/search.mako:430
+#: sickrage/core/webserver/views/config/search.mako:905
+#: sickrage/core/webserver/views/config/search.mako:922
 msgid "blank = no authentication"
 msgstr "空白 = 認証なし"
 
@@ -1664,8 +1664,8 @@ msgstr "KODI パスワード"
 #: sickrage/core/webserver/views/config/notifications.mako:3250
 #: sickrage/core/webserver/views/config/notifications.mako:3354
 #: sickrage/core/webserver/views/config/notifications.mako:3528
-#: sickrage/core/webserver/views/config/search.mako:722
-#: sickrage/core/webserver/views/config/search.mako:1028
+#: sickrage/core/webserver/views/config/search.mako:727
+#: sickrage/core/webserver/views/config/search.mako:1033
 msgid "Click below to test"
 msgstr "テストするのには下記をクリック"
 
@@ -2225,12 +2225,12 @@ msgid "Moderate"
 msgstr "中程度"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1868
-#: sickrage/core/webserver/views/config/search.mako:703
+#: sickrage/core/webserver/views/config/search.mako:708
 msgid "Normal"
 msgstr "通常"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1871
-#: sickrage/core/webserver/views/config/search.mako:706
+#: sickrage/core/webserver/views/config/search.mako:711
 msgid "High"
 msgstr "高"
 
@@ -3875,12 +3875,12 @@ msgid "Search Settings"
 msgstr "検索の設定"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:317
+#: sickrage/core/webserver/views/config/search.mako:322
 msgid "NZB Clients"
 msgstr "NZB クライアント"
 
 #: sickrage/core/webserver/views/config/search.mako:10
-#: sickrage/core/webserver/views/config/search.mako:744
+#: sickrage/core/webserver/views/config/search.mako:749
 msgid "Torrent Clients"
 msgstr "急流クライアント"
 
@@ -3981,309 +3981,309 @@ msgid "Backlog search frequency"
 msgstr "バックログ検索頻度"
 
 #: sickrage/core/webserver/views/config/search.mako:179
-#: sickrage/core/webserver/views/config/search.mako:200
+#: sickrage/core/webserver/views/config/search.mako:205
 msgid "time in minutes"
 msgstr "分単位の時間"
 
-#: sickrage/core/webserver/views/config/search.mako:188
+#: sickrage/core/webserver/views/config/search.mako:193
 msgid "Daily search frequency"
 msgstr "毎日の検索の頻度"
 
-#: sickrage/core/webserver/views/config/search.mako:214
+#: sickrage/core/webserver/views/config/search.mako:219
 msgid "Usenet retention"
 msgstr "Usenet の保持"
 
-#: sickrage/core/webserver/views/config/search.mako:239
+#: sickrage/core/webserver/views/config/search.mako:244
 msgid "Ignore words"
 msgstr "単語は無視します。"
 
-#: sickrage/core/webserver/views/config/search.mako:248
-#: sickrage/core/webserver/views/config/search.mako:266
+#: sickrage/core/webserver/views/config/search.mako:253
+#: sickrage/core/webserver/views/config/search.mako:271
 #: sickrage/core/webserver/views/home/edit_show.mako:314
 #: sickrage/core/webserver/views/home/edit_show.mako:335
 msgid "ex. word1,word2,word3"
 msgstr "例: word1 word2, word3"
 
-#: sickrage/core/webserver/views/config/search.mako:257
+#: sickrage/core/webserver/views/config/search.mako:262
 msgid "Require words"
 msgstr "言葉を必要とします。"
 
-#: sickrage/core/webserver/views/config/search.mako:275
+#: sickrage/core/webserver/views/config/search.mako:280
 msgid "Ignore language names in subbed results"
 msgstr "话結果に言語名を無視します。"
 
-#: sickrage/core/webserver/views/config/search.mako:284
+#: sickrage/core/webserver/views/config/search.mako:289
 msgid "ex. lang1,lang2,lang3"
 msgstr "例: lang1、lang2、lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:293
+#: sickrage/core/webserver/views/config/search.mako:298
 msgid "Allow high priority"
 msgstr "高優先順位を許可します。"
 
-#: sickrage/core/webserver/views/config/search.mako:299
+#: sickrage/core/webserver/views/config/search.mako:304
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "最近放映されたエピソードのダウンロードを高い優先度に設定します。"
 
-#: sickrage/core/webserver/views/config/search.mako:319
+#: sickrage/core/webserver/views/config/search.mako:324
 msgid "How to handle NZB search results for clients."
 msgstr "クライアントの NZB 検索結果を処理する方法。"
 
-#: sickrage/core/webserver/views/config/search.mako:333
+#: sickrage/core/webserver/views/config/search.mako:338
 msgid "enable NZB searches"
 msgstr "NZB 検索を有効にします。"
 
-#: sickrage/core/webserver/views/config/search.mako:341
+#: sickrage/core/webserver/views/config/search.mako:346
 msgid "Send .nzb files to:"
 msgstr ".Nzb ファイルを送信します。"
 
-#: sickrage/core/webserver/views/config/search.mako:361
-#: sickrage/core/webserver/views/config/search.mako:789
+#: sickrage/core/webserver/views/config/search.mako:366
+#: sickrage/core/webserver/views/config/search.mako:794
 msgid "Black hole folder location"
 msgstr "ブラック ホールのフォルダーの場所"
 
-#: sickrage/core/webserver/views/config/search.mako:371
-#: sickrage/core/webserver/views/config/search.mako:800
+#: sickrage/core/webserver/views/config/search.mako:376
+#: sickrage/core/webserver/views/config/search.mako:805
 msgid "files are stored at this location for external software to find and use"
 msgstr "ファイルはこの場所に検索を使用して、外部のソフトウェアに格納されます。"
 
-#: sickrage/core/webserver/views/config/search.mako:381
+#: sickrage/core/webserver/views/config/search.mako:386
 msgid "SABnzbd server URL"
 msgstr "SABnzbd サーバーの URL"
 
-#: sickrage/core/webserver/views/config/search.mako:390
+#: sickrage/core/webserver/views/config/search.mako:395
 msgid "ex. http://localhost:8080/"
 msgstr "例: http://localhost:8080/"
 
-#: sickrage/core/webserver/views/config/search.mako:398
+#: sickrage/core/webserver/views/config/search.mako:403
 msgid "SABnzbd username"
 msgstr "ユーザー名 SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:416
+#: sickrage/core/webserver/views/config/search.mako:421
 msgid "SABnzbd password"
 msgstr "SABnzbd パスワード"
 
-#: sickrage/core/webserver/views/config/search.mako:434
+#: sickrage/core/webserver/views/config/search.mako:439
 msgid "SABnzbd API key"
 msgstr "SABnzbd API キー"
 
-#: sickrage/core/webserver/views/config/search.mako:452
+#: sickrage/core/webserver/views/config/search.mako:457
 msgid "Use SABnzbd category"
 msgstr "使用 SABnzbd カテゴリ"
 
-#: sickrage/core/webserver/views/config/search.mako:461
-#: sickrage/core/webserver/views/config/search.mako:479
-#: sickrage/core/webserver/views/config/search.mako:620
-#: sickrage/core/webserver/views/config/search.mako:638
+#: sickrage/core/webserver/views/config/search.mako:466
+#: sickrage/core/webserver/views/config/search.mako:484
+#: sickrage/core/webserver/views/config/search.mako:625
+#: sickrage/core/webserver/views/config/search.mako:643
 msgid "ex. TV"
 msgstr "例: テレビ"
 
-#: sickrage/core/webserver/views/config/search.mako:470
+#: sickrage/core/webserver/views/config/search.mako:475
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "SABnzbd カテゴリ (バックログのエピソード) を使用します。"
 
-#: sickrage/core/webserver/views/config/search.mako:488
+#: sickrage/core/webserver/views/config/search.mako:493
 msgid "Use SABnzbd category for anime"
 msgstr "キャラクターの使用 SABnzbd カテゴリ"
 
-#: sickrage/core/webserver/views/config/search.mako:497
-#: sickrage/core/webserver/views/config/search.mako:517
-#: sickrage/core/webserver/views/config/search.mako:656
-#: sickrage/core/webserver/views/config/search.mako:675
+#: sickrage/core/webserver/views/config/search.mako:502
+#: sickrage/core/webserver/views/config/search.mako:522
+#: sickrage/core/webserver/views/config/search.mako:661
+#: sickrage/core/webserver/views/config/search.mako:680
 msgid "ex. anime"
 msgstr "例: キャラクター"
 
-#: sickrage/core/webserver/views/config/search.mako:507
+#: sickrage/core/webserver/views/config/search.mako:512
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "アニメ (バックログのエピソード) のための使用 SABnzbd カテゴリ"
 
-#: sickrage/core/webserver/views/config/search.mako:527
+#: sickrage/core/webserver/views/config/search.mako:532
 msgid "Use forced priority"
 msgstr "強制の優先度を使用します。"
 
-#: sickrage/core/webserver/views/config/search.mako:533
+#: sickrage/core/webserver/views/config/search.mako:538
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "高いから強制に優先度を変更するを有効にします。"
 
-#: sickrage/core/webserver/views/config/search.mako:543
+#: sickrage/core/webserver/views/config/search.mako:548
 msgid "Connect using HTTPS"
 msgstr "HTTPS を使用して接続します。"
 
-#: sickrage/core/webserver/views/config/search.mako:549
+#: sickrage/core/webserver/views/config/search.mako:554
 msgid "enable secure control"
 msgstr "安全なコントロールを有効にします。"
 
-#: sickrage/core/webserver/views/config/search.mako:556
+#: sickrage/core/webserver/views/config/search.mako:561
 msgid "NZBget host:port"
 msgstr "NZBget ホスト: ポート"
 
-#: sickrage/core/webserver/views/config/search.mako:565
+#: sickrage/core/webserver/views/config/search.mako:570
 msgid "ex. localhost:6789"
 msgstr "例: localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:575
+#: sickrage/core/webserver/views/config/search.mako:580
 msgid "NZBget username"
 msgstr "NZBget ユーザー名"
 
-#: sickrage/core/webserver/views/config/search.mako:584
+#: sickrage/core/webserver/views/config/search.mako:589
 msgid "default = nzbget"
 msgstr "デフォルト = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:593
+#: sickrage/core/webserver/views/config/search.mako:598
 msgid "NZBget password"
 msgstr "NZBget パスワード"
 
-#: sickrage/core/webserver/views/config/search.mako:602
+#: sickrage/core/webserver/views/config/search.mako:607
 msgid "default = tegbzn6789"
 msgstr "デフォルト = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:611
+#: sickrage/core/webserver/views/config/search.mako:616
 msgid "Use NZBget category"
 msgstr "使用 NZBget カテゴリ"
 
-#: sickrage/core/webserver/views/config/search.mako:629
+#: sickrage/core/webserver/views/config/search.mako:634
 msgid "Use NZBget category (backlog episodes)"
 msgstr "NZBget カテゴリ (バックログのエピソード) を使用します。"
 
-#: sickrage/core/webserver/views/config/search.mako:647
+#: sickrage/core/webserver/views/config/search.mako:652
 msgid "Use NZBget category for anime"
 msgstr "キャラクターの使用 NZBget カテゴリ"
 
-#: sickrage/core/webserver/views/config/search.mako:665
+#: sickrage/core/webserver/views/config/search.mako:670
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "アニメ (バックログのエピソード) のため NZBget カテゴリを使用します。"
 
-#: sickrage/core/webserver/views/config/search.mako:684
+#: sickrage/core/webserver/views/config/search.mako:689
 msgid "NZBget priority"
 msgstr "NZBget の優先順位"
 
-#: sickrage/core/webserver/views/config/search.mako:697
+#: sickrage/core/webserver/views/config/search.mako:702
 msgid "Very low"
 msgstr "非常に低い"
 
-#: sickrage/core/webserver/views/config/search.mako:700
+#: sickrage/core/webserver/views/config/search.mako:705
 msgid "Low"
 msgstr "低"
 
-#: sickrage/core/webserver/views/config/search.mako:709
+#: sickrage/core/webserver/views/config/search.mako:714
 msgid "Very high"
 msgstr "非常に高い"
 
-#: sickrage/core/webserver/views/config/search.mako:712
+#: sickrage/core/webserver/views/config/search.mako:717
 #: sickrage/core/webserver/views/manage/queues.mako:23
 #: sickrage/core/webserver/views/manage/queues.mako:41
 msgid "Force"
 msgstr "力"
 
-#: sickrage/core/webserver/views/config/search.mako:728
+#: sickrage/core/webserver/views/config/search.mako:733
 msgid "Test SABnzbd"
 msgstr "テスト SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:746
+#: sickrage/core/webserver/views/config/search.mako:751
 msgid "How to handle Torrent search results for clients."
 msgstr "激流の検索を処理する方法は、クライアントを結果します。"
 
-#: sickrage/core/webserver/views/config/search.mako:760
+#: sickrage/core/webserver/views/config/search.mako:765
 msgid "Enable torrent searches"
 msgstr "激流の検索を有効にします。"
 
-#: sickrage/core/webserver/views/config/search.mako:768
+#: sickrage/core/webserver/views/config/search.mako:773
 msgid "Send .torrent files to:"
 msgstr ".Torrent ファイルを送信します。"
 
-#: sickrage/core/webserver/views/config/search.mako:814
+#: sickrage/core/webserver/views/config/search.mako:819
 msgid "Torrent host:port"
 msgstr "トレント ホスト: ポート"
 
-#: sickrage/core/webserver/views/config/search.mako:823
+#: sickrage/core/webserver/views/config/search.mako:828
 msgid "ex. http://localhost:8000/"
 msgstr "例: http://localhost:8000/"
 
-#: sickrage/core/webserver/views/config/search.mako:833
+#: sickrage/core/webserver/views/config/search.mako:838
 msgid "Torrent RPC URL"
 msgstr "トレント RPC URL"
 
-#: sickrage/core/webserver/views/config/search.mako:842
+#: sickrage/core/webserver/views/config/search.mako:847
 msgid "ex. transmission"
 msgstr "例: 伝送"
 
-#: sickrage/core/webserver/views/config/search.mako:852
+#: sickrage/core/webserver/views/config/search.mako:857
 msgid "HTTP Authentication"
 msgstr "HTTP 認証"
 
-#: sickrage/core/webserver/views/config/search.mako:861
+#: sickrage/core/webserver/views/config/search.mako:866
 msgid "None"
 msgstr "どれも"
 
-#: sickrage/core/webserver/views/config/search.mako:861
+#: sickrage/core/webserver/views/config/search.mako:866
 msgid "Basic"
 msgstr "基本的な"
 
-#: sickrage/core/webserver/views/config/search.mako:861
+#: sickrage/core/webserver/views/config/search.mako:866
 msgid "Digest"
 msgstr "ダイジェスト"
 
-#: sickrage/core/webserver/views/config/search.mako:873
+#: sickrage/core/webserver/views/config/search.mako:878
 msgid "Verify certificate"
 msgstr "証明書を確認します。"
 
-#: sickrage/core/webserver/views/config/search.mako:880
+#: sickrage/core/webserver/views/config/search.mako:885
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "あなたのログに「洪水: 認証エラー」を取得する場合を無効にします。"
 
-#: sickrage/core/webserver/views/config/search.mako:883
+#: sickrage/core/webserver/views/config/search.mako:888
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "HTTPS 要求に SSL 証明書を確認します。"
 
-#: sickrage/core/webserver/views/config/search.mako:891
+#: sickrage/core/webserver/views/config/search.mako:896
 msgid "Client username"
 msgstr "クライアントのユーザー名"
 
-#: sickrage/core/webserver/views/config/search.mako:908
+#: sickrage/core/webserver/views/config/search.mako:913
 msgid "Client password"
 msgstr "クライアント パスワード"
 
-#: sickrage/core/webserver/views/config/search.mako:925
+#: sickrage/core/webserver/views/config/search.mako:930
 msgid "Add label to torrent"
 msgstr "急流にラベルを追加します。"
 
-#: sickrage/core/webserver/views/config/search.mako:934
-#: sickrage/core/webserver/views/config/search.mako:952
+#: sickrage/core/webserver/views/config/search.mako:939
+#: sickrage/core/webserver/views/config/search.mako:957
 msgid "blank spaces are not allowed"
 msgstr "空白スペースは使用できません。"
 
-#: sickrage/core/webserver/views/config/search.mako:943
+#: sickrage/core/webserver/views/config/search.mako:948
 msgid "Add anime label to torrent"
 msgstr "急流にキャラクター ラベルを追加します。"
 
-#: sickrage/core/webserver/views/config/search.mako:961
+#: sickrage/core/webserver/views/config/search.mako:966
 msgid "Downloaded files location"
 msgstr "ダウンロードしたファイルの場所"
 
-#: sickrage/core/webserver/views/config/search.mako:971
+#: sickrage/core/webserver/views/config/search.mako:976
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "ダウンロードしたファイル (クライアントのデフォルトの空白) の torrent クライアントが保存されます。"
 
-#: sickrage/core/webserver/views/config/search.mako:973
+#: sickrage/core/webserver/views/config/search.mako:978
 msgid "the destination has to be a shared folder for Synology DS"
 msgstr "目的地は、Synology DS 用の共有フォルダーでなければなりません"
 
-#: sickrage/core/webserver/views/config/search.mako:1002
+#: sickrage/core/webserver/views/config/search.mako:1007
 msgid "Start torrent paused"
 msgstr "スタートのトレントが一時停止"
 
-#: sickrage/core/webserver/views/config/search.mako:1008
+#: sickrage/core/webserver/views/config/search.mako:1013
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr "クライアントに .torrent を追加、<b>not</b> 開始のダウンロードを行う"
 
-#: sickrage/core/webserver/views/config/search.mako:1015
+#: sickrage/core/webserver/views/config/search.mako:1020
 msgid "Allow high bandwidth"
 msgstr "高帯域幅を許可します。"
 
-#: sickrage/core/webserver/views/config/search.mako:1021
+#: sickrage/core/webserver/views/config/search.mako:1026
 msgid "use high bandwidth allocation if priority is high"
 msgstr "高帯域幅の割り当てを使用して、優先度が高い場合"
 
-#: sickrage/core/webserver/views/config/search.mako:1035
+#: sickrage/core/webserver/views/config/search.mako:1040
 msgid "Test Connection"
 msgstr "接続のテスト"
 

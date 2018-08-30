@@ -1,4 +1,5 @@
 include README.txt
 include COPYING.txt
+include changelog.md
 include requirements.txt
 recursive-include sickrage *
