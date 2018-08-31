@@ -1,6 +1,7 @@
 # Changelog
 
-- * eb98521 - 2018-08-30: Pre-Release v9.3.65.dev3 
+- * d51ba52 - 2018-08-30: Fixed issues with failed snatch searcher attempting to re-download archived episodes 
+- * cd59c7f - 2018-08-30: Pre-Release v9.3.65.dev3 
 - * 61c0376 - 2018-08-30: Pre-Release v9.3.65.dev2 
 - * a534896 - 2018-08-30: Pre-Release v9.3.65.dev1 
 - * 9d880bd - 2018-08-30: Failed processing skips paused shows and archived episodes. 
