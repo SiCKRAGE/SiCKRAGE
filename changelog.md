@@ -1,6 +1,13 @@
 # Changelog
 
-- * 1ad5bd8 - 2018-08-29: Release v9.3.64 
+- * 9098c26 - 2018-08-30: Release v9.3.65 
+- * 889fa19 - 2018-08-30: Fixed issues with failed snatch searcher attempting to re-download archived episodes 
+- * cd59c7f - 2018-08-30: Pre-Release v9.3.65.dev3 
+- * 61c0376 - 2018-08-30: Pre-Release v9.3.65.dev2 
+- * a534896 - 2018-08-30: Pre-Release v9.3.65.dev1 
+- * 9d880bd - 2018-08-30: Failed processing skips paused shows and archived episodes. 
+- * fbc8814 - 2018-08-30: Removed unrequired logging from AniDB module 
+- * dc90396 - 2018-08-29: Release v9.3.64 
 - * 0c2e95d - 2018-08-27: Release v9.3.63 
 - * 9e66cf5 - 2018-08-27: Fixed javascript issue when adding existing shows 
 - * 6b01822 - 2018-08-27: Release v9.3.62 

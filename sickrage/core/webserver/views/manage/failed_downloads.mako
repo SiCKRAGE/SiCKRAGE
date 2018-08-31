@@ -52,12 +52,14 @@
                                             % endif
                                         </td>
                                         <td class="table-fit">
+                                            % if hItem["provider"].lower() in sickrage.app.search_providers.all():
                                             <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
-                                            % if provider is not None:
                                                 <i class="sickrage-providers sickrage-providers-${provider.id}"
-                                                   title="${provider.name}"></i>
+                                                   title="${provider.name}"
+                                                   style="vertical-align:middle;cursor: help;"></i>
                                             % else:
                                                 <i class="sickrage-providers sickrage-providers-missing"
+                                                   style="vertical-align:middle;"
                                                    title="${_('missing provider')}"></i>
                                             % endif
                                         </td>
@@ -69,7 +71,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <input type="button" class="btn" value="${_('Submit')}"
+                    <input type="button" class="btn" value="${_('Clear')}"
                            id="submitMassRemove">
                 </div>
             </div>

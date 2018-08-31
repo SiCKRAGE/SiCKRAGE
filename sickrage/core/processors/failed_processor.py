@@ -19,6 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import sickrage
+from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
 from sickrage.core.exceptions import FailedPostProcessingFailedException
 from sickrage.core.helpers import show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -47,19 +48,23 @@ class FailedProcessor(object):
         """
         self._log("Failed download detected: (" + str(self.nzb_name) + ", " + str(self.dir_name) + ")")
 
-        releaseName = show_names.determineReleaseName(self.dir_name, self.nzb_name)
-        if releaseName is None:
+        release_name = show_names.determineReleaseName(self.dir_name, self.nzb_name)
+        if release_name is None:
             self._log("Warning: unable to find a valid release name.", sickrage.app.log.WARNING)
             raise FailedPostProcessingFailedException()
 
         try:
-            parser = NameParser(False)
-            parsed = parser.parse(releaseName)
+            parsed = NameParser(False).parse(release_name)
         except InvalidNameException:
-            self._log("Error: release name is invalid: " + releaseName, sickrage.app.log.DEBUG)
+            self._log("Error: release name is invalid: " + release_name, sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
         except InvalidShowException:
-            self._log("Error: unable to parse release name " + releaseName + " into a valid show",
+            self._log("Error: unable to parse release name " + release_name + " into a valid show",
+                      sickrage.app.log.DEBUG)
+            raise FailedPostProcessingFailedException()
+
+        if parsed.show.paused:
+            self._log("Warning: skipping failed processing for {} because the show is paused".format(release_name),
                       sickrage.app.log.DEBUG)
             raise FailedPostProcessingFailedException()
 
@@ -72,8 +77,13 @@ class FailedProcessor(object):
         sickrage.app.log.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            sickrage.app.search_queue.put(
-                FailedQueueItem(parsed.show, [parsed.show.getEpisode(parsed.season_number, episode)]))
+            segment = parsed.show.getEpisode(parsed.season_number, episode)
+
+            curStatus, curQuality = Quality.splitCompositeStatus(segment.status)
+            if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
+                continue
+
+            sickrage.app.search_queue.put(FailedQueueItem(parsed.show, [segment]))
 
         return True
 

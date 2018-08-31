@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-29 22:35-0700\n"
-"PO-Revision-Date: 2018-08-30 05:36\n"
+"POT-Creation-Date: 2018-08-30 20:34-0700\n"
+"PO-Revision-Date: 2018-08-31 03:35\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -414,6 +414,7 @@ msgid "Response:"
 msgstr "Antwoord:"
 
 #: sickrage/core/webserver/views/api_builder.mako:137
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:74
 msgid "Clear"
 msgstr "Leegmaken"
 
@@ -514,7 +515,7 @@ msgid "Subtitled"
 msgstr "Ondertiteld"
 
 #: sickrage/core/webserver/views/history.mako:158
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:61
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:63
 msgid "missing provider"
 msgstr "ontbrekende provider"
 
@@ -4487,7 +4488,6 @@ msgid "Prompt me to set settings for each show"
 msgstr "Prompt mij voor instellen voor elke Toon"
 
 #: sickrage/core/webserver/views/home/add_existing_shows.mako:77
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:72
 msgid "Submit"
 msgstr "Opslaan"
 

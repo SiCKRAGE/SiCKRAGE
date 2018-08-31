@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-29 22:35-0700\n"
-"PO-Revision-Date: 2018-08-30 05:37\n"
+"POT-Creation-Date: 2018-08-30 20:34-0700\n"
+"PO-Revision-Date: 2018-08-31 03:36\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -414,6 +414,7 @@ msgid "Response:"
 msgstr "Svar:"
 
 #: sickrage/core/webserver/views/api_builder.mako:137
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:74
 msgid "Clear"
 msgstr "Rensa"
 
@@ -514,7 +515,7 @@ msgid "Subtitled"
 msgstr "Textad"
 
 #: sickrage/core/webserver/views/history.mako:158
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:61
+#: sickrage/core/webserver/views/manage/failed_downloads.mako:63
 msgid "missing provider"
 msgstr "saknad leverantör"
 
@@ -4487,7 +4488,6 @@ msgid "Prompt me to set settings for each show"
 msgstr "Uppmana mig att ange inställningar för varje serie"
 
 #: sickrage/core/webserver/views/home/add_existing_shows.mako:77
-#: sickrage/core/webserver/views/manage/failed_downloads.mako:72
 msgid "Submit"
 msgstr "Skicka"
 
