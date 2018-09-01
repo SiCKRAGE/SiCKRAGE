@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-31 19:38-0700\n"
-"PO-Revision-Date: 2018-09-01 02:40\n"
+"POT-Creation-Date: 2018-09-01 07:26-0700\n"
+"PO-Revision-Date: 2018-09-01 14:27\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -49,295 +49,295 @@ msgstr ""
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:558 src/js/core.js:569 src/js/core.js:590
+#: src/js/core.js:561 src/js/core.js:572 src/js/core.js:593
 msgid "Searching"
 msgstr "Arama"
 
-#: src/js/core.js:564 src/js/core.js:595
+#: src/js/core.js:567 src/js/core.js:598
 msgid "Queued"
 msgstr "Sıraya alındı"
 
 #: sickrage/core/webserver/views/home/display_show.mako:709
 #: sickrage/core/webserver/views/includes/modals.mako:54
 #: sickrage/core/webserver/views/includes/modals.mako:75
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:599
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:602
 msgid "Manual Search"
 msgstr "El ile arama"
 
-#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:624
-#: src/js/core.js:770 src/js/core.js:813
+#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:627
+#: src/js/core.js:773 src/js/core.js:816
 msgid "loading"
 msgstr "Yükleme"
 
-#: src/js/core.js:829
+#: src/js/core.js:832
 msgid "Choose Directory"
 msgstr "Dizin Seç"
 
-#: sickrage/core/webserver/views.py:3571 src/js/core.js:1469
+#: sickrage/core/webserver/views.py:3575 src/js/core.js:1472
 msgid "Clear History"
 msgstr "Geçmişi Temizle"
 
-#: src/js/core.js:1470
+#: src/js/core.js:1473
 msgid "Are you sure you want to clear all download history ?"
 msgstr "İndirme geçmişinizi tümünü temizlemek istediğinizden emin misiniz?"
 
-#: sickrage/core/webserver/views.py:3573 src/js/core.js:1475
+#: sickrage/core/webserver/views.py:3577 src/js/core.js:1478
 msgid "Trim History"
 msgstr "Geçmiş döşeme"
 
-#: src/js/core.js:1476
+#: src/js/core.js:1479
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Tüm kırpmak istediğiniz emin download tarih 30 günden daha eski olan?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2174
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2177
 msgid "Remove Show"
 msgstr "Gösteri kaldırma"
 
-#: src/js/core.js:2175
+#: src/js/core.js:2178
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2175
+#: src/js/core.js:2178
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2175
+#: src/js/core.js:2178
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2228 src/js/core.js:2260
+#: src/js/core.js:2231 src/js/core.js:2263
 msgid "Update failed."
 msgstr "Güncelleştirme işlemi başarısız oldu."
 
-#: src/js/core.js:2271
+#: src/js/core.js:2274
 msgid "Select Show Location"
 msgstr "Gösteri konumu seçin"
 
-#: src/js/core.js:2413
+#: src/js/core.js:2416
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2429
+#: src/js/core.js:2432
 msgid "Select Unprocessed Episode Folder"
 msgstr "İşlenmemiş bölüm klasörü seçin"
 
-#: src/js/core.js:2798
+#: src/js/core.js:2801
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "araması zaman aşımına, dizin oluşturucu için artan zaman aşımı deneyin"
 
-#: src/js/core.js:2802
+#: src/js/core.js:2805
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2806
+#: src/js/core.js:2809
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2825
+#: src/js/core.js:2828
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2827
+#: src/js/core.js:2830
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2836
+#: src/js/core.js:2839
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2876
+#: src/js/core.js:2879
 msgid "Saved Defaults"
 msgstr "Kaydedilmiş Varsayılanları"
 
-#: src/js/core.js:2876
+#: src/js/core.js:2879
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "\"Show Ekle\" varsayılanlarınız geçerli seçimlerinizi belirledik."
 
-#: src/js/core.js:2933
+#: src/js/core.js:2936
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2975
+#: src/js/core.js:2978
 msgid "Reset Config to Defaults"
 msgstr "Config varsayılan değerlerine sıfırlamak"
 
-#: src/js/core.js:2976
+#: src/js/core.js:2979
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Config varsayılan değerlerine sıfırlamak istediğinizden emin misiniz?"
 
-#: src/js/core.js:3070
+#: src/js/core.js:3073
 msgid "Select path to pip"
 msgstr "Pip için yolu seçin"
 
-#: src/js/core.js:3076
+#: src/js/core.js:3079
 msgid "Select path to git"
 msgstr "Git yolunu seçin"
 
-#: src/js/core.js:3084 src/js/core.js:3102 src/js/core.js:3892 src/js/core.js:3910
-#: src/js/core.js:3931 src/js/core.js:3953 src/js/core.js:3976 src/js/core.js:3998
-#: src/js/core.js:4026 src/js/core.js:4043 src/js/core.js:4087 src/js/core.js:4172
-#: src/js/core.js:4230 src/js/core.js:4247 src/js/core.js:4277 src/js/core.js:4334
-#: src/js/core.js:4410 src/js/core.js:4429 src/js/core.js:4445
+#: src/js/core.js:3087 src/js/core.js:3105 src/js/core.js:3895 src/js/core.js:3913
+#: src/js/core.js:3934 src/js/core.js:3956 src/js/core.js:3979 src/js/core.js:4001
+#: src/js/core.js:4029 src/js/core.js:4046 src/js/core.js:4090 src/js/core.js:4175
+#: src/js/core.js:4233 src/js/core.js:4250 src/js/core.js:4280 src/js/core.js:4337
+#: src/js/core.js:4413 src/js/core.js:4432 src/js/core.js:4448
 msgid "Please fill out the necessary fields above."
 msgstr "Lütfen yukarıdaki gerekli alanları doldurun."
 
-#: src/js/core.js:3140
+#: src/js/core.js:3143
 msgid "Select Subtitles Download Directory"
 msgstr "Seçme altyazı indirme dizini"
 
-#: src/js/core.js:3256
+#: src/js/core.js:3259
 msgid "Select .nzb blackhole/watch location"
 msgstr ".NZB kara delik/izle konumu seçin"
 
-#: src/js/core.js:3257
+#: src/js/core.js:3260
 msgid "Select .torrent blackhole/watch location"
 msgstr ".Torrent kara delik/izle konumu seçin"
 
-#: src/js/core.js:3258
+#: src/js/core.js:3261
 msgid "Select .torrent download location"
 msgstr ".Torrent karşıdan yükleme konumunu seçin"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3325
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3328
 msgid "Minimum seeding time is"
 msgstr "En az zaman tohum"
 
-#: src/js/core.js:3327
+#: src/js/core.js:3330
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL için uTorrent istemciniz (örneğin http://localhost:8000)"
 
-#: src/js/core.js:3330
+#: src/js/core.js:3333
 msgid "Stop seeding when inactive for"
 msgstr "Durdurmak için etkin olmadığında tohumlama"
 
-#: src/js/core.js:3336
+#: src/js/core.js:3339
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL için iletim istemciniz (örneğin http://localhost:9091)"
 
-#: src/js/core.js:3346
+#: src/js/core.js:3349
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL, Tufan istemciye (örneğin http://localhost:8112)"
 
-#: src/js/core.js:3355
+#: src/js/core.js:3358
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP veya ana bilgisayar adı, Tufan cininin (örneğin scgi://localhost:58846)"
 
-#: src/js/core.js:3362
+#: src/js/core.js:3365
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL, Synology DS istemci (örneğin http://localhost:5000) için"
 
-#: src/js/core.js:3367
+#: src/js/core.js:3370
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3367
+#: src/js/core.js:3370
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3377
+#: src/js/core.js:3380
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Qbittorrent istemciniz (örneğin http://localhost: 8080) için URL"
 
-#: src/js/core.js:3387
+#: src/js/core.js:3390
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL, MLDonkey (örneğin http://localhost:4080) için"
 
-#: src/js/core.js:3398
+#: src/js/core.js:3401
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL, putio istemci (örneğin http://localhost: 8080) için"
 
-#: src/js/core.js:3567
+#: src/js/core.js:3570
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3568
+#: src/js/core.js:3571
 msgid "Select TV Download Directory"
 msgstr "TV indirme dizini seçin"
 
-#: src/js/core.js:3569
+#: src/js/core.js:3572
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3583
+#: src/js/core.js:3586
 msgid "Unrar Executable not found."
 msgstr "Unrar yürütülebilir dosya bulunamadı."
 
-#: src/js/core.js:3626 src/js/core.js:3661 src/js/core.js:3696 src/js/core.js:3747
+#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3750
 msgid "This pattern is invalid."
 msgstr "Bu desen geçerli değil."
 
-#: src/js/core.js:3630 src/js/core.js:3665 src/js/core.js:3700 src/js/core.js:3751
+#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3754
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Bu deseni geçersiz olurdu klasörler kullanmaya \"Flatten\" kapalı tüm gösterileri için zorlar."
 
-#: src/js/core.js:3634 src/js/core.js:3669 src/js/core.js:3704 src/js/core.js:3756
+#: src/js/core.js:3637 src/js/core.js:3672 src/js/core.js:3707 src/js/core.js:3759
 msgid "This pattern is valid."
 msgstr "Bu desen geçerli değil."
 
-#: src/js/core.js:4080
+#: src/js/core.js:4083
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> onaylamak yetkilendirme"
 
-#: src/js/core.js:4137 src/js/core.js:4191
+#: src/js/core.js:4140 src/js/core.js:4194
 msgid "Please fill in the Popcorn IP address"
 msgstr "Lütfen patlamış mısır IP adresinizi girin"
 
-#: src/js/core.js:4344
+#: src/js/core.js:4347
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kara liste adı denetleyin; değer bir trakt sülük olmak gerek"
 
-#: src/js/core.js:4376
+#: src/js/core.js:4379
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4379
+#: src/js/core.js:4382
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4381
+#: src/js/core.js:4384
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4387
+#: src/js/core.js:4390
 msgid "Enter an email address to send the test to:"
 msgstr "Test etmek için göndermek için e-posta adresi girin:"
 
-#: src/js/core.js:4389
+#: src/js/core.js:4392
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4459
+#: src/js/core.js:4462
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Aygıt listesi güncellendi. Lütfen için itmek için bir aygıt seçin."
 
-#: src/js/core.js:4520
+#: src/js/core.js:4523
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Pushbullet API anahtarı tedarik yoktu"
 
-#: src/js/core.js:4550
+#: src/js/core.js:4553
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Yeni pushbullet ayarlarınızı kaydetmek için unutmayın."
 
-#: src/js/core.js:4622
+#: src/js/core.js:4625
 msgid "Select backup folder to save to"
 msgstr "Kaydetmek için yedekleme klasörü seçin"
 
-#: src/js/core.js:4627
+#: src/js/core.js:4630
 msgid "Select backup files to restore"
 msgstr "Geri yüklenecek yedek dosyaları seçin"
 
-#: src/js/core.js:5172
+#: src/js/core.js:5175
 msgid "No providers available to configure."
 msgstr "Hiçbir sağlayıcılarını yapılandırmak kullanılabilir."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5382
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5385
 msgid "Mass Delete"
 msgstr "Toplu olarak silme"
 
-#: src/js/core.js:5383
+#: src/js/core.js:5386
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Show(s) silmek için seçtiniz.  Devam etmek istediğinizden emin misiniz? Tüm dosyalar sisteminizden kaldırılır."
 
-#: src/js/core.js:5460
+#: src/js/core.js:5463
 msgid "DELETED"
 msgstr ""
 
@@ -767,7 +767,7 @@ msgstr "Gösterir"
 msgid "Schedule"
 msgstr "Zamanlama"
 
-#: sickrage/core/webserver/views.py:3583 sickrage/core/webserver/views.py:3584
+#: sickrage/core/webserver/views.py:3587 sickrage/core/webserver/views.py:3588
 #: sickrage/core/webserver/views/config/general.mako:148
 #: sickrage/core/webserver/views/layouts/main.mako:223
 msgid "History"
@@ -3502,7 +3502,7 @@ msgstr "En az bir sağlayıcı gereklidir ancak iki tavsiye edilir."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/sel sağlayıcıları içinde toggled olabilir"
 
-#: sickrage/core/webserver/views.py:3616 sickrage/core/webserver/views.py:3887
+#: sickrage/core/webserver/views.py:3620 sickrage/core/webserver/views.py:3891
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:248
 msgid "Search Clients"
@@ -4770,7 +4770,7 @@ msgstr "Bilinmiyor"
 msgid "Retry Download"
 msgstr "Download yeniden deneyin"
 
-#: sickrage/core/webserver/views.py:4883
+#: sickrage/core/webserver/views.py:4887
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Ana"
@@ -4896,7 +4896,7 @@ msgstr "Hava düzeni yerine DVD düzeni kullanma"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Bir \"kuvvet tam güncelleştirme\" gereklidir ve varolan bölümleri varsa bunları el ile sıralamak gerekir."
 
-#: sickrage/core/webserver/views.py:3622 sickrage/core/webserver/views.py:4762
+#: sickrage/core/webserver/views.py:3626 sickrage/core/webserver/views.py:4766
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:266
@@ -5218,7 +5218,7 @@ msgstr "Yeniden başlatma gerçekleştirme"
 msgid "Daily Search"
 msgstr "Günlük arama"
 
-#: sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:4874
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Bekleme listesi"
@@ -5243,7 +5243,7 @@ msgstr "İşlem sonrası"
 msgid "Subtitles Finder"
 msgstr "Altyazı Bulucu"
 
-#: sickrage/core/webserver/views.py:4878
+#: sickrage/core/webserver/views.py:4882
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt denetleyicisi"
@@ -5276,7 +5276,7 @@ msgstr "HAYIR"
 msgid "True"
 msgstr "Gerçek"
 
-#: sickrage/core/webserver/views.py:4873
+#: sickrage/core/webserver/views.py:4877
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Sıra göster"
@@ -5572,7 +5572,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "Listeyi göster"
 
-#: sickrage/core/webserver/views.py:2231 sickrage/core/webserver/views.py:2232
+#: sickrage/core/webserver/views.py:2235 sickrage/core/webserver/views.py:2236
 #: sickrage/core/webserver/views/layouts/main.mako:145
 msgid "Add Shows"
 msgstr "Gösterir eklemek"
@@ -5587,18 +5587,18 @@ msgstr "El ile post-işleme"
 msgid "Manage"
 msgstr "Yönetmek"
 
-#: sickrage/core/webserver/views.py:3402 sickrage/core/webserver/views.py:3403
+#: sickrage/core/webserver/views.py:3406 sickrage/core/webserver/views.py:3407
 #: sickrage/core/webserver/views/layouts/main.mako:171
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Toplu olarak güncelleştirme"
 
-#: sickrage/core/webserver/views.py:3010 sickrage/core/webserver/views.py:3011
+#: sickrage/core/webserver/views.py:3014 sickrage/core/webserver/views.py:3015
 #: sickrage/core/webserver/views/layouts/main.mako:174
 msgid "Backlog Overview"
 msgstr "Biriktirme listesi genel bakış"
 
-#: sickrage/core/webserver/views.py:3455 sickrage/core/webserver/views.py:3456
+#: sickrage/core/webserver/views.py:3459 sickrage/core/webserver/views.py:3460
 #: sickrage/core/webserver/views/layouts/main.mako:177
 msgid "Manage Queues"
 msgstr "Sıraları yönetme"
@@ -5627,7 +5627,7 @@ msgstr "Güncelleştirme Emby"
 msgid "Manage Torrents"
 msgstr "Sel yönetmek"
 
-#: sickrage/core/webserver/views.py:3430 sickrage/core/webserver/views.py:3431
+#: sickrage/core/webserver/views.py:3434 sickrage/core/webserver/views.py:3435
 #: sickrage/core/webserver/views/layouts/main.mako:208
 msgid "Failed Downloads"
 msgstr "Başaramamak Downloads"
@@ -5640,12 +5640,12 @@ msgstr "Cevapsız altyazı yönetimi"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3613
+#: sickrage/core/webserver/views.py:3617
 #: sickrage/core/webserver/views/layouts/main.mako:239
 msgid "Help and Info"
 msgstr "Yardım ve bilgi"
 
-#: sickrage/core/webserver/views.py:3614
+#: sickrage/core/webserver/views.py:3618
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "General"
 msgstr "Genel"
@@ -5654,28 +5654,28 @@ msgstr "Genel"
 msgid "Backup and Restore"
 msgstr "Yedekleme ve geri yükleme"
 
-#: sickrage/core/webserver/views.py:3617 sickrage/core/webserver/views.py:4187
+#: sickrage/core/webserver/views.py:3621 sickrage/core/webserver/views.py:4191
 #: sickrage/core/webserver/views/layouts/main.mako:251
 msgid "Search Providers"
 msgstr "Arama sağlayıcıları"
 
-#: sickrage/core/webserver/views.py:3618 sickrage/core/webserver/views.py:4678
+#: sickrage/core/webserver/views.py:3622 sickrage/core/webserver/views.py:4682
 #: sickrage/core/webserver/views/layouts/main.mako:254
 msgid "Subtitles Settings"
 msgstr "Altyazı ayarları"
 
-#: sickrage/core/webserver/views.py:3619 sickrage/core/webserver/views.py:4801
+#: sickrage/core/webserver/views.py:3623 sickrage/core/webserver/views.py:4805
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Quality Settings"
 msgstr "Kalite ayarları"
 
-#: sickrage/core/webserver/views.py:2195 sickrage/core/webserver/views.py:2196
-#: sickrage/core/webserver/views.py:3620 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:2199 sickrage/core/webserver/views.py:2200
+#: sickrage/core/webserver/views.py:3624 sickrage/core/webserver/views.py:3996
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "İşlem sonrası"
 
-#: sickrage/core/webserver/views.py:3621 sickrage/core/webserver/views.py:4344
+#: sickrage/core/webserver/views.py:3625 sickrage/core/webserver/views.py:4348
 #: sickrage/core/webserver/views/layouts/main.mako:263
 msgid "Notifications"
 msgstr "Bildirimleri"
@@ -5876,7 +5876,7 @@ msgstr "Eğer bu gösterileri Show.S02E03 yerine Show.03.02.2010 olarak serbest 
 msgid "Search for subtitles."
 msgstr "İçin altyazı arama."
 
-#: sickrage/core/webserver/views.py:3160 sickrage/core/webserver/views.py:3161
+#: sickrage/core/webserver/views.py:3164 sickrage/core/webserver/views.py:3165
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Toplu Düzenle"
@@ -5941,7 +5941,7 @@ msgstr "Propers arama devre dışı"
 msgid "Post-Processor:"
 msgstr "Sonradan işleyici:"
 
-#: sickrage/core/webserver/views.py:4874
+#: sickrage/core/webserver/views.py:4878
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Ara sıra"
@@ -6132,8 +6132,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Bir download için <i>%s</i> bulamadım"
 
 #: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2600
-#: sickrage/core/webserver/views.py:2612
+#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2604
+#: sickrage/core/webserver/views.py:2616
 msgid "Unable to add show"
 msgstr "Gösteri eklenemiyor"
 
@@ -6528,7 +6528,7 @@ msgstr "Zaten şube: "
 #: sickrage/core/webserver/views.py:1832 sickrage/core/webserver/views.py:1837
 #: sickrage/core/webserver/views.py:1840 sickrage/core/webserver/views.py:1883
 #: sickrage/core/webserver/views.py:1889 sickrage/core/webserver/views.py:1892
-#: sickrage/core/webserver/views.py:4880
+#: sickrage/core/webserver/views.py:4884
 msgid "Error"
 msgstr "Hata"
 
@@ -6630,7 +6630,7 @@ msgstr "Bu Haritayı yenilemek için :{}"
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Klasör %s adlı bir tvshow.nfo içermiyor - SiCKRAGE dizininde değiştirmeden önce dosyalarınızı bu klasöre kopyalayın."
 
-#: sickrage/core/webserver/views.py:1447 sickrage/core/webserver/views.py:3352
+#: sickrage/core/webserver/views.py:1447 sickrage/core/webserver/views.py:3356
 msgid "Unable to update show: {}"
 msgstr ""
 
@@ -6638,7 +6638,7 @@ msgstr ""
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Bir güncelleştirme gösterinin sahne özel durumlarını zorlamak yapamaz."
 
-#: sickrage/core/webserver/views.py:1468 sickrage/core/webserver/views.py:3277
+#: sickrage/core/webserver/views.py:1468 sickrage/core/webserver/views.py:3281
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "değişiklikler kaydedilirken {num_errors:d} error{plural}:"
 
@@ -6780,322 +6780,322 @@ msgstr ""
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2220
+#: sickrage/core/webserver/views.py:2224
 msgid "Postprocessing results"
 msgstr "Postprocessing sonuçları"
 
-#: sickrage/core/webserver/views.py:2280
+#: sickrage/core/webserver/views.py:2284
 msgid "No folders selected."
 msgstr "Seçili klasör yok."
 
-#: sickrage/core/webserver/views.py:2416 sickrage/core/webserver/views.py:2417
+#: sickrage/core/webserver/views.py:2420 sickrage/core/webserver/views.py:2421
 msgid "New Show"
 msgstr "Yeni gösterisi"
 
-#: sickrage/core/webserver/views.py:2481 sickrage/core/webserver/views.py:2482
+#: sickrage/core/webserver/views.py:2485 sickrage/core/webserver/views.py:2486
 msgid "Existing Show"
 msgstr "Varolan gösteri"
 
-#: sickrage/core/webserver/views.py:2523 sickrage/core/webserver/views.py:2665
+#: sickrage/core/webserver/views.py:2527 sickrage/core/webserver/views.py:2669
 msgid "Adding Show"
 msgstr "Gösteri ekleme"
 
-#: sickrage/core/webserver/views.py:2523 sickrage/core/webserver/views.py:2665
+#: sickrage/core/webserver/views.py:2527 sickrage/core/webserver/views.py:2669
 msgid "Adding the specified show into "
 msgstr "Belirtilen programın içine ekleme "
 
-#: sickrage/core/webserver/views.py:2526
+#: sickrage/core/webserver/views.py:2530
 msgid "No root directories setup, please go back and add one."
 msgstr "Kök dizin kurulum, lütfen geri dönüp bir bakın."
 
-#: sickrage/core/webserver/views.py:2577
+#: sickrage/core/webserver/views.py:2581
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Bilinmeyen bir hata oluştu. Haritayı göster seçimi ile sorun nedeniyle eklenemiyor."
 
-#: sickrage/core/webserver/views.py:2601
+#: sickrage/core/webserver/views.py:2605
 msgid "Folder "
 msgstr "Klasör "
 
-#: sickrage/core/webserver/views.py:2601
+#: sickrage/core/webserver/views.py:2605
 msgid " exists already"
 msgstr " zaten var"
 
-#: sickrage/core/webserver/views.py:2613
+#: sickrage/core/webserver/views.py:2617
 msgid "Unable to create the folder , can't add the show"
 msgstr "Oluşturulamıyor belgili tanımlık ağıl, gösterinin ekleyemezsiniz"
 
-#: sickrage/core/webserver/views.py:2740
+#: sickrage/core/webserver/views.py:2744
 msgid "Shows Added"
 msgstr "Eklenen gösterir"
 
-#: sickrage/core/webserver/views.py:2741
+#: sickrage/core/webserver/views.py:2745
 msgid "Automatically added "
 msgstr "Otomatik olarak eklendi "
 
-#: sickrage/core/webserver/views.py:2742
+#: sickrage/core/webserver/views.py:2746
 msgid " from their existing metadata files"
 msgstr " onların varolan meta veri dosyalarından"
 
-#: sickrage/core/webserver/views.py:2924 sickrage/core/webserver/views.py:2925
+#: sickrage/core/webserver/views.py:2928 sickrage/core/webserver/views.py:2929
 msgid "Missing Subtitles"
 msgstr "Altyazılar eksik"
 
-#: sickrage/core/webserver/views.py:3360
+#: sickrage/core/webserver/views.py:3364
 msgid "Unable to refresh show "
 msgstr "Gösteri yenilenemedi "
 
-#: sickrage/core/webserver/views.py:3371
+#: sickrage/core/webserver/views.py:3375
 msgid "Errors encountered"
 msgstr "Hatalarla karşılaşıldı"
 
-#: sickrage/core/webserver/views.py:3377
+#: sickrage/core/webserver/views.py:3381
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3382
+#: sickrage/core/webserver/views.py:3386
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3387
+#: sickrage/core/webserver/views.py:3391
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3392
+#: sickrage/core/webserver/views.py:3396
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3397
+#: sickrage/core/webserver/views.py:3401
 msgid "The following actions were queued:"
 msgstr "Aşağıdaki eylemleri sıraya alınan:"
 
-#: sickrage/core/webserver/views.py:3466
+#: sickrage/core/webserver/views.py:3470
 msgid "Backlog search started"
 msgstr "Biriktirme listesi arama başladı"
 
-#: sickrage/core/webserver/views.py:3474
+#: sickrage/core/webserver/views.py:3478
 msgid "Daily search started"
 msgstr "Günlük arama başladı"
 
-#: sickrage/core/webserver/views.py:3482
+#: sickrage/core/webserver/views.py:3486
 msgid "Find propers search started"
 msgstr "Başlatan propers ara bul"
 
-#: sickrage/core/webserver/views.py:3593
+#: sickrage/core/webserver/views.py:3597
 msgid "History cleared"
 msgstr "Geçmişi temizlenir"
 
-#: sickrage/core/webserver/views.py:3600
+#: sickrage/core/webserver/views.py:3604
 msgid "Removed history entries older than 30 days"
 msgstr "Kaldırılan Tarih kayıtları 30 günden daha eski"
 
-#: sickrage/core/webserver/views.py:3615 sickrage/core/webserver/views.py:3830
+#: sickrage/core/webserver/views.py:3619 sickrage/core/webserver/views.py:3834
 msgid "Backup/Restore"
 msgstr "Yedekleme/geri yükleme"
 
-#: sickrage/core/webserver/views.py:3631 sickrage/core/webserver/views.py:3632
+#: sickrage/core/webserver/views.py:3635 sickrage/core/webserver/views.py:3636
 msgid "Configuration"
 msgstr "Yapılandırma"
 
-#: sickrage/core/webserver/views.py:3640
+#: sickrage/core/webserver/views.py:3644
 msgid "Configuration Reset to Defaults"
 msgstr "Varsayılanlara sıfırla yapılandırma"
 
-#: sickrage/core/webserver/views.py:3653
+#: sickrage/core/webserver/views.py:3657
 msgid "Config - General"
 msgstr "Config - genel"
 
-#: sickrage/core/webserver/views.py:3654
+#: sickrage/core/webserver/views.py:3658
 msgid "General Configuration"
 msgstr "Genel yapılandırma"
 
-#: sickrage/core/webserver/views.py:3812 sickrage/core/webserver/views.py:3974
-#: sickrage/core/webserver/views.py:4105 sickrage/core/webserver/views.py:4326
-#: sickrage/core/webserver/views.py:4660 sickrage/core/webserver/views.py:4744
-#: sickrage/core/webserver/views.py:4783
+#: sickrage/core/webserver/views.py:3816 sickrage/core/webserver/views.py:3978
+#: sickrage/core/webserver/views.py:4109 sickrage/core/webserver/views.py:4330
+#: sickrage/core/webserver/views.py:4664 sickrage/core/webserver/views.py:4748
+#: sickrage/core/webserver/views.py:4787
 msgid "Error(s) Saving Configuration"
 msgstr "Yapılandırma kaydetme hatası"
 
-#: sickrage/core/webserver/views.py:3814
+#: sickrage/core/webserver/views.py:3818
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:3829
+#: sickrage/core/webserver/views.py:3833
 msgid "Config - Backup/Restore"
 msgstr "Config - yedekleme/geri yükleme"
 
-#: sickrage/core/webserver/views.py:3842
+#: sickrage/core/webserver/views.py:3846
 msgid "Backup SUCCESSFUL"
 msgstr "Yedekleme başarılı"
 
-#: sickrage/core/webserver/views.py:3844
+#: sickrage/core/webserver/views.py:3848
 msgid "Backup FAILED!"
 msgstr "Yedekleme başarısız oldu!"
 
-#: sickrage/core/webserver/views.py:3846
+#: sickrage/core/webserver/views.py:3850
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Yedekleme için ilk kaydetmek için bir klasör seçmeniz gerekir!"
 
-#: sickrage/core/webserver/views.py:3865
+#: sickrage/core/webserver/views.py:3869
 msgid "Successfully extracted restore files to "
 msgstr "Başarıyla ayıklanan geri yükleme dosyaları "
 
-#: sickrage/core/webserver/views.py:3866
+#: sickrage/core/webserver/views.py:3870
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "Geri yüklemeyi tamamlamak için <br>Restart sickrage."
 
-#: sickrage/core/webserver/views.py:3868
+#: sickrage/core/webserver/views.py:3872
 msgid "Restore FAILED"
 msgstr "Geri yükleme başarısız oldu"
 
-#: sickrage/core/webserver/views.py:3870
+#: sickrage/core/webserver/views.py:3874
 msgid "You need to select a backup file to restore!"
 msgstr "Geri yüklemek için bir yedek dosyası seçmeniz gerekir."
 
-#: sickrage/core/webserver/views.py:3886
+#: sickrage/core/webserver/views.py:3890
 msgid "Config - Search Clients"
 msgstr "Yapılandırma - Arama Müşterileri"
 
-#: sickrage/core/webserver/views.py:3912 sickrage/core/webserver/views.py:3915
-#: sickrage/core/webserver/views.py:4020
+#: sickrage/core/webserver/views.py:3916 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:4024
 msgid "Unable to create directory "
 msgstr "Dizin oluşturulamıyor "
 
-#: sickrage/core/webserver/views.py:3912 sickrage/core/webserver/views.py:3915
-#: sickrage/core/webserver/views.py:4020
+#: sickrage/core/webserver/views.py:3916 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:4024
 msgid ", dir not changed."
 msgstr ", değişmez dir."
 
-#: sickrage/core/webserver/views.py:3976
+#: sickrage/core/webserver/views.py:3980
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:3991
+#: sickrage/core/webserver/views.py:3995
 msgid "Config - Post Processing"
 msgstr "Config - sonrası işleme"
 
-#: sickrage/core/webserver/views.py:4031
+#: sickrage/core/webserver/views.py:4035
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Açma değil taraftar, devre dışı bırakma ayarı açmak"
 
-#: sickrage/core/webserver/views.py:4066 sickrage/core/webserver/views.py:4077
+#: sickrage/core/webserver/views.py:4070 sickrage/core/webserver/views.py:4081
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Yapılandırma adlandırma, adlandırma ayarlarınız kaydediliyor değil geçersiz bir anime kaydetme çalıştı"
 
-#: sickrage/core/webserver/views.py:4068 sickrage/core/webserver/views.py:4079
+#: sickrage/core/webserver/views.py:4072 sickrage/core/webserver/views.py:4083
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Geçersiz bir adlandırma config tasarrufu adlandırma ayarlarınız kaydediliyor değil çalıştı"
 
-#: sickrage/core/webserver/views.py:4085
+#: sickrage/core/webserver/views.py:4089
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Geçersiz bir tarihe göre hava adlandırma config tasarrufu hava tarihe göre ayarlarınızı kurtarmak değil çalıştı"
 
-#: sickrage/core/webserver/views.py:4091
+#: sickrage/core/webserver/views.py:4095
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Geçersiz bir spor yapılandırma adlandırma, spor ayarlarınız kaydediliyor değil kaydetme çalıştı"
 
-#: sickrage/core/webserver/views.py:4107
+#: sickrage/core/webserver/views.py:4111
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4186
+#: sickrage/core/webserver/views.py:4190
 msgid "Config - Search Providers"
 msgstr "Yapılandırma - Arama Sağlayıcıları"
 
-#: sickrage/core/webserver/views.py:4227
+#: sickrage/core/webserver/views.py:4231
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Belirtilen sağlayıcı adı"
 
-#: sickrage/core/webserver/views.py:4229
+#: sickrage/core/webserver/views.py:4233
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Hiçbir sağlayıcı belirtilen Url"
 
-#: sickrage/core/webserver/views.py:4231
+#: sickrage/core/webserver/views.py:4235
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Belirtilen hiçbir sağlayıcı API anahtarı"
 
-#: sickrage/core/webserver/views.py:4328
+#: sickrage/core/webserver/views.py:4332
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4343
+#: sickrage/core/webserver/views.py:4347
 msgid "Config - Notifications"
 msgstr "Config - bildirimleri"
 
-#: sickrage/core/webserver/views.py:4662
+#: sickrage/core/webserver/views.py:4666
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4677
+#: sickrage/core/webserver/views.py:4681
 msgid "Config - Subtitles Settings"
 msgstr "Yapılandırma - Altyazı Ayarları"
 
-#: sickrage/core/webserver/views.py:4746
+#: sickrage/core/webserver/views.py:4750
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:4765
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4785
+#: sickrage/core/webserver/views.py:4789
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4800
+#: sickrage/core/webserver/views.py:4804
 msgid "Config - Quality Settings"
 msgstr "Config - kalite ayarları"
 
-#: sickrage/core/webserver/views.py:4812
+#: sickrage/core/webserver/views.py:4816
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[KALİTE AYARLARI] Yapılandırma kaydedildi"
 
-#: sickrage/core/webserver/views.py:4825
+#: sickrage/core/webserver/views.py:4829
 msgid "Clear Errors"
 msgstr "Hataları siler"
 
-#: sickrage/core/webserver/views.py:4828
+#: sickrage/core/webserver/views.py:4832
 msgid "Clear Warnings"
 msgstr "Uyarılar temizleyin"
 
-#: sickrage/core/webserver/views.py:4869
+#: sickrage/core/webserver/views.py:4873
 msgid "Daily Searcher"
 msgstr "Günlük arama"
 
-#: sickrage/core/webserver/views.py:4871
+#: sickrage/core/webserver/views.py:4875
 msgid "Show Updater"
 msgstr "Güncelleyici'yi göster"
 
-#: sickrage/core/webserver/views.py:4872
+#: sickrage/core/webserver/views.py:4876
 msgid "Check Version"
 msgstr "Sürüm kontrol"
 
-#: sickrage/core/webserver/views.py:4875
+#: sickrage/core/webserver/views.py:4879
 msgid "Find Propers"
 msgstr "Propers bul"
 
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:4880
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4877
+#: sickrage/core/webserver/views.py:4881
 msgid "Find Subtitles"
 msgstr "Bulmak subtitles"
 
-#: sickrage/core/webserver/views.py:4879
+#: sickrage/core/webserver/views.py:4883
 msgid "Event"
 msgstr "Olay"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4885
 msgid "Tornado"
 msgstr "Kasırga"
 
-#: sickrage/core/webserver/views.py:4882
+#: sickrage/core/webserver/views.py:4886
 msgid "Thread"
 msgstr "İş parçacığı"
 
