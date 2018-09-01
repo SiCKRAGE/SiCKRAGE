@@ -2178,7 +2178,11 @@ class changelog(WebHandler):
         super(changelog, self).__init__(*args, **kwargs)
 
     def index(self):
-        data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])
+        try:
+            data = markdown2.markdown(sickrage.changelog(), extras=['header-ids'])
+        except Exception:
+            data = ''
+
         sickrage.app.config.view_changelog = False
         sickrage.app.config.save()
         return data

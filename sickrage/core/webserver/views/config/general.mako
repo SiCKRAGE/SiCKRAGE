@@ -290,7 +290,6 @@
                 </div>
 
                 <div class="form-row form-group">
-
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Show indexer timeout')}</label>
                     </div>
@@ -313,7 +312,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="form-row form-group">
