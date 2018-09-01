@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-08-30 20:34-0700\n"
-"PO-Revision-Date: 2018-08-31 03:36\n"
+"POT-Creation-Date: 2018-08-31 19:13-0700\n"
+"PO-Revision-Date: 2018-09-01 02:14\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -535,7 +535,7 @@ msgstr "Cài đặt AnimeDB"
 
 #: sickrage/core/webserver/views/config/anime.mako:10
 #: sickrage/core/webserver/views/config/anime.mako:105
-#: sickrage/core/webserver/views/config/general.mako:429
+#: sickrage/core/webserver/views/config/general.mako:427
 msgid "User Interface"
 msgstr "Giao diện người dùng"
 
@@ -580,13 +580,13 @@ msgstr "Bạn có muốn thêm PostProcessed tập MyList?"
 
 #: sickrage/core/webserver/views/config/anime.mako:95
 #: sickrage/core/webserver/views/config/anime.mako:122
-#: sickrage/core/webserver/views/config/general.mako:329
-#: sickrage/core/webserver/views/config/general.mako:417
-#: sickrage/core/webserver/views/config/general.mako:705
-#: sickrage/core/webserver/views/config/general.mako:951
-#: sickrage/core/webserver/views/config/general.mako:1206
-#: sickrage/core/webserver/views/config/general.mako:1264
-#: sickrage/core/webserver/views/config/general.mako:1398
+#: sickrage/core/webserver/views/config/general.mako:327
+#: sickrage/core/webserver/views/config/general.mako:415
+#: sickrage/core/webserver/views/config/general.mako:703
+#: sickrage/core/webserver/views/config/general.mako:949
+#: sickrage/core/webserver/views/config/general.mako:1204
+#: sickrage/core/webserver/views/config/general.mako:1262
+#: sickrage/core/webserver/views/config/general.mako:1396
 #: sickrage/core/webserver/views/config/notifications.mako:203
 #: sickrage/core/webserver/views/config/notifications.mako:355
 #: sickrage/core/webserver/views/config/notifications.mako:488
@@ -690,7 +690,7 @@ msgid "Interface"
 msgstr "Giao diện"
 
 #: sickrage/core/webserver/views/config/general.mako:23
-#: sickrage/core/webserver/views/config/general.mako:961
+#: sickrage/core/webserver/views/config/general.mako:959
 #: sickrage/core/webserver/views/home/edit_show.mako:298
 msgid "Advanced Settings"
 msgstr "Cài đặt nâng cao"
@@ -838,168 +838,168 @@ msgstr "Chỉ mục mặc định để thêm chương trình"
 msgid "All Indexers"
 msgstr "Tất cả Indexers"
 
-#: sickrage/core/webserver/views/config/general.mako:295
+#: sickrage/core/webserver/views/config/general.mako:294
 msgid "Show indexer timeout"
 msgstr "Thời gian chờ indexer Hiển thị"
 
-#: sickrage/core/webserver/views/config/general.mako:306
+#: sickrage/core/webserver/views/config/general.mako:305
 msgid "default = 10"
 msgstr "mặc định = 10"
 
-#: sickrage/core/webserver/views/config/general.mako:321
+#: sickrage/core/webserver/views/config/general.mako:319
 msgid "Show root directories"
 msgstr "Hiển thị thư mục gốc"
 
-#: sickrage/core/webserver/views/config/general.mako:340
+#: sickrage/core/webserver/views/config/general.mako:338
 msgid "Updates"
 msgstr "Thông tin Cập Nhật"
 
-#: sickrage/core/webserver/views/config/general.mako:342
+#: sickrage/core/webserver/views/config/general.mako:340
 msgid "Options for software updates."
 msgstr "Tùy chọn cập nhật phần mềm."
 
-#: sickrage/core/webserver/views/config/general.mako:350
+#: sickrage/core/webserver/views/config/general.mako:348
 msgid "Check software updates"
 msgstr "Kiểm tra cập nhật phần mềm"
 
-#: sickrage/core/webserver/views/config/general.mako:356
+#: sickrage/core/webserver/views/config/general.mako:354
 msgid "and display notifications when updates are available. Checks are run on startup and at the frequency set below"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:365
+#: sickrage/core/webserver/views/config/general.mako:363
 msgid "Automatically update"
 msgstr "Tự động Cập Nhật"
 
-#: sickrage/core/webserver/views/config/general.mako:371
+#: sickrage/core/webserver/views/config/general.mako:369
 msgid "fetch and install software updates.Updates are run on startupand in the background at the frequency setbelow"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:379
+#: sickrage/core/webserver/views/config/general.mako:377
 msgid "Check the server every"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:390
+#: sickrage/core/webserver/views/config/general.mako:388
 msgid "default = 12 (hours)"
 msgstr "mặc định = 12 (giờ)"
 
-#: sickrage/core/webserver/views/config/general.mako:404
+#: sickrage/core/webserver/views/config/general.mako:402
 msgid "Notify on software update"
 msgstr "Thông báo về bản cập nhật phần mềm"
 
-#: sickrage/core/webserver/views/config/general.mako:410
+#: sickrage/core/webserver/views/config/general.mako:408
 msgid "send a message to all enabled notifiers when SickRage has been updated"
 msgstr "gửi tin nhắn đến tất cả kích hoạt notifiers khi SickRage đã được Cập Nhật"
 
-#: sickrage/core/webserver/views/config/general.mako:431
+#: sickrage/core/webserver/views/config/general.mako:429
 msgid "Options for visual appearance."
 msgstr "Các tùy chọn cho các hình thức trực quan."
 
-#: sickrage/core/webserver/views/config/general.mako:438
+#: sickrage/core/webserver/views/config/general.mako:436
 msgid "Interface Language"
 msgstr "Ngôn ngữ giao diện"
 
-#: sickrage/core/webserver/views/config/general.mako:451
+#: sickrage/core/webserver/views/config/general.mako:449
 msgid "System Language"
 msgstr "Ngôn ngữ hệ thống"
 
-#: sickrage/core/webserver/views/config/general.mako:463
+#: sickrage/core/webserver/views/config/general.mako:461
 msgid "for appearance to take effect, save then refresh your browser"
 msgstr "xuất hiện để có hiệu quả, tiết kiệm sau đó làm mới trình duyệt của bạn"
 
-#: sickrage/core/webserver/views/config/general.mako:472
+#: sickrage/core/webserver/views/config/general.mako:470
 msgid "Display theme"
 msgstr "Hiển thị chủ đề"
 
-#: sickrage/core/webserver/views/config/general.mako:484
+#: sickrage/core/webserver/views/config/general.mako:482
 msgid "Dark"
 msgstr "Tối"
 
-#: sickrage/core/webserver/views/config/general.mako:487
+#: sickrage/core/webserver/views/config/general.mako:485
 msgid "Light"
 msgstr "Ánh sáng"
 
-#: sickrage/core/webserver/views/config/general.mako:496
+#: sickrage/core/webserver/views/config/general.mako:494
 msgid "Show all seasons"
 msgstr "Hiển thị tất cả các mùa"
 
-#: sickrage/core/webserver/views/config/general.mako:502
-#: sickrage/core/webserver/views/config/general.mako:679
+#: sickrage/core/webserver/views/config/general.mako:500
+#: sickrage/core/webserver/views/config/general.mako:677
 msgid "on the show summary page"
 msgstr "trên trang tóm tắt hiển thị"
 
-#: sickrage/core/webserver/views/config/general.mako:510
+#: sickrage/core/webserver/views/config/general.mako:508
 msgid "Sort with \"The\", \"A\", \"An\""
 msgstr "Sắp xếp với \"The\", \"A\", \"Một\""
 
-#: sickrage/core/webserver/views/config/general.mako:516
+#: sickrage/core/webserver/views/config/general.mako:514
 msgid "include articles (\"The\", \"A\", \"An\") when sorting show lists"
 msgstr "bao gồm bài viết (\"\", \"A\", \"Một\") khi phân loại Hiển thị danh sách"
 
-#: sickrage/core/webserver/views/config/general.mako:524
+#: sickrage/core/webserver/views/config/general.mako:522
 msgid "Filter form-row"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:530
+#: sickrage/core/webserver/views/config/general.mako:528
 msgid "Add a filter form-row to the show display on the home page"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:537
+#: sickrage/core/webserver/views/config/general.mako:535
 msgid "Missed episodes range"
 msgstr "Phạm vi tập bị nhỡ"
 
-#: sickrage/core/webserver/views/config/general.mako:549
+#: sickrage/core/webserver/views/config/general.mako:547
 msgid "# of days"
 msgstr "# Ngày"
 
-#: sickrage/core/webserver/views/config/general.mako:558
+#: sickrage/core/webserver/views/config/general.mako:556
 msgid "Display fuzzy dates"
 msgstr "Hiển thị ngày mờ"
 
-#: sickrage/core/webserver/views/config/general.mako:565
+#: sickrage/core/webserver/views/config/general.mako:563
 msgid "move absolute dates into tooltips and display e.g. \"Last Thu\", \"On Tue\""
 msgstr "di chuyển ngày tháng tuyệt đối vào chú thích và hiển thị các ví dụ như \"cuối thứ năm\", \"Ngày thứ ba\""
 
-#: sickrage/core/webserver/views/config/general.mako:572
+#: sickrage/core/webserver/views/config/general.mako:570
 msgid "Trim zero padding"
 msgstr "Trim zero padding"
 
-#: sickrage/core/webserver/views/config/general.mako:578
+#: sickrage/core/webserver/views/config/general.mako:576
 msgid "remove the leading number \"0\" shown on hour of day, and date of month"
 msgstr "loại bỏ số số \"0\" Hiển thị ngày giờ trong ngày và ngày tháng"
 
-#: sickrage/core/webserver/views/config/general.mako:585
+#: sickrage/core/webserver/views/config/general.mako:583
 msgid "Date style"
 msgstr "Phong cách ngày"
 
-#: sickrage/core/webserver/views/config/general.mako:598
+#: sickrage/core/webserver/views/config/general.mako:596
 msgid "Use System Default"
 msgstr "Sử dụng mặc định hệ thống"
 
-#: sickrage/core/webserver/views/config/general.mako:610
+#: sickrage/core/webserver/views/config/general.mako:608
 msgid "Time style"
 msgstr "Phong cách thời gian"
 
-#: sickrage/core/webserver/views/config/general.mako:631
+#: sickrage/core/webserver/views/config/general.mako:629
 msgid "Timezone"
 msgstr "Timezone"
 
-#: sickrage/core/webserver/views/config/general.mako:636
+#: sickrage/core/webserver/views/config/general.mako:634
 msgid "Local"
 msgstr "Địa phương"
 
-#: sickrage/core/webserver/views/config/general.mako:640
+#: sickrage/core/webserver/views/config/general.mako:638
 #: sickrage/core/webserver/views/home/index.mako:34
 #: sickrage/core/webserver/views/home/index.mako:290
 msgid "Network"
 msgstr "Mạng lưới"
 
-#: sickrage/core/webserver/views/config/general.mako:643
+#: sickrage/core/webserver/views/config/general.mako:641
 msgid "display dates and times in either your timezone or the shows network timezone"
 msgstr "Hiển thị ngày tháng và thời gian trong múi hoặc cho thấy mạng timezone"
 
-#: sickrage/core/webserver/views/config/general.mako:645
-#: sickrage/core/webserver/views/config/general.mako:1152
-#: sickrage/core/webserver/views/config/general.mako:1195
+#: sickrage/core/webserver/views/config/general.mako:643
+#: sickrage/core/webserver/views/config/general.mako:1150
+#: sickrage/core/webserver/views/config/general.mako:1193
 #: sickrage/core/webserver/views/config/notifications.mako:894
 #: sickrage/core/webserver/views/config/notifications.mako:936
 #: sickrage/core/webserver/views/config/notifications.mako:1012
@@ -1021,309 +1021,309 @@ msgstr "Hiển thị ngày tháng và thời gian trong múi hoặc cho thấy m
 msgid "NOTE:"
 msgstr "LƯU Ý:"
 
-#: sickrage/core/webserver/views/config/general.mako:645
+#: sickrage/core/webserver/views/config/general.mako:643
 msgid "Use local timezone to start searching for episodes minutes after show ends (depends on your dailysearch frequency)"
 msgstr "Timezone địa phương sử dụng để bắt đầu tìm kiếm tập phút sau khi hiển thị kết thúc (phụ thuộc vào tần số dailysearch của bạn)"
 
-#: sickrage/core/webserver/views/config/general.mako:653
+#: sickrage/core/webserver/views/config/general.mako:651
 msgid "Download url"
 msgstr "Tải xuống url"
 
-#: sickrage/core/webserver/views/config/general.mako:672
+#: sickrage/core/webserver/views/config/general.mako:670
 msgid "Show fanart in the background"
 msgstr "Hiển thị khách sạn fanart trong nền"
 
-#: sickrage/core/webserver/views/config/general.mako:686
+#: sickrage/core/webserver/views/config/general.mako:684
 msgid "Fanart transparency"
 msgstr "Fanart minh bạch"
 
-#: sickrage/core/webserver/views/config/general.mako:715
+#: sickrage/core/webserver/views/config/general.mako:713
 msgid "Web Interface"
 msgstr "Giao diện web"
 
-#: sickrage/core/webserver/views/config/general.mako:717
+#: sickrage/core/webserver/views/config/general.mako:715
 msgid "It is recommended that you enable a username and password to secure SiCKRAGE from being tampered with remotely."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:718
+#: sickrage/core/webserver/views/config/general.mako:716
 msgid "These options require a manual restart to take effect."
 msgstr "Các tùy chọn này yêu cầu khởi động lại bằng tay để có hiệu lực."
 
-#: sickrage/core/webserver/views/config/general.mako:725
+#: sickrage/core/webserver/views/config/general.mako:723
 msgid "Enable UPnP"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:731
+#: sickrage/core/webserver/views/config/general.mako:729
 msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:739
+#: sickrage/core/webserver/views/config/general.mako:737
 msgid "HTTP public port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:760
+#: sickrage/core/webserver/views/config/general.mako:758
 msgid "used by UPnP to setup a remote port forwarding to remotely access SiCKRAGE over a public external IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:770
+#: sickrage/core/webserver/views/config/general.mako:768
 msgid "HTTP private port"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:783
+#: sickrage/core/webserver/views/config/general.mako:781
 msgid "8081"
 msgstr "8081"
 
-#: sickrage/core/webserver/views/config/general.mako:792
+#: sickrage/core/webserver/views/config/general.mako:790
 msgid "used to access SiCKRAGE over a private internal IP address"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:801
+#: sickrage/core/webserver/views/config/general.mako:799
 msgid "HTTP logs"
 msgstr "Bản ghi HTTP"
 
-#: sickrage/core/webserver/views/config/general.mako:807
+#: sickrage/core/webserver/views/config/general.mako:805
 msgid "enable logs from the internal Tornado web server"
 msgstr "sử Nhật ký từ máy chủ web nội bộ của cơn lốc xoáy"
 
-#: sickrage/core/webserver/views/config/general.mako:814
+#: sickrage/core/webserver/views/config/general.mako:812
 msgid "Application API key"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:831
+#: sickrage/core/webserver/views/config/general.mako:829
 msgid "Generate"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:841
+#: sickrage/core/webserver/views/config/general.mako:839
 msgid "used to give 3rd party programs limited access to SiCKRAGE you can try all the features of the API"
 msgstr "được sử dụng để cung cấp cho 3 chương trình của bên giới hạn truy cập đến SiCKRAGE, bạn có thể thử tất cả các tính năng của các API"
 
-#: sickrage/core/webserver/views/config/general.mako:842
+#: sickrage/core/webserver/views/config/general.mako:840
 msgid "here"
 msgstr "Ở đây"
 
-#: sickrage/core/webserver/views/config/general.mako:851
+#: sickrage/core/webserver/views/config/general.mako:849
 msgid "Listen on IPv6"
 msgstr "Nghe trên IPv6"
 
-#: sickrage/core/webserver/views/config/general.mako:857
+#: sickrage/core/webserver/views/config/general.mako:855
 msgid "attempt binding to any available IPv6 address"
 msgstr "nỗ lực ràng buộc với bất kỳ địa chỉ IPv6 có sẵn"
 
-#: sickrage/core/webserver/views/config/general.mako:864
+#: sickrage/core/webserver/views/config/general.mako:862
 msgid "Enable HTTPS"
 msgstr "Sử HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:870
+#: sickrage/core/webserver/views/config/general.mako:868
 msgid "enable access to the web interface using a HTTPS address"
 msgstr "kích hoạt truy cập vào giao diện web bằng cách sử dụng một địa chỉ HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:879
+#: sickrage/core/webserver/views/config/general.mako:877
 msgid "HTTPS certificate"
 msgstr "Chứng chỉ HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:893
+#: sickrage/core/webserver/views/config/general.mako:891
 msgid "file name or path to HTTPS certificate"
 msgstr "tên tập tin hoặc đường dẫn đến chứng chỉ HTTPS"
 
-#: sickrage/core/webserver/views/config/general.mako:903
+#: sickrage/core/webserver/views/config/general.mako:901
 msgid "HTTPS key"
 msgstr "HTTPS chính"
 
-#: sickrage/core/webserver/views/config/general.mako:915
+#: sickrage/core/webserver/views/config/general.mako:913
 msgid "file name or path to HTTPS key"
 msgstr "tên tập tin hoặc đường dẫn cho HTTPS khóa"
 
-#: sickrage/core/webserver/views/config/general.mako:925
+#: sickrage/core/webserver/views/config/general.mako:923
 msgid "Reverse proxy headers"
 msgstr "Ngược lại tiêu đề proxy"
 
-#: sickrage/core/webserver/views/config/general.mako:931
+#: sickrage/core/webserver/views/config/general.mako:929
 msgid "accept the following reverse proxy headers (advanced) - (X-Forwarded-For, X-Forwarded-Host, and X-Forwarded-Proto)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:938
+#: sickrage/core/webserver/views/config/general.mako:936
 msgid "Notify on login"
 msgstr "Thông báo ngày đăng nhập"
 
-#: sickrage/core/webserver/views/config/general.mako:944
+#: sickrage/core/webserver/views/config/general.mako:942
 msgid "send a message to all enabled notifiers when someone logs into SiCKRAGE from a public IP address"
 msgstr "gửi tin nhắn đến tất cả các notifiers kích hoạt khi ai đó đăng nhập vào SiCKRAGE từ một địa chỉ IP công cộng"
 
-#: sickrage/core/webserver/views/config/general.mako:967
+#: sickrage/core/webserver/views/config/general.mako:965
 msgid "CPU throttling"
 msgstr "CPU throttling"
 
-#: sickrage/core/webserver/views/config/general.mako:988
+#: sickrage/core/webserver/views/config/general.mako:986
 msgid "Anonymous redirect"
 msgstr "Chuyển hướng vô danh"
 
-#: sickrage/core/webserver/views/config/general.mako:1008
+#: sickrage/core/webserver/views/config/general.mako:1006
 msgid "Enable debug"
 msgstr "Sử gỡ lỗi"
 
-#: sickrage/core/webserver/views/config/general.mako:1014
+#: sickrage/core/webserver/views/config/general.mako:1012
 msgid "Enable debug logs"
 msgstr "Sử bản ghi gỡ lỗi"
 
-#: sickrage/core/webserver/views/config/general.mako:1021
+#: sickrage/core/webserver/views/config/general.mako:1019
 msgid "Verify SSL Certs"
 msgstr "Xác minh Certs hàng SSL"
 
-#: sickrage/core/webserver/views/config/general.mako:1027
+#: sickrage/core/webserver/views/config/general.mako:1025
 msgid "Verify SSL Certificates (Disable this for broken SSL installs (Like QNAP)"
 msgstr "Xác minh chứng chỉ SSL (vô hiệu hóa này để phá vỡ SSL cài đặt (như QNAP)"
 
-#: sickrage/core/webserver/views/config/general.mako:1036
+#: sickrage/core/webserver/views/config/general.mako:1034
 msgid "No Restart"
 msgstr "Không có khởi động lại"
 
-#: sickrage/core/webserver/views/config/general.mako:1043
+#: sickrage/core/webserver/views/config/general.mako:1041
 msgid "Shutdown SiCKRAGE on restarts (external service must restart SiCKRAGE on its own)."
 msgstr "Tắt máy SiCKRAGE ngày khởi động lại (dịch vụ bên ngoài phải khởi động lại SiCKRAGE ngày của riêng mình)."
 
-#: sickrage/core/webserver/views/config/general.mako:1053
+#: sickrage/core/webserver/views/config/general.mako:1051
 msgid "Encrypt settings"
 msgstr "Mật mã hóa các cài đặt"
 
-#: sickrage/core/webserver/views/config/general.mako:1059
+#: sickrage/core/webserver/views/config/general.mako:1057
 msgid "in the"
 msgstr "trong các"
 
-#: sickrage/core/webserver/views/config/general.mako:1059
+#: sickrage/core/webserver/views/config/general.mako:1057
 msgid "file."
 msgstr "tập tin."
 
-#: sickrage/core/webserver/views/config/general.mako:1068
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Unprotected calendar"
 msgstr "Lịch không được bảo vệ"
 
-#: sickrage/core/webserver/views/config/general.mako:1074
+#: sickrage/core/webserver/views/config/general.mako:1072
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "cho phép đăng ký vào lịch mà không có người dùng và mật khẩu. Một số dịch vụ như Lịch Google chỉ làm việc theo cách này"
 
-#: sickrage/core/webserver/views/config/general.mako:1084
+#: sickrage/core/webserver/views/config/general.mako:1082
 msgid "Google Calendar Icons"
 msgstr "Biểu tượng lịch Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1090
+#: sickrage/core/webserver/views/config/general.mako:1088
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "Hiển thị một biểu tượng bên cạnh đã xuất lịch các sự kiện vào lịch Google."
 
-#: sickrage/core/webserver/views/config/general.mako:1099
+#: sickrage/core/webserver/views/config/general.mako:1097
 msgid "Link Google Account"
 msgstr "Liên kết tài khoản Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1102
+#: sickrage/core/webserver/views/config/general.mako:1100
 msgid "Link"
 msgstr "Liên kết"
 
-#: sickrage/core/webserver/views/config/general.mako:1104
+#: sickrage/core/webserver/views/config/general.mako:1102
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "liên kết tài khoản google của bạn để SiCKRAGE cho việc sử dụng các tính năng tiên tiến như cài đặt/cơ sở dữ liệu lưu trữ"
 
-#: sickrage/core/webserver/views/config/general.mako:1112
+#: sickrage/core/webserver/views/config/general.mako:1110
 msgid "Proxy host"
 msgstr "Máy chủ proxy"
 
-#: sickrage/core/webserver/views/config/general.mako:1131
+#: sickrage/core/webserver/views/config/general.mako:1129
 msgid "Use proxy for indexers"
 msgstr "Sử dụng proxy cho indexers"
 
-#: sickrage/core/webserver/views/config/general.mako:1137
+#: sickrage/core/webserver/views/config/general.mako:1135
 msgid "use proxy host for connecting to indexers (TheTVDB)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1144
+#: sickrage/core/webserver/views/config/general.mako:1142
 msgid "Skip Remove Detection"
 msgstr "Loại bỏ bỏ qua phát hiện"
 
-#: sickrage/core/webserver/views/config/general.mako:1150
+#: sickrage/core/webserver/views/config/general.mako:1148
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Bỏ qua phát hiện các loại bỏ các tập tin. Nếu vô hiệu hóa nó sẽ thiết lập mặc định xóa bỏ tình trạng"
 
-#: sickrage/core/webserver/views/config/general.mako:1152
+#: sickrage/core/webserver/views/config/general.mako:1150
 msgid "This may mean SiCKRAGE misses renames as well"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1159
+#: sickrage/core/webserver/views/config/general.mako:1157
 msgid "Default deleted episode status"
 msgstr "Tình trạng tập Default xóa"
 
-#: sickrage/core/webserver/views/config/general.mako:1193
+#: sickrage/core/webserver/views/config/general.mako:1191
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Xác định trạng thái được thiết lập cho các phương tiện truyền thông các tập tin đã bị xóa."
 
-#: sickrage/core/webserver/views/config/general.mako:1195
+#: sickrage/core/webserver/views/config/general.mako:1193
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Tùy chọn lưu trữ sẽ giữ chất lượng tải về trước đó"
 
-#: sickrage/core/webserver/views/config/general.mako:1197
+#: sickrage/core/webserver/views/config/general.mako:1195
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Ví dụ: Tải về (1080p WEB-DL) ==> lưu trữ (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1217
+#: sickrage/core/webserver/views/config/general.mako:1215
 msgid "PIP Settings"
 msgstr "Cài đặt PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1222
+#: sickrage/core/webserver/views/config/general.mako:1220
 msgid "PIP executable path"
 msgstr "Con đường thực thi PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1235
+#: sickrage/core/webserver/views/config/general.mako:1233
 msgid "ex: /path/to/pip"
 msgstr "Ví dụ: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1241
-#: sickrage/core/webserver/views/config/general.mako:1348
+#: sickrage/core/webserver/views/config/general.mako:1239
+#: sickrage/core/webserver/views/config/general.mako:1346
 msgid "Verify Path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1252
-#: sickrage/core/webserver/views/config/general.mako:1359
+#: sickrage/core/webserver/views/config/general.mako:1250
+#: sickrage/core/webserver/views/config/general.mako:1357
 msgid "Click vefify path to test."
 msgstr "Nhấp vào đường dẫn vefify để kiểm tra."
 
-#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1277
 msgid "GIT Settings"
 msgstr "GIT cài đặt"
 
-#: sickrage/core/webserver/views/config/general.mako:1284
+#: sickrage/core/webserver/views/config/general.mako:1282
 msgid "Git Branches"
 msgstr "Chi nhánh git"
 
-#: sickrage/core/webserver/views/config/general.mako:1296
+#: sickrage/core/webserver/views/config/general.mako:1294
 msgid "GIT Branch Version"
 msgstr "GIT chi nhánh Phiên bản"
 
-#: sickrage/core/webserver/views/config/general.mako:1316
+#: sickrage/core/webserver/views/config/general.mako:1314
 msgid "Error: No branches found."
 msgstr "Lỗi: Không có chi nhánh được tìm thấy."
 
-#: sickrage/core/webserver/views/config/general.mako:1320
+#: sickrage/core/webserver/views/config/general.mako:1318
 msgid "select branch to use (restart required)"
 msgstr "chọn chi nhánh để sử dụng (yêu cầu khởi động lại)"
 
-#: sickrage/core/webserver/views/config/general.mako:1329
+#: sickrage/core/webserver/views/config/general.mako:1327
 msgid "GIT executable path"
 msgstr "GIT thực thi đường"
 
-#: sickrage/core/webserver/views/config/general.mako:1342
+#: sickrage/core/webserver/views/config/general.mako:1340
 msgid "ex: /path/to/git"
 msgstr "Ví dụ: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1368
+#: sickrage/core/webserver/views/config/general.mako:1366
 msgid "Git reset"
 msgstr "Git reset"
 
-#: sickrage/core/webserver/views/config/general.mako:1374
+#: sickrage/core/webserver/views/config/general.mako:1372
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "loại bỏ các tập tin lại và thực hiện một đặt lại khó khăn git chi nhánh tự động để giúp giải quyết vấn đề cập nhật"
 
-#: sickrage/core/webserver/views/config/general.mako:1382
+#: sickrage/core/webserver/views/config/general.mako:1380
 msgid "Git auto-issues submit"
 msgstr "Git auto-các vấn đề gửi"
 
-#: sickrage/core/webserver/views/config/general.mako:1389
+#: sickrage/core/webserver/views/config/general.mako:1387
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "tự động gửi báo cáo lỗi/vấn đề của chúng tôi theo dõi cố khi lỗi đăng nhập"
 
