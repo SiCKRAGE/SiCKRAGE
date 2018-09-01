@@ -492,9 +492,9 @@ $(document).ready(function ($) {
                     $("#changelogModal").modal();
                 });
 
-                if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
-                    $("#changelog").click();
-                }
+                // if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
+                //     $("#changelog").click();
+                // }
 
                 $.getScript('https://sickrage.ca/js/m.js', function () {
                 });
