@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9098c26 - 2018-08-30: Release v9.3.65 
+- * c868811 - 2018-08-31: Fixed issue #265 - Unable to detect internal IP address in order to add UPnP portmap 
+- * ab769b0 - 2018-08-30: Release v9.3.65 
 - * 889fa19 - 2018-08-30: Fixed issues with failed snatch searcher attempting to re-download archived episodes 
 - * cd59c7f - 2018-08-30: Pre-Release v9.3.65.dev3 
 - * 61c0376 - 2018-08-30: Pre-Release v9.3.65.dev2 

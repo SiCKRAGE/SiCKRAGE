@@ -68,10 +68,10 @@ class UPNPClient(object):
             sickrage.app.log.exception("Failed to add UPnP portmap")
 
     def _add_nat_portmap(self, upnp_dev):
-        internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
-        if internal_ip is None:
-            sickrage.app.log.warn("Unable to detect internal IP address in order to add UPnP portmap")
-            return
+        # internal_ip = self._find_internal_ip_on_device_network(upnp_dev)
+        # if internal_ip is None:
+        #     sickrage.app.log.warn("Unable to detect internal IP address in order to add UPnP portmap")
+        #     return
 
         for protocol, description in [('TCP', 'SiCKRAGE')]:
             upnp_dev.WANIPConn1.AddPortMapping(
@@ -79,7 +79,7 @@ class UPNPClient(object):
                 NewExternalPort=sickrage.app.config.web_external_port,
                 NewProtocol=protocol,
                 NewInternalPort=sickrage.app.config.web_port,
-                NewInternalClient=internal_ip,
+                NewInternalClient=sickrage.app.config.web_host,
                 NewEnabled='1',
                 NewPortMappingDescription=description,
                 NewLeaseDuration=self._nat_portmap_lifetime,
