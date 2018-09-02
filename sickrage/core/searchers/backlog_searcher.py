@@ -110,7 +110,8 @@ class BacklogSearcher(object):
 
         self.amActive = False
 
-    def _get_segments(self, show, from_date):
+    @staticmethod
+    def _get_segments(show, from_date):
         anyQualities, bestQualities = Quality.splitQuality(show.quality)
 
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
@@ -147,7 +148,8 @@ class BacklogSearcher(object):
 
         return wanted
 
-    def _get_last_backlog_search(self, showid):
+    @staticmethod
+    def _get_last_backlog_search(showid):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
@@ -156,12 +158,10 @@ class BacklogSearcher(object):
         except:
             return 1
 
-    def _set_last_backlog_search(self, showid, when):
+    @staticmethod
+    def _set_last_backlog_search(showid, when):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         dbData = sickrage.app.main_db.get('tv_shows', showid)
         dbData['last_backlog_search'] = when
         sickrage.app.main_db.update(dbData)
-
-    def get_backlog_cycle_time(self):
-        return max([sickrage.app.config.daily_searcher_freq * 4, 30])

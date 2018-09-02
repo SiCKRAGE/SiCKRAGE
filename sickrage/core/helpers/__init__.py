@@ -1569,15 +1569,14 @@ def app_statistics():
             if status in status_quality:
                 show_stat[showid]['ep_snatched'] += 1
                 overall_stats['episodes']['snatched'] += 1
-                overall_stats['episodes']['total'] += 1
+
             if status in status_download:
                 show_stat[showid]['ep_downloaded'] += 1
                 overall_stats['episodes']['downloaded'] += 1
-                overall_stats['episodes']['total'] += 1
+
             if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
                     status in status_quality + status_download):
                 show_stat[showid]['ep_total'] += 1
-                overall_stats['episodes']['total'] += 1
 
             if show_stat[showid]['ep_total'] > max_download_count:
                 max_download_count = show_stat[showid]['ep_total']
@@ -1588,6 +1587,8 @@ def app_statistics():
                 show_stat[showid]['ep_airs_prev'] = airdate
 
             show_stat[showid]['total_size'] += epData['file_size']
+
+            overall_stats['episodes']['total'] += 1
             overall_stats['total_size'] += epData['file_size']
 
     max_download_count *= 100

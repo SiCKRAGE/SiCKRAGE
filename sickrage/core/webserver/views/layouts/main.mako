@@ -374,19 +374,17 @@
                     ep_total = overall_stats['episodes']['total']
                     ep_percentage = '' if ep_total == 0 else '(<span class="text-primary">%s%%</span>)' % re.sub(r'(\d+)(\.\d)\d+', r'\1\2', str((float(ep_downloaded)/float(ep_total))*100))
                 %>
-                    <span class="text-primary">${overall_stats['shows']['total']}</span> ${_('Shows')} (<span
-                        class="text-primary">${overall_stats['shows']['active']}</span> ${_('Active')})
+                    <span class="text-primary">${overall_stats['shows']['total']}</span> ${_('Shows')}
+                    (<span class="text-primary">${overall_stats['shows']['active']}</span> ${_('Active')})
                     | <span class="text-primary">${ep_downloaded}</span>
-
                 % if ep_snatched:
                     <span class="text-primary">
                         <a href="${srWebRoot}/manage/episodeStatuses?whichStatus=2">+${ep_snatched}</a>
                     </span>
                 ${_('Snatched')}
                 % endif
-                    &nbsp;/&nbsp;<span
-                        class="text-primary">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
-                    &nbsp;/&nbsp;<span class="text-primary">${total_size}</span> ${_('Overall Downloaded')}
+                    /&nbsp;<span class="text-primary">${ep_total}</span> ${_('Episodes Downloaded')} ${ep_percentage}
+                    /&nbsp;<span class="text-primary">${total_size}</span> ${_('Overall Downloaded')}
                 % endif
             </div>
 

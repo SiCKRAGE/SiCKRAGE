@@ -62,7 +62,8 @@ class DailySearcher(object):
 
         self.amActive = False
 
-    def _get_segments(self, show, fromDate):
+    @staticmethod
+    def _get_segments(show, fromDate):
         """
         Get a list of episodes that we want to download
         :param show: Show these episodes are from

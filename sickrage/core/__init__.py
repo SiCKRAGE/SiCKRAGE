@@ -58,6 +58,7 @@ from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
 from sickrage.core.queues.postprocessor import PostProcessorQueue
 from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
+from sickrage.core.searchers import get_backlog_cycle_time
 from sickrage.core.searchers.backlog_searcher import BacklogSearcher
 from sickrage.core.searchers.daily_searcher import DailySearcher
 from sickrage.core.searchers.failed_snatch_searcher import FailedSnatchSearcher
@@ -320,7 +321,7 @@ class Core(object):
             self.config.autopostprocessor_freq = self.config.min_autopostprocessor_freq
         if self.config.daily_searcher_freq < self.config.min_daily_searcher_freq:
             self.config.daily_searcher_freq = self.config.min_daily_searcher_freq
-        self.config.min_backlog_searcher_freq = self.backlog_searcher.get_backlog_cycle_time()
+        self.config.min_backlog_searcher_freq = get_backlog_cycle_time()
         if self.config.backlog_searcher_freq < self.config.min_backlog_searcher_freq:
             self.config.backlog_searcher_freq = self.config.min_backlog_searcher_freq
         if self.config.version_updater_freq < self.config.min_version_updater_freq:

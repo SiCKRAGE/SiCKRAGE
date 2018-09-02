@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4332f4e - 2018-09-01: Release v9.3.66 
+- * 9d461c0 - 2018-09-01: Fixed issue #255 - total episode count incorrect. Improved memory usage from database calls. Misc code cleanup. 
+- * 569f95c - 2018-09-01: Release v9.3.66 
 - * 33b3f9c - 2018-09-01: Disabled changelog from popping after a new update 
 - * 4c62c8c - 2018-08-31: Pre-Release v9.3.66.dev2 
 - * 4ac6773 - 2018-08-31: Pre-Release v9.3.66.dev1 
