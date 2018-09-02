@@ -39,6 +39,7 @@ import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import makeDir, generate_secret, auto_type, get_lan_ip, \
     extract_zipfile, try_int, checkbox_to_value, generateApiKey, backupVersionedFile
+from sickrage.core.searchers import get_backlog_cycle_time
 from sickrage.core.websession import WebSession
 
 
@@ -1162,7 +1163,7 @@ class Config(object):
         :param freq: New frequency
         """
         self.backlog_searcher_freq = try_int(freq, self.defaults['General']['backlog_frequency'])
-        self.min_backlog_searcher_freq = sickrage.app.backlog_searcher.get_backlog_cycle_time()
+        self.min_backlog_searcher_freq = get_backlog_cycle_time()
         if self.backlog_searcher_freq < self.min_backlog_searcher_freq:
             self.backlog_searcher_freq = self.min_backlog_searcher_freq
 

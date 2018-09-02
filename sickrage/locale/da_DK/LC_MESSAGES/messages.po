@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-01 07:26-0700\n"
-"PO-Revision-Date: 2018-09-01 14:26\n"
+"POT-Creation-Date: 2018-09-01 21:40-0700\n"
+"PO-Revision-Date: 2018-09-02 04:41\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -499,7 +499,7 @@ msgstr "Kvalitet"
 
 #: sickrage/core/common.py:186 sickrage/core/common.py:618
 #: sickrage/core/webserver/views/history.mako:120
-#: sickrage/core/webserver/views/layouts/main.mako:385
+#: sickrage/core/webserver/views/layouts/main.mako:384
 msgid "Snatched"
 msgstr "Snappede"
 
@@ -5720,33 +5720,33 @@ msgstr "Logout"
 msgid "Server Status"
 msgstr "Serverstatus"
 
-#: sickrage/core/webserver/views/layouts/main.mako:388
+#: sickrage/core/webserver/views/layouts/main.mako:386
 msgid "Episodes Downloaded"
 msgstr "Episoder downloadet"
 
-#: sickrage/core/webserver/views/layouts/main.mako:389
+#: sickrage/core/webserver/views/layouts/main.mako:387
 msgid "Overall Downloaded"
 msgstr "Alt i alt hentet"
 
-#: sickrage/core/webserver/views/layouts/main.mako:394
+#: sickrage/core/webserver/views/layouts/main.mako:392
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Daily Search:"
 msgstr "Daglige søgning:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:397
+#: sickrage/core/webserver/views/layouts/main.mako:395
 #: sickrage/core/webserver/views/manage/queues.mako:17
 msgid "Backlog Search:"
 msgstr "Puklen søgning:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:400
+#: sickrage/core/webserver/views/layouts/main.mako:398
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:404
+#: sickrage/core/webserver/views/layouts/main.mako:402
 msgid "Load time:"
 msgstr "Indlæsningstid:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:411
+#: sickrage/core/webserver/views/layouts/main.mako:409
 msgid "Now:"
 msgstr "Nu:"
 
