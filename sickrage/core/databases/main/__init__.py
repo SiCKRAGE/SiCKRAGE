@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import os
 
 import sickrage
+from sickrage.core import helpers
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
     MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
@@ -103,6 +104,7 @@ class MainDB(srDatabase):
         self.fix_dupe_shows()
         self.fix_dupe_episodes()
         self.fix_orphaned_episodes()
+        self.sync_tv_episodes_by_indexerid()
 
     def fix_show_none_types(self):
         checked = []
@@ -177,3 +179,12 @@ class MainDB(srDatabase):
             if not self.get('tv_shows', ep['showid']):
                 sickrage.app.log.info("Deleting orphan episode with id: {}".format(ep["indexerid"]))
                 self.delete(ep)
+
+    def sync_tv_episodes_by_indexerid(self):
+        show = None
+        for episode in self.all('tv_episodes'):
+            if not show or int(episode["showid"]) != show.indexerid:
+                show = helpers.findCertainShow(int(episode["showid"]))
+
+            if show:
+                show.getEpisode(int(episode['season']), int(episode['episode'])).saveToDB()

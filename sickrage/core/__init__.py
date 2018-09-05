@@ -264,7 +264,7 @@ class Core(object):
             db.upgrade()
 
         # compact main database
-        if not self.developer and self.config.last_db_compact < time.time() - 604800:  # 7 days
+        if self.config.last_db_compact < time.time() - 604800:  # 7 days
             self.main_db.compact()
             self.config.last_db_compact = int(time.time())
 

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 14eb31c - 2018-09-04: Release v9.3.68 
+- * d13de20 - 2018-09-05: Added main database function to sync tv episodes to index 
+- * 51f6fb2 - 2018-09-04: Release v9.3.68 
 - * 78d23e1 - 2018-09-04: Added &#x27;tv_episodes_by_indexerid&#x27; database index. Added database test case. Fixed TV episode database upsert code. Misc variable name cleanup. 
 - * c11dace - 2018-09-01: Release v9.3.67 
 - * 1430717 - 2018-09-01: Fixed issue #255 - total episode count incorrect. Improved memory usage from database calls. Misc code cleanup. 
