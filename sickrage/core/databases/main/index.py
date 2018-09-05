@@ -68,21 +68,6 @@ class MainTVEpisodesIndex(HashIndex):
             return data.get('showid'), None
 
 
-class MainTVEpisodesByIndexerIDIndex(HashIndex):
-    _version = 1
-
-    def __init__(self, *args, **kwargs):
-        kwargs['key_format'] = 'I'
-        super(MainTVEpisodesByIndexerIDIndex, self).__init__(*args, **kwargs)
-
-    def make_key(self, key):
-        return key
-
-    def make_key_value(self, data):
-        if data.get('_t') == 'tv_episodes' and data.get('indexerid'):
-            return data.get('indexerid'), None
-
-
 class MainIMDBInfoIndex(HashIndex):
     _version = 1
 

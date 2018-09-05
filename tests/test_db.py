@@ -55,7 +55,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.status = UNAIRED
         ep.saveToDB()
 
-    def test_all(self):
+    def test_unaired(self):
         count = 0
 
         for episode in sickrage.app.main_db.all('tv_episodes'):

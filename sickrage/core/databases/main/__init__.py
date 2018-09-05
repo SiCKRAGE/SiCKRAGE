@@ -24,8 +24,7 @@ import sickrage
 from sickrage.core.databases import srDatabase
 from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
     MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
-    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex, MainVersionIndex, \
-    MainTVEpisodesByIndexerIDIndex
+    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex, MainVersionIndex
 
 
 class MainDB(srDatabase):
@@ -35,7 +34,6 @@ class MainDB(srDatabase):
         'version': MainVersionIndex,
         'tv_shows': MainTVShowsIndex,
         'tv_episodes': MainTVEpisodesIndex,
-        'tv_episodes_by_indexerid': MainTVEpisodesByIndexerIDIndex,
         'imdb_info': MainIMDBInfoIndex,
         'xem_refresh': MainXEMRefreshIndex,
         'scene_numbering': MainSceneNumberingIndex,
