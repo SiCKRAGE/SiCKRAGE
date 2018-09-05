@@ -25,6 +25,8 @@ import threading
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
+from CodernityDB.database import RecordNotFound
+
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
@@ -533,8 +535,8 @@ class TVEpisode(object):
         # don't update show status if show dir is missing, unless it's missing on purpose
         if not os.path.isdir(
                 self.show.location) and not sickrage.app.config.create_missing_show_dirs and not sickrage.app.config.add_shows_wo_dir:
-            sickrage.app.log.info(
-                "The show dir %s is missing, not bothering to change the episode statuses since it'd probably be invalid" % self.show.location)
+            sickrage.app.log.info("The show dir %s is missing, not bothering to change the episode statuses since "
+                                  "it'd probably be invalid" % self.show.location)
             return False
 
         if self.location:
@@ -549,7 +551,8 @@ class TVEpisode(object):
                         UNAIRED])
                 self.status = UNAIRED
             elif self.status in [UNAIRED, UNKNOWN]:
-                # Only do UNAIRED/UNKNOWN, it could already be snatched/ignored/skipped, or downloaded/archived to disconnected media
+                # Only do UNAIRED/UNKNOWN, it could already be snatched/ignored/skipped, or downloaded/archived to
+                # disconnected media
                 sickrage.app.log.debug(
                     "Episode has already aired, marking it %s" % statusStrings[self.show.default_ep_status])
                 self.status = self.show.default_ep_status if self.season > 0 else SKIPPED  # auto-skip specials
@@ -730,15 +733,15 @@ class TVEpisode(object):
 
         raise EpisodeDeletedException()
 
-    def saveToDB(self, forceSave=False):
+    def saveToDB(self, force_save=False):
         """
         Saves this episode to the database if any of its data has been changed since the last save.
 
-        forceSave: If True it will save to the database even if no data has been changed since the
+        force_save: If True it will save to the database even if no data has been changed since the
                     last save (aka if the record is not dirty).
         """
 
-        if not self.dirty and not forceSave:
+        if not self.dirty and not force_save:
             return
 
         sickrage.app.log.debug("%i: Saving episode to database: %s" % (self.show.indexerid, self.name))
@@ -772,12 +775,10 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
-                      if x['indexerid'] == self.indexerid][0]
-
+            dbData = sickrage.app.main_db.get('tv_episodes_by_indexerid', self.indexerid)
             dbData.update(tv_episode)
             sickrage.app.main_db.update(dbData)
-        except:
+        except RecordNotFound:
             sickrage.app.main_db.insert(tv_episode)
 
     def fullPath(self):

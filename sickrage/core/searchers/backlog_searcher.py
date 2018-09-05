@@ -92,7 +92,7 @@ class BacklogSearcher(object):
         # go through non air-by-date shows and see if they need any episodes
         for curShow in show_list:
             if curShow.paused:
-                sickrage.app.log.debug("Skipping backlog for {} because the show is paused".format(curShow.name))
+                sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
 
             self._last_backlog_search = self._get_last_backlog_search(curShow.indexerid)

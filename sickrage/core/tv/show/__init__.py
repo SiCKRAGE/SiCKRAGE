@@ -731,6 +731,7 @@ class TVShow(object):
                 # need some examples of wtf episode 0 means to decide if we want it or not
                 if episode == 0:
                     continue
+
                 try:
                     curEp = self.getEpisode(season, episode)
                 except EpisodeNotFoundException:
@@ -1214,9 +1215,8 @@ class TVShow(object):
                 "%s: Error occurred when downloading subtitles for %s" % (self.indexerid, self.name))
             sickrage.app.log.error(traceback.format_exc())
 
-    def saveToDB(self, forceSave=False):
-
-        if not self.dirty and not forceSave:
+    def saveToDB(self, force_save=False):
+        if not self.dirty and not force_save:
             return
 
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexerid, self.name))

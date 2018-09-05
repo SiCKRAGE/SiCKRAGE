@@ -19,15 +19,60 @@
 
 from __future__ import print_function, unicode_literals
 
+import datetime
 import unittest
 
+import sickrage
 import tests
+from sickrage.core import TVShow, helpers
+from sickrage.core.common import UNAIRED
+from sickrage.core.tv.episode import TVEpisode
 
 
 class DBBasicTests(tests.SiCKRAGETestDBCase):
-    def test_select(self):
-        pass
+    def setUp(self):
+        super(DBBasicTests, self).setUp()
+        show = TVShow(1, 0001, "en")
+        show.saveToDB()
+        sickrage.app.showlist += [show]
 
+        ep = TVEpisode(show, 1, 1)
+        ep.indexerid = 1
+        ep.name = "test episode 1"
+        ep.airdate = datetime.date.fromordinal(733832)
+        ep.status = UNAIRED
+        ep.saveToDB()
+        ep = TVEpisode(show, 1, 2)
+        ep.indexerid = 2
+        ep.name = "test episode 2"
+        ep.airdate = datetime.date.fromordinal(733832)
+        ep.status = UNAIRED
+        ep.saveToDB()
+        ep = TVEpisode(show, 1, 3)
+        ep.indexerid = 3
+        ep.name = "test episode 3"
+        ep.airdate = datetime.date.fromordinal(733832)
+        ep.status = UNAIRED
+        ep.saveToDB()
+
+    def test_all(self):
+        count = 0
+
+        for episode in sickrage.app.main_db.all('tv_episodes'):
+            if all([episode['status'] == UNAIRED, episode['season'] > 0, episode['airdate'] > 1]):
+                count += 1
+
+                show = helpers.findCertainShow(int(episode["showid"]))
+
+                ep = TVEpisode(show, 1, episode['episode'])
+                ep.indexerid = episode['episode']
+                ep.name = "test episode {}".format(episode['episode'])
+                ep.airdate = datetime.date.fromordinal(733832)
+                ep.status = UNAIRED
+
+                ep.saveToDB()
+
+        self.assertEqual(count, 3)
 
 if __name__ == '__main__':
     print("==================")
