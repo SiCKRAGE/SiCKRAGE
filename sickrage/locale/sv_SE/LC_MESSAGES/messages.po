@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-01 21:40-0700\n"
-"PO-Revision-Date: 2018-09-02 04:41\n"
+"POT-Creation-Date: 2018-09-04 22:06-0700\n"
+"PO-Revision-Date: 2018-09-05 05:08\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -39,7 +39,7 @@ msgstr "Skicka fel"
 
 #: src/js/core.js:437
 msgid "Are you sure you want to submit these errors ?"
-msgstr ""
+msgstr "Är du säker på att du vill skicka dessa fel ?"
 
 #: src/js/core.js:437
 msgid "Make sure SiCKRAGE is updated and trigger"
@@ -95,15 +95,15 @@ msgstr "Ta bort Serie"
 
 #: src/js/core.js:2178
 msgid "Are you sure you want to remove"
-msgstr ""
+msgstr "Är du säker på att du vill ta bort"
 
 #: src/js/core.js:2178
 msgid " from the database?"
-msgstr ""
+msgstr " från databasen?"
 
 #: src/js/core.js:2178
 msgid "Check to delete files as well. IRREVERSIBLE"
-msgstr ""
+msgstr "Markera för att radera alla filer. OÅTERKALLELIGT"
 
 #: src/js/core.js:2231 src/js/core.js:2263
 msgid "Update failed."
@@ -115,7 +115,7 @@ msgstr "Välj plats för Serie"
 
 #: src/js/core.js:2416
 msgid "loading folders..."
-msgstr ""
+msgstr "laddar mappar..."
 
 #: src/js/core.js:2432
 msgid "Select Unprocessed Episode Folder"
@@ -127,7 +127,7 @@ msgstr "tidsgräns för sökning överskriden, testa att öka timeout för index
 
 #: src/js/core.js:2805
 msgid "Search Results:"
-msgstr ""
+msgstr "Sökresultat:"
 
 #: src/js/core.js:2809
 msgid "No results found, try a different search or language."
@@ -713,15 +713,15 @@ msgstr "Aktivera providercachen?"
 
 #: sickrage/core/webserver/views/config/general.mako:55
 msgid "Google Drive"
-msgstr ""
+msgstr "Google Drive"
 
 #: sickrage/core/webserver/views/config/general.mako:68
 msgid "Sync To Google Drive"
-msgstr ""
+msgstr "Synka till Google Drive"
 
 #: sickrage/core/webserver/views/config/general.mako:70
 msgid "Sync To Local Drive"
-msgstr ""
+msgstr "Synka till lokal disk"
 
 #: sickrage/core/webserver/views/config/general.mako:91
 msgid "Startup options. Indexer options. Log and show file locations."
@@ -1051,7 +1051,7 @@ msgstr "Dessa alternativ kräver en manuell omstart träder i kraft."
 
 #: sickrage/core/webserver/views/config/general.mako:723
 msgid "Enable UPnP"
-msgstr ""
+msgstr "Aktivera UPnP"
 
 #: sickrage/core/webserver/views/config/general.mako:729
 msgid "automatically sets up port-forwarding from external IP to SiCKRAGE"

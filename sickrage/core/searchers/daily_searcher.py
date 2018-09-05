@@ -52,6 +52,7 @@ class DailySearcher(object):
 
         for curShow in sickrage.app.showlist:
             if curShow.paused:
+                sickrage.app.log.debug("Skipping search for {} because the show is paused".format(curShow.name))
                 continue
 
             segments = self._get_segments(curShow, datetime.date.today())
@@ -72,10 +73,6 @@ class DailySearcher(object):
         """
 
         wanted = []
-
-        if show.paused:
-            sickrage.app.log.debug("Not checking for episodes of {} because the show is paused".format(show.name))
-            return wanted
 
         anyQualities, bestQualities = Quality.splitQuality(show.quality)
         allQualities = list(set(anyQualities + bestQualities))
