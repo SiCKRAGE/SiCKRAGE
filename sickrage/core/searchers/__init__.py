@@ -34,9 +34,8 @@ def new_episode_finder():
     else:
         curDate += datetime.timedelta(days=2)
 
-    curTime = datetime.datetime.now(sickrage.app.tz)
-
     show = None
+    curTime = datetime.datetime.now(sickrage.app.tz)
 
     for episode in sickrage.app.main_db.all('tv_episodes'):
         if not all([episode['status'] == UNAIRED, episode['season'] > 0, episode['airdate'] > 1]):
@@ -75,7 +74,6 @@ def new_episode_finder():
             ))
 
             ep_obj.saveToDB()
-
 
 def get_backlog_cycle_time():
     return max([sickrage.app.config.daily_searcher_freq * 4, 30])

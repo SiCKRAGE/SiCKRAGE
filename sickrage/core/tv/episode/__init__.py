@@ -775,9 +775,12 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = sickrage.app.main_db.get('tv_episodes_by_indexerid', self.indexerid)
-            dbData.update(tv_episode)
-            sickrage.app.main_db.update(dbData)
+            for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid):
+                if x['indexerid'] == self.indexerid:
+                    x.update(tv_episode)
+                    sickrage.app.main_db.update(x)
+                    return
+            raise RecordNotFound
         except RecordNotFound:
             sickrage.app.main_db.insert(tv_episode)
 
