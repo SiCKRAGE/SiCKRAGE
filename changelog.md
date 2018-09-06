@@ -1,6 +1,7 @@
 # Changelog
 
-- * 82e88af - 2018-09-06: Added general settings option to specify a comma delimited list of allowed video file extensions to be checked against existing files when performing show updates/refreshes 
+- * 288930b - 2018-09-06: Pre-Release v9.3.70.dev1 
+- * 088d5f3 - 2018-09-06: Added general settings option to specify a comma delimited list of allowed video file extensions to be checked against existing files when performing show updates/refreshes 
 - * e93f949 - 2018-09-05: Release v9.3.69 
 - * 3f84dd7 - 2018-09-05: Added main database function to sync tv episodes to index 
 - * 51f6fb2 - 2018-09-04: Release v9.3.68 
