@@ -3712,7 +3712,7 @@ class ConfigGeneral(Config):
                     fuzzy_dating=None, trim_zero=None, date_preset=None, date_preset_na=None, time_preset=None,
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
-                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None,
+                    display_all_seasons=None, showupdate_stale=None, notify_on_login=None, allowed_video_file_exts=None,
                     enable_api_providers_cache=None, enable_upnp=None, web_external_port=None, **kwargs):
 
         results = []
@@ -3773,6 +3773,8 @@ class ConfigGeneral(Config):
         sickrage.app.config.filter_row = checkbox_to_value(filter_row)
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
+
+        sickrage.app.config.allowed_video_file_exts = [x.lower() for x in allowed_video_file_exts.split(',')]
 
         # sickrage.app.config.change_web_external_port(web_external_port)
 

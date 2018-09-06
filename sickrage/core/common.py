@@ -30,10 +30,6 @@ try:
 except:
     from collections import UserDict
 
-video_exts = ['3g2', '3gp', '3gp2', 'asf', 'avi', 'divx', 'flv', 'm4v', 'mk2',
-              'mka', 'mkv', 'mov', 'mp4', 'mp4a', 'mpeg', 'mpg', 'ogg', 'ogm',
-              'ogv', 'qt', 'ra', 'ram', 'rm', 'ts', 'wav', 'webm', 'wma', 'wmv']
-
 ### CPU Presets for sleep timers
 cpu_presets = {
     'HIGH': 0.05,
@@ -43,8 +39,7 @@ cpu_presets = {
 
 countryList = {'Australia': 'AU',
                'Canada': 'CA',
-               'USA': 'US'
-               }
+               'USA': 'US'}
 
 dateFormat = '%Y-%m-%d'
 dateTimeFormat = '%Y-%m-%d %H:%M:%S'

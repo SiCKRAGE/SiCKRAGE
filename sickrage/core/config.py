@@ -429,6 +429,7 @@ class Config(object):
         self.calendar_unprotected = False
         self.calendar_icons = False
         self.no_restart = False
+        self.allowed_video_file_exts = []
         self.thetvdb_apitoken = ""
         self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
@@ -796,6 +797,13 @@ class Config(object):
                 'git_password': '',
                 'ep_default_deleted_status': 6,
                 'no_restart': False,
+                'allowed_video_file_exts': [
+                    'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
+                    'ogm', 'mp4', 'iso', 'img', 'divx',
+                    'm2ts', 'm4v', 'ts', 'flv', 'f4v',
+                    'mov', 'rmvb', 'vob', 'dvr-ms', 'wtv',
+                    'ogv', '3gp', 'webm', 'tp'
+                ],
                 'require_words': '',
                 'naming_strip_year': False,
                 'proxy_indexers': True,
@@ -1300,6 +1308,22 @@ class Config(object):
         return my_val
 
     ################################################################################
+    # check_setting_list                                                           #
+    ################################################################################
+    def check_setting_list(self, section, key, def_val=None, silent=True):
+        def_val = def_val if def_val is not None else self.defaults[section][key]
+
+        try:
+            my_val = list(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
+        except StandardError:
+            my_val = def_val
+
+        if not silent:
+            print(key + " -> " + repr(my_val))
+
+        return my_val
+
+    ################################################################################
     # check_setting_dict                                                            #
     ################################################################################
     def check_setting_dict(self, section, key, def_val=None, silent=True):
@@ -1477,6 +1501,7 @@ class Config(object):
         self.calendar_unprotected = self.check_setting_bool('General', 'calendar_unprotected')
         self.calendar_icons = self.check_setting_bool('General', 'calendar_icons')
         self.no_restart = self.check_setting_bool('General', 'no_restart')
+        self.allowed_video_file_exts = self.check_setting_list('General', 'allowed_video_file_exts')
         self.extra_scripts = [x.strip() for x in self.check_setting_str('General', 'extra_scripts').split('|') if
                               x.strip()]
         self.use_listview = self.check_setting_bool('General', 'use_listview')
@@ -1971,6 +1996,7 @@ class Config(object):
                 'calendar_unprotected': int(self.calendar_unprotected),
                 'calendar_icons': int(self.calendar_icons),
                 'no_restart': int(self.no_restart),
+                'allowed_video_file_exts': self.allowed_video_file_exts,
                 'display_all_seasons': int(self.display_all_seasons),
                 'random_user_agent': int(self.random_user_agent),
                 'processor_follow_symlinks': int(self.processor_follow_symlinks),
