@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import json
-import os
 import time
 from urlparse import urljoin
 
@@ -18,9 +17,7 @@ class API(object):
         self.client_id = sickrage.app.oidc_client._client_id
         self.client_secret = sickrage.app.oidc_client._client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
-        self.token_file = os.path.join(sickrage.app.data_dir, 'sr_token.json')
         self.token_refreshed = False
-        self._token = {}
 
     @property
     def session(self):
@@ -28,15 +25,12 @@ class API(object):
 
     @property
     def token(self):
-        if os.path.exists(self.token_file):
-            with open(self.token_file) as infile:
-                self._token = json.load(infile)
-        return self._token
+        return json.loads(sickrage.app.config.app_oauth_token)
 
     @token.setter
     def token(self, value):
-        with open(self.token_file, 'w') as outfile:
-            json.dump(value, outfile)
+        sickrage.app.config.app_oauth_token = json.dumps(value)
+        sickrage.app.config.save()
 
     @property
     def userinfo(self):

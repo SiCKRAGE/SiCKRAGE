@@ -54,6 +54,7 @@ class Config(object):
         self.encryption_version = 2
 
         self.app_id = ""
+        self.app_oauth_token = ""
 
         self.debug = False
 
@@ -82,8 +83,6 @@ class Config(object):
         self.web_external_port = 0
         self.web_log = False
         self.web_root = ""
-        self.app_username = ""
-        self.app_password = ""
         self.web_ipv6 = False
         self.web_cookie_secret = ""
         self.web_use_gzip = True
@@ -95,7 +94,6 @@ class Config(object):
         self.https_cert = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
         self.https_key = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
         self.api_key = ""
-        self.api_root = ""
         self.indexer_default_language = 'en'
         self.ep_default_deleted_status = None
         self.launch_browser = False
@@ -692,6 +690,7 @@ class Config(object):
             },
             'General': {
                 'app_id': self.app_id or str(uuid.uuid4()),
+                'app_oauth_token': '',
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -738,8 +737,6 @@ class Config(object):
                 'naming_pattern': 'Season %0S/%SN - S%0SE%0E - %EN',
                 'sort_article': False,
                 'handle_reverse_proxy': False,
-                'app_username': '',
-                'app_password': '',
                 'postpone_if_sync_files': True,
                 'cpu_preset': 'NORMAL',
                 'nfo_rename': True,
@@ -1388,6 +1385,7 @@ class Config(object):
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
         self.app_id = self.check_setting_str('General', 'app_id')
+        self.app_oauth_token = self.check_setting_str('General', 'app_oauth_token')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
@@ -1408,8 +1406,6 @@ class Config(object):
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
         self.web_root = self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
         self.web_log = self.check_setting_bool('General', 'web_log')
-        self.app_username = self.check_setting_str('General', 'app_username', censor=True)
-        self.app_password = self.check_setting_str('General', 'app_password', censor=True)
         self.web_cookie_secret = self.check_setting_str('General', 'web_cookie_secret')
         self.web_use_gzip = self.check_setting_bool('General', 'web_use_gzip')
         self.ssl_verify = self.check_setting_bool('General', 'ssl_verify')
@@ -1884,6 +1880,7 @@ class Config(object):
                 'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
                 'app_id': self.app_id,
+                'app_oauth_token': self.app_oauth_token,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
@@ -1899,8 +1896,6 @@ class Config(object):
                 'web_ipv6': int(self.web_ipv6),
                 'web_log': int(self.web_log),
                 'web_root': self.web_root,
-                'app_username': self.app_username,
-                'app_password': self.app_password,
                 'web_cookie_secret': self.web_cookie_secret,
                 'web_use_gzip': int(self.web_use_gzip),
                 'ssl_verify': int(self.ssl_verify),
