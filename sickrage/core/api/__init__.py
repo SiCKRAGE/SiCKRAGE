@@ -4,7 +4,7 @@ import json
 import time
 from urlparse import urljoin
 
-from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError
+from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
 from requests_oauthlib import OAuth2Session
 
 import sickrage
@@ -72,7 +72,10 @@ class API(object):
             'client_secret': self.client_secret,
         }
 
-        self.token = self.session.refresh_token(self.token_url, **extras)
+        try:
+            self.token = self.session.refresh_token(self.token_url, **extras)
+        except InvalidGrantError as e:
+            self.token = {}
 
     @staticmethod
     def throttle_hook(response, **kwargs):
