@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4373157 - 2018-09-08: Added real-time SSO session handling for WebUI. Token exchange performed to get offline token for API access. 
+- * ecc0d43 - 2018-09-08: Pre-Release v9.3.70.dev2 
+- * f805a60 - 2018-09-08: Added real-time SSO session handling for WebUI. Token exchange performed to get offline token for API access. 
 - * 4027b39 - 2018-09-06: Application oAuth token now saved to config as a JSON string 
 - * 1c0d920 - 2018-09-06: Pre-Release v9.3.70.dev1 
 - * 088d5f3 - 2018-09-06: Added general settings option to specify a comma delimited list of allowed video file extensions to be checked against existing files when performing show updates/refreshes 
