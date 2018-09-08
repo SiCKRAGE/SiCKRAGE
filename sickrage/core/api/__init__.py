@@ -70,12 +70,15 @@ class API(object):
         extras = {
             'client_id': self.client_id,
             'client_secret': self.client_secret,
+            'refresh_token': sickrage.app.config.app_oauth_refresh_token
         }
 
         try:
-            self.token = self.session.refresh_token(self.token_url, **extras)
+            if sickrage.app.config.app_oauth_refresh_token:
+                self.token = self.session.refresh_token(self.token_url, **extras)
         except InvalidGrantError as e:
-            self.token = {}
+            sickrage.app.config.app_oauth_refresh_token = ''
+            sickrage.app.config.save()
 
     @staticmethod
     def throttle_hook(response, **kwargs):

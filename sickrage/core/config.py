@@ -55,6 +55,7 @@ class Config(object):
 
         self.app_id = ""
         self.app_oauth_token = ""
+        self.app_oauth_refresh_token = ""
 
         self.debug = False
 
@@ -691,6 +692,7 @@ class Config(object):
             'General': {
                 'app_id': self.app_id or str(uuid.uuid4()),
                 'app_oauth_token': '',
+                'app_oauth_refresh_token': '',
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -1386,6 +1388,7 @@ class Config(object):
         self.config_version = self.check_setting_int('General', 'config_version')
         self.app_id = self.check_setting_str('General', 'app_id')
         self.app_oauth_token = self.check_setting_str('General', 'app_oauth_token')
+        self.app_oauth_refresh_token = self.check_setting_str('General', 'app_oauth_refresh_token')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
@@ -1881,6 +1884,7 @@ class Config(object):
                 'last_db_compact': self.last_db_compact,
                 'app_id': self.app_id,
                 'app_oauth_token': self.app_oauth_token,
+                'app_oauth_refresh_token': self.app_oauth_refresh_token,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
