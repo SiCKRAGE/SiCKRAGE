@@ -134,6 +134,7 @@ class BaseHandler(RequestHandler):
                              <body>
                                 <button onclick="window.location='{webroot}/logs/';">View Log(Errors)</button>
                                 <button onclick="window.location='{webroot}/home/restart?force=1';">Restart SiCKRAGE</button>
+                                <button onclick="window.location='{webroot}/logout';">Logout</button>
                                 <h2>Error</h2>
                                 <p>{error}</p>
                                 <h2>Traceback</h2>
