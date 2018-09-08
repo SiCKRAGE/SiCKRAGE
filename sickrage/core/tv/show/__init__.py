@@ -646,7 +646,7 @@ class TVShow(object):
 
             sickrage.app.log.debug(str(self.indexerid) + ": Creating episode from " + mediaFile)
             try:
-                curEpisode = self.makeEpFromFile(os.path.join(self.location, mediaFile))
+                curEpisode = self.make_ep_from_file(os.path.join(self.location, mediaFile))
             except (ShowNotFoundException, EpisodeNotFoundException) as e:
                 sickrage.app.log.warning("Episode " + mediaFile + " returned an exception: {}".format(e))
             except EpisodeDeletedException:
@@ -778,25 +778,25 @@ class TVShow(object):
         return fanart_result or poster_result or banner_result or season_posters_result or season_banners_result or season_all_poster_result or season_all_banner_result
 
     # make a TVEpisode object from a media file
-    def makeEpFromFile(self, file):
-        if not os.path.isfile(file):
-            sickrage.app.log.info(str(self.indexerid) + ": That isn't even a real file dude... " + file)
+    def make_ep_from_file(self, filename):
+        if not os.path.isfile(filename):
+            sickrage.app.log.info(str(self.indexerid) + ": That isn't even a real file dude... " + filename)
             return None
 
-        sickrage.app.log.debug(str(self.indexerid) + ": Creating episode object from " + file)
+        sickrage.app.log.debug(str(self.indexerid) + ": Creating episode object from " + filename)
 
         try:
-            parse_result = NameParser(showObj=self).parse(file, skip_scene_detection=True)
+            parse_result = NameParser(showObj=self).parse(filename, skip_scene_detection=True)
         except InvalidNameException:
-            sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid episode")
+            sickrage.app.log.debug("Unable to parse the filename " + filename + " into a valid episode")
             return None
         except InvalidShowException:
-            sickrage.app.log.debug("Unable to parse the filename " + file + " into a valid show")
+            sickrage.app.log.debug("Unable to parse the filename " + filename + " into a valid show")
             return None
 
         if not len(parse_result.episode_numbers):
             sickrage.app.log.info("parse_result: " + str(parse_result))
-            sickrage.app.log.warning("No episode number found in " + file + ", ignoring it")
+            sickrage.app.log.warning("No episode number found in " + filename + ", ignoring it")
             return None
 
         # for now lets assume that any episode in the show dir belongs to that show
@@ -807,7 +807,7 @@ class TVShow(object):
             episode = int(curEpNum)
 
             sickrage.app.log.debug(
-                "%s: %s parsed to %s S%02dE%02d" % (self.indexerid, file, self.name, season or 0, episode or 0))
+                "%s: %s parsed to %s S%02dE%02d" % (self.indexerid, filename, self.name, season or 0, episode or 0))
 
             checkQualityAgain = False
             same_file = False
@@ -815,7 +815,7 @@ class TVShow(object):
             curEp = self.getEpisode(season, episode)
             if not curEp:
                 try:
-                    curEp = self.getEpisode(season, episode, file)
+                    curEp = self.getEpisode(season, episode, filename)
                 except EpisodeNotFoundException:
                     sickrage.app.log.error(
                         str(self.indexerid) + ": Unable to figure out what this file is, skipping")
@@ -823,15 +823,15 @@ class TVShow(object):
 
             else:
                 # if there is a new file associated with this ep then re-check the quality
-                if curEp.location and os.path.normpath(curEp.location) != os.path.normpath(file):
-                    sickrage.app.log.debug(
-                        "The old episode had a different file associated with it, I will re-check the quality based on the new filename " + file)
+                if curEp.location and os.path.normpath(curEp.location) != os.path.normpath(filename):
+                    sickrage.app.log.debug("The old episode had a different file associated with it, I will re-check "
+                                           "the quality based on the new filename " + filename)
                     checkQualityAgain = True
 
                 with curEp.lock:
                     # if the sizes are the same then it's probably the same file
                     old_size = curEp.file_size
-                    curEp.location = file
+                    curEp.location = filename
                     same_file = old_size and curEp.file_size == old_size
                     curEp.checkForMetaFiles()
 
@@ -849,7 +849,7 @@ class TVShow(object):
 
             # if they replace a file on me I'll make some attempt at re-checking the quality unless I know it's the same file
             if checkQualityAgain and not same_file:
-                newQuality = Quality.nameQuality(file, self.is_anime)
+                newQuality = Quality.nameQuality(filename, self.is_anime)
                 sickrage.app.log.debug("Since this file has been renamed")
 
                 with curEp.lock:
@@ -857,9 +857,9 @@ class TVShow(object):
 
             # check for status/quality changes as long as it's a new file
             elif not same_file and is_media_file(
-                    file) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
+                    filename) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
                 oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                newQuality = Quality.nameQuality(file, self.is_anime)
+                newQuality = Quality.nameQuality(filename, self.is_anime)
 
                 newStatus = None
 
@@ -889,7 +889,7 @@ class TVShow(object):
                         sickrage.app.log.debug(
                             "STATUS: we have an associated file, so setting the status from " + str(
                                 curEp.status) + " to DOWNLOADED/" + str(
-                                Quality.statusFromName(file, anime=self.is_anime)))
+                                Quality.statusFromName(filename, anime=self.is_anime)))
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:

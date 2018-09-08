@@ -322,6 +322,7 @@
                             <%include file="../includes/root_dirs.mako"/>
                     </div>
                 </div>
+
                 <div class="form-row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
@@ -1195,6 +1196,26 @@
                                     ${_('Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)')}
                                 </label>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Allowed video file extensions')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-file"></span>
+                                </span>
+                            </div>
+                            <input name="allowed_video_file_exts" id="allowed_video_file_exts"
+                                   value="${','.join(sickrage.app.config.allowed_video_file_exts)}"
+                                   placeholder="${_('ex: avi,mp4,mkv')}"
+                                   title="comma separated list of video file extensions you want to allow, do not include dots"
+                                   class="form-control"/>
                         </div>
                     </div>
                 </div>

@@ -54,6 +54,7 @@ class Config(object):
         self.encryption_version = 2
 
         self.app_id = ""
+        self.app_oauth_token = ""
 
         self.debug = False
 
@@ -82,8 +83,6 @@ class Config(object):
         self.web_external_port = 0
         self.web_log = False
         self.web_root = ""
-        self.app_username = ""
-        self.app_password = ""
         self.web_ipv6 = False
         self.web_cookie_secret = ""
         self.web_use_gzip = True
@@ -95,7 +94,6 @@ class Config(object):
         self.https_cert = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
         self.https_key = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
         self.api_key = ""
-        self.api_root = ""
         self.indexer_default_language = 'en'
         self.ep_default_deleted_status = None
         self.launch_browser = False
@@ -429,6 +427,7 @@ class Config(object):
         self.calendar_unprotected = False
         self.calendar_icons = False
         self.no_restart = False
+        self.allowed_video_file_exts = []
         self.thetvdb_apitoken = ""
         self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
@@ -691,6 +690,7 @@ class Config(object):
             },
             'General': {
                 'app_id': self.app_id or str(uuid.uuid4()),
+                'app_oauth_token': '',
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -737,8 +737,6 @@ class Config(object):
                 'naming_pattern': 'Season %0S/%SN - S%0SE%0E - %EN',
                 'sort_article': False,
                 'handle_reverse_proxy': False,
-                'app_username': '',
-                'app_password': '',
                 'postpone_if_sync_files': True,
                 'cpu_preset': 'NORMAL',
                 'nfo_rename': True,
@@ -796,6 +794,13 @@ class Config(object):
                 'git_password': '',
                 'ep_default_deleted_status': 6,
                 'no_restart': False,
+                'allowed_video_file_exts': [
+                    'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
+                    'ogm', 'mp4', 'iso', 'img', 'divx',
+                    'm2ts', 'm4v', 'ts', 'flv', 'f4v',
+                    'mov', 'rmvb', 'vob', 'dvr-ms', 'wtv',
+                    'ogv', '3gp', 'webm', 'tp'
+                ],
                 'require_words': '',
                 'naming_strip_year': False,
                 'proxy_indexers': True,
@@ -1300,6 +1305,22 @@ class Config(object):
         return my_val
 
     ################################################################################
+    # check_setting_list                                                           #
+    ################################################################################
+    def check_setting_list(self, section, key, def_val=None, silent=True):
+        def_val = def_val if def_val is not None else self.defaults[section][key]
+
+        try:
+            my_val = list(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
+        except StandardError:
+            my_val = def_val
+
+        if not silent:
+            print(key + " -> " + repr(my_val))
+
+        return my_val
+
+    ################################################################################
     # check_setting_dict                                                            #
     ################################################################################
     def check_setting_dict(self, section, key, def_val=None, silent=True):
@@ -1364,6 +1385,7 @@ class Config(object):
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
         self.app_id = self.check_setting_str('General', 'app_id')
+        self.app_oauth_token = self.check_setting_str('General', 'app_oauth_token')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
@@ -1384,8 +1406,6 @@ class Config(object):
         self.web_ipv6 = self.check_setting_bool('General', 'web_ipv6')
         self.web_root = self.check_setting_str('General', 'web_root').lstrip('/').rstrip('/')
         self.web_log = self.check_setting_bool('General', 'web_log')
-        self.app_username = self.check_setting_str('General', 'app_username', censor=True)
-        self.app_password = self.check_setting_str('General', 'app_password', censor=True)
         self.web_cookie_secret = self.check_setting_str('General', 'web_cookie_secret')
         self.web_use_gzip = self.check_setting_bool('General', 'web_use_gzip')
         self.ssl_verify = self.check_setting_bool('General', 'ssl_verify')
@@ -1477,6 +1497,7 @@ class Config(object):
         self.calendar_unprotected = self.check_setting_bool('General', 'calendar_unprotected')
         self.calendar_icons = self.check_setting_bool('General', 'calendar_icons')
         self.no_restart = self.check_setting_bool('General', 'no_restart')
+        self.allowed_video_file_exts = self.check_setting_list('General', 'allowed_video_file_exts')
         self.extra_scripts = [x.strip() for x in self.check_setting_str('General', 'extra_scripts').split('|') if
                               x.strip()]
         self.use_listview = self.check_setting_bool('General', 'use_listview')
@@ -1859,6 +1880,7 @@ class Config(object):
                 'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
                 'app_id': self.app_id,
+                'app_oauth_token': self.app_oauth_token,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
@@ -1874,8 +1896,6 @@ class Config(object):
                 'web_ipv6': int(self.web_ipv6),
                 'web_log': int(self.web_log),
                 'web_root': self.web_root,
-                'app_username': self.app_username,
-                'app_password': self.app_password,
                 'web_cookie_secret': self.web_cookie_secret,
                 'web_use_gzip': int(self.web_use_gzip),
                 'ssl_verify': int(self.ssl_verify),
@@ -1971,6 +1991,7 @@ class Config(object):
                 'calendar_unprotected': int(self.calendar_unprotected),
                 'calendar_icons': int(self.calendar_icons),
                 'no_restart': int(self.no_restart),
+                'allowed_video_file_exts': self.allowed_video_file_exts,
                 'display_all_seasons': int(self.display_all_seasons),
                 'random_user_agent': int(self.random_user_agent),
                 'processor_follow_symlinks': int(self.processor_follow_symlinks),

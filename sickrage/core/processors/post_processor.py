@@ -129,8 +129,7 @@ class PostProcessor(object):
         """
 
         if not existing_file:
-            self._log("There is no existing file so there's no worries about replacing it",
-                      sickrage.app.log.DEBUG)
+            self._log("There is no existing file so there's no worries about replacing it", sickrage.app.log.DEBUG)
             return PostProcessor.DOESNT_EXIST
 
         # if the new file exists, return the appropriate code depending on the size
@@ -142,13 +141,11 @@ class PostProcessor(object):
                 return PostProcessor.EXISTS_LARGER
 
             elif os.path.getsize(existing_file) == os.path.getsize(self.file_path):
-                self._log("File " + existing_file + " is the same size as " + self.file_path,
-                          sickrage.app.log.DEBUG)
+                self._log("File " + existing_file + " is the same size as " + self.file_path, sickrage.app.log.DEBUG)
                 return PostProcessor.EXISTS_SAME
 
             else:
-                self._log("File " + existing_file + " is smaller than " + self.file_path,
-                          sickrage.app.log.DEBUG)
+                self._log("File " + existing_file + " is smaller than " + self.file_path, sickrage.app.log.DEBUG)
                 return PostProcessor.EXISTS_SMALLER
 
         else:
@@ -444,7 +441,8 @@ class PostProcessor(object):
                 hardlinkFile(cur_file_path, new_file_path)
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
-                self._log("Unable to hardlink file {} to {}: {}".format(cur_file_path, new_file_path, e), sickrage.app.log.ERROR)
+                self._log("Unable to hardlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
+                          sickrage.app.log.ERROR)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link,
@@ -1026,7 +1024,7 @@ class PostProcessor(object):
         if not isFileLocked(self.file_path, False):
             if not verify_freespace(self.file_path, ep_obj.show.location, [ep_obj] + ep_obj.relatedEps):
                 self._log("Not enough space to continue PostProcessing, exiting", sickrage.app.log.WARNING)
-                #return False
+                # return False
                 raise NoFreeSpaceException
         else:
             self._log("Unable to determine needed filespace as the source file is locked for access")

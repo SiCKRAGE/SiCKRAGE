@@ -50,14 +50,6 @@ import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
 from sickrage.core.exceptions import MultipleShowObjectsException
 
-mediaExtensions = [
-    'avi', 'mkv', 'mpg', 'mpeg', 'wmv',
-    'ogm', 'mp4', 'iso', 'img', 'divx',
-    'm2ts', 'm4v', 'ts', 'flv', 'f4v',
-    'mov', 'rmvb', 'vob', 'dvr-ms', 'wtv',
-    'ogv', '3gp', 'webm', 'tp'
-]
-
 
 def safe_getattr(object, name, default=None):
     try:
@@ -152,7 +144,7 @@ def remove_extension(name):
 
     if name and "." in name:
         base_name, sep, extension = name.rpartition('.')
-        if base_name and extension.lower() in ['nzb', 'torrent'] + mediaExtensions:
+        if base_name and extension.lower() in ['nzb', 'torrent'] + sickrage.app.config.allowed_video_file_exts:
             name = base_name
 
     return name
@@ -317,7 +309,7 @@ def is_media_file(filename):
     if re.search('extras?$', sepFile[0], re.I):
         return False
 
-    return sepFile[-1].lower() in mediaExtensions
+    return sepFile[-1].lower() in sickrage.app.config.allowed_video_file_exts
 
 
 def is_rar_file(filename):

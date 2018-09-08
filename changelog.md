@@ -1,6 +1,12 @@
 # Changelog
 
-- * 39f81c5 - 2018-09-05: Release v9.3.69 
+- * f12bdcd - 2018-09-08: Release v9.3.70 
+- * d1aa98d - 2018-09-08: Pre-Release v9.3.70.dev2 
+- * f805a60 - 2018-09-08: Added real-time SSO session handling for WebUI. Token exchange performed to get offline token for API access. 
+- * 4027b39 - 2018-09-06: Application oAuth token now saved to config as a JSON string 
+- * 1c0d920 - 2018-09-06: Pre-Release v9.3.70.dev1 
+- * 088d5f3 - 2018-09-06: Added general settings option to specify a comma delimited list of allowed video file extensions to be checked against existing files when performing show updates/refreshes 
+- * e93f949 - 2018-09-05: Release v9.3.69 
 - * 3f84dd7 - 2018-09-05: Added main database function to sync tv episodes to index 
 - * 51f6fb2 - 2018-09-04: Release v9.3.68 
 - * 78d23e1 - 2018-09-04: Added &#x27;tv_episodes_by_indexerid&#x27; database index. Added database test case. Fixed TV episode database upsert code. Misc variable name cleanup. 

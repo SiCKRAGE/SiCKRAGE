@@ -5,6 +5,7 @@
     from time import time
 
     import sickrage
+    from sickrage.core import API
     from sickrage.core.updaters import tz_updater
     from sickrage.core.helpers import pretty_filesize, memory_usage
 %>
@@ -321,9 +322,11 @@
                                    class="confirm shutdown">
                                     <i class="fas fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
-                                <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
-                                    <i class="fas fa-unlink"></i>&nbsp;${_('Unlink Account')}
-                                </a>
+                                % if current_user['sub'] == API().userinfo['sub']:
+                                    <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
+                                        <i class="fas fa-unlink"></i>&nbsp;${_('Unlink Account')}
+                                    </a>
+                                % endif
                                 <a class="dropdown-item" href="${srWebRoot}/logout" class="confirm logout">
                                     <i class="fas fa-sign-out-alt"></i>&nbsp;${_('Logout')}
                                 </a>
