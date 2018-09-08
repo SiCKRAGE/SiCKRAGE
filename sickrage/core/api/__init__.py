@@ -25,7 +25,8 @@ class API(object):
 
     @property
     def token(self):
-        return json.loads(sickrage.app.config.app_oauth_token)
+        if sickrage.app.config.app_oauth_token:
+            return json.loads(sickrage.app.config.app_oauth_token)
 
     @token.setter
     def token(self, value):
@@ -34,10 +35,9 @@ class API(object):
 
     @property
     def userinfo(self):
-        if self.token:
-            return sickrage.app.oidc_client.userinfo(self.token['access_token'])
+        return self._request('GET', 'userinfo')
 
-    def register_appid(self, appid):
+    def register_appid(self, appid, username=""):
         self._request('POST', 'register-appid', json={'appid': appid})
 
     def unregister_appid(self, appid):
@@ -49,21 +49,30 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                msg = resp.json()['error']['message']
+                msg = resp.json()['error']
                 if not self.token_refreshed:
                     raise TokenExpiredError
                 raise error(msg)
             elif resp.status_code >= 400:
-                msg = resp.json()['error']['message']
+                msg = resp.json()['error']
                 raise error(msg)
 
             return resp.json()
         except TokenExpiredError:
-            self.token_refreshed = True
-            self.token = sickrage.app.oidc_client.refresh_token(self.token['refresh_token'])
+            self.refresh_token()
             return self._request(method, url, **kwargs)
         except (InvalidClientIdError, MissingTokenError) as e:
             sickrage.app.log.warning("SiCKRAGE token issue, please try logging out and back in again to the web-ui")
+
+    def refresh_token(self):
+        self.token_refreshed = True
+
+        extras = {
+            'client_id': self.client_id,
+            'client_secret': self.client_secret,
+        }
+
+        self.token = self.session.refresh_token(self.token_url, **extras)
 
     @staticmethod
     def throttle_hook(response, **kwargs):

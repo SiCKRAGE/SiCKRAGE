@@ -36,8 +36,9 @@ from CodernityDB.database import RecordNotFound
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
+from requests import HTTPError
 from tornado.concurrent import run_on_executor
-from tornado.escape import json_encode, recursive_unicode, json_decode
+from tornado.escape import json_encode, recursive_unicode
 from tornado.gen import coroutine
 from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
@@ -146,9 +147,16 @@ class BaseHandler(RequestHandler):
                                              webroot=sickrage.app.config.web_root))
 
     def get_current_user(self):
-        user = self.get_secure_cookie('sr_user')
-        if user:
-            return json_decode(user)
+        try:
+            try:
+                return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('access_token'))
+            except HTTPError:
+                token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
+                self.set_secure_cookie('sr_access_token', token['access_token'])
+                self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
+                return sickrage.app.oidc_client.userinfo(token['access_token'])
+        except Exception:
+            pass
 
     def render_string(self, template_name, **kwargs):
         template_kwargs = {
@@ -267,22 +275,23 @@ class LoginHandler(BaseHandler):
         code = self.get_argument('code', False)
         if code:
             try:
-                API().token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
-                self.set_secure_cookie('sr_refresh_token', API().token['refresh_token'])
+                token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
+                self.set_secure_cookie('sr_access_token', token['access_token'])
+                self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
 
-                API().register_appid(sickrage.app.config.app_id)
-
-                user = sickrage.app.oidc_client.userinfo(API().token['access_token'])
-                self.set_secure_cookie('sr_user', json_encode(user))
+                if not API().token:
+                    exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
+                    API().token = sickrage.app.oidc_client.token_exchange(**exchange)
+                    API().register_appid(sickrage.app.config.app_id)
+                elif sickrage.app.oidc_client.userinfo(token['access_token'])['sub'] != API().userinfo['sub']:
+                    return self.redirect('/logout')
             except Exception as e:
                 return self.redirect('/logout')
 
             redirect_page = self.get_argument('next', "/{}/".format(sickrage.app.config.default_page))
             return self.redirect("{}".format(redirect_page))
         else:
-            authorization_url = sickrage.app.oidc_client.authorization_url(scope='offline_access',
-                                                                           redirect_uri=redirect_uri)
-            self.redirect(authorization_url)
+            self.redirect(sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri))
 
 
 class LogoutHandler(BaseHandler):
@@ -522,7 +531,13 @@ class WebRoot(WebHandler):
         )
 
     def unlink(self):
+        if self.get_current_user()['sub'] != API().userinfo['sub']:
+            return self.redirect("/{}/".format(sickrage.app.config.default_page))
+
         API().unregister_appid(sickrage.app.config.app_id)
+        sickrage.app.oidc_client.logout(API().token['refresh_token'])
+        API().token = ''
+
         return self.redirect('/logout/')
 
     def quicksearch_json(self, term):

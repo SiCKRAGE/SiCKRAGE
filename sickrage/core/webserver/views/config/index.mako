@@ -38,10 +38,19 @@
                             </div>
                         </div>
                         <br/>
+                        <div class="form-row">
+                            <div class="col-lg-3 col-md-3 col-sm-3">
+                                <i class="sickrage-core sickrage-core-type"></i> ${_('SR Install Type:')}
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9">
+                                ${sickrage.app.version_updater.updater.type.upper()}
+                            </div>
+                        </div>
+                        <br/>
                         % if sickrage.app.version_updater.updater.type == 'git':
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
-                                    <i class="sickrage-core sickrage-core-commit"></i> ${_('SR Commit:')}
+                                    <i class="sickrage-core sickrage-core-commit"></i> ${_('SR GIT Commit:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
                                     ${sickrage.app.version_updater.version}
@@ -49,22 +58,13 @@
                             </div>
                             <br/>
                         % endif
-                        <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-type"></i> ${_('SR Type:')}
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">
-                                ${sickrage.app.version_updater.updater.type}
-                            </div>
-                        </div>
-                        <br/>
                         % if sr_user:
                             <div class="form-row">
                                 <div class="col-lg-3 col-md-3 col-sm-3">
-                                    <i class="sickrage-core sickrage-core-user"></i> ${_('SR User:')}
+                                    <i class="sickrage-core sickrage-core-user"></i> ${_('SR Username:')}
                                 </div>
                                 <div class="col-lg-9 col-md-9 col-sm-9">
-                                    ${sr_user}
+                                    ${current_user['preferred_username']}
                                 </div>
                             </div>
                             <br/>
@@ -78,7 +78,7 @@
                         <br/>
                         <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
-                                <i class="sickrage-core sickrage-core-cfg"></i> ${_('SR Config:')}
+                                <i class="sickrage-core sickrage-core-cfg"></i> ${_('SR Config File:')}
                             </div>
                             <div class="col-lg-9 col-md-9 col-sm-9">
                                 ${sickrage.app.config_file}
