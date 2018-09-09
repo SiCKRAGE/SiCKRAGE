@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-09 01:06-0700\n"
-"PO-Revision-Date: 2018-09-09 08:07\n"
+"POT-Creation-Date: 2018-09-09 13:56-0700\n"
+"PO-Revision-Date: 2018-09-09 20:57\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -669,14 +669,18 @@ msgid "Select the backup file you wish to restore"
 msgstr "復元したいバックアップファイルを選択します。"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:73
+msgid "Restore application id (requires restoring config)"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:82
 msgid "Restore database files"
 msgstr "データベース ファイルを復元します。"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:82
+#: sickrage/core/webserver/views/config/backup_restore.mako:91
 msgid "Restore configuration file"
 msgstr "構成ファイルを復元します。"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:91
+#: sickrage/core/webserver/views/config/backup_restore.mako:100
 msgid "Restore cache files"
 msgstr "キャッシュ ファイルを復元します。"
 
@@ -3510,7 +3514,7 @@ msgstr "プロバイダーが少なくとも 1 つは必要ですが、2 つを�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/急流プロバイダーに切り替えることができます。"
 
-#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3920
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Search Clients"
@@ -4778,7 +4782,7 @@ msgstr "不明"
 msgid "Retry Download"
 msgstr "ダウンロードを再試行します。"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4916
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "メイン"
@@ -4904,7 +4908,7 @@ msgstr "空気順序の代わりに DVD の注文を使用します。"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "「力のフル更新」は、必要に応じて、手動でそれらをソートする必要があります既存のエピソードがあれば。"
 
-#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4794
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4795
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5226,7 +5230,7 @@ msgstr "再起動の実行"
 msgid "Daily Search"
 msgstr "毎日検索"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "バックログ"
@@ -5251,7 +5255,7 @@ msgstr "ポスト プロセス"
 msgid "Subtitles Finder"
 msgstr "字幕ファインダー"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4911
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt チェッカー"
@@ -5284,7 +5288,7 @@ msgstr "違います"
 msgid "True"
 msgstr "真"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "キューを表示します。"
@@ -5662,28 +5666,28 @@ msgstr "一般的です"
 msgid "Backup and Restore"
 msgstr "バックアップと復元"
 
-#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4219
+#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4220
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "検索プロバイダー"
 
-#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4710
+#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4711
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "字幕設定"
 
-#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4833
+#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4834
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "品質の設定"
 
 #: sickrage/core/webserver/views.py:2225 sickrage/core/webserver/views.py:2226
-#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4025
 #: sickrage/core/webserver/views/layouts/main.mako:261
 msgid "Post Processing"
 msgstr "ポスト処理"
 
-#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4377
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "通知"
@@ -5949,7 +5953,7 @@ msgstr "Propers 検索が無効になっています。"
 msgid "Post-Processor:"
 msgstr "ポスト プロセッサ:"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4907
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "検索キュー"
@@ -6536,7 +6540,7 @@ msgstr "既に上支店。"
 #: sickrage/core/webserver/views.py:1858 sickrage/core/webserver/views.py:1863
 #: sickrage/core/webserver/views.py:1866 sickrage/core/webserver/views.py:1909
 #: sickrage/core/webserver/views.py:1915 sickrage/core/webserver/views.py:1918
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4913
 msgid "Error"
 msgstr "エラー"
 
@@ -6916,10 +6920,10 @@ msgstr "設定 - 全般"
 msgid "General Configuration"
 msgstr "全般的なコンフィグレーション"
 
-#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4006
-#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4358
-#: sickrage/core/webserver/views.py:4692 sickrage/core/webserver/views.py:4776
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4007
+#: sickrage/core/webserver/views.py:4138 sickrage/core/webserver/views.py:4359
+#: sickrage/core/webserver/views.py:4693 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:4816
 msgid "Error(s) Saving Configuration"
 msgstr "構成の保存エラー"
 
@@ -6943,164 +6947,164 @@ msgstr "バックアップに失敗しました!"
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "最初に、バックアップを保存するフォルダーを選択する必要があります!"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3898
 msgid "Successfully extracted restore files to "
 msgstr "ファイルの正常に抽出された復元先"
 
-#: sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3899
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "復元を完了する <br>Restart の sickrage。"
 
-#: sickrage/core/webserver/views.py:3900
+#: sickrage/core/webserver/views.py:3901
 msgid "Restore FAILED"
 msgstr "復元に失敗しました"
 
-#: sickrage/core/webserver/views.py:3902
+#: sickrage/core/webserver/views.py:3903
 msgid "You need to select a backup file to restore!"
 msgstr "復元するバックアップ ファイルを選択する必要があります!"
 
-#: sickrage/core/webserver/views.py:3918
+#: sickrage/core/webserver/views.py:3919
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid "Unable to create directory "
 msgstr "ディレクトリを作成できません。"
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid ", dir not changed."
 msgstr "、ディレクトリは変更されません。"
 
-#: sickrage/core/webserver/views.py:4008
+#: sickrage/core/webserver/views.py:4009
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4023
+#: sickrage/core/webserver/views.py:4024
 msgid "Config - Post Processing"
 msgstr "設定 - ポスト処理"
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4064
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "解凍できません、設定をアンパックを無効にします。"
 
-#: sickrage/core/webserver/views.py:4098 sickrage/core/webserver/views.py:4109
+#: sickrage/core/webserver/views.py:4099 sickrage/core/webserver/views.py:4110
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "あなたは、config を命名、名前付け設定を保存していない無効なキャラクターを保存しようと"
 
-#: sickrage/core/webserver/views.py:4100 sickrage/core/webserver/views.py:4111
+#: sickrage/core/webserver/views.py:4101 sickrage/core/webserver/views.py:4112
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "しようと、無効な名前付け設定を保存しない名前付け設定を保存"
 
-#: sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4118
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "あなたは、空気で日付設定を保存しない無効な日付による空気の名前付け設定の保存試してください。"
 
-#: sickrage/core/webserver/views.py:4123
+#: sickrage/core/webserver/views.py:4124
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "構成に名前を付ける、スポーツ設定を保存しない無効なスポーツを保存しよう"
 
-#: sickrage/core/webserver/views.py:4139
+#: sickrage/core/webserver/views.py:4140
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4218
+#: sickrage/core/webserver/views.py:4219
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4259
+#: sickrage/core/webserver/views.py:4260
 msgid "\n"
 "No Provider Name specified"
 msgstr "指定されたプロバイダー名がいません"
 
-#: sickrage/core/webserver/views.py:4261
+#: sickrage/core/webserver/views.py:4262
 msgid "\n"
 "No Provider Url specified"
 msgstr "指定されたプロバイダー Url がいません。"
 
-#: sickrage/core/webserver/views.py:4263
+#: sickrage/core/webserver/views.py:4264
 msgid "\n"
 "No Provider Api key specified"
 msgstr "指定されたプロバイダーの Api キーがありません。"
 
-#: sickrage/core/webserver/views.py:4360
+#: sickrage/core/webserver/views.py:4361
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4375
+#: sickrage/core/webserver/views.py:4376
 msgid "Config - Notifications"
 msgstr "設定 - 通知"
 
-#: sickrage/core/webserver/views.py:4694
+#: sickrage/core/webserver/views.py:4695
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4709
+#: sickrage/core/webserver/views.py:4710
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4778
+#: sickrage/core/webserver/views.py:4779
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4793
+#: sickrage/core/webserver/views.py:4794
 msgid "Config - Anime"
 msgstr "設定 - キャラクター"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4818
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4832
+#: sickrage/core/webserver/views.py:4833
 msgid "Config - Quality Settings"
 msgstr "設定 - 品質の設定"
 
-#: sickrage/core/webserver/views.py:4844
+#: sickrage/core/webserver/views.py:4845
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[品質設定]構成が保存されました"
 
-#: sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:4858
 msgid "Clear Errors"
 msgstr "エラーをクリア"
 
-#: sickrage/core/webserver/views.py:4860
+#: sickrage/core/webserver/views.py:4861
 msgid "Clear Warnings"
 msgstr "警告をオフに"
 
-#: sickrage/core/webserver/views.py:4901
+#: sickrage/core/webserver/views.py:4902
 msgid "Daily Searcher"
 msgstr "毎日サーチャー"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4904
 msgid "Show Updater"
 msgstr "アップデーターを表示します。"
 
-#: sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:4905
 msgid "Check Version"
 msgstr "バージョンを確認します。"
 
-#: sickrage/core/webserver/views.py:4907
+#: sickrage/core/webserver/views.py:4908
 msgid "Find Propers"
 msgstr "Propers を見つける"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4909
 msgid "Postprocessor"
 msgstr "ポスト プロセッサ"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4910
 msgid "Find Subtitles"
 msgstr "字幕を見つける"
 
-#: sickrage/core/webserver/views.py:4911
+#: sickrage/core/webserver/views.py:4912
 msgid "Event"
 msgstr "イベント"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4914
 msgid "Tornado"
 msgstr "竜巻"
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4915
 msgid "Thread"
 msgstr "スレッド"
 

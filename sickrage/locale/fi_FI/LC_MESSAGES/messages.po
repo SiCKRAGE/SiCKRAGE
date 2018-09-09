@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-09 01:06-0700\n"
-"PO-Revision-Date: 2018-09-09 08:07\n"
+"POT-Creation-Date: 2018-09-09 13:56-0700\n"
+"PO-Revision-Date: 2018-09-09 20:57\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -669,14 +669,18 @@ msgid "Select the backup file you wish to restore"
 msgstr "Haluat palauttaa varmuuskopiotiedoston valitseminen"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:73
+msgid "Restore application id (requires restoring config)"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:82
 msgid "Restore database files"
 msgstr "Palauta tiedostot"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:82
+#: sickrage/core/webserver/views/config/backup_restore.mako:91
 msgid "Restore configuration file"
 msgstr "Palauttaa kokoonpano arkistoida"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:91
+#: sickrage/core/webserver/views/config/backup_restore.mako:100
 msgid "Restore cache files"
 msgstr "Palauttaa välimuistitiedostoja"
 
@@ -3510,7 +3514,7 @@ msgstr "Vähintään yksi toimittaja ei tarvita, mutta kahta suositetaan."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent tarjoajien kanisteri olla toggled"
 
-#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3920
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Search Clients"
@@ -4778,7 +4782,7 @@ msgstr "Tuntematon"
 msgid "Retry Download"
 msgstr "Yritä lataamista uudelleen"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4916
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Pääsivu"
@@ -4904,7 +4908,7 @@ msgstr "Käytä DVD jotta Ilmastointi-tilaus"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "”Voimassa koko Update” on tarpeen, ja jos sinulla on olemassa olevat jaksot haluat lajitella ne manuaalisesti."
 
-#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4794
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4795
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5226,7 +5230,7 @@ msgstr "Suorittaa uudelleen"
 msgid "Daily Search"
 msgstr "Päivittäinen Etsi"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Tilauskanta"
@@ -5251,7 +5255,7 @@ msgstr "Post prosessi"
 msgid "Subtitles Finder"
 msgstr "Tekstitys Finder"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4911
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt tarkistaminen"
@@ -5284,7 +5288,7 @@ msgstr "Ei"
 msgid "True"
 msgstr "Totta"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Näytä jono"
@@ -5662,28 +5666,28 @@ msgstr "Ehdot"
 msgid "Backup and Restore"
 msgstr "Varmuuskopiointi ja palautus"
 
-#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4219
+#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4220
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Visuaalinen haku"
 
-#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4710
+#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4711
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Tekstityksen asetukset"
 
-#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4833
+#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4834
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "Laatuasetuksia"
 
 #: sickrage/core/webserver/views.py:2225 sickrage/core/webserver/views.py:2226
-#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4025
 #: sickrage/core/webserver/views/layouts/main.mako:261
 msgid "Post Processing"
 msgstr "Jälkikäsittelyssä"
 
-#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4377
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "Ilmoitukset"
@@ -5949,7 +5953,7 @@ msgstr "Propers haku poissa käytöstä"
 msgid "Post-Processor:"
 msgstr "Post-prosessori:"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4907
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Etsi jonoon"
@@ -6536,7 +6540,7 @@ msgstr "Jo olevien haara: "
 #: sickrage/core/webserver/views.py:1858 sickrage/core/webserver/views.py:1863
 #: sickrage/core/webserver/views.py:1866 sickrage/core/webserver/views.py:1909
 #: sickrage/core/webserver/views.py:1915 sickrage/core/webserver/views.py:1918
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4913
 msgid "Error"
 msgstr "Virhe"
 
@@ -6916,10 +6920,10 @@ msgstr "Config - General"
 msgid "General Configuration"
 msgstr "Yleiset asetukset"
 
-#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4006
-#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4358
-#: sickrage/core/webserver/views.py:4692 sickrage/core/webserver/views.py:4776
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4007
+#: sickrage/core/webserver/views.py:4138 sickrage/core/webserver/views.py:4359
+#: sickrage/core/webserver/views.py:4693 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:4816
 msgid "Error(s) Saving Configuration"
 msgstr "Virheet tallennetaan kokoonpano"
 
@@ -6943,167 +6947,167 @@ msgstr "Varmuuskopiointi epäonnistui!"
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Sinun täytyy valita kansion varmuuskopion ensin!"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3898
 msgid "Successfully extracted restore files to "
 msgstr "Onnistuneesti puretut palauttaa tiedostot "
 
-#: sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3899
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage palauttaminen loppuun."
 
-#: sickrage/core/webserver/views.py:3900
+#: sickrage/core/webserver/views.py:3901
 msgid "Restore FAILED"
 msgstr "Palautus epäonnistui"
 
-#: sickrage/core/webserver/views.py:3902
+#: sickrage/core/webserver/views.py:3903
 msgid "You need to select a backup file to restore!"
 msgstr "Sinun täytyy valita varmuuskopiotiedoston palauttaminen!"
 
-#: sickrage/core/webserver/views.py:3918
+#: sickrage/core/webserver/views.py:3919
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid "Unable to create directory "
 msgstr "Hakemistoa ei voi luoda "
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid ", dir not changed."
 msgstr ", dir ei muuteta."
 
-#: sickrage/core/webserver/views.py:4008
+#: sickrage/core/webserver/views.py:4009
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4023
+#: sickrage/core/webserver/views.py:4024
 msgid "Config - Post Processing"
 msgstr "Config - jälkikäsittelyssä"
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4064
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Purkaminen ei tueta, tehdä kykenemättömäksi Pura asetus"
 
-#: sickrage/core/webserver/views.py:4098 sickrage/core/webserver/views.py:4109
+#: sickrage/core/webserver/views.py:4099 sickrage/core/webserver/views.py:4110
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Yritit säästää virheellinen anime nimeäminen config, ei nimeäminen asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4100 sickrage/core/webserver/views.py:4111
+#: sickrage/core/webserver/views.py:4101 sickrage/core/webserver/views.py:4112
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Kokeillut säästö virheellinen nimeäminen config ei nimeäminen asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4118
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Yritit säästää ei kelpaa ilman päivämäärä nimeäminen config, ei ilman päivämäärä-asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4123
+#: sickrage/core/webserver/views.py:4124
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Yritit säästää virheellinen urheilu nimeäminen config, ei urheilu-asetusten tallentaminen"
 
-#: sickrage/core/webserver/views.py:4139
+#: sickrage/core/webserver/views.py:4140
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4218
+#: sickrage/core/webserver/views.py:4219
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4259
+#: sickrage/core/webserver/views.py:4260
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Tarjoajan nimeä ei ole määritetty"
 
-#: sickrage/core/webserver/views.py:4261
+#: sickrage/core/webserver/views.py:4262
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ei ole palveluntarjoajan URL-osoite"
 
-#: sickrage/core/webserver/views.py:4263
+#: sickrage/core/webserver/views.py:4264
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Ei ole määritetty toimittaja Api-avain"
 
-#: sickrage/core/webserver/views.py:4360
+#: sickrage/core/webserver/views.py:4361
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4375
+#: sickrage/core/webserver/views.py:4376
 msgid "Config - Notifications"
 msgstr "Config - ilmoitukset"
 
-#: sickrage/core/webserver/views.py:4694
+#: sickrage/core/webserver/views.py:4695
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4709
+#: sickrage/core/webserver/views.py:4710
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4778
+#: sickrage/core/webserver/views.py:4779
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4793
+#: sickrage/core/webserver/views.py:4794
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4818
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] kokoonpano tallennetaan"
 
-#: sickrage/core/webserver/views.py:4832
+#: sickrage/core/webserver/views.py:4833
 msgid "Config - Quality Settings"
 msgstr "Config - laatuasetuksia"
 
-#: sickrage/core/webserver/views.py:4844
+#: sickrage/core/webserver/views.py:4845
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[QUALITY SETTINGS] Asetukset tallennettu"
 
-#: sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:4858
 msgid "Clear Errors"
 msgstr "Tyhjennä virheet"
 
-#: sickrage/core/webserver/views.py:4860
+#: sickrage/core/webserver/views.py:4861
 msgid "Clear Warnings"
 msgstr "Selkeitä varoituksia"
 
-#: sickrage/core/webserver/views.py:4901
+#: sickrage/core/webserver/views.py:4902
 msgid "Daily Searcher"
 msgstr "Päivittäinen Searcher"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4904
 msgid "Show Updater"
 msgstr "Näytä Updater"
 
-#: sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:4905
 msgid "Check Version"
 msgstr "Tarkista versio"
 
-#: sickrage/core/webserver/views.py:4907
+#: sickrage/core/webserver/views.py:4908
 msgid "Find Propers"
 msgstr "Etsi Propers"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4909
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4910
 msgid "Find Subtitles"
 msgstr "Löytää tekstityksen"
 
-#: sickrage/core/webserver/views.py:4911
+#: sickrage/core/webserver/views.py:4912
 msgid "Event"
 msgstr "Tapahtuma"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4914
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4915
 msgid "Thread"
 msgstr "Thread"
 

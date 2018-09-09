@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8131650 - 2018-09-09: Added ability to optionally restore application id when restoring backup. Fixed issue with provider cache API calls. 
+- * 14afaff - 2018-09-09: Release v9.3.75 
+- * b0e0ac6 - 2018-09-09: Added ability to optionally restore application id when restoring backup. Fixed issue with provider cache API calls. 
 - * 0a5590f - 2018-09-09: Release v9.3.74 
 - * fd54d1e - 2018-09-08: Pre-Release v9.3.74.dev1 
 - * d4b634c - 2018-09-08: Release v9.3.73 
