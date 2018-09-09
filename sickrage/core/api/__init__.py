@@ -75,6 +75,8 @@ class API(object):
         except InvalidGrantError as e:
             self.token = ''
 
+        return self.token
+
     @staticmethod
     def throttle_hook(response, **kwargs):
         ratelimited = "X-RateLimit-Remaining" in response.headers

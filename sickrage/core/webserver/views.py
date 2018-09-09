@@ -287,9 +287,16 @@ class LoginHandler(BaseHandler):
                         API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
                         return self.redirect('/logout')
                 else:
-                    app_ids = sickrage.app.oidc_client.userinfo(token['access_token']).get('appid', [])
-                    if sickrage.app.config.app_id not in app_ids:
-                        return self.redirect('/logout')
+                    api_token_decoded = sickrage.app.oidc_client.decode_token(API().refresh_token()['access_token'],
+                                                                              sickrage.app.oidc_client.certs())
+
+                    userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
+                    if userinfo.get('sub') == api_token_decoded['sub']:
+                        API().register_appid(sickrage.app.config.app_id)
+                    else:
+                        app_ids = userinfo.get('appid', [])
+                        if sickrage.app.config.app_id not in app_ids:
+                            return self.redirect('/logout')
             except Exception as e:
                 return self.redirect('/logout')
 
