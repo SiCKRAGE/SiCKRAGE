@@ -283,8 +283,8 @@ class LoginHandler(BaseHandler):
                 if not sickrage.app.config.app_oauth_refresh_token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-                    sickrage.app.config.app_oauth_refresh_token = API().token['refresh_token']
                     API().register_appid(sickrage.app.config.app_id)
+                    sickrage.app.config.app_oauth_refresh_token = API().token['refresh_token']
                     sickrage.app.config.save()
                 elif sickrage.app.oidc_client.userinfo(token['access_token'])['sub'] != API().userinfo['sub']:
                     return self.redirect('/logout')
