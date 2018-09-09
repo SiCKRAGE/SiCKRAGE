@@ -1,6 +1,8 @@
 # Changelog
 
-- * eedd912 - 2018-09-08: Release v9.3.71 
+- * 9a5db91 - 2018-09-08: Release v9.3.72 
+- * 5c3c795 - 2018-09-08: Pre-Release v9.3.72.dev1 
+- * 3b8de1e - 2018-09-08: Release v9.3.71 
 - * cf75694a - 2018-09-08: Release v9.3.70 
 - * d1aa98d - 2018-09-08: Pre-Release v9.3.70.dev2 
 - * f805a60 - 2018-09-08: Added real-time SSO session handling for WebUI. Token exchange performed to get offline token for API access. 
