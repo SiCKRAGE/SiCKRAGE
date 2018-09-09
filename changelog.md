@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9a5db91 - 2018-09-08: Release v9.3.72 
+- * e9c1a16 - 2018-09-08: Release v9.3.73 
+- * 0f56bf7 - 2018-09-08: Release v9.3.72 
 - * 5c3c795 - 2018-09-08: Pre-Release v9.3.72.dev1 
 - * 3b8de1e - 2018-09-08: Release v9.3.71 
 - * cf75694a - 2018-09-08: Release v9.3.70 
