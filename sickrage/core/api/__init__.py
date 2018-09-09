@@ -27,6 +27,7 @@ class API(object):
     def token(self):
         if sickrage.app.config.app_oauth_token:
             return json.loads(sickrage.app.config.app_oauth_token)
+        return {}
 
     @token.setter
     def token(self, value):
@@ -38,10 +39,10 @@ class API(object):
         return self._request('GET', 'userinfo')
 
     def register_appid(self, appid, username=""):
-        self._request('POST', 'register-appid', json={'appid': appid})
+        return self._request('POST', 'register-appid', json={'appid': appid})
 
     def unregister_appid(self, appid):
-        self._request('POST', 'unregister-appid', json={'appid': appid})
+        return self._request('POST', 'unregister-appid', json={'appid': appid})
 
     def _request(self, method, url, **kwargs):
         try:
@@ -49,13 +50,13 @@ class API(object):
                                         hooks={'response': self.throttle_hook}, **kwargs)
 
             if resp.status_code == 401:
-                msg = resp.json()['error']
                 if not self.token_refreshed:
                     raise TokenExpiredError
-                raise error(msg)
+                if 'error' in resp.json():
+                    raise error(resp.json()['error'])
             elif resp.status_code >= 400:
-                msg = resp.json()['error']
-                raise error(msg)
+                if 'error' in resp.json():
+                    raise error(resp.json()['error'])
 
             return resp.json()
         except TokenExpiredError:
@@ -67,18 +68,12 @@ class API(object):
     def refresh_token(self):
         self.token_refreshed = True
 
-        extras = {
-            'client_id': self.client_id,
-            'client_secret': self.client_secret,
-            'refresh_token': sickrage.app.config.app_oauth_refresh_token
-        }
+        extras = {'client_id': self.client_id, 'client_secret': self.client_secret}
 
         try:
-            if sickrage.app.config.app_oauth_refresh_token:
-                self.token = self.session.refresh_token(self.token_url, **extras)
+            self.token = self.session.refresh_token(self.token_url, **extras)
         except InvalidGrantError as e:
-            sickrage.app.config.app_oauth_refresh_token = ''
-            sickrage.app.config.save()
+            self.token = ''
 
     @staticmethod
     def throttle_hook(response, **kwargs):

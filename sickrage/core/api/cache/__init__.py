@@ -3,12 +3,11 @@ from sickrage.core import API
 
 class ProviderCacheAPI(API):
     def get(self, provider, indexerid, season, episode):
-        query = 'cache/providers/{}/indexerids/{}/seasons/()/episodes/()'.format(provider, indexerid, season,
-                                                                                        episode)
+        query = 'cache/providers/{}/indexerids/{}/seasons/()/episodes/()'.format(provider, indexerid, season, episode)
         return self._request('GET', query)
 
     def add(self, data):
-        self._request('POST', 'cache/providers', json=data)
+        return self._request('POST', 'cache/providers', json=data)
 
 
 class TorrentCacheAPI(API):
@@ -17,4 +16,4 @@ class TorrentCacheAPI(API):
         return self._request('GET', query)
 
     def add(self, url):
-        self._request('POST', 'cache/torrents', data=dict({'url': url}))
+        return self._request('POST', 'cache/torrents', data=dict({'url': url}))

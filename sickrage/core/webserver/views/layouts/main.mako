@@ -322,7 +322,7 @@
                                    class="confirm shutdown">
                                     <i class="fas fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
-                                % if current_user['sub'] == API().userinfo['sub']:
+                                % if sickrage.app.config.app_id in current_user.get('appid', []):
                                     <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
                                         <i class="fas fa-unlink"></i>&nbsp;${_('Unlink Account')}
                                     </a>

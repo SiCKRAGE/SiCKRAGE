@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-08 16:58-0700\n"
-"PO-Revision-Date: 2018-09-08 23:59\n"
+"POT-Creation-Date: 2018-09-08 22:01-0700\n"
+"PO-Revision-Date: 2018-09-09 05:02\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -761,7 +761,7 @@ msgstr "khi tung ra các giao diện SickRage"
 msgid "Shows"
 msgstr "Cho thấy"
 
-#: sickrage/core/webserver/views.py:529 sickrage/core/webserver/views.py:530
+#: sickrage/core/webserver/views.py:531 sickrage/core/webserver/views.py:532
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "Schedule"
@@ -6197,11 +6197,11 @@ msgstr "HTTP Error 404"
 msgid "HTTP Error 500"
 msgstr "Lỗi HTTP 500"
 
-#: sickrage/core/webserver/views.py:427
+#: sickrage/core/webserver/views.py:429
 msgid "API Key not generated"
 msgstr "API khóa không tạo ra"
 
-#: sickrage/core/webserver/views.py:431 sickrage/core/webserver/views.py:432
+#: sickrage/core/webserver/views.py:433 sickrage/core/webserver/views.py:434
 msgid "API Builder"
 msgstr "API xây dựng"
 

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.72\n"
+"Project-Id-Version: sickrage 9.3.73\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-08 17:01-0700\n"
+"POT-Creation-Date: 2018-09-08 22:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -767,7 +767,7 @@ msgstr ""
 msgid "Shows"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:529 sickrage/core/webserver/views.py:530
+#: sickrage/core/webserver/views.py:531 sickrage/core/webserver/views.py:532
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "Schedule"
@@ -6375,11 +6375,11 @@ msgstr ""
 msgid "HTTP Error 500"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:427
+#: sickrage/core/webserver/views.py:429
 msgid "API Key not generated"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:431 sickrage/core/webserver/views.py:432
+#: sickrage/core/webserver/views.py:433 sickrage/core/webserver/views.py:434
 msgid "API Builder"
 msgstr ""
 

@@ -150,7 +150,7 @@ class BaseHandler(RequestHandler):
     def get_current_user(self):
         try:
             try:
-                return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('access_token'))
+                return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('sr_access_token'))
             except HTTPError:
                 token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
                 self.set_secure_cookie('sr_access_token', token['access_token'])
@@ -280,14 +280,16 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('sr_access_token', token['access_token'])
                 self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
 
-                if not sickrage.app.config.app_oauth_refresh_token:
+                if not API().token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-                    API().register_appid(sickrage.app.config.app_id)
-                    sickrage.app.config.app_oauth_refresh_token = API().token['refresh_token']
-                    sickrage.app.config.save()
-                elif sickrage.app.oidc_client.userinfo(token['access_token'])['sub'] != API().userinfo['sub']:
-                    return self.redirect('/logout')
+                    if not bool(API().register_appid(sickrage.app.config.app_id)['success']):
+                        API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
+                        return self.redirect('/logout')
+                else:
+                    app_ids = sickrage.app.oidc_client.userinfo(token['access_token']).get('appid', [])
+                    if sickrage.app.config.app_id not in app_ids:
+                        return self.redirect('/logout')
             except Exception as e:
                 return self.redirect('/logout')
 
@@ -534,13 +536,11 @@ class WebRoot(WebHandler):
         )
 
     def unlink(self):
-        if self.get_current_user()['sub'] != API().userinfo['sub']:
+        if sickrage.app.config.app_id not in self.get_current_user().get('appid', []):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
         API().unregister_appid(sickrage.app.config.app_id)
-        sickrage.app.oidc_client.logout(sickrage.app.config.app_oauth_refresh_token)
-        sickrage.app.config.app_oauth_refresh_token = ''
-        sickrage.app.config.save()
+        API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
 
         return self.redirect('/logout/')
 
