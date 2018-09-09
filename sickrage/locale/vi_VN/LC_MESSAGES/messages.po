@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-09 01:06-0700\n"
-"PO-Revision-Date: 2018-09-09 08:08\n"
+"POT-Creation-Date: 2018-09-09 13:56-0700\n"
+"PO-Revision-Date: 2018-09-09 20:58\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -669,14 +669,18 @@ msgid "Select the backup file you wish to restore"
 msgstr "Chọn tập tin sao lưu để khôi phục"
 
 #: sickrage/core/webserver/views/config/backup_restore.mako:73
+msgid "Restore application id (requires restoring config)"
+msgstr ""
+
+#: sickrage/core/webserver/views/config/backup_restore.mako:82
 msgid "Restore database files"
 msgstr "Khôi phục tập tin cơ sở dữ liệu"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:82
+#: sickrage/core/webserver/views/config/backup_restore.mako:91
 msgid "Restore configuration file"
 msgstr "Khôi phục tập tin cấu hình"
 
-#: sickrage/core/webserver/views/config/backup_restore.mako:91
+#: sickrage/core/webserver/views/config/backup_restore.mako:100
 msgid "Restore cache files"
 msgstr "Khôi phục tập tin bộ nhớ cache"
 
@@ -3510,7 +3514,7 @@ msgstr "Nhà cung cấp ít nhất một là cần thiết nhưng hai được �
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent các nhà cung cấp có thể được toggled trong"
 
-#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3919
+#: sickrage/core/webserver/views.py:3646 sickrage/core/webserver/views.py:3920
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Search Clients"
@@ -4778,7 +4782,7 @@ msgstr "Chưa biết"
 msgid "Retry Download"
 msgstr "Thử tải về"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4916
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Main"
@@ -4904,7 +4908,7 @@ msgstr "sử dụng bộ đĩa DVD thay vì bộ máy"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Một \"lực lượng đầy đủ Cập Nhật\" là cần thiết, và nếu bạn đã sẵn có tập bạn cần phải sắp xếp chúng theo cách thủ công."
 
-#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4794
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4795
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5226,7 +5230,7 @@ msgstr "Thực hiện khởi động lại"
 msgid "Daily Search"
 msgstr "Tìm kiếm hàng ngày"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Việc tồn đọng"
@@ -5251,7 +5255,7 @@ msgstr "Đăng trình"
 msgid "Subtitles Finder"
 msgstr "Tìm kiếm phụ đề"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4911
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5284,7 +5288,7 @@ msgstr "Không"
 msgid "True"
 msgstr "Sự thật"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Hiển thị xếp hàng"
@@ -5662,28 +5666,28 @@ msgstr "Tổng quát"
 msgid "Backup and Restore"
 msgstr "Sao lưu và khôi phục"
 
-#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4219
+#: sickrage/core/webserver/views.py:3647 sickrage/core/webserver/views.py:4220
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Tìm nhà cung cấp"
 
-#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4710
+#: sickrage/core/webserver/views.py:3648 sickrage/core/webserver/views.py:4711
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Cài đặt phụ đề"
 
-#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4833
+#: sickrage/core/webserver/views.py:3649 sickrage/core/webserver/views.py:4834
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "Thiết đặt chất lượng"
 
 #: sickrage/core/webserver/views.py:2225 sickrage/core/webserver/views.py:2226
-#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:4025
 #: sickrage/core/webserver/views/layouts/main.mako:261
 msgid "Post Processing"
 msgstr "Xử lý đăng bài"
 
-#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:4377
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "Thông báo"
@@ -5949,7 +5953,7 @@ msgstr "Propers tìm kiếm vô hiệu hoá"
 msgid "Post-Processor:"
 msgstr "Bộ vi xử lý sau:"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4907
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Tìm hàng đợi"
@@ -6536,7 +6540,7 @@ msgstr "Đã có trên chi nhánh: "
 #: sickrage/core/webserver/views.py:1858 sickrage/core/webserver/views.py:1863
 #: sickrage/core/webserver/views.py:1866 sickrage/core/webserver/views.py:1909
 #: sickrage/core/webserver/views.py:1915 sickrage/core/webserver/views.py:1918
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4913
 msgid "Error"
 msgstr "Lỗi"
 
@@ -6916,10 +6920,10 @@ msgstr "Config - tổng hợp"
 msgid "General Configuration"
 msgstr "Cấu hình chung"
 
-#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4006
-#: sickrage/core/webserver/views.py:4137 sickrage/core/webserver/views.py:4358
-#: sickrage/core/webserver/views.py:4692 sickrage/core/webserver/views.py:4776
-#: sickrage/core/webserver/views.py:4815
+#: sickrage/core/webserver/views.py:3844 sickrage/core/webserver/views.py:4007
+#: sickrage/core/webserver/views.py:4138 sickrage/core/webserver/views.py:4359
+#: sickrage/core/webserver/views.py:4693 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:4816
 msgid "Error(s) Saving Configuration"
 msgstr "Lỗi đã lưu cấu hình"
 
@@ -6943,167 +6947,167 @@ msgstr "Sao lưu thất bại!"
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Bạn cần phải chọn một thư mục để lưu bản sao lưu của bạn đầu tiên!"
 
-#: sickrage/core/webserver/views.py:3897
+#: sickrage/core/webserver/views.py:3898
 msgid "Successfully extracted restore files to "
 msgstr "Khôi phục thành công chiết xuất các tập tin "
 
-#: sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3899
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage để hoàn tất khôi phục."
 
-#: sickrage/core/webserver/views.py:3900
+#: sickrage/core/webserver/views.py:3901
 msgid "Restore FAILED"
 msgstr "Khôi phục không thành công"
 
-#: sickrage/core/webserver/views.py:3902
+#: sickrage/core/webserver/views.py:3903
 msgid "You need to select a backup file to restore!"
 msgstr "Bạn cần phải chọn một tập tin sao lưu để khôi phục!"
 
-#: sickrage/core/webserver/views.py:3918
+#: sickrage/core/webserver/views.py:3919
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid "Unable to create directory "
 msgstr "Không thể tạo thư mục "
 
-#: sickrage/core/webserver/views.py:3944 sickrage/core/webserver/views.py:3947
-#: sickrage/core/webserver/views.py:4052
+#: sickrage/core/webserver/views.py:3945 sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:4053
 msgid ", dir not changed."
 msgstr ", dir không thay đổi."
 
-#: sickrage/core/webserver/views.py:4008
+#: sickrage/core/webserver/views.py:4009
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4023
+#: sickrage/core/webserver/views.py:4024
 msgid "Config - Post Processing"
 msgstr "Config - đăng bài chế biến"
 
-#: sickrage/core/webserver/views.py:4063
+#: sickrage/core/webserver/views.py:4064
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Giải nén không hỗ trợ, vô hiệu hóa giải nén cài đặt"
 
-#: sickrage/core/webserver/views.py:4098 sickrage/core/webserver/views.py:4109
+#: sickrage/core/webserver/views.py:4099 sickrage/core/webserver/views.py:4110
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Bạn cố gắng tiết kiệm một anime không hợp lệ đặt tên cấu hình, không tiết kiệm cài đặt tên"
 
-#: sickrage/core/webserver/views.py:4100 sickrage/core/webserver/views.py:4111
+#: sickrage/core/webserver/views.py:4101 sickrage/core/webserver/views.py:4112
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Bạn cố gắng tiết kiệm một cấu hình đặt tên không hợp lệ, không tiết kiệm cài đặt tên"
 
-#: sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4118
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Bạn cố gắng tiết kiệm một cấu hình không hợp lệ đặt tên máy bằng ngày, không tiết kiệm của bạn cài đặt máy bởi ngày"
 
-#: sickrage/core/webserver/views.py:4123
+#: sickrage/core/webserver/views.py:4124
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Bạn cố gắng tiết kiệm một môn thể thao không hợp lệ đặt tên cấu hình, không tiết kiệm của bạn cài đặt thể thao"
 
-#: sickrage/core/webserver/views.py:4139
+#: sickrage/core/webserver/views.py:4140
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4218
+#: sickrage/core/webserver/views.py:4219
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4259
+#: sickrage/core/webserver/views.py:4260
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Không có tên nhà cung cấp được chỉ định"
 
-#: sickrage/core/webserver/views.py:4261
+#: sickrage/core/webserver/views.py:4262
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Không có nhà cung cấp Url được chỉ định"
 
-#: sickrage/core/webserver/views.py:4263
+#: sickrage/core/webserver/views.py:4264
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Không có chìa khóa nhà cung cấp Api được chỉ định"
 
-#: sickrage/core/webserver/views.py:4360
+#: sickrage/core/webserver/views.py:4361
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4375
+#: sickrage/core/webserver/views.py:4376
 msgid "Config - Notifications"
 msgstr "Config - thông báo"
 
-#: sickrage/core/webserver/views.py:4694
+#: sickrage/core/webserver/views.py:4695
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4709
+#: sickrage/core/webserver/views.py:4710
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4778
+#: sickrage/core/webserver/views.py:4779
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4793
+#: sickrage/core/webserver/views.py:4794
 msgid "Config - Anime"
 msgstr "Cấu hình - Anime"
 
-#: sickrage/core/webserver/views.py:4817
+#: sickrage/core/webserver/views.py:4818
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4832
+#: sickrage/core/webserver/views.py:4833
 msgid "Config - Quality Settings"
 msgstr "Config - cài đặt chất lượng"
 
-#: sickrage/core/webserver/views.py:4844
+#: sickrage/core/webserver/views.py:4845
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CHẤT LƯỢNG CÀI ĐẶT] Cấu hình đã lưu"
 
-#: sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:4858
 msgid "Clear Errors"
 msgstr "Sai sót rõ ràng"
 
-#: sickrage/core/webserver/views.py:4860
+#: sickrage/core/webserver/views.py:4861
 msgid "Clear Warnings"
 msgstr "Cảnh báo rõ ràng"
 
-#: sickrage/core/webserver/views.py:4901
+#: sickrage/core/webserver/views.py:4902
 msgid "Daily Searcher"
 msgstr "Tìm kiếm hàng ngày"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4904
 msgid "Show Updater"
 msgstr "Hiển thị Updater"
 
-#: sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:4905
 msgid "Check Version"
 msgstr "Kiểm tra phiên bản"
 
-#: sickrage/core/webserver/views.py:4907
+#: sickrage/core/webserver/views.py:4908
 msgid "Find Propers"
 msgstr "Tìm Propers"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4909
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4910
 msgid "Find Subtitles"
 msgstr "Tìm phụ đề"
 
-#: sickrage/core/webserver/views.py:4911
+#: sickrage/core/webserver/views.py:4912
 msgid "Event"
 msgstr "Tổ chức sự kiện"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4914
 msgid "Tornado"
 msgstr "Cơn lốc xoáy"
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4915
 msgid "Thread"
 msgstr "Chủ đề"
 

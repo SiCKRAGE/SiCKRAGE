@@ -3,7 +3,7 @@ from sickrage.core import API
 
 class ProviderCacheAPI(API):
     def get(self, provider, indexerid, season, episode):
-        query = 'cache/providers/{}/indexerids/{}/seasons/()/episodes/()'.format(provider, indexerid, season, episode)
+        query = 'cache/providers/{}/indexerids/{}/seasons/{}/episodes/{}'.format(provider, indexerid, season, episode)
         return self._request('GET', query)
 
     def add(self, data):
