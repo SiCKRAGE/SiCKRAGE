@@ -294,8 +294,8 @@ class LoginHandler(BaseHandler):
                     if userinfo.get('sub') == api_token_decoded['sub']:
                         API().register_appid(sickrage.app.config.app_id)
                     else:
-                        app_ids = userinfo.get('appid', [])
-                        if sickrage.app.config.app_id not in app_ids:
+                        allowed_usernames = API().allowed_usernames(sickrage.app.config.app_id)['data']
+                        if not userinfo['preferred_username'] in allowed_usernames:
                             return self.redirect('/logout')
             except Exception as e:
                 return self.redirect('/logout')
