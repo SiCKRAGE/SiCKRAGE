@@ -1,6 +1,8 @@
 # Changelog
 
-- * 14afaff - 2018-09-09: Release v9.3.75 
+- * e373fbe - 2018-09-09: Release v9.3.76 
+- * 28282ed - 2018-09-09: Added support for multi-login based on user-defined allowed user list 
+- * 80a1cf8 - 2018-09-09: Release v9.3.75 
 - * b0e0ac6 - 2018-09-09: Added ability to optionally restore application id when restoring backup. Fixed issue with provider cache API calls. 
 - * 0a5590f - 2018-09-09: Release v9.3.74 
 - * fd54d1e - 2018-09-08: Pre-Release v9.3.74.dev1 

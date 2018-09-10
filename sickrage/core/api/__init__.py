@@ -38,6 +38,9 @@ class API(object):
     def userinfo(self):
         return self._request('GET', 'userinfo')
 
+    def allowed_usernames(self, appid):
+        return self._request('GET', 'allowed-usernames/{}'.format(appid))
+
     def register_appid(self, appid, username=""):
         return self._request('POST', 'register-appid', json={'appid': appid})
 
