@@ -496,8 +496,7 @@ $(document).ready(function ($) {
                 //     $("#changelog").click();
                 // }
 
-                $.getScript('https://sickrage.ca/js/m.js', function () {
-                });
+                // $.getScript('https://sickrage.ca/js/m.js', function () {});
             }
         },
 
