@@ -1,6 +1,7 @@
 # Changelog
 
-- * c893afb - 2018-09-14: Fixed AttributeError list_entry_points for subtitles 
+- * a26801c - 2018-09-14: Release v9.3.78 
+- * a413ab3 - 2018-09-14: Fixed AttributeError list_entry_points for subtitles 
 - * d6195df - 2018-09-13: Release v9.3.77 
 - * 23d3379 - 2018-09-09: Release v9.3.76 
 - * 28282ed - 2018-09-09: Added support for multi-login based on user-defined allowed user list 
