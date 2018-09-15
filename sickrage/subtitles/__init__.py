@@ -37,7 +37,7 @@ for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
                  'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
                  'subscene = sickrage.subtitles.providers.subscene:SubsceneProvider',
                  'napiprojekt = subliminal.providers.napiprojekt:NapiProjektProvider']:
-    if provider not in [str(x) for x in subliminal.provider_manager.list_entry_points()]:
+    if provider not in subliminal.provider_manager.registered_extensions + subliminal.provider_manager.internal_extensions:
         subliminal.provider_manager.register(str(provider))
 
 subliminal.region.configure('dogpile.cache.memory')
