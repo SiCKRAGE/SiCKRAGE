@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-16 08:42-0700\n"
-"PO-Revision-Date: 2018-09-16 15:43\n"
+"POT-Creation-Date: 2018-09-16 15:36-0700\n"
+"PO-Revision-Date: 2018-09-16 22:36\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -49,295 +49,295 @@ msgstr ""
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:561 src/js/core.js:572 src/js/core.js:593
+#: src/js/core.js:566 src/js/core.js:577 src/js/core.js:598
 msgid "Searching"
 msgstr "La recherche"
 
-#: src/js/core.js:567 src/js/core.js:598
+#: src/js/core.js:572 src/js/core.js:603
 msgid "Queued"
 msgstr "En file d’attente"
 
 #: sickrage/core/webserver/views/home/display_show.mako:709
 #: sickrage/core/webserver/views/includes/modals.mako:54
 #: sickrage/core/webserver/views/includes/modals.mako:75
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:602
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:607
 msgid "Manual Search"
 msgstr "Recherche manuelle"
 
-#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:627
-#: src/js/core.js:773 src/js/core.js:816
+#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:632
+#: src/js/core.js:777 src/js/core.js:820
 msgid "loading"
 msgstr "chargement"
 
-#: src/js/core.js:832
+#: src/js/core.js:836
 msgid "Choose Directory"
 msgstr "Choisir le répertoire"
 
-#: sickrage/core/webserver/views.py:3601 src/js/core.js:1472
+#: sickrage/core/webserver/views.py:3601 src/js/core.js:1476
 msgid "Clear History"
 msgstr "Effacer l’historique"
 
-#: src/js/core.js:1473
+#: src/js/core.js:1477
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Êtes vous s√r de vouloir effacer toutes les Téléchargez histoire ?"
 
-#: sickrage/core/webserver/views.py:3603 src/js/core.js:1478
+#: sickrage/core/webserver/views.py:3603 src/js/core.js:1482
 msgid "Trim History"
 msgstr "Histoire de garniture"
 
-#: src/js/core.js:1479
+#: src/js/core.js:1483
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Êtes vous s├╗r de vouloir couper tous Téléchargez histoire de plus de 30 jours ?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2177
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2181
 msgid "Remove Show"
 msgstr "Supprimer le spectacle"
 
-#: src/js/core.js:2178
+#: src/js/core.js:2182
 msgid "Are you sure you want to remove"
 msgstr "Êtes-vous sûr que vous voulez supprimer"
 
-#: src/js/core.js:2178
+#: src/js/core.js:2182
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2178
+#: src/js/core.js:2182
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2231 src/js/core.js:2263
+#: src/js/core.js:2235 src/js/core.js:2267
 msgid "Update failed."
 msgstr "Mise à jour a échoué."
 
-#: src/js/core.js:2274
+#: src/js/core.js:2278
 msgid "Select Show Location"
 msgstr "Sélectionnez Voir la carte"
 
-#: src/js/core.js:2416
+#: src/js/core.js:2420
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2432
+#: src/js/core.js:2436
 msgid "Select Unprocessed Episode Folder"
 msgstr "Sélectionnez dossier épisode non transformés"
 
-#: src/js/core.js:2801
+#: src/js/core.js:2805
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "recherche a expiré, essayez de délai d’attente croissante d’indexeur"
 
-#: src/js/core.js:2805
+#: src/js/core.js:2809
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2809
+#: src/js/core.js:2813
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2828
+#: src/js/core.js:2832
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2830
+#: src/js/core.js:2834
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2839
+#: src/js/core.js:2843
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2879
+#: src/js/core.js:2883
 msgid "Saved Defaults"
 msgstr "Valeurs par défaut enregistrées"
 
-#: src/js/core.js:2879
+#: src/js/core.js:2883
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Vos paramètres par défaut « ajouter show » ont été fixés à votre choix."
 
-#: src/js/core.js:2936
+#: src/js/core.js:2940
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2978
+#: src/js/core.js:2982
 msgid "Reset Config to Defaults"
 msgstr "Config de réinitialisation aux valeurs par défaut"
 
-#: src/js/core.js:2979
+#: src/js/core.js:2983
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Êtes-vous sûr de que vouloir réinitialiser la config par défaut ?"
 
-#: src/js/core.js:3073
+#: src/js/core.js:3077
 msgid "Select path to pip"
 msgstr "Sélectionnez le chemin d’accès à pip"
 
-#: src/js/core.js:3079
+#: src/js/core.js:3083
 msgid "Select path to git"
 msgstr "Sélectionnez le chemin d’accès à git"
 
-#: src/js/core.js:3087 src/js/core.js:3105 src/js/core.js:3895 src/js/core.js:3913
-#: src/js/core.js:3934 src/js/core.js:3956 src/js/core.js:3979 src/js/core.js:4001
-#: src/js/core.js:4029 src/js/core.js:4046 src/js/core.js:4090 src/js/core.js:4175
-#: src/js/core.js:4233 src/js/core.js:4250 src/js/core.js:4280 src/js/core.js:4337
-#: src/js/core.js:4413 src/js/core.js:4432 src/js/core.js:4448
+#: src/js/core.js:3091 src/js/core.js:3109 src/js/core.js:3899 src/js/core.js:3917
+#: src/js/core.js:3938 src/js/core.js:3960 src/js/core.js:3983 src/js/core.js:4005
+#: src/js/core.js:4033 src/js/core.js:4050 src/js/core.js:4094 src/js/core.js:4179
+#: src/js/core.js:4237 src/js/core.js:4254 src/js/core.js:4284 src/js/core.js:4341
+#: src/js/core.js:4417 src/js/core.js:4436 src/js/core.js:4452
 msgid "Please fill out the necessary fields above."
 msgstr "Veuillez remplir les champs nécessaires ci-dessus."
 
-#: src/js/core.js:3143
+#: src/js/core.js:3147
 msgid "Select Subtitles Download Directory"
 msgstr "Répertoire de téléchargement de sous-titres Select"
 
-#: src/js/core.js:3259
+#: src/js/core.js:3263
 msgid "Select .nzb blackhole/watch location"
 msgstr "Sélectionnez emplacement de .nzb blackhole/surveillance"
 
-#: src/js/core.js:3260
+#: src/js/core.js:3264
 msgid "Select .torrent blackhole/watch location"
 msgstr "Sélectionnez emplacement de blackhole/surveillance .torrent"
 
-#: src/js/core.js:3261
+#: src/js/core.js:3265
 msgid "Select .torrent download location"
 msgstr "Sélectionnez l’emplacement de téléchargement .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3328
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3332
 msgid "Minimum seeding time is"
 msgstr "Minimum de temps de l’ensemencement est"
 
-#: src/js/core.js:3330
+#: src/js/core.js:3334
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL vers votre client uTorrent (par exemple, http://localhost : 8000)"
 
-#: src/js/core.js:3333
+#: src/js/core.js:3337
 msgid "Stop seeding when inactive for"
 msgstr "Arrêter lorsqu’il est inactif pour l’ensemencement"
 
-#: src/js/core.js:3339
+#: src/js/core.js:3343
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL à votre client de Transmission (p. ex. http://localhost:9091)"
 
-#: src/js/core.js:3349
+#: src/js/core.js:3353
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL à votre client de déluge (p. ex. http://localhost:8112)"
 
-#: src/js/core.js:3358
+#: src/js/core.js:3362
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "Adresse IP ou nom d’hôte de votre démon de déluge (p. ex. scgi://localhost:58846)"
 
-#: src/js/core.js:3365
+#: src/js/core.js:3369
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL à votre client de Synology DS (par exemple, http://localhost : 5000)"
 
-#: src/js/core.js:3370
+#: src/js/core.js:3374
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3370
+#: src/js/core.js:3374
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3380
+#: src/js/core.js:3384
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL vers votre client qbittorrent (par exemple, http://localhost : 8080)"
 
-#: src/js/core.js:3390
+#: src/js/core.js:3394
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL vers votre MLDonkey (p. ex. http://localhost:4080)"
 
-#: src/js/core.js:3401
+#: src/js/core.js:3405
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL vers votre client putio (par exemple, http://localhost : 8080)"
 
-#: src/js/core.js:3570
+#: src/js/core.js:3574
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3571
+#: src/js/core.js:3575
 msgid "Select TV Download Directory"
 msgstr "Sélectionnez le répertoire de téléchargement TV"
 
-#: src/js/core.js:3572
+#: src/js/core.js:3576
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3586
+#: src/js/core.js:3590
 msgid "Unrar Executable not found."
 msgstr "Unrar Executable introuvable."
 
-#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3750
+#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3754
 msgid "This pattern is invalid."
 msgstr "Ce modèle n’est pas valide."
 
-#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3754
+#: src/js/core.js:3637 src/js/core.js:3672 src/js/core.js:3707 src/js/core.js:3758
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Ce modèle ne serait pas valable sans les dossiers, à l’aide d’Il forcera « Flatten » hors pour tous les spectacles."
 
-#: src/js/core.js:3637 src/js/core.js:3672 src/js/core.js:3707 src/js/core.js:3759
+#: src/js/core.js:3641 src/js/core.js:3676 src/js/core.js:3711 src/js/core.js:3763
 msgid "This pattern is valid."
 msgstr "Ce modèle est valide."
 
-#: src/js/core.js:4083
+#: src/js/core.js:4087
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmer autorisation"
 
-#: src/js/core.js:4140 src/js/core.js:4194
+#: src/js/core.js:4144 src/js/core.js:4198
 msgid "Please fill in the Popcorn IP address"
 msgstr "Veuillez remplir l’adresse IP de Popcorn"
 
-#: src/js/core.js:4347
+#: src/js/core.js:4351
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Vérifiez le nom de la liste noire ; la valeur doivent être une limace trakt"
 
-#: src/js/core.js:4379
+#: src/js/core.js:4383
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4382
+#: src/js/core.js:4386
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4384
+#: src/js/core.js:4388
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4390
+#: src/js/core.js:4394
 msgid "Enter an email address to send the test to:"
 msgstr "Entrez une adresse de courriel pour envoyer le test :"
 
-#: src/js/core.js:4392
+#: src/js/core.js:4396
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4462
+#: src/js/core.js:4466
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Liste des périphériques mis à jour. S’il vous plaît choisir un appareil à pousser."
 
-#: src/js/core.js:4523
+#: src/js/core.js:4527
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Vous ne fournissez une clé de l’api Pushbullet"
 
-#: src/js/core.js:4553
+#: src/js/core.js:4557
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "N’oubliez pas de sauvegarder vos nouveaux paramètres de pushbullet."
 
-#: src/js/core.js:4625
+#: src/js/core.js:4629
 msgid "Select backup folder to save to"
 msgstr "Sélectionnez le dossier de sauvegarde pour enregistrer sur"
 
-#: src/js/core.js:4630
+#: src/js/core.js:4634
 msgid "Select backup files to restore"
 msgstr "Sélectionnez les fichiers de sauvegarde à restaurer"
 
-#: src/js/core.js:5175
+#: src/js/core.js:5179
 msgid "No providers available to configure."
 msgstr "Aucun fournisseur n’est disponible pour configurer."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5385
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5389
 msgid "Mass Delete"
 msgstr "Suppression massive"
 
-#: src/js/core.js:5386
+#: src/js/core.js:5390
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Vous avez choisi de supprimer les spectacles.  Êtes-vous sûr de que vouloir continuer ? Tous les fichiers seront supprimés de votre système."
 
-#: src/js/core.js:5463
+#: src/js/core.js:5467
 msgid "DELETED"
 msgstr "SUPPRIMÉ"
 
