@@ -31,7 +31,8 @@ class IndexerApi(object):
         self.module = indexerConfig[self.indexerID]['module']
 
     def indexer(self, *args, **kwargs):
-        return self.module(*args, **kwargs)
+        self.module.settings(*args, **kwargs)
+        return self.module
 
     @property
     def config(self):

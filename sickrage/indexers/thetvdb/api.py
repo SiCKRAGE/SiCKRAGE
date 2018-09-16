@@ -19,10 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import functools
-import io
 import json
-import os
-import pickle
 import re
 import time
 import urlparse
@@ -298,7 +295,37 @@ class Tvdb:
     """Create easy-to-use interface to name of season/episode name
     """
 
-    def __init__(self,
+    def __init__(self):
+        self.config = {
+            'api': {
+                'lang': 'en',
+                'base': "https://api.thetvdb.com",
+                'login': '/login',
+                'refresh': '/refresh_token',
+                'languages': '/languages',
+                'getSeries': "/search/series?name={name}",
+                'getSeriesIMDB': "/search/series?imdbId={id}",
+                'getSeriesZap2It': "/search/series?zap2itId={id}",
+                'series': "/series/{id}",
+                'episodes': "/series/{id}/episodes",
+                'episode_info': "/episodes/{id}",
+                'actors': "/series/{id}/actors",
+                'updated': "/updated/query?fromTime={time}",
+                'images': {
+                    'fanart': "/series/{id}/images/query?keyType=fanart&subKey=graphical",
+                    'banner': "/series/{id}/images/query?keyType=fanart&subKey=text",
+                    'poster': "/series/{id}/images/query?keyType=poster",
+                    'series': "/series/{id}/images/query?keyType=series",
+                    'season': "/series/{id}/images/query?keyType=season&subKey={season}",
+                    'seasonwide': "/series/{id}/images/query?keyType=seasonwide&subKey={season}",
+                    'prefix': "https://thetvdb.com/banners/{value}"
+                }
+            }
+        }
+
+        self.shows = ShowCache()
+
+    def settings(self,
                  debug=False,
                  cache=True,
                  custom_ui=None,
@@ -308,52 +335,9 @@ class Tvdb:
                  proxy=None,
                  headers=None):
 
-        if headers is None:
-            headers = {}
-
-        self.shows = ShowCache()
-        if os.path.isfile(os.path.join(sickrage.app.data_dir, 'thetvdb.db')):
-            with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.db'), 'rb') as fp:
-                try:
-                    self.shows = ShowCache(pickle.load(fp))
-                except:
-                    pass
-
-        self.config = dict(apikey=apikey, debug_enabled=debug, custom_ui=custom_ui, cache_enabled=cache,
-                           dvdorder=dvdorder, proxy=proxy, api={}, headers=headers)
-
-        # api base url
-        self.config['api']['base'] = "https://api.thetvdb.com"
-
-        # api-v2 urls
-        self.config['api']['login'] = '/login'
-        self.config['api']['refresh'] = '/refresh_token'
-        self.config['api']['languages'] = '/languages'
-        self.config['api']['getSeries'] = "/search/series?name={name}"
-        self.config['api']['getSeriesIMDB'] = "/search/series?imdbId={id}"
-        self.config['api']['getSeriesZap2It'] = "/search/series?zap2itId={id}"
-        self.config['api']['series'] = "/series/{id}"
-        self.config['api']['episodes'] = "/series/{id}/episodes"
-        self.config['api']['episode_info'] = "/episodes/{id}"
-        self.config['api']['actors'] = "/series/{id}/actors"
-        self.config['api']['updated'] = "/updated/query?fromTime={time}"
-
-        self.config['api']['images'] = {}
-        self.config['api']['images']['fanart'] = "/series/{id}/images/query?keyType=fanart&subKey=graphical"
-        self.config['api']['images']['banner'] = "/series/{id}/images/query?keyType=fanart&subKey=text"
-        self.config['api']['images']['poster'] = "/series/{id}/images/query?keyType=poster"
-        self.config['api']['images']['series'] = "/series/{id}/images/query?keyType=series"
-        self.config['api']['images']['season'] = "/series/{id}/images/query?keyType=season&subKey={season}"
-        self.config['api']['images']['seasonwide'] = "/series/{id}/images/query?keyType=seasonwide&subKey={season}"
-        self.config['api']['images']['prefix'] = "https://thetvdb.com/banners/{value}"
-
-        # api-v2 language
-        self.config['api']['lang'] = 'en'
-
-        # language to translate into
-        self.config['language'] = language
-        if language not in self.languages:
-            self.config['language'] = None
+        self.config.update({'apikey': apikey, 'debug_enabled': debug, 'custom_ui': custom_ui, 'cache_enabled': cache,
+                            'dvdorder': dvdorder, 'proxy': proxy, 'headers': headers or {},
+                            'language': language if language in self.languages else None})
 
     @property
     def jwt_token(self):
@@ -654,10 +638,6 @@ class Tvdb:
         # set last updated
         self._setShowData(sid, 'last_updated', int(time.mktime(datetime.now().timetuple())))
 
-        # save show cache
-        with io.open(os.path.join(sickrage.app.data_dir, 'thetvdb.db'), 'wb') as fp:
-            pickle.dump(self.shows, fp)
-
         return self.shows[int(sid)]
 
     @login_required
@@ -721,8 +701,7 @@ class Tvdb:
             if key in self.shows:
                 if self.config['cache_enabled']:
                     return self.shows[key]
-                else:
-                    del self.shows[key]
+                del self.shows[key]
             return self._getShowData(key)
         return self._getSeries(key)
 
