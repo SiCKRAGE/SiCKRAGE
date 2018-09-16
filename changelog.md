@@ -1,6 +1,7 @@
 # Changelog
 
-- * b51b690 - 2018-09-15: Pre-Release v9.3.79.dev1 
+- * 4c0c80e - 2018-09-16: Fixed search issue with Zooqle torrent provider. 
+- * e6fab35 - 2018-09-15: Pre-Release v9.3.79.dev1 
 - * 60a435c - 2018-09-15: Added Zooqle torrent provider 
 - * 90f31c5 - 2018-09-14: Release v9.3.78 
 - * a413ab3 - 2018-09-14: Fixed AttributeError list_entry_points for subtitles 

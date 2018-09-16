@@ -94,7 +94,7 @@ class ZooqleProvider(TorrentProvider):
         results = []
 
         with bs4_parser(data) as html:
-            torrent_table = html.find('div', class_='panel-body')
+            torrent_table = html.find(class_='table-torrents')
             torrent_rows = torrent_table('tr') if torrent_table else []
 
             # Continue only if at least one release is found
