@@ -121,11 +121,11 @@ class ZooqleProvider(TorrentProvider):
             sickrage.app.log.debug('Search mode: {}'.format(mode))
 
             for search_string in search_strings[mode]:
-
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
                     search_params = {'q': '{} category:TV'.format(search_string)}
 
+                search_params['q'] = '{} {}'.format(search_params['q'], '+lang:en')
                 search_params['fmt'] = 'rss'
 
                 data = self.cache.get_rss_feed(self.urls['search'], params=search_params)

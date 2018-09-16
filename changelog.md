@@ -1,6 +1,7 @@
 # Changelog
 
-- * be0c392 - 2018-09-16: Pre-Release v9.3.79.dev3 
+- * 2397ff7 - 2018-09-16: Hardcoded Zooqle torrent provider to search for english torrents 
+- * 2868350 - 2018-09-16: Pre-Release v9.3.79.dev3 
 - * f40c471 - 2018-09-16: Refactored Zooqle torrent provider to use RSS Fixed Attribute error for name parser 
 - * 7bb2095 - 2018-09-16: Fixed performance issues with TheTVDB indexer 
 - * e8445dd - 2018-09-16: Fixed issue when displaying multiple modals same page, 2nd modal wasn&#x27;t removing scrollbar. 
