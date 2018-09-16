@@ -1,6 +1,7 @@
 # Changelog
 
-- * 33383e1 - 2018-09-16: Fixed performance issues with TheTVDB indexer 
+- * 03ad5fb - 2018-09-16: Refactored Zooqle torrent provider to use RSS Fixed Attribute error for name parser 
+- * 7bb2095 - 2018-09-16: Fixed performance issues with TheTVDB indexer 
 - * e8445dd - 2018-09-16: Fixed issue when displaying multiple modals same page, 2nd modal wasn&#x27;t removing scrollbar. 
 - * 15f9781 - 2018-09-16: Pre-Release v9.3.79.dev2 
 - * f87f0b0 - 2018-09-16: Fixed search issue with Zooqle torrent provider. 

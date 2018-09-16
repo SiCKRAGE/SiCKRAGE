@@ -511,8 +511,7 @@ class NameParser(object):
 
         # if there's no useful info in it then raise an exception
         if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
-            raise InvalidNameException("Unable to parse {} to a valid episode of {}. Parser result: {}".format(
-                name, final_result.show.name, final_result))
+            raise InvalidNameException("Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
 
         if cache_result and final_result.show:
             name_parser_cache.add(name, final_result)

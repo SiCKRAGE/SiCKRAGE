@@ -243,7 +243,7 @@ class NewpctCache(TVCache):
     def _get_rss_data(self):
         results = {'entries': []}
 
-        for result in self.getRSSFeed(self.provider.urls['rss']).get('entries', []):
+        for result in self.get_rss_feed(self.provider.urls['rss']).get('entries', []):
             if 'Series' in result.category:
                 title = self.provider._process_title(result.title, result.link)
                 link = self.provider._process_link(result.link)

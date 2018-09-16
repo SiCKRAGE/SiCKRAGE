@@ -59,7 +59,7 @@ class ShazbatCache(TVCache):
         rss_url = self.provider.urls['base_url'] + '/rss/recent?passkey=' + self.provider.passkey + '&fname=true'
         sickrage.app.log.debug("Cache update URL: %s" % rss_url)
 
-        return self.getRSSFeed(rss_url)
+        return self.get_rss_feed(rss_url)
 
     def _check_auth(self, data):
         return self.provider._check_auth_from_data(data)

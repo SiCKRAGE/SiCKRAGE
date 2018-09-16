@@ -18,9 +18,11 @@
 
 from __future__ import unicode_literals
 
+import re
+
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import try_int, convert_size, bs4_parser
+from sickrage.core.helpers import try_int, show_names, sanitizeSceneName
 from sickrage.providers import TorrentProvider
 
 
@@ -32,6 +34,7 @@ class ZooqleProvider(TorrentProvider):
         # URLs
         self.urls.update({
             'search': '{base_url}/search'.format(**self.urls),
+            'api': '{base_url}/api/media/%s'.format(**self.urls),
         })
 
         # Proper Strings
@@ -45,6 +48,55 @@ class ZooqleProvider(TorrentProvider):
 
         # Cache
         self.cache = TVCache(self, min_time=15)
+
+    def _get_season_search_strings(self, episode):
+        search_string = {'Season': []}
+
+        for show_name in set(show_names.allPossibleShowNames(episode.show)):
+            for sep in ' ', ' - ':
+                season_string = show_name + sep + 'Series '
+                if episode.show.air_by_date or episode.show.sports:
+                    season_string += str(episode.airdate).split('-')[0]
+                elif episode.show.anime:
+                    season_string += '%d' % episode.scene_absolute_number
+                else:
+                    season_string += '%d' % int(episode.scene_season)
+
+                search_string['Season'].append(re.sub(r'\s+', ' ', season_string.replace('.', ' ').strip()))
+
+        return [search_string]
+
+    def _get_episode_search_strings(self, episode, add_string=''):
+        search_string = {'Episode': []}
+
+        if not episode:
+            return []
+
+        for show_name in set(show_names.allPossibleShowNames(episode.show)):
+            for sep in ' ', ' - ':
+                ep_string = sanitizeSceneName(show_name) + sep
+                if episode.show.air_by_date:
+                    ep_string += str(episode.airdate)
+                elif episode.show.sports:
+                    ep_string += str(episode.airdate) + '|' + episode.airdate.strftime('%b')
+                elif episode.show.anime:
+                    ep_string += '%i' % int(episode.scene_absolute_number)
+                else:
+                    ep_string += sickrage.app.naming_ep_type[4] % {'seasonnumber': episode.scene_season,
+                                                                   'episodenumber': episode.scene_episode}
+
+                if add_string:
+                    ep_string += ' %s' % add_string
+
+                search_string['Episode'].append(re.sub(r'\s+', ' ', ep_string.replace('.', ' ').strip()))
+
+        return [search_string]
+
+    def _get_torrent_info(self, torrent_hash):
+        try:
+            return self.session.get(self.urls['api'] % torrent_hash).json()
+        except Exception:
+            return {}
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         """
@@ -74,11 +126,14 @@ class ZooqleProvider(TorrentProvider):
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
                     search_params = {'q': '{} category:TV'.format(search_string)}
 
-                try:
-                    data = self.session.get(self.urls['search'], params=search_params).text
-                    results += self.parse(data, mode)
-                except Exception:
+                search_params['fmt'] = 'rss'
+
+                data = self.cache.get_rss_feed(self.urls['search'], params=search_params)
+                if not data :
                     sickrage.app.log.debug('No data returned from provider')
+                    continue
+
+                results += self.parse(data, mode)
 
         return results
 
@@ -93,44 +148,28 @@ class ZooqleProvider(TorrentProvider):
         """
         results = []
 
-        with bs4_parser(data) as html:
-            torrent_table = html.find(class_='table-torrents')
-            torrent_rows = torrent_table('tr') if torrent_table else []
+        if not data.get('entries'):
+            sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+            return results
 
-            # Continue only if at least one release is found
-            if len(torrent_rows) < 2:
-                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
-                return results
+        for item in data['entries']:
+            try:
+                title = item['title']
+                download_url = item['torrent_magneturi']
+                if not all([title, download_url]):
+                    continue
 
-            # Skip column headers
-            for row in torrent_rows[1:]:
-                cells = row('td')
+                seeders = try_int(item['torrent_seeds'])
+                leechers = try_int(item['torrent_peers'])
+                size = try_int(item['torrent_contentlength'], -1)
 
-                try:
-                    title = cells[1].find('a').get_text()
-                    download_url = cells[2].find('a', title='Magnet link')['href']
-                    if not all([title, download_url]):
-                        continue
+                results += [
+                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
+                ]
 
-                    seeders = 1
-                    leechers = 0
-                    if len(cells) > 5:
-                        peers = cells[5].find('div')
-                        if peers and peers.get('title'):
-                            peers = peers['title'].replace(',', '').split(' | ', 1)
-                            seeders = try_int(peers[0][9:])
-                            leechers = try_int(peers[1][10:])
-
-                    torrent_size = cells[3].get_text().replace(',', '')
-                    size = convert_size(torrent_size, -1)
-
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
-
-                    if mode != 'RSS':
-                        sickrage.app.log.debug('Found result: {}'.format(title))
-                except Exception:
-                    sickrage.app.log.error("Failed parsing provider")
+                if mode != 'RSS':
+                    sickrage.app.log.debug('Found result: {}'.format(title))
+            except Exception:
+                sickrage.app.log.error("Failed parsing provider")
 
         return results

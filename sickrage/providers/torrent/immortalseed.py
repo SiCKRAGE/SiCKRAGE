@@ -189,7 +189,7 @@ class ImmortalseedCache(TVCache):
             'showrows': '50',
         }
 
-        return self.getRSSFeed(self.provider.urls['rss'], params=params)
+        return self.get_rss_feed(self.provider.urls['rss'], params=params)
 
     def _check_auth(self, data):
         return self.provider._check_auth_from_data(data)
