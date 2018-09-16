@@ -483,6 +483,11 @@ $(document).ready(function ($) {
                     }
                 });
 
+                $('.modal').on('shown.bs.modal', function () {
+                  $('body').addClass('modal-open');
+                  $('body').removeAttr('style');
+                })
+
                 SICKRAGE.browser.init();
                 SICKRAGE.quality_chooser.init();
 
@@ -719,7 +724,6 @@ $(document).ready(function ($) {
 
                 $('#manualSearchModalFailed .btn').click(function () {
                     SICKRAGE.ajax_search.failedDownload = ($(this).text().toLowerCase() === 'yes');
-                    $("#manualSearchModalQuality").modal();
                 });
 
                 $('#manualSearchModalQuality .btn').click(function () {

@@ -47,7 +47,7 @@
 
 <!-- displayShow Modals -->
 <%def name="displayShowModals()">
-    <div id="manualSearchModalFailed" class="modal fade" data-backdrop="false" data-keyboard="false">
+    <div id="manualSearchModalFailed" class="modal fade" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
                 <div class="modal-header bg-secondary">
@@ -61,14 +61,14 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">${_('No')}</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal">${_('Yes')}</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" href="#manualSearchModalQuality">${_('No')}</button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal" href="#manualSearchModalQuality">${_('Yes')}</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="manualSearchModalQuality" class="modal fade" data-backdrop="false" data-keyboard="false">
+    <div id="manualSearchModalQuality" class="modal fade" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content bg-dark">
                 <div class="modal-header bg-secondary">

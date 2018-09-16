@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2cfa719 - 2018-09-16: Pre-Release v9.3.79.dev2 
+- * 3b394b0 - 2018-09-16: Fixed issue when displaying multiple modals same page, 2nd modal wasn&#x27;t removing scrollbar. 
+- * 15f9781 - 2018-09-16: Pre-Release v9.3.79.dev2 
 - * f87f0b0 - 2018-09-16: Fixed search issue with Zooqle torrent provider. 
 - * e6fab35 - 2018-09-15: Pre-Release v9.3.79.dev1 
 - * 60a435c - 2018-09-15: Added Zooqle torrent provider 
