@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-15 23:15-0700\n"
-"PO-Revision-Date: 2018-09-16 06:15\n"
+"POT-Creation-Date: 2018-09-16 08:42-0700\n"
+"PO-Revision-Date: 2018-09-16 15:42\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -39,15 +39,15 @@ msgstr "提交错误"
 
 #: src/js/core.js:437
 msgid "Are you sure you want to submit these errors ?"
-msgstr ""
+msgstr "您是否想要提交这些错误？"
 
 #: src/js/core.js:437
 msgid "Make sure SiCKRAGE is updated and trigger"
-msgstr ""
+msgstr "请确保 SiCKRAGE 已更新并已激活"
 
 #: src/js/core.js:437
 msgid "this error with debug enabled before submitting"
-msgstr ""
+msgstr "在提交前启用此错误及调试"
 
 #: src/js/core.js:561 src/js/core.js:572 src/js/core.js:593
 msgid "Searching"
@@ -95,11 +95,11 @@ msgstr "删除显示"
 
 #: src/js/core.js:2178
 msgid "Are you sure you want to remove"
-msgstr ""
+msgstr "您是否想从数据库中移除"
 
 #: src/js/core.js:2178
 msgid " from the database?"
-msgstr ""
+msgstr "？"
 
 #: src/js/core.js:2178
 msgid "Check to delete files as well. IRREVERSIBLE"
@@ -115,7 +115,7 @@ msgstr "选择显示位置"
 
 #: src/js/core.js:2416
 msgid "loading folders..."
-msgstr ""
+msgstr "正在载入文件夹···"
 
 #: src/js/core.js:2432
 msgid "Select Unprocessed Episode Folder"
@@ -127,11 +127,11 @@ msgstr "搜索超时，请尝试增加超时为索引器"
 
 #: src/js/core.js:2805
 msgid "Search Results:"
-msgstr ""
+msgstr "搜索结果:"
 
 #: src/js/core.js:2809
 msgid "No results found, try a different search or language."
-msgstr ""
+msgstr "未找到结果，请尝试其他关键词或语言。"
 
 #: src/js/core.js:2828
 msgid " (will debut on "
@@ -7042,7 +7042,7 @@ msgstr "[NOTIFICATIONS] 保存配置"
 
 #: sickrage/core/webserver/views.py:4710
 msgid "Config - Subtitles Settings"
-msgstr ""
+msgstr "配置 - 字幕设置"
 
 #: sickrage/core/webserver/views.py:4779
 msgid "[SUBTITLES] Configuration Saved"
