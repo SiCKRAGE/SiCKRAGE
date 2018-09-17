@@ -127,13 +127,23 @@ class ZooqleProvider(TorrentProvider):
 
                 search_params['q'] = '{} {}'.format(search_params['q'], '+lang:en')
                 search_params['fmt'] = 'rss'
+                search_params['pg'] = 1
 
-                data = self.cache.get_rss_feed(self.urls['search'], params=search_params)
-                if not data :
-                    sickrage.app.log.debug('No data returned from provider')
-                    continue
+                while search_params['pg'] < 11:
+                    data = self.cache.get_rss_feed(self.urls['search'], params=search_params)
+                    if not data:
+                        sickrage.app.log.debug('No data returned from provider')
+                        break
 
-                results += self.parse(data, mode)
+                    total_results = try_int(data['feed']['opensearch_totalresults'])
+                    start_index = try_int(data['feed']['opensearch_startindex'])
+                    items_per_page = try_int(data['feed']['opensearch_itemsperpage'])
+                    if int(start_index) + int(items_per_page) > int(total_results):
+                        break
+
+                    results += self.parse(data, mode)
+
+                    search_params['pg'] += 1
 
         return results
 
