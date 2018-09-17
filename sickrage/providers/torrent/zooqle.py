@@ -134,13 +134,13 @@ class ZooqleProvider(TorrentProvider):
                         sickrage.app.log.debug('No data returned from provider')
                         break
 
+                    results += self.parse(data, mode)
+
                     total_results = try_int(data['feed']['opensearch_totalresults'])
                     start_index = try_int(data['feed']['opensearch_startindex'])
                     items_per_page = try_int(data['feed']['opensearch_itemsperpage'])
                     if int(start_index) + int(items_per_page) > int(total_results):
                         break
-
-                    results += self.parse(data, mode)
 
                     search_params['pg'] += 1
 
