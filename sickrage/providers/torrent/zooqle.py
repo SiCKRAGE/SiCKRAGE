@@ -130,7 +130,7 @@ class ZooqleProvider(TorrentProvider):
 
                 while search_params['pg'] < 11:
                     data = self.cache.get_rss_feed(self.urls['search'], params=search_params)
-                    if not data:
+                    if not data or not data.get('feed'):
                         sickrage.app.log.debug('No data returned from provider')
                         break
 
