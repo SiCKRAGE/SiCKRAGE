@@ -136,10 +136,10 @@ class ZooqleProvider(TorrentProvider):
 
                     results += self.parse(data, mode)
 
-                    total_results = try_int(data['feed']['opensearch_totalresults'])
-                    start_index = try_int(data['feed']['opensearch_startindex'])
-                    items_per_page = try_int(data['feed']['opensearch_itemsperpage'])
-                    if int(start_index) + int(items_per_page) > int(total_results):
+                    total_results = try_int(data['feed'].get('opensearch_totalresults'))
+                    start_index = try_int(data['feed'].get('opensearch_startindex'))
+                    items_per_page = try_int(data['feed'].get('opensearch_itemsperpage'))
+                    if not total_results or start_index + items_per_page > total_results:
                         break
 
                     search_params['pg'] += 1
