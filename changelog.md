@@ -1,6 +1,7 @@
 # Changelog
 
-- * 27719cf - 2018-09-16: Pre-Release v9.3.79.dev6 
+- * 9fd8833 - 2018-09-16: Pre-Release v9.3.79.dev7 
+- * 605f75c - 2018-09-16: Pre-Release v9.3.79.dev6 
 - * 8780b59 - 2018-09-16: Zooqle torrent provider RSS feed English only results 
 - * bd67a69 - 2018-09-16: Pre-Release v9.3.79.dev5 
 - * f39ab1c - 2018-09-16: Refactored Zooqle torrent provider to handling paging results 
