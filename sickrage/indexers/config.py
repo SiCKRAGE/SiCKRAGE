@@ -27,10 +27,11 @@ indexerConfig = {
     INDEXER_TVDB: {
         'id': INDEXER_TVDB,
         'name': 'theTVDB',
-        'module': Tvdb,
-        'api_params': {'apikey': 'F9C450E78D99172E',
-                       'language': 'en'
-                       },
+        'module': Tvdb(),
+        'api_params': {
+            'apikey': 'F9C450E78D99172E',
+            'language': 'en'
+        },
         'trakt_id': 'tvdb',
         'xem_origin': 'tvdb',
         'icon': 'thetvdb16.png',

@@ -1,6 +1,26 @@
 # Changelog
 
-- * a26801c - 2018-09-14: Release v9.3.78 
+- * 7cbaa2e - 2018-09-18: Release v9.3.79 
+- * dbb7543 - 2018-09-18: Fixed issue with custom webroot and too many redirects 
+- * a7d0209 - 2018-09-17: Pre-Release v9.3.79.dev10 
+- * 09b1857 - 2018-09-17: Pre-Release v9.3.79.dev9 
+- * 3419702 - 2018-09-16: Pre-Release v9.3.79.dev8 
+- * a4a4814 - 2018-09-16: Pre-Release v9.3.79.dev7 
+- * 605f75c - 2018-09-16: Pre-Release v9.3.79.dev6 
+- * 8780b59 - 2018-09-16: Zooqle torrent provider RSS feed English only results 
+- * bd67a69 - 2018-09-16: Pre-Release v9.3.79.dev5 
+- * f39ab1c - 2018-09-16: Refactored Zooqle torrent provider to handling paging results 
+- * 31a9c17 - 2018-09-16: Pre-Release v9.3.79.dev4 
+- * 69668c7 - 2018-09-16: Hardcoded Zooqle torrent provider to search for english torrents 
+- * 2868350 - 2018-09-16: Pre-Release v9.3.79.dev3 
+- * f40c471 - 2018-09-16: Refactored Zooqle torrent provider to use RSS Fixed Attribute error for name parser 
+- * 7bb2095 - 2018-09-16: Fixed performance issues with TheTVDB indexer 
+- * e8445dd - 2018-09-16: Fixed issue when displaying multiple modals same page, 2nd modal wasn&#x27;t removing scrollbar. 
+- * 15f9781 - 2018-09-16: Pre-Release v9.3.79.dev2 
+- * f87f0b0 - 2018-09-16: Fixed search issue with Zooqle torrent provider. 
+- * e6fab35 - 2018-09-15: Pre-Release v9.3.79.dev1 
+- * 60a435c - 2018-09-15: Added Zooqle torrent provider 
+- * 90f31c5 - 2018-09-14: Release v9.3.78 
 - * a413ab3 - 2018-09-14: Fixed AttributeError list_entry_points for subtitles 
 - * d6195df - 2018-09-13: Release v9.3.77 
 - * 23d3379 - 2018-09-09: Release v9.3.76 

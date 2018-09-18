@@ -90,7 +90,7 @@ class TVCache(object):
 
         return True
 
-    def getRSSFeed(self, url, params=None):
+    def get_rss_feed(self, url, params=None):
         try:
             if self.provider.login():
                 resp = WebSession().get(url, params=params).text

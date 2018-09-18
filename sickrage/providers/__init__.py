@@ -1286,7 +1286,7 @@ class TorrentRssCache(TVCache):
             add_dict_to_cookiejar(self.provider.session.cookies,
                                   dict(x.rsplit('=', 1) for x in self.provider.cookies.split(';')))
 
-        return self.getRSSFeed(self.provider.urls['base_url'])
+        return self.get_rss_feed(self.provider.urls['base_url'])
 
 
 class SearchProviders(dict):
