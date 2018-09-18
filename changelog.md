@@ -1,6 +1,7 @@
 # Changelog
 
-- * d6ddfdb - 2018-09-18: Fixed issue with custom webroot and too many redirects 
+- * 7cbaa2e - 2018-09-18: Release v9.3.79 
+- * dbb7543 - 2018-09-18: Fixed issue with custom webroot and too many redirects 
 - * a7d0209 - 2018-09-17: Pre-Release v9.3.79.dev10 
 - * 09b1857 - 2018-09-17: Pre-Release v9.3.79.dev9 
 - * 3419702 - 2018-09-16: Pre-Release v9.3.79.dev8 
