@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.79\n"
+"Project-Id-Version: sickrage 9.3.80.dev1\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-18 16:42-0700\n"
+"POT-Creation-Date: 2018-09-20 11:35-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -501,18 +501,18 @@ msgstr ""
 msgid "Quality"
 msgstr ""
 
-#: sickrage/core/common.py:181 sickrage/core/common.py:613
+#: sickrage/core/common.py:181 sickrage/core/common.py:616
 #: sickrage/core/webserver/views/history.mako:120
 #: sickrage/core/webserver/views/layouts/main.mako:387
 msgid "Snatched"
 msgstr ""
 
-#: sickrage/core/common.py:180 sickrage/core/common.py:616
+#: sickrage/core/common.py:180 sickrage/core/common.py:619
 #: sickrage/core/webserver/views/history.mako:121
 msgid "Downloaded"
 msgstr ""
 
-#: sickrage/core/common.py:621
+#: sickrage/core/common.py:624
 #: sickrage/core/webserver/views/config/providers.mako:915
 #: sickrage/core/webserver/views/history.mako:123
 msgid "Subtitled"
@@ -4834,6 +4834,7 @@ msgstr ""
 msgid "Select Filtered Episodes"
 msgstr ""
 
+#: sickrage/core/webserver/views.py:4863
 #: sickrage/core/webserver/views/home/display_show.mako:456
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4908,7 +4909,7 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: sickrage/core/common.py:611
+#: sickrage/core/common.py:614
 #: sickrage/core/webserver/views/home/display_show.mako:683
 msgid "Unknown"
 msgstr ""
@@ -4917,7 +4918,7 @@ msgstr ""
 msgid "Retry Download"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4921
+#: sickrage/core/webserver/views.py:4916
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr ""
@@ -5377,7 +5378,7 @@ msgstr ""
 msgid "Daily Search"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr ""
@@ -5402,7 +5403,7 @@ msgstr ""
 msgid "Subtitles Finder"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4916
+#: sickrage/core/webserver/views.py:4911
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr ""
@@ -5435,7 +5436,7 @@ msgstr ""
 msgid "True"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4911
+#: sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr ""
@@ -6115,7 +6116,7 @@ msgstr ""
 msgid "Post-Processor:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4907
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr ""
@@ -6212,39 +6213,39 @@ msgstr ""
 msgid "Extend (Limited, E-prefixed)"
 msgstr ""
 
-#: sickrage/core/common.py:182 sickrage/core/common.py:614
+#: sickrage/core/common.py:182 sickrage/core/common.py:617
 msgid "Snatched (Proper)"
 msgstr ""
 
-#: sickrage/core/common.py:183 sickrage/core/common.py:615
+#: sickrage/core/common.py:183 sickrage/core/common.py:618
 msgid "Snatched (Best)"
 msgstr ""
 
-#: sickrage/core/common.py:184 sickrage/core/common.py:619
+#: sickrage/core/common.py:184 sickrage/core/common.py:622
 msgid "Archived"
 msgstr ""
 
-#: sickrage/core/common.py:185 sickrage/core/common.py:622
+#: sickrage/core/common.py:185 sickrage/core/common.py:625
 msgid "Failed"
 msgstr ""
 
-#: sickrage/core/common.py:186 sickrage/core/common.py:623
+#: sickrage/core/common.py:186 sickrage/core/common.py:626
 msgid "Missed"
 msgstr ""
 
-#: sickrage/core/common.py:612
+#: sickrage/core/common.py:615
 msgid "Unaired"
 msgstr ""
 
-#: sickrage/core/common.py:617
+#: sickrage/core/common.py:620
 msgid "Skipped"
 msgstr ""
 
-#: sickrage/core/common.py:618
+#: sickrage/core/common.py:621
 msgid "Wanted"
 msgstr ""
 
-#: sickrage/core/common.py:620
+#: sickrage/core/common.py:623
 msgid "Ignored"
 msgstr ""
 
@@ -6730,7 +6731,7 @@ msgstr ""
 #: sickrage/core/webserver/views.py:1863 sickrage/core/webserver/views.py:1868
 #: sickrage/core/webserver/views.py:1871 sickrage/core/webserver/views.py:1914
 #: sickrage/core/webserver/views.py:1920 sickrage/core/webserver/views.py:1923
-#: sickrage/core/webserver/views.py:4918
+#: sickrage/core/webserver/views.py:4913
 msgid "Error"
 msgstr ""
 
@@ -7267,47 +7268,39 @@ msgstr ""
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4863
-msgid "Clear Errors"
-msgstr ""
-
-#: sickrage/core/webserver/views.py:4866
-msgid "Clear Warnings"
-msgstr ""
-
-#: sickrage/core/webserver/views.py:4907
+#: sickrage/core/webserver/views.py:4902
 msgid "Daily Searcher"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4904
 msgid "Show Updater"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4905
 msgid "Check Version"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4908
 msgid "Find Propers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4909
 msgid "Postprocessor"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4910
 msgid "Find Subtitles"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4917
+#: sickrage/core/webserver/views.py:4912
 msgid "Event"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4919
+#: sickrage/core/webserver/views.py:4914
 msgid "Tornado"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4920
+#: sickrage/core/webserver/views.py:4915
 msgid "Thread"
 msgstr ""
 
