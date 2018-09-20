@@ -1,6 +1,7 @@
 # Changelog
 
-- * f1b7b77 - 2018-09-20: Fixed issue with magnet links missing torrent trackers 
+- * 225abdc - 2018-09-20: Pre-Release v9.3.80.dev2 
+- * d2b5aab - 2018-09-20: Fixed issue with magnet links missing torrent trackers 
 - * 0ee4330 - 2018-09-20: Added back missing bootstrap-formhelpers library 
 - * ec020ec - 2018-09-20: Pre-Release v9.3.80.dev1 
 - * bf4e106 - 2018-09-20: Updated remaining ui-icon icons to fontawesome. Fixed issue #260 - removed redundant clear errors and clear warnings button, merged into one button. 
