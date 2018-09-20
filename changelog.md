@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7cbaa2e - 2018-09-18: Release v9.3.79 
+- * 1ebac36 - 2018-09-20: Added UHD to quality preset ANY. Added quality preset &quot;ANY + Unknown&quot;. Added ability to set quality size for unknown qualities. 
+- * 5bf995b - 2018-09-18: Release v9.3.79 
 - * dbb7543 - 2018-09-18: Fixed issue with custom webroot and too many redirects 
 - * a7d0209 - 2018-09-17: Pre-Release v9.3.79.dev10 
 - * 09b1857 - 2018-09-17: Pre-Release v9.3.79.dev9 

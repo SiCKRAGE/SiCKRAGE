@@ -515,7 +515,8 @@ UHD_8K = Quality.combineQualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Qual
 SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
 HD = Quality.combineQualities([HD720p, HD1080p], [])
 UHD = Quality.combineQualities([UHD_4K, UHD_8K], [])
-ANY = Quality.combineQualities([SD, HD], [])
+ANY = Quality.combineQualities([SD, HD, UHD], [])
+ANY_PLUS_UNKNOWN = Quality.combineQualities([Quality.UNKNOWN, SD, HD, UHD], [])
 
 # legacy template, cant remove due to reference in mainDB upgrade?
 BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
@@ -527,7 +528,8 @@ qualityPresets = (SD,
                   UHD,
                   UHD_4K,
                   UHD_8K,
-                  ANY)
+                  ANY,
+                  ANY_PLUS_UNKNOWN)
 
 qualityPresetStrings = {SD: "SD",
                         HD: "HD",
@@ -536,7 +538,8 @@ qualityPresetStrings = {SD: "SD",
                         UHD: "UHD",
                         UHD_4K: "UHD-4K",
                         UHD_8K: "UHD-8K",
-                        ANY: "Any"}
+                        ANY: "Any",
+                        ANY_PLUS_UNKNOWN: "Any + Unknown"}
 
 
 class StatusStrings(UserDict):
