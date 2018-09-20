@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1ebac36 - 2018-09-20: Added UHD to quality preset ANY. Added quality preset &quot;ANY + Unknown&quot;. Added ability to set quality size for unknown qualities. 
+- * 6f293ad - 2018-09-20: Updated remaining ui-icon icons to fontawesome. Fixed issue #260 - removed redundant clear errors and clear warnings button, merged into one button. 
+- * 5962b54 - 2018-09-20: Added UHD to quality preset ANY. Added quality preset &quot;ANY + Unknown&quot;. Added ability to set quality size for unknown qualities. 
 - * 5bf995b - 2018-09-18: Release v9.3.79 
 - * dbb7543 - 2018-09-18: Fixed issue with custom webroot and too many redirects 
 - * a7d0209 - 2018-09-17: Pre-Release v9.3.79.dev10 
