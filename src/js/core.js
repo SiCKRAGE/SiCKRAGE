@@ -1,4 +1,5 @@
 import 'bootstrap';
+import 'bootstrap-formhelpers/dist/js/bootstrap-formhelpers';
 import 'tablesorter';
 import 'tablesorter/dist/js/widgets/widget-columnSelector.min';
 import 'tooltipster';

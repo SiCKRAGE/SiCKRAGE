@@ -102,7 +102,7 @@
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
-                                    <span class="fas fa-flag"></span>
+                                    <span class="fas fa-language"></span>
                                 </span>
                             </div>
                             <select name="indexerDefaultLang" id="indexerDefaultLang"
