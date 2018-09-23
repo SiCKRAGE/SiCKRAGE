@@ -1,6 +1,7 @@
 # Changelog
 
-- * 996b09c - 2018-09-22: Added a loading spinner for all view page loads. 
+- * 7a2697e - 2018-09-22: Pre-Release v9.3.80.dev3 
+- * 3afaeb1 - 2018-09-22: Added a loading spinner for all view page loads. 
 - * a74e159 - 2018-09-22: Added a loading spinner when displaying show information. 
 - * 6e16bcc - 2018-09-20: Pre-Release v9.3.80.dev2 
 - * d2b5aab - 2018-09-20: Fixed issue with magnet links missing torrent trackers 

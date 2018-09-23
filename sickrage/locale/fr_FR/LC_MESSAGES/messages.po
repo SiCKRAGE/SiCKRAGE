@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-09-20 16:27-0700\n"
-"PO-Revision-Date: 2018-09-20 23:38\n"
+"POT-Creation-Date: 2018-09-22 22:14-0700\n"
+"PO-Revision-Date: 2018-09-23 05:15\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -49,295 +49,295 @@ msgstr ""
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:567 src/js/core.js:578 src/js/core.js:599
+#: src/js/core.js:557 src/js/core.js:568 src/js/core.js:589
 msgid "Searching"
 msgstr "La recherche"
 
-#: src/js/core.js:573 src/js/core.js:604
+#: src/js/core.js:563 src/js/core.js:594
 msgid "Queued"
 msgstr "En file d’attente"
 
-#: sickrage/core/webserver/views/home/display_show.mako:709
+#: sickrage/core/webserver/views/home/display_show.mako:703
 #: sickrage/core/webserver/views/includes/modals.mako:54
 #: sickrage/core/webserver/views/includes/modals.mako:75
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:608
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:598
 msgid "Manual Search"
 msgstr "Recherche manuelle"
 
-#: sickrage/core/webserver/views/home/index.mako:304 src/js/core.js:633
-#: src/js/core.js:778 src/js/core.js:821
+#: sickrage/core/webserver/views/home/index.mako:301 src/js/core.js:623
+#: src/js/core.js:768 src/js/core.js:811
 msgid "loading"
 msgstr "chargement"
 
-#: src/js/core.js:837
+#: src/js/core.js:827
 msgid "Choose Directory"
 msgstr "Choisir le répertoire"
 
-#: sickrage/core/webserver/views.py:3606 src/js/core.js:1477
+#: sickrage/core/webserver/views.py:3606 src/js/core.js:1467
 msgid "Clear History"
 msgstr "Effacer l’historique"
 
-#: src/js/core.js:1478
+#: src/js/core.js:1468
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Êtes vous s√r de vouloir effacer toutes les Téléchargez histoire ?"
 
-#: sickrage/core/webserver/views.py:3608 src/js/core.js:1483
+#: sickrage/core/webserver/views.py:3608 src/js/core.js:1473
 msgid "Trim History"
 msgstr "Histoire de garniture"
 
-#: src/js/core.js:1484
+#: src/js/core.js:1474
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Êtes vous s├╗r de vouloir couper tous Téléchargez histoire de plus de 30 jours ?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2182
+#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2171
 msgid "Remove Show"
 msgstr "Supprimer le spectacle"
 
-#: src/js/core.js:2183
+#: src/js/core.js:2172
 msgid "Are you sure you want to remove"
 msgstr "Êtes-vous sûr que vous voulez supprimer"
 
-#: src/js/core.js:2183
+#: src/js/core.js:2172
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2183
+#: src/js/core.js:2172
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2236 src/js/core.js:2268
+#: src/js/core.js:2225 src/js/core.js:2257
 msgid "Update failed."
 msgstr "Mise à jour a échoué."
 
-#: src/js/core.js:2279
+#: src/js/core.js:2268
 msgid "Select Show Location"
 msgstr "Sélectionnez Voir la carte"
 
-#: src/js/core.js:2421
+#: src/js/core.js:2410
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2437
+#: src/js/core.js:2426
 msgid "Select Unprocessed Episode Folder"
 msgstr "Sélectionnez dossier épisode non transformés"
 
-#: src/js/core.js:2806
+#: src/js/core.js:2793
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "recherche a expiré, essayez de délai d’attente croissante d’indexeur"
 
-#: src/js/core.js:2810
+#: src/js/core.js:2797
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2814
+#: src/js/core.js:2801
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2833
+#: src/js/core.js:2820
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2835
+#: src/js/core.js:2822
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2844
+#: src/js/core.js:2831
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2884
+#: src/js/core.js:2871
 msgid "Saved Defaults"
 msgstr "Valeurs par défaut enregistrées"
 
-#: src/js/core.js:2884
+#: src/js/core.js:2871
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Vos paramètres par défaut « ajouter show » ont été fixés à votre choix."
 
-#: src/js/core.js:2941
+#: src/js/core.js:2928
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2983
+#: src/js/core.js:2970
 msgid "Reset Config to Defaults"
 msgstr "Config de réinitialisation aux valeurs par défaut"
 
-#: src/js/core.js:2984
+#: src/js/core.js:2971
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Êtes-vous sûr de que vouloir réinitialiser la config par défaut ?"
 
-#: src/js/core.js:3078
+#: src/js/core.js:3065
 msgid "Select path to pip"
 msgstr "Sélectionnez le chemin d’accès à pip"
 
-#: src/js/core.js:3084
+#: src/js/core.js:3071
 msgid "Select path to git"
 msgstr "Sélectionnez le chemin d’accès à git"
 
-#: src/js/core.js:3092 src/js/core.js:3110 src/js/core.js:3900 src/js/core.js:3918
-#: src/js/core.js:3939 src/js/core.js:3961 src/js/core.js:3984 src/js/core.js:4006
-#: src/js/core.js:4034 src/js/core.js:4051 src/js/core.js:4095 src/js/core.js:4180
-#: src/js/core.js:4238 src/js/core.js:4255 src/js/core.js:4285 src/js/core.js:4342
-#: src/js/core.js:4418 src/js/core.js:4437 src/js/core.js:4453
+#: src/js/core.js:3079 src/js/core.js:3097 src/js/core.js:3887 src/js/core.js:3905
+#: src/js/core.js:3926 src/js/core.js:3948 src/js/core.js:3971 src/js/core.js:3993
+#: src/js/core.js:4021 src/js/core.js:4038 src/js/core.js:4082 src/js/core.js:4167
+#: src/js/core.js:4225 src/js/core.js:4242 src/js/core.js:4272 src/js/core.js:4329
+#: src/js/core.js:4405 src/js/core.js:4424 src/js/core.js:4440
 msgid "Please fill out the necessary fields above."
 msgstr "Veuillez remplir les champs nécessaires ci-dessus."
 
-#: src/js/core.js:3148
+#: src/js/core.js:3135
 msgid "Select Subtitles Download Directory"
 msgstr "Répertoire de téléchargement de sous-titres Select"
 
-#: src/js/core.js:3264
+#: src/js/core.js:3251
 msgid "Select .nzb blackhole/watch location"
 msgstr "Sélectionnez emplacement de .nzb blackhole/surveillance"
 
-#: src/js/core.js:3265
+#: src/js/core.js:3252
 msgid "Select .torrent blackhole/watch location"
 msgstr "Sélectionnez emplacement de blackhole/surveillance .torrent"
 
-#: src/js/core.js:3266
+#: src/js/core.js:3253
 msgid "Select .torrent download location"
 msgstr "Sélectionnez l’emplacement de téléchargement .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3333
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3320
 msgid "Minimum seeding time is"
 msgstr "Minimum de temps de l’ensemencement est"
 
-#: src/js/core.js:3335
+#: src/js/core.js:3322
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL vers votre client uTorrent (par exemple, http://localhost : 8000)"
 
-#: src/js/core.js:3338
+#: src/js/core.js:3325
 msgid "Stop seeding when inactive for"
 msgstr "Arrêter lorsqu’il est inactif pour l’ensemencement"
 
-#: src/js/core.js:3344
+#: src/js/core.js:3331
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL à votre client de Transmission (p. ex. http://localhost:9091)"
 
-#: src/js/core.js:3354
+#: src/js/core.js:3341
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL à votre client de déluge (p. ex. http://localhost:8112)"
 
-#: src/js/core.js:3363
+#: src/js/core.js:3350
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "Adresse IP ou nom d’hôte de votre démon de déluge (p. ex. scgi://localhost:58846)"
 
-#: src/js/core.js:3370
+#: src/js/core.js:3357
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL à votre client de Synology DS (par exemple, http://localhost : 5000)"
 
-#: src/js/core.js:3375
+#: src/js/core.js:3362
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3375
+#: src/js/core.js:3362
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3385
+#: src/js/core.js:3372
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL vers votre client qbittorrent (par exemple, http://localhost : 8080)"
 
-#: src/js/core.js:3395
+#: src/js/core.js:3382
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL vers votre MLDonkey (p. ex. http://localhost:4080)"
 
-#: src/js/core.js:3406
+#: src/js/core.js:3393
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL vers votre client putio (par exemple, http://localhost : 8080)"
 
-#: src/js/core.js:3575
+#: src/js/core.js:3562
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3576
+#: src/js/core.js:3563
 msgid "Select TV Download Directory"
 msgstr "Sélectionnez le répertoire de téléchargement TV"
 
-#: src/js/core.js:3577
+#: src/js/core.js:3564
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3591
+#: src/js/core.js:3578
 msgid "Unrar Executable not found."
 msgstr "Unrar Executable introuvable."
 
-#: src/js/core.js:3634 src/js/core.js:3669 src/js/core.js:3704 src/js/core.js:3755
+#: src/js/core.js:3621 src/js/core.js:3656 src/js/core.js:3691 src/js/core.js:3742
 msgid "This pattern is invalid."
 msgstr "Ce modèle n’est pas valide."
 
-#: src/js/core.js:3638 src/js/core.js:3673 src/js/core.js:3708 src/js/core.js:3759
+#: src/js/core.js:3625 src/js/core.js:3660 src/js/core.js:3695 src/js/core.js:3746
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Ce modèle ne serait pas valable sans les dossiers, à l’aide d’Il forcera « Flatten » hors pour tous les spectacles."
 
-#: src/js/core.js:3642 src/js/core.js:3677 src/js/core.js:3712 src/js/core.js:3764
+#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3751
 msgid "This pattern is valid."
 msgstr "Ce modèle est valide."
 
-#: src/js/core.js:4088
+#: src/js/core.js:4075
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmer autorisation"
 
-#: src/js/core.js:4145 src/js/core.js:4199
+#: src/js/core.js:4132 src/js/core.js:4186
 msgid "Please fill in the Popcorn IP address"
 msgstr "Veuillez remplir l’adresse IP de Popcorn"
 
-#: src/js/core.js:4352
+#: src/js/core.js:4339
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Vérifiez le nom de la liste noire ; la valeur doivent être une limace trakt"
 
-#: src/js/core.js:4384
+#: src/js/core.js:4371
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4387
+#: src/js/core.js:4374
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4389
+#: src/js/core.js:4376
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4395
+#: src/js/core.js:4382
 msgid "Enter an email address to send the test to:"
 msgstr "Entrez une adresse de courriel pour envoyer le test :"
 
-#: src/js/core.js:4397
+#: src/js/core.js:4384
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4467
+#: src/js/core.js:4454
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Liste des périphériques mis à jour. S’il vous plaît choisir un appareil à pousser."
 
-#: src/js/core.js:4528
+#: src/js/core.js:4515
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Vous ne fournissez une clé de l’api Pushbullet"
 
-#: src/js/core.js:4558
+#: src/js/core.js:4545
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "N’oubliez pas de sauvegarder vos nouveaux paramètres de pushbullet."
 
-#: src/js/core.js:4630
+#: src/js/core.js:4617
 msgid "Select backup folder to save to"
 msgstr "Sélectionnez le dossier de sauvegarde pour enregistrer sur"
 
-#: src/js/core.js:4635
+#: src/js/core.js:4622
 msgid "Select backup files to restore"
 msgstr "Sélectionnez les fichiers de sauvegarde à restaurer"
 
-#: src/js/core.js:5180
+#: src/js/core.js:5167
 msgid "No providers available to configure."
 msgstr "Aucun fournisseur n’est disponible pour configurer."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5390
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5377
 msgid "Mass Delete"
 msgstr "Suppression massive"
 
-#: src/js/core.js:5391
+#: src/js/core.js:5378
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Vous avez choisi de supprimer les spectacles.  Êtes-vous sûr de que vouloir continuer ? Tous les fichiers seront supprimés de votre système."
 
-#: src/js/core.js:5468
+#: src/js/core.js:5455
 msgid "DELETED"
 msgstr "SUPPRIMÉ"
 
@@ -358,7 +358,7 @@ msgid "Parameters"
 msgstr "Paramètres"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:555
+#: sickrage/core/webserver/views/home/display_show.mako:549
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:26
 #: sickrage/core/webserver/views/home/trakt_shows.mako:20
@@ -475,7 +475,7 @@ msgstr "Temps"
 
 #: sickrage/core/webserver/views/history.mako:55
 #: sickrage/core/webserver/views/history.mako:119
-#: sickrage/core/webserver/views/home/display_show.mako:551
+#: sickrage/core/webserver/views/home/display_show.mako:545
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:79
 msgid "Episode"
@@ -492,14 +492,14 @@ msgstr "Fournisseur de"
 
 #: sickrage/core/webserver/views/history.mako:58
 #: sickrage/core/webserver/views/history.mako:125
-#: sickrage/core/webserver/views/home/index.mako:291
+#: sickrage/core/webserver/views/home/index.mako:288
 #: sickrage/core/webserver/views/manage/mass_update.mako:68
 msgid "Quality"
 msgstr "Qualité"
 
 #: sickrage/core/common.py:181 sickrage/core/common.py:616
 #: sickrage/core/webserver/views/history.mako:120
-#: sickrage/core/webserver/views/layouts/main.mako:387
+#: sickrage/core/webserver/views/layouts/main.mako:391
 msgid "Snatched"
 msgstr "Arraché"
 
@@ -519,7 +519,7 @@ msgstr "Sous-titrés"
 msgid "missing provider"
 msgstr "fournisseur de manquant"
 
-#: sickrage/core/webserver/views/home/display_show.mako:450
+#: sickrage/core/webserver/views/home/display_show.mako:444
 #: sickrage/core/webserver/views/schedule.mako:23
 msgid "Select Columns"
 msgstr "Sélectionner les colonnes"
@@ -761,7 +761,7 @@ msgstr "lors du lancement d’interface SickRage"
 
 #: sickrage/core/webserver/views/config/general.mako:142
 #: sickrage/core/webserver/views/layouts/main.mako:138
-#: sickrage/core/webserver/views/layouts/main.mako:380
+#: sickrage/core/webserver/views/layouts/main.mako:384
 msgid "Shows"
 msgstr "Montre"
 
@@ -993,7 +993,7 @@ msgstr "Local"
 
 #: sickrage/core/webserver/views/config/general.mako:639
 #: sickrage/core/webserver/views/home/index.mako:34
-#: sickrage/core/webserver/views/home/index.mako:290
+#: sickrage/core/webserver/views/home/index.mako:287
 msgid "Network"
 msgstr "Réseau"
 
@@ -3225,7 +3225,7 @@ msgstr "Episode_Name"
 #: sickrage/core/webserver/views/config/postprocessing.mako:805
 #: sickrage/core/webserver/views/config/postprocessing.mako:1018
 #: sickrage/core/webserver/views/config/postprocessing.mako:1258
-#: sickrage/core/webserver/views/home/display_show.mako:147
+#: sickrage/core/webserver/views/home/display_show.mako:141
 msgid "Quality:"
 msgstr "Qualité :"
 
@@ -4303,7 +4303,7 @@ msgstr "Tester la connexion"
 #: sickrage/core/webserver/api.py:968
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:716
+#: sickrage/core/webserver/views/home/display_show.mako:710
 msgid "Subtitles Search"
 msgstr "Recherche de sous-titres"
 
@@ -4376,7 +4376,7 @@ msgid "The directory where SickRage should store your"
 msgstr "Le répertoire où le SickRage devrait enregistrer votre"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:125
-#: sickrage/core/webserver/views/home/display_show.mako:559
+#: sickrage/core/webserver/views/home/display_show.mako:553
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:276
@@ -4543,243 +4543,243 @@ msgstr "Afficher les promotions :"
 msgid "Season:"
 msgstr "Saison :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:136
+#: sickrage/core/webserver/views/home/display_show.mako:130
 msgid "Rating:"
 msgstr "Puissance nominale :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:164
+#: sickrage/core/webserver/views/home/display_show.mako:158
 msgid "Show Status:"
 msgstr "Afficher l’État :"
 
+#: sickrage/core/webserver/views/home/display_show.mako:164
 #: sickrage/core/webserver/views/home/display_show.mako:170
-#: sickrage/core/webserver/views/home/display_show.mako:176
-#: sickrage/core/webserver/views/home/display_show.mako:181
+#: sickrage/core/webserver/views/home/display_show.mako:175
 msgid "Originally Airs:"
 msgstr "À l’origine des Airs :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:187
+#: sickrage/core/webserver/views/home/display_show.mako:181
 msgid "Start Year:"
 msgstr "Rentrée :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:194
+#: sickrage/core/webserver/views/home/display_show.mako:188
 msgid "Runtime:"
 msgstr "Duree :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:198
+#: sickrage/core/webserver/views/home/display_show.mako:192
 msgid "minutes"
 msgstr "minutes"
 
-#: sickrage/core/webserver/views/home/display_show.mako:200
+#: sickrage/core/webserver/views/home/display_show.mako:194
 msgid "UNKNOWN"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:207
+#: sickrage/core/webserver/views/home/display_show.mako:201
 msgid "Info Sites:"
 msgstr "Sites d’informations :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:239
+#: sickrage/core/webserver/views/home/display_show.mako:233
 msgid "Genre:"
 msgstr "Genre :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:265
+#: sickrage/core/webserver/views/home/display_show.mako:259
 msgid "Default EP Status:"
 msgstr "Statut d’EP par défaut :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:269
+#: sickrage/core/webserver/views/home/display_show.mako:263
 msgid "Location:"
 msgstr "Zone géographique :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:273
+#: sickrage/core/webserver/views/home/display_show.mako:267
 #: sickrage/core/webserver/views/home/status.mako:219
 #: sickrage/core/webserver/views/home/status.mako:230
 msgid "Missing"
 msgstr "Manque de"
 
-#: sickrage/core/webserver/views/home/display_show.mako:276
+#: sickrage/core/webserver/views/home/display_show.mako:270
 msgid "Size:"
 msgstr "Taille :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:280
+#: sickrage/core/webserver/views/home/display_show.mako:274
 msgid "Scene Name:"
 msgstr "Nom de scène :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:284
+#: sickrage/core/webserver/views/home/display_show.mako:278
 msgid "Search Delay:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:289
+#: sickrage/core/webserver/views/home/display_show.mako:283
 msgid "Required Words:"
 msgstr "Mots requis :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:295
+#: sickrage/core/webserver/views/home/display_show.mako:289
 msgid "Ignored Words:"
 msgstr "Des mots ignorés :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:301
+#: sickrage/core/webserver/views/home/display_show.mako:295
 msgid "Wanted Group"
 msgstr "Groupe voulu"
 
-#: sickrage/core/webserver/views/home/display_show.mako:309
+#: sickrage/core/webserver/views/home/display_show.mako:303
 msgid "Unwanted Group"
 msgstr "Groupe non désiré"
 
-#: sickrage/core/webserver/views/home/display_show.mako:320
+#: sickrage/core/webserver/views/home/display_show.mako:314
 msgid "Info Language:"
 msgstr "Langue de l’info :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:327
+#: sickrage/core/webserver/views/home/display_show.mako:321
 msgid "Subtitles:"
 msgstr "Sous-titres :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:334
+#: sickrage/core/webserver/views/home/display_show.mako:328
 msgid "Subtitles Metadata:"
 msgstr "Métadonnées de sous-titres :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:340
+#: sickrage/core/webserver/views/home/display_show.mako:334
 msgid "Season Folders:"
 msgstr "Dossiers de la saison :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:346
+#: sickrage/core/webserver/views/home/display_show.mako:340
 msgid "Paused:"
 msgstr "En pause :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:352
+#: sickrage/core/webserver/views/home/display_show.mako:346
 msgid "Air-by-Date:"
 msgstr "Par-Date de diffusion :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:358
+#: sickrage/core/webserver/views/home/display_show.mako:352
 msgid "Sports:"
 msgstr "Sports :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:364
+#: sickrage/core/webserver/views/home/display_show.mako:358
 msgid "Anime:"
 msgstr "Anime :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:370
+#: sickrage/core/webserver/views/home/display_show.mako:364
 msgid "DVD Order:"
 msgstr "Commande de DVD :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:376
+#: sickrage/core/webserver/views/home/display_show.mako:370
 msgid "Scene Numbering:"
 msgstr "Scène de numérotation :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:382
+#: sickrage/core/webserver/views/home/display_show.mako:376
 msgid "Skip Downloaded:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:421
+#: sickrage/core/webserver/views/home/display_show.mako:415
 msgid "Missed:"
 msgstr "Raté :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:425
+#: sickrage/core/webserver/views/home/display_show.mako:419
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:25
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:66
 msgid "Wanted:"
 msgstr "Voulu :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:429
+#: sickrage/core/webserver/views/home/display_show.mako:423
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:26
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:68
 msgid "Low Quality:"
 msgstr "Basse qualité :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:433
+#: sickrage/core/webserver/views/home/display_show.mako:427
 msgid "Downloaded:"
 msgstr "Téléchargé :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:437
+#: sickrage/core/webserver/views/home/display_show.mako:431
 msgid "Skipped:"
 msgstr "Ignoré :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:442
+#: sickrage/core/webserver/views/home/display_show.mako:436
 msgid "Snatched:"
 msgstr "Arraché :"
 
-#: sickrage/core/webserver/views/home/display_show.mako:453
+#: sickrage/core/webserver/views/home/display_show.mako:447
 msgid "Select Filtered Episodes"
 msgstr "Sélectionnez les épisodes filtrées"
 
 #: sickrage/core/webserver/views.py:4863
-#: sickrage/core/webserver/views/home/display_show.mako:456
+#: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "Effacer tout"
 
-#: sickrage/core/webserver/views/home/display_show.mako:523
+#: sickrage/core/webserver/views/home/display_show.mako:517
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:523
+#: sickrage/core/webserver/views/home/display_show.mako:517
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:530
+#: sickrage/core/webserver/views/home/display_show.mako:524
 msgid "Hide Episodes"
 msgstr "Masquer les épisodes"
 
-#: sickrage/core/webserver/views/home/display_show.mako:535
+#: sickrage/core/webserver/views/home/display_show.mako:529
 msgid "Show Episodes"
 msgstr "Épisodes"
 
-#: sickrage/core/webserver/views/home/display_show.mako:549
+#: sickrage/core/webserver/views/home/display_show.mako:543
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/home/display_show.mako:544
 msgid "TBN"
 msgstr "TBN"
 
-#: sickrage/core/webserver/views/home/display_show.mako:552
+#: sickrage/core/webserver/views/home/display_show.mako:546
 msgid "Absolute"
 msgstr "Absolu"
 
-#: sickrage/core/webserver/views/home/display_show.mako:553
+#: sickrage/core/webserver/views/home/display_show.mako:547
 #: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Scene"
 msgstr "Scène"
 
-#: sickrage/core/webserver/views/home/display_show.mako:554
+#: sickrage/core/webserver/views/home/display_show.mako:548
 msgid "Scene Absolute"
 msgstr "Absolue de la scène"
 
-#: sickrage/core/webserver/views/home/display_show.mako:556
-#: sickrage/core/webserver/views/home/index.mako:293
+#: sickrage/core/webserver/views/home/display_show.mako:550
+#: sickrage/core/webserver/views/home/index.mako:290
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "Taille"
 
-#: sickrage/core/webserver/views/home/display_show.mako:557
+#: sickrage/core/webserver/views/home/display_show.mako:551
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:81
 msgid "Airdate"
 msgstr "Date de diffusion"
 
-#: sickrage/core/webserver/views/home/display_show.mako:558
-#: sickrage/core/webserver/views/home/display_show.mako:667
+#: sickrage/core/webserver/views/home/display_show.mako:552
+#: sickrage/core/webserver/views/home/display_show.mako:661
 msgid "Download"
 msgstr "Télécharger"
 
 #: sickrage/core/webserver/views.py:1020 sickrage/core/webserver/views.py:1021
-#: sickrage/core/webserver/views/home/display_show.mako:560
-#: sickrage/core/webserver/views/home/index.mako:295
+#: sickrage/core/webserver/views/home/display_show.mako:554
+#: sickrage/core/webserver/views/home/index.mako:292
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
 msgid "Status"
 msgstr "Statut"
 
-#: sickrage/core/webserver/views/home/display_show.mako:561
+#: sickrage/core/webserver/views/home/display_show.mako:555
 #: sickrage/core/webserver/views/home/new_show.mako:115
 msgid "Search"
 msgstr "Recherche"
 
-#: sickrage/core/webserver/views/home/display_show.mako:653
+#: sickrage/core/webserver/views/home/display_show.mako:647
 msgid "Never"
 msgstr "Jamais"
 
 #: sickrage/core/common.py:614
-#: sickrage/core/webserver/views/home/display_show.mako:683
+#: sickrage/core/webserver/views/home/display_show.mako:677
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: sickrage/core/webserver/views/home/display_show.mako:702
+#: sickrage/core/webserver/views/home/display_show.mako:696
 msgid "Retry Download"
 msgstr "Nouvelle tentative de téléchargement"
 
@@ -4855,7 +4855,7 @@ msgid "use SiCKRAGE metadata when searching for subtitle, this will override the
 msgstr "utiliser des métadonnées de SiCKRAGE lorsque vous cherchez un sous-titre, cela remplace les métadonnées de découverte automatique"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:175
-#: sickrage/core/webserver/views/home/index.mako:243
+#: sickrage/core/webserver/views/home/index.mako:240
 #: sickrage/core/webserver/views/manage/mass_edit.mako:176
 #: sickrage/core/webserver/views/manage/mass_update.mako:74
 #: sickrage/core/webserver/views/manage/queues.mako:18
@@ -5043,74 +5043,74 @@ msgstr "Progrès"
 msgid "Anime List"
 msgstr "Liste d’anime"
 
-#: sickrage/core/webserver/views/home/index.mako:128
+#: sickrage/core/webserver/views/home/index.mako:125
 msgid "... Loading ..."
 msgstr ""
 
-#: sickrage/core/webserver/views/home/index.mako:147
-#: sickrage/core/webserver/views/home/index.mako:484
+#: sickrage/core/webserver/views/home/index.mako:144
+#: sickrage/core/webserver/views/home/index.mako:481
 #: sickrage/core/webserver/views/manage/mass_update.mako:33
 msgid "Continuing"
 msgstr "Continuant"
 
-#: sickrage/core/webserver/views/home/index.mako:149
-#: sickrage/core/webserver/views/home/index.mako:486
+#: sickrage/core/webserver/views/home/index.mako:146
+#: sickrage/core/webserver/views/home/index.mako:483
 #: sickrage/core/webserver/views/manage/mass_update.mako:39
 msgid "Ended"
 msgstr "S’est terminée"
 
-#: sickrage/core/webserver/views/home/index.mako:168
-#: sickrage/core/webserver/views/home/index.mako:356
+#: sickrage/core/webserver/views/home/index.mako:165
+#: sickrage/core/webserver/views/home/index.mako:353
 msgid "Downloaded: "
 msgstr "Téléchargé : "
 
-#: sickrage/core/webserver/views/home/index.mako:171
-#: sickrage/core/webserver/views/home/index.mako:359
+#: sickrage/core/webserver/views/home/index.mako:168
+#: sickrage/core/webserver/views/home/index.mako:356
 msgid "Snatched: "
 msgstr "Arraché : "
 
-#: sickrage/core/webserver/views/home/index.mako:174
-#: sickrage/core/webserver/views/home/index.mako:362
+#: sickrage/core/webserver/views/home/index.mako:171
+#: sickrage/core/webserver/views/home/index.mako:359
 msgid "Total: "
 msgstr "Total : "
 
-#: sickrage/core/webserver/views/home/index.mako:177
-#: sickrage/core/webserver/views/home/index.mako:365
+#: sickrage/core/webserver/views/home/index.mako:174
+#: sickrage/core/webserver/views/home/index.mako:362
 msgid "no data"
 msgstr "aucune donnée"
 
-#: sickrage/core/webserver/views/home/index.mako:234
+#: sickrage/core/webserver/views/home/index.mako:231
 msgid "Invalid date"
 msgstr "Date non valide"
 
-#: sickrage/core/webserver/views/home/index.mako:265
-#: sickrage/core/webserver/views/home/index.mako:446
+#: sickrage/core/webserver/views/home/index.mako:262
+#: sickrage/core/webserver/views/home/index.mako:443
 msgid "No Network"
 msgstr "Pas de réseau"
 
-#: sickrage/core/webserver/views/home/index.mako:287
+#: sickrage/core/webserver/views/home/index.mako:284
 msgid "Next Ep"
 msgstr "Prochain Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:288
+#: sickrage/core/webserver/views/home/index.mako:285
 msgid "Prev Ep"
 msgstr "PREV Ep"
 
-#: sickrage/core/webserver/views/home/index.mako:289
+#: sickrage/core/webserver/views/home/index.mako:286
 msgid "Show"
 msgstr "Voir l’établissement"
 
-#: sickrage/core/webserver/views/home/index.mako:292
+#: sickrage/core/webserver/views/home/index.mako:289
 msgid "Downloads"
 msgstr "Téléchargements"
 
-#: sickrage/core/webserver/views/home/index.mako:294
+#: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/home/status.mako:42
-#: sickrage/core/webserver/views/layouts/main.mako:381
+#: sickrage/core/webserver/views/layouts/main.mako:385
 msgid "Active"
 msgstr "Actif"
 
-#: sickrage/core/webserver/views/home/index.mako:308
+#: sickrage/core/webserver/views/home/index.mako:305
 msgid "Loading..."
 msgstr "Chargement..."
 
@@ -5733,33 +5733,33 @@ msgstr "Logout"
 msgid "Server Status"
 msgstr "État du serveur"
 
-#: sickrage/core/webserver/views/layouts/main.mako:389
+#: sickrage/core/webserver/views/layouts/main.mako:393
 msgid "Episodes Downloaded"
 msgstr "Épisodes téléchargés"
 
-#: sickrage/core/webserver/views/layouts/main.mako:390
+#: sickrage/core/webserver/views/layouts/main.mako:394
 msgid "Overall Downloaded"
 msgstr "Dans l’ensemble téléchargé"
 
-#: sickrage/core/webserver/views/layouts/main.mako:395
+#: sickrage/core/webserver/views/layouts/main.mako:399
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Daily Search:"
 msgstr "Rechercher tous les jours :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:398
+#: sickrage/core/webserver/views/layouts/main.mako:402
 #: sickrage/core/webserver/views/manage/queues.mako:17
 msgid "Backlog Search:"
 msgstr "Recherche de carnet de commandes :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:401
+#: sickrage/core/webserver/views/layouts/main.mako:405
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:405
+#: sickrage/core/webserver/views/layouts/main.mako:409
 msgid "Load time:"
 msgstr "Temps de chargement :"
 
-#: sickrage/core/webserver/views/layouts/main.mako:412
+#: sickrage/core/webserver/views/layouts/main.mako:416
 msgid "Now:"
 msgstr "Maintenant :"
 
