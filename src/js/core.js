@@ -2084,6 +2084,9 @@ $(document).ready(function ($) {
                             }
                         }
                     });
+
+                    $('.loading-spinner').hide();
+                    $('.show-container').removeClass('d-none')
                 },
 
                 imdbRating: function () {

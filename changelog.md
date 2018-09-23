@@ -1,6 +1,7 @@
 # Changelog
 
-- * 225abdc - 2018-09-20: Pre-Release v9.3.80.dev2 
+- * 461fba4 - 2018-09-22: Added a loading spinner when displaying show information. 
+- * 6e16bcc - 2018-09-20: Pre-Release v9.3.80.dev2 
 - * d2b5aab - 2018-09-20: Fixed issue with magnet links missing torrent trackers 
 - * 0ee4330 - 2018-09-20: Added back missing bootstrap-formhelpers library 
 - * ec020ec - 2018-09-20: Pre-Release v9.3.80.dev1 
