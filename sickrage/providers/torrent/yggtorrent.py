@@ -31,7 +31,7 @@ from sickrage.providers import TorrentProvider
 class YggtorrentProvider(TorrentProvider):
     def __init__(self):
         """Initialize the class."""
-        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://www.yggtorrent.is', True)
+        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.to', True)
 
         # URLs
         self.urls.update({
@@ -159,7 +159,7 @@ class YggtorrentProvider(TorrentProvider):
         login_params = {
             'id': self.username,
             'pass': self.password,
-            'submit': ''
+            'ci_csrf_token': ''
         }
 
         try:
