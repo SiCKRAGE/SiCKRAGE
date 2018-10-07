@@ -1,6 +1,7 @@
 # Changelog
 
-- * d3870f8 - 2018-10-06: Fixed login issue for YGGTorrent 
+- * 772318e - 2018-10-06: Pre-Release v9.3.80.dev4 
+- * b85e87b - 2018-10-06: Fixed login issue for YGGTorrent 
 - * e3e893f - 2018-10-06: Fixed saving allowed video exts 
 - * be55b94 - 2018-09-22: Pre-Release v9.3.80.dev3 
 - * 3afaeb1 - 2018-09-22: Added a loading spinner for all view page loads. 
