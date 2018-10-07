@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7a2697e - 2018-09-22: Pre-Release v9.3.80.dev3 
+- * 907b789 - 2018-10-06: Fixed saving allowed video exts 
+- * be55b94 - 2018-09-22: Pre-Release v9.3.80.dev3 
 - * 3afaeb1 - 2018-09-22: Added a loading spinner for all view page loads. 
 - * a74e159 - 2018-09-22: Added a loading spinner when displaying show information. 
 - * 6e16bcc - 2018-09-20: Pre-Release v9.3.80.dev2 

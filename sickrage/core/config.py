@@ -1311,7 +1311,7 @@ class Config(object):
         def_val = def_val if def_val is not None else self.defaults[section][key]
 
         try:
-            my_val = list(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
+            my_val = list(self.config_obj.get(section, {section: key}).get(key, def_val))
         except StandardError:
             my_val = def_val
 
