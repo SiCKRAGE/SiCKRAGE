@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-06 20:27-0700\n"
-"PO-Revision-Date: 2018-10-07 03:28\n"
+"POT-Creation-Date: 2018-10-08 08:35-0700\n"
+"PO-Revision-Date: 2018-10-08 15:36\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "načítání"
 msgid "Choose Directory"
 msgstr "Zvolte adresář"
 
-#: sickrage/core/webserver/views.py:3606 src/js/core.js:1467
+#: sickrage/core/webserver/views.py:3607 src/js/core.js:1467
 msgid "Clear History"
 msgstr "Vymazat historii"
 
@@ -81,7 +81,7 @@ msgstr "Vymazat historii"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Jsou si jisti, že chcete vymazat všechny historie stahování?"
 
-#: sickrage/core/webserver/views.py:3608 src/js/core.js:1473
+#: sickrage/core/webserver/views.py:3609 src/js/core.js:1473
 msgid "Trim History"
 msgstr "Střih historie"
 
@@ -765,13 +765,13 @@ msgstr "Při spuštění rozhraní SickRage"
 msgid "Shows"
 msgstr "Ukazuje"
 
-#: sickrage/core/webserver/views.py:543 sickrage/core/webserver/views.py:544
+#: sickrage/core/webserver/views.py:544 sickrage/core/webserver/views.py:545
 #: sickrage/core/webserver/views/config/general.mako:145
 #: sickrage/core/webserver/views/layouts/main.mako:220
 msgid "Schedule"
 msgstr "Plán"
 
-#: sickrage/core/webserver/views.py:3618 sickrage/core/webserver/views.py:3619
+#: sickrage/core/webserver/views.py:3619 sickrage/core/webserver/views.py:3620
 #: sickrage/core/webserver/views/config/general.mako:148
 #: sickrage/core/webserver/views/layouts/main.mako:224
 msgid "History"
@@ -3514,7 +3514,7 @@ msgstr "Alespoň jeden zprostředkovatel je vyžadována, ale dva jsou doporučo
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent poskytovatelé mohou být přepnuto do"
 
-#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:3925
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3926
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Search Clients"
@@ -4699,7 +4699,7 @@ msgstr "Vytrhla:"
 msgid "Select Filtered Episodes"
 msgstr "Vyberte filtrované epizody"
 
-#: sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:4864
 #: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4758,7 +4758,7 @@ msgstr "Metropolisu"
 msgid "Download"
 msgstr "Stáhnout"
 
-#: sickrage/core/webserver/views.py:1020 sickrage/core/webserver/views.py:1021
+#: sickrage/core/webserver/views.py:1021 sickrage/core/webserver/views.py:1022
 #: sickrage/core/webserver/views/home/display_show.mako:554
 #: sickrage/core/webserver/views/home/index.mako:292
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4783,7 +4783,7 @@ msgstr "Neznámý"
 msgid "Retry Download"
 msgstr "Opakovat stahování"
 
-#: sickrage/core/webserver/views.py:4916
+#: sickrage/core/webserver/views.py:4917
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Hlavní"
@@ -4909,7 +4909,7 @@ msgstr "použití DVD pořadí místo pořadí vzduchu"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Síla úplná aktualizace\" je nutný, a máte existující epizody je seřadit ručně."
 
-#: sickrage/core/webserver/views.py:3657 sickrage/core/webserver/views.py:4800
+#: sickrage/core/webserver/views.py:3658 sickrage/core/webserver/views.py:4801
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5231,7 +5231,7 @@ msgstr "Provedení restartu"
 msgid "Daily Search"
 msgstr "Denní hledání"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4904
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Nevyřízené položky"
@@ -5256,7 +5256,7 @@ msgstr "Zaúčtovat proces"
 msgid "Subtitles Finder"
 msgstr "Titulky Finder"
 
-#: sickrage/core/webserver/views.py:4911
+#: sickrage/core/webserver/views.py:4912
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt kontrola"
@@ -5289,7 +5289,7 @@ msgstr "Ne"
 msgid "True"
 msgstr "Pravda"
 
-#: sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:4907
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Zobrazit frontu"
@@ -5467,7 +5467,7 @@ msgstr "<p>Select váš preferovaný fansub skupiny od <b>Available Groups</b> a
 msgid "Whitelist"
 msgstr "Whitelist"
 
-#: sickrage/core/webserver/views.py:1157
+#: sickrage/core/webserver/views.py:1158
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5559,7 +5559,7 @@ msgstr "Kořenové adresáře"
 msgid "New"
 msgstr "Nové"
 
-#: sickrage/core/webserver/views.py:1120 sickrage/core/webserver/views.py:1897
+#: sickrage/core/webserver/views.py:1121 sickrage/core/webserver/views.py:1898
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5585,7 +5585,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "Zobrazit seznam"
 
-#: sickrage/core/webserver/views.py:2266 sickrage/core/webserver/views.py:2267
+#: sickrage/core/webserver/views.py:2267 sickrage/core/webserver/views.py:2268
 #: sickrage/core/webserver/views/layouts/main.mako:146
 msgid "Add Shows"
 msgstr "Přidat pořady"
@@ -5600,18 +5600,18 @@ msgstr "Ruční zpracování"
 msgid "Manage"
 msgstr "Správa"
 
-#: sickrage/core/webserver/views.py:3437 sickrage/core/webserver/views.py:3438
+#: sickrage/core/webserver/views.py:3438 sickrage/core/webserver/views.py:3439
 #: sickrage/core/webserver/views/layouts/main.mako:172
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Hromadná aktualizace"
 
-#: sickrage/core/webserver/views.py:3045 sickrage/core/webserver/views.py:3046
+#: sickrage/core/webserver/views.py:3046 sickrage/core/webserver/views.py:3047
 #: sickrage/core/webserver/views/layouts/main.mako:175
 msgid "Backlog Overview"
 msgstr "Přehled nevyřízených položek"
 
-#: sickrage/core/webserver/views.py:3490 sickrage/core/webserver/views.py:3491
+#: sickrage/core/webserver/views.py:3491 sickrage/core/webserver/views.py:3492
 #: sickrage/core/webserver/views/layouts/main.mako:178
 msgid "Manage Queues"
 msgstr "Správa front"
@@ -5640,7 +5640,7 @@ msgstr "Aktualizace držíme"
 msgid "Manage Torrents"
 msgstr "Správa torrenty"
 
-#: sickrage/core/webserver/views.py:3465 sickrage/core/webserver/views.py:3466
+#: sickrage/core/webserver/views.py:3466 sickrage/core/webserver/views.py:3467
 #: sickrage/core/webserver/views/layouts/main.mako:209
 msgid "Failed Downloads"
 msgstr "Selhání stažení"
@@ -5653,12 +5653,12 @@ msgstr "Správa zmeškaných titulků"
 msgid "Config"
 msgstr "Konfigurace"
 
-#: sickrage/core/webserver/views.py:3648
+#: sickrage/core/webserver/views.py:3649
 #: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Help and Info"
 msgstr "Pomoc a informace"
 
-#: sickrage/core/webserver/views.py:3649
+#: sickrage/core/webserver/views.py:3650
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "General"
 msgstr "Obecné"
@@ -5667,28 +5667,28 @@ msgstr "Obecné"
 msgid "Backup and Restore"
 msgstr "Zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:4225
+#: sickrage/core/webserver/views.py:3653 sickrage/core/webserver/views.py:4226
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Search Providers"
 msgstr "Poskytovatelé hledání"
 
-#: sickrage/core/webserver/views.py:3653 sickrage/core/webserver/views.py:4716
+#: sickrage/core/webserver/views.py:3654 sickrage/core/webserver/views.py:4717
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Nastavení titulků"
 
-#: sickrage/core/webserver/views.py:3654 sickrage/core/webserver/views.py:4839
+#: sickrage/core/webserver/views.py:3655 sickrage/core/webserver/views.py:4840
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "Nastavení kvality"
 
-#: sickrage/core/webserver/views.py:2230 sickrage/core/webserver/views.py:2231
-#: sickrage/core/webserver/views.py:3655 sickrage/core/webserver/views.py:4030
+#: sickrage/core/webserver/views.py:2231 sickrage/core/webserver/views.py:2232
+#: sickrage/core/webserver/views.py:3656 sickrage/core/webserver/views.py:4031
 #: sickrage/core/webserver/views/layouts/main.mako:261
 msgid "Post Processing"
 msgstr "Zpracování po"
 
-#: sickrage/core/webserver/views.py:3656 sickrage/core/webserver/views.py:4382
+#: sickrage/core/webserver/views.py:3657 sickrage/core/webserver/views.py:4383
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "Oznámení"
@@ -5889,7 +5889,7 @@ msgstr "Nastavte, pokud se tyto pořady jsou vydána jako Show.03.02.2010, nikol
 msgid "Search for subtitles."
 msgstr "Hledat titulky."
 
-#: sickrage/core/webserver/views.py:3195 sickrage/core/webserver/views.py:3196
+#: sickrage/core/webserver/views.py:3196 sickrage/core/webserver/views.py:3197
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Hromadné úpravy"
@@ -5929,7 +5929,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "Ne v průběhu"
 
-#: sickrage/core/webserver/views.py:1154
+#: sickrage/core/webserver/views.py:1155
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5954,7 +5954,7 @@ msgstr "Propers vyhledávání zakázáno"
 msgid "Post-Processor:"
 msgstr "Post-procesor:"
 
-#: sickrage/core/webserver/views.py:4907
+#: sickrage/core/webserver/views.py:4908
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Hledat fronty"
@@ -6145,8 +6145,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nelze najít ke stažení na <i>%s</i>"
 
 #: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2635
-#: sickrage/core/webserver/views.py:2647
+#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2636
+#: sickrage/core/webserver/views.py:2648
 msgid "Unable to add show"
 msgstr "Nelze přidat show"
 
@@ -6202,905 +6202,905 @@ msgstr "Chyba HTTP 404"
 msgid "HTTP Error 500"
 msgstr "Chyba protokolu HTTP 500"
 
-#: sickrage/core/webserver/views.py:441
+#: sickrage/core/webserver/views.py:442
 msgid "API Key not generated"
 msgstr "Není generován klíč API"
 
-#: sickrage/core/webserver/views.py:445 sickrage/core/webserver/views.py:446
+#: sickrage/core/webserver/views.py:446 sickrage/core/webserver/views.py:447
 msgid "API Builder"
 msgstr "API Tvůrce"
 
-#: sickrage/core/webserver/views.py:590
+#: sickrage/core/webserver/views.py:591
 msgid "Invalid show parameters"
 msgstr "Zobrazit neplatné parametry"
 
-#: sickrage/core/webserver/views.py:595
+#: sickrage/core/webserver/views.py:596
 msgid "Invalid show paramaters"
 msgstr "Neplatné zobrazení parametrů"
 
-#: sickrage/core/webserver/views.py:602
+#: sickrage/core/webserver/views.py:603
 msgid "Invalid paramaters"
 msgstr "Neplatný parametrů"
 
-#: sickrage/core/webserver/views.py:605 sickrage/core/webserver/views.py:1700
-#: sickrage/core/webserver/views.py:1762
+#: sickrage/core/webserver/views.py:606 sickrage/core/webserver/views.py:1701
+#: sickrage/core/webserver/views.py:1763
 msgid "Episode couldn't be retrieved"
 msgstr "Nelze načíst epizoda"
 
-#: sickrage/core/webserver/views.py:643
+#: sickrage/core/webserver/views.py:644
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Chyba: Nepodporovaný požadavek. Odešlete žádost jsonp s proměnnou \"srcallback\" v řetězci dotazu."
 
-#: sickrage/core/webserver/views.py:679
+#: sickrage/core/webserver/views.py:680
 msgid "Success. Connected and authenticated"
 msgstr "Úspěch. Připojení a ověření"
 
-#: sickrage/core/webserver/views.py:681
+#: sickrage/core/webserver/views.py:682
 msgid "Authentication failed. SABnzbd expects "
 msgstr "Ověřování se nezdařilo. SABnzbd očekává "
 
-#: sickrage/core/webserver/views.py:681
+#: sickrage/core/webserver/views.py:682
 msgid " as authentication method, "
 msgstr " jako metodu ověřování, "
 
-#: sickrage/core/webserver/views.py:684
+#: sickrage/core/webserver/views.py:685
 msgid "Unable to connect to host"
 msgstr "Nelze se připojit k hostiteli"
 
-#: sickrage/core/webserver/views.py:702
+#: sickrage/core/webserver/views.py:703
 msgid "SMS sent successfully"
 msgstr "SMS odeslána úspěšně"
 
-#: sickrage/core/webserver/views.py:704
+#: sickrage/core/webserver/views.py:705
 msgid "Problem sending SMS: "
 msgstr "Problém při odesílání SMS: "
 
-#: sickrage/core/webserver/views.py:711
+#: sickrage/core/webserver/views.py:712
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Telegram oznámení bylo úspěšně dokončeno. Zkontrolujte své klienty Telegram, ujistěte se, že to fungovalo"
 
-#: sickrage/core/webserver/views.py:713
+#: sickrage/core/webserver/views.py:714
 msgid "Error sending Telegram notification: {message}"
 msgstr "Chyba při odesílání telegramu oznámení: {message}"
 
-#: sickrage/core/webserver/views.py:723
+#: sickrage/core/webserver/views.py:724
 msgid " with password: "
 msgstr " s heslem: "
 
-#: sickrage/core/webserver/views.py:726
+#: sickrage/core/webserver/views.py:727
 msgid "Registered and Tested growl successfully "
 msgstr "Registrovány a testováno vrčet úspěšně "
 
-#: sickrage/core/webserver/views.py:728
+#: sickrage/core/webserver/views.py:729
 msgid "Registration and Testing of growl failed "
 msgstr "Registrace a testování growl selhala "
 
-#: sickrage/core/webserver/views.py:735
+#: sickrage/core/webserver/views.py:736
 msgid "Test prowl notice sent successfully"
 msgstr "Testovat prowl oznámení úspěšně odeslán"
 
-#: sickrage/core/webserver/views.py:737
+#: sickrage/core/webserver/views.py:738
 msgid "Test prowl notice failed"
 msgstr "Testovat oznámení lovu se nezdařilo"
 
-#: sickrage/core/webserver/views.py:744
+#: sickrage/core/webserver/views.py:745
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 oznámení bylo úspěšně dokončeno. Zkontrolujte své klienty Boxcar2 Ujistěte se, že to fungovalo"
 
-#: sickrage/core/webserver/views.py:746
+#: sickrage/core/webserver/views.py:747
 msgid "Error sending Boxcar2 notification"
 msgstr "Chyba při odesílání oznámení Boxcar2"
 
-#: sickrage/core/webserver/views.py:753
+#: sickrage/core/webserver/views.py:754
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Hračka oznámení bylo úspěšně dokončeno. Zkontrolujte své klienty padavka, ujistěte se, že to fungovalo"
 
-#: sickrage/core/webserver/views.py:755
+#: sickrage/core/webserver/views.py:756
 msgid "Error sending Pushover notification"
 msgstr "Chyba odesílání oznámení hračka"
 
-#: sickrage/core/webserver/views.py:767
+#: sickrage/core/webserver/views.py:768
 msgid "Key verification successful"
 msgstr "Úspěšné ověření klíče"
 
-#: sickrage/core/webserver/views.py:769
+#: sickrage/core/webserver/views.py:770
 msgid "Unable to verify key"
 msgstr "Nelze ověřit klíč"
 
-#: sickrage/core/webserver/views.py:776
+#: sickrage/core/webserver/views.py:777
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Pípání úspěšný, zkontrolujte svůj twitter a přesvědčte se, zda to fungovalo"
 
-#: sickrage/core/webserver/views.py:778
+#: sickrage/core/webserver/views.py:779
 msgid "Error sending tweet"
 msgstr "Chyba odesílání pípání"
 
-#: sickrage/core/webserver/views.py:783
+#: sickrage/core/webserver/views.py:784
 msgid "Please enter a valid account sid"
 msgstr "Zadejte prosím platné číslo sid účtu"
 
-#: sickrage/core/webserver/views.py:786
+#: sickrage/core/webserver/views.py:787
 msgid "Please enter a valid auth token"
 msgstr "Zadejte prosím platný autentizační token"
 
-#: sickrage/core/webserver/views.py:789
+#: sickrage/core/webserver/views.py:790
 msgid "Please enter a valid phone sid"
 msgstr "Zadejte prosím platný telefon sid"
 
-#: sickrage/core/webserver/views.py:792
+#: sickrage/core/webserver/views.py:793
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Prosím formátovat telefonní číslo jako \"+ 1-###-###-###\""
 
-#: sickrage/core/webserver/views.py:796
+#: sickrage/core/webserver/views.py:797
 msgid "Authorization successful and number ownership verified"
 msgstr "Ověření úspěšné a číslo vlastnictví ověřena"
 
-#: sickrage/core/webserver/views.py:798
+#: sickrage/core/webserver/views.py:799
 msgid "Error sending sms"
 msgstr "Chyba při odesílání sms"
 
-#: sickrage/core/webserver/views.py:804
+#: sickrage/core/webserver/views.py:805
 msgid "Slack message successful"
 msgstr "Brzdové zpráva úspěšné"
 
-#: sickrage/core/webserver/views.py:806
+#: sickrage/core/webserver/views.py:807
 msgid "Slack message failed"
 msgstr "Brzdové zprávy se nezdařilo"
 
-#: sickrage/core/webserver/views.py:812
+#: sickrage/core/webserver/views.py:813
 msgid "Discord message successful"
 msgstr "Svár zpráva úspěšné"
 
-#: sickrage/core/webserver/views.py:814
+#: sickrage/core/webserver/views.py:815
 msgid "Discord message failed"
 msgstr "Svár zprávy se nezdařilo"
 
-#: sickrage/core/webserver/views.py:825
+#: sickrage/core/webserver/views.py:826
 msgid "Test KODI notice sent successfully to "
 msgstr "Testovací KODI oznámení odesláno úspěšně "
 
-#: sickrage/core/webserver/views.py:827
+#: sickrage/core/webserver/views.py:828
 msgid "Test KODI notice failed to "
 msgstr "Testovací KODI oznámení se nezdařilo. "
 
-#: sickrage/core/webserver/views.py:842
+#: sickrage/core/webserver/views.py:843
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Úspěšný test oznámení odeslaných klientovi Plex... "
 
-#: sickrage/core/webserver/views.py:844
+#: sickrage/core/webserver/views.py:845
 msgid "Test failed for Plex client ... "
 msgstr "Test se nezdařil pro klienta objektu Plex... "
 
-#: sickrage/core/webserver/views.py:847
+#: sickrage/core/webserver/views.py:848
 msgid "Tested Plex client(s): "
 msgstr "Testované Plex stavebník: "
 
-#: sickrage/core/webserver/views.py:862
+#: sickrage/core/webserver/views.py:863
 msgid "Successful test of Plex server(s) ... "
 msgstr "Úspěšný test servery Plex... "
 
-#: sickrage/core/webserver/views.py:865
+#: sickrage/core/webserver/views.py:866
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Test se nezdařil, ne Plex Media Server Hostitel zadán"
 
-#: sickrage/core/webserver/views.py:867
+#: sickrage/core/webserver/views.py:868
 msgid "Test failed for Plex server(s) ... "
 msgstr "Test se nezdařil pro objekt Plex servery... "
 
-#: sickrage/core/webserver/views.py:871
+#: sickrage/core/webserver/views.py:872
 msgid "Tested Plex Media Server host(s): "
 msgstr "Testované hostiteli serveru Plex Media Server: "
 
-#: sickrage/core/webserver/views.py:879
+#: sickrage/core/webserver/views.py:880
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Snažil se zaslání upozornění na ploše přes libnotify"
 
-#: sickrage/core/webserver/views.py:888 sickrage/core/webserver/views.py:921
+#: sickrage/core/webserver/views.py:889 sickrage/core/webserver/views.py:922
 msgid "Test notice sent successfully to "
 msgstr "Testovat oznámení úspěšně odeslána do "
 
-#: sickrage/core/webserver/views.py:890 sickrage/core/webserver/views.py:923
+#: sickrage/core/webserver/views.py:891 sickrage/core/webserver/views.py:924
 msgid "Test notice failed to "
 msgstr "Testovat oznámení se nezdařilo. "
 
-#: sickrage/core/webserver/views.py:897
+#: sickrage/core/webserver/views.py:898
 msgid "Successfully started the scan update"
 msgstr "Aktualizace kontroly byl úspěšně spuštěn"
 
-#: sickrage/core/webserver/views.py:899
+#: sickrage/core/webserver/views.py:900
 msgid "Test failed to start the scan update"
 msgstr "Test se nepodařilo spustit aktualizaci skenování"
 
-#: sickrage/core/webserver/views.py:907
+#: sickrage/core/webserver/views.py:908
 msgid "Got settings from"
 msgstr "Mám nastavení z"
 
-#: sickrage/core/webserver/views.py:912
+#: sickrage/core/webserver/views.py:913
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Selhala! Přesvědčte se, zda váš Popcorn je na a NMJ běží. (viz chyby protokolu &-> ladění pro podrobnější informace)"
 
-#: sickrage/core/webserver/views.py:940
+#: sickrage/core/webserver/views.py:941
 msgid "Trakt Authorized"
 msgstr "Trakt autorizovaného"
 
-#: sickrage/core/webserver/views.py:941
+#: sickrage/core/webserver/views.py:942
 msgid "Trakt Not Authorized!"
 msgstr "Trakt není povoleno!"
 
-#: sickrage/core/webserver/views.py:968
+#: sickrage/core/webserver/views.py:969
 msgid "Test email sent successfully! Check inbox."
 msgstr "Zkušební e-mail byl úspěšně odeslán! Kontrola složky Doručená pošta."
 
-#: sickrage/core/webserver/views.py:970
+#: sickrage/core/webserver/views.py:971
 #, python-format
 msgid "ERROR: %s"
 msgstr "CHYBA: %s"
 
-#: sickrage/core/webserver/views.py:977
+#: sickrage/core/webserver/views.py:978
 msgid "Test NMA notice sent successfully"
 msgstr "Testovací NMA Upozornění úspěšně odeslán"
 
-#: sickrage/core/webserver/views.py:979
+#: sickrage/core/webserver/views.py:980
 msgid "Test NMA notice failed"
 msgstr "NMA Upozornění testu selhal"
 
-#: sickrage/core/webserver/views.py:985
+#: sickrage/core/webserver/views.py:986
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot oznámení bylo úspěšně dokončeno. Zkontrolujte své klienty Pushalot Ujistěte se, že to fungovalo"
 
-#: sickrage/core/webserver/views.py:987
+#: sickrage/core/webserver/views.py:988
 msgid "Error sending Pushalot notification"
 msgstr "Chyba při odesílání oznámení Pushalot"
 
-#: sickrage/core/webserver/views.py:993
+#: sickrage/core/webserver/views.py:994
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet oznámení bylo úspěšně dokončeno. Zkontrolujte zařízení Ujistěte se, že to fungovalo"
 
-#: sickrage/core/webserver/views.py:995
+#: sickrage/core/webserver/views.py:996
 msgid "Error sending Pushbullet notification"
 msgstr "Chyba při odesílání oznámení Pushbullet"
 
-#: sickrage/core/webserver/views.py:1003
+#: sickrage/core/webserver/views.py:1004
 msgid "Error getting Pushbullet devices"
 msgstr "Při načítání informací o zařízení Pushbullet"
 
-#: sickrage/core/webserver/views.py:1033
+#: sickrage/core/webserver/views.py:1034
 msgid "Shutting down"
 msgstr "Vypínání"
 
-#: sickrage/core/webserver/views.py:1033
+#: sickrage/core/webserver/views.py:1034
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE se vypíná"
 
-#: sickrage/core/webserver/views.py:1044
+#: sickrage/core/webserver/views.py:1045
 msgid "Restarting"
 msgstr "Restartování"
 
-#: sickrage/core/webserver/views.py:1044
+#: sickrage/core/webserver/views.py:1045
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE restartování"
 
-#: sickrage/core/webserver/views.py:1063
+#: sickrage/core/webserver/views.py:1064
 msgid "No new updates!"
 msgstr "Žádné nové aktualizace!"
 
-#: sickrage/core/webserver/views.py:1075
+#: sickrage/core/webserver/views.py:1076
 msgid "Update Failed"
 msgstr "Aktualizace se nezdařila."
 
-#: sickrage/core/webserver/views.py:1076
+#: sickrage/core/webserver/views.py:1077
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Aktualizace nebyla úspěšná, není restartování. Zkontrolujte protokol na Další informace."
 
-#: sickrage/core/webserver/views.py:1081
+#: sickrage/core/webserver/views.py:1082
 msgid "Successfully found {path}"
 msgstr "Úspěšně našel {path}"
 
-#: sickrage/core/webserver/views.py:1083
+#: sickrage/core/webserver/views.py:1084
 msgid "Failed to find {path}"
 msgstr "Nepodařilo se najít {path}"
 
-#: sickrage/core/webserver/views.py:1086
+#: sickrage/core/webserver/views.py:1087
 msgid "Installing SiCKRAGE requirements"
 msgstr "Instalace SiCKRAGE požadavky"
 
-#: sickrage/core/webserver/views.py:1088
+#: sickrage/core/webserver/views.py:1089
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "Nepodařilo se nainstalovat SiCKRAGE požadavky"
 
-#: sickrage/core/webserver/views.py:1090
+#: sickrage/core/webserver/views.py:1091
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "SiCKRAGE požadavky úspěšně nainstalovat!"
 
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/webserver/views.py:1097
 msgid "Checking out branch: "
 msgstr "Rezervování větev: "
 
-#: sickrage/core/webserver/views.py:1098
+#: sickrage/core/webserver/views.py:1099
 msgid "Branch checkout successful, restarting: "
 msgstr "Pokladna pobočky úspěšný, restartování: "
 
-#: sickrage/core/webserver/views.py:1101
+#: sickrage/core/webserver/views.py:1102
 msgid "Already on branch: "
 msgstr "Již na větvi: "
 
-#: sickrage/core/webserver/views.py:1107 sickrage/core/webserver/views.py:1112
-#: sickrage/core/webserver/views.py:1293 sickrage/core/webserver/views.py:1302
-#: sickrage/core/webserver/views.py:1507 sickrage/core/webserver/views.py:1512
-#: sickrage/core/webserver/views.py:1525 sickrage/core/webserver/views.py:1530
-#: sickrage/core/webserver/views.py:1552 sickrage/core/webserver/views.py:1557
-#: sickrage/core/webserver/views.py:1570 sickrage/core/webserver/views.py:1575
-#: sickrage/core/webserver/views.py:1591 sickrage/core/webserver/views.py:1596
-#: sickrage/core/webserver/views.py:1669 sickrage/core/webserver/views.py:1672
-#: sickrage/core/webserver/views.py:1676 sickrage/core/webserver/views.py:1678
-#: sickrage/core/webserver/views.py:1681 sickrage/core/webserver/views.py:1700
-#: sickrage/core/webserver/views.py:1718 sickrage/core/webserver/views.py:1721
-#: sickrage/core/webserver/views.py:1726 sickrage/core/webserver/views.py:1729
-#: sickrage/core/webserver/views.py:1734 sickrage/core/webserver/views.py:1736
-#: sickrage/core/webserver/views.py:1739 sickrage/core/webserver/views.py:1762
-#: sickrage/core/webserver/views.py:1863 sickrage/core/webserver/views.py:1868
-#: sickrage/core/webserver/views.py:1871 sickrage/core/webserver/views.py:1914
-#: sickrage/core/webserver/views.py:1920 sickrage/core/webserver/views.py:1923
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:1108 sickrage/core/webserver/views.py:1113
+#: sickrage/core/webserver/views.py:1294 sickrage/core/webserver/views.py:1303
+#: sickrage/core/webserver/views.py:1508 sickrage/core/webserver/views.py:1513
+#: sickrage/core/webserver/views.py:1526 sickrage/core/webserver/views.py:1531
+#: sickrage/core/webserver/views.py:1553 sickrage/core/webserver/views.py:1558
+#: sickrage/core/webserver/views.py:1571 sickrage/core/webserver/views.py:1576
+#: sickrage/core/webserver/views.py:1592 sickrage/core/webserver/views.py:1597
+#: sickrage/core/webserver/views.py:1670 sickrage/core/webserver/views.py:1673
+#: sickrage/core/webserver/views.py:1677 sickrage/core/webserver/views.py:1679
+#: sickrage/core/webserver/views.py:1682 sickrage/core/webserver/views.py:1701
+#: sickrage/core/webserver/views.py:1719 sickrage/core/webserver/views.py:1722
+#: sickrage/core/webserver/views.py:1727 sickrage/core/webserver/views.py:1730
+#: sickrage/core/webserver/views.py:1735 sickrage/core/webserver/views.py:1737
+#: sickrage/core/webserver/views.py:1740 sickrage/core/webserver/views.py:1763
+#: sickrage/core/webserver/views.py:1864 sickrage/core/webserver/views.py:1869
+#: sickrage/core/webserver/views.py:1872 sickrage/core/webserver/views.py:1915
+#: sickrage/core/webserver/views.py:1921 sickrage/core/webserver/views.py:1924
+#: sickrage/core/webserver/views.py:4914
 msgid "Error"
 msgstr "Chyba"
 
-#: sickrage/core/webserver/views.py:1107 sickrage/core/webserver/views.py:1507
-#: sickrage/core/webserver/views.py:1525 sickrage/core/webserver/views.py:1552
-#: sickrage/core/webserver/views.py:1570 sickrage/core/webserver/views.py:1591
+#: sickrage/core/webserver/views.py:1108 sickrage/core/webserver/views.py:1508
+#: sickrage/core/webserver/views.py:1526 sickrage/core/webserver/views.py:1553
+#: sickrage/core/webserver/views.py:1571 sickrage/core/webserver/views.py:1592
 msgid "Invalid show ID"
 msgstr "Neplatný průkaz"
 
-#: sickrage/core/webserver/views.py:1112 sickrage/core/webserver/views.py:1868
-#: sickrage/core/webserver/views.py:1919
+#: sickrage/core/webserver/views.py:1113 sickrage/core/webserver/views.py:1869
+#: sickrage/core/webserver/views.py:1920
 msgid "Show not in show list"
 msgstr "Zobrazit v seznamu zobrazit"
 
-#: sickrage/core/webserver/views.py:1128
+#: sickrage/core/webserver/views.py:1129
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Tato show je právě stahuje - info níže je neúplný."
 
-#: sickrage/core/webserver/views.py:1131
+#: sickrage/core/webserver/views.py:1132
 msgid "The information on this page is in the process of being updated."
 msgstr "Informace na této stránce jsou právě aktualizovány."
 
-#: sickrage/core/webserver/views.py:1134
+#: sickrage/core/webserver/views.py:1135
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Epizody níže jsou v současné době aktualizována z disku"
 
-#: sickrage/core/webserver/views.py:1137
+#: sickrage/core/webserver/views.py:1138
 msgid "Currently downloading subtitles for this show"
 msgstr "V současné době stahování titulků pro tuto show"
 
-#: sickrage/core/webserver/views.py:1140
+#: sickrage/core/webserver/views.py:1141
 msgid "This show is queued to be refreshed."
 msgstr "Tento pořad je zařazen k aktualizaci."
 
-#: sickrage/core/webserver/views.py:1143
+#: sickrage/core/webserver/views.py:1144
 msgid "This show is queued and awaiting an update."
 msgstr "Tento pořad je zařazen do fronty a čeká na aktualizaci."
 
-#: sickrage/core/webserver/views.py:1146
+#: sickrage/core/webserver/views.py:1147
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Tento pořad je zařazen do fronty a čeká titulky download."
 
-#: sickrage/core/webserver/views.py:1151
+#: sickrage/core/webserver/views.py:1152
 msgid "Resume"
 msgstr "Životopis"
 
-#: sickrage/core/webserver/views.py:1159
+#: sickrage/core/webserver/views.py:1160
 msgid "Re-scan files"
 msgstr "Znovu prohledat soubory"
 
-#: sickrage/core/webserver/views.py:1161
+#: sickrage/core/webserver/views.py:1162
 msgid "Full Update"
 msgstr "Úplná aktualizace"
 
-#: sickrage/core/webserver/views.py:1165
+#: sickrage/core/webserver/views.py:1166
 msgid "Update show in KODI"
 msgstr "Aktualizace show v KODI"
 
-#: sickrage/core/webserver/views.py:1168
+#: sickrage/core/webserver/views.py:1169
 msgid "Update show in Emby"
 msgstr "Aktualizace show v držíme"
 
-#: sickrage/core/webserver/views.py:1170 sickrage/core/webserver/views.py:1905
-#: sickrage/core/webserver/views.py:1906
+#: sickrage/core/webserver/views.py:1171 sickrage/core/webserver/views.py:1906
+#: sickrage/core/webserver/views.py:1907
 msgid "Preview Rename"
 msgstr "Náhled přejmenování"
 
-#: sickrage/core/webserver/views.py:1176
+#: sickrage/core/webserver/views.py:1177
 msgid "Download Subtitles"
 msgstr "Stáhnout titulky"
 
-#: sickrage/core/webserver/views.py:1289
+#: sickrage/core/webserver/views.py:1290
 msgid "Invalid show ID: "
 msgstr "Neplatný průkaz: "
 
-#: sickrage/core/webserver/views.py:1298
+#: sickrage/core/webserver/views.py:1299
 msgid "Unable to find the specified show: "
 msgstr "Nepodařilo se najít zadanou Ukázat: "
 
-#: sickrage/core/webserver/views.py:1318
+#: sickrage/core/webserver/views.py:1319
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "Nelze načíst Fansub skupiny z AniDB."
 
-#: sickrage/core/webserver/views.py:1334 sickrage/core/webserver/views.py:1335
-#: sickrage/core/webserver/views.py:1345 sickrage/core/webserver/views.py:1346
+#: sickrage/core/webserver/views.py:1335 sickrage/core/webserver/views.py:1336
+#: sickrage/core/webserver/views.py:1346 sickrage/core/webserver/views.py:1347
 msgid "Edit Show"
 msgstr "Upravit Show"
 
-#: sickrage/core/webserver/views.py:1428
+#: sickrage/core/webserver/views.py:1429
 msgid "Unable to refresh this show: {}"
 msgstr "Nelze aktualizovat tento pořad: {}"
 
-#: sickrage/core/webserver/views.py:1460
+#: sickrage/core/webserver/views.py:1461
 msgid "Unable to refresh this show:{}"
 msgstr "Nelze aktualizovat tento pořad :{}"
 
-#: sickrage/core/webserver/views.py:1466
+#: sickrage/core/webserver/views.py:1467
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Složka v %s neobsahuje tvshow.nfo - kopírovat soubory do této složky, než změníte adresář v SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1478 sickrage/core/webserver/views.py:3387
+#: sickrage/core/webserver/views.py:1479 sickrage/core/webserver/views.py:3388
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1485
+#: sickrage/core/webserver/views.py:1486
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Nelze vynutit aktualizaci na scéně výjimky show."
 
-#: sickrage/core/webserver/views.py:1499 sickrage/core/webserver/views.py:3312
+#: sickrage/core/webserver/views.py:1500 sickrage/core/webserver/views.py:3313
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} při ukládání změn:"
 
-#: sickrage/core/webserver/views.py:1512 sickrage/core/webserver/views.py:1530
-#: sickrage/core/webserver/views.py:1557 sickrage/core/webserver/views.py:1575
-#: sickrage/core/webserver/views.py:1596
+#: sickrage/core/webserver/views.py:1513 sickrage/core/webserver/views.py:1531
+#: sickrage/core/webserver/views.py:1558 sickrage/core/webserver/views.py:1576
+#: sickrage/core/webserver/views.py:1597
 msgid "Unable to find the specified show"
 msgstr "Nelze najít zadaný show"
 
-#: sickrage/core/webserver/views.py:1519
+#: sickrage/core/webserver/views.py:1520
 #, python-format
 msgid "%s has been %s"
 msgstr "%s byla %s"
 
-#: sickrage/core/webserver/views.py:1519
+#: sickrage/core/webserver/views.py:1520
 msgid "resumed"
 msgstr "obnoveno"
 
-#: sickrage/core/webserver/views.py:1519
+#: sickrage/core/webserver/views.py:1520
 msgid "paused"
 msgstr "pozastaveno"
 
-#: sickrage/core/webserver/views.py:1535
+#: sickrage/core/webserver/views.py:1536
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s byla %s %s"
 
-#: sickrage/core/webserver/views.py:1538
+#: sickrage/core/webserver/views.py:1539
 msgid "deleted"
 msgstr "odstraněno"
 
-#: sickrage/core/webserver/views.py:1538
+#: sickrage/core/webserver/views.py:1539
 msgid "trashed"
 msgstr "ožralý"
 
-#: sickrage/core/webserver/views.py:1539
+#: sickrage/core/webserver/views.py:1540
 msgid "(media untouched)"
 msgstr "(média beze změny)"
 
-#: sickrage/core/webserver/views.py:1539
+#: sickrage/core/webserver/views.py:1540
 msgid "(with all related media)"
 msgstr "(se všemi související média)"
 
-#: sickrage/core/webserver/views.py:1543
+#: sickrage/core/webserver/views.py:1544
 msgid "Unable to delete this show."
 msgstr "Nelze odstranit tuto show."
 
-#: sickrage/core/webserver/views.py:1562
+#: sickrage/core/webserver/views.py:1563
 msgid "Unable to refresh this show."
 msgstr "Nelze aktualizovat tuto show."
 
-#: sickrage/core/webserver/views.py:1581
+#: sickrage/core/webserver/views.py:1582
 msgid "Unable to update this show."
 msgstr "Nelze aktualizovat tuto show."
 
-#: sickrage/core/webserver/views.py:1620
+#: sickrage/core/webserver/views.py:1621
 msgid "Library update command sent to KODI host(s): "
 msgstr "Příkaz update knihovny zaslány KODI hostiteli: "
 
-#: sickrage/core/webserver/views.py:1622
+#: sickrage/core/webserver/views.py:1623
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Nelze se spojit s jedním nebo více hostiteli KODI: "
 
-#: sickrage/core/webserver/views.py:1632
+#: sickrage/core/webserver/views.py:1633
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Příkaz update knihovny odesílány serveru Plex Media Server hostitele: "
 
-#: sickrage/core/webserver/views.py:1636
+#: sickrage/core/webserver/views.py:1637
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Nelze se spojit s Plex Media Server hostitele: "
 
-#: sickrage/core/webserver/views.py:1648
+#: sickrage/core/webserver/views.py:1649
 msgid "Library update command sent to Emby host: "
 msgstr "Příkaz update knihovny zaslány držíme hostitele: "
 
-#: sickrage/core/webserver/views.py:1651
+#: sickrage/core/webserver/views.py:1652
 msgid "Unable to contact Emby host: "
 msgstr "Nelze se spojit s držíme hostitele: "
 
-#: sickrage/core/webserver/views.py:1661
+#: sickrage/core/webserver/views.py:1662
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Synchronizace Trakt s SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1667 sickrage/core/webserver/views.py:1716
-#: sickrage/core/webserver/views.py:1913
+#: sickrage/core/webserver/views.py:1668 sickrage/core/webserver/views.py:1717
+#: sickrage/core/webserver/views.py:1914
 msgid "You must specify a show and at least one episode"
 msgstr "Musíte zadat alespoň jednu epizodu a show"
 
-#: sickrage/core/webserver/views.py:1724
+#: sickrage/core/webserver/views.py:1725
 msgid "Invalid status"
 msgstr "Neplatný stav"
 
-#: sickrage/core/webserver/views.py:1819
+#: sickrage/core/webserver/views.py:1820
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Nevyřízené položky se automaticky spustí pro následující období "
 
-#: sickrage/core/webserver/views.py:1826 sickrage/core/webserver/views.py:1846
+#: sickrage/core/webserver/views.py:1827 sickrage/core/webserver/views.py:1847
 msgid "Season "
 msgstr "Sezóny "
 
-#: sickrage/core/webserver/views.py:1833
+#: sickrage/core/webserver/views.py:1834
 msgid "Backlog started"
 msgstr "Nevyřízené položky začala"
 
-#: sickrage/core/webserver/views.py:1839
+#: sickrage/core/webserver/views.py:1840
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "Opakování hledání byl automaticky spustí pro následující sezónu "
 
-#: sickrage/core/webserver/views.py:1853
+#: sickrage/core/webserver/views.py:1854
 msgid "Retry Search started"
 msgstr "Opakovat hledání začalo"
 
-#: sickrage/core/webserver/views.py:1863
+#: sickrage/core/webserver/views.py:1864
 msgid "You must specify a show"
 msgstr "Je třeba zadat show"
 
-#: sickrage/core/webserver/views.py:1871 sickrage/core/webserver/views.py:1923
+#: sickrage/core/webserver/views.py:1872 sickrage/core/webserver/views.py:1924
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "Nelze přejmenovat epizody, když chybí dir Ukázat."
 
-#: sickrage/core/webserver/views.py:2058
+#: sickrage/core/webserver/views.py:2059
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Nové titulky stáhnout: %s"
 
-#: sickrage/core/webserver/views.py:2060
+#: sickrage/core/webserver/views.py:2061
 msgid "No subtitles downloaded"
 msgstr "Žádné titulky stáhnout"
 
-#: sickrage/core/webserver/views.py:2182 sickrage/core/webserver/views.py:2186
+#: sickrage/core/webserver/views.py:2183 sickrage/core/webserver/views.py:2187
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2182
+#: sickrage/core/webserver/views.py:2183
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2186
+#: sickrage/core/webserver/views.py:2187
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2255
+#: sickrage/core/webserver/views.py:2256
 msgid "Postprocessing results"
 msgstr "Postprocessing výsledků"
 
-#: sickrage/core/webserver/views.py:2315
+#: sickrage/core/webserver/views.py:2316
 msgid "No folders selected."
 msgstr "Nejsou vybrány žádné složky."
 
-#: sickrage/core/webserver/views.py:2451 sickrage/core/webserver/views.py:2452
+#: sickrage/core/webserver/views.py:2452 sickrage/core/webserver/views.py:2453
 msgid "New Show"
 msgstr "Nový pořad"
 
-#: sickrage/core/webserver/views.py:2516 sickrage/core/webserver/views.py:2517
+#: sickrage/core/webserver/views.py:2517 sickrage/core/webserver/views.py:2518
 msgid "Existing Show"
 msgstr "Stávající Show"
 
-#: sickrage/core/webserver/views.py:2558 sickrage/core/webserver/views.py:2700
+#: sickrage/core/webserver/views.py:2559 sickrage/core/webserver/views.py:2701
 msgid "Adding Show"
 msgstr "Přidání Show"
 
-#: sickrage/core/webserver/views.py:2558 sickrage/core/webserver/views.py:2700
+#: sickrage/core/webserver/views.py:2559 sickrage/core/webserver/views.py:2701
 msgid "Adding the specified show into "
 msgstr "Přidání zadaného pořad do "
 
-#: sickrage/core/webserver/views.py:2561
+#: sickrage/core/webserver/views.py:2562
 msgid "No root directories setup, please go back and add one."
 msgstr "Žádné kořenových adresářů nastavení, prosím vraťte se a přidejte jeden."
 
-#: sickrage/core/webserver/views.py:2612
+#: sickrage/core/webserver/views.py:2613
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Neznámá chyba. Nelze přidat show kvůli problému s výběrem show."
 
-#: sickrage/core/webserver/views.py:2636
+#: sickrage/core/webserver/views.py:2637
 msgid "Folder "
 msgstr "Složka "
 
-#: sickrage/core/webserver/views.py:2636
+#: sickrage/core/webserver/views.py:2637
 msgid " exists already"
 msgstr " již existuje"
 
-#: sickrage/core/webserver/views.py:2648
+#: sickrage/core/webserver/views.py:2649
 msgid "Unable to create the folder , can't add the show"
 msgstr "Nelze vytvořit složku, nelze přidat show"
 
-#: sickrage/core/webserver/views.py:2775
+#: sickrage/core/webserver/views.py:2776
 msgid "Shows Added"
 msgstr "Zobrazí přidané"
 
-#: sickrage/core/webserver/views.py:2776
+#: sickrage/core/webserver/views.py:2777
 msgid "Automatically added "
 msgstr "Automaticky přidány "
 
-#: sickrage/core/webserver/views.py:2777
+#: sickrage/core/webserver/views.py:2778
 msgid " from their existing metadata files"
 msgstr " z jejich stávající metadata souborů"
 
-#: sickrage/core/webserver/views.py:2959 sickrage/core/webserver/views.py:2960
+#: sickrage/core/webserver/views.py:2960 sickrage/core/webserver/views.py:2961
 msgid "Missing Subtitles"
 msgstr "Chybějící titulky"
 
-#: sickrage/core/webserver/views.py:3395
+#: sickrage/core/webserver/views.py:3396
 msgid "Unable to refresh show "
 msgstr "Nelze aktualizovat show "
 
-#: sickrage/core/webserver/views.py:3406
+#: sickrage/core/webserver/views.py:3407
 msgid "Errors encountered"
 msgstr "Chyby, které nastaly"
 
-#: sickrage/core/webserver/views.py:3412
+#: sickrage/core/webserver/views.py:3413
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3417
+#: sickrage/core/webserver/views.py:3418
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3422
+#: sickrage/core/webserver/views.py:3423
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3427
+#: sickrage/core/webserver/views.py:3428
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3432
+#: sickrage/core/webserver/views.py:3433
 msgid "The following actions were queued:"
 msgstr "Byly zařazeny následující akce:"
 
-#: sickrage/core/webserver/views.py:3501
+#: sickrage/core/webserver/views.py:3502
 msgid "Backlog search started"
 msgstr "Nevyřízené položky hledání začalo"
 
-#: sickrage/core/webserver/views.py:3509
+#: sickrage/core/webserver/views.py:3510
 msgid "Daily search started"
 msgstr "Denní hledání začalo"
 
-#: sickrage/core/webserver/views.py:3517
+#: sickrage/core/webserver/views.py:3518
 msgid "Find propers search started"
 msgstr "Najít propers hledání začalo"
 
-#: sickrage/core/webserver/views.py:3628
+#: sickrage/core/webserver/views.py:3629
 msgid "History cleared"
 msgstr "Vymazání historie"
 
-#: sickrage/core/webserver/views.py:3635
+#: sickrage/core/webserver/views.py:3636
 msgid "Removed history entries older than 30 days"
 msgstr "Položky odstraněné historie starší než 30 dní"
 
-#: sickrage/core/webserver/views.py:3650 sickrage/core/webserver/views.py:3867
+#: sickrage/core/webserver/views.py:3651 sickrage/core/webserver/views.py:3868
 msgid "Backup/Restore"
 msgstr "Zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:3667
+#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:3668
 msgid "Configuration"
 msgstr "Konfigurace"
 
-#: sickrage/core/webserver/views.py:3675
+#: sickrage/core/webserver/views.py:3676
 msgid "Configuration Reset to Defaults"
 msgstr "Konfigurace obnovit výchozí nastavení"
 
-#: sickrage/core/webserver/views.py:3688
+#: sickrage/core/webserver/views.py:3689
 msgid "Config - General"
 msgstr "Config - obecné"
 
-#: sickrage/core/webserver/views.py:3689
+#: sickrage/core/webserver/views.py:3690
 msgid "General Configuration"
 msgstr "Obecná konfigurace"
 
-#: sickrage/core/webserver/views.py:3849 sickrage/core/webserver/views.py:4012
-#: sickrage/core/webserver/views.py:4143 sickrage/core/webserver/views.py:4364
-#: sickrage/core/webserver/views.py:4698 sickrage/core/webserver/views.py:4782
-#: sickrage/core/webserver/views.py:4821
+#: sickrage/core/webserver/views.py:3850 sickrage/core/webserver/views.py:4013
+#: sickrage/core/webserver/views.py:4144 sickrage/core/webserver/views.py:4365
+#: sickrage/core/webserver/views.py:4699 sickrage/core/webserver/views.py:4783
+#: sickrage/core/webserver/views.py:4822
 msgid "Error(s) Saving Configuration"
 msgstr "Chyby konfigurace"
 
-#: sickrage/core/webserver/views.py:3851
+#: sickrage/core/webserver/views.py:3852
 msgid "[GENERAL] Configuration Saved"
 msgstr "Uloženo v [GENERAL] konfigurace"
 
-#: sickrage/core/webserver/views.py:3866
+#: sickrage/core/webserver/views.py:3867
 msgid "Config - Backup/Restore"
 msgstr "Config - zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3879
+#: sickrage/core/webserver/views.py:3880
 msgid "Backup SUCCESSFUL"
 msgstr "Zálohování úspěšná"
 
-#: sickrage/core/webserver/views.py:3881
+#: sickrage/core/webserver/views.py:3882
 msgid "Backup FAILED!"
 msgstr "Zálohování selhalo!"
 
-#: sickrage/core/webserver/views.py:3883
+#: sickrage/core/webserver/views.py:3884
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Je třeba vybrat složku pro uložení zálohy do první!"
 
-#: sickrage/core/webserver/views.py:3903
+#: sickrage/core/webserver/views.py:3904
 msgid "Successfully extracted restore files to "
 msgstr "Úspěšně extrahován obnovených souborů "
 
-#: sickrage/core/webserver/views.py:3904
+#: sickrage/core/webserver/views.py:3905
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage k dokončení obnovení."
 
-#: sickrage/core/webserver/views.py:3906
+#: sickrage/core/webserver/views.py:3907
 msgid "Restore FAILED"
 msgstr "Obnovení se nezdařilo"
 
-#: sickrage/core/webserver/views.py:3908
+#: sickrage/core/webserver/views.py:3909
 msgid "You need to select a backup file to restore!"
 msgstr "Je třeba vybrat záložní soubor pro obnovení!"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3925
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3950 sickrage/core/webserver/views.py:3953
-#: sickrage/core/webserver/views.py:4058
+#: sickrage/core/webserver/views.py:3951 sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:4059
 msgid "Unable to create directory "
 msgstr "Nelze vytvořit adresář "
 
-#: sickrage/core/webserver/views.py:3950 sickrage/core/webserver/views.py:3953
-#: sickrage/core/webserver/views.py:4058
+#: sickrage/core/webserver/views.py:3951 sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:4059
 msgid ", dir not changed."
 msgstr ", dir není změněna."
 
-#: sickrage/core/webserver/views.py:4014
+#: sickrage/core/webserver/views.py:4015
 msgid "[SEARCH] Configuration Saved"
 msgstr "Uloženo v [SEARCH] konfigurace"
 
-#: sickrage/core/webserver/views.py:4029
+#: sickrage/core/webserver/views.py:4030
 msgid "Config - Post Processing"
 msgstr "Config - Post zpracování"
 
-#: sickrage/core/webserver/views.py:4069
+#: sickrage/core/webserver/views.py:4070
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Rozbalení není podporováno, zakázání rozbalit nastavení"
 
-#: sickrage/core/webserver/views.py:4104 sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4105 sickrage/core/webserver/views.py:4116
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Jste se pokusili, uložení neplatný anime pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4106 sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4107 sickrage/core/webserver/views.py:4118
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Jste se pokusili uložit neplatný pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4123
+#: sickrage/core/webserver/views.py:4124
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Jste se pokusili uložení neplatný vzduchu datum pojmenování config, neukládá nastavení vzduchu podle data"
 
-#: sickrage/core/webserver/views.py:4129
+#: sickrage/core/webserver/views.py:4130
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Jste se pokusili, uložení neplatný sportovní pojmenování config, neukládá nastavení sportovní"
 
-#: sickrage/core/webserver/views.py:4145
+#: sickrage/core/webserver/views.py:4146
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "Uloženo v [POST-PROCESSING] konfigurace"
 
-#: sickrage/core/webserver/views.py:4224
+#: sickrage/core/webserver/views.py:4225
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4265
+#: sickrage/core/webserver/views.py:4266
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nebyl zadán žádný název poskytovatele"
 
-#: sickrage/core/webserver/views.py:4267
+#: sickrage/core/webserver/views.py:4268
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Zadána žádná adresa Url poskytovatele"
 
-#: sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:4270
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Žádný zprostředkovatel Api klíč zadán"
 
-#: sickrage/core/webserver/views.py:4366
+#: sickrage/core/webserver/views.py:4367
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "Uloženo v [PROVIDERS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4381
+#: sickrage/core/webserver/views.py:4382
 msgid "Config - Notifications"
 msgstr "Config - oznámení"
 
-#: sickrage/core/webserver/views.py:4700
+#: sickrage/core/webserver/views.py:4701
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "Uloženo v [NOTIFICATIONS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4715
+#: sickrage/core/webserver/views.py:4716
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4784
+#: sickrage/core/webserver/views.py:4785
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "Uloženo v [SUBTITLES] konfigurace"
 
-#: sickrage/core/webserver/views.py:4799
+#: sickrage/core/webserver/views.py:4800
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4823
+#: sickrage/core/webserver/views.py:4824
 msgid "[ANIME] Configuration Saved"
 msgstr "Uloženo v [ANIME] konfigurace"
 
-#: sickrage/core/webserver/views.py:4838
+#: sickrage/core/webserver/views.py:4839
 msgid "Config - Quality Settings"
 msgstr "Config - nastavení kvality"
 
-#: sickrage/core/webserver/views.py:4850
+#: sickrage/core/webserver/views.py:4851
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[NASTAVENÍ] Uložení konfigurace"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4903
 msgid "Daily Searcher"
 msgstr "Denní Searcher"
 
-#: sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:4905
 msgid "Show Updater"
 msgstr "Zobrazit Updater"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4906
 msgid "Check Version"
 msgstr "Kontrola verze"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4909
 msgid "Find Propers"
 msgstr "Najít Propers"
 
-#: sickrage/core/webserver/views.py:4909
+#: sickrage/core/webserver/views.py:4910
 msgid "Postprocessor"
 msgstr "Postprocesor"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4911
 msgid "Find Subtitles"
 msgstr "Najít titulky"
 
-#: sickrage/core/webserver/views.py:4912
+#: sickrage/core/webserver/views.py:4913
 msgid "Event"
 msgstr "Událost"
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4915
 msgid "Tornado"
 msgstr "Tornádo"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4916
 msgid "Thread"
 msgstr "Vlákno"
 
