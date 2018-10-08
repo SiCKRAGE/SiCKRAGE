@@ -1549,47 +1549,50 @@ def app_statistics():
 
     max_download_count = 1000
 
-    for epData in sickrage.app.main_db.all('tv_episodes'):
-        showid = epData['showid']
-        if showid not in show_stat:
-            show_stat[showid] = {}
-            show_stat[showid]['ep_snatched'] = 0
-            show_stat[showid]['ep_downloaded'] = 0
-            show_stat[showid]['ep_total'] = 0
-            show_stat[showid]['ep_airs_next'] = None
-            show_stat[showid]['ep_airs_prev'] = None
-            show_stat[showid]['total_size'] = 0
+    for show in sickrage.app.showlist:
+        if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
+            continue
 
-        season = epData['season']
-        episode = epData['episode']
-        airdate = epData['airdate']
-        status = epData['status']
+        for epData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
+            if show.indexerid not in show_stat:
+                show_stat[show.indexerid] = {}
+                show_stat[show.indexerid]['ep_snatched'] = 0
+                show_stat[show.indexerid]['ep_downloaded'] = 0
+                show_stat[show.indexerid]['ep_total'] = 0
+                show_stat[show.indexerid]['ep_airs_next'] = None
+                show_stat[show.indexerid]['ep_airs_prev'] = None
+                show_stat[show.indexerid]['total_size'] = 0
 
-        if season > 0 and episode > 0 and airdate > 1:
-            if status in status_quality:
-                show_stat[showid]['ep_snatched'] += 1
-                overall_stats['episodes']['snatched'] += 1
+            season = epData['season']
+            episode = epData['episode']
+            airdate = epData['airdate']
+            status = epData['status']
 
-            if status in status_download:
-                show_stat[showid]['ep_downloaded'] += 1
-                overall_stats['episodes']['downloaded'] += 1
+            if season > 0 and episode > 0 and airdate > 1:
+                if status in status_quality:
+                    show_stat[show.indexerid]['ep_snatched'] += 1
+                    overall_stats['episodes']['snatched'] += 1
 
-            if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
-                    status in status_quality + status_download):
-                show_stat[showid]['ep_total'] += 1
+                if status in status_download:
+                    show_stat[show.indexerid]['ep_downloaded'] += 1
+                    overall_stats['episodes']['downloaded'] += 1
 
-            if show_stat[showid]['ep_total'] > max_download_count:
-                max_download_count = show_stat[showid]['ep_total']
+                if (airdate <= today and status in [SKIPPED, WANTED, FAILED]) or (
+                        status in status_quality + status_download):
+                    show_stat[show.indexerid]['ep_total'] += 1
 
-            if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[showid]['ep_airs_next']:
-                show_stat[showid]['ep_airs_next'] = airdate
-            elif airdate < today > show_stat[showid]['ep_airs_prev'] and status != UNAIRED:
-                show_stat[showid]['ep_airs_prev'] = airdate
+                if show_stat[show.indexerid]['ep_total'] > max_download_count:
+                    max_download_count = show_stat[show.indexerid]['ep_total']
 
-            show_stat[showid]['total_size'] += epData['file_size']
+                if airdate >= today and status in [WANTED, UNAIRED] and not show_stat[show.indexerid]['ep_airs_next']:
+                    show_stat[show.indexerid]['ep_airs_next'] = airdate
+                elif airdate < today > show_stat[show.indexerid]['ep_airs_prev'] and status != UNAIRED:
+                    show_stat[show.indexerid]['ep_airs_prev'] = airdate
 
-            overall_stats['episodes']['total'] += 1
-            overall_stats['total_size'] += epData['file_size']
+                show_stat[show.indexerid]['total_size'] += epData['file_size']
+
+                overall_stats['episodes']['total'] += 1
+                overall_stats['total_size'] += epData['file_size']
 
     max_download_count *= 100
 

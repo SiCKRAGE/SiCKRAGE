@@ -307,6 +307,7 @@ class LoginHandler(BaseHandler):
             return super(BaseHandler, self).redirect(authorization_url)
 
 
+
 class LogoutHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LogoutHandler, self).__init__(*args, **kwargs)
