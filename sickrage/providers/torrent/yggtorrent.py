@@ -31,12 +31,13 @@ from sickrage.providers import TorrentProvider
 class YggtorrentProvider(TorrentProvider):
     def __init__(self):
         """Initialize the class."""
-        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.to', True)
+        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.is', True)
 
         # URLs
         self.urls.update({
             'login': '{base_url}/user/login'.format(**self.urls),
             'search': '{base_url}/engine/search'.format(**self.urls),
+            'download': '{base_url}/engine/download_torrent?id=%s'.format(**self.urls)
         })
 
         # Credentials
@@ -86,7 +87,8 @@ class YggtorrentProvider(TorrentProvider):
 
         # Search Params
         search_params = {
-            'category': 2145
+            'category': 2145,
+            'do': 'search'
         }
 
         for mode in search_strings:
@@ -95,7 +97,7 @@ class YggtorrentProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug('Search string: {}'.format(search_string))
 
-                search_params['q'] = re.sub(r'[()]', '', search_string)
+                search_params['name'] = re.sub(r'[()]', '', search_string)
 
                 try:
                     data = self.session.get(self.urls['search'], params=search_params).text
@@ -117,7 +119,7 @@ class YggtorrentProvider(TorrentProvider):
         results = []
 
         with bs4_parser(data) as html:
-            torrent_table = html.find(class_='table table-striped')
+            torrent_table = html.find(class_='table-responsive results')
             torrent_rows = torrent_table('tr') if torrent_table else []
 
             # Continue only if at least one Release is found
@@ -125,23 +127,26 @@ class YggtorrentProvider(TorrentProvider):
                 sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            # Skip column headers
             for result in torrent_rows[1:]:
                 cells = result('td')
-                if len(cells) < 5:
+                if len(cells) < 9:
                     continue
 
                 try:
-                    title = cells[0].find('a', class_='torrent-name').get_text(strip=True)
-                    download_url = cells[0].find_all('a')[2]['href']
+                    info = cells[1].find('a')
+                    title = info.get_text(strip=True)
+                    download_url = info.get('href')
                     if not (title and download_url):
                         continue
 
-                    seeders = try_int(cells[4].get_text(strip=True), 1)
-                    leechers = try_int(cells[5].get_text(strip=True), 0)
+                    torrent_id = re.search(r'/(\d+)-', download_url)
+                    download_url = self.urls['download'] % torrent_id.group(1)
 
-                    torrent_size = cells[3].get_text()
-                    size = convert_size(torrent_size, -1)
+                    seeders = try_int(cells[7].get_text(strip=True), 0)
+                    leechers = try_int(cells[8].get_text(strip=True), 0)
+
+                    torrent_size = cells[5].get_text()
+                    size = convert_size(torrent_size, -1, ['O', 'KO', 'MO', 'GO', 'TO', 'PO'])
 
                     results += [
                         {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
@@ -158,8 +163,7 @@ class YggtorrentProvider(TorrentProvider):
         """Login method used for logging in before doing search and torrent downloads."""
         login_params = {
             'id': self.username,
-            'pass': self.password,
-            'ci_csrf_token': ''
+            'pass': self.password
         }
 
         try:
