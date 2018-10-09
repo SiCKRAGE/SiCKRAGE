@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ad81bb - 2018-10-08: Pre-Release v9.3.80.dev6 
+- * 9ca359a - 2018-10-08: Release v9.3.80 
+- * 615cf7d - 2018-10-08: Pre-Release v9.3.80.dev6 
 - * fabc483 - 2018-10-08: Added web session hook to handle redirects when doing posts. Fixed issues with getting search results from YGGTorrent provider. 
 - * f64a196 - 2018-10-08: Pre-Release v9.3.80.dev5 
 - * 7b0a85e - 2018-10-08: Fixed issue #273 - location not found when adding/removing a show 
