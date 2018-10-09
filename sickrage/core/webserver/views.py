@@ -307,6 +307,7 @@ class LoginHandler(BaseHandler):
             return super(BaseHandler, self).redirect(authorization_url)
 
 
+
 class LogoutHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(LogoutHandler, self).__init__(*args, **kwargs)
@@ -1895,7 +1896,7 @@ class Home(WebHandler):
 
         submenu = [
             {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
-             'icon': 'ui-icon ui-icon-pencil'}]
+             'icon': 'fas fa-edit'}]
 
         return self.render(
             "/home/test_renaming.mako",
@@ -3603,9 +3604,9 @@ class History(WebHandler):
                 history['actions'].sort(key=lambda d: d['time'], reverse=True)
 
         submenu = [
-            {'title': _('Clear History'), 'path': '/history/clearHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': _('Clear History'), 'path': '/history/clearHistory', 'icon': 'fas fa-trash',
              'class': 'clearhistory', 'confirm': True},
-            {'title': _('Trim History'), 'path': '/history/trimHistory', 'icon': 'ui-icon ui-icon-trash',
+            {'title': _('Trim History'), 'path': '/history/trimHistory', 'icon': 'fas fa-cut',
              'class': 'trimhistory', 'confirm': True},
         ]
 
@@ -4858,14 +4859,11 @@ class Logs(WebHandler):
     def __init__(self, *args, **kwargs):
         super(Logs, self).__init__(*args, **kwargs)
 
-    def LogsMenu(self, level):
+    def LogsMenu(self):
         menu = [
-            {'title': _('Clear Errors'), 'path': '/logs/clearerrors/',
-             'requires': self.haveErrors() and level == sickrage.app.log.ERROR,
-             'icon': 'ui-icon ui-icon-trash'},
-            {'title': _('Clear Warnings'), 'path': '/logs/clearerrors/?level=' + str(sickrage.app.log.WARNING),
-             'requires': self.haveWarnings() and level == sickrage.app.log.WARNING,
-             'icon': 'ui-icon ui-icon-trash'},
+            {'title': _('Clear All'), 'path': '/logs/clearAll/',
+             'requires': self.haveErrors() or self.haveWarnings(),
+             'icon': 'fas fa-trash'},
         ]
 
         return menu
@@ -4877,7 +4875,7 @@ class Logs(WebHandler):
             header="Logs &amp; Errors",
             title="Logs &amp; Errors",
             topmenu="system",
-            submenu=self.LogsMenu(level),
+            submenu=self.LogsMenu(),
             logLevel=level,
             controller='logs',
             action='errors'
@@ -4893,11 +4891,9 @@ class Logs(WebHandler):
         if len(WarningViewer.errors) > 0:
             return True
 
-    def clearerrors(self, level=None):
-        if int(level or sickrage.app.log.ERROR) == sickrage.app.log.WARNING:
-            WarningViewer.clear()
-        else:
-            ErrorViewer.clear()
+    def clearAll(self):
+        WarningViewer.clear()
+        ErrorViewer.clear()
 
         return self.redirect("/logs/viewlog/")
 

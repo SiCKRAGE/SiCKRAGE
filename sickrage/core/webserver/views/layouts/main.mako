@@ -361,7 +361,11 @@
     % endif
 </div>
 
-<div class="container-fluid" style="opacity: .90">
+<div class="loading-spinner text-center m-3">
+    <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
+</div>
+
+<div class="container-fluid main-container d-none" style="opacity: .90">
         <%block name="content" />
 </div>
 

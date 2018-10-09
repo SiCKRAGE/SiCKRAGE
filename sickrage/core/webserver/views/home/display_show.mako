@@ -113,12 +113,6 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-
-            </div>
-        </div>
-
-        <div class="row">
             <div class="col">
                 <div class="card bg-transparent font-weight-bold"
                      style="background-image:linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.6) 100%),

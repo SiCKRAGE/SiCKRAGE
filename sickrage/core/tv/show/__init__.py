@@ -1351,7 +1351,8 @@ class TVShow(object):
                     "Usually ignoring found episode, but forced search allows the quality, getting found episode")
                 return True
 
-        # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we have, or we only have one bestQuality and we do not have that quality yet
+        # if we are re-downloading then we only want it if it's in our bestQualities list and better than what we
+        # have, or we only have one bestQuality and we do not have that quality yet
         if epStatus in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER and quality in bestQualities and (
                 quality > curQuality or curQuality not in bestQualities):
             sickrage.app.log.debug(

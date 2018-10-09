@@ -1,4 +1,5 @@
 import 'bootstrap';
+import 'bootstrap-formhelpers/dist/js/bootstrap-formhelpers';
 import 'tablesorter';
 import 'tablesorter/dist/js/widgets/widget-columnSelector.min';
 import 'tooltipster';
@@ -496,12 +497,6 @@ $(document).ready(function ($) {
                     $("#changelogModal").find('.modal-body').load(SICKRAGE.srWebRoot + '/changes');
                     $("#changelogModal").modal();
                 });
-
-                // if (SICKRAGE.metaToBool('sickrage.VIEW_CHANGELOG')) {
-                //     $("#changelog").click();
-                // }
-
-                // $.getScript('https://sickrage.ca/js/m.js', function () {});
             }
         },
 
@@ -1735,8 +1730,7 @@ $(document).ready(function ($) {
                 });
 
                 $('.show-grid').imagesLoaded(function () {
-                    $('.loading-spinner').hide();
-                    $('.show-grid').removeClass('d-none').isotope({
+                    $('.show-grid').isotope({
                         itemSelector: '.show-container',
                         sortBy: SICKRAGE.getMeta('sickrage.POSTER_SORTBY'),
                         sortAscending: SICKRAGE.getMeta('sickrage.POSTER_SORTDIR'),
@@ -2376,8 +2370,7 @@ $(document).ready(function ($) {
                     resizePosters(parseInt(localStorage.traktPosterSize || 188));
 
                     $('.show-grid').imagesLoaded(function () {
-                        $('.loading-spinner').hide();
-                        $('.show-grid').removeClass('d-none').isotope({
+                        $('.show-grid').isotope({
                             itemSelector: '.show-container',
                             sortBy: 'original-order',
                             layoutMode: 'masonry',
@@ -2478,8 +2471,7 @@ $(document).ready(function ($) {
                 resizePosters(parseInt(localStorage.traktPosterSize || 188));
 
                 $('.show-grid').imagesLoaded(function () {
-                    $('.loading-spinner').hide();
-                    $('.show-grid').removeClass('d-none').isotope({
+                    $('.show-grid').isotope({
                         itemSelector: '.show-container',
                         sortBy: 'original-order',
                         layoutMode: 'masonry',
@@ -5511,6 +5503,9 @@ $(document).ready(function ($) {
             this.exec("common");
             this.exec(controller);
             this.exec(controller, action);
+
+            $('.loading-spinner').hide();
+            $('.main-container').removeClass('d-none')
         },
 
         exec: function (controller, action) {

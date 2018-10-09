@@ -1,6 +1,23 @@
 # Changelog
 
-- * 7cbaa2e - 2018-09-18: Release v9.3.79 
+- * 9ca359a - 2018-10-08: Release v9.3.80 
+- * 615cf7d - 2018-10-08: Pre-Release v9.3.80.dev6 
+- * fabc483 - 2018-10-08: Added web session hook to handle redirects when doing posts. Fixed issues with getting search results from YGGTorrent provider. 
+- * f64a196 - 2018-10-08: Pre-Release v9.3.80.dev5 
+- * 7b0a85e - 2018-10-08: Fixed issue #273 - location not found when adding/removing a show 
+- * 8a1fd06 - 2018-10-06: Pre-Release v9.3.80.dev4 
+- * b85e87b - 2018-10-06: Fixed login issue for YGGTorrent 
+- * e3e893f - 2018-10-06: Fixed saving allowed video exts 
+- * be55b94 - 2018-09-22: Pre-Release v9.3.80.dev3 
+- * 3afaeb1 - 2018-09-22: Added a loading spinner for all view page loads. 
+- * a74e159 - 2018-09-22: Added a loading spinner when displaying show information. 
+- * 6e16bcc - 2018-09-20: Pre-Release v9.3.80.dev2 
+- * d2b5aab - 2018-09-20: Fixed issue with magnet links missing torrent trackers 
+- * 0ee4330 - 2018-09-20: Added back missing bootstrap-formhelpers library 
+- * ec020ec - 2018-09-20: Pre-Release v9.3.80.dev1 
+- * bf4e106 - 2018-09-20: Updated remaining ui-icon icons to fontawesome. Fixed issue #260 - removed redundant clear errors and clear warnings button, merged into one button. 
+- * 5962b54 - 2018-09-20: Added UHD to quality preset ANY. Added quality preset &quot;ANY + Unknown&quot;. Added ability to set quality size for unknown qualities. 
+- * 5bf995b - 2018-09-18: Release v9.3.79 
 - * dbb7543 - 2018-09-18: Fixed issue with custom webroot and too many redirects 
 - * a7d0209 - 2018-09-17: Pre-Release v9.3.79.dev10 
 - * 09b1857 - 2018-09-17: Pre-Release v9.3.79.dev9 

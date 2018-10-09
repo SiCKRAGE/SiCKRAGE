@@ -732,6 +732,8 @@ class TorrentProvider(GenericProvider):
         if trackers_list:
             # adds public torrent trackers to magnet url
             if result.url.startswith('magnet:'):
+                if not result.url.endswith('&tr='):
+                    result.url += '&tr='
                 result.url += '&tr='.join(trackers_list)
 
             # adds public torrent trackers to content

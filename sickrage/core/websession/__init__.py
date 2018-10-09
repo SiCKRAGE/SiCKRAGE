@@ -59,7 +59,7 @@ class WebSession(Session):
         self.proxies = proxies or _add_proxies()
 
         # add hooks
-        self.hooks['response'] += [WebHooks.log_url, WebHooks.cloudflare]
+        self.hooks['response'] += [WebHooks.log_url, WebHooks.redirect_posts, WebHooks.cloudflare]
 
     @staticmethod
     def _get_ssl_cert(verify):
@@ -209,3 +209,31 @@ class WebHooks(object):
             return cf_resp
         else:
             return resp
+
+    @staticmethod
+    def redirect_posts(resp, **kwargs):
+        """Response hook to handle post method for URLs that are redirected"""
+
+        if resp.request.method == 'POST' and resp.headers.get('Location'):
+            # Get the session used or create a new one
+            session = getattr(resp, 'session', requests.Session())
+
+            # Get the original request
+            original_request = resp.request
+
+            # Set new URL
+            location = resp.headers['Location']
+            sickrage.app.log.debug('URL redirection detected for {} to {}'.format(original_request.url, location))
+            original_request.url = location
+
+            # Remove hooks from original request
+            original_hooks = original_request.hooks
+            original_request.hooks = session.hooks
+
+            # Resend the request
+            resp = session.send(original_request, **kwargs)
+
+            # Add original hooks back to original request
+            resp.hooks = original_hooks
+
+        return resp
