@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ca359a - 2018-10-08: Release v9.3.80 
+- * 414a1aa - 2018-10-09: Fixed issue with TorrentLeech logins 
+- * a9e7913 - 2018-10-08: Release v9.3.80 
 - * 615cf7d - 2018-10-08: Pre-Release v9.3.80.dev6 
 - * fabc483 - 2018-10-08: Added web session hook to handle redirects when doing posts. Fixed issues with getting search results from YGGTorrent provider. 
 - * f64a196 - 2018-10-08: Pre-Release v9.3.80.dev5 
