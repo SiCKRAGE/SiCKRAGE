@@ -1,6 +1,7 @@
 # Changelog
 
-- * 27d4727 - 2018-10-13: Fixed issue with displaying provider icons for custom providers 
+- * 58a2a7c - 2018-10-13: Fixed issue with re-scanning existing show episodes that do not contain the show name in the filename 
+- * a216e2b - 2018-10-13: Fixed issue with displaying provider icons for custom providers 
 - * f29e97d - 2018-10-12: Release v9.3.81 
 - * 35fb7f1 - 2018-10-12: Fixed issue with building Dockerfile. Added .dockerignore file. Fixed issue with viewing config settings. 
 - * 7141eec - 2018-10-09: Pre-Release v9.3.81.dev1 
