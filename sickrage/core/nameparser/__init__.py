@@ -259,6 +259,8 @@ class NameParser(object):
                     else:
                         bestResult.show = None
                         bestResult.indexerid = 0
+                elif self.showObj and not bestResult.show:
+                    bestResult.show = self.showObj
 
             # if this is a naming pattern test or result doesn't have a show object then return best result
             if not bestResult.show or self.naming_pattern:

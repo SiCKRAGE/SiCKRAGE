@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-12 22:24-0700\n"
-"PO-Revision-Date: 2018-10-13 05:24\n"
+"POT-Creation-Date: 2018-10-13 16:06-0700\n"
+"PO-Revision-Date: 2018-10-13 23:07\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -393,7 +393,7 @@ msgstr "Leikkikenttä"
 
 #: sickrage/core/webserver/views/api_builder.mako:91
 #: sickrage/core/webserver/views/api_builder.mako:133
-#: sickrage/core/webserver/views/config/providers.mako:161
+#: sickrage/core/webserver/views/config/providers.mako:165
 msgid "URL:"
 msgstr "URL-OSOITE:"
 
@@ -509,7 +509,7 @@ msgid "Downloaded"
 msgstr "Ladata"
 
 #: sickrage/core/common.py:624
-#: sickrage/core/webserver/views/config/providers.mako:915
+#: sickrage/core/webserver/views/config/providers.mako:919
 #: sickrage/core/webserver/views/history.mako:123
 msgid "Subtitled"
 msgstr "Tekstitys"
@@ -614,8 +614,8 @@ msgstr "Haluatko lisätä PostProcessed jaksot MyList?"
 #: sickrage/core/webserver/views/config/notifications.mako:3539
 #: sickrage/core/webserver/views/config/postprocessing.mako:401
 #: sickrage/core/webserver/views/config/postprocessing.mako:1403
-#: sickrage/core/webserver/views/config/providers.mako:120
-#: sickrage/core/webserver/views/config/providers.mako:932
+#: sickrage/core/webserver/views/config/providers.mako:124
+#: sickrage/core/webserver/views/config/providers.mako:936
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
 #: sickrage/core/webserver/views/config/search.mako:311
 #: sickrage/core/webserver/views/config/search.mako:736
@@ -3490,7 +3490,7 @@ msgid "Provider Priorities"
 msgstr "Tarjoajan painopisteet"
 
 #: sickrage/core/webserver/views/config/providers.mako:15
-#: sickrage/core/webserver/views/config/providers.mako:128
+#: sickrage/core/webserver/views/config/providers.mako:132
 msgid "Provider Options"
 msgstr "Palveluntarjoajista"
 
@@ -3528,344 +3528,344 @@ msgstr "Ei tue ruuhkan hakuja tällä hetkellä."
 msgid "Provider is <b>NOT WORKING</b>."
 msgstr "Palveluntarjoaja on <b>NOT WORKING</b>."
 
-#: sickrage/core/webserver/views/config/providers.mako:130
+#: sickrage/core/webserver/views/config/providers.mako:134
 msgid "Configure individual provider settings here."
 msgstr "Määrittää yksittäiselle toimijalle täällä."
 
-#: sickrage/core/webserver/views/config/providers.mako:131
+#: sickrage/core/webserver/views/config/providers.mako:135
 msgid "Check with provider's website on how to obtain an API key if needed."
 msgstr "Tarkista palveluntarjoajan www-sivustosta, miten saada API-avain, jos tarpeen."
 
-#: sickrage/core/webserver/views/config/providers.mako:138
+#: sickrage/core/webserver/views/config/providers.mako:142
 msgid "Configure provider:"
 msgstr "Määritä toimittaja:"
 
-#: sickrage/core/webserver/views/config/providers.mako:181
-#: sickrage/core/webserver/views/config/providers.mako:311
-#: sickrage/core/webserver/views/config/providers.mako:1001
+#: sickrage/core/webserver/views/config/providers.mako:185
+#: sickrage/core/webserver/views/config/providers.mako:315
+#: sickrage/core/webserver/views/config/providers.mako:1005
 msgid "API key:"
 msgstr "API-avain:"
 
-#: sickrage/core/webserver/views/config/providers.mako:203
-#: sickrage/core/webserver/views/config/providers.mako:331
-#: sickrage/core/webserver/views/config/providers.mako:789
+#: sickrage/core/webserver/views/config/providers.mako:207
+#: sickrage/core/webserver/views/config/providers.mako:335
+#: sickrage/core/webserver/views/config/providers.mako:793
 msgid "Enable daily searches"
 msgstr "Ota käyttöön päivittäisten hakujen"
 
-#: sickrage/core/webserver/views/config/providers.mako:210
-#: sickrage/core/webserver/views/config/providers.mako:338
-#: sickrage/core/webserver/views/config/providers.mako:796
+#: sickrage/core/webserver/views/config/providers.mako:214
+#: sickrage/core/webserver/views/config/providers.mako:342
+#: sickrage/core/webserver/views/config/providers.mako:800
 msgid "enable provider to perform daily searches."
 msgstr "Ota tarjoaja suorittaa päivittäin hakuja."
 
-#: sickrage/core/webserver/views/config/providers.mako:219
-#: sickrage/core/webserver/views/config/providers.mako:347
-#: sickrage/core/webserver/views/config/providers.mako:821
+#: sickrage/core/webserver/views/config/providers.mako:223
+#: sickrage/core/webserver/views/config/providers.mako:351
+#: sickrage/core/webserver/views/config/providers.mako:825
 msgid "Enable backlog searches"
 msgstr "Avulla ruuhkan hakuja"
 
-#: sickrage/core/webserver/views/config/providers.mako:226
-#: sickrage/core/webserver/views/config/providers.mako:354
-#: sickrage/core/webserver/views/config/providers.mako:828
+#: sickrage/core/webserver/views/config/providers.mako:230
+#: sickrage/core/webserver/views/config/providers.mako:358
+#: sickrage/core/webserver/views/config/providers.mako:832
 msgid "enable provider to perform backlog searches."
 msgstr "mahdollistaa tarjoajan ruuhkan hakujen tekemiseen."
 
-#: sickrage/core/webserver/views/config/providers.mako:235
-#: sickrage/core/webserver/views/config/providers.mako:363
-#: sickrage/core/webserver/views/config/providers.mako:837
+#: sickrage/core/webserver/views/config/providers.mako:239
+#: sickrage/core/webserver/views/config/providers.mako:367
+#: sickrage/core/webserver/views/config/providers.mako:841
 msgid "Search mode fallback"
 msgstr "Hakutapa varmistus"
 
-#: sickrage/core/webserver/views/config/providers.mako:242
+#: sickrage/core/webserver/views/config/providers.mako:246
 msgid "when searching for a complete season depending on search mode you may"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:244
+#: sickrage/core/webserver/views/config/providers.mako:248
 msgid "return no results, this helps by restarting the search using the opposite"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:246
+#: sickrage/core/webserver/views/config/providers.mako:250
 msgid "search mode."
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:255
-#: sickrage/core/webserver/views/config/providers.mako:381
-#: sickrage/core/webserver/views/config/providers.mako:855
+#: sickrage/core/webserver/views/config/providers.mako:259
+#: sickrage/core/webserver/views/config/providers.mako:385
+#: sickrage/core/webserver/views/config/providers.mako:859
 msgid "Season search mode"
 msgstr "Kausi tilassa Hae"
 
-#: sickrage/core/webserver/views/config/providers.mako:264
-#: sickrage/core/webserver/views/config/providers.mako:401
-#: sickrage/core/webserver/views/config/providers.mako:864
+#: sickrage/core/webserver/views/config/providers.mako:268
+#: sickrage/core/webserver/views/config/providers.mako:405
+#: sickrage/core/webserver/views/config/providers.mako:868
 msgid "season packs only."
 msgstr "kauden pakkauksissa."
 
-#: sickrage/core/webserver/views/config/providers.mako:272
-#: sickrage/core/webserver/views/config/providers.mako:390
-#: sickrage/core/webserver/views/config/providers.mako:876
+#: sickrage/core/webserver/views/config/providers.mako:276
+#: sickrage/core/webserver/views/config/providers.mako:394
+#: sickrage/core/webserver/views/config/providers.mako:880
 msgid "episodes only."
 msgstr "jaksot."
 
-#: sickrage/core/webserver/views/config/providers.mako:275
-#: sickrage/core/webserver/views/config/providers.mako:407
-#: sickrage/core/webserver/views/config/providers.mako:882
+#: sickrage/core/webserver/views/config/providers.mako:279
+#: sickrage/core/webserver/views/config/providers.mako:411
+#: sickrage/core/webserver/views/config/providers.mako:886
 msgid "when searching for complete seasons you can choose to have it look for season packs only, or choose to have it build a complete season from just single episodes."
 msgstr "Kun etsit täydellinen seasons voit etsiä vain kauden Pack-pakettien tai valita rakentaa kokonaiselle kaudelle vain yhden jaksot."
 
-#: sickrage/core/webserver/views/config/providers.mako:292
-#: sickrage/core/webserver/views/config/providers.mako:506
+#: sickrage/core/webserver/views/config/providers.mako:296
+#: sickrage/core/webserver/views/config/providers.mako:510
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: sickrage/core/webserver/views/config/providers.mako:370
-#: sickrage/core/webserver/views/config/providers.mako:844
+#: sickrage/core/webserver/views/config/providers.mako:374
+#: sickrage/core/webserver/views/config/providers.mako:848
 msgid "when searching for a complete season depending on search mode you may return no results, this helps by restarting the search using the opposite search mode."
 msgstr "Kun etsivät täydellinen kausi Etsi tilan voi hakutuloksia ei, näin käynnistämällä haku vastapäätä hakutapa."
 
-#: sickrage/core/webserver/views/config/providers.mako:422
+#: sickrage/core/webserver/views/config/providers.mako:426
 msgid "Custom URL:"
 msgstr "Mukautettu URL-osoite:"
 
-#: sickrage/core/webserver/views/config/providers.mako:432
+#: sickrage/core/webserver/views/config/providers.mako:436
 msgid "Provider custom url"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:443
+#: sickrage/core/webserver/views/config/providers.mako:447
 msgid "Api key:"
 msgstr "API-avain:"
 
-#: sickrage/core/webserver/views/config/providers.mako:453
+#: sickrage/core/webserver/views/config/providers.mako:457
 msgid "Provider API key"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:464
+#: sickrage/core/webserver/views/config/providers.mako:468
 msgid "Digest:"
 msgstr "Digest:"
 
-#: sickrage/core/webserver/views/config/providers.mako:473
+#: sickrage/core/webserver/views/config/providers.mako:477
 msgid "Provider digest"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:484
+#: sickrage/core/webserver/views/config/providers.mako:488
 msgid "Hash:"
 msgstr "Hash:"
 
-#: sickrage/core/webserver/views/config/providers.mako:495
+#: sickrage/core/webserver/views/config/providers.mako:499
 msgid "Provider hash"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:516
+#: sickrage/core/webserver/views/config/providers.mako:520
 msgid "Provider username"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:527
+#: sickrage/core/webserver/views/config/providers.mako:531
 msgid "Password:"
 msgstr "Salasana:"
 
-#: sickrage/core/webserver/views/config/providers.mako:536
+#: sickrage/core/webserver/views/config/providers.mako:540
 msgid "Provider password"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:546
+#: sickrage/core/webserver/views/config/providers.mako:550
 msgid "Passkey:"
 msgstr "Pääsyavain:"
 
-#: sickrage/core/webserver/views/config/providers.mako:556
+#: sickrage/core/webserver/views/config/providers.mako:560
 msgid "Provider PassKey"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:567
-#: sickrage/core/webserver/views/config/providers.mako:1130
+#: sickrage/core/webserver/views/config/providers.mako:571
+#: sickrage/core/webserver/views/config/providers.mako:1134
 msgid "Cookies:"
 msgstr "Evästeet:"
 
-#: sickrage/core/webserver/views/config/providers.mako:585
+#: sickrage/core/webserver/views/config/providers.mako:589
 msgid "this provider requires the following cookies: "
 msgstr "Tämä palvelu vaatii seuraavat evästeitä: "
 
-#: sickrage/core/webserver/views/config/providers.mako:596
+#: sickrage/core/webserver/views/config/providers.mako:600
 msgid "Pin:"
 msgstr "PIN:"
 
-#: sickrage/core/webserver/views/config/providers.mako:606
+#: sickrage/core/webserver/views/config/providers.mako:610
 msgid "Provider PIN#"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:617
+#: sickrage/core/webserver/views/config/providers.mako:621
 msgid "Seed ratio:"
 msgstr "Kylvää kerroin:"
 
-#: sickrage/core/webserver/views/config/providers.mako:630
+#: sickrage/core/webserver/views/config/providers.mako:634
 msgid "stop transfer when ratio is reached (-1 SickRage default to seed forever, or leave blank for downloader default)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:639
+#: sickrage/core/webserver/views/config/providers.mako:643
 msgid "Minimum seeders:"
 msgstr "Vähintään kylvää:"
 
-#: sickrage/core/webserver/views/config/providers.mako:651
+#: sickrage/core/webserver/views/config/providers.mako:655
 msgid "Minimum allowed seeders"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:661
+#: sickrage/core/webserver/views/config/providers.mako:665
 msgid "Minimum leechers:"
 msgstr "Vähintään iilimato:"
 
-#: sickrage/core/webserver/views/config/providers.mako:673
+#: sickrage/core/webserver/views/config/providers.mako:677
 msgid "Minimum allowed leechers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:683
+#: sickrage/core/webserver/views/config/providers.mako:687
 msgid "Confirmed download"
 msgstr "Vahvistettu download"
 
-#: sickrage/core/webserver/views/config/providers.mako:690
+#: sickrage/core/webserver/views/config/providers.mako:694
 msgid "only download torrents from trusted or verified uploaders?"
 msgstr "vain ladata torrents luotettavien tai todennettuja uploaders?"
 
-#: sickrage/core/webserver/views/config/providers.mako:699
+#: sickrage/core/webserver/views/config/providers.mako:703
 msgid "Ranked torrents"
 msgstr "Sijoittui ryöppy"
 
-#: sickrage/core/webserver/views/config/providers.mako:706
+#: sickrage/core/webserver/views/config/providers.mako:710
 msgid "only download ranked torrents (internal releases)"
 msgstr "vain ladata sijoittui torrentit (sisäinen julkaisut)"
 
-#: sickrage/core/webserver/views/config/providers.mako:715
+#: sickrage/core/webserver/views/config/providers.mako:719
 msgid "English torrents"
 msgstr "Englanti torrent"
 
-#: sickrage/core/webserver/views/config/providers.mako:722
+#: sickrage/core/webserver/views/config/providers.mako:726
 msgid "only download english torrents ,or torrents containing english subtitles"
 msgstr "vain ladata Englanti torrent tai ryöppy sisältävät Englanti tekstitys"
 
-#: sickrage/core/webserver/views/config/providers.mako:731
+#: sickrage/core/webserver/views/config/providers.mako:735
 msgid "For Spanish torrents"
 msgstr "Espanjan torrent"
 
-#: sickrage/core/webserver/views/config/providers.mako:739
+#: sickrage/core/webserver/views/config/providers.mako:743
 msgid "ONLY search on this provider if show info is defined as \"Spanish\" (avoid provider's use for VOS shows)"
 msgstr "Hae vain palveluntarjoajasta jos Näytä tiedot on määritelty ”Espanjan” (Vältä tarjoajan VOS näyttää)"
 
-#: sickrage/core/webserver/views/config/providers.mako:750
+#: sickrage/core/webserver/views/config/providers.mako:754
 msgid "Sort results by"
 msgstr "Lajittele tulokset"
 
-#: sickrage/core/webserver/views/config/providers.mako:759
+#: sickrage/core/webserver/views/config/providers.mako:763
 msgid "Sort search results"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:773
+#: sickrage/core/webserver/views/config/providers.mako:777
 msgid "Freeleech"
 msgstr "Freeleech"
 
-#: sickrage/core/webserver/views/config/providers.mako:780
+#: sickrage/core/webserver/views/config/providers.mako:784
 msgid "only download"
 msgstr "vain ladata"
 
-#: sickrage/core/webserver/views/config/providers.mako:780
+#: sickrage/core/webserver/views/config/providers.mako:784
 msgid "FreeLeech"
 msgstr "FreeLeech"
 
-#: sickrage/core/webserver/views/config/providers.mako:780
+#: sickrage/core/webserver/views/config/providers.mako:784
 msgid "torrents."
 msgstr "ryöppy."
 
-#: sickrage/core/webserver/views/config/providers.mako:805
+#: sickrage/core/webserver/views/config/providers.mako:809
 msgid "Reject Blu-ray M2TS releases"
 msgstr "Hylkää Blu-ray M2TS Tiedotteet"
 
-#: sickrage/core/webserver/views/config/providers.mako:812
+#: sickrage/core/webserver/views/config/providers.mako:816
 msgid "enable to ignore Blu-ray MPEG-2 Transport Stream container releases"
 msgstr "mahdollistaa sivuuttaa Blu-ray MPEG-2-siirtovirran kontti Tiedotteet"
 
-#: sickrage/core/webserver/views/config/providers.mako:893
+#: sickrage/core/webserver/views/config/providers.mako:897
 msgid "Category:"
 msgstr "Luokka:"
 
-#: sickrage/core/webserver/views/config/providers.mako:922
+#: sickrage/core/webserver/views/config/providers.mako:926
 msgid "select torrent with Italian subtitle"
 msgstr "Valitse torrent Italian tekstitys"
 
-#: sickrage/core/webserver/views/config/providers.mako:944
-#: sickrage/core/webserver/views/config/providers.mako:1071
+#: sickrage/core/webserver/views/config/providers.mako:948
+#: sickrage/core/webserver/views/config/providers.mako:1075
 msgid "Configure Custom"
 msgstr "Määritä mukautettu"
 
-#: sickrage/core/webserver/views/config/providers.mako:945
+#: sickrage/core/webserver/views/config/providers.mako:949
 msgid "Newznab Providers"
 msgstr "Newznab tarjoajat"
 
-#: sickrage/core/webserver/views/config/providers.mako:948
+#: sickrage/core/webserver/views/config/providers.mako:952
 msgid "Add and setup or remove custom Newznab providers."
 msgstr "Lisää ja Määritä tai Poista mukautetun Newznab tarjoajat."
 
-#: sickrage/core/webserver/views/config/providers.mako:955
-#: sickrage/core/webserver/views/config/providers.mako:1082
+#: sickrage/core/webserver/views/config/providers.mako:959
+#: sickrage/core/webserver/views/config/providers.mako:1086
 msgid "Select provider:"
 msgstr "Valitse toimittaja:"
 
-#: sickrage/core/webserver/views/config/providers.mako:963
-#: sickrage/core/webserver/views/config/providers.mako:1090
+#: sickrage/core/webserver/views/config/providers.mako:967
+#: sickrage/core/webserver/views/config/providers.mako:1094
 msgid "add new provider"
 msgstr "Lisää uusi palveluntarjoaja"
 
-#: sickrage/core/webserver/views/config/providers.mako:972
-#: sickrage/core/webserver/views/config/providers.mako:1099
+#: sickrage/core/webserver/views/config/providers.mako:976
+#: sickrage/core/webserver/views/config/providers.mako:1103
 msgid "Provider name:"
 msgstr "Palveluntarjoajan nimi:"
 
-#: sickrage/core/webserver/views/config/providers.mako:987
+#: sickrage/core/webserver/views/config/providers.mako:991
 msgid "Site URL:"
 msgstr "Osoite:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1016
+#: sickrage/core/webserver/views/config/providers.mako:1020
 msgid "Newznab search categories:"
 msgstr "Newznab Etsi Luokat:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1026
+#: sickrage/core/webserver/views/config/providers.mako:1030
 msgid "(select your Newznab categories on the left, and click the \"update categories\" button to use them for searching.)"
 msgstr "(Valitse Newznab luokkia vasemmalla ja valitsemalla ”Päivitä luokat” käyttää etsimiseen.)"
 
-#: sickrage/core/webserver/views/config/providers.mako:1028
+#: sickrage/core/webserver/views/config/providers.mako:1032
 msgid "Don't forget to save changes!"
 msgstr "Älä unohda tallentaa muutokset!"
 
-#: sickrage/core/webserver/views/config/providers.mako:1038
+#: sickrage/core/webserver/views/config/providers.mako:1042
 msgid "Update Categories"
 msgstr "Päivitä luokat"
 
-#: sickrage/core/webserver/views/config/providers.mako:1048
+#: sickrage/core/webserver/views/config/providers.mako:1052
 msgid "Add"
 msgstr "Lisää"
 
-#: sickrage/core/webserver/views/config/providers.mako:1056
+#: sickrage/core/webserver/views/config/providers.mako:1060
 #: sickrage/core/webserver/views/includes/root_dirs.mako:38
 #: sickrage/core/webserver/views/manage/mass_edit.mako:78
 msgid "Delete"
 msgstr "Poista"
 
-#: sickrage/core/webserver/views/config/providers.mako:1072
+#: sickrage/core/webserver/views/config/providers.mako:1076
 msgid "Torrent Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/providers.mako:1075
+#: sickrage/core/webserver/views/config/providers.mako:1079
 msgid "Add and setup or remove custom RSS providers."
 msgstr "Lisää ja Määritä tai poista mukautettuja RSS tarjoajat."
 
-#: sickrage/core/webserver/views/config/providers.mako:1116
+#: sickrage/core/webserver/views/config/providers.mako:1120
 msgid "RSS URL:"
 msgstr "RSS URL-OSOITE:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1137
+#: sickrage/core/webserver/views/config/providers.mako:1141
 msgid "ex. uid=xx;pass=yy"
 msgstr "ex. uid = xx, pass = yy"
 
-#: sickrage/core/webserver/views/config/providers.mako:1144
+#: sickrage/core/webserver/views/config/providers.mako:1148
 msgid "Search element:"
 msgstr "Etsi elementti:"
 
-#: sickrage/core/webserver/views/config/providers.mako:1151
+#: sickrage/core/webserver/views/config/providers.mako:1155
 msgid "ex. title"
 msgstr "ex. otsikko"
 

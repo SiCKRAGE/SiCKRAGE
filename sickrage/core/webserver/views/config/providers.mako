@@ -101,7 +101,11 @@
                                                class="provider_enabler text-left" ${('', 'checked')[bool(providerObj.isEnabled)]}/>
                                         <a href="${anon_url(provider_url)}" class="text-right" rel="noreferrer"
                                            onclick="window.open(this.href, '_blank'); return false;">
-                                            <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
+                                            % if providerObj.type in ['nzb', 'torrent']:
+                                                <i class="sickrage-providers sickrage-providers-${providerObj.id}"></i>
+                                            % else:
+                                                <i class="sickrage-providers sickrage-providers-${providerObj.type}"></i>
+                                            % endif
                                         </a>
                                         <span class="font-weight-bold">${providerObj.name}</span>
                                     </label>
