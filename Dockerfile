@@ -8,6 +8,7 @@ LABEL build_version="Version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 
 # install app
 COPY . /opt/sickrage/
+
 RUN pip install -r /opt/sickrage/requirements.txt
 
 # ports and volumes
