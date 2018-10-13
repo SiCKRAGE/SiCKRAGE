@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-09 22:30-0700\n"
-"PO-Revision-Date: 2018-10-10 05:32\n"
+"POT-Creation-Date: 2018-10-12 22:24-0700\n"
+"PO-Revision-Date: 2018-10-13 05:25\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -165,179 +165,179 @@ msgstr "Redefinir a configuração para os padrões"
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Tem certeza de que deseja redefinir config para os padrões?"
 
-#: src/js/core.js:3065
+#: src/js/core.js:3066
 msgid "Select path to pip"
 msgstr "Selecione o caminho para o pip"
 
-#: src/js/core.js:3071
-msgid "Select path to git"
-msgstr "Selecione o caminho para git"
-
-#: src/js/core.js:3079 src/js/core.js:3097 src/js/core.js:3887 src/js/core.js:3905
-#: src/js/core.js:3926 src/js/core.js:3948 src/js/core.js:3971 src/js/core.js:3993
-#: src/js/core.js:4021 src/js/core.js:4038 src/js/core.js:4082 src/js/core.js:4167
-#: src/js/core.js:4225 src/js/core.js:4242 src/js/core.js:4272 src/js/core.js:4329
-#: src/js/core.js:4405 src/js/core.js:4424 src/js/core.js:4440
+#: src/js/core.js:3074 src/js/core.js:3100 src/js/core.js:3891 src/js/core.js:3909
+#: src/js/core.js:3930 src/js/core.js:3952 src/js/core.js:3975 src/js/core.js:3997
+#: src/js/core.js:4025 src/js/core.js:4042 src/js/core.js:4086 src/js/core.js:4171
+#: src/js/core.js:4229 src/js/core.js:4246 src/js/core.js:4276 src/js/core.js:4333
+#: src/js/core.js:4409 src/js/core.js:4428 src/js/core.js:4444
 msgid "Please fill out the necessary fields above."
 msgstr "Por favor, preencha os campos necessários acima."
 
-#: src/js/core.js:3135
+#: src/js/core.js:3092
+msgid "Select path to git"
+msgstr "Selecione o caminho para git"
+
+#: src/js/core.js:3139
 msgid "Select Subtitles Download Directory"
 msgstr "Diretório de Download selecione legendas"
 
-#: src/js/core.js:3251
+#: src/js/core.js:3255
 msgid "Select .nzb blackhole/watch location"
 msgstr "Selecionar local de blackhole/relógio NZB"
 
-#: src/js/core.js:3252
+#: src/js/core.js:3256
 msgid "Select .torrent blackhole/watch location"
 msgstr "Selecione torrent blackhole/relógio local"
 
-#: src/js/core.js:3253
+#: src/js/core.js:3257
 msgid "Select .torrent download location"
 msgstr "Selecionar local de download torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3320
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3324
 msgid "Minimum seeding time is"
 msgstr "É o mínimo tempo de semeadura"
 
-#: src/js/core.js:3322
+#: src/js/core.js:3326
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL para seu cliente uTorrent (por exemplo, http://localhost:8000/)"
 
-#: src/js/core.js:3325
+#: src/js/core.js:3329
 msgid "Stop seeding when inactive for"
 msgstr "Parar a propagação quando inativo para"
 
-#: src/js/core.js:3331
+#: src/js/core.js:3335
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL para seu cliente de transmissão (por exemplo, http://localhost:9091)"
 
-#: src/js/core.js:3341
+#: src/js/core.js:3345
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL para seu cliente de dilúvio (por exemplo, http://localhost:8112)"
 
-#: src/js/core.js:3350
+#: src/js/core.js:3354
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP ou nome do host do seu Daemon do dilúvio (por exemplo, scgi://localhost:58846)"
 
-#: src/js/core.js:3357
+#: src/js/core.js:3361
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL para seu cliente Synology DS (por exemplo, http://localhost:5000)"
 
-#: src/js/core.js:3362
+#: src/js/core.js:3366
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3362
+#: src/js/core.js:3366
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3372
+#: src/js/core.js:3376
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente qbittorrent (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:3382
+#: src/js/core.js:3386
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL para seu MLDonkey (por exemplo, http://localhost:4080)"
 
-#: src/js/core.js:3393
+#: src/js/core.js:3397
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente putio (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:3562
+#: src/js/core.js:3566
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3563
+#: src/js/core.js:3567
 msgid "Select TV Download Directory"
 msgstr "Selecione o diretório de Download TV"
 
-#: src/js/core.js:3564
+#: src/js/core.js:3568
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3578
+#: src/js/core.js:3582
 msgid "Unrar Executable not found."
 msgstr "Unrar executável não encontrado."
 
-#: src/js/core.js:3621 src/js/core.js:3656 src/js/core.js:3691 src/js/core.js:3742
+#: src/js/core.js:3625 src/js/core.js:3660 src/js/core.js:3695 src/js/core.js:3746
 msgid "This pattern is invalid."
 msgstr "Este padrão é inválido."
 
-#: src/js/core.js:3625 src/js/core.js:3660 src/js/core.js:3695 src/js/core.js:3746
+#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3750
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Esse padrão seria inválido sem as pastas, usá-lo irá forçar \"Flatten\" fora para todos os shows."
 
-#: src/js/core.js:3629 src/js/core.js:3664 src/js/core.js:3699 src/js/core.js:3751
+#: src/js/core.js:3633 src/js/core.js:3668 src/js/core.js:3703 src/js/core.js:3755
 msgid "This pattern is valid."
 msgstr "Este padrão é válido."
 
-#: src/js/core.js:4075
+#: src/js/core.js:4079
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmar autorização"
 
-#: src/js/core.js:4132 src/js/core.js:4186
+#: src/js/core.js:4136 src/js/core.js:4190
 msgid "Please fill in the Popcorn IP address"
 msgstr "Por favor, preencha o endereço de IP de pipoca"
 
-#: src/js/core.js:4339
+#: src/js/core.js:4343
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Verificar o nome de \"lista negra\"; o valor precisa ser uma lesma trakt"
 
-#: src/js/core.js:4371
+#: src/js/core.js:4375
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4374
+#: src/js/core.js:4378
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4376
+#: src/js/core.js:4380
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4382
+#: src/js/core.js:4386
 msgid "Enter an email address to send the test to:"
 msgstr "Digite um endereço de e-mail para enviar o teste:"
 
-#: src/js/core.js:4384
+#: src/js/core.js:4388
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4454
+#: src/js/core.js:4458
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Lista de dispositivos atualizada. Por favor, escolha um dispositivo para forçar."
 
-#: src/js/core.js:4515
+#: src/js/core.js:4519
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Você não fornecer uma chave de api Pushbullet"
 
-#: src/js/core.js:4545
+#: src/js/core.js:4549
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Não se esqueça de salvar as novas configurações de pushbullet."
 
-#: src/js/core.js:4617
+#: src/js/core.js:4621
 msgid "Select backup folder to save to"
 msgstr "Selecione a pasta de backup para salvar em"
 
-#: src/js/core.js:4622
+#: src/js/core.js:4626
 msgid "Select backup files to restore"
 msgstr "Selecione arquivos de backup para restaurar"
 
-#: src/js/core.js:5167
+#: src/js/core.js:5171
 msgid "No providers available to configure."
 msgstr "Não há provedores disponíveis para configurar."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5377
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5381
 msgid "Mass Delete"
 msgstr "Exclusão em massa"
 
-#: src/js/core.js:5378
+#: src/js/core.js:5382
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Você selecionou excluir show(s).  Tem certeza que deseja continuar? Todos os arquivos serão removidos do seu sistema."
 
-#: src/js/core.js:5455
+#: src/js/core.js:5459
 msgid "DELETED"
 msgstr ""
 
