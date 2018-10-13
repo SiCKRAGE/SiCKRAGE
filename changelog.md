@@ -1,6 +1,10 @@
 # Changelog
 
-- * 9ca359a - 2018-10-08: Release v9.3.80 
+- * b5e4ac1 - 2018-10-12: Release v9.3.81 
+- * 35fb7f1 - 2018-10-12: Fixed issue with building Dockerfile. Added .dockerignore file. Fixed issue with viewing config settings. 
+- * 7141eec - 2018-10-09: Pre-Release v9.3.81.dev1 
+- * 7a20aea - 2018-10-09: Fixed issue with TorrentLeech logins 
+- * a9e7913 - 2018-10-08: Release v9.3.80 
 - * 615cf7d - 2018-10-08: Pre-Release v9.3.80.dev6 
 - * fabc483 - 2018-10-08: Added web session hook to handle redirects when doing posts. Fixed issues with getting search results from YGGTorrent provider. 
 - * f64a196 - 2018-10-08: Pre-Release v9.3.80.dev5 
