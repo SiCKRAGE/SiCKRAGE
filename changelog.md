@@ -1,6 +1,7 @@
 # Changelog
 
-- * a7a38dd - 2018-10-13: Release v9.3.85 
+- * a7cf86f - 2018-10-14: Release v9.3.86 
+- * b0c7dc9 - 2018-10-13: Release v9.3.85 
 - * 2e0a378 - 2018-10-13: Fixed issue with saving subtitle language settings 
 - * 57a541f - 2018-10-13: Release v9.3.84 
 - * aa89c95 - 2018-10-13: Added notifier Join 

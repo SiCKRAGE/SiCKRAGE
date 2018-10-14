@@ -336,8 +336,6 @@ class Core(object):
             self.config.proper_searcher_interval = 'daily'
         if self.config.showupdate_hour < 0 or self.config.showupdate_hour > 23:
             self.config.showupdate_hour = 0
-        if self.config.subtitles_languages[0] == '':
-            self.config.subtitles_languages = []
 
         # add version checker job
         self.scheduler.add_job(
