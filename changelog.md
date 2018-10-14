@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0929705 - 2018-10-14: Release v9.3.87 
+- * 8d0178c - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 
+- * d186f55 - 2018-10-14: Release v9.3.87 
 - * ca05ceb - 2018-10-14: Fixed issue with freebsd init script not daemonizing the app 
 - * 10fc6b3 - 2018-10-14: Release v9.3.86 
 - * b0c7dc9 - 2018-10-13: Release v9.3.85 

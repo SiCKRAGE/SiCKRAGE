@@ -644,14 +644,23 @@ class Tvdb:
     def images(self, sid, key_type='poster', season=None):
         sickrage.app.log.debug('Getting {} images for {}'.format(key_type, sid))
 
-        try:
-            if not season:
-                images = self._request('get', self.config['api']['images'][key_type].format(id=sid),
-                                       self.config['api']['lang'])['data']
-            else:
-                images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season),
-                                       self.config['api']['lang'])['data']
-        except tvdb_error:
+        images = []
+        for language in [self.config['api']['lang'], self.config['language']]:
+            if len(images):
+                continue
+
+            try:
+                if not season:
+                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid),
+                                           language)['data']
+                else:
+                    images = self._request('get', self.config['api']['images'][key_type].format(id=sid, season=season),
+                                           language)['data']
+            except tvdb_error:
+                continue
+
+        # unable to retrieve images in languages wanted
+        if not images:
             return []
 
         for i, image in enumerate(images):
