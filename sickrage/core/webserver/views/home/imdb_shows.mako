@@ -39,10 +39,7 @@
                 </div>
                 <div class="card-body">
                     <% imdb_tt = {show.imdbid for show in sickrage.app.showlist if show.imdbid} %>
-                    <div class="loading-spinner text-center">
-                        <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
-                    </div>
-                    <div class="show-grid mx-auto d-none">
+                    <div class="show-grid mx-auto">
                         % if not popular_shows:
                             <div class="trakt_show" style="width:100%; margin-top:20px">
                                 <p class="red-text">
