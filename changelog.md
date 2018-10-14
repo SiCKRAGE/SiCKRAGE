@@ -1,6 +1,7 @@
 # Changelog
 
-- * 69efb12 - 2018-10-13: Release v9.3.82 
+- * 0e68147 - 2018-10-13: Testing fix for &quot;unsupported operand type&quot; during BTN provider search 
+- * 536c3ba - 2018-10-13: Release v9.3.82 
 - * a120b3e - 2018-10-13: Fixed issue with re-scanning existing show episodes that do not contain the show name in the filename 
 - * a216e2b - 2018-10-13: Fixed issue with displaying provider icons for custom providers 
 - * f29e97d - 2018-10-12: Release v9.3.81 

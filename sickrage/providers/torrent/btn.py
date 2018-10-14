@@ -26,7 +26,7 @@ import jsonrpclib
 import sickrage
 from sickrage.core import scene_exceptions
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import sanitizeSceneName, episode_num
+from sickrage.core.helpers import sanitizeSceneName, episode_num, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -107,9 +107,9 @@ class BTNProvider(TorrentProvider):
             if not all([title, download_url]):
                 continue
 
-            seeders = row.get('Seeders', 1)
-            leechers = row.get('Leechers', 0)
-            size = row.get('Size') or -1
+            seeders = try_int(row.get('Seeders'))
+            leechers = try_int(row.get('Leechers'))
+            size = try_int(row.get('Size'), -1)
 
             results += [
                 {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
