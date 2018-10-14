@@ -35,22 +35,43 @@ load_rc_config ${name}
 : ${sickrage_dir:="/usr/local/sickrage"}
 : ${sickrage_datadir:="${sickrage_dir}"}
 
+stop_cmd="sickrage_stop"
+status_cmd="sickrage_status"
+
 pidfile="/var/run/sickrage/sickrage.pid"
-command="/usr/local/bin/python2.7"
-command_args="${sickrage_dir}/SiCKRAGE.py -q --daemon --datadir ${sickrage_datadir} --pidfile ${pidfile} --nolaunch"
 
+command="/usr/local/bin/python2.7 ${sickrage_dir}/SiCKRAGE.py -q --datadir ${sickrage_datadir} --nolaunch"
+
+start_cmd="/usr/sbin/daemon -P ${pidfile} -r -f $command"
 start_precmd="sickrage_prestart"
-sickrage_prestart() {
-	if [ -f ${pidfile} ]; then
-		rm -f ${pidfile}
-		echo "Removing stale pidfile."
-	elif [ ! -d ${pidfile%/*} ]; then
-		install -d -o ${sickrage_user} -g ${sickrage_group} ${pidfile%/*}
-	fi
 
-	if [ ! -d ${sickrage_datadir} ]; then
-		install -d -o ${sickrage_user} -g ${sickrage_group} ${sickrage_datadir}
-	fi
+sickrage_prestart() {
+        if [ -f ${pidfile} ]; then
+                rm -f ${pidfile}
+                echo "Removing stale pidfile."
+        elif [ ! -d ${pidfile%/*} ]; then
+                install -d -o ${sickrage_user} -g ${sickrage_group} ${pidfile%/*}
+        fi
+
+        if [ ! -d ${sickrage_datadir} ]; then
+                install -d -o ${sickrage_user} -g ${sickrage_group} ${sickrage_datadir}
+        fi
+}
+
+sickrage_stop() {
+        if [ -e "${pidfile}" ]; then
+                kill -s TERM `cat ${pidfile}`
+        else
+                echo "${name} is not running"
+        fi
+}
+
+sickrage_status() {
+        if [ -e "${pidfile}" ]; then
+                echo "${name} is running as pid `cat ${pidfile}`"
+        else
+                echo "${name} is not running"
+        fi
 }
 
 run_rc_command "$1"
