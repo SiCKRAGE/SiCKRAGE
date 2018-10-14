@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-14 01:07-0700\n"
-"PO-Revision-Date: 2018-10-14 08:08\n"
+"POT-Creation-Date: 2018-10-14 15:18-0700\n"
+"PO-Revision-Date: 2018-10-14 22:18\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -4749,7 +4749,7 @@ msgstr "Snappede:"
 msgid "Select Filtered Episodes"
 msgstr "Marker filtrerede episoder"
 
-#: sickrage/core/webserver/views.py:4889
+#: sickrage/core/webserver/views.py:4892
 #: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4833,7 +4833,7 @@ msgstr "Ukendt"
 msgid "Retry Download"
 msgstr "Retry Download"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4945
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Main"
@@ -4959,7 +4959,7 @@ msgstr "bruge DVD rækkefølge i stedet for luft rækkefølge"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "En \"kraft fuld opdatering\" er nødvendigt, og hvis du har eksisterende episoder du skal sortere dem manuelt."
 
-#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4826
+#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4829
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5281,7 +5281,7 @@ msgstr "Udfører genstart"
 msgid "Daily Search"
 msgstr "Daglige søgning"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4932
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Efterslæb"
@@ -5306,7 +5306,7 @@ msgstr "Indlæg proces"
 msgid "Subtitles Finder"
 msgstr "Undertekster Finder"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4940
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5339,7 +5339,7 @@ msgstr "Nej"
 msgid "True"
 msgstr "Sandt"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4935
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Vis kø"
@@ -5722,12 +5722,12 @@ msgstr "Sikkerhedskopiering og gendannelse"
 msgid "Search Providers"
 msgstr "Søgemaskiner"
 
-#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4738
+#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Indstillinger for undertekster"
 
-#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4868
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "Kvalitetsindstillinger"
@@ -5738,7 +5738,7 @@ msgstr "Kvalitetsindstillinger"
 msgid "Post Processing"
 msgstr "Efterbehandling"
 
-#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4392
+#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4395
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "Meddelelser"
@@ -6004,7 +6004,7 @@ msgstr "Propers Søg deaktiveret"
 msgid "Post-Processor:"
 msgstr "Post-processor:"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4936
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Søg kø"
@@ -6599,7 +6599,7 @@ msgstr "Allerede på filial: "
 #: sickrage/core/webserver/views.py:1873 sickrage/core/webserver/views.py:1878
 #: sickrage/core/webserver/views.py:1881 sickrage/core/webserver/views.py:1924
 #: sickrage/core/webserver/views.py:1930 sickrage/core/webserver/views.py:1933
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4942
 msgid "Error"
 msgstr "Fejl"
 
@@ -6980,9 +6980,9 @@ msgid "General Configuration"
 msgstr "Generel konfiguration"
 
 #: sickrage/core/webserver/views.py:3859 sickrage/core/webserver/views.py:4022
-#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4374
-#: sickrage/core/webserver/views.py:4720 sickrage/core/webserver/views.py:4808
-#: sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4377
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4811
+#: sickrage/core/webserver/views.py:4850
 msgid "Error(s) Saving Configuration"
 msgstr "Fejl gemme konfiguration"
 
@@ -7090,75 +7090,75 @@ msgid "\n"
 msgstr "\n"
 "Ingen udbyder Api-nøgle, der er angivet"
 
-#: sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:4379
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] konfiguration gemmes"
 
-#: sickrage/core/webserver/views.py:4391
+#: sickrage/core/webserver/views.py:4394
 msgid "Config - Notifications"
 msgstr "Config - meddelelser"
 
-#: sickrage/core/webserver/views.py:4722
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] konfiguration gemmes"
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4810
+#: sickrage/core/webserver/views.py:4813
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] konfiguration gemmes"
 
-#: sickrage/core/webserver/views.py:4825
+#: sickrage/core/webserver/views.py:4828
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4852
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] konfiguration gemmes"
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4867
 msgid "Config - Quality Settings"
 msgstr "Config - kvalitetsindstillinger"
 
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:4879
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[KVALITETSINDSTILLINGER] Konfiguration gemmes"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4931
 msgid "Daily Searcher"
 msgstr "Daglige Searcher"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4933
 msgid "Show Updater"
 msgstr "Vis Updater"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4934
 msgid "Check Version"
 msgstr "Check Version"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Propers"
 msgstr "Find Propers"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4938
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4939
 msgid "Find Subtitles"
 msgstr "Find undertekster"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4941
 msgid "Event"
 msgstr "Event"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4943
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4944
 msgid "Thread"
 msgstr "Tråd"
 

@@ -4288,7 +4288,10 @@ class ConfigProviders(Config):
 
         # custom providers
         custom_providers = ''
-        for curProviderStr in kwargs.get('provider_strings', '').split():
+        for curProviderStr in kwargs.get('provider_strings', '').split('!!!'):
+            if not len(curProviderStr):
+                continue
+
             custom_providers += '{}!!!'.format(curProviderStr)
             cur_type, curProviderData = curProviderStr.split('|', 1)
 
@@ -4316,13 +4319,13 @@ class ConfigProviders(Config):
 
         # remove providers
         for p in list(set(sickrage.app.search_providers.provider_order).difference(
-                [x.split(':')[0] for x in kwargs.get('provider_order', '').split()])):
+                [x.split(':')[0] for x in kwargs.get('provider_order', '').split('!!!')])):
             providerObj = sickrage.app.search_providers.all()[p]
             del sickrage.app.search_providers[providerObj.type][p]
 
         # enable/disable/sort providers
         sickrage.app.search_providers.provider_order = []
-        for curProviderStr in kwargs.get('provider_order', '').split():
+        for curProviderStr in kwargs.get('provider_order', '').split('!!!'):
             curProvider, curEnabled = curProviderStr.split(':')
             sickrage.app.search_providers.provider_order += [curProvider]
             if curProvider in sickrage.app.search_providers.all():

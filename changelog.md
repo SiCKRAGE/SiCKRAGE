@@ -1,6 +1,11 @@
 # Changelog
 
-- * 0929705 - 2018-10-14: Release v9.3.87 
+- * 1f91427 - 2018-10-14: Release v9.3.88 
+- * 79735d7 - 2018-10-14: Fixed issue with custom provider not being saved when using spaces for names. Fixed parsing issue with Jackett. Fixed issue with missing provider icons. 
+- * 6d8c60a - 2018-10-14: Fixed issue with custom providers having spaces in their names that was causing settings to not save 
+- * 23f9684 - 2018-10-14: Fixed issues with removing custom torrent/newznab providers 
+- * e2132a2 - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 
+- * d186f55 - 2018-10-14: Release v9.3.87 
 - * ca05ceb - 2018-10-14: Fixed issue with freebsd init script not daemonizing the app 
 - * 10fc6b3 - 2018-10-14: Release v9.3.86 
 - * b0c7dc9 - 2018-10-13: Release v9.3.85 

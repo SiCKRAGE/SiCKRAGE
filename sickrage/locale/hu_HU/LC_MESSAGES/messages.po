@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-14 01:07-0700\n"
-"PO-Revision-Date: 2018-10-14 08:09\n"
+"POT-Creation-Date: 2018-10-14 15:18-0700\n"
+"PO-Revision-Date: 2018-10-14 22:19\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -4749,7 +4749,7 @@ msgstr "Ruházata:"
 msgid "Select Filtered Episodes"
 msgstr "Jelölje be a szűrt epizódok"
 
-#: sickrage/core/webserver/views.py:4889
+#: sickrage/core/webserver/views.py:4892
 #: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4833,7 +4833,7 @@ msgstr "Ismeretlen"
 msgid "Retry Download"
 msgstr "Újra megpróbál letölt"
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4945
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Fő"
@@ -4959,7 +4959,7 @@ msgstr "helyett a légi sorrendben használja a DVD rendelés"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "A \"teljes frissítésének kikényszerítése\", és ha már meglévő epizódok kell rendezni őket manuálisan."
 
-#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4826
+#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4829
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5281,7 +5281,7 @@ msgstr "Rendszerindításának végrehajtása"
 msgid "Daily Search"
 msgstr "Napi keresés"
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4932
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Lemaradás"
@@ -5306,7 +5306,7 @@ msgstr "Post eljárás"
 msgid "Subtitles Finder"
 msgstr "Feliratok kereső"
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4940
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt jelenléti ellenőr"
@@ -5339,7 +5339,7 @@ msgstr "nem"
 msgid "True"
 msgstr "Igaz"
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4935
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Térkép-várólista"
@@ -5722,12 +5722,12 @@ msgstr "Biztonsági mentés és visszaállítás"
 msgid "Search Providers"
 msgstr "Keresésszolgáltatók"
 
-#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4738
+#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr "Felirat beállítás"
 
-#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4868
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr "Minőségi beállítások"
@@ -5738,7 +5738,7 @@ msgstr "Minőségi beállítások"
 msgid "Post Processing"
 msgstr "Utómunka"
 
-#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4392
+#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4395
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr "Értesítések"
@@ -6004,7 +6004,7 @@ msgstr "Propers keresés fogyatékkal élők"
 msgid "Post-Processor:"
 msgstr "Utó-feldolgozó:"
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4936
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Várólista keresése"
@@ -6599,7 +6599,7 @@ msgstr "Már a kirendeltség: "
 #: sickrage/core/webserver/views.py:1873 sickrage/core/webserver/views.py:1878
 #: sickrage/core/webserver/views.py:1881 sickrage/core/webserver/views.py:1924
 #: sickrage/core/webserver/views.py:1930 sickrage/core/webserver/views.py:1933
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4942
 msgid "Error"
 msgstr "Hiba"
 
@@ -6980,9 +6980,9 @@ msgid "General Configuration"
 msgstr "Általános beállítások"
 
 #: sickrage/core/webserver/views.py:3859 sickrage/core/webserver/views.py:4022
-#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4374
-#: sickrage/core/webserver/views.py:4720 sickrage/core/webserver/views.py:4808
-#: sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4377
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4811
+#: sickrage/core/webserver/views.py:4850
 msgid "Error(s) Saving Configuration"
 msgstr "Mentése konfigurációs hiba"
 
@@ -7090,75 +7090,75 @@ msgid "\n"
 msgstr "\n"
 "Nincs megadva szolgáltató Api-kulcs"
 
-#: sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:4379
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4391
+#: sickrage/core/webserver/views.py:4394
 msgid "Config - Notifications"
 msgstr "Config - értesítések"
 
-#: sickrage/core/webserver/views.py:4722
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles Settings"
 msgstr "Beállítás - Felírat Beállítás"
 
-#: sickrage/core/webserver/views.py:4810
+#: sickrage/core/webserver/views.py:4813
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4825
+#: sickrage/core/webserver/views.py:4828
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4852
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4867
 msgid "Config - Quality Settings"
 msgstr "Config - minőségi beállítások"
 
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:4879
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[MINŐSÉGI BEÁLLÍTÁSOK] Beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4931
 msgid "Daily Searcher"
 msgstr "Napi kereső"
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4933
 msgid "Show Updater"
 msgstr "Térkép-Updater"
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4934
 msgid "Check Version"
 msgstr "Ellenőriz változat"
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Propers"
 msgstr "Még Propers"
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4938
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4939
 msgid "Find Subtitles"
 msgstr "Meg a feliratok"
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4941
 msgid "Event"
 msgstr "Esemény"
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4943
 msgid "Tornado"
 msgstr "Tornádó"
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4944
 msgid "Thread"
 msgstr "Szál"
 
