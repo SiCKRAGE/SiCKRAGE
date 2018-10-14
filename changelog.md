@@ -1,6 +1,7 @@
 # Changelog
 
-- * 237e5e5 - 2018-10-13: Added notifier Join 
+- * ceb8b21 - 2018-10-13: Release v9.3.84 
+- * aa89c95 - 2018-10-13: Added notifier Join 
 - * 7891d45 - 2018-10-13: Release v9.3.83 
 - * 83e5033 - 2018-10-13: Fixed issue with adding shows from Trakt and IMDB not showing 
 - * 256f26b - 2018-10-13: Pre-Release v9.3.83.dev1 
