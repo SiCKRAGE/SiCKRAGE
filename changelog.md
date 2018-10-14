@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0ca909e - 2018-10-14: Fixed issues with removing custom torrent/newznab providers 
+- * ba79a49 - 2018-10-14: Fixed issue with custom providers having spaces in their names that was causing settings to not save 
+- * 23f9684 - 2018-10-14: Fixed issues with removing custom torrent/newznab providers 
 - * e2132a2 - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 
 - * d186f55 - 2018-10-14: Release v9.3.87 
 - * ca05ceb - 2018-10-14: Fixed issue with freebsd init script not daemonizing the app 

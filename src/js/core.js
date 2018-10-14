@@ -4801,7 +4801,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        //$('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -4941,7 +4941,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        $('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        //$('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -5031,8 +5031,8 @@ $(document).ready(function ($) {
                         }
                     }
 
-                    $("#provider_strings").val(provStrings.join(' '));
-                    $("#provider_order").val(finalArr.join(' '));
+                    $("#provider_strings").val(provStrings.join('!!!'));
+                    $("#provider_order").val(finalArr.join('!!!'));
 
                     SICKRAGE.config.providers.refreshEditAProvider();
                 },
