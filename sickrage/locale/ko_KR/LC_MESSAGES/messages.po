@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-13 18:14-0700\n"
-"PO-Revision-Date: 2018-10-14 01:18\n"
+"POT-Creation-Date: 2018-10-13 18:52-0700\n"
+"PO-Revision-Date: 2018-10-14 01:54\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -89,7 +89,7 @@ msgstr "역사를 트림"
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "당신은 모든 트림을 다운로드 30 일 보다 오래 된 역사는?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2171
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2171
 msgid "Remove Show"
 msgstr "표시 제거"
 
@@ -5018,16 +5018,16 @@ msgstr "Asc"
 msgid "Desc"
 msgstr "Desc"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:49
+#: sickrage/core/webserver/views/home/imdb_shows.mako:46
 msgid "Fetching of IMDB Data failed. Are you online?"
 msgstr "IMDB 데이터의 가져오기에 실패 했습니다. 온라인 당신은?"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:50
+#: sickrage/core/webserver/views/home/imdb_shows.mako:47
 msgid "Exception:"
 msgstr "예외:"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:88
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111
+#: sickrage/core/webserver/views/home/imdb_shows.mako:85
+#: sickrage/core/webserver/views/home/trakt_shows.mako:108
 msgid "Add Show"
 msgstr "보기 추가"
 

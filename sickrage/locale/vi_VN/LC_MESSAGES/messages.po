@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-13 18:14-0700\n"
-"PO-Revision-Date: 2018-10-14 01:19\n"
+"POT-Creation-Date: 2018-10-13 18:52-0700\n"
+"PO-Revision-Date: 2018-10-14 01:55\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -89,7 +89,7 @@ msgstr "Trim lịch sử"
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Có chắc chắn muốn cắt tất cả các bạn tải về lịch sử cũ hơn 30 ngày?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:114 src/js/core.js:2171
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2171
 msgid "Remove Show"
 msgstr "Loại bỏ các hiển thị"
 
@@ -5018,16 +5018,16 @@ msgstr "ASC"
 msgid "Desc"
 msgstr "Desc"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:49
+#: sickrage/core/webserver/views/home/imdb_shows.mako:46
 msgid "Fetching of IMDB Data failed. Are you online?"
 msgstr "Lấy dữ liệu IMDB đã thất bại. Đang trực tuyến?"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:50
+#: sickrage/core/webserver/views/home/imdb_shows.mako:47
 msgid "Exception:"
 msgstr "Ngoại lệ:"
 
-#: sickrage/core/webserver/views/home/imdb_shows.mako:88
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111
+#: sickrage/core/webserver/views/home/imdb_shows.mako:85
+#: sickrage/core/webserver/views/home/trakt_shows.mako:108
 msgid "Add Show"
 msgstr "Hiển thị thêm"
 
