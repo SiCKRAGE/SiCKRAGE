@@ -714,6 +714,15 @@ class Home(WebHandler):
             return _('Error sending Telegram notification: {message}').format(message=message)
 
     @staticmethod
+    def testJoin(join_id=None, join_apikey=None):
+
+        result, message = sickrage.app.notifier_providers['join'].test_notify(join_id, join_apikey)
+        if result:
+            return _('Join notification succeeded. Check your Join clients to make sure it worked')
+        else:
+            return _('Error sending Join notification: {message}').format(message=message)
+
+    @staticmethod
     def testGrowl(host=None, password=None):
         host = clean_host(host, default_port=23053)
 
@@ -4400,6 +4409,8 @@ class ConfigNotifications(Config):
                           freemobile_notify_onsubtitledownload=None, freemobile_id=None, freemobile_apikey=None,
                           use_telegram=None, telegram_notify_onsnatch=None, telegram_notify_ondownload=None,
                           telegram_notify_onsubtitledownload=None, telegram_id=None, telegram_apikey=None,
+                          use_join=None, join_notify_onsnatch=None, join_notify_ondownload=None,
+                          join_notify_onsubtitledownload=None, join_id=None, join_apikey=None,
                           use_prowl=None, prowl_notify_onsnatch=None, prowl_notify_ondownload=None,
                           prowl_notify_onsubtitledownload=None, prowl_api=None, prowl_priority=0,
                           use_twitter=None, twitter_notify_onsnatch=None, twitter_notify_ondownload=None,
@@ -4514,6 +4525,16 @@ class ConfigNotifications(Config):
             telegram_notify_onsubtitledownload)
         sickrage.app.config.telegram_id = telegram_id
         sickrage.app.config.telegram_apikey = telegram_apikey
+
+        sickrage.app.config.use_join = checkbox_to_value(use_join)
+        sickrage.app.config.join_notify_onsnatch = checkbox_to_value(
+            join_notify_onsnatch)
+        sickrage.app.config.join_notify_ondownload = checkbox_to_value(
+            join_notify_ondownload)
+        sickrage.app.config.join_notify_onsubtitledownload = checkbox_to_value(
+            join_notify_onsubtitledownload)
+        sickrage.app.config.join_id = join_id
+        sickrage.app.config.join_apikey = join_apikey
 
         sickrage.app.config.use_prowl = checkbox_to_value(use_prowl)
         sickrage.app.config.prowl_notify_onsnatch = checkbox_to_value(

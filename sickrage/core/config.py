@@ -257,6 +257,12 @@ class Config(object):
         self.telegram_notify_onsubtitledownload = False
         self.telegram_id = ""
         self.telegram_apikey = ""
+        self.use_join = False
+        self.join_notify_onsnatch = False
+        self.join_notify_ondownload = False
+        self.join_notify_onsubtitledownload = False
+        self.join_id = ""
+        self.join_apikey = ""
         self.use_prowl = False
         self.prowl_notify_onsnatch = False
         self.prowl_notify_ondownload = False
@@ -498,6 +504,14 @@ class Config(object):
                 'use_telegram': False,
                 'telegram_notify_onsnatch': False,
                 'telegram_notify_onsubtitledownload': False
+            },
+            'JOIN': {
+                'join_notify_ondownload': False,
+                'join_apikey': '',
+                'join_id': '',
+                'use_join': False,
+                'join_notify_onsnatch': False,
+                'join_notify_onsubtitledownload': False
             },
             'GUI': {
                 'coming_eps_display_paused': False,
@@ -1641,6 +1655,15 @@ class Config(object):
         self.telegram_id = self.check_setting_str('TELEGRAM', 'telegram_id')
         self.telegram_apikey = self.check_setting_str('TELEGRAM', 'telegram_apikey', censor=True)
 
+        # JOIN SETTINGS
+        self.use_join = self.check_setting_bool('JOIN', 'use_join')
+        self.join_notify_onsnatch = self.check_setting_bool('JOIN', 'join_notify_onsnatch')
+        self.join_notify_ondownload = self.check_setting_bool('JOIN', 'join_notify_ondownload')
+        self.join_notify_onsubtitledownload = self.check_setting_bool('JOIN',
+                                                                      'join_notify_onsubtitledownload')
+        self.join_id = self.check_setting_str('JOIN', 'join_id')
+        self.join_apikey = self.check_setting_str('JOIN', 'join_apikey', censor=True)
+
         # PROWL SETTINGS
         self.use_prowl = self.check_setting_bool('Prowl', 'use_prowl')
         self.prowl_notify_onsnatch = self.check_setting_bool('Prowl', 'prowl_notify_onsnatch')
@@ -2127,6 +2150,14 @@ class Config(object):
                 'telegram_notify_onsubtitledownload': int(self.telegram_notify_onsubtitledownload),
                 'telegram_id': self.telegram_id,
                 'telegram_apikey': self.telegram_apikey,
+            },
+            'JOIN': {
+                'use_join': int(self.use_join),
+                'join_notify_onsnatch': int(self.join_notify_onsnatch),
+                'join_notify_ondownload': int(self.join_notify_ondownload),
+                'join_notify_onsubtitledownload': int(self.join_notify_onsubtitledownload),
+                'join_id': self.join_id,
+                'join_apikey': self.join_apikey,
             },
             'Prowl': {
                 'use_prowl': int(self.use_prowl),

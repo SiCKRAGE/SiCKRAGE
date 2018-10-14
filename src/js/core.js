@@ -4172,6 +4172,36 @@ $(document).ready(function ($) {
                         });
                     });
 
+                    $('#testJoin').on('click', function () {
+                        var join = {};
+                        join.id = $.trim($('#join_id').val());
+                        join.apikey = $.trim($('#join_apikey').val());
+                        if (!join.id || !join.apikey) {
+                            $('#testJoin-result').html(gt('Please fill out the necessary fields above.'));
+                            if (!join.id) {
+                                $('#join_id').addClass('warning');
+                            } else {
+                                $('#join_id').removeClass('warning');
+                            }
+                            if (!join.apikey) {
+                                $('#join_apikey').addClass('warning');
+                            } else {
+                                $('#join_apikey').removeClass('warning');
+                            }
+                            return;
+                        }
+                        $('#join_id,#join_apikey').removeClass('warning');
+                        $(this).prop('disabled', true);
+                        $('#testJoin-result').html(SICKRAGE.loadingHTML);
+                        $.get(SICKRAGE.srWebRoot + '/home/testJoin', {
+                            'join_id': join.id,
+                            'join_apikey': join.apikey
+                        }).done(function (data) {
+                            $('#testJoin-result').html(data);
+                            $('#testJoin').prop('disabled', false);
+                        });
+                    });
+
                     $('#TraktGetPin').click(function () {
                         window.open($('#trakt_pin_url').val(), "popUp", "toolbar=no, scrollbars=no, resizable=no, top=200, left=200, width=650, height=550");
                         $('#trakt_pin').removeClass('d-none');
