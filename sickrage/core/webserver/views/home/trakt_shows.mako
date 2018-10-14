@@ -79,10 +79,7 @@
                             <p class="red-text">${_('Trakt API did not return any results, please check your config.')}
                         </div>
                     % else:
-                        <div class="loading-spinner text-center">
-                            <i class="fas fa-10x fa-spinner fa-spin fa-fw"></i>
-                        </div>
-                        <div class="show-grid mx-auto d-none">
+                        <div class="show-grid mx-auto">
                             % for cur_show in trakt_shows:
                             <% indexer_id = cur_show.ids['tvdb'] %>
                             <% show_url = 'http://www.trakt.tv/shows/%s' % cur_show.ids['slug'] %>
