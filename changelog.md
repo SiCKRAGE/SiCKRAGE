@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8d0178c - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 
+- * 0ca909e - 2018-10-14: Fixed issues with removing custom torrent/newznab providers 
+- * e2132a2 - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 
 - * d186f55 - 2018-10-14: Release v9.3.87 
 - * ca05ceb - 2018-10-14: Fixed issue with freebsd init script not daemonizing the app 
 - * 10fc6b3 - 2018-10-14: Release v9.3.86 

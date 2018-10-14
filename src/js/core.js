@@ -4817,9 +4817,8 @@ $(document).ready(function ($) {
                 },
 
                 deleteNewznabProvider: function (id) {
-                    $('#editANewznabProvider').removeOption(id);
+                    $("#editANewznabProvider option[value='" + id + "']").remove();
                     SICKRAGE.config.providers.populateNewznabSection();
-                    $('li').remove('#' + id);
                     delete SICKRAGE.config.providers.newznabProviders[id];
                     SICKRAGE.config.providers.refreshProviderList();
                 },
@@ -4958,9 +4957,8 @@ $(document).ready(function ($) {
                 },
 
                 deleteTorrentRssProvider: function (id) {
-                    $('#editATorrentRssProvider').removeOption(id);
+                    $("#editATorrentRssProvider option[value='" + id + "']").remove();
                     SICKRAGE.config.providers.populateTorrentRssSection();
-                    $('li').remove('#' + id);
                     delete SICKRAGE.config.providers.torrentRssProviders[id];
                     SICKRAGE.config.providers.refreshProviderList();
                 },
