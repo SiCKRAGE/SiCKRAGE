@@ -4767,7 +4767,6 @@ class ConfigSubtitles(Config):
 
         sickrage.app.config.change_subtitle_searcher_freq(subtitles_finder_frequency)
         sickrage.app.config.use_subtitles = checkbox_to_value(use_subtitles)
-        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
         sickrage.app.config.subtitles_dir = subtitles_dir
         sickrage.app.config.subtitles_history = checkbox_to_value(subtitles_history)
         sickrage.app.config.embedded_subtitles_all = checkbox_to_value(embedded_subtitles_all)
@@ -4775,6 +4774,11 @@ class ConfigSubtitles(Config):
         sickrage.app.config.subtitles_multi = checkbox_to_value(subtitles_multi)
         sickrage.app.config.subtitles_extra_scripts = [x.strip() for x in subtitles_extra_scripts.split('|') if
                                                        x.strip()]
+
+        # Subtitle languages
+        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
+        if not isinstance(sickrage.app.config.subtitles_languages, list):
+            sickrage.app.config.subtitles_languages = [sickrage.app.config.subtitles_languages]
 
         # Subtitles services
         services_str_list = service_order.split()

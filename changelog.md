@@ -1,6 +1,7 @@
 # Changelog
 
-- * ceb8b21 - 2018-10-13: Release v9.3.84 
+- * b0ea768 - 2018-10-13: Fixed issue with saving subtitle language settings 
+- * 57a541f - 2018-10-13: Release v9.3.84 
 - * aa89c95 - 2018-10-13: Added notifier Join 
 - * 7891d45 - 2018-10-13: Release v9.3.83 
 - * 83e5033 - 2018-10-13: Fixed issue with adding shows from Trakt and IMDB not showing 

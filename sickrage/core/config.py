@@ -407,9 +407,9 @@ class Config(object):
         self.poster_sortdir = ""
         self.filter_row = True
         self.use_subtitles = False
-        self.subtitles_languages = ""
+        self.subtitles_languages = []
+        self.subtitles_services_list = []
         self.subtitles_dir = ""
-        self.subtitles_services_list = ""
         self.subtitles_services_enabled = ""
         self.subtitles_history = False
         self.embedded_subtitles_all = False
@@ -923,12 +923,12 @@ class Config(object):
             'Subtitles': {
                 'itasa_password': '',
                 'opensubtitles_username': '',
-                'subtitles_services_list': '',
+                'subtitles_services_list': [],
                 'subtitles_history': False,
                 'legendastv_password': '',
                 'subtitles_hearing_impaired': False,
                 'addic7ed_password': '',
-                'subtitles_languages': '',
+                'subtitles_languages': [],
                 'embedded_subtitles_all': False,
                 'subtitles_finder_frequency': 1,
                 'subtitles_default': False,
@@ -1813,9 +1813,9 @@ class Config(object):
 
         # SUBTITLE SETTINGS
         self.use_subtitles = self.check_setting_bool('Subtitles', 'use_subtitles')
-        self.subtitles_languages = self.check_setting_str('Subtitles', 'subtitles_languages').split(',')
+        self.subtitles_languages = self.check_setting_list('Subtitles', 'subtitles_languages')
+        self.subtitles_services_list = self.check_setting_list('Subtitles', 'subtitles_services_list')
         self.subtitles_dir = self.check_setting_str('Subtitles', 'subtitles_dir')
-        self.subtitles_services_list = self.check_setting_str('Subtitles', 'subtitles_services_list').split(',')
         self.subtitles_default = self.check_setting_bool('Subtitles', 'subtitles_default')
         self.subtitles_history = self.check_setting_bool('Subtitles', 'subtitles_history')
         self.subtitles_hearing_impaired = self.check_setting_bool('Subtitles', 'subtitles_hearing_impaired')
@@ -2317,8 +2317,8 @@ class Config(object):
             },
             'Subtitles': {
                 'use_subtitles': int(self.use_subtitles),
-                'subtitles_languages': ','.join(self.subtitles_languages),
-                'subtitles_services_list': ','.join(self.subtitles_services_list),
+                'subtitles_languages': self.subtitles_languages,
+                'subtitles_services_list': self.subtitles_services_list,
                 'subtitles_services_enabled': '|'.join([str(x) for x in self.subtitles_services_enabled]),
                 'subtitles_dir': self.subtitles_dir,
                 'subtitles_default': int(self.subtitles_default),
