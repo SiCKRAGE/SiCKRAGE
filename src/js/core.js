@@ -4801,7 +4801,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        //$('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/nzb.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-dark rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-providers sickrage-providers-newznab"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -4818,6 +4818,7 @@ $(document).ready(function ($) {
 
                 deleteNewznabProvider: function (id) {
                     $("#editANewznabProvider option[value='" + id + "']").remove();
+                    $(".list-group #" + id).remove();
                     SICKRAGE.config.providers.populateNewznabSection();
                     delete SICKRAGE.config.providers.newznabProviders[id];
                     SICKRAGE.config.providers.refreshProviderList();
@@ -4941,7 +4942,7 @@ $(document).ready(function ($) {
                     }
 
                     if ($('#provider_order_list > #' + id).length === 0 && showProvider !== 'false') {
-                        //$('#provider_order_list').append('<li class="ui-state-default" id="' + id + '"> <input type="checkbox" id="enable_' + id + '" class="provider_enabler" CHECKED> <a href="' + SICKRAGE.anonURL + url + '" class="imgLink" target="_new"><img src="' + SICKRAGE.srWebRoot + '/images/providers/torrent.png" alt="' + name + '" width="16" height="16"></a> ' + name + '</li>');
+                        $('#provider_order_list').append('<div class="list-group-item list-group-item-action list-group-item-secondary rounded mb-1 p-2" id="' + id + '"><div class="align-middle"><label class="form-check-label" for="enable_' + id + '"><input type="checkbox" id="enable_' + id + '" class="provider_enabler text-left" checked><a href="' + SICKRAGE.anonURL + url + '" class="text-right" target="_new"> <i class="sickrage-providers sickrage-providers-torrentrss"></i></a> <span class="font-weight-bold">' + name + '</span></label><span class="float-right d-inline-block"><i class="fas fa-lock text-danger"></i></span></div>');
                         $('#provider_order_list').sortable("refresh");
                     }
 
@@ -4958,6 +4959,7 @@ $(document).ready(function ($) {
 
                 deleteTorrentRssProvider: function (id) {
                     $("#editATorrentRssProvider option[value='" + id + "']").remove();
+                    $(".list-group #" + id).remove();
                     SICKRAGE.config.providers.populateTorrentRssSection();
                     delete SICKRAGE.config.providers.torrentRssProviders[id];
                     SICKRAGE.config.providers.refreshProviderList();

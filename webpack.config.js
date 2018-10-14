@@ -9,7 +9,7 @@ const templateFunction = function (data) {
     var iconName = path.basename(data.sprites[0].image, path.extname(data.sprites[0].image))
         .replace('~', '');
 
-    var shared = '.D { display: inline-block; background-image: url(I) }'
+    var shared = '.D { display: inline-block; background-image: url(I); }'
         .replace('D', iconName)
         .replace('I', data.sprites[0].image);
 
