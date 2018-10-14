@@ -1,6 +1,7 @@
 # Changelog
 
-- * c242871 - 2018-10-13: Release v9.3.83 
+- * 237e5e5 - 2018-10-13: Added notifier Join 
+- * 7891d45 - 2018-10-13: Release v9.3.83 
 - * 83e5033 - 2018-10-13: Fixed issue with adding shows from Trakt and IMDB not showing 
 - * 256f26b - 2018-10-13: Pre-Release v9.3.83.dev1 
 - * 2aa5b96 - 2018-10-13: Testing fix for &quot;unsupported operand type&quot; during BTN provider search 

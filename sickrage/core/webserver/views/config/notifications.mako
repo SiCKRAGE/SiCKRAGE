@@ -2407,6 +2407,143 @@
         <div class="form-row">
             <div class="col-lg-3 col-md-4 col-sm-4 card-title">
                 <h3>
+                    <a href="${anon_url('https://joaoapps.com/join/')}" rel="noreferrer"
+                       onclick="window.open(this.href, '_blank'); return false;">
+                        <i class="sickrage-notifiers sickrage-notifiers-join" title="Join"></i>
+                        ${_('Join')}
+                    </a>
+                </h3>
+                <small class="form-text text-muted">
+                    ${_('Join all of your devices together')}
+                </small>
+            </div>
+            <fieldset class="col-lg-9 col-md-8 col-sm-8 card-text">
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Enable')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label for="use_join">
+                            <input type="checkbox" class="enabler toggle color-primary is-material" name="use_join"
+                                   id="use_join" ${('', 'checked')[bool(sickrage.app.config.use_join)]}/>
+                            ${_('send Join notifications?')}
+                        </label>
+                    </div>
+                </div>
+
+                <div id="content_use_join">
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Notify on snatch')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <label for="join_notify_onsnatch">
+                                <input type="checkbox" class="toggle color-primary is-material" name="join_notify_onsnatch"
+                                       id="join_notify_onsnatch" ${('', 'checked')[bool(sickrage.app.config.join_notify_onsnatch)]}/>
+                                ${_('send a message when a download starts?')}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Notify on download')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <label for="join_notify_ondownload">
+                                <input type="checkbox" class="toggle color-primary is-material" name="join_notify_ondownload"
+                                       id="join_notify_ondownload" ${('', 'checked')[bool(sickrage.app.config.join_notify_ondownload)]}/>
+                                ${_('send a message when a download finishes?')}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Notify on subtitle download')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <label for="join_notify_onsubtitledownload">
+                                <input type="checkbox" class="toggle color-primary is-material" name="join_notify_onsubtitledownload"
+                                       id="join_notify_onsubtitledownload" ${('', 'checked')[bool(sickrage.app.config.join_notify_onsubtitledownload)]}/>
+                                ${_('send a message when subtitles are downloaded?')}
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('Device ID')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><span class="fas fa-user"></span></span>
+                                        </div>
+                                        <input name="join_id" id="join_id"
+                                               value="${sickrage.app.config.join_id}"
+                                               class="form-control"
+                                               placeholder="${_('ex. 12345678')}"
+                                               autocapitalize="off"/>
+                                    </div>
+                                    <label class="text-info" for="join_id">
+                                        ${_('per device specific id')}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row form-group">
+                        <div class="col-lg-3 col-md-4 col-sm-5">
+                            <label class="component-title">${_('API Key')}</label>
+                        </div>
+                        <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><span class="fas fa-cloud"></span></span>
+                                        </div>
+                                        <input name="join_apikey" id="join_apikey"
+                                               value="${sickrage.app.config.join_apikey}"
+                                               class="form-control"
+                                               placeholder="${_('enter your API key')}"
+                                               autocapitalize="off"/>
+                                    </div>
+                                    <label class="text-info" for="join_apikey">
+                                        <a href="${anon_url('https://joaoapps.com/join/web')}" rel="noreferrer" onclick="window.open(this.href, '_blank'); return false;"><b>${_('click here')}</b></a>${_(' to create a Join API key')}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <div class="card mb-3">
+                                <div class="card-text m-1">
+                                    <div id="testJoin-result">${_('Click below to test')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <input class="btn" type="button" value="${_('Test Join')}"
+                                   id="testJoin"/>
+                            <input type="submit" class="config_submitter btn" value="${_('Save Changes')}"/>
+                        </div>
+                    </div>
+                </div><!-- /content_use_join //-->
+            </fieldset>
+        </div><!-- /join tab-pane //-->
+
+        <hr/>
+
+        <div class="form-row">
+            <div class="col-lg-3 col-md-4 col-sm-4 card-title">
+                <h3>
                     <a href="${anon_url('http://www.twilio.com/')}" rel="noreferrer"
                        onclick="window.open(this.href, '_blank'); return false;">
                         <i class="sickrage-notifiers sickrage-notifiers-twilio" title="Twilio"></i>
