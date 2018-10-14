@@ -1,6 +1,7 @@
 # Changelog
 
-- * d0c5c9e - 2018-10-14: Fixed issue with custom provider not being saved when using spaces for names. Fixed parsing issue with Jackett. Fixed issue with missing provider icons. 
+- * 1f91427 - 2018-10-14: Release v9.3.88 
+- * 79735d7 - 2018-10-14: Fixed issue with custom provider not being saved when using spaces for names. Fixed parsing issue with Jackett. Fixed issue with missing provider icons. 
 - * 6d8c60a - 2018-10-14: Fixed issue with custom providers having spaces in their names that was causing settings to not save 
 - * 23f9684 - 2018-10-14: Fixed issues with removing custom torrent/newznab providers 
 - * e2132a2 - 2018-10-14: Fixed issue#286 - added support for non-english indexer images 

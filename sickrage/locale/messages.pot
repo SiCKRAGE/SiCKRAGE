@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.3.87\n"
+"Project-Id-Version: sickrage 9.3.88\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-14 01:07-0700\n"
+"POT-Creation-Date: 2018-10-14 15:18-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4884,7 +4884,7 @@ msgstr ""
 msgid "Select Filtered Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4889
+#: sickrage/core/webserver/views.py:4892
 #: sickrage/core/webserver/views/home/display_show.mako:450
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4968,7 +4968,7 @@ msgstr ""
 msgid "Retry Download"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4942
+#: sickrage/core/webserver/views.py:4945
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr ""
@@ -5102,7 +5102,7 @@ msgid ""
 "need to sort them manually."
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4826
+#: sickrage/core/webserver/views.py:3667 sickrage/core/webserver/views.py:4829
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:267
@@ -5428,7 +5428,7 @@ msgstr ""
 msgid "Daily Search"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4929
+#: sickrage/core/webserver/views.py:4932
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr ""
@@ -5453,7 +5453,7 @@ msgstr ""
 msgid "Subtitles Finder"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4937
+#: sickrage/core/webserver/views.py:4940
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr ""
@@ -5486,7 +5486,7 @@ msgstr ""
 msgid "True"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4932
+#: sickrage/core/webserver/views.py:4935
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr ""
@@ -5880,12 +5880,12 @@ msgstr ""
 msgid "Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4738
+#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4741
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4868
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Quality Settings"
 msgstr ""
@@ -5896,7 +5896,7 @@ msgstr ""
 msgid "Post Processing"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4392
+#: sickrage/core/webserver/views.py:3666 sickrage/core/webserver/views.py:4395
 #: sickrage/core/webserver/views/layouts/main.mako:264
 msgid "Notifications"
 msgstr ""
@@ -6166,7 +6166,7 @@ msgstr ""
 msgid "Post-Processor:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4933
+#: sickrage/core/webserver/views.py:4936
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr ""
@@ -6789,7 +6789,7 @@ msgstr ""
 #: sickrage/core/webserver/views.py:1873 sickrage/core/webserver/views.py:1878
 #: sickrage/core/webserver/views.py:1881 sickrage/core/webserver/views.py:1924
 #: sickrage/core/webserver/views.py:1930 sickrage/core/webserver/views.py:1933
-#: sickrage/core/webserver/views.py:4939
+#: sickrage/core/webserver/views.py:4942
 msgid "Error"
 msgstr ""
 
@@ -7174,9 +7174,9 @@ msgid "General Configuration"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:3859 sickrage/core/webserver/views.py:4022
-#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4374
-#: sickrage/core/webserver/views.py:4720 sickrage/core/webserver/views.py:4808
-#: sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:4153 sickrage/core/webserver/views.py:4377
+#: sickrage/core/webserver/views.py:4723 sickrage/core/webserver/views.py:4811
+#: sickrage/core/webserver/views.py:4850
 msgid "Error(s) Saving Configuration"
 msgstr ""
 
@@ -7290,75 +7290,75 @@ msgid ""
 "No Provider Api key specified"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4376
+#: sickrage/core/webserver/views.py:4379
 msgid "[PROVIDERS] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4391
+#: sickrage/core/webserver/views.py:4394
 msgid "Config - Notifications"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4722
+#: sickrage/core/webserver/views.py:4725
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4737
+#: sickrage/core/webserver/views.py:4740
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4810
+#: sickrage/core/webserver/views.py:4813
 msgid "[SUBTITLES] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4825
+#: sickrage/core/webserver/views.py:4828
 msgid "Config - Anime"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4852
 msgid "[ANIME] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4867
 msgid "Config - Quality Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4876
+#: sickrage/core/webserver/views.py:4879
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4931
 msgid "Daily Searcher"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4933
 msgid "Show Updater"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4931
+#: sickrage/core/webserver/views.py:4934
 msgid "Check Version"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4934
+#: sickrage/core/webserver/views.py:4937
 msgid "Find Propers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4935
+#: sickrage/core/webserver/views.py:4938
 msgid "Postprocessor"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4936
+#: sickrage/core/webserver/views.py:4939
 msgid "Find Subtitles"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4938
+#: sickrage/core/webserver/views.py:4941
 msgid "Event"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4940
+#: sickrage/core/webserver/views.py:4943
 msgid "Tornado"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4941
+#: sickrage/core/webserver/views.py:4944
 msgid "Thread"
 msgstr ""
 
