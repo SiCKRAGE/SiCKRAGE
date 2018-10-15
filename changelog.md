@@ -1,6 +1,7 @@
 # Changelog
 
-- * 48a6d13 - 2018-10-15: Fixed issues with Torznab sending results to NZB client instead of Torrent client 
+- * 2277184 - 2018-10-15: Release v9.3.89 
+- * 38a0dd8 - 2018-10-15: Fixed issues with Torznab sending results to NZB client instead of Torrent client 
 - * b01ca47 - 2018-10-14: Release v9.3.88 
 - * 79735d7 - 2018-10-14: Fixed issue with custom provider not being saved when using spaces for names. Fixed parsing issue with Jackett. Fixed issue with missing provider icons. 
 - * 6d8c60a - 2018-10-14: Fixed issue with custom providers having spaces in their names that was causing settings to not save 
