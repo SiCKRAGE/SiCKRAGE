@@ -761,6 +761,7 @@ class NZBProvider(GenericProvider):
         super(NZBProvider, self).__init__(name, url, private)
         self.api_key = ''
         self.username = ''
+        self.torznab = False
 
     @property
     def isActive(self):
@@ -775,6 +776,7 @@ class NZBProvider(GenericProvider):
         Returns a result of the correct type for this provider
         """
         result = NZBSearchResult(episodes)
+        result.resultType = ('nzb', 'torznab')[self.torznab]
         result.provider = self
         return result
 
