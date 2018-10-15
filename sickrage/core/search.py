@@ -60,9 +60,6 @@ def snatchEpisode(result, endStatus=SNATCHED):
     if re.search(r'(^|[. _-])(proper|repack)([. _-]|$)', result.name, re.I) is not None:
         endStatus = SNATCHED_PROPER
 
-    if result.url.startswith('magnet') or result.url.endswith('torrent'):
-        result.resultType = 'torrent'
-
     # get result content
     result.content = result.provider.get_content(result.url)
 
@@ -78,7 +75,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
         else:
             sickrage.app.log.error(
                 "Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
-    elif result.resultType == "torrent":
+    elif result.resultType in ("torrent", "torznab"):
         # add public trackers to torrent result
         if not result.provider.private:
             result = result.provider.add_trackers(result)

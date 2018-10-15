@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-14 15:18-0700\n"
-"PO-Revision-Date: 2018-10-14 22:19\n"
+"POT-Creation-Date: 2018-10-15 06:57-0700\n"
+"PO-Revision-Date: 2018-10-15 13:59\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -6137,7 +6137,7 @@ msgstr "Хотел"
 msgid "Ignored"
 msgstr "Игнорируется"
 
-#: sickrage/core/search.py:103
+#: sickrage/core/search.py:100
 msgid "Episode snatched"
 msgstr "Вырвал эпизод"
 
