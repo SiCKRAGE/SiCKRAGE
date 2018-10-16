@@ -1,6 +1,9 @@
 # Changelog
 
-- * 2277184 - 2018-10-15: Release v9.3.89 
+- * 684add0 - 2018-10-15: Release v9.3.90 
+- * 70b40c6 - 2018-10-15: Updated .gitignore 
+- * 01f719f - 2018-10-15: Updated Dockerfile. Added CI/CD config. 
+- * 89b5a00 - 2018-10-15: Release v9.3.89 
 - * 38a0dd8 - 2018-10-15: Fixed issues with Torznab sending results to NZB client instead of Torrent client 
 - * b01ca47 - 2018-10-14: Release v9.3.88 
 - * 79735d7 - 2018-10-14: Fixed issue with custom provider not being saved when using spaces for names. Fixed parsing issue with Jackett. Fixed issue with missing provider icons. 
