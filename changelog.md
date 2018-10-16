@@ -1,6 +1,9 @@
 # Changelog
 
-- * 6ae77e9 - 2018-10-15: Release v9.3.93 
+- * 373e2c3 - 2018-10-15: Release v9.3.94 
+- * 47ce84c - 2018-10-16: Update .gitlab-ci.yml 
+- * bc472cc - 2018-10-16: Update .gitlab-ci.yml 
+- * eb1a642 - 2018-10-15: Release v9.3.93 
 - * 13ff53a - 2018-10-15: Release v9.3.92 
 - * def0213 - 2018-10-15: Updated .gitlab-ci.yml 
 - * 4500af0 - 2018-10-15: Release v9.3.91 
