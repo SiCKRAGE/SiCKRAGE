@@ -1,6 +1,8 @@
 # Changelog
 
-- * 684add0 - 2018-10-15: Release v9.3.90 
+- * b07227d - 2018-10-15: Release v9.3.91 
+- * b226cf4 - 2018-10-15: Updated .gitlab-ci.yml 
+- * b4d3c18 - 2018-10-15: Release v9.3.90 
 - * 70b40c6 - 2018-10-15: Updated .gitignore 
 - * 01f719f - 2018-10-15: Updated Dockerfile. Added CI/CD config. 
 - * 89b5a00 - 2018-10-15: Release v9.3.89 
