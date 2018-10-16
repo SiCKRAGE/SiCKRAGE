@@ -11,7 +11,7 @@ before_script:
 build-master:
   stage: build
   script:
-    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` --squash --pull -t sickrage/sickrage:latest .
+    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` -t sickrage/sickrage:latest .
     - docker push "sickrage/sickrage:latest"
   only:
     - master
@@ -21,7 +21,7 @@ build-master:
 build-dev:
   stage: build
   script:
-    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` --squash --pull -t sickrage/sickrage:$CI_COMMIT_REF_SLUG .
+    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` -t sickrage/sickrage:$CI_COMMIT_REF_SLUG .
     - docker push sickrage/sickrage:$CI_COMMIT_REF_SLUG
   except:
     - master
