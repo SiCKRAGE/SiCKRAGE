@@ -1,6 +1,7 @@
 # Changelog
 
-- * d651eb4 - 2018-10-15: Updated .gitignore 
+- * 684add0 - 2018-10-15: Release v9.3.90 
+- * 70b40c6 - 2018-10-15: Updated .gitignore 
 - * 01f719f - 2018-10-15: Updated Dockerfile. Added CI/CD config. 
 - * 89b5a00 - 2018-10-15: Release v9.3.89 
 - * 38a0dd8 - 2018-10-15: Fixed issues with Torznab sending results to NZB client instead of Torrent client 
