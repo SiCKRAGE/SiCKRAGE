@@ -1,0 +1,25 @@
+image: docker:latest
+
+services:
+  - name: docker:dind
+
+before_script:
+  - apk add --no-cache py-pip
+  - pip install docker-compose
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin
+
+build-master:
+  stage: build
+  script:
+    - docker build --squash --pull -t "$CI_PROJECT_NAMESPACE"/"$CI_PROJECT_NAME":latest .
+    - docker push "$CI_PROJECT_NAMESPACE"/"$CI_PROJECT_NAME":latest
+  only:
+    - master
+
+build-dev:
+  stage: build
+  script:
+    - docker build --squash --pull -t "$CI_PROJECT_NAMESPACE"/"$CI_PROJECT_NAME":"$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_PROJECT_NAMESPACE"/"$CI_PROJECT_NAME":"$CI_COMMIT_REF_SLUG"
+  except:
+    - master
