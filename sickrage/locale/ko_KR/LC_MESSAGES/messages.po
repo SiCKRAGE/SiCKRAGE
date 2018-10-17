@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-15 22:39-0700\n"
-"PO-Revision-Date: 2018-10-16 05:41\n"
+"POT-Creation-Date: 2018-10-16 22:02-0700\n"
+"PO-Revision-Date: 2018-10-17 05:03\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -584,9 +584,9 @@ msgstr "당신은 PostProcessed 에피소드는 MyList에 추가 하 시겠습�
 #: sickrage/core/webserver/views/config/general.mako:416
 #: sickrage/core/webserver/views/config/general.mako:704
 #: sickrage/core/webserver/views/config/general.mako:950
-#: sickrage/core/webserver/views/config/general.mako:1225
-#: sickrage/core/webserver/views/config/general.mako:1283
-#: sickrage/core/webserver/views/config/general.mako:1417
+#: sickrage/core/webserver/views/config/general.mako:1221
+#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1413
 #: sickrage/core/webserver/views/config/notifications.mako:203
 #: sickrage/core/webserver/views/config/notifications.mako:355
 #: sickrage/core/webserver/views/config/notifications.mako:488
@@ -1003,8 +1003,8 @@ msgid "display dates and times in either your timezone or the shows network time
 msgstr "귀하의 시간대 또는 쇼 네트워크 시간대에 날짜와 시간을 표시"
 
 #: sickrage/core/webserver/views/config/general.mako:644
-#: sickrage/core/webserver/views/config/general.mako:1151
-#: sickrage/core/webserver/views/config/general.mako:1194
+#: sickrage/core/webserver/views/config/general.mako:1147
+#: sickrage/core/webserver/views/config/general.mako:1190
 #: sickrage/core/webserver/views/config/notifications.mako:894
 #: sickrage/core/webserver/views/config/notifications.mako:936
 #: sickrage/core/webserver/views/config/notifications.mako:1012
@@ -1198,145 +1198,145 @@ msgstr "안에"
 msgid "file."
 msgstr "파일입니다."
 
-#: sickrage/core/webserver/views/config/general.mako:1067
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Unprotected calendar"
 msgstr "보호 되지 않은 캘린더"
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1072
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "사용자 및 암호 없이 달력에 가입 하실 수 있습니다. Google 캘린더와 같은 일부 서비스에만이 방법을 작동합니다"
 
-#: sickrage/core/webserver/views/config/general.mako:1083
+#: sickrage/core/webserver/views/config/general.mako:1079
 msgid "Google Calendar Icons"
 msgstr "Google 캘린더 아이콘"
 
-#: sickrage/core/webserver/views/config/general.mako:1089
+#: sickrage/core/webserver/views/config/general.mako:1085
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "Google 캘린더에서 내보낸된 캘린더 이벤트 옆에 아이콘을 표시."
 
-#: sickrage/core/webserver/views/config/general.mako:1098
+#: sickrage/core/webserver/views/config/general.mako:1094
 msgid "Link Google Account"
 msgstr "Google 계정에 연결"
 
-#: sickrage/core/webserver/views/config/general.mako:1101
+#: sickrage/core/webserver/views/config/general.mako:1097
 msgid "Link"
 msgstr "링크"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1099
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "SiCKRAGE 설정/데이터베이스 저장소와 같은 고급 기능 사용에 대 한 귀하의 google 계정 연결"
 
-#: sickrage/core/webserver/views/config/general.mako:1111
+#: sickrage/core/webserver/views/config/general.mako:1107
 msgid "Proxy host"
 msgstr "프록시 호스트"
 
-#: sickrage/core/webserver/views/config/general.mako:1130
+#: sickrage/core/webserver/views/config/general.mako:1126
 msgid "Use proxy for indexers"
 msgstr "인덱서에 대 한 프록시를 사용 하 여"
 
-#: sickrage/core/webserver/views/config/general.mako:1136
+#: sickrage/core/webserver/views/config/general.mako:1132
 msgid "use proxy host for connecting to indexers (TheTVDB)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1143
+#: sickrage/core/webserver/views/config/general.mako:1139
 msgid "Skip Remove Detection"
 msgstr "건너뛰기 제거 감지"
 
-#: sickrage/core/webserver/views/config/general.mako:1149
+#: sickrage/core/webserver/views/config/general.mako:1145
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "제거 된 파일의 검색을 건너뜁니다. 그것은 기본 설정 사용 안 함 상태를 삭제 하는 경우"
 
-#: sickrage/core/webserver/views/config/general.mako:1151
+#: sickrage/core/webserver/views/config/general.mako:1147
 msgid "This may mean SiCKRAGE misses renames as well"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1158
+#: sickrage/core/webserver/views/config/general.mako:1154
 msgid "Default deleted episode status"
 msgstr "기본 삭제 에피소드 상태"
 
-#: sickrage/core/webserver/views/config/general.mako:1192
+#: sickrage/core/webserver/views/config/general.mako:1188
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "삭제 된 미디어 파일에 대 한 설정 상태를 정의 합니다."
 
-#: sickrage/core/webserver/views/config/general.mako:1194
+#: sickrage/core/webserver/views/config/general.mako:1190
 msgid "Archived option will keep previous downloaded quality"
 msgstr "보관된 옵션 이전 다운로드 품질 유지"
 
-#: sickrage/core/webserver/views/config/general.mako:1196
+#: sickrage/core/webserver/views/config/general.mako:1192
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "예: 보관된 (1080p 웹-DL) ==> (1080p 웹-DL) 다운로드"
 
-#: sickrage/core/webserver/views/config/general.mako:1205
+#: sickrage/core/webserver/views/config/general.mako:1201
 msgid "Allowed video file extensions"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1216
+#: sickrage/core/webserver/views/config/general.mako:1212
 msgid "ex: avi,mp4,mkv"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1236
+#: sickrage/core/webserver/views/config/general.mako:1232
 msgid "PIP Settings"
 msgstr "픽처 인 픽처 설정"
 
-#: sickrage/core/webserver/views/config/general.mako:1241
+#: sickrage/core/webserver/views/config/general.mako:1237
 msgid "PIP executable path"
 msgstr "핍 실행 파일 경로"
 
-#: sickrage/core/webserver/views/config/general.mako:1254
+#: sickrage/core/webserver/views/config/general.mako:1250
 msgid "ex: /path/to/pip"
 msgstr "예: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1260
-#: sickrage/core/webserver/views/config/general.mako:1367
+#: sickrage/core/webserver/views/config/general.mako:1256
+#: sickrage/core/webserver/views/config/general.mako:1363
 msgid "Verify Path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1271
-#: sickrage/core/webserver/views/config/general.mako:1378
+#: sickrage/core/webserver/views/config/general.mako:1267
+#: sickrage/core/webserver/views/config/general.mako:1374
 msgid "Click vefify path to test."
 msgstr "Vefify 경로 테스트를 클릭 합니다."
 
-#: sickrage/core/webserver/views/config/general.mako:1298
+#: sickrage/core/webserver/views/config/general.mako:1294
 msgid "GIT Settings"
 msgstr "GIT 설정"
 
-#: sickrage/core/webserver/views/config/general.mako:1303
+#: sickrage/core/webserver/views/config/general.mako:1299
 msgid "Git Branches"
 msgstr "자식 분기"
 
-#: sickrage/core/webserver/views/config/general.mako:1315
+#: sickrage/core/webserver/views/config/general.mako:1311
 msgid "GIT Branch Version"
 msgstr "GIT 브랜치 버전"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1331
 msgid "Error: No branches found."
 msgstr "오류: 없음 지점을 발견입니다."
 
-#: sickrage/core/webserver/views/config/general.mako:1339
+#: sickrage/core/webserver/views/config/general.mako:1335
 msgid "select branch to use (restart required)"
 msgstr "(다시 시작 필요)를 사용 하 여 지점 선택"
 
-#: sickrage/core/webserver/views/config/general.mako:1348
+#: sickrage/core/webserver/views/config/general.mako:1344
 msgid "GIT executable path"
 msgstr "자식 실행 파일 경로"
 
-#: sickrage/core/webserver/views/config/general.mako:1361
+#: sickrage/core/webserver/views/config/general.mako:1357
 msgid "ex: /path/to/git"
 msgstr "예: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1387
+#: sickrage/core/webserver/views/config/general.mako:1383
 msgid "Git reset"
 msgstr "Git 리셋"
 
-#: sickrage/core/webserver/views/config/general.mako:1393
+#: sickrage/core/webserver/views/config/general.mako:1389
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "추적된 파일을 제거 하 고 자동으로 업데이트 문제 해결에 도움을 git에 하드 리셋을 수행합니다"
 
-#: sickrage/core/webserver/views/config/general.mako:1401
+#: sickrage/core/webserver/views/config/general.mako:1397
 msgid "Git auto-issues submit"
 msgstr "Git 자동 문제 제출"
 
-#: sickrage/core/webserver/views/config/general.mako:1408
+#: sickrage/core/webserver/views/config/general.mako:1404
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "자동으로 오류가 기록 됩니다 때 우리의 문제 추적기에 버그/문제 보고서를 제출"
 
@@ -6173,15 +6173,15 @@ msgstr "일반 고급 또는->-> 설정에서 git 경로 찾을 수 없습니다
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
 
-#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
+#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:554
+#: sickrage/core/version_updater.py:557
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "알 수 없는 현재 버전 번호: 만약 요 사용한 적이 전에 SiCKRAGE 업그레이드 시스템 현재 버전을 설정 하지 않으면 다음. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:712
+#: sickrage/core/version_updater.py:715
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
