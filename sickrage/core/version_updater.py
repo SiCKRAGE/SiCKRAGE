@@ -294,11 +294,14 @@ class UpdateManager(object):
             sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         elif exit_status == 1:
-            if 'stash' in output:
-                sickrage.app.log.warning(
-                    "Please enable 'git reset' in settings or stash your changes in local files")
+            if output:
+                if 'stash' in output:
+                    sickrage.app.log.warning(
+                        "Please enable 'git reset' in settings or stash your changes in local files")
+                else:
+                    sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output))
             else:
-                sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output))
+                sickrage.app.log.warning('{} returned no data'.format(cmd))
             exit_status = 1
         elif exit_status == 128 or 'fatal:' in output or err:
             sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output))

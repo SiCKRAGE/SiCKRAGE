@@ -1062,7 +1062,6 @@
                 </div>
 
                 <div class="form-row form-group">
-
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Unprotected calendar')}</label>
                     </div>
@@ -1073,12 +1072,9 @@
                             ${_('allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way')}
                         </label>
                     </div>
-
-
                 </div>
 
                 <div class="form-row form-group">
-
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Google Calendar Icons')}</label>
                     </div>

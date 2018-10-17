@@ -1,6 +1,8 @@
 # Changelog
 
-- * 373e2c3 - 2018-10-15: Release v9.3.94 
+- * 4efb182 - 2018-10-16: Release v9.3.95 
+- * 0f07f4b - 2018-10-16: Fixed issue with checking for stash in output of git cmds Disabled creating docker tags for develop branch 
+- * 8b3319d - 2018-10-15: Release v9.3.94 
 - * 47ce84c - 2018-10-16: Update .gitlab-ci.yml 
 - * bc472cc - 2018-10-16: Update .gitlab-ci.yml 
 - * eb1a642 - 2018-10-15: Release v9.3.93 

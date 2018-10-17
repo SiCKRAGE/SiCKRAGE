@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-15 22:39-0700\n"
-"PO-Revision-Date: 2018-10-16 05:41\n"
+"POT-Creation-Date: 2018-10-16 22:02-0700\n"
+"PO-Revision-Date: 2018-10-17 05:04\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -584,9 +584,9 @@ msgstr "Вы хотите добавить реализации эпизодов
 #: sickrage/core/webserver/views/config/general.mako:416
 #: sickrage/core/webserver/views/config/general.mako:704
 #: sickrage/core/webserver/views/config/general.mako:950
-#: sickrage/core/webserver/views/config/general.mako:1225
-#: sickrage/core/webserver/views/config/general.mako:1283
-#: sickrage/core/webserver/views/config/general.mako:1417
+#: sickrage/core/webserver/views/config/general.mako:1221
+#: sickrage/core/webserver/views/config/general.mako:1279
+#: sickrage/core/webserver/views/config/general.mako:1413
 #: sickrage/core/webserver/views/config/notifications.mako:203
 #: sickrage/core/webserver/views/config/notifications.mako:355
 #: sickrage/core/webserver/views/config/notifications.mako:488
@@ -1003,8 +1003,8 @@ msgid "display dates and times in either your timezone or the shows network time
 msgstr "Отображение даты и времени в ваш часовой пояс и часовой пояс сети шоу"
 
 #: sickrage/core/webserver/views/config/general.mako:644
-#: sickrage/core/webserver/views/config/general.mako:1151
-#: sickrage/core/webserver/views/config/general.mako:1194
+#: sickrage/core/webserver/views/config/general.mako:1147
+#: sickrage/core/webserver/views/config/general.mako:1190
 #: sickrage/core/webserver/views/config/notifications.mako:894
 #: sickrage/core/webserver/views/config/notifications.mako:936
 #: sickrage/core/webserver/views/config/notifications.mako:1012
@@ -1198,145 +1198,145 @@ msgstr "В"
 msgid "file."
 msgstr "файл."
 
-#: sickrage/core/webserver/views/config/general.mako:1067
+#: sickrage/core/webserver/views/config/general.mako:1066
 msgid "Unprotected calendar"
 msgstr "Незащищенные календарь"
 
-#: sickrage/core/webserver/views/config/general.mako:1073
+#: sickrage/core/webserver/views/config/general.mako:1072
 msgid "allow subscribing to the calendar without user and password. Some services like Google Calendar only work this way"
 msgstr "Разрешить подписку на календарь без пользователя и пароль. Некоторые услуги, такие как Google календарь только работать таким образом"
 
-#: sickrage/core/webserver/views/config/general.mako:1083
+#: sickrage/core/webserver/views/config/general.mako:1079
 msgid "Google Calendar Icons"
 msgstr "Иконка Календарь Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1089
+#: sickrage/core/webserver/views/config/general.mako:1085
 msgid "show an icon next to exported calendar events in Google Calendar."
 msgstr "Показать значок рядом с экспортированный календарь событий в календаре Google."
 
-#: sickrage/core/webserver/views/config/general.mako:1098
+#: sickrage/core/webserver/views/config/general.mako:1094
 msgid "Link Google Account"
 msgstr "Связать аккаунт Google"
 
-#: sickrage/core/webserver/views/config/general.mako:1101
+#: sickrage/core/webserver/views/config/general.mako:1097
 msgid "Link"
 msgstr "Ссылка"
 
-#: sickrage/core/webserver/views/config/general.mako:1103
+#: sickrage/core/webserver/views/config/general.mako:1099
 msgid "link your google account to SiCKRAGE for advanced feature usage such as settings/database storage"
 msgstr "связать аккаунт google с SiCKRAGE для использования передовых функций, таких как параметры базы данных"
 
-#: sickrage/core/webserver/views/config/general.mako:1111
+#: sickrage/core/webserver/views/config/general.mako:1107
 msgid "Proxy host"
 msgstr "Хост прокси"
 
-#: sickrage/core/webserver/views/config/general.mako:1130
+#: sickrage/core/webserver/views/config/general.mako:1126
 msgid "Use proxy for indexers"
 msgstr "Использовать прокси-сервер для индексаторов"
 
-#: sickrage/core/webserver/views/config/general.mako:1136
+#: sickrage/core/webserver/views/config/general.mako:1132
 msgid "use proxy host for connecting to indexers (TheTVDB)"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1143
+#: sickrage/core/webserver/views/config/general.mako:1139
 msgid "Skip Remove Detection"
 msgstr "Удаление пропустить обнаружение"
 
-#: sickrage/core/webserver/views/config/general.mako:1149
+#: sickrage/core/webserver/views/config/general.mako:1145
 msgid "Skip detection of removed files. If disable it will set default deleted status"
 msgstr "Пропустить обнаружение удаленных файлов. Если будет установлено по умолчанию отключить удалить статус"
 
-#: sickrage/core/webserver/views/config/general.mako:1151
+#: sickrage/core/webserver/views/config/general.mako:1147
 msgid "This may mean SiCKRAGE misses renames as well"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1158
+#: sickrage/core/webserver/views/config/general.mako:1154
 msgid "Default deleted episode status"
 msgstr "По умолчанию удаленные эпизод статус"
 
-#: sickrage/core/webserver/views/config/general.mako:1192
+#: sickrage/core/webserver/views/config/general.mako:1188
 msgid "Define the status to be set for media file that has been deleted."
 msgstr "Определите статус необходимо задать файл мультимедиа, который был удален."
 
-#: sickrage/core/webserver/views/config/general.mako:1194
+#: sickrage/core/webserver/views/config/general.mako:1190
 msgid "Archived option will keep previous downloaded quality"
 msgstr "Архивированные вариант будет держать ранее загруженных качества"
 
-#: sickrage/core/webserver/views/config/general.mako:1196
+#: sickrage/core/webserver/views/config/general.mako:1192
 msgid "Example: Downloaded (1080p WEB-DL) ==> Archived (1080p WEB-DL)"
 msgstr "Пример: Загрузить (1080p WEB-DL) ==> Архив (1080p WEB-DL)"
 
-#: sickrage/core/webserver/views/config/general.mako:1205
+#: sickrage/core/webserver/views/config/general.mako:1201
 msgid "Allowed video file extensions"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1216
+#: sickrage/core/webserver/views/config/general.mako:1212
 msgid "ex: avi,mp4,mkv"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1236
+#: sickrage/core/webserver/views/config/general.mako:1232
 msgid "PIP Settings"
 msgstr "Настройки, Пип"
 
-#: sickrage/core/webserver/views/config/general.mako:1241
+#: sickrage/core/webserver/views/config/general.mako:1237
 msgid "PIP executable path"
 msgstr "Путь к исполняемому файлу PIP"
 
-#: sickrage/core/webserver/views/config/general.mako:1254
+#: sickrage/core/webserver/views/config/general.mako:1250
 msgid "ex: /path/to/pip"
 msgstr "ex: /path/to/pip"
 
-#: sickrage/core/webserver/views/config/general.mako:1260
-#: sickrage/core/webserver/views/config/general.mako:1367
+#: sickrage/core/webserver/views/config/general.mako:1256
+#: sickrage/core/webserver/views/config/general.mako:1363
 msgid "Verify Path"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/general.mako:1271
-#: sickrage/core/webserver/views/config/general.mako:1378
+#: sickrage/core/webserver/views/config/general.mako:1267
+#: sickrage/core/webserver/views/config/general.mako:1374
 msgid "Click vefify path to test."
 msgstr "Нажмите vefify путь для тестирования."
 
-#: sickrage/core/webserver/views/config/general.mako:1298
+#: sickrage/core/webserver/views/config/general.mako:1294
 msgid "GIT Settings"
 msgstr "Настройка GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1303
+#: sickrage/core/webserver/views/config/general.mako:1299
 msgid "Git Branches"
 msgstr "Git филиалов"
 
-#: sickrage/core/webserver/views/config/general.mako:1315
+#: sickrage/core/webserver/views/config/general.mako:1311
 msgid "GIT Branch Version"
 msgstr "GIT версия филиал"
 
-#: sickrage/core/webserver/views/config/general.mako:1335
+#: sickrage/core/webserver/views/config/general.mako:1331
 msgid "Error: No branches found."
 msgstr "Ошибка: Ветви не найдено."
 
-#: sickrage/core/webserver/views/config/general.mako:1339
+#: sickrage/core/webserver/views/config/general.mako:1335
 msgid "select branch to use (restart required)"
 msgstr "Выберите филиал для использования (требуется перезапуск)"
 
-#: sickrage/core/webserver/views/config/general.mako:1348
+#: sickrage/core/webserver/views/config/general.mako:1344
 msgid "GIT executable path"
 msgstr "Путь к исполняемому файлу GIT"
 
-#: sickrage/core/webserver/views/config/general.mako:1361
+#: sickrage/core/webserver/views/config/general.mako:1357
 msgid "ex: /path/to/git"
 msgstr "ex: /path/to/git"
 
-#: sickrage/core/webserver/views/config/general.mako:1387
+#: sickrage/core/webserver/views/config/general.mako:1383
 msgid "Git reset"
 msgstr "Git reset"
 
-#: sickrage/core/webserver/views/config/general.mako:1393
+#: sickrage/core/webserver/views/config/general.mako:1389
 msgid "removes untracked files and performs a hard reset on git branch automatically to help resolve update issues"
 msgstr "Удаляет Неотслеживаемые файлы и выполняет полный сброс на ветке git автоматически, чтобы помочь решить проблемы обновления"
 
-#: sickrage/core/webserver/views/config/general.mako:1401
+#: sickrage/core/webserver/views/config/general.mako:1397
 msgid "Git auto-issues submit"
 msgstr "Git автоматически вопросы отправить"
 
-#: sickrage/core/webserver/views/config/general.mako:1408
+#: sickrage/core/webserver/views/config/general.mako:1404
 msgid "automatically submit bug/issue reports to our issue tracker when errors are logged"
 msgstr "автоматически отправлять отчеты ошибка/проблема для нашего приложения issue tracker когда ошибки регистрируются"
 
@@ -6173,15 +6173,15 @@ msgstr "Не удается найти ваш git исполняемый - на�
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Не удается найти ваш ПМС исполняемый - набор ПУМ путь от параметров-> Генеральной-> дополнительно"
 
-#: sickrage/core/version_updater.py:421 sickrage/core/version_updater.py:558
+#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Есть новая версия, версия {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:554
+#: sickrage/core/version_updater.py:557
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Неизвестный номер текущей версии: Если вы никогда не использовали SiCKRAGE обновления системы до Текущая версия не устанавливается. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:712
+#: sickrage/core/version_updater.py:715
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
