@@ -1003,15 +1003,12 @@ class NewznabProvider(NZBProvider):
 
         def _parse_cap(tag):
             elm = data.find(tag)
-            return elm.get('supportedparams', 'True') if elm and elm.get('available') else ''
+            is_supported = elm and all([elm.get('supportedparams'), elm.get('available') == 'yes'])
+            return elm['supportedparams'].split(',') if is_supported else []
 
         self.cap_tv_search = _parse_cap('tv-search')
-        # self.cap_search = _parse_cap('search')
-        # self.cap_movie_search = _parse_cap('movie-search')
-        # self.cap_audio_search = _parse_cap('audio-search')
 
-        # self.caps = any([self.cap_tv_search, self.cap_search, self.cap_movie_search, self.cap_audio_search])
-        self.caps = any([self.cap_tv_search])
+        self.caps = any(self.cap_tv_search)
 
     def get_newznab_categories(self, just_caps=False):
         """
@@ -1100,8 +1097,6 @@ class NewznabProvider(NZBProvider):
         # For providers that don't have caps, or for which the t=caps is not working.
         if not self.caps:
             self.get_newznab_categories(just_caps=True)
-            if not self.caps:
-                return results
 
         for mode in search_strings:
             self.torznab = False

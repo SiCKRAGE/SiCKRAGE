@@ -1431,9 +1431,9 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
     def run(self):
         messages = []
         for cur_notification in sickrage.app.alerts.get_notifications(self.request.remote_ip):
-            messages.append({"title": cur_notification.title,
-                             "message": cur_notification.message,
-                             "type": cur_notification.type})
+            messages.append({"title": cur_notification.data['title'],
+                             "message": cur_notification.data['message'],
+                             "type": cur_notification.data['type']})
         return _responds(RESULT_SUCCESS, messages)
 
 
