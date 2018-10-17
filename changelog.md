@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4c87e58 - 2018-10-17: Fixed &#x27;Notification&#x27; object has no attribute &#x27;type&#x27; issue. 
+- * c2532ce - 2018-10-17: Fixed setting caps issue when searching newznab providers 
+- * bbbc6cb - 2018-10-17: Fixed &#x27;Notification&#x27; object has no attribute &#x27;type&#x27; issue. 
 - * aad016d - 2018-10-16: Release v9.3.95 
 - * 0f07f4b - 2018-10-16: Fixed issue with checking for stash in output of git cmds Disabled creating docker tags for develop branch 
 - * 8b3319d - 2018-10-15: Release v9.3.94 
