@@ -1432,7 +1432,7 @@ class CMD_SiCKRAGEGetMessages(ApiCall):
         messages = []
         for cur_notification in sickrage.app.alerts.get_notifications(self.request.remote_ip):
             messages.append({"title": cur_notification.data['title'],
-                             "message": cur_notification.data['message'],
+                             "message": cur_notification.data['body'],
                              "type": cur_notification.data['type']})
         return _responds(RESULT_SUCCESS, messages)
 
