@@ -1,6 +1,8 @@
 # Changelog
 
-- * d7e782f - 2018-10-21: Release v9.3.97 
+- * 4be64d5 - 2018-10-21: Release v9.3.98 
+- * d5ec001 - 2018-10-21: Fixed issues with matching shows with parsed results when containing accents 
+- * 84de9fe - 2018-10-21: Release v9.3.97 
 - * a5f7b6a - 2018-10-21: Fixed issues with network timezones 
 - * af471d1 - 2018-10-21: Added API denied handling 
 - * f37d3db - 2018-10-17: Fixed typo for API notification retrieval 
