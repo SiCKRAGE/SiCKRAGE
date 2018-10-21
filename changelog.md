@@ -1,6 +1,7 @@
 # Changelog
 
-- * b3e7d82 - 2018-10-21: Fixed issues with network timezones 
+- * d7e782f - 2018-10-21: Release v9.3.97 
+- * a5f7b6a - 2018-10-21: Fixed issues with network timezones 
 - * af471d1 - 2018-10-21: Added API denied handling 
 - * f37d3db - 2018-10-17: Fixed typo for API notification retrieval 
 - * ed1b33e - 2018-10-17: Release v9.3.96 

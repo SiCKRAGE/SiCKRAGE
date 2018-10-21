@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-17 07:17-0700\n"
-"PO-Revision-Date: 2018-10-17 14:18\n"
+"POT-Creation-Date: 2018-10-21 01:13-0700\n"
+"PO-Revision-Date: 2018-10-21 08:15\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -4350,7 +4350,7 @@ msgstr "使用高带宽分配，如果优先级高"
 msgid "Test Connection"
 msgstr "测试连接"
 
-#: sickrage/core/webserver/api.py:968
+#: sickrage/core/webserver/api.py:953
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:710

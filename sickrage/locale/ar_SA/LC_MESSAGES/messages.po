@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-17 07:17-0700\n"
-"PO-Revision-Date: 2018-10-17 14:18\n"
+"POT-Creation-Date: 2018-10-21 01:13-0700\n"
+"PO-Revision-Date: 2018-10-21 08:14\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -4350,7 +4350,7 @@ msgstr "استخدام تخصيص عرض النطاق الترددي العال�
 msgid "Test Connection"
 msgstr "اختبار الاتصال"
 
-#: sickrage/core/webserver/api.py:968
+#: sickrage/core/webserver/api.py:953
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:710
