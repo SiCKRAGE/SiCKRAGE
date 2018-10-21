@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import os
 import re
 import time
+import unicodedata
 from collections import OrderedDict
 from threading import Lock
 
@@ -63,45 +64,46 @@ class NameParser(object):
         if not all([name, sickrage.app.showlist]):
             return show, show_id
 
-        def cache_lookup(name):
-            return sickrage.app.name_cache.get(name)
+        def cache_lookup(show_name):
+            return sickrage.app.name_cache.get(show_name)
 
-        def scene_exception_lookup(name):
-            return get_scene_exception_by_name(name)[0]
+        def scene_exception_lookup(show_name):
+            return get_scene_exception_by_name(show_name)[0]
 
-        def indexer_lookup(name):
-            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(name))[2])
-            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(name), 'show')[0].ids['tvdb'])
+        def indexer_lookup(show_name):
+            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(show_name))[2])
+            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(show_name), 'show')[0].ids['tvdb'])
             return (None, show_id1)[show_id1 == show_id2]
 
-        lookup_list = [
-            lambda: cache_lookup(name),
-            lambda: scene_exception_lookup(name),
-            lambda: indexer_lookup(name),
-        ]
+        for x in [unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore'), name]:
+            lookup_list = [
+                lambda: cache_lookup(x),
+                lambda: scene_exception_lookup(x),
+                lambda: indexer_lookup(x),
+            ]
 
-        # lookup show id
-        for lookup in lookup_list:
-            if show or show_id is not None:
-                continue
-
-            try:
-                show_id = int(lookup())
-                if show_id == 0:
+            # lookup show id
+            for lookup in lookup_list:
+                if show or show_id is not None:
                     continue
 
-                sickrage.app.name_cache.put(name, show_id)
-                if self.validate_show:
-                    show = findCertainShow(show_id)
-                else:
-                    from sickrage.core.tv.show import TVShow
-                    show = TVShow(1, show_id)
-            except Exception:
-                pass
+                try:
+                    show_id = int(lookup())
+                    if show_id == 0:
+                        continue
 
-        if show_id is None:
-            # ignore show name by caching it with a indexerid of 0
-            sickrage.app.name_cache.put(name, 0)
+                    sickrage.app.name_cache.put(x, show_id)
+                    if self.validate_show:
+                        show = findCertainShow(show_id)
+                    else:
+                        from sickrage.core.tv.show import TVShow
+                        show = TVShow(1, show_id)
+                except Exception:
+                    pass
+
+            if show_id is None:
+                # ignore show name by caching it with a indexerid of 0
+                sickrage.app.name_cache.put(x, 0)
 
         return show, show_id or 0
 
