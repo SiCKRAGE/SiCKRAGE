@@ -32,7 +32,6 @@ from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage.subtitles
-from sickrage.core import API
 
 try:
     from futures import ThreadPoolExecutor
@@ -80,27 +79,6 @@ result_type_map = {
 }
 
 
-class KeyHandler(RequestHandler):
-    def __init__(self, *args, **kwargs):
-        super(KeyHandler, self).__init__(*args, **kwargs)
-
-    def prepare(self, *args, **kwargs):
-        api_key = None
-
-        try:
-            username = self.get_argument('u', None)
-            password = self.get_argument('p', None)
-            api_token = API(username, password).token
-
-            if api_token:
-                api_key = sickrage.app.config.api_key
-
-            self.finish({'success': api_key is not None, 'api_key': api_key})
-        except Exception:
-            sickrage.app.log.error('Failed doing key request: %s' % (traceback.format_exc()))
-            self.finish({'success': False, 'error': 'Failed returning results'})
-
-
 # basically everything except RESULT_SUCCESS / success is bad
 class ApiHandler(RequestHandler):
     """ api class that returns json results """
@@ -116,27 +94,34 @@ class ApiHandler(RequestHandler):
             'image': self._out_as_image,
         }
 
-        accessMsg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
-        sickrage.app.log.debug(accessMsg)
+        if sickrage.app.config.api_key == self.path_args[0]:
+            accessMsg = "IP:{} - ACCESS GRANTED".format(self.request.remote_ip)
+            sickrage.app.log.debug(accessMsg)
 
-        # set the original call_dispatcher as the local _call_dispatcher
-        _call_dispatcher = self.call_dispatcher
+            # set the original call_dispatcher as the local _call_dispatcher
+            _call_dispatcher = self.call_dispatcher
 
-        # if profile was set wrap "_call_dispatcher" in the profile function
-        if 'profile' in self.request.arguments:
-            from profilehooks import profile
+            # if profile was set wrap "_call_dispatcher" in the profile function
+            if 'profile' in self.request.arguments:
+                from profilehooks import profile
 
-            _call_dispatcher = profile(_call_dispatcher, immediate=True)
-            del self.request.arguments["profile"]
+                _call_dispatcher = profile(_call_dispatcher, immediate=True)
+                del self.request.arguments["profile"]
 
-        try:
-            outDict = self.route(_call_dispatcher, **self.request.arguments)
-        except Exception as e:
-            sickrage.app.log.error(str(e))
-            errorData = {"error_msg": e, "request arguments": self.request.arguments}
-            outDict = _responds(RESULT_FATAL,
-                                errorData,
-                                "SiCKRAGE encountered an internal error! Please report to the Devs")
+            try:
+                outDict = self.route(_call_dispatcher, **self.request.arguments)
+            except Exception as e:
+                sickrage.app.log.error(str(e))
+                errorData = {"error_msg": e, "request arguments": self.request.arguments}
+                outDict = _responds(RESULT_FATAL,
+                                    errorData,
+                                    "SiCKRAGE encountered an internal error! Please report to the Devs")
+        else:
+            accessMsg = "IP:{} - ACCESS DENIED".format(self.request.remote_ip)
+            sickrage.app.log.debug(accessMsg)
+
+            errorData = {"error_msg": accessMsg, "request arguments": self.request.arguments}
+            outDict = _responds(RESULT_DENIED, errorData, accessMsg)
 
         outputCallback = outputCallbackDict['default']
         if 'outputType' in outDict:

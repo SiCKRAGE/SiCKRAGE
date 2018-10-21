@@ -29,7 +29,7 @@ from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
 from sickrage.core.helpers import create_https_certificates, launch_browser
-from sickrage.core.webserver.api import ApiHandler, KeyHandler
+from sickrage.core.webserver.api import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
 from sickrage.core.websocket import WebSocketUIHandler
@@ -121,14 +121,11 @@ class WebServer(object):
         # Static File Handlers
         self.app.add_handlers('.*$', [
             # api
-            (r'%s(/?.*)' % self.api_root, ApiHandler),
+            (r'%s/api/(\w{32})(/?.*)' % sickrage.app.config.web_root, ApiHandler),
 
             # redirect to home
             (r"(%s)" % sickrage.app.config.web_root, RedirectHandler,
              {"url": "%s/home" % sickrage.app.config.web_root}),
-
-            # api key
-            (r'%s/getkey(/?.*)' % sickrage.app.config.web_root, KeyHandler),
 
             # api builder
             (r'%s/api/builder' % sickrage.app.config.web_root, RedirectHandler,

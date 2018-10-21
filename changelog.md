@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5572dbd - 2018-10-17: Fixed typo for API notification retrieval 
+- * a9ca448 - 2018-10-21: Added API denied handling 
+- * f37d3db - 2018-10-17: Fixed typo for API notification retrieval 
 - * ed1b33e - 2018-10-17: Release v9.3.96 
 - * ecb1600 - 2018-10-17: Fixed setting caps issue when searching newznab providers 
 - * bbbc6cb - 2018-10-17: Fixed &#x27;Notification&#x27; object has no attribute &#x27;type&#x27; issue. 
