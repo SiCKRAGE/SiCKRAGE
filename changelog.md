@@ -1,6 +1,7 @@
 # Changelog
 
-- * c4e7cda - 2018-10-21: Added code to strip accents from show names and add as a possible show match 
+- * 2d44f65 - 2018-10-21: Release v9.3.99 
+- * a24520f - 2018-10-21: Added code to strip accents from show names and add as a possible show match 
 - * e3b3be9 - 2018-10-21: Release v9.3.98 
 - * d5ec001 - 2018-10-21: Fixed issues with matching shows with parsed results when containing accents 
 - * 84de9fe - 2018-10-21: Release v9.3.97 
