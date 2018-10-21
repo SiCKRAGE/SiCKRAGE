@@ -343,9 +343,10 @@ class Core(object):
             IntervalTrigger(
                 hours=self.config.version_updater_freq
             ),
+            next_run_time=datetime.datetime.now(),
             name=self.version_updater.name,
             id=self.version_updater.name
-        ).func()
+        )
 
         # add network timezones updater job
         self.scheduler.add_job(
@@ -353,9 +354,10 @@ class Core(object):
             IntervalTrigger(
                 days=1
             ),
+            next_run_time=datetime.datetime.now(),
             name="TZUPDATER",
             id="TZUPDATER"
-        ).func()
+        )
 
         # add show updater job
         self.scheduler.add_job(

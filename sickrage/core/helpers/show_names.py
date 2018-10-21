@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import fnmatch
 import os
 import re
+import unicodedata
 from datetime import date
 from functools import partial
 
@@ -309,19 +310,30 @@ def allPossibleShowNames(show, season=-1):
     :rtype: list[unicode]
     """
 
-    showNames = get_scene_exceptions(show.indexerid, season=season)[:]
-    if not showNames:  # if we dont have any season specific exceptions fallback to generic exceptions
+    show_names = get_scene_exceptions(show.indexerid, season=season)[:]
+    if not show_names:  # if we dont have any season specific exceptions fallback to generic exceptions
         season = -1
-        showNames = get_scene_exceptions(show.indexerid, season=season)[:]
+        show_names = get_scene_exceptions(show.indexerid, season=season)[:]
 
     if season in [-1, 1]:
-        showNames.append(show.name)
+        show_names.append(show.name)
+
+    try:
+        # strip accents
+        try:
+            show.name.decode('ascii')
+        except UnicodeEncodeError:
+            pass
+        show_names.append(unicodedata.normalize('NFKD', show.name).encode('ASCII', 'ignore'))
+        show_names.append(unicodedata.normalize('NFKD', show.name).encode('ASCII', 'ignore').replace("'", " "))
+    except UnicodeDecodeError:
+        pass
 
     if not show.is_anime:
-        newShowNames = []
+        new_show_names = []
         country_list = countryList
         country_list.update(dict(zip(countryList.values(), countryList.keys())))
-        for curName in set(showNames):
+        for curName in set(show_names):
             if not curName:
                 continue
 
@@ -330,16 +342,16 @@ def allPossibleShowNames(show, season=-1):
             # (and vice versa)
             for curCountry in country_list:
                 if curName.endswith(' ' + curCountry):
-                    newShowNames.append(curName.replace(' ' + curCountry, ' (' + country_list[curCountry] + ')'))
+                    new_show_names.append(curName.replace(' ' + curCountry, ' (' + country_list[curCountry] + ')'))
                 elif curName.endswith(' (' + curCountry + ')'):
-                    newShowNames.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
+                    new_show_names.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
 
                     # # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
-                    # newShowNames.append(re.sub('\(\d{4}\)', '', curName))
+                    # new_show_names.append(re.sub('\(\d{4}\)', '', curName))
 
-        showNames += newShowNames
+        show_names += new_show_names
 
-    return showNames
+    return list(set(show_names))
 
 
 def determineReleaseName(dir_name=None, nzb_name=None):

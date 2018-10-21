@@ -60,26 +60,38 @@ class NameParser(object):
     def get_show(self, name):
         show = None
         show_id = None
+        show_names = [name]
 
         if not all([name, sickrage.app.showlist]):
             return show, show_id
 
-        def cache_lookup(show_name):
-            return sickrage.app.name_cache.get(show_name)
+        def cache_lookup(term):
+            return sickrage.app.name_cache.get(term)
 
-        def scene_exception_lookup(show_name):
-            return get_scene_exception_by_name(show_name)[0]
+        def scene_exception_lookup(term):
+            return get_scene_exception_by_name(term)[0]
 
-        def indexer_lookup(show_name):
-            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(show_name))[2])
-            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(show_name), 'show')[0].ids['tvdb'])
+        def indexer_lookup(term):
+            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(term))[2])
+            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(term), 'show')[0].ids['tvdb'])
             return (None, show_id1)[show_id1 == show_id2]
 
-        for x in [unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore'), name]:
+        try:
+            # strip accents
+            try:
+                name.decode('ascii')
+            except UnicodeEncodeError:
+                pass
+            show_names.append(unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore'))
+            show_names.append(unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').replace("'", " "))
+        except UnicodeDecodeError:
+            pass
+
+        for show_name in set(show_names):
             lookup_list = [
-                lambda: cache_lookup(x),
-                lambda: scene_exception_lookup(x),
-                lambda: indexer_lookup(x),
+                lambda: cache_lookup(show_name),
+                lambda: scene_exception_lookup(show_name),
+                lambda: indexer_lookup(show_name),
             ]
 
             # lookup show id
@@ -92,7 +104,7 @@ class NameParser(object):
                     if show_id == 0:
                         continue
 
-                    sickrage.app.name_cache.put(x, show_id)
+                    sickrage.app.name_cache.put(show_name, show_id)
                     if self.validate_show:
                         show = findCertainShow(show_id)
                     else:
@@ -103,7 +115,7 @@ class NameParser(object):
 
             if show_id is None:
                 # ignore show name by caching it with a indexerid of 0
-                sickrage.app.name_cache.put(x, 0)
+                sickrage.app.name_cache.put(show_name, 0)
 
         return show, show_id or 0
 
