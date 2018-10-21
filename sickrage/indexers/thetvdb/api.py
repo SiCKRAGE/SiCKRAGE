@@ -141,7 +141,7 @@ class Show(dict):
         else:
             # If it's not numeric, it must be an attribute name, which
             # doesn't exist, so attribute error.
-            raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
+            raise tvdb_attributenotfound("Cannot find show attribute {}".format(repr(key)))
 
     def airedOn(self, date):
         ret = self.search(str(date), 'firstaired')
@@ -210,7 +210,7 @@ class Season(dict):
         if key and (isinstance(key, int) or key.isdigit()):
             raise tvdb_episodenotfound("Could not find episode {}".format(repr(key)))
         else:
-            raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
+            raise tvdb_attributenotfound("Cannot find season attribute {}".format(repr(key)))
 
     def search(self, term=None, key=None):
         """Search all episodes in season, returns a list of matching Episode
@@ -247,7 +247,7 @@ class Episode(dict):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            raise tvdb_attributenotfound("Cannot find attribute {}".format(repr(key)))
+            raise tvdb_attributenotfound("Cannot find episode attribute {}".format(repr(key)))
 
     def search(self, term=None, key=None):
         """Search episode data for term, if it matches, return the Episode (self).

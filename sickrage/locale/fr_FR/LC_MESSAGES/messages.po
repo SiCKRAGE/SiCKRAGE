@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-10-17 07:17-0700\n"
-"PO-Revision-Date: 2018-10-17 14:19\n"
+"POT-Creation-Date: 2018-10-21 01:13-0700\n"
+"PO-Revision-Date: 2018-10-21 08:13\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -4350,7 +4350,7 @@ msgstr "utiliser l’allocation de bande passante élevée si la priorité est �
 msgid "Test Connection"
 msgstr "Tester la connexion"
 
-#: sickrage/core/webserver/api.py:968
+#: sickrage/core/webserver/api.py:953
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:710
