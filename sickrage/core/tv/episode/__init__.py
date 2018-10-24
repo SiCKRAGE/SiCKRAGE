@@ -455,6 +455,8 @@ class TVEpisode(object):
                         lINDEXER_API_PARMS['dvdorder'] = True
 
                     t = IndexerApi(self.indexer).indexer(**lINDEXER_API_PARMS)
+                if episode not in t[self.show.indexerid][season]:
+                    raise indexer_episodenotfound
                 myEp = t[self.show.indexerid][season][episode]
             else:
                 myEp = cachedSeason[episode]
