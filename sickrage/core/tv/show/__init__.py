@@ -496,7 +496,7 @@ class TVShow(object):
                     related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
                                                  if x['season'] == cur_ep.season
                                                  and x['location'] == cur_ep.location
-                                                 and x['episode'] == cur_ep.episode], key=lambda d: d['episode'])
+                                                 and x['episode'] != cur_ep.episode], key=lambda d: d['episode'])
 
                     for cur_related_ep in related_eps_result:
                         related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
