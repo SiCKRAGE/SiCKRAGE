@@ -20,13 +20,13 @@
 from __future__ import unicode_literals
 
 import time
-import unicodedata
 from datetime import datetime, timedelta
 
 from CodernityDB.database import RecordNotFound
 
 import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName
+from sickrage.core.helpers.encoding import strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
@@ -131,22 +131,8 @@ class NameCache(object):
             for curSeason in [-1] + get_scene_seasons(show.indexerid):
                 for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
                     show_names.append(name)
-
-                    # strip accents
-                    try:
-                        try:
-                            name.decode('ascii')
-                        except UnicodeEncodeError:
-                            pass
-
-                        show_names.append(
-                            unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore')
-                        )
-                        show_names.append(
-                            unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').replace("'", " ")
-                        )
-                    except UnicodeDecodeError:
-                        pass
+                    show_names.append(strip_accents(name))
+                    show_names.append(strip_accents(name).replace("'", " "))
 
             for show_name in set(show_names):
                 self.put(show_name, show.indexerid)

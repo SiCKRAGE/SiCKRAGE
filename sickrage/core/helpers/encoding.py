@@ -25,6 +25,7 @@ import locale
 import os
 import sys
 import types
+import unicodedata
 
 import six
 from chardet import detect
@@ -141,6 +142,21 @@ def to_unicode(var):
                             var = six.text_type(var, sickrage.app.sys_encoding, 'replace')
 
     return var
+
+
+def strip_accents(name):
+    try:
+        # strip accents
+        try:
+            name.decode('ascii')
+        except UnicodeEncodeError:
+            pass
+
+        name = unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore')
+    except UnicodeDecodeError:
+        pass
+
+    return name
 
 
 def patch_modules():

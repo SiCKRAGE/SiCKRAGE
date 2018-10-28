@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import os
 import re
 import time
-import unicodedata
 from collections import OrderedDict
 from threading import Lock
 
@@ -30,6 +29,7 @@ from dateutil import parser
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, remove_extension
+from sickrage.core.helpers.encoding import strip_accents
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
@@ -76,16 +76,8 @@ class NameParser(object):
             show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(term), 'show')[0].ids['tvdb'])
             return (None, show_id1)[show_id1 == show_id2]
 
-        try:
-            # strip accents
-            try:
-                name.decode('ascii')
-            except UnicodeEncodeError:
-                pass
-            show_names.append(unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore'))
-            show_names.append(unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').replace("'", " "))
-        except UnicodeDecodeError:
-            pass
+        show_names.append(strip_accents(name))
+        show_names.append(strip_accents(name).replace("'", " "))
 
         for show_name in set(show_names):
             lookup_list = [

@@ -21,7 +21,6 @@ from __future__ import unicode_literals
 import fnmatch
 import os
 import re
-import unicodedata
 from datetime import date
 from functools import partial
 
@@ -29,6 +28,7 @@ import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
 from sickrage.core.helpers import sanitizeSceneName
+from sickrage.core.helpers.encoding import strip_accents
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -318,16 +318,8 @@ def allPossibleShowNames(show, season=-1):
     if season in [-1, 1]:
         show_names.append(show.name)
 
-    try:
-        # strip accents
-        try:
-            show.name.decode('ascii')
-        except UnicodeEncodeError:
-            pass
-        show_names.append(unicodedata.normalize('NFKD', show.name).encode('ASCII', 'ignore'))
-        show_names.append(unicodedata.normalize('NFKD', show.name).encode('ASCII', 'ignore').replace("'", " "))
-    except UnicodeDecodeError:
-        pass
+    show_names.append(strip_accents(show.name))
+    show_names.append(strip_accents(show.name).replace("'", " "))
 
     if not show.is_anime:
         new_show_names = []
