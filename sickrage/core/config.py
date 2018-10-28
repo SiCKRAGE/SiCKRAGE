@@ -53,7 +53,7 @@ class Config(object):
         self.encryption_secret = ""
         self.encryption_version = 2
 
-        self.app_id = ""
+        self.app_sub = ""
         self.app_oauth_token = ""
 
         self.debug = False
@@ -91,8 +91,8 @@ class Config(object):
         self.proxy_indexers = True
         self.ssl_verify = True
         self.enable_https = False
-        self.https_cert = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt'))
-        self.https_key = os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key'))
+        self.https_cert = ""
+        self.https_key = ""
         self.api_key = ""
         self.indexer_default_language = 'en'
         self.ep_default_deleted_status = None
@@ -100,7 +100,7 @@ class Config(object):
         self.showupdate_stale = True
         self.root_dirs = ""
         self.cpu_preset = "NORMAL"
-        self.anon_redirect = 'http://nullrefer.com/?'
+        self.anon_redirect = ""
         self.download_url = ""
         self.trash_remove_show = False
         self.trash_rotate_logs = False
@@ -703,12 +703,13 @@ class Config(object):
                 'torrent_dir': ''
             },
             'General': {
-                'app_id': self.app_id or str(uuid.uuid4()),
+                'app_sub': self.app_sub,
                 'app_oauth_token': '',
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
-                'https_key': os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.key')),
+                'https_key': os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.key')),
+                'https_cert': os.path.abspath(os.path.join(sickrage.app.data_dir, 'server.crt')),
                 'allow_high_priority': True,
                 'anon_redirect': 'http://nullrefer.com/?',
                 'indexer_timeout': 120,
@@ -744,7 +745,6 @@ class Config(object):
                 'trash_rotate_logs': False,
                 'airdate_episodes': False,
                 'notify_on_update': True,
-                'https_cert': os.path.abspath(os.path.join(sickrage.PROG_DIR, 'server.crt')),
                 'git_autoissues': False,
                 'backlog_days': 7,
                 'root_dirs': '',
@@ -1398,7 +1398,7 @@ class Config(object):
 
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
-        self.app_id = self.check_setting_str('General', 'app_id')
+        self.app_sub = self.check_setting_str('General', 'app_sub')
         self.app_oauth_token = self.check_setting_str('General', 'app_oauth_token')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
@@ -1902,7 +1902,7 @@ class Config(object):
                 'encryption_version': int(self.encryption_version),
                 'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
-                'app_id': self.app_id,
+                'app_sub': self.app_sub,
                 'app_oauth_token': self.app_oauth_token,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
