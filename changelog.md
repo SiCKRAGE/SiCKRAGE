@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2bf11c2 - 2018-10-27: Removed app_id and replaced with app_sub. App now links its self to SSO user via userid instead of appid. SSL cert and key now stored/retrieved from data folder. 
+- * cda451a - 2018-10-27: Release v9.3.100 
+- * 479d80e - 2018-10-27: Removed app_id and replaced with app_sub. App now links its self to SSO user via userid instead of appid. SSL cert and key now stored/retrieved from data folder. 
 - * 33ea2f1 - 2018-10-21: Release v9.3.99 
 - * a24520f - 2018-10-21: Added code to strip accents from show names and add as a possible show match 
 - * e3b3be9 - 2018-10-21: Release v9.3.98 
