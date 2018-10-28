@@ -55,7 +55,6 @@ from sickrage.core.media.poster import Poster
 from sickrage.core.queues.search import BacklogQueueItem, ManualSearchQueueItem
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History
-from sickrage.core.updaters import tz_updater
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, \
     indexer_showincomplete, indexer_shownotfound
@@ -733,7 +732,7 @@ class CMD_Episode(ApiCall):
         # convert stuff to human form
         if try_int(episode['airdate'], 1) > 693595:  # 1900
             episode['airdate'] = srdatetime.srDateTime(srdatetime.srDateTime(
-                tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network),
+                sickrage.app.tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network),
                 convert=True).dt).srfdate(d_preset=dateFormat)
         else:
             episode['airdate'] = 'Never'
@@ -1810,7 +1809,7 @@ class CMD_Show(ApiCall):
 
         if try_int(showObj.next_aired, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime(
-                tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']), convert=True).dt
+                sickrage.app.tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']), convert=True).dt
             showDict['airs'] = srdatetime.srDateTime(dtEpisodeAirs).srftime(t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
             showDict['next_ep_airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
@@ -2413,7 +2412,7 @@ class CMD_ShowSeasons(ApiCall):
 
                 if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
+                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
                     row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2445,7 +2444,7 @@ class CMD_ShowSeasons(ApiCall):
                 row["quality"] = get_quality_string(quality)
                 if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
+                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
                     row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2693,7 +2692,7 @@ class CMD_Shows(ApiCall):
 
             if try_int(curShow.next_aired, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime(
-                    tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']), convert=True).dt
+                    sickrage.app.tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']), convert=True).dt
                 showDict['next_ep_airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
             else:
                 showDict['next_ep_airdate'] = ''

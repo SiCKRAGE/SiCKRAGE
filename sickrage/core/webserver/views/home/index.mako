@@ -6,7 +6,6 @@
 
     import sickrage
     from sickrage.core.helpers import srdatetime, pretty_filesize
-    from sickrage.core.updaters import tz_updater
     from sickrage.core.media.util import showImage
 %>
 <%block name="metas">
@@ -182,7 +181,7 @@
 
                         data_date = '6000000000.0'
                         if cur_airs_next:
-                            data_date = calendar.timegm(srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
+                            data_date = calendar.timegm(srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt.timetuple())
                         elif display_status:
                             if 'nded' not in display_status and 1 == int(curShow.paused):
                                 data_date = '5000000500.0'
@@ -223,7 +222,7 @@
 
                                     <div class="show-date" style="color: grey">
                                         % if cur_airs_next:
-                                            <% ldatetime = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                            <% ldatetime = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                             <%
                                                 try:
                                                   out = srdatetime.srDateTime(ldatetime).srfdate()
@@ -377,7 +376,7 @@
                                     %>
                                     <tr>
                                         % if cur_airs_next:
-                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
+                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_next, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}"
@@ -391,7 +390,7 @@
                                         % endif
 
                                         % if cur_airs_prev:
-                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
+                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(cur_airs_prev, curShow.airs, curShow.network), convert=True).dt %>
                                         % try:
                                             <td class="table-fit align-middle">
                                                 <time datetime="${airDate.isoformat()}" class="date">

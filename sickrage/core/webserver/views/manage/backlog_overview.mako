@@ -6,7 +6,6 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Overview, Quality, qualityPresets, qualityPresetStrings
     from sickrage.core.helpers import srdatetime
-    from sickrage.core.updaters import tz_updater
 %>
 <%block name="content">
     <% totalWanted = totalQual = 0 %>
@@ -91,7 +90,7 @@
                                                         ${curResult["name"]}
                                                     </td>
                                                     <td>
-                                                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(curResult['airdate'], curShow.airs, curShow.network), convert=True).dt %>
+                                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(curResult['airdate'], curShow.airs, curShow.network), convert=True).dt %>
                                                         % if int(curResult['airdate']) != 1:
                                                             <time datetime="${airDate.isoformat()}"
                                                                   class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>

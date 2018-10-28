@@ -7,7 +7,6 @@
 
     import sickrage
     import sickrage.subtitles
-    from sickrage.core.updaters import tz_updater
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
@@ -162,7 +161,7 @@
                                 % if show.network and show.airs:
                                     <tr>
                                         <td class="showLegend">${_('Originally Airs:')}</td>
-                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[tz_updater.test_timeformat(show.airs)]}
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}
                                             on ${show.network}</td>
                                     </tr>
                                 % elif show.network:
@@ -173,7 +172,7 @@
                                 % elif show.airs:
                                     <tr>
                                         <td class="showLegend">${_('Originally Airs:')}</td>
-                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[tz_updater.test_timeformat(show.airs)]}</td>
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}</td>
                                     </tr>
                                 % endif
 
@@ -640,7 +639,7 @@
                     <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
 
                     % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
+                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
                     % endif
                         <time datetime="${airDate.isoformat()}" class="date text-nowrap">
                             ${srdatetime.srDateTime(airDate).srfdatetime()}

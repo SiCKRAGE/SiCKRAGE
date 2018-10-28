@@ -6,7 +6,6 @@
 
     import sickrage
     from sickrage.core import API
-    from sickrage.core.updaters import tz_updater
     from sickrage.core.helpers import pretty_filesize, memory_usage
 %>
 

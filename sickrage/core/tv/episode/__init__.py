@@ -38,7 +38,6 @@ from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
-from sickrage.core.updaters import tz_updater
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_seasonnotfound, indexer_error, indexer_episodenotfound
 from sickrage.notifiers import Notifiers
@@ -943,7 +942,7 @@ class TVEpisode(object):
             if airdate_ordinal < 1:
                 return
 
-            airdatetime = tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
+            airdatetime = sickrage.app.tz_updater.parse_date_time(airdate_ordinal, self.show.airs, self.show.network)
 
             if sickrage.app.config.file_timestamp_timezone == 'local':
                 airdatetime = airdatetime.astimezone(sickrage.app.tz)
