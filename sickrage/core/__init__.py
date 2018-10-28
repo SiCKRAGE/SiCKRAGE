@@ -68,7 +68,7 @@ from sickrage.core.searchers.trakt_searcher import TraktSearcher
 from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import Notifications
 from sickrage.core.updaters.show_updater import ShowUpdater
-from sickrage.core.updaters.tz_updater import update_network_dict
+from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
 from sickrage.core.version_updater import VersionUpdater
 from sickrage.core.webserver import WebServer
@@ -139,6 +139,7 @@ class Core(object):
         self.postprocessor_queue = None
         self.version_updater = None
         self.show_updater = None
+        self.tz_updater = None
         self.daily_searcher = None
         self.backlog_searcher = None
         self.proper_searcher = None
@@ -175,6 +176,7 @@ class Core(object):
         self.postprocessor_queue = PostProcessorQueue()
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
+        self.tz_updater = TimeZoneUpdater()
         self.daily_searcher = DailySearcher()
         self.failed_snatch_searcher = FailedSnatchSearcher()
         self.backlog_searcher = BacklogSearcher()
@@ -350,13 +352,13 @@ class Core(object):
 
         # add network timezones updater job
         self.scheduler.add_job(
-            update_network_dict,
+            self.tz_updater.run,
             IntervalTrigger(
                 days=1
             ),
             next_run_time=datetime.datetime.now(),
-            name="TZUPDATER",
-            id="TZUPDATER"
+            name=self.tz_updater.name,
+            id=self.tz_updater.name
         )
 
         # add show updater job

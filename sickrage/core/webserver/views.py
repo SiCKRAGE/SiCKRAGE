@@ -79,7 +79,6 @@ from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
 from sickrage.core.tv.show.history import History as HistoryTool
-from sickrage.core.updaters import tz_updater
 from sickrage.core.webserver import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.indexers import IndexerApi
@@ -372,7 +371,8 @@ class CalendarHandler(BaseHandler):
             for episode in (x for x in sickrage.app.main_db.get_many('tv_episodes', int(show.indexerid))
                             if past_date <= x['airdate'] < future_date):
 
-                air_date_time = tz_updater.parse_date_time(episode['airdate'], show.airs, show.network).astimezone(utc)
+                air_date_time = sickrage.app.tz_updater.parse_date_time(episode['airdate'], show.airs,
+                                                                        show.network).astimezone(utc)
                 air_date_time_end = air_date_time + datetime.timedelta(minutes=try_int(show.runtime, 60))
 
                 # Create event for episode
@@ -1216,8 +1216,9 @@ class Home(WebHandler):
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
                 airDate = datetime.datetime.fromordinal(curEp['airdate'])
                 if airDate.year >= 1970 or showObj.network:
-                    airDate = srDateTime(tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
-                                         convert=True).dt
+                    airDate = srDateTime(
+                        sickrage.app.tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
+                        convert=True).dt
 
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED

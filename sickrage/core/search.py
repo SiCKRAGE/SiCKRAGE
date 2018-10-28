@@ -317,10 +317,6 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
     :return: results for search
     """
 
-    if not len(sickrage.app.search_providers.enabled()):
-        sickrage.app.log.warning("No NZB/Torrent providers enabled. Please check your settings.")
-        return
-
     # build name cache for show
     sickrage.app.name_cache.build(show)
 

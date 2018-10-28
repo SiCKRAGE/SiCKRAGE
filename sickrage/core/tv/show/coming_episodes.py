@@ -23,7 +23,6 @@ import datetime
 import sickrage
 from sickrage.core.common import Quality, get_quality_string, WANTED, UNAIRED, timeFormat, dateFormat
 from sickrage.core.helpers.srdatetime import srDateTime
-from sickrage.core.updaters.tz_updater import parse_date_time
 
 
 class ComingEpisodes:
@@ -111,8 +110,9 @@ class ComingEpisodes:
                     results += result(s, e)
 
         for index, item in enumerate(results):
-            results[index]['localtime'] = srDateTime(parse_date_time(item['airdate'], item['airs'], item['network']),
-                                                     convert=True).dt
+            results[index]['localtime'] = srDateTime(
+                sickrage.app.tz_updater.parse_date_time(item['airdate'], item['airs'], item['network']),
+                convert=True).dt
 
         results.sort(ComingEpisodes.sorts[sort])
 

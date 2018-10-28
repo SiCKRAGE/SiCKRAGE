@@ -8,7 +8,6 @@
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import Quality, qualityPresets, qualityPresetStrings
     from sickrage.core.helpers import srdatetime
-    from sickrage.core.updaters import tz_updater
 %>
 <%block name="content">
     <div class="row">

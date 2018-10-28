@@ -24,12 +24,11 @@ import datetime
 import sickrage
 from sickrage.core import helpers
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
-from sickrage.core.updaters import tz_updater
 
 
 def new_episode_finder():
     curDate = datetime.date.today()
-    if tz_updater.network_dict:
+    if sickrage.app.tz_updater.network_dict:
         curDate += datetime.timedelta(days=1)
     else:
         curDate += datetime.timedelta(days=2)
@@ -55,7 +54,7 @@ def new_episode_finder():
 
         if show.airs and show.network:
             # This is how you assure it is always converted to local time
-            air_time = tz_updater.parse_date_time(episode['airdate'],
+            air_time = sickrage.app.tz_updater.parse_date_time(episode['airdate'],
                                                   show.airs, show.network).astimezone(sickrage.app.tz)
 
             # filter out any episodes that haven't started airing yet,

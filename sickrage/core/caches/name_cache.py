@@ -20,13 +20,13 @@
 from __future__ import unicode_literals
 
 import time
-import unicodedata
 from datetime import datetime, timedelta
 
 from CodernityDB.database import RecordNotFound
 
 import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName
+from sickrage.core.helpers.encoding import strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
@@ -83,16 +83,18 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexerid):
+    def clear(self, indexerid=None, name=None):
         """
-        Deletes all entries from the cache matching the indexerid.
+        Deletes all entries from the cache matching the indexerid or name.
         """
-        [sickrage.app.cache_db.delete(x) for x in
-         sickrage.app.cache_db.all('scene_names')
-         if x['indexer_id'] == indexerid]
+        if any([indexerid, name]):
+            for x in sickrage.app.cache_db.all('scene_names'):
+                if x['indexer_id'] == indexerid or x['name'] == name:
+                    sickrage.app.cache_db.delete(x)
 
-        for item in [self.cache[key] for key, value in self.cache.items() if value == indexerid]:
-            del item
+            for key, value in self.cache.items():
+                if value == indexerid or key == name:
+                    del self.cache[key]
 
     def load(self):
         self.cache = dict([(x['name'], x['indexer_id']) for x in sickrage.app.cache_db.all('scene_names')])
@@ -131,22 +133,9 @@ class NameCache(object):
             for curSeason in [-1] + get_scene_seasons(show.indexerid):
                 for name in list(set(get_scene_exceptions(show.indexerid, season=curSeason) + [show.name])):
                     show_names.append(name)
-
-                    # strip accents
-                    try:
-                        try:
-                            name.decode('ascii')
-                        except UnicodeEncodeError:
-                            pass
-
-                        show_names.append(
-                            unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore')
-                        )
-                        show_names.append(
-                            unicodedata.normalize('NFKD', name).encode('ASCII', 'ignore').replace("'", " ")
-                        )
-                    except UnicodeDecodeError:
-                        pass
+                    show_names.append(strip_accents(name))
+                    show_names.append(strip_accents(name).replace("'", " "))
 
             for show_name in set(show_names):
+                self.clear(show_name)
                 self.put(show_name, show.indexerid)

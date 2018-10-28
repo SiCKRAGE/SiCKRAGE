@@ -7,7 +7,6 @@
 
     import sickrage
     import sickrage.subtitles
-    from sickrage.core.updaters import tz_updater
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, FAILED, DOWNLOADED
     from sickrage.core.common import Quality, qualityPresets, statusStrings, Overview
     from sickrage.core.helpers import anon_url, srdatetime, pretty_filesize, get_size
@@ -162,7 +161,7 @@
                                 % if show.network and show.airs:
                                     <tr>
                                         <td class="showLegend">${_('Originally Airs:')}</td>
-                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[tz_updater.test_timeformat(show.airs)]}
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}
                                             on ${show.network}</td>
                                     </tr>
                                 % elif show.network:
@@ -173,7 +172,7 @@
                                 % elif show.airs:
                                     <tr>
                                         <td class="showLegend">${_('Originally Airs:')}</td>
-                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[tz_updater.test_timeformat(show.airs)]}</td>
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}</td>
                                     </tr>
                                 % endif
 
@@ -552,7 +551,9 @@
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.download_url)]}>${_('Download')}</th>
                     <th data-sorter="false" ${("class=\"col-ep columnSelector-false\"", "class=\"col-ep\"")[bool(sickrage.app.config.use_subtitles)]}>${_('Subtitles')}</th>
                     <th data-sorter="false" class="col-status">${_('Status')}</th>
-                    <th data-sorter="false" class="col-search">${_('Search')}</th>
+                    % if len(sickrage.app.search_providers.enabled()):
+                        <th data-sorter="false" class="col-search">${_('Search')}</th>
+                    % endif
                 </tr>
                 </thead>
 
@@ -638,7 +639,7 @@
                     <% airDate = datetime.datetime.fromordinal(epResult['airdate']) %>
 
                     % if airDate.year >= 1970 or show.network:
-                        <% airDate = srdatetime.srDateTime(tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
+                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(epResult['airdate'], show.airs, show.network), convert=True).dt %>
                     % endif
                         <time datetime="${airDate.isoformat()}" class="date text-nowrap">
                             ${srdatetime.srDateTime(airDate).srfdatetime()}
@@ -686,31 +687,33 @@
                     <td class="table-fit text-nowrap col-status">${statusStrings[curStatus]}</td>
                 % endif
 
-                <td class="table-fit col-search">
-                    % if int(epResult["season"]) != 0:
-                        % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ):
-                            <a class="epRetry"
-                               id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                                <i class="fas fa-sync" title="${_('Retry Download')}"></i>
-                            </a>
-                        % else:
-                            <a class="epSearch"
-                               id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
-                               href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                                <i class="fas fa-search" title="${_('Manual Search')}"></i>
+                % if len(sickrage.app.search_providers.enabled()):
+                    <td class="table-fit col-search">
+                        % if int(epResult["season"]) != 0:
+                            % if ( int(epResult["status"]) in Quality.SNATCHED + Quality.DOWNLOADED ):
+                                <a class="epRetry"
+                                   id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                                   name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                                   href="retryEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                    <i class="fas fa-sync" title="${_('Retry Download')}"></i>
+                                </a>
+                            % else:
+                                <a class="epSearch"
+                                   id="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                                   name="${str(show.indexerid)}x${str(epResult["season"])}x${str(epResult["episode"])}"
+                                   href="searchEpisode?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                    <i class="fas fa-search" title="${_('Manual Search')}"></i>
+                                </a>
+                            % endif
+                        % endif
+                        % if sickrage.app.config.use_subtitles and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
+                            <a class="epSubtitlesSearch"
+                               href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
+                                <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
                             </a>
                         % endif
-                    % endif
-                    % if sickrage.app.config.use_subtitles and show.subtitles and epResult["location"] and frozenset(sickrage.subtitles.wanted_languages()).difference(epResult["subtitles"].split(',')):
-                        <a class="epSubtitlesSearch"
-                           href="searchEpisodeSubtitles?show=${show.indexerid}&amp;season=${epResult["season"]}&amp;episode=${epResult["episode"]}">
-                            <i class="fas fa-comment" title="${_('Subtitles Search')}"></i>
-                        </a>
-                    % endif
-                </td>
+                    </td>
+                % endif
             </tr>
         % endfor
     </tbody>
