@@ -128,6 +128,9 @@ class SearchQueue(srQueue):
         return length
 
     def put(self, item, *args, **kwargs):
+        if all([not sickrage.app.config.use_nzbs, not sickrage.app.config.use_torrents]):
+            return
+
         if not len(sickrage.app.search_providers.enabled()):
             sickrage.app.log.warning("Search Failed, No NZB/Torrent providers enabled")
             return
