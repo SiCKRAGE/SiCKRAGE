@@ -277,25 +277,34 @@ class LoginHandler(BaseHandler):
         if code:
             try:
                 token = sickrage.app.oidc_client.authorization_code(code, redirect_uri)
+                userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
+
                 self.set_secure_cookie('sr_access_token', token['access_token'])
                 self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
 
                 if not API().token:
                     exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
                     API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-                    if not bool(API().register_appid(sickrage.app.config.app_id)['success']):
+                    if not sickrage.app.config.app_sub and userinfo.get('sub'):
+                        sickrage.app.config.app_sub = userinfo.get('sub')
+                        sickrage.app.config.save()
+                    else:
                         API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
                         return self.redirect('/logout')
                 else:
                     api_token_decoded = sickrage.app.oidc_client.decode_token(API().refresh_token()['access_token'],
                                                                               sickrage.app.oidc_client.certs())
 
-                    userinfo = sickrage.app.oidc_client.userinfo(token['access_token'])
                     if userinfo.get('sub') == api_token_decoded['sub']:
-                        API().register_appid(sickrage.app.config.app_id)
+                        sickrage.app.config.app_sub = userinfo.get('sub')
+                        sickrage.app.config.save()
                     else:
-                        allowed_usernames = API().allowed_usernames(sickrage.app.config.app_id)['data']
+                        allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
+                            sickrage.app.log.debug(
+                                "USERNAME:{} IP:{} - ACCESS DENIED".format(userinfo['preferred_username'],
+                                                                           self.request.remote_ip)
+                            )
                             return self.redirect('/logout')
             except Exception as e:
                 return self.redirect('/logout')
@@ -305,7 +314,6 @@ class LoginHandler(BaseHandler):
         else:
             authorization_url = sickrage.app.oidc_client.authorization_url(redirect_uri=redirect_uri)
             return super(BaseHandler, self).redirect(authorization_url)
-
 
 
 class LogoutHandler(BaseHandler):
@@ -549,10 +557,12 @@ class WebRoot(WebHandler):
         )
 
     def unlink(self):
-        if sickrage.app.config.app_id not in self.get_current_user().get('appid', []):
+        if not sickrage.app.config.app_sub == self.get_current_user().get('sub'):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        API().unregister_appid(sickrage.app.config.app_id)
+        sickrage.app.config.app_sub = ""
+        sickrage.app.config.save()
+
         API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
 
         return self.redirect('/logout/')
