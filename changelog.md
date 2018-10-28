@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8000c60 - 2018-10-28: Converted Timezone Updater to class 
+- * c6c846f - 2018-10-28: Clears name cache with indexerid and show name 
+- * e26ad3e - 2018-10-28: Converted Timezone Updater to class 
 - * 7e3baa8 - 2018-10-28: Disabled warning for when no nzb/torrent provider is picked if no nzb/torrent client enabled. Disabled search column for display show view if no nzb/torrent is picked. 
 - * 9969a0b - 2018-10-28: Added function to strip accents to encoding functions 
 - * bf93454 - 2018-10-27: Release v9.4.1 

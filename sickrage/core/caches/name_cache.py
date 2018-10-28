@@ -83,16 +83,18 @@ class NameCache(object):
         if name in self.cache:
             return int(self.cache[name])
 
-    def clear(self, indexerid):
+    def clear(self, indexerid=None, name=None):
         """
-        Deletes all entries from the cache matching the indexerid.
+        Deletes all entries from the cache matching the indexerid or name.
         """
-        [sickrage.app.cache_db.delete(x) for x in
-         sickrage.app.cache_db.all('scene_names')
-         if x['indexer_id'] == indexerid]
+        if any([indexerid, name]):
+            for x in sickrage.app.cache_db.all('scene_names'):
+                if x['indexer_id'] == indexerid or x['name'] == name:
+                    sickrage.app.cache_db.delete(x)
 
-        for item in [self.cache[key] for key, value in self.cache.items() if value == indexerid]:
-            del item
+            for key, value in self.cache.items():
+                if value == indexerid or key == name:
+                    del self.cache[key]
 
     def load(self):
         self.cache = dict([(x['name'], x['indexer_id']) for x in sickrage.app.cache_db.all('scene_names')])
@@ -135,4 +137,5 @@ class NameCache(object):
                     show_names.append(strip_accents(name).replace("'", " "))
 
             for show_name in set(show_names):
+                self.clear(show_name)
                 self.put(show_name, show.indexerid)
