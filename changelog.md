@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9d1c1e7 - 2018-10-28: Release v9.4.2 
+- * 4a79597 - 2018-10-28: Fixed issue with unrar unpack directory setting 
+- * 206857b - 2018-10-28: Release v9.4.2 
 - * 1ad42fe - 2018-10-28: Clears name cache with indexerid and show name 
 - * e26ad3e - 2018-10-28: Converted Timezone Updater to class 
 - * 7e3baa8 - 2018-10-28: Disabled warning for when no nzb/torrent provider is picked if no nzb/torrent client enabled. Disabled search column for display show view if no nzb/torrent is picked. 
