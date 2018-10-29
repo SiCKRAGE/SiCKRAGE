@@ -18,7 +18,11 @@
 
 from __future__ import unicode_literals
 
+import os
+import re
 from urlparse import urljoin
+
+from requests import RequestException
 
 import sickrage
 from sickrage.clients import GenericClient
@@ -32,9 +36,13 @@ class DownloadStationAPI(GenericClient):
         self.urls = {
             'auth': urljoin(self.host, 'webapi/auth.cgi'),
             'task': urljoin(self.host, 'webapi/DownloadStation/task.cgi'),
+            'info': urljoin(self.host, '/webapi/DownloadStation/info.cgi'),
         }
 
         self.url = self.urls['task']
+
+        self.checked_destination = False
+        self.destination = sickrage.app.config.torrent_path
 
         self.post_task = {
             'method': 'create',
@@ -82,17 +90,19 @@ class DownloadStationAPI(GenericClient):
         try:
             resp = self._response.json()
         except (ValueError, AttributeError):
+            self.session.cookies.clear()
             self.auth = False
             return self.auth
-
-        self.auth = resp.get('success')
-        if not self.auth:
-            error_code = resp.get('error', {}).get('code')
-            api_method = resp.get('method', 'login')
-            log_string = self.error_map.get(api_method)[error_code]
-            sickrage.app.log.info('{}: {}'.format(self.name, log_string))
-        elif resp.get('data', {}).get('sid'):
-            self.post_task['_sid'] = resp['data']['sid']
+        else:
+            self.auth = resp.get('success')
+            if not self.auth:
+                error_code = resp.get('error', {}).get('code')
+                api_method = resp.get('method', 'login')
+                log_string = self.error_map.get(api_method)[error_code]
+                sickrage.app.log.info('{}: {}'.format(self.name, log_string))
+                self.session.cookies.clear()
+            elif resp.get('data', {}).get('sid'):
+                self.post_task['_sid'] = resp['data']['sid']
 
         return self.auth
 
@@ -118,6 +128,7 @@ class DownloadStationAPI(GenericClient):
             # get sid
             self.auth = self.response
         except Exception:
+            self.session.cookies.clear()
             self.auth = False
             return self.auth
 
@@ -135,10 +146,81 @@ class DownloadStationAPI(GenericClient):
 
         return self._send_dsm_request(method='post', data=data, files=files)
 
-    def _send_dsm_request(self, method, data, **kwargs):
+    def _check_destination(self):
+        """Validate and set torrent destination."""
+        torrent_path = sickrage.app.config.torrent_path
 
-        if sickrage.app.config.torrent_path:
-            data['destination'] = sickrage.app.config.torrent_path
+        if not (self.auth or self._get_auth()):
+            return False
+
+        if self.checked_destination and self.destination == torrent_path:
+            return True
+
+        params = {
+            'api': 'SYNO.DownloadStation.Info',
+            'version': 2,
+            'method': 'getinfo',
+            'session': 'DownloadStation',
+        }
+
+        try:
+            self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
+            self.response.raise_for_status()
+        except RequestException as error:
+            self.session.cookies.clear()
+            self.auth = False
+            return False
+
+        destination = ''
+        if self._check_response():
+            jdata = self.response.json()
+            version_string = jdata.get('data', {}).get('version_string')
+            if not version_string:
+                sickrage.app.log.warning('Could not get the version string from DSM: {}'.format(jdata))
+                return False
+
+            #  This is DSM6, lets make sure the location is relative
+            if torrent_path and os.path.isabs(torrent_path):
+                torrent_path = re.sub(r'^/volume\d/', '', torrent_path).lstrip('/')
+            else:
+                #  Since they didn't specify the location in the settings,
+                #  lets make sure the default is relative,
+                #  or forcefully set the location setting
+                params.update({
+                    'method': 'getconfig',
+                    'version': 2,
+                })
+
+                try:
+                    self.response = self.session.get(self.urls['info'], params=params, verify=False, timeout=120)
+                    self.response.raise_for_status()
+                except RequestException as error:
+                    self.session.cookies.clear()
+                    self.auth = False
+                    return False
+
+                if self._check_response():
+                    jdata = self.response.json()
+                    destination = jdata.get('data', {}).get('default_destination')
+                    if not destination:
+                        sickrage.app.log.info('Default destination could not be'
+                                              ' determined for DSM6: {}'.format(jdata))
+                        return False
+                    elif os.path.isabs(destination):
+                        torrent_path = re.sub(r'^/volume\d/', '', destination).lstrip('/')
+
+        if destination or torrent_path:
+            sickrage.app.log.info('Destination is now {}'.format(torrent_path or destination))
+
+        self.checked_destination = True
+        self.destination = torrent_path
+        return True
+
+    def _send_dsm_request(self, method, data, **kwargs):
+        if not self._check_destination():
+            return False
+
+        data['destination'] = self.destination
 
         self._request(method=method, data=data, **kwargs)
         return self._check_response()
