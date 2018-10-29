@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4a79597 - 2018-10-28: Fixed issue with unrar unpack directory setting 
+- * 398ea7e - 2018-10-28: Release v9.4.3 
+- * f7c0464 - 2018-10-28: Fixed issue with unrar unpack directory setting 
 - * 206857b - 2018-10-28: Release v9.4.2 
 - * 1ad42fe - 2018-10-28: Clears name cache with indexerid and show name 
 - * e26ad3e - 2018-10-28: Converted Timezone Updater to class 
