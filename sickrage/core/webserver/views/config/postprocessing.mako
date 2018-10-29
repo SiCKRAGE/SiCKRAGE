@@ -314,7 +314,7 @@
                                     <span class="input-group-text"><span class="fas fa-folder-open"></span></span>
                                 </div>
                                 <input name="unpack_dir" id="unpack_dir"
-                                       value="${'|'.join(sickrage.app.config.unpack_dir)}"
+                                       value="${sickrage.app.config.unpack_dir}"
                                        class="form-control" autocapitalize="off"/>
                             </div>
                             <label class="text-info" for="unpack_dir">
