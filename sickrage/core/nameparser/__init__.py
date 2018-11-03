@@ -93,8 +93,9 @@ class NameParser(object):
                     if show_id == 0:
                         continue
 
+                    sickrage.app.name_cache.put(show_name, show_id)
+
                     if not show:
-                        sickrage.app.name_cache.put(show_name, show_id)
                         if self.validate_show:
                             show = findCertainShow(show_id)
                         else:
