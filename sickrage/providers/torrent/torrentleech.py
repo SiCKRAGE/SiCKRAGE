@@ -155,9 +155,13 @@ class TorrentLeechProvider(TorrentProvider):
 
                     size = convert_size(cells[labels.index('Size')].get_text(), -1)
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))

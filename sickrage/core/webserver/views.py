@@ -975,7 +975,7 @@ class Home(WebHandler):
     @staticmethod
     def saveShowNotifyList(show=None, emails=None):
         try:
-            show = findCertainShow(show)
+            show = findCertainShow(int(show))
             show.notify_list = emails
             show.saveToDB()
         except Exception:

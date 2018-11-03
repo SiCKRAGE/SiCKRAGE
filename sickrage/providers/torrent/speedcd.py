@@ -19,11 +19,13 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
 
 from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.helpers import bs4_parser, try_int, convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -32,10 +34,8 @@ class SpeedCDProvider(TorrentProvider):
         super(SpeedCDProvider, self).__init__("Speedcd", 'https://speed.cd', True)
 
         self.urls.update({
-            'login': '{base_url}/take_login.php'.format(**self.urls),
-            'detail': '{base_url}/t/%s'.format(**self.urls),
-            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
-            'download': '{base_url}/download.php?torrent=%s'.format(**self.urls)
+            'login': '{base_url}/login.php'.format(**self.urls),
+            'search': '{base_url}/browse.php'.format(**self.urls),
         })
 
         self.username = None
@@ -45,9 +45,7 @@ class SpeedCDProvider(TorrentProvider):
         self.minseed = None
         self.minleech = None
 
-        self.categories = {'Season': {'c14': 1}, 'Episode': {'c2': 1, 'c49': 1}, 'RSS': {'c14': 1, 'c2': 1, 'c49': 1}}
-
-        self.proper_strings = ['PROPER', 'REPACK']
+        self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=20)
 
@@ -59,14 +57,15 @@ class SpeedCDProvider(TorrentProvider):
                         'password': self.password}
 
         try:
-            response = self.session.post(self.urls['login'], data=login_params, timeout=30).text
+            data = bs4_parser(self.session.get(self.urls['login']).text)
+            login_url = data.soup.find('form', id='loginform').get('action')
+            response = self.session.post(login_url, data=login_params, timeout=30).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider")
             return False
 
         if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings")
+            sickrage.app.log.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -77,6 +76,20 @@ class SpeedCDProvider(TorrentProvider):
         if not self.login():
             return results
 
+        # http://speed.cd/browse.php?c49=1&c50=1&c52=1&c41=1&c55=1&c2=1&c30=1&freeleech=on&search=arrow&d=on
+        # Search Params
+        search_params = {
+            'c2': 1,  # TV/Episodes
+            'c30': 1,  # Anime
+            'c41': 1,  # TV/Packs
+            'c49': 1,  # TV/HD
+            'c50': 1,  # TV/Sports
+            'c52': 1,  # TV/B-Ray
+            'c55': 1,  # TV/Kids
+            'search': '',
+            'freeleech': 'on' if self.freeleech else None
+        }
+
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
             for search_string in search_strings[mode]:
@@ -84,13 +97,10 @@ class SpeedCDProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                search_string = '+'.join(search_string.split())
-
-                post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 4, 'jxw': 'b', 'search': search_string},
-                                 **self.categories[mode])
+                search_params['search'] = search_string
 
                 try:
-                    data = self.session.post(self.urls['search'], data=post_data).json()
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -107,33 +117,45 @@ class SpeedCDProvider(TorrentProvider):
 
         results = []
 
-        try:
-            torrents = data['Fs'][0]['Cn']['torrents']
-        except Exception:
-            return results
+        with bs4_parser(data) as html:
+            torrent_table = html.find('div', class_='boxContent')
+            torrent_table = torrent_table.find('table') if torrent_table else None
+            torrent_rows = torrent_table('tr') if torrent_table else []
 
-        for torrent in torrents:
-            try:
-                if self.freeleech and not torrent['free']:
-                    continue
+            # Continue only if at least one release is found
+            if len(torrent_rows) < 2:
+                sickrage.app.log.debug('Data returned from provider does not contain any torrents')
+                return results
 
-                title = re.sub('<[^>]*>', '', torrent['name'])
-                download_url = self.urls['download'] % (torrent['id'])
-                seeders = int(torrent['seed'])
-                leechers = int(torrent['leech'])
-                # FIXME
-                size = -1
+            # Skip column headers
+            for row in torrent_rows[1:]:
+                cells = row('td')
 
-                if not all([title, download_url]):
-                    continue
+                try:
+                    title = cells[1].find('a').get_text()
+                    download_url = urljoin(self.urls['base_url'], cells[2].find(title='Download').parent['href'])
+                    if not all([title, download_url]):
+                        continue
 
-                results += [
-                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                ]
+                    seeders = try_int(cells[6].get_text(strip=True))
+                    leechers = try_int(cells[7].get_text(strip=True))
 
-                if mode != 'RSS':
-                    sickrage.app.log.debug("Found result: {}".format(title))
-            except Exception:
-                sickrage.app.log.error("Failed parsing provider")
+                    torrent_size = cells[4].get_text()
+                    torrent_size = torrent_size[:-2] + ' ' + torrent_size[-2:]
+                    size = convert_size(torrent_size, -1)
+
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
+
+                    if mode != 'RSS':
+                        sickrage.app.log.debug("Found result: {}".format(title))
+
+                except (AttributeError, TypeError, KeyError, ValueError, IndexError):
+                    sickrage.app.log.exception('Failed parsing provider.')
 
         return results
