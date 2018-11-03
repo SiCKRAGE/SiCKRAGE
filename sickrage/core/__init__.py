@@ -345,7 +345,7 @@ class Core(object):
             IntervalTrigger(
                 hours=self.config.version_updater_freq
             ),
-            next_run_time=datetime.datetime.now(),
+            next_run_time=datetime.datetime.now() + datetime.timedelta(minutes=1),
             name=self.version_updater.name,
             id=self.version_updater.name
         )
@@ -356,7 +356,7 @@ class Core(object):
             IntervalTrigger(
                 days=1
             ),
-            next_run_time=datetime.datetime.now(),
+            next_run_time=datetime.datetime.now() + datetime.timedelta(minutes=1),
             name=self.tz_updater.name,
             id=self.tz_updater.name
         )
@@ -544,9 +544,12 @@ class Core(object):
         self.quicksearch_cache.load()
 
         for dbData in self.main_db.all('tv_shows'):
+            show = TVShow(int(dbData['indexer']), int(dbData['indexer_id']))
+
             try:
-                self.log.debug("Loading data for show: [{}]".format(dbData['show_name']))
-                self.showlist.append(TVShow(int(dbData['indexer']), int(dbData['indexer_id'])))
-                self.quicksearch_cache.add_show(dbData['indexer_id'])
+                self.log.debug("Loading data for show: [{}]".format(show.name))
+                self.showlist.append(show)
+                self.name_cache.build(show)
+                self.quicksearch_cache.add_show(show.indexerid)
             except Exception as e:
-                self.log.debug("Show error in [%s]: %s" % (dbData['location'], str(e)))
+                self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))

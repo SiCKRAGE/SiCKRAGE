@@ -1,6 +1,7 @@
 # Changelog
 
-- * ea173ba - 2018-10-28: Release v9.4.4 
+- * ceb1967 - 2018-11-03: Added code to build show name cache on startup of app. Fixed issue with show lookup during name parsing. 
+- * f91c70b - 2018-10-28: Release v9.4.4 
 - * bb87bb2 - 2018-10-28: Added code to get default download location from Synology Download Station 
 - * d32be97 - 2018-10-28: Release v9.4.3 
 - * f7c0464 - 2018-10-28: Fixed issue with unrar unpack directory setting 

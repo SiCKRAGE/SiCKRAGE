@@ -88,20 +88,18 @@ class NameParser(object):
 
             # lookup show id
             for lookup in lookup_list:
-                if show or show_id is not None:
-                    continue
-
                 try:
                     show_id = int(lookup())
                     if show_id == 0:
                         continue
 
-                    sickrage.app.name_cache.put(show_name, show_id)
-                    if self.validate_show:
-                        show = findCertainShow(show_id)
-                    else:
-                        from sickrage.core.tv.show import TVShow
-                        show = TVShow(1, show_id)
+                    if not show:
+                        sickrage.app.name_cache.put(show_name, show_id)
+                        if self.validate_show:
+                            show = findCertainShow(show_id)
+                        else:
+                            from sickrage.core.tv.show import TVShow
+                            show = TVShow(1, show_id)
                 except Exception:
                     pass
 
@@ -519,7 +517,8 @@ class NameParser(object):
 
         # if there's no useful info in it then raise an exception
         if final_result.season_number is None and not final_result.episode_numbers and final_result.air_date is None and not final_result.ab_episode_numbers and not final_result.series_name:
-            raise InvalidNameException("Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
+            raise InvalidNameException(
+                "Unable to parse {} to a valid episode. Parser result: {}".format(name, final_result))
 
         if cache_result and final_result.show:
             name_parser_cache.add(name, final_result)
