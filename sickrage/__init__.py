@@ -229,7 +229,7 @@ def main():
         parser.add_argument('-d', '--daemon',
                             action='store_true',
                             help='Run as a daemon (*NIX ONLY)')
-        parser.add_argument('-q', '--quite',
+        parser.add_argument('-q', '--quiet',
                             action='store_true',
                             help='Disables logging to CONSOLE')
         parser.add_argument('-p', '--port',

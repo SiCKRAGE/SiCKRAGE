@@ -69,7 +69,8 @@ class GenericProvider(object):
         self.enable_cookies = False
         self.cookies = ''
 
-        self.session = WebSession()
+        # web session
+        self.session = WebSession(cloudflare=True)
 
     @property
     def id(self):

@@ -1,6 +1,9 @@
 # Changelog
 
-- * d40e147 - 2018-11-03: Release v9.4.6 
+- * 166276a - 2018-11-03: Release v9.4.7 
+- * c7dd1c1 - 2018-11-03: Added pagination support to TorrentLeech provider. 
+- * 63eed66 - 2018-11-03: Refactored cloudflare bypass. Fixed issues with TorrentLeech provider. 
+- * ad3bf92 - 2018-11-03: Release v9.4.6 
 - * 9678e16 - 2018-11-03: Refactored speed.cd provider code. 
 - * 68b1f56 - 2018-11-03: Fixed issue with email notifications and saving addresses. 
 - * bcccf74 - 2018-11-03: Release v9.4.5 
