@@ -209,5 +209,6 @@ class WebServer(object):
     def shutdown(self):
         if self.started:
             self.started = False
-            self.server.close_all_connections()
-            self.server.stop()
+            if self.server:
+                self.server.close_all_connections()
+                self.server.stop()

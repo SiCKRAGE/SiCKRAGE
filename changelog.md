@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8944584 - 2018-11-04: Release v9.4.14 
+- * 31f76d2 - 2018-11-04: Fixed attribute error caused by none type when shutting down web server. 
+- * 7596f3b - 2018-11-04: Release v9.4.14 
 - * 7508f1a - 2018-11-04: Fixed SSO login issues when token is missing from config after unlinking account 
 - * c506406 - 2018-11-03: Release v9.4.13 
 - * 7af3585 - 2018-11-03: Fixed redirection loop when attempting to login via SSO. Fixed error when attempting to close AniDB connection. 
