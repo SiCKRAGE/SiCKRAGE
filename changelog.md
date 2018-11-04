@@ -1,6 +1,7 @@
 # Changelog
 
-- * cf053fa - 2018-11-04: Fixed pagination for TorrentLeech provider. 
+- * 67c1616 - 2018-11-04: Release v9.4.15 
+- * 924aa17 - 2018-11-04: Fixed pagination for TorrentLeech provider. 
 - * 9ca8af6 - 2018-11-04: Fixed attribute error caused by none type when shutting down web server. 
 - * 7596f3b - 2018-11-04: Release v9.4.14 
 - * 7508f1a - 2018-11-04: Fixed SSO login issues when token is missing from config after unlinking account 
