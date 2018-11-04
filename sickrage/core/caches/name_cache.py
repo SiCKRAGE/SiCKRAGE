@@ -139,3 +139,7 @@ class NameCache(object):
             for show_name in set(show_names):
                 self.clear(show_name)
                 self.put(show_name, show.indexerid)
+
+    def build_all(self):
+        for show in sickrage.app.showlist:
+            self.build(show)

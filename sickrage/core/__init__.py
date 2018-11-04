@@ -549,7 +549,8 @@ class Core(object):
             try:
                 self.log.debug("Loading data for show: [{}]".format(show.name))
                 self.showlist.append(show)
-                self.name_cache.build(show)
                 self.quicksearch_cache.add_show(show.indexerid)
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))
+
+        self.io_loop.add_callback(self.name_cache.build_all)

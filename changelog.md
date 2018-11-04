@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3dfb271 - 2018-11-03: Release v9.4.8 
+- * 772afab - 2018-11-03: Moved building of name cache for app start to io loop callback, 
+- * c35d07b - 2018-11-03: Release v9.4.8 
 - * 231a032 - 2018-11-03: Fixed typo 
 - * 697d36a - 2018-11-03: Release v9.4.7 
 - * c7dd1c1 - 2018-11-03: Added pagination support to TorrentLeech provider. 
