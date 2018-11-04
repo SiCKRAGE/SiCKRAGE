@@ -552,5 +552,3 @@ class Core(object):
                 self.quicksearch_cache.add_show(show.indexerid)
             except Exception as e:
                 self.log.debug("Show error in [%s]: %s" % (show.location, str(e)))
-
-        self.io_loop.add_callback(self.name_cache.build_all)
