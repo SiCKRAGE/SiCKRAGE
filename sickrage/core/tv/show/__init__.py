@@ -473,9 +473,10 @@ class TVShow(object):
     def getAllEpisodes(self, season=None, has_location=False):
         results = []
         for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            if (season and x['season'] != season) or (has_location and x['location'] == ''):
+            if season and x['season'] != season:
                 continue
-
+            if has_location and x['location'] == '':
+                continue
             results += [x]
 
         ep_list = []
@@ -487,21 +488,21 @@ class TVShow(object):
             cur_ep.relatedEps = []
             if cur_ep.location:
                 # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
-                if not len([r for r in results
+                if len([r for r in results
                             if r['showid'] == cur_result['showid']
                                and r['season'] == cur_result['season']
                                and r['location'] != '' and r['location'] == cur_result['location']
-                               and r['episode'] != cur_result['episode']]) > 0: continue
+                               and r['episode'] != cur_result['episode']]) > 0:
 
-                related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                                             if x['season'] == cur_ep.season
-                                             and x['location'] == cur_ep.location
-                                             and x['episode'] != cur_ep.episode], key=lambda d: d['episode'])
+                    related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
+                                                 if x['season'] == cur_ep.season
+                                                 and x['location'] == cur_ep.location
+                                                 and x['episode'] != cur_ep.episode], key=lambda d: d['episode'])
 
-                for cur_related_ep in related_eps_result:
-                    related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
-                    if related_ep and related_ep not in cur_ep.relatedEps:
-                        cur_ep.relatedEps.append(related_ep)
+                    for cur_related_ep in related_eps_result:
+                        related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
+                        if related_ep and related_ep not in cur_ep.relatedEps:
+                            cur_ep.relatedEps.append(related_ep)
 
             ep_list.append(cur_ep)
 

@@ -56,7 +56,8 @@
                                                 <th class="col-checkbox">
                                                     <input type="checkbox" class="seriesCheck" id="SelectAll"/>
                                                 </th>
-                                                <th align="left" valign="top" class="text-nowrap">${_('Select All')}</th>
+                                                <th align="left" valign="top"
+                                                    class="text-nowrap">${_('Select All')}</th>
                                                 <th width="100%" class="col-name d-none"></th>
                                             </tr>
                                             </thead>
