@@ -24,7 +24,6 @@ from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
-from sickrage.core.helpers import bs4_parser, convert_size, try_int
 from sickrage.providers import TorrentProvider
 
 
@@ -34,7 +33,9 @@ class TorrentLeechProvider(TorrentProvider):
 
         self.urls.update({
             'login': '{base_url}/user/account/login'.format(**self.urls),
-            'search': '{base_url}/torrents/browse'.format(**self.urls),
+            'search': '{base_url}/torrents/browse/list/'.format(**self.urls),
+            'download': '{base_url}/download/%s/%s'.format(**self.urls),
+            'details': '{base_url}/download/%s/%s'.format(**self.urls),
         })
 
         self.username = None
@@ -71,7 +72,7 @@ class TorrentLeechProvider(TorrentProvider):
             sickrage.app.log.warning("Unable to connect to provider")
             return False
 
-        if '<title>Login :: TorrentLeech.org</title>' in response:
+        if '/user/account/logout' not in response:
             sickrage.app.log.warning("Invalid username or password. Check your settings")
             return False
 
@@ -96,13 +97,14 @@ class TorrentLeechProvider(TorrentProvider):
                 else:
                     categories = ["2", "26", "27", "32", "7", "34", "35", "44"]
 
-                search_params = {
-                    "categories": ",".join(categories),
-                    "query": search_string
-                }
+                # Create the query URL
+                categories_url = 'categories/{}/'.format(",".join(categories))
+                query_url = 'query/{}'.format(search_string)
+                params_url = urljoin(categories_url, query_url)
+                search_url = urljoin(self.urls['search'], params_url)
 
                 try:
-                    data = self.session.get(self.urls["search"], params=search_params).text
+                    data = self.session.get(search_url).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -119,53 +121,26 @@ class TorrentLeechProvider(TorrentProvider):
 
         results = []
 
-        def process_column_header(td):
-            result = ''
-            if td.a:
-                result = td.a.get('title')
-            if not result:
-                result = td.get_text(strip=True)
-            return result
+        for item in data.get('torrentList') or []:
+            try:
+                title = item['name']
+                download_url = self.urls['download'] % (item['fid'], item['filename'])
 
-        with bs4_parser(data) as html:
-            torrent_table = html.find('table', id='torrenttable')
-            torrent_rows = torrent_table('tr') if torrent_table else []
+                seeders = item['seeders']
+                leechers = item['leechers']
+                size = item['size']
 
-            # Continue only if one Release is found
-            if len(torrent_rows) < 2:
-                sickrage.app.log.debug("Data returned from provider does not contain any torrents")
-                return results
+                results += [{
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers
+                }]
 
-            labels = [process_column_header(label) for label in torrent_rows[0]('th')]
-
-            for row in torrent_rows[1:]:
-                cells = row('td')
-
-                try:
-                    name = cells[labels.index('Name')]
-                    title = name.find('a').get_text(strip=True)
-                    download_url = row.find('td', class_='quickdownload').find('a')
-                    if not all([title, download_url]):
-                        continue
-
-                    download_url = urljoin(self.urls['base_url'], download_url['href'])
-
-                    seeders = try_int(cells[labels.index('Seeders')].get_text(strip=True))
-                    leechers = try_int(cells[labels.index('Leechers')].get_text(strip=True))
-
-                    size = convert_size(cells[labels.index('Size')].get_text(), -1)
-
-                    results += [{
-                        'title': title,
-                        'link': download_url,
-                        'size': size,
-                        'seeders': seeders,
-                        'leechers': leechers
-                    }]
-
-                    if mode != 'RSS':
-                        sickrage.app.log.debug("Found result: {}".format(title))
-                except Exception:
-                    sickrage.app.log.error("Failed parsing provider.")
+                if mode != 'RSS':
+                    sickrage.app.log.debug("Found result: {}".format(title))
+            except Exception:
+                sickrage.app.log.error("Failed parsing provider.")
 
         return results
