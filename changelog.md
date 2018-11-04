@@ -1,6 +1,7 @@
 # Changelog
 
-- * 166276a - 2018-11-03: Release v9.4.7 
+- * f27f502 - 2018-11-03: Fixed typo 
+- * 697d36a - 2018-11-03: Release v9.4.7 
 - * c7dd1c1 - 2018-11-03: Added pagination support to TorrentLeech provider. 
 - * 63eed66 - 2018-11-03: Refactored cloudflare bypass. Fixed issues with TorrentLeech provider. 
 - * ad3bf92 - 2018-11-03: Release v9.4.6 

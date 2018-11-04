@@ -257,7 +257,7 @@ def main():
 
         # Parse startup args
         args = parser.parse_args()
-        app.quite = args.quite
+        app.quiet = args.quiet
         app.web_port = int(args.port)
         app.no_launch = args.nolaunch
         app.developer = args.dev
@@ -308,7 +308,7 @@ def main():
         # daemonize if requested
         if daemonize:
             app.no_launch = True
-            app.quite = True
+            app.quiet = True
             app.daemon = Daemon(pid_file, app.data_dir)
             app.daemon.daemonize()
             app.pid = app.daemon.pid
