@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6ffa71a - 2018-11-03: Fixed redirection loop when attempting to login via SSO. Fixed error when attempting to close AniDB connection. 
+- * 3fe3962 - 2018-11-03: Release v9.4.13 
+- * 7af3585 - 2018-11-03: Fixed redirection loop when attempting to login via SSO. Fixed error when attempting to close AniDB connection. 
 - * 73b760b - 2018-11-03: Release v9.4.12 
 - * f6754e4 - 2018-11-03: Release v9.4.11 
 - * e8e2d80 - 2018-11-03: Fixed issues with properly identifying multi-part episodes. 
