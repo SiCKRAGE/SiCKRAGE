@@ -1,6 +1,7 @@
 # Changelog
 
-- * 772afab - 2018-11-03: Moved building of name cache for app start to io loop callback, 
+- * 7792ee1 - 2018-11-03: Release v9.4.9 
+- * e073791 - 2018-11-03: Moved building of name cache for app start to io loop callback, 
 - * c35d07b - 2018-11-03: Release v9.4.8 
 - * 231a032 - 2018-11-03: Fixed typo 
 - * 697d36a - 2018-11-03: Release v9.4.7 
