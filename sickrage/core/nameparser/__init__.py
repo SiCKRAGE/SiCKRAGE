@@ -306,14 +306,13 @@ class NameParser(object):
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
-                        sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show_name}, "
+                        sickrage.app.log.warning("Unable to find episode with date {air_date} for release {release}, "
                                                  "skipping".format(air_date=bestResult.air_date,
-                                                                   show_name=bestResult.show.name))
+                                                                   release=bestResult.original_name))
                         episode_numbers = []
                     except indexer_error as e:
                         sickrage.app.log.warning(
-                            "Unable to contact " + IndexerApi(bestResult.show.indexer).name + ": {}".format(
-                                e))
+                            "Unable to contact " + IndexerApi(bestResult.show.indexer).name + ": {}".format(e))
                         episode_numbers = []
 
                 for epNo in episode_numbers:

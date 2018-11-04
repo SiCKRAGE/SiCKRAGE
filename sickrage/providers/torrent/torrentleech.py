@@ -106,6 +106,7 @@ class TorrentLeechProvider(TorrentProvider):
 
                 try:
                     data = self.session.get(search_url).json()
+                    results += self.parse(data, mode)
 
                     # Handle pagination
                     num_found = data.get('numFound', 0)
@@ -117,11 +118,10 @@ class TorrentLeechProvider(TorrentProvider):
                         pages = 1
 
                     for page in range(2, pages + 1):
-                        results += self.parse(data, mode)
-
                         if num_found and num_found > per_page and pages > 1:
                             page_url = urljoin(search_url, 'page/{}/'.format(page))
                             data = self.session.get(page_url).json()
+                            results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
 
