@@ -27,7 +27,7 @@ import time
 import traceback
 import urllib
 from collections import OrderedDict
-from urlparse import urlparse
+from urlparse import urlparse, urljoin
 
 import dateutil.tz
 import markdown2
@@ -220,8 +220,8 @@ class BaseHandler(RequestHandler):
         self.set_header('Cache-Control', 'max-age=0,no-cache,no-store')
 
     def redirect(self, url, permanent=True, status=None):
-        m = re.search(r'(?!%s)/(.*)' % sickrage.app.config.web_root, url)
-        if m: url = "{}/{}".format(sickrage.app.config.web_root, m.group(0).lstrip('/'))
+        if sickrage.app.config.web_root not in url:
+            url = urljoin(sickrage.app.config.web_root + '/', url.lstrip('/'))
         super(BaseHandler, self).redirect(url, permanent, status)
 
     def previous_url(self):
