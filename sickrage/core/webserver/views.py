@@ -2263,14 +2263,14 @@ class HomePostProcess(Home):
              ) for k, v in kwargs.items())
 
         proc_dir = pp_options.pop("proc_dir", None)
-        quite = pp_options.pop("quiet", None)
+        quiet = pp_options.pop("quiet", None)
 
         if not proc_dir:
             return self.redirect("/home/postprocess/")
 
         result = sickrage.app.postprocessor_queue.put(proc_dir, **pp_options)
 
-        if quite:
+        if quiet:
             return result
 
         return self._genericMessage(_("Postprocessing results"), result.replace("\n", "<br>\n"))

@@ -90,7 +90,7 @@ class Core(object):
         self.config_file = None
         self.data_dir = None
         self.cache_dir = None
-        self.quite = None
+        self.quiet = None
         self.no_launch = None
         self.web_port = None
         self.developer = None
@@ -225,7 +225,7 @@ class Core(object):
         self.log.logNr = self.config.log_nr
         self.log.logFile = os.path.join(self.data_dir, 'logs', 'sickrage.log')
         self.log.debugLogging = self.config.debug
-        self.log.consoleLogging = not self.quite
+        self.log.consoleLogging = not self.quiet
 
         # start logger
         self.log.start()

@@ -266,7 +266,7 @@ module.exports = function (grunt) {
 
         const tasks = [
             'webpack:prod',
-            'sync_trans', // sync translations with crowdin
+            //'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_release_start:' + newVersion,
             'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
