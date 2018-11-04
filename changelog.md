@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0fc3065 - 2018-11-03: Fixed issues with properly identifying multi-part episodes. 
+- * b2408e3 - 2018-11-03: Release v9.4.11 
+- * e8e2d80 - 2018-11-03: Fixed issues with properly identifying multi-part episodes. 
 - * 429568d - 2018-11-03: Release v9.4.10 
 - * 39c0a09 - 2018-11-03: Release v9.4.9 
 - * e073791 - 2018-11-03: Moved building of name cache for app start to io loop callback, 
