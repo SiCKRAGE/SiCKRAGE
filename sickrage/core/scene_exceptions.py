@@ -142,8 +142,6 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
 
     if updated_exceptions:
         sickrage.app.log.debug("Updated scene exceptions")
-    else:
-        sickrage.app.log.debug("No scene exceptions update needed")
 
     # cleanup
     exception_dict.clear()
