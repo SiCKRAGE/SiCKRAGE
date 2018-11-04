@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3fe3962 - 2018-11-03: Release v9.4.13 
+- * c6ac556 - 2018-11-04: Fixed SSO login issues when token is missing from config after unlinking account 
+- * c506406 - 2018-11-03: Release v9.4.13 
 - * 7af3585 - 2018-11-03: Fixed redirection loop when attempting to login via SSO. Fixed error when attempting to close AniDB connection. 
 - * 73b760b - 2018-11-03: Release v9.4.12 
 - * f6754e4 - 2018-11-03: Release v9.4.11 

@@ -281,23 +281,14 @@ class LoginHandler(BaseHandler):
                 self.set_secure_cookie('sr_access_token', token['access_token'])
                 self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
 
-                if not API().token:
-                    exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
-                    API().token = sickrage.app.oidc_client.token_exchange(**exchange)
-                    if not sickrage.app.config.app_sub and userinfo.get('sub'):
-                        sickrage.app.config.app_sub = userinfo.get('sub')
-                        sickrage.app.config.save()
-                    else:
-                        API().token = sickrage.app.oidc_client.logout(API().token['refresh_token'])
-                        return self.redirect('/logout')
-                else:
-                    api_token_decoded = sickrage.app.oidc_client.decode_token(API().refresh_token()['access_token'],
-                                                                              sickrage.app.oidc_client.certs())
+                if not userinfo.get('sub'):
+                    return self.redirect('/logout')
 
-                    if userinfo.get('sub') == api_token_decoded['sub']:
-                        sickrage.app.config.app_sub = userinfo.get('sub')
-                        sickrage.app.config.save()
-                    else:
+                if not sickrage.app.config.app_sub:
+                    sickrage.app.config.app_sub = userinfo.get('sub')
+                    sickrage.app.config.save()
+                elif sickrage.app.config.app_sub != userinfo.get('sub'):
+                    if API().token:
                         allowed_usernames = API().allowed_usernames()['data']
                         if not userinfo['preferred_username'] in allowed_usernames:
                             sickrage.app.log.debug(
@@ -305,6 +296,12 @@ class LoginHandler(BaseHandler):
                                                                            self.request.remote_ip)
                             )
                             return self.redirect('/logout')
+                    else:
+                        return self.redirect('/logout')
+
+                if not API().token:
+                    exchange = {'scope': 'offline_access', 'subject_token': token['access_token']}
+                    API().token = sickrage.app.oidc_client.token_exchange(**exchange)
             except Exception as e:
                 return self.redirect('/logout')
 
