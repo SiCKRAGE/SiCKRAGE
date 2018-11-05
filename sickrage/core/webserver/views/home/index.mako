@@ -470,9 +470,8 @@
                                         </td>
 
                                         <td class="table-fit align-middle">
-                                            <% paused = int(curShow.paused) == 0 and curShow.status == 'Continuing' %>
-                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(paused)]}"></i>
-                                            <span class="d-none d-print-inline">${bool(paused)}</span>
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[not bool(curShow.paused)]}"></i>
+                                            <span class="d-none d-print-inline">${('No', 'Yes')[not bool(curShow.paused)]}</span>
                                         </td>
 
                                         <td class="table-fit align-middle">
