@@ -348,7 +348,6 @@ class Core(object):
             name=self.version_updater.name,
             id=self.version_updater.name
         )
-        self.version_updater.run()
 
         # add network timezones updater job
         self.scheduler.add_job(
@@ -359,7 +358,6 @@ class Core(object):
             name=self.tz_updater.name,
             id=self.tz_updater.name
         )
-        self.tz_updater.run()
 
         # add show updater job
         self.scheduler.add_job(
@@ -472,6 +470,10 @@ class Core(object):
         # start webserver
         self.wserver.start()
 
+        # add callbacks
+        self.io_loop.add_callback(self.version_updater.run)
+        self.io_loop.add_callback(self.tz_updater.run)
+        
         # start ioloop
         self.io_loop.start()
 
