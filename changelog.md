@@ -1,6 +1,7 @@
 # Changelog
 
-- * 6379b9d - 2018-11-06: Release v9.4.16 
+- * e3d8468 - 2018-11-06: Release v9.4.17 
+- * 8963ac9 - 2018-11-06: Release v9.4.16 
 - * 8869731 - 2018-11-05: &quot;Unable to find episode with date&quot; warnings now only shown for shows in library. 
 - * 086e274 - 2018-11-05: Fixed issue with Media Browser metadata nfo creation 
 - * 6441354 - 2018-11-04: Fixed active column for home show display 
