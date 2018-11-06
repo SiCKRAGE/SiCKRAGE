@@ -378,9 +378,9 @@ class GenericMetadata(object):
 
             sickrage.app.log.debug("Writing show nfo file to " + nfo_file_path)
 
-            nfo_file = io.open(nfo_file_path, 'wb')
-            data.write(nfo_file, encoding='UTF-8')
-            nfo_file.close()
+            with io.open(nfo_file_path, 'wb') as nfo_file:
+                data.write(nfo_file, encoding='utf-8')
+
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
@@ -421,9 +421,10 @@ class GenericMetadata(object):
                 chmodAsParent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
-            nfo_file = io.open(nfo_file_path, 'wb')
-            data.write(nfo_file, encoding='UTF-8')
-            nfo_file.close()
+
+            with io.open(nfo_file_path, 'wb') as nfo_file:
+                data.write(nfo_file, encoding='utf-8')
+
             chmodAsParent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
@@ -604,9 +605,9 @@ class GenericMetadata(object):
                 os.makedirs(image_dir)
                 chmodAsParent(image_dir)
 
-            outFile = io.open(image_path, 'wb')
-            outFile.write(image_data)
-            outFile.close()
+            with io.open(image_path, 'wb') as outFile:
+                outFile.write(image_data)
+
             chmodAsParent(image_path)
         except IOError as e:
             sickrage.app.log.error(
