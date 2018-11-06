@@ -19,9 +19,11 @@
 from __future__ import unicode_literals
 
 import re
+from urlparse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
+from sickrage.core.helpers import convert_size
 from sickrage.providers import TorrentProvider
 
 
@@ -30,9 +32,9 @@ class TorrentDayProvider(TorrentProvider):
         super(TorrentDayProvider, self).__init__("TorrentDay", 'https://www.torrentday.com', True)
 
         self.urls.update({
-            'login': '{base_url}/t'.format(**self.urls),
-            'search': '{base_url}/V3/API/API.php'.format(**self.urls),
-            'download': '{base_url}/download.php/%s/%s'.format(**self.urls)
+            'login': '{base_url}/torrents/'.format(**self.urls),
+            'search': '{base_url}/t.json'.format(**self.urls),
+            'download': '{base_url}/download.php/'.format(**self.urls)
         })
 
         self.username = None
@@ -45,10 +47,21 @@ class TorrentDayProvider(TorrentProvider):
         self.enable_cookies = True
         self.required_cookies = ('uid', 'pass')
 
+        # TV/480p - 24
+        # TV/Bluray - 32
+        # TV/DVD-R - 31
+        # TV/DVD-Rip - 33
+        # TV/Mobile - 46
+        # TV/Packs - 14
+        # TV/SD/x264 - 26
+        # TV/x264 - 7
+        # TV/x265 - 34
+        # TV/XviD - 2
+
         self.categories = {
-            'Season': {'c14': 1},
-            'Episode': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1},
-            'RSS': {'c2': 1, 'c26': 1, 'c7': 1, 'c24': 1, 'c34': 1, 'c14': 1}
+            'Season': {'14': 1},
+            'Episode': {'2': 1, '26': 1, '7': 1, '24': 1, '34': 1},
+            'RSS': {'2': 1, '26': 1, '7': 1, '24': 1, '34': 1, '14': 1}
         }
 
         self.cache = TVCache(self)
@@ -71,14 +84,10 @@ class TorrentDayProvider(TorrentProvider):
 
                 search_string = '+'.join(search_string.split())
 
-                post_data = dict({'/browse.php?': None, 'cata': 'yes', 'jxt': 8, 'jxw': 'b', 'search': search_string},
-                                 **self.categories[mode])
-
-                if self.freeleech:
-                    post_data.update({'free': 'on'})
+                params = dict({'q': search_string}, **self.categories[mode])
 
                 try:
-                    data = self.session.post(self.urls['search'], data=post_data).json()
+                    data = self.session.get(self.urls['search'], params=params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -95,26 +104,32 @@ class TorrentDayProvider(TorrentProvider):
 
         results = []
 
-        try:
-            torrents = data['Fs'][0]['Cn']['torrents']
-        except Exception:
-            return results
-
-        for torrent in torrents:
+        for item in data:
             try:
-                title = re.sub(r"\[.*=.*\].*\[/.*\]", "", torrent['name'])
-                download_url = self.urls['download'] % (torrent['id'], torrent['fname'])
-                seeders = int(torrent['seed'])
-                leechers = int(torrent['leech'])
-                # FIXME
-                size = -1
+                # Check if this is a freeleech torrent and if we've configured to only allow freeleech.
+                if self.freeleech and item.get('download-multiplier') != 0:
+                    continue
 
+                title = re.sub(r'\[.*\=.*\].*\[/.*\]', '', item['name']) if item['name'] else None
+                download_url = urljoin(self.urls['download'], '{}/{}.torrent'.format(
+                    item['t'], item['name']
+                )) if item['t'] and item['name'] else None
                 if not all([title, download_url]):
                     continue
 
-                results += [
-                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                ]
+                seeders = int(item['seeders'])
+                leechers = int(item['leechers'])
+
+                torrent_size = item['size']
+                size = convert_size(torrent_size, -1)
+
+                results += [{
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers
+                }]
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Found result: {}".format(title))

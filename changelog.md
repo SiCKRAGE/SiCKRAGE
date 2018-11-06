@@ -1,6 +1,8 @@
 # Changelog
 
-- * e3d8468 - 2018-11-06: Release v9.4.17 
+- * c4b25ec - 2018-11-06: Release v9.4.18 
+- * aba32ea - 2018-11-06: Fixed issues with searching TorrentDay provider 
+- * 3bbf2ca - 2018-11-06: Release v9.4.17 
 - * 8963ac9 - 2018-11-06: Release v9.4.16 
 - * 8869731 - 2018-11-05: &quot;Unable to find episode with date&quot; warnings now only shown for shows in library. 
 - * 086e274 - 2018-11-05: Fixed issue with Media Browser metadata nfo creation 
