@@ -524,7 +524,7 @@ class MediaBrowserMetadata(GenericMetadata):
 
                 Language = SubElement(episode, "Language")
                 try:
-                    Language.text = myEp['language']
+                    Language.text = myEp['language']['overview']
                 except Exception:
                     Language.text = sickrage.app.config.indexer_default_language
 
@@ -538,23 +538,19 @@ class MediaBrowserMetadata(GenericMetadata):
 
             else:
                 # append data from (if any) related episodes
-                if curEpToWrite.episode:
-                    if not EpisodeNumberEnd.text:
-                        EpisodeNumberEnd.text = curEpToWrite.episode
-                    else:
-                        EpisodeNumberEnd.text = EpisodeNumberEnd.text + ", " + curEpToWrite.episode
+                EpisodeNumberEnd.text = str(curEpToWrite.episode)
 
                 if curEpToWrite.name:
                     if not EpisodeName.text:
                         EpisodeName.text = curEpToWrite.name
                     else:
-                        EpisodeName.text = EpisodeName.text + ", " + curEpToWrite.name
+                        EpisodeName.text = ', '.join([EpisodeName.text, curEpToWrite.name])
 
                 if curEpToWrite.description:
                     if not Overview.text:
                         Overview.text = curEpToWrite.description
                     else:
-                        Overview.text = Overview.text + "\r" + curEpToWrite.description
+                        Overview.text = '\r'.join([Overview.text, curEpToWrite.description])
 
             # collect all directors, guest stars and writers
             if getattr(myEp, 'director', None):

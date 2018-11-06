@@ -1,6 +1,7 @@
 # Changelog
 
-- * bd8263b - 2018-11-04: Fixed active column for home show display 
+- * 859b849 - 2018-11-05: Fixed issue with Media Browser metadata nfo creation 
+- * 6441354 - 2018-11-04: Fixed active column for home show display 
 - * 180d59d - 2018-11-04: Release v9.4.15 
 - * 924aa17 - 2018-11-04: Fixed pagination for TorrentLeech provider. 
 - * 9ca8af6 - 2018-11-04: Fixed attribute error caused by none type when shutting down web server. 
