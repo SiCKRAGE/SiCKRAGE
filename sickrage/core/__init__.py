@@ -343,23 +343,23 @@ class Core(object):
         self.scheduler.add_job(
             self.version_updater.run,
             IntervalTrigger(
-                hours=self.config.version_updater_freq
+                hours=self.config.version_updater_freq,
             ),
-            next_run_time=datetime.datetime.now() + datetime.timedelta(minutes=1),
             name=self.version_updater.name,
             id=self.version_updater.name
         )
+        self.version_updater.run()
 
         # add network timezones updater job
         self.scheduler.add_job(
             self.tz_updater.run,
             IntervalTrigger(
-                days=1
+                days=1,
             ),
-            next_run_time=datetime.datetime.now() + datetime.timedelta(minutes=1),
             name=self.tz_updater.name,
             id=self.tz_updater.name
         )
+        self.tz_updater.run()
 
         # add show updater job
         self.scheduler.add_job(
@@ -419,8 +419,13 @@ class Core(object):
         self.scheduler.add_job(
             self.proper_searcher.run,
             IntervalTrigger(
-                minutes={'15m': 15, '45m': 45, '90m': 90, '4h': 4 * 60, 'daily': 24 * 60}[
-                    self.config.proper_searcher_interval]
+                minutes={
+                    '15m': 15,
+                    '45m': 45,
+                    '90m': 90,
+                    '4h': 4 * 60,
+                    'daily': 24 * 60
+                }[self.config.proper_searcher_interval]
             ),
             name=self.proper_searcher.name,
             id=self.proper_searcher.name
