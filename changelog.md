@@ -1,6 +1,7 @@
 # Changelog
 
-- * b25344e - 2018-11-06: Fixed issues with saving provider settings. Added property &quot;in_library&quot; to parsed results to identify search results to library shows. 
+- * ba3c129 - 2018-11-06: Release v9.4.19 
+- * d394cb1 - 2018-11-06: Fixed issues with saving provider settings. Added property &quot;in_library&quot; to parsed results to identify search results to library shows. 
 - * 6d5e91c - 2018-11-06: Release v9.4.18 
 - * aba32ea - 2018-11-06: Fixed issues with searching TorrentDay provider 
 - * 3bbf2ca - 2018-11-06: Release v9.4.17 
