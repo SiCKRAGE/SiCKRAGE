@@ -31,11 +31,12 @@ from sickrage.providers import TorrentProvider
 
 class Torrent9Provider(TorrentProvider):
     def __init__(self):
-        super(Torrent9Provider, self).__init__('Torrent9', 'https://ww2.torrent9.blue', False)
+        super(Torrent9Provider, self).__init__('Torrent9', 'ww1.torrent9.ph', False)
 
         self.urls.update({
             'search': '{base_url}/search_torrent/'.format(**self.urls),
-            'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self.urls)
+            'rss': '{base_url}/torrents_series.html,trie-date-d'.format(**self.urls),
+            'download': '{base_url}get_torrent/%s.torrent'.format(**self.urls)
         })
 
         self.minseed = None
@@ -45,7 +46,7 @@ class Torrent9Provider(TorrentProvider):
 
         self.proper_strings = ['PROPER', 'REPACK']
 
-        self.cache = TVCache(self)
+        self.cache = TVCache(self, min_time=20)
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):  # pylint: disable=too-many-locals
         results = []
@@ -57,19 +58,15 @@ class Torrent9Provider(TorrentProvider):
                     search_string = re.sub(r'(.*)S0?', r'\1Saison ', search_string)
 
                 if mode != 'RSS':
-                    sickrage.app.log.debug("Search string: {0}".format
-                                           (search_string))
-
-                    search_string = search_string.replace('.', '-').replace(' ', '-')
-
-                    search_url = urljoin(self.urls['search'],
-                                         "{search_string}.html".format(search_string=search_string))
+                    sickrage.app.log.debug("Search string: {}".format(search_string))
+                    search_query = re.sub(r'\W', '-', search_string)
+                    search_url = urljoin(self.urls['search'], "{search_query}.html".format(search_query=search_query))
                 else:
                     search_url = self.urls['rss']
 
                 if self.custom_url:
                     if not validate_url(self.custom_url):
-                        sickrage.app.log.warning("Invalid custom url: {0}".format(self.custom_url))
+                        sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
                         return results
                     search_url = urljoin(self.custom_url, search_url.split(self.urls['base_url'])[1])
 
@@ -92,20 +89,20 @@ class Torrent9Provider(TorrentProvider):
         results = []
 
         with bs4_parser(data) as html:
-            table_header = html.find('thead')
-            if not table_header:
+            table_body = html.find('tbody')
+
+            # Continue only if at least one release is found
+            if not table_body:
                 sickrage.app.log.debug('Data returned from provider does not contain any torrents')
                 return results
 
-            # Nom du torrent, Taille, Seed, Leech
-            labels = [label.get_text() for label in table_header('th')]
-
-            table_body = html.find('tbody')
             for row in table_body('tr'):
                 cells = row('td')
+                if len(cells) < 4:
+                    continue
 
                 try:
-                    info_cell = cells[labels.index('Nom du torrent')].a
+                    info_cell = cells[0].a
                     title = info_cell.get_text()
                     download_url = info_cell.get('href')
                     if not all([title, download_url]):
@@ -113,20 +110,27 @@ class Torrent9Provider(TorrentProvider):
 
                     title = '{name} {codec}'.format(name=title, codec='x264')
 
-                    download_link = download_url.replace('/torrent', 'get_torrent')
-                    download_url = self.urls['download'].format(link=download_link)
+                    download_name = download_url.rsplit('/', 1)[1]
+                    download_url = self.urls['download'] % download_name
                     if self.custom_url:
+                        if not validate_url(self.custom_url):
+                            sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
+                            return results
                         download_url = urljoin(self.custom_url, download_url.split(self.urls['base_url'])[1])
 
-                    seeders = try_int(cells[labels.index('Seed')].get_text(strip=True))
-                    leechers = try_int(cells[labels.index('Leech')].get_text(strip=True))
+                    seeders = try_int(cells[2].get_text(strip=True))
+                    leechers = try_int(cells[3].get_text(strip=True))
 
-                    torrent_size = cells[labels.index('Taille')].get_text()
-                    size = convert_size(torrent_size, -1, ['o', 'Ko', 'Mo', 'Go', 'To', 'Po'])
+                    torrent_size = cells[1].get_text()
+                    size = convert_size(torrent_size, -1, ['O', 'KO', 'MO', 'GO', 'TO', 'PO'])
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
