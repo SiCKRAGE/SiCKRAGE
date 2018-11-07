@@ -306,7 +306,7 @@ class NameParser(object):
                         season_number = int(epObj["airedseason"])
                         episode_numbers = [int(epObj["airedepisodenumber"])]
                     except indexer_episodenotfound:
-                        if bestResult.show:
+                        if bestResult.in_showlist:
                             sickrage.app.log.warning("Unable to find episode with date {air_date} for show {show}, "
                                                      "skipping".format(air_date=bestResult.air_date,
                                                                        show=bestResult.show.name))
@@ -610,6 +610,12 @@ class ParseResult(object):
     @property
     def is_anime(self):
         if self.ab_episode_numbers:
+            return True
+        return False
+
+    @property
+    def in_showlist(self):
+        if findCertainShow(self.indexerid):
             return True
         return False
 
