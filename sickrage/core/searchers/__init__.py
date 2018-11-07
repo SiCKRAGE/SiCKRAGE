@@ -73,6 +73,3 @@ def new_episode_finder():
             ))
 
             ep_obj.saveToDB()
-
-def get_backlog_cycle_time():
-    return max([sickrage.app.config.daily_searcher_freq * 4, 30])
