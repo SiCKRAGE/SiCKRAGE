@@ -1,6 +1,7 @@
 # Changelog
 
-- * 62acf7f - 2018-11-07: Removed backlog cycle time 
+- * f4b16d6 - 2018-11-07: Fixed Torrent9 provider search issues. 
+- * dfa2238 - 2018-11-07: Removed backlog cycle time 
 - * e7526ee - 2018-11-06: Release v9.4.19 
 - * d394cb1 - 2018-11-06: Fixed issues with saving provider settings. Added property &quot;in_library&quot; to parsed results to identify search results to library shows. 
 - * 6d5e91c - 2018-11-06: Release v9.4.18 
