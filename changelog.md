@@ -1,6 +1,7 @@
 # Changelog
 
-- * a1033a5 - 2018-11-08: Fixed issues with YGGToreent provider searches. 
+- * caa1918 - 2018-11-08: Release v9.4.21 
+- * dc15dc2 - 2018-11-08: Fixed issues with YGGToreent provider searches. 
 - * 6b3ab52 - 2018-11-07: Release v9.4.20 
 - * d5adb49 - 2018-11-07: Fixed Torrent9 provider search issues. 
 - * dfa2238 - 2018-11-07: Removed backlog cycle time 
