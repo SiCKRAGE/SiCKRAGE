@@ -44,6 +44,7 @@
 
 [Unit]
 Description=SickRage Daemon
+After=network-online.target
 
 [Service]
 User=sickrage
@@ -52,6 +53,8 @@ Group=sickrage
 Type=forking
 GuessMainPID=no
 ExecStart=/usr/bin/python2.7 /opt/sickrage/SiCKRAGE.py -q --daemon --nolaunch --datadir=/opt/sickrage
+Restart=on-failure
+TimeoutStopSec=300
 
 [Install]
 WantedBy=multi-user.target
