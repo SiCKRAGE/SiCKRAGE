@@ -31,10 +31,11 @@ from sickrage.providers import TorrentProvider
 class YggtorrentProvider(TorrentProvider):
     def __init__(self):
         """Initialize the class."""
-        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.is', True)
+        super(YggtorrentProvider, self).__init__('Yggtorrent', 'https://yggtorrent.to', True)
 
         # URLs
         self.urls.update({
+            'auth': '{base_url}/user/ajax_usermenu'.format(**self.urls),
             'login': '{base_url}/user/login'.format(**self.urls),
             'search': '{base_url}/engine/search'.format(**self.urls),
             'download': '{base_url}/engine/download_torrent?id=%s'.format(**self.urls)
@@ -69,7 +70,7 @@ class YggtorrentProvider(TorrentProvider):
         self.minleech = None
 
         # Cache
-        self.cache = TVCache(self, min_time=30)
+        self.cache = TVCache(self, min_time=20)
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         """
@@ -148,9 +149,13 @@ class YggtorrentProvider(TorrentProvider):
                     torrent_size = cells[5].get_text()
                     size = convert_size(torrent_size, -1, ['O', 'KO', 'MO', 'GO', 'TO', 'PO'])
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))
@@ -166,21 +171,24 @@ class YggtorrentProvider(TorrentProvider):
             'pass': self.password
         }
 
+        if not self._is_authenticated():
+            try:
+                self.session.post(self.urls['login'], data=login_params)
+            except Exception:
+                sickrage.app.log.warning('Unable to connect or login to provider')
+                return False
+
+            if not self._is_authenticated():
+                sickrage.app.log.warning('Invalid username or password. Check your settings')
+                return False
+
+        return True
+
+    def _is_authenticated(self):
         try:
-            self.session.post(self.urls['login'], data=login_params)
-            response = self.session.get(self.urls['base_url']).text
+            response = self.session.get(self.urls['auth']).json()
         except Exception:
-            sickrage.app.log.warning('Unable to connect to provider')
             return False
-
-        if 'Ces identifiants sont invalides' in response:
-            sickrage.app.log.warning('Invalid username or password. Check your settings')
-            return False
-
-        if 'Mon compte' not in response:
-            sickrage.app.log.warning('Unable to login to provider')
-            return False
-
         return True
 
 
