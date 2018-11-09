@@ -975,7 +975,7 @@
                                 <label for="torrent_path">
                                     ${_('where the torrent client will save downloaded files (blank for client default)')}
                                     <br/>
-                                    <b>${_('NOTE:')}</b> ${_('the destination has to be a shared folder for Synology DS')}
+                                    <b>${_('NOTE:')}</b> ${_('the destination has to be a shared folder for Synology DS devices')}
                                 </label>
                             </div>
                         </div>

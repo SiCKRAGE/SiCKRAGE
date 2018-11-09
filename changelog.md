@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2786e5e - 2018-11-08: Release v9.4.22 
+- * 0197249 - 2018-11-09: Fixed location issue with Transmission client. 
+- * f98b5e8 - 2018-11-08: Release v9.4.22 
 - * d705db2 - 2018-11-08: Fixed startup issues with systemd init script. 
 - * 5bb165d - 2018-11-08: Release v9.4.21 
 - * dc15dc2 - 2018-11-08: Fixed issues with YGGToreent provider searches. 
