@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import json
+import os
 from base64 import b64encode
 
 import sickrage
@@ -43,10 +44,10 @@ class TransmissionAPI(GenericClient):
 
     def _get_auth(self):
         self.response = self.session.post(self.url,
-                                                          data=json.dumps({'method': 'session-get', }),
-                                                          timeout=120,
-                                                          auth=(self.username, self.password),
-                                                          verify=bool(sickrage.app.config.torrent_verify_cert))
+                                          data=json.dumps({'method': 'session-get', }),
+                                          timeout=120,
+                                          auth=(self.username, self.password),
+                                          verify=bool(sickrage.app.config.torrent_verify_cert))
 
         # get auth session header
         self.auth = self.response.headers['x-transmission-session-id'] if self.response is not None else None
@@ -65,31 +66,40 @@ class TransmissionAPI(GenericClient):
         return super(TransmissionAPI, self)._request(*args, **kwargs)
 
     def _add_torrent_uri(self, result):
+        arguments = {
+            'filename': result.url,
+            'paused': 1 if sickrage.app.config.torrent_paused else 0,
+        }
 
-        arguments = {'filename': result.url,
-                     'paused': 1 if sickrage.app.config.torrent_paused else 0,
-                     'download-dir': sickrage.app.config.torrent_path}
+        if os.path.isabs(sickrage.app.config.torrent_path):
+            arguments['download-dir'] = sickrage.app.config.torrent_path
 
-        post_data = json.dumps({'arguments': arguments,
-                                'method': 'torrent-add'})
+        post_data = json.dumps({
+            'arguments': arguments,
+            'method': 'torrent-add'
+        })
 
         if self._request(method='post', data=post_data):
             return self.response.json()['result'] == "success"
 
     def _add_torrent_file(self, result):
+        arguments = {
+            'metainfo': b64encode(result.content),
+            'paused': 1 if sickrage.app.config.torrent_paused else 0
+        }
 
-        arguments = {'metainfo': b64encode(result.content),
-                     'paused': 1 if sickrage.app.config.torrent_paused else 0,
-                     'download-dir': sickrage.app.config.torrent_path}
+        if os.path.isabs(sickrage.app.config.torrent_path):
+            arguments['download-dir'] = sickrage.app.config.torrent_path
 
-        post_data = json.dumps({'arguments': arguments,
-                                'method': 'torrent-add'})
+        post_data = json.dumps({
+            'arguments': arguments,
+            'method': 'torrent-add'
+        })
 
         if self._request(method='post', data=post_data):
             return self.response.json()['result'] == "success"
 
     def _set_torrent_ratio(self, result):
-
         ratio = None
         if isinstance(result.ratio, (int, long)):
             ratio = result.ratio
@@ -103,26 +113,33 @@ class TransmissionAPI(GenericClient):
                 ratio = float(ratio)
                 mode = 1  # Stop seeding at seedRatioLimit
 
-        arguments = {'ids': [result.hash],
-                     'seedRatioLimit': ratio,
-                     'seedRatioMode': mode}
+        arguments = {
+            'ids': [result.hash],
+            'seedRatioLimit': ratio,
+            'seedRatioMode': mode
+        }
 
-        post_data = json.dumps({'arguments': arguments,
-                                'method': 'torrent-set'})
+        post_data = json.dumps({
+            'arguments': arguments,
+            'method': 'torrent-set'
+        })
 
         if self._request(method='post', data=post_data):
             return self.response.json()['result'] == "success"
 
     def _set_torrent_seed_time(self, result):
-
         if sickrage.app.config.torrent_seed_time and sickrage.app.config.torrent_seed_time != -1:
             time = int(60 * float(sickrage.app.config.torrent_seed_time))
-            arguments = {'ids': [result.hash],
-                         'seedIdleLimit': time,
-                         'seedIdleMode': 1}
+            arguments = {
+                'ids': [result.hash],
+                'seedIdleLimit': time,
+                'seedIdleMode': 1
+            }
 
-            post_data = json.dumps({'arguments': arguments,
-                                    'method': 'torrent-set'})
+            post_data = json.dumps({
+                'arguments': arguments,
+                'method': 'torrent-set'
+            })
 
             if self._request(method='post', data=post_data):
                 return self.response.json()['result'] == "success"
@@ -130,7 +147,6 @@ class TransmissionAPI(GenericClient):
             return True
 
     def _set_torrent_priority(self, result):
-
         arguments = {'ids': [result.hash]}
 
         if result.priority == -1:
@@ -145,8 +161,24 @@ class TransmissionAPI(GenericClient):
         else:
             arguments['priority-normal'] = []
 
-        post_data = json.dumps({'arguments': arguments,
-                                'method': 'torrent-set'})
+        post_data = json.dumps({
+            'arguments': arguments,
+            'method': 'torrent-set'
+        })
+
+        if self._request(method='post', data=post_data):
+            return self.response.json()['result'] == "success"
+
+    def remove_torrent(self, info_hash):
+        arguments = {
+            'ids': [info_hash],
+            'delete-local-data': 1,
+        }
+
+        post_data = json.dumps({
+            'arguments': arguments,
+            'method': 'torrent-remove',
+        })
 
         if self._request(method='post', data=post_data):
             return self.response.json()['result'] == "success"
