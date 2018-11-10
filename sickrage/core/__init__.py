@@ -55,6 +55,7 @@ from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
 from sickrage.core.processors.auto_postprocessor import AutoPostProcessor
+from sickrage.core.queues.event import EventQueue
 from sickrage.core.queues.postprocessor import PostProcessorQueue
 from sickrage.core.queues.search import SearchQueue
 from sickrage.core.queues.show import ShowQueue
@@ -136,6 +137,7 @@ class Core(object):
         self.show_queue = None
         self.search_queue = None
         self.postprocessor_queue = None
+        self.event_queue = None
         self.version_updater = None
         self.show_updater = None
         self.tz_updater = None
@@ -173,6 +175,7 @@ class Core(object):
         self.show_queue = ShowQueue()
         self.search_queue = SearchQueue()
         self.postprocessor_queue = PostProcessorQueue()
+        self.event_queue = EventQueue()
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
         self.tz_updater = TimeZoneUpdater()
@@ -464,14 +467,15 @@ class Core(object):
         self.search_queue.start()
         self.show_queue.start()
         self.postprocessor_queue.start()
+        self.event_queue.start()
 
         # start webserver
         self.wserver.start()
 
-        # add callbacks
-        self.io_loop.add_callback(self.version_updater.run)
-        self.io_loop.add_callback(self.tz_updater.run)
-        
+        # fire off startup events
+        self.event_queue.fire_event(self.version_updater.run)
+        self.event_queue.fire_event(self.tz_updater.run)
+
         # start ioloop
         self.io_loop.start()
 
@@ -500,6 +504,12 @@ class Core(object):
                 self.log.debug("Shutting down post-processor queue")
                 self.postprocessor_queue.shutdown()
                 del self.postprocessor_queue
+
+            # shutdown event queue
+            if self.event_queue:
+                self.log.debug("Shutting down event queue")
+                self.event_queue.shutdown()
+                del self.event_queue
 
             # log out of ADBA
             if self.adba_connection:
