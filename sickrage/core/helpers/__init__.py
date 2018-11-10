@@ -45,7 +45,6 @@ import rarfile
 import requests
 import six
 from bs4 import BeautifulSoup
-from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
@@ -928,8 +927,7 @@ def create_zipfile(fileList, archive, arcname=None):
         return False
 
 
-def restoreConfigZip(archive, targetDir, restore_appid=True, restore_database=True, restore_config=True,
-                     restore_cache=True):
+def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
     """
     Restores a backup ZIP file back in place
 
@@ -961,12 +959,6 @@ def restoreConfigZip(archive, targetDir, restore_appid=True, restore_database=Tr
                     continue
 
                 zip_file.extract(member, targetDir)
-
-        if restore_config and not restore_appid:
-            cfg = ConfigObj(os.path.join(targetDir, 'config.ini'), indent_type='  ', encoding='utf8')
-            if 'app_id' in cfg['General']:
-                del cfg['General']['app_id']
-            cfg.write()
 
         return True
     except Exception as e:
