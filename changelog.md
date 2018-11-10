@@ -1,6 +1,7 @@
 # Changelog
 
-- * a322835 - 2018-11-09: Release v9.4.24 
+- * 08042e6 - 2018-11-10: Refactored misc logging errors to warnings. 
+- * 73acd71 - 2018-11-09: Release v9.4.24 
 - * ede2f85 - 2018-11-09: Added threaded event queue. Fixed duplicate notifications. 
 - * e9ca9af - 2018-11-09: Release v9.4.23 
 - * 2c4ce80 - 2018-11-09: Fixed location issue with Transmission client. 

@@ -314,7 +314,7 @@ class PostProcessor(object):
         """
 
         if not action:
-            self._log("Must provide an action for the combined file operation", sickrage.app.log.ERROR)
+            self._log("Must provide an action for the combined file operation", sickrage.app.log.WARNING)
             return
 
         file_list = [file_path]
@@ -363,7 +363,7 @@ class PostProcessor(object):
                 subs_new_path = os.path.join(new_path, sickrage.app.config.subtitles_dir)
                 dir_exists = makeDir(subs_new_path)
                 if not dir_exists:
-                    sickrage.app.log.error("Unable to create subtitles folder " + subs_new_path)
+                    sickrage.app.log.warning("Unable to create subtitles folder " + subs_new_path)
                 else:
                     chmodAsParent(subs_new_path)
                 new_file_path = os.path.join(subs_new_path, new_file_name)
@@ -390,7 +390,7 @@ class PostProcessor(object):
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to move file {} to {}: {}".format(cur_file_path, new_file_path, e),
-                          sickrage.app.log.ERROR)
+                          sickrage.app.log.WARNING)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_move,
@@ -414,7 +414,7 @@ class PostProcessor(object):
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to copy file {} to {}: {}".format(cur_file_path, new_file_path, e),
-                          sickrage.app.log.ERROR)
+                          sickrage.app.log.WARNING)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_copy,
@@ -442,7 +442,7 @@ class PostProcessor(object):
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to hardlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
-                          sickrage.app.log.ERROR)
+                          sickrage.app.log.WARNING)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files, action=_int_hard_link,
@@ -467,7 +467,7 @@ class PostProcessor(object):
                 chmodAsParent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to move and symlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
-                          sickrage.app.log.ERROR)
+                          sickrage.app.log.WARNING)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
@@ -485,7 +485,7 @@ class PostProcessor(object):
 
         def _int_sym_link(cur_file_path, new_file_path):
 
-            self._log("Creating then symbolic linking file from " + new_file_path + " to " + cur_file_path,
+            self._log("Creating the symbolic linking file from " + new_file_path + " to " + cur_file_path,
                       sickrage.app.log.DEBUG)
             try:
                 if os.path.exists(new_file_path):
@@ -495,7 +495,7 @@ class PostProcessor(object):
                 chmodAsParent(cur_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to symlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
-                          sickrage.app.log.ERROR)
+                          sickrage.app.log.WARNING)
                 raise
 
         self._combined_file_operation(file_path, new_path, new_base_name, associated_files,
