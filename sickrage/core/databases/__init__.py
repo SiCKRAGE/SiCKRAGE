@@ -234,6 +234,8 @@ class srDatabase(object):
             except Exception as e:
                 if index_name in self.db.indexes_names:
                     self.db.destroy_index(self.db.indexes_names[index_name])
+                self.db.add_index(self._indexes[index_name](self.db.path, index_name))
+                #self.db.reindex_index(index_name)
 
     def migrate(self):
         if os.path.isfile(self.old_db_path):

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9ca02ed - 2018-11-10: Refactored misc errors to warnings. 
+- * 62c1ce5 - 2018-11-10: Fixed issue for missing database indexes. 
+- * 3f20cdd - 2018-11-10: Refactored misc errors to warnings. 
 - * 4127ed3 - 2018-11-10: Refactored misc errors to warnings. 
 - * 78c64b1 - 2018-11-10: Release v9.4.26 
 - * 9e4dc5f - 2018-11-10: Fixed issue with file browser and clicking on files not properly choosing file and closing browser dialog. 
