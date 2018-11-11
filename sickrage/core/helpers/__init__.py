@@ -903,7 +903,7 @@ def extract_zipfile(archive, targetDir):
         zip_file.close()
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: %r " % repr(e))
+        sickrage.app.log.warning("Zip extraction error: %r " % repr(e))
         return False
 
 
@@ -923,7 +923,7 @@ def create_zipfile(fileList, archive, arcname=None):
                 z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip creation error: {} ".format(e))
+        sickrage.app.log.warning("Zip creation error: {} ".format(e))
         return False
 
 
@@ -935,6 +935,9 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
     :param targetDir: Directory to restore to
     :return: True on success, False on failure
     """
+
+    if not os.path.isfile(archive):
+        return
 
     try:
         if not os.path.exists(targetDir):
@@ -962,7 +965,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: {}".format(e))
+        sickrage.app.log.warning("Zip extraction error: {}".format(e))
         shutil.rmtree(targetDir)
 
 

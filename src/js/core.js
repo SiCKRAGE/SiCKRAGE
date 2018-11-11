@@ -855,7 +855,7 @@ $(document).ready(function ($) {
                         link = $('<a href="javascript:void(0)">').on('click', function () {
                             if (entry.isFile) {
                                 SICKRAGE.browser.currentBrowserPath = entry.path;
-                                $('.browserDialog .ui-button:contains("Ok")').click();
+                                SICKRAGE.browser.fileBrowserDialog.find('.modal-footer .btn-success').click();
                             } else {
                                 SICKRAGE.browser.browse(entry.path, endpoint, includeFiles, fileTypes);
                             }
