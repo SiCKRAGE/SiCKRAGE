@@ -45,7 +45,6 @@ import rarfile
 import requests
 import six
 from bs4 import BeautifulSoup
-from configobj import ConfigObj
 
 import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
@@ -904,7 +903,7 @@ def extract_zipfile(archive, targetDir):
         zip_file.close()
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: %r " % repr(e))
+        sickrage.app.log.warning("Zip extraction error: %r " % repr(e))
         return False
 
 
@@ -924,12 +923,11 @@ def create_zipfile(fileList, archive, arcname=None):
                 z.write(f, os.path.relpath(f, arcname))
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip creation error: {} ".format(e))
+        sickrage.app.log.warning("Zip creation error: {} ".format(e))
         return False
 
 
-def restoreConfigZip(archive, targetDir, restore_appid=True, restore_database=True, restore_config=True,
-                     restore_cache=True):
+def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=True, restore_cache=True):
     """
     Restores a backup ZIP file back in place
 
@@ -937,6 +935,9 @@ def restoreConfigZip(archive, targetDir, restore_appid=True, restore_database=Tr
     :param targetDir: Directory to restore to
     :return: True on success, False on failure
     """
+
+    if not os.path.isfile(archive):
+        return
 
     try:
         if not os.path.exists(targetDir):
@@ -962,15 +963,9 @@ def restoreConfigZip(archive, targetDir, restore_appid=True, restore_database=Tr
 
                 zip_file.extract(member, targetDir)
 
-        if restore_config and not restore_appid:
-            cfg = ConfigObj(os.path.join(targetDir, 'config.ini'), indent_type='  ', encoding='utf8')
-            if 'app_id' in cfg['General']:
-                del cfg['General']['app_id']
-            cfg.write()
-
         return True
     except Exception as e:
-        sickrage.app.log.error("Zip extraction error: {}".format(e))
+        sickrage.app.log.warning("Zip extraction error: {}".format(e))
         shutil.rmtree(targetDir)
 
 

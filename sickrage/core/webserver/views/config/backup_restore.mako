@@ -68,15 +68,6 @@
 
                         <div class="form-row">
                             <div class="col-md-12">
-                                <label for="restore_appid">
-                                    <input type="checkbox" class="toggle color-primary is-material" name="restore_appid" id="restore_appid" checked/>
-                                    ${_('Restore application id (requires restoring config)')}
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="col-md-12">
                                 <label for="restore_database">
                                     <input type="checkbox" class="toggle color-primary is-material" name="restore_database" id="restore_database" checked/>
                                     ${_('Restore database files')}
