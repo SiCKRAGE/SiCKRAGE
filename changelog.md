@@ -1,6 +1,7 @@
 # Changelog
 
-- * 38e0115 - 2018-11-10: Release v9.4.27 
+- * b07f692 - 2018-11-10: Release v9.4.28 
+- * c5ea143 - 2018-11-10: Release v9.4.27 
 - * 0f190e0 - 2018-11-10: Added function to check database index data integrity and rebuild if failed 
 - * 7c31b0c - 2018-11-10: Fixed issue for missing database indexes. 
 - * 3f20cdd - 2018-11-10: Refactored misc errors to warnings. 
