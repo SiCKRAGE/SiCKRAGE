@@ -4799,7 +4799,7 @@ class ConfigSubtitles(Config):
                                                        x.strip()]
 
         # Subtitle languages
-        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
+        sickrage.app.config.subtitles_languages = kwargs.get('subtitles_languages[]', 'eng')
         if not isinstance(sickrage.app.config.subtitles_languages, list):
             sickrage.app.config.subtitles_languages = [sickrage.app.config.subtitles_languages]
 
