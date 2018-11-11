@@ -1,6 +1,7 @@
 # Changelog
 
-- * 158beba - 2018-11-10: Fixed issue with displaying language flags in views 
+- * fec82ca - 2018-11-11: Cleaned up subtitles code. 
+- * 1558dce - 2018-11-10: Fixed issue with displaying language flags in views 
 - * 0173a0f - 2018-11-10: Release v9.4.28 
 - * c5ea143 - 2018-11-10: Release v9.4.27 
 - * 0f190e0 - 2018-11-10: Added function to check database index data integrity and rebuild if failed 
