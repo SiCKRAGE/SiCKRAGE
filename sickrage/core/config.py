@@ -2423,7 +2423,7 @@ class ConfigMigrator(Config):
         """
 
         if current_version > expected_version:
-            sickrage.app.log.error("Your config version (%i) has been incremented past what this version of supports "
+            sickrage.app.log.warning("Your config version (%i) has been incremented past what this version of supports "
                                    "(%i). If you have used other forks or a newer version of  your config file may be "
                                    "unusable due to their modifications." % (current_version,
                                                                              expected_version)

@@ -136,7 +136,7 @@ def codeDescription(status_code):
     if status_code in http_error_code:
         return http_error_code[status_code]
     else:
-        sickrage.app.log.error("Unknown error code: %s. Please submit an issue" % status_code)
+        sickrage.app.log.warning("Unknown error code: %s. Please submit an issue" % status_code)
         return 'unknown'
 
 

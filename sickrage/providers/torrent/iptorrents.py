@@ -48,7 +48,7 @@ class IPTorrentsProvider(TorrentProvider):
 
         self.custom_url = ""
 
-        self.cache = TVCache(self)
+        self.cache = TVCache(self, min_time=10)
 
     def login(self):
         return self.cookie_login('sign in')
@@ -117,9 +117,13 @@ class IPTorrentsProvider(TorrentProvider):
                     seeders = int(torrent.find('td', attrs={'class': 'ac t_seeders'}).text)
                     leechers = int(torrent.find('td', attrs={'class': 'ac t_leechers'}).text)
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != 'RSS':
                         sickrage.app.log.debug("Found result: {}".format(title))

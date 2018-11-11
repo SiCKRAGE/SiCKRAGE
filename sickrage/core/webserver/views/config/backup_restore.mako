@@ -1,5 +1,5 @@
 <%inherit file="../layouts/config.mako"/>
-<%def name='formaction()'><% return 'backuprestore' %></%def>
+<%def name='formaction()'><% return 'saveBackupRestore' %></%def>
 <%block name="menus">
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#backup">${_('Backup')}</a></li>
     <li class="nav-item px-1"><a class="nav-link" data-toggle="tab" href="#restore">${_('Restore')}</a></li>

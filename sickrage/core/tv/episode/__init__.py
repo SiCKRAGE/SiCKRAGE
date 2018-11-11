@@ -526,7 +526,7 @@ class TVEpisode(object):
         # early conversion to int so that episode doesn't get marked dirty
         self.indexerid = try_int(safe_getattr(myEp, 'id'), self.indexerid)
         if self.indexerid is None:
-            sickrage.app.log.error("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
+            sickrage.app.log.warning("Failed to retrieve ID from " + IndexerApi(self.indexer).name)
             if self.indexerid != -1:
                 self.deleteEpisode()
             return False
@@ -606,7 +606,7 @@ class TVEpisode(object):
                     try:
                         os.rename(nfoFile, nfoFile + ".old")
                     except Exception as e:
-                        sickrage.app.log.error(
+                        sickrage.app.log.warning(
                             "Failed to rename your episode's NFO file - you need to delete it or fix it: {}".format(e))
                     raise NoNFOException("Error in NFO format")
 
@@ -902,14 +902,14 @@ class TVEpisode(object):
             cur_result = self.rename_ep_file(cur_related_file, proper_related_path,
                                              absolute_current_path_no_ext_length + len(subfolder))
             if not cur_result:
-                sickrage.app.log.error(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
+                sickrage.app.log.warning(str(self.indexerid) + ": Unable to rename file " + cur_related_file)
 
         for cur_related_sub in related_subs:
             absolute_proper_subs_path = os.path.join(sickrage.app.config.subtitles_dir, self.formatted_filename())
             cur_result = self.rename_ep_file(cur_related_sub, absolute_proper_subs_path,
                                              absolute_current_path_no_ext_length)
             if not cur_result:
-                sickrage.app.log.error(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
+                sickrage.app.log.warning(str(self.indexerid) + ": Unable to rename file " + cur_related_sub)
 
         # save the ep
         with self.lock:
@@ -1392,7 +1392,7 @@ class TVEpisode(object):
             sickrage.app.log.info("Renaming file from %s to %s" % (cur_path, new_path))
             moveFile(cur_path, new_path)
         except (OSError, IOError) as e:
-            sickrage.app.log.error("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
+            sickrage.app.log.warning("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
             return False
 
         # clean up any old folders that are empty

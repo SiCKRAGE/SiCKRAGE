@@ -3928,6 +3928,9 @@ class ConfigBackupRestore(Config):
 
         return finalResult
 
+    def saveBackupRestore(self, **kwargs):
+        return self.redirect("/config/backuprestore/")
+
 
 @Route('/config/search(/?.*)')
 class ConfigSearch(Config):

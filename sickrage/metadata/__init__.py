@@ -383,7 +383,7 @@ class GenericMetadata(object):
 
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
@@ -427,7 +427,7 @@ class GenericMetadata(object):
 
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 
@@ -610,7 +610,7 @@ class GenericMetadata(object):
 
             chmodAsParent(image_path)
         except IOError as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(e))
             return False
 
@@ -650,7 +650,7 @@ class GenericMetadata(object):
             return None
 
         if image_type not in ('fanart', 'poster', 'series', 'poster_thumb', 'series_thumb'):
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Invalid image type " + str(image_type) + ", couldn't find it in the " + IndexerApi(
                     show_obj.indexer).name + " object")
             return
