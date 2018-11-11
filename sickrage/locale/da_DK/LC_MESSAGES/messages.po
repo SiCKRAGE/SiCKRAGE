@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 12:26-0800\n"
-"PO-Revision-Date: 2018-11-11 20:27\n"
+"POT-Creation-Date: 2018-11-11 12:48-0800\n"
+"PO-Revision-Date: 2018-11-11 20:49\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -622,9 +622,9 @@ msgstr "Vil du tilføje efterbehandlet episoder til MyList?"
 #: sickrage/core/webserver/views/config/search.mako:736
 #: sickrage/core/webserver/views/config/search.mako:813
 #: sickrage/core/webserver/views/config/search.mako:1043
-#: sickrage/core/webserver/views/config/subtitles.mako:206
-#: sickrage/core/webserver/views/config/subtitles.mako:256
-#: sickrage/core/webserver/views/config/subtitles.mako:313
+#: sickrage/core/webserver/views/config/subtitles.mako:209
+#: sickrage/core/webserver/views/config/subtitles.mako:259
+#: sickrage/core/webserver/views/config/subtitles.mako:316
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
 #: sickrage/core/webserver/views/manage/mass_edit.mako:291
@@ -1018,8 +1018,9 @@ msgstr "vise datoer og klokkeslæt i enten din tidszone eller viser netværk tid
 #: sickrage/core/webserver/views/config/postprocessing.mako:1380
 #: sickrage/core/webserver/views/config/postprocessing.mako:1394
 #: sickrage/core/webserver/views/config/search.mako:978
-#: sickrage/core/webserver/views/config/subtitles.mako:126
-#: sickrage/core/webserver/views/config/subtitles.mako:170
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+#: sickrage/core/webserver/views/config/subtitles.mako:129
+#: sickrage/core/webserver/views/config/subtitles.mako:173
 msgid "NOTE:"
 msgstr "BEMÆRK:"
 
@@ -3143,17 +3144,17 @@ msgid "Delete files left over from a failed download?"
 msgstr "Slette filer tilovers fra en mislykket download?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:380
-#: sickrage/core/webserver/views/config/subtitles.mako:156
+#: sickrage/core/webserver/views/config/subtitles.mako:159
 msgid "Extra Scripts"
 msgstr "Ekstra Scripts"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:393
-#: sickrage/core/webserver/views/config/subtitles.mako:173
+#: sickrage/core/webserver/views/config/subtitles.mako:176
 msgid "See"
 msgstr "Se"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:395
-#: sickrage/core/webserver/views/config/subtitles.mako:175
+#: sickrage/core/webserver/views/config/subtitles.mako:178
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -4386,55 +4387,59 @@ msgstr "Søg efter undertekster"
 msgid "Subtitle Languages"
 msgstr "Undertekstsprog"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:60
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+msgid "Leave empty to default language to English."
+msgstr ""
+
+#: sickrage/core/webserver/views/config/subtitles.mako:63
 msgid "Subtitles History"
 msgstr "Undertekster historie"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:66
+#: sickrage/core/webserver/views/config/subtitles.mako:69
 msgid "Log downloaded Subtitle on History page?"
 msgstr "Log downloadet undertitel på historie side?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:72
+#: sickrage/core/webserver/views/config/subtitles.mako:75
 msgid "Subtitles Multi-Language"
 msgstr "Undertekster multi sprog"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:78
+#: sickrage/core/webserver/views/config/subtitles.mako:81
 msgid "Append language codes to subtitle filenames?"
 msgstr "Føj sprogkoder til at tekste filnavne?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:84
+#: sickrage/core/webserver/views/config/subtitles.mako:87
 msgid "Embedded Subtitles"
 msgstr "Integrerede undertekster"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:90
+#: sickrage/core/webserver/views/config/subtitles.mako:93
 msgid "Ignore subtitles embedded inside video file?"
 msgstr "Ignorere undertekster indlejret inde i videofil?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "Warning:"
 msgstr "Advarsel:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "this will ignore <u>all</u> embedded subtitles for every video file!"
 msgstr "Dette vil ignorere <u>all</u> indlejret undertekster for hver video fil!"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:99
+#: sickrage/core/webserver/views/config/subtitles.mako:102
 msgid "Hearing Impaired Subtitles"
 msgstr "Hørehæmmede undertekster"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:105
+#: sickrage/core/webserver/views/config/subtitles.mako:108
 msgid "Download hearing impaired style subtitles?"
 msgstr "Download hørehæmmede stil undertekster?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:111
+#: sickrage/core/webserver/views/config/subtitles.mako:114
 msgid "Subtitle Directory"
 msgstr "Undertitel Register"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:124
+#: sickrage/core/webserver/views/config/subtitles.mako:127
 msgid "The directory where SickRage should store your"
 msgstr "Den mappe, hvor SickRage skal gemme din"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
@@ -4442,75 +4447,75 @@ msgstr "Den mappe, hvor SickRage skal gemme din"
 msgid "Subtitles"
 msgstr "Undertekster"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 msgid "files."
 msgstr "filer."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:126
+#: sickrage/core/webserver/views/config/subtitles.mako:129
 msgid "Leave empty if you want store subtitle in episode path."
 msgstr "Lad være tomt, hvis du vil gemme undertitel i episode sti."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:132
+#: sickrage/core/webserver/views/config/subtitles.mako:135
 msgid "Subtitle Find Frequency"
 msgstr "Undertitel Find frekvens"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:143
+#: sickrage/core/webserver/views/config/subtitles.mako:146
 msgid "1"
 msgstr "1"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:177
+#: sickrage/core/webserver/views/config/subtitles.mako:180
 msgid "for a script arguments description."
 msgstr "en script argumenter beskrivelse."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:180
+#: sickrage/core/webserver/views/config/subtitles.mako:183
 msgid "Additional scripts separated by"
 msgstr "Yderligere scripts adskilt af"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:183
+#: sickrage/core/webserver/views/config/subtitles.mako:186
 msgid "Scripts are called after each episode has searched and downloaded subtitles."
 msgstr "Scripts kaldes efter hver episode har søgt og downloadet subtitles."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:186
+#: sickrage/core/webserver/views/config/subtitles.mako:189
 msgid "For any scripted languages, include the interpreter executable before the script. See the following example:"
 msgstr "For enhver scriptbaserede sprog, omfatte tolk eksekverbare før scriptet. Se følgende eksempel:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:190
+#: sickrage/core/webserver/views/config/subtitles.mako:193
 msgid "For Windows:"
 msgstr "Windows:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:194
+#: sickrage/core/webserver/views/config/subtitles.mako:197
 msgid "For Linux:"
 msgstr "Til Linux:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:217
+#: sickrage/core/webserver/views/config/subtitles.mako:220
 msgid "Subtitle Plugins"
 msgstr "Undertitel Plugins"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:219
+#: sickrage/core/webserver/views/config/subtitles.mako:222
 msgid "Check off and drag the plugins into the order you want them to be used."
 msgstr "Check ud og trække plugins til den rækkefølge, du vil have dem til at blive brugt."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:220
+#: sickrage/core/webserver/views/config/subtitles.mako:223
 msgid "At least one plugin is required."
 msgstr "Der kræves mindst én plugin."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:221
+#: sickrage/core/webserver/views/config/subtitles.mako:224
 msgid "Web-scraping plugin"
 msgstr "Web skrabning plugin"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:266
+#: sickrage/core/webserver/views/config/subtitles.mako:269
 msgid "Subtitle Settings"
 msgstr "Indstillinger for undertekster"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:268
+#: sickrage/core/webserver/views/config/subtitles.mako:271
 msgid "Set user and password for each provider"
 msgstr "Sæt bruger og password for hver udbyder"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:277
+#: sickrage/core/webserver/views/config/subtitles.mako:280
 msgid "User Name"
 msgstr "Brugernavn"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:294
+#: sickrage/core/webserver/views/config/subtitles.mako:297
 msgid "Password"
 msgstr "Adgangskode"
 
@@ -6720,7 +6725,7 @@ msgstr "Stand til at tvinge en opdatering på scene undtagelser af showet."
 
 #: sickrage/core/webserver/views.py:1511
 msgid "Unable to force an update on scene numbering of the show."
-msgstr ""
+msgstr "Stand til at tvinge en opdatering på scene nummerering af showet."
 
 #: sickrage/core/webserver/views.py:1518
 msgid "{num_warnings:d} warning{plural} while saving changes:"

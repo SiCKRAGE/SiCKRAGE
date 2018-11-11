@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 12:26-0800\n"
-"PO-Revision-Date: 2018-11-11 20:28\n"
+"POT-Creation-Date: 2018-11-11 12:48-0800\n"
+"PO-Revision-Date: 2018-11-11 20:50\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -622,9 +622,9 @@ msgstr "你想要添加 MyList 爲发作吗？"
 #: sickrage/core/webserver/views/config/search.mako:736
 #: sickrage/core/webserver/views/config/search.mako:813
 #: sickrage/core/webserver/views/config/search.mako:1043
-#: sickrage/core/webserver/views/config/subtitles.mako:206
-#: sickrage/core/webserver/views/config/subtitles.mako:256
-#: sickrage/core/webserver/views/config/subtitles.mako:313
+#: sickrage/core/webserver/views/config/subtitles.mako:209
+#: sickrage/core/webserver/views/config/subtitles.mako:259
+#: sickrage/core/webserver/views/config/subtitles.mako:316
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
 #: sickrage/core/webserver/views/manage/mass_edit.mako:291
@@ -1018,8 +1018,9 @@ msgstr "在您的时区或显示网络时区中显示日期和时间"
 #: sickrage/core/webserver/views/config/postprocessing.mako:1380
 #: sickrage/core/webserver/views/config/postprocessing.mako:1394
 #: sickrage/core/webserver/views/config/search.mako:978
-#: sickrage/core/webserver/views/config/subtitles.mako:126
-#: sickrage/core/webserver/views/config/subtitles.mako:170
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+#: sickrage/core/webserver/views/config/subtitles.mako:129
+#: sickrage/core/webserver/views/config/subtitles.mako:173
 msgid "NOTE:"
 msgstr "注意："
 
@@ -3143,17 +3144,17 @@ msgid "Delete files left over from a failed download?"
 msgstr "删除遗留下来一个失败的下载的文件吗？"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:380
-#: sickrage/core/webserver/views/config/subtitles.mako:156
+#: sickrage/core/webserver/views/config/subtitles.mako:159
 msgid "Extra Scripts"
 msgstr "额外的脚本"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:393
-#: sickrage/core/webserver/views/config/subtitles.mako:173
+#: sickrage/core/webserver/views/config/subtitles.mako:176
 msgid "See"
 msgstr "请参见"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:395
-#: sickrage/core/webserver/views/config/subtitles.mako:175
+#: sickrage/core/webserver/views/config/subtitles.mako:178
 msgid "Wiki"
 msgstr "维基"
 
@@ -4386,55 +4387,59 @@ msgstr "搜索字幕"
 msgid "Subtitle Languages"
 msgstr "字幕语言"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:60
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+msgid "Leave empty to default language to English."
+msgstr ""
+
+#: sickrage/core/webserver/views/config/subtitles.mako:63
 msgid "Subtitles History"
 msgstr "字幕历史"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:66
+#: sickrage/core/webserver/views/config/subtitles.mako:69
 msgid "Log downloaded Subtitle on History page?"
 msgstr "日志历史页面上下载字幕吗？"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:72
+#: sickrage/core/webserver/views/config/subtitles.mako:75
 msgid "Subtitles Multi-Language"
 msgstr "字幕多语言"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:78
+#: sickrage/core/webserver/views/config/subtitles.mako:81
 msgid "Append language codes to subtitle filenames?"
 msgstr "追加字幕文件名的语言代码？"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:84
+#: sickrage/core/webserver/views/config/subtitles.mako:87
 msgid "Embedded Subtitles"
 msgstr "嵌入式的字幕"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:90
+#: sickrage/core/webserver/views/config/subtitles.mako:93
 msgid "Ignore subtitles embedded inside video file?"
 msgstr "忽略嵌入的视频文件的字幕？"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "Warning:"
 msgstr "警告："
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "this will ignore <u>all</u> embedded subtitles for every video file!"
 msgstr "这将忽略每个视频文件的 <u>all</u> 嵌入式字幕 ！"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:99
+#: sickrage/core/webserver/views/config/subtitles.mako:102
 msgid "Hearing Impaired Subtitles"
 msgstr "听力障碍字幕"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:105
+#: sickrage/core/webserver/views/config/subtitles.mako:108
 msgid "Download hearing impaired style subtitles?"
 msgstr "下载听力受损风格字幕吗？"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:111
+#: sickrage/core/webserver/views/config/subtitles.mako:114
 msgid "Subtitle Directory"
 msgstr "副标题目录"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:124
+#: sickrage/core/webserver/views/config/subtitles.mako:127
 msgid "The directory where SickRage should store your"
 msgstr "SickRage 应该在哪里存储的目录你"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
@@ -4442,75 +4447,75 @@ msgstr "SickRage 应该在哪里存储的目录你"
 msgid "Subtitles"
 msgstr "字幕"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 msgid "files."
 msgstr "文件。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:126
+#: sickrage/core/webserver/views/config/subtitles.mako:129
 msgid "Leave empty if you want store subtitle in episode path."
 msgstr "保留为空，如果你想要存储集路径中的字幕。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:132
+#: sickrage/core/webserver/views/config/subtitles.mako:135
 msgid "Subtitle Find Frequency"
 msgstr "副标题查找频率"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:143
+#: sickrage/core/webserver/views/config/subtitles.mako:146
 msgid "1"
 msgstr "1"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:177
+#: sickrage/core/webserver/views/config/subtitles.mako:180
 msgid "for a script arguments description."
 msgstr "有关脚本的参数说明。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:180
+#: sickrage/core/webserver/views/config/subtitles.mako:183
 msgid "Additional scripts separated by"
 msgstr "隔开的附加脚本"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:183
+#: sickrage/core/webserver/views/config/subtitles.mako:186
 msgid "Scripts are called after each episode has searched and downloaded subtitles."
 msgstr "在每一集有搜索并下载字幕之后调用脚本。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:186
+#: sickrage/core/webserver/views/config/subtitles.mako:189
 msgid "For any scripted languages, include the interpreter executable before the script. See the following example:"
 msgstr "对于任何脚本语言，包括解释器可执行脚本之前。请参阅下面的示例："
 
-#: sickrage/core/webserver/views/config/subtitles.mako:190
+#: sickrage/core/webserver/views/config/subtitles.mako:193
 msgid "For Windows:"
 msgstr "窗口："
 
-#: sickrage/core/webserver/views/config/subtitles.mako:194
+#: sickrage/core/webserver/views/config/subtitles.mako:197
 msgid "For Linux:"
 msgstr "Linux:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:217
+#: sickrage/core/webserver/views/config/subtitles.mako:220
 msgid "Subtitle Plugins"
 msgstr "字幕插件"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:219
+#: sickrage/core/webserver/views/config/subtitles.mako:222
 msgid "Check off and drag the plugins into the order you want them to be used."
 msgstr "核对和将插件拖到你想要他们要使用的顺序。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:220
+#: sickrage/core/webserver/views/config/subtitles.mako:223
 msgid "At least one plugin is required."
 msgstr "至少一个插件是必需的。"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:221
+#: sickrage/core/webserver/views/config/subtitles.mako:224
 msgid "Web-scraping plugin"
 msgstr "网页抓取的插件"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:266
+#: sickrage/core/webserver/views/config/subtitles.mako:269
 msgid "Subtitle Settings"
 msgstr "字幕设置"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:268
+#: sickrage/core/webserver/views/config/subtitles.mako:271
 msgid "Set user and password for each provider"
 msgstr "为每个提供程序设置用户和密码"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:277
+#: sickrage/core/webserver/views/config/subtitles.mako:280
 msgid "User Name"
 msgstr "用户名称"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:294
+#: sickrage/core/webserver/views/config/subtitles.mako:297
 msgid "Password"
 msgstr "密码"
 
@@ -6720,7 +6725,7 @@ msgstr "无法强制更新现场异常时的显示。"
 
 #: sickrage/core/webserver/views.py:1511
 msgid "Unable to force an update on scene numbering of the show."
-msgstr ""
+msgstr "无法强制更新对场景的显示编号。"
 
 #: sickrage/core/webserver/views.py:1518
 msgid "{num_warnings:d} warning{plural} while saving changes:"

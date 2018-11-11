@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 12:26-0800\n"
-"PO-Revision-Date: 2018-11-11 20:27\n"
+"POT-Creation-Date: 2018-11-11 12:48-0800\n"
+"PO-Revision-Date: 2018-11-11 20:49\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -622,9 +622,9 @@ msgstr "Szeretné hozzáadni a kottává epizódok a MyList?"
 #: sickrage/core/webserver/views/config/search.mako:736
 #: sickrage/core/webserver/views/config/search.mako:813
 #: sickrage/core/webserver/views/config/search.mako:1043
-#: sickrage/core/webserver/views/config/subtitles.mako:206
-#: sickrage/core/webserver/views/config/subtitles.mako:256
-#: sickrage/core/webserver/views/config/subtitles.mako:313
+#: sickrage/core/webserver/views/config/subtitles.mako:209
+#: sickrage/core/webserver/views/config/subtitles.mako:259
+#: sickrage/core/webserver/views/config/subtitles.mako:316
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
 #: sickrage/core/webserver/views/manage/mass_edit.mako:291
@@ -1018,8 +1018,9 @@ msgstr "dátumok és időpontok megjelenítésére, az időzóna vagy a mutat h�
 #: sickrage/core/webserver/views/config/postprocessing.mako:1380
 #: sickrage/core/webserver/views/config/postprocessing.mako:1394
 #: sickrage/core/webserver/views/config/search.mako:978
-#: sickrage/core/webserver/views/config/subtitles.mako:126
-#: sickrage/core/webserver/views/config/subtitles.mako:170
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+#: sickrage/core/webserver/views/config/subtitles.mako:129
+#: sickrage/core/webserver/views/config/subtitles.mako:173
 msgid "NOTE:"
 msgstr "MEGJEGYZÉS:"
 
@@ -3143,17 +3144,17 @@ msgid "Delete files left over from a failed download?"
 msgstr "Töröl meghagy-ból egy megbukik letölt?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:380
-#: sickrage/core/webserver/views/config/subtitles.mako:156
+#: sickrage/core/webserver/views/config/subtitles.mako:159
 msgid "Extra Scripts"
 msgstr "Extra szkriptek"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:393
-#: sickrage/core/webserver/views/config/subtitles.mako:173
+#: sickrage/core/webserver/views/config/subtitles.mako:176
 msgid "See"
 msgstr "Lásd:"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:395
-#: sickrage/core/webserver/views/config/subtitles.mako:175
+#: sickrage/core/webserver/views/config/subtitles.mako:178
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -4386,55 +4387,59 @@ msgstr "Feliratok keresés"
 msgid "Subtitle Languages"
 msgstr "Felirat nyelvek"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:60
+#: sickrage/core/webserver/views/config/subtitles.mako:57
+msgid "Leave empty to default language to English."
+msgstr ""
+
+#: sickrage/core/webserver/views/config/subtitles.mako:63
 msgid "Subtitles History"
 msgstr "Feliratok története"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:66
+#: sickrage/core/webserver/views/config/subtitles.mako:69
 msgid "Log downloaded Subtitle on History page?"
 msgstr "Napló történelem oldal letöltött felirat?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:72
+#: sickrage/core/webserver/views/config/subtitles.mako:75
 msgid "Subtitles Multi-Language"
 msgstr "Feliratok több nyelven"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:78
+#: sickrage/core/webserver/views/config/subtitles.mako:81
 msgid "Append language codes to subtitle filenames?"
 msgstr "Hozzáfűzés a alcím filenév nyelvkódokat?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:84
+#: sickrage/core/webserver/views/config/subtitles.mako:87
 msgid "Embedded Subtitles"
 msgstr "Beágyazott feliratok"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:90
+#: sickrage/core/webserver/views/config/subtitles.mako:93
 msgid "Ignore subtitles embedded inside video file?"
 msgstr "Figyelmen kívül hagyja a feliratok beágyazott video reszelő?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "Warning:"
 msgstr "Figyelmeztetés:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:92
+#: sickrage/core/webserver/views/config/subtitles.mako:95
 msgid "this will ignore <u>all</u> embedded subtitles for every video file!"
 msgstr "Ez akarat nem vesz tudomásul minden videó fájl <u>all</u> beágyazott feliratok!"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:99
+#: sickrage/core/webserver/views/config/subtitles.mako:102
 msgid "Hearing Impaired Subtitles"
 msgstr "A Hallássérülés feliratok"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:105
+#: sickrage/core/webserver/views/config/subtitles.mako:108
 msgid "Download hearing impaired style subtitles?"
 msgstr "Letöltés hallássérülteknek stílus feliratok?"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:111
+#: sickrage/core/webserver/views/config/subtitles.mako:114
 msgid "Subtitle Directory"
 msgstr "Könyvtár feliratok"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:124
+#: sickrage/core/webserver/views/config/subtitles.mako:127
 msgid "The directory where SickRage should store your"
 msgstr "A könyvtár, ahol SickRage kell tárolni a"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
@@ -4442,75 +4447,75 @@ msgstr "A könyvtár, ahol SickRage kell tárolni a"
 msgid "Subtitles"
 msgstr "Feliratok"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:125
+#: sickrage/core/webserver/views/config/subtitles.mako:128
 msgid "files."
 msgstr "fájlok."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:126
+#: sickrage/core/webserver/views/config/subtitles.mako:129
 msgid "Leave empty if you want store subtitle in episode path."
 msgstr "Hagyja üresen, ha szeretné, hogy a felirat epizód elérési útját tárolja."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:132
+#: sickrage/core/webserver/views/config/subtitles.mako:135
 msgid "Subtitle Find Frequency"
 msgstr "Felirat keresés gyakorisága"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:143
+#: sickrage/core/webserver/views/config/subtitles.mako:146
 msgid "1"
 msgstr "1"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:177
+#: sickrage/core/webserver/views/config/subtitles.mako:180
 msgid "for a script arguments description."
 msgstr "script argumentumok leírását."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:180
+#: sickrage/core/webserver/views/config/subtitles.mako:183
 msgid "Additional scripts separated by"
 msgstr "További szkriptek elválasztva"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:183
+#: sickrage/core/webserver/views/config/subtitles.mako:186
 msgid "Scripts are called after each episode has searched and downloaded subtitles."
 msgstr "Parancsfájlok után minden egyes epizód keresett és letöltött feliratok nevezzük."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:186
+#: sickrage/core/webserver/views/config/subtitles.mako:189
 msgid "For any scripted languages, include the interpreter executable before the script. See the following example:"
 msgstr "Bármely parancsnyelveket tartalmaznia kell a futtatható a script előtt tolmács. Lásd az alábbi példát:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:190
+#: sickrage/core/webserver/views/config/subtitles.mako:193
 msgid "For Windows:"
 msgstr "A Windows:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:194
+#: sickrage/core/webserver/views/config/subtitles.mako:197
 msgid "For Linux:"
 msgstr "A Linux:"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:217
+#: sickrage/core/webserver/views/config/subtitles.mako:220
 msgid "Subtitle Plugins"
 msgstr "Felirat dugó"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:219
+#: sickrage/core/webserver/views/config/subtitles.mako:222
 msgid "Check off and drag the plugins into the order you want them to be used."
 msgstr "Ellenőrizze le, és húzza a dugó, a rend, azt szeretné, hogy kell használni."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:220
+#: sickrage/core/webserver/views/config/subtitles.mako:223
 msgid "At least one plugin is required."
 msgstr "Legalább egy plugin szükség."
 
-#: sickrage/core/webserver/views/config/subtitles.mako:221
+#: sickrage/core/webserver/views/config/subtitles.mako:224
 msgid "Web-scraping plugin"
 msgstr "Webes kaparással plugin"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:266
+#: sickrage/core/webserver/views/config/subtitles.mako:269
 msgid "Subtitle Settings"
 msgstr "Felirat beállítás"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:268
+#: sickrage/core/webserver/views/config/subtitles.mako:271
 msgid "Set user and password for each provider"
 msgstr "Állítsa be a felhasználó és jelszó részére minden szolgáltató"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:277
+#: sickrage/core/webserver/views/config/subtitles.mako:280
 msgid "User Name"
 msgstr "Felhasználói név"
 
-#: sickrage/core/webserver/views/config/subtitles.mako:294
+#: sickrage/core/webserver/views/config/subtitles.mako:297
 msgid "Password"
 msgstr "Jelszó"
 
@@ -6720,7 +6725,7 @@ msgstr "Nem lehet kényszeríteni egy frissítést a jelenet kivételek a show."
 
 #: sickrage/core/webserver/views.py:1511
 msgid "Unable to force an update on scene numbering of the show."
-msgstr ""
+msgstr "Nem lehet kényszeríteni egy frissítést a jelenet számozása a show."
 
 #: sickrage/core/webserver/views.py:1518
 msgid "{num_warnings:d} warning{plural} while saving changes:"

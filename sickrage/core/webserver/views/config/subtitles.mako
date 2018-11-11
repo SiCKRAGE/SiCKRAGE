@@ -53,6 +53,9 @@
                             <div class="input-group">
                                 <div id="subtitles_languages"></div>
                             </div>
+                            <label class="text-info" for="subtitles_languages">
+                                <b>${_('NOTE:')}</b> ${_('Leave empty to default language to English.')}
+                            </label>
                         </div>
                     </div>
                     <div class="form-row form-group">
