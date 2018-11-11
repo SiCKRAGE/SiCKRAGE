@@ -288,7 +288,7 @@
                                 <a class="dropdown-item" href="#" id="changelog">
                                     <i class="fas fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>
-                                <a class="dropdown-item" href="https://www.sickrage.ca/forums/donate" rel="noreferrer"
+                                <a class="dropdown-item" href="https://www.paypal.me/sickrage" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
                                     <i class="fas fa-donate"></i>&nbsp;${_('Donate')}
                                 </a>
