@@ -323,7 +323,7 @@ class TIVOMetadata(GenericMetadata):
             chmodAsParent(nfo_file_path)
 
         except EnvironmentError as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 

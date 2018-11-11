@@ -424,7 +424,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             nfo_file.close()
             chmodAsParent(nfo_file_path)
         except IOError as e:
-            sickrage.app.log.error(
+            sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
             return False
 

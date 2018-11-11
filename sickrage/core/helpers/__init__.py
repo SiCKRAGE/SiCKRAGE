@@ -553,7 +553,7 @@ def make_dirs(path):
                 sickrage.app.log.debug("Folder %s didn't exist, creating it" % path)
                 os.makedirs(path)
             except (OSError, IOError) as e:
-                sickrage.app.log.error("Failed creating %s : %r" % (path, e))
+                sickrage.app.log.warning("Failed creating %s : %r" % (path, e))
                 return False
 
         # not Windows, create all missing folders and set permissions

@@ -1,6 +1,7 @@
 # Changelog
 
-- * af1611e - 2018-11-10: Refactored misc errors to warnings. 
+- * 9ca02ed - 2018-11-10: Refactored misc errors to warnings. 
+- * 4127ed3 - 2018-11-10: Refactored misc errors to warnings. 
 - * 78c64b1 - 2018-11-10: Release v9.4.26 
 - * 9e4dc5f - 2018-11-10: Fixed issue with file browser and clicking on files not properly choosing file and closing browser dialog. 
 - * 0972ec5 - 2018-11-10: Removed restoring of application ID from backup/restore functions 
