@@ -404,8 +404,7 @@ class ApiCall(ApiHandler):
         elif arg_type == "ignore":
             pass
         else:
-            sickrage.app.log.error(
-                'Invalid param type: "{}" can not be checked. Ignoring it.'.format(str(arg_type)))
+            sickrage.app.log.error('Invalid param type: "{}" can not be checked. Ignoring it.'.format(str(arg_type)))
 
         if error:
             # this is a real ApiError !!

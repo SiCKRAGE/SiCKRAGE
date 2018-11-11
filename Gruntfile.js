@@ -229,6 +229,7 @@ module.exports = function (grunt) {
         grunt.log.writeln(('Packaging Pre-Release v' + newVersion).magenta);
 
         const tasks = [
+            'changelog',
             'webpack:dev',
             'sync_trans', // sync translations with crowdin
             'exec:git_commit:Pre-Release v' + newVersion,
@@ -265,8 +266,9 @@ module.exports = function (grunt) {
         grunt.log.writeln(('Packaging Release v' + newVersion).magenta);
 
         const tasks = [
+            'changelog',
             'webpack:prod',
-            //'sync_trans', // sync translations with crowdin
+            'sync_trans', // sync translations with crowdin
             'exec:git_commit:Release v' + newVersion,
             'exec:git_flow_release_start:' + newVersion,
             'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,

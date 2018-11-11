@@ -56,7 +56,7 @@ def getSeasonNZBs(name, urlData, season):
     if sceneNameMatch:
         showName, qualitySection, groupName = sceneNameMatch.groups()
     else:
-        sickrage.app.log.error("Unable to parse " + name + " into a scene name. If it's a valid one log a bug.")
+        sickrage.app.log.error("Unable to parse " + name + " into a scene name. If it's a valid, log a bug.")
         return {}, ''
 
     regex = '(' + re.escape(showName) + '\.S%02d(?:[E0-9]+)\.[\w\._]+\-\w+' % season + ')'
@@ -107,7 +107,7 @@ def saveNZB(nzbName, nzbString):
             nzb_fh.write(nzbString)
 
     except EnvironmentError as e:
-        sickrage.app.log.error("Unable to save NZB: {}".format(e))
+        sickrage.app.log.warning("Unable to save NZB: {}".format(e))
 
 
 def stripNS(element, ns):

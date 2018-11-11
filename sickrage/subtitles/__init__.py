@@ -227,7 +227,7 @@ def get_subtitles_path(video_path):
         new_subtitles_path = os.path.join(os.path.dirname(video_path), sickrage.app.config.subtitles_dir)
         dir_exists = makeDir(new_subtitles_path)
         if not dir_exists:
-            sickrage.app.log.error('Unable to create subtitles folder {}'.format(new_subtitles_path))
+            sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
         else:
             chmodAsParent(new_subtitles_path)
     else:

@@ -818,8 +818,7 @@ class TVShow(object):
                 try:
                     curEp = self.getEpisode(season, episode, filename)
                 except EpisodeNotFoundException:
-                    sickrage.app.log.error(
-                        str(self.indexerid) + ": Unable to figure out what this file is, skipping")
+                    sickrage.app.log.error("{}: Unable to figure out what this file is, skipping".format(self.indexerid))
                     continue
 
             else:
@@ -1212,9 +1211,8 @@ class TVShow(object):
                 episode.downloadSubtitles()
 
         except Exception:
-            sickrage.app.log.debug(
+            sickrage.app.log.error(
                 "%s: Error occurred when downloading subtitles for %s" % (self.indexerid, self.name))
-            sickrage.app.log.error(traceback.format_exc())
 
     def saveToDB(self, force_save=False):
         if not self.dirty and not force_save:

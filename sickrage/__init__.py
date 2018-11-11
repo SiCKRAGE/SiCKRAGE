@@ -316,8 +316,7 @@ def main():
         # start app
         app.start()
     except (SystemExit, KeyboardInterrupt):
-        if app:
-            app.shutdown()
+        if app: app.shutdown()
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):

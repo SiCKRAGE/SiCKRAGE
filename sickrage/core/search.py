@@ -73,8 +73,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
             is_proper = True if endStatus == SNATCHED_PROPER else False
             dlResult = NZBGet.sendNZB(result, is_proper)
         else:
-            sickrage.app.log.error(
-                "Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
+            sickrage.app.log.error("Unknown NZB action specified in config: " + sickrage.app.config.nzb_method)
     elif result.resultType in ("torrent", "torznab"):
         # add public trackers to torrent result
         if not result.provider.private:
@@ -381,8 +380,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                     sickrage.app.log.warning("Authentication error: {}".format(e))
                     break
                 except Exception as e:
-                    sickrage.app.log.error(
-                        "Error while searching " + providerObj.name + ", skipping: {}".format(e))
+                    sickrage.app.log.error("Error while searching " + providerObj.name + ", skipping: {}".format(e))
                     break
                 finally:
                     threading.currentThread().setName(origThreadName)
