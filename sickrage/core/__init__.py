@@ -204,14 +204,14 @@ class Core(object):
         # migrate old database file names to new ones
         if os.path.isfile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db'))):
             if os.path.isfile(os.path.join(self.data_dir, 'sickrage.db')):
-                helpers.moveFile(os.path.join(self.data_dir, 'sickrage.db'),
-                                 os.path.join(self.data_dir, '{}.bak-{}'
+                helpers.move_file(os.path.join(self.data_dir, 'sickrage.db'),
+                                  os.path.join(self.data_dir, '{}.bak-{}'
                                               .format('sickrage.db',
                                                       datetime.datetime.now().strftime(
                                                           '%Y%m%d_%H%M%S'))))
 
-            helpers.moveFile(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
-                             os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
+            helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
+                              os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
         # load config
         self.config.load()

@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import base64
 import ctypes
 import datetime
+import errno
 import io
 import os
 import platform
@@ -435,39 +436,42 @@ def list_media_files(path):
     return files
 
 
-def copyFile(srcFile, destFile):
+def copy_file(src_file, dest_file):
     """
     Copy a file from source to destination
 
-    :param srcFile: Path of source file
-    :param destFile: Path of destination file
+    :param src_file: Path of source file
+    :param dest_file: Path of destination file
     """
 
     try:
-        shutil.copyfile(srcFile, destFile)
-    except Exception as e:
-        sickrage.app.log.warning(str(e))
+        shutil.copyfile(src_file, dest_file)
+    except OSError as e:
+        if e.errno == errno.ENOSPC:
+            sickrage.app.log.warning(e)
+        else:
+            sickrage.app.log.error(e)
     else:
         try:
-            shutil.copymode(srcFile, destFile)
+            shutil.copymode(src_file, dest_file)
         except OSError:
             pass
 
 
-def moveFile(srcFile, destFile):
+def move_file(src_file, dest_file):
     """
     Move a file from source to destination
 
-    :param srcFile: Path of source file
-    :param destFile: Path of destination file
+    :param src_file: Path of source file
+    :param dest_file: Path of destination file
     """
 
     try:
-        shutil.move(srcFile, destFile)
-        fixSetGroupID(destFile)
+        shutil.move(src_file, dest_file)
+        fix_set_group_id(dest_file)
     except OSError:
-        copyFile(srcFile, destFile)
-        os.unlink(srcFile)
+        copy_file(src_file, dest_file)
+        os.unlink(src_file)
 
 
 def link(src, dst):
@@ -486,21 +490,27 @@ def link(src, dst):
         os.link(src, dst)
 
 
-def hardlinkFile(srcFile, destFile):
+def hardlink_file(src_file, dest_file):
     """
     Create a hard-link (inside filesystem link) between source and destination
 
-    :param srcFile: Source file
-    :param destFile: Destination file
+    :param src_file: Source file
+    :param dest_file: Destination file
     """
 
     try:
-        link(srcFile, destFile)
-        fixSetGroupID(destFile)
-    except Exception as e:
-        sickrage.app.log.warning("Failed to create hardlink of %s at %s. Error: %r. Copying instead"
-                                 % (srcFile, destFile, e))
-        copyFile(srcFile, destFile)
+        link(src_file, dest_file)
+        fix_set_group_id(dest_file)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            # File exists. Don't fallback to copy
+            sickrage.app.log.warning('Failed to create hardlink of {src} at {dest}. Error: {error!r}'.format(
+                **{'src': src_file, 'dest': dest_file, 'error': e}))
+        else:
+            sickrage.app.log.warning(
+                "Failed to create hardlink of {src} at {dest}. Error: {error!r}. Copying instead".format(
+                    **{'src': src_file, 'dest': dest_file, 'error': e}))
+            copy_file(src_file, dest_file)
 
 
 def symlink(src, dst):
@@ -519,23 +529,28 @@ def symlink(src, dst):
         os.symlink(src, dst)
 
 
-def moveAndSymlinkFile(srcFile, destFile):
+def move_and_symlink_file(src_file, dest_file):
     """
     Move a file from source to destination, then create a symlink back from destination from source. If this fails, copy
     the file from source to destination
 
-    :param srcFile: Source file
-    :param destFile: Destination file
+    :param src_file: Source file
+    :param dest_file: Destination file
     """
 
     try:
-        shutil.move(srcFile, destFile)
-        fixSetGroupID(destFile)
-        symlink(destFile, srcFile)
-    except Exception as e:
-        sickrage.app.log.warning("Failed to create symlink of %s at %s. Error: %r. Copying instead"
-                                 % (srcFile, destFile, e))
-        copyFile(srcFile, destFile)
+        shutil.move(src_file, dest_file)
+        fix_set_group_id(dest_file)
+        symlink(dest_file, src_file)
+    except OSError as e:
+        if e.errno == errno.EEXIST:
+            # File exists. Don't fallback to copy
+            sickrage.app.log.warning('Failed to create symlink of {src} at {dest}. Error: {error!r}'.format(
+                **{'src': src_file, 'dest': dest_file, 'error': e}))
+        else:
+            sickrage.app.log.warning("Failed to create symlink of {src} at {dest}. Error: {error!r}. Copying instead".format(
+                            **{'src': src_file, 'dest': dest_file, 'error': e}))
+            copy_file(src_file, dest_file)
 
 
 def make_dirs(path):
@@ -573,7 +588,7 @@ def make_dirs(path):
                     sickrage.app.log.debug("Folder %s didn't exist, creating it" % sofar)
                     os.mkdir(sofar)
                     # use normpath to remove end separator, otherwise checks permissions against itself
-                    chmodAsParent(os.path.normpath(sofar))
+                    chmod_as_parent(os.path.normpath(sofar))
                     # do the library update for synoindex
                     sickrage.app.notifier_providers['synoindex'].addFolder(sofar)
                 except (OSError, IOError) as e:
@@ -621,7 +636,7 @@ def delete_empty_folders(check_empty_dir, keep_dir=None):
         pass
 
 
-def fileBitFilter(mode):
+def file_bit_filter(mode):
     """
     Strip special filesystem bits from file
 
@@ -636,9 +651,10 @@ def fileBitFilter(mode):
     return mode
 
 
-def chmodAsParent(childPath):
+def chmod_as_parent(child_path):
     """
     Retain permissions of parent for childs
+
     (Does not work for Windows hosts)
 
     :param childPath: Child Path to change permissions to sync from parent
@@ -647,82 +663,85 @@ def chmodAsParent(childPath):
     if os.name == 'nt' or os.name == 'ce':
         return
 
-    parentPath = os.path.dirname(childPath)
+    parent_path = os.path.dirname(child_path)
 
-    if not parentPath:
-        sickrage.app.log.debug("No parent path provided in " + childPath + ", unable to get permissions from it")
+    if not parent_path:
+        sickrage.app.log.debug("No parent path provided in " + child_path + ", unable to get permissions from it")
         return
 
-    childPath = os.path.join(parentPath, os.path.basename(childPath))
+    child_path = os.path.join(parent_path, os.path.basename(child_path))
+    if not os.path.exists(child_path):
+        return
 
-    parentPathStat = os.stat(parentPath)
-    parentMode = stat.S_IMODE(parentPathStat[stat.ST_MODE])
+    parent_path_stat = os.stat(parent_path)
+    parent_mode = stat.S_IMODE(parent_path_stat[stat.ST_MODE])
 
-    childPathStat = os.stat(childPath)
-    childPath_mode = stat.S_IMODE(childPathStat[stat.ST_MODE])
+    child_path_stat = os.stat(child_path)
+    child_path_mode = stat.S_IMODE(child_path_stat[stat.ST_MODE])
 
-    if os.path.isfile(childPath):
-        childMode = fileBitFilter(parentMode)
+    if os.path.isfile(child_path) and sickrage.app.config.strip_special_file_bits:
+        child_mode = file_bit_filter(parent_mode)
     else:
-        childMode = parentMode
+        child_mode = parent_mode
 
-    if childPath_mode == childMode:
+    if child_path_mode == child_mode:
         return
 
-    childPath_owner = childPathStat.st_uid
+    child_path_owner = child_path_stat.st_uid
     user_id = os.geteuid()
 
-    if user_id != 0 and user_id != childPath_owner:
-        sickrage.app.log.debug("Not running as root or owner of " + childPath + ", not trying to set permissions")
+    if user_id not in (0, child_path_owner):
+        sickrage.app.log.debug("Not running as root or owner of " + child_path + ", not trying to set permissions")
         return
 
     try:
-        os.chmod(childPath, childMode)
+        os.chmod(child_path, child_mode)
         sickrage.app.log.debug(
-            "Setting permissions for %s to %o as parent directory has %o" % (childPath, childMode, parentMode))
+            "Setting permissions for %s to %o as parent directory has %o" % (child_path, child_mode, parent_mode))
     except OSError:
-        sickrage.app.log.debug("Failed to set permission for %s to %o" % (childPath, childMode))
+        sickrage.app.log.debug("Failed to set permission for %s to %o" % (child_path, child_mode))
 
 
-def fixSetGroupID(childPath):
+def fix_set_group_id(child_path):
     """
-    Inherid SGID from parent
+    Inherit SGID from parent
+
     (does not work on Windows hosts)
 
-    :param childPath: Path to inherit SGID permissions from parent
+    :param child_path: Path to inherit SGID permissions from parent
     """
 
     if os.name == 'nt' or os.name == 'ce':
         return
 
-    parentPath = os.path.dirname(childPath)
-    parentStat = os.stat(parentPath)
-    parentMode = stat.S_IMODE(parentStat[stat.ST_MODE])
+    parent_path = os.path.dirname(child_path)
+    parent_stat = os.stat(parent_path)
+    parent_mode = stat.S_IMODE(parent_stat[stat.ST_MODE])
 
-    childPath = os.path.join(parentPath, os.path.basename(childPath))
+    child_path = os.path.join(parent_path, os.path.basename(child_path))
 
-    if parentMode & stat.S_ISGID:
-        parentGID = parentStat[stat.ST_GID]
-        childStat = os.stat(childPath)
-        childGID = childStat[stat.ST_GID]
+    if parent_mode & stat.S_ISGID:
+        parent_gid = parent_stat[stat.ST_GID]
+        child_stat = os.stat(child_path)
+        child_gid = child_stat[stat.ST_GID]
 
-        if childGID == parentGID:
+        if child_gid == parent_gid:
             return
 
-        childPath_owner = childStat.st_uid
+        child_path_owner = child_stat.st_uid
         user_id = os.geteuid()
 
-        if user_id != 0 and user_id != childPath_owner:
+        if user_id not in (0, child_path_owner):
             sickrage.app.log.debug(
-                "Not running as root or owner of {}, not trying to set the set-group-ID".format(childPath))
+                "Not running as root or owner of {}, not trying to set the set-group-ID".format(child_path))
             return
 
         try:
-            os.chown(childPath, -1, parentGID)  # @UndefinedVariable - only available on UNIX
-            sickrage.app.log.debug("Respecting the set-group-ID bit on the parent directory for {}".format(childPath))
+            os.chown(child_path, -1, parent_gid)
+            sickrage.app.log.debug("Respecting the set-group-ID bit on the parent directory for {}".format(child_path))
         except OSError:
             sickrage.app.log.error("Failed to respect the set-group-ID bit on the parent directory for {} (setting "
-                                   "group ID {})".format(childPath, parentGID))
+                                   "group ID {})".format(child_path, parent_gid))
 
 
 def sanitizeSceneName(name, anime=False):
@@ -948,7 +967,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
                 return tail or os.path.basename(head)
 
             bakFilename = '{0}-{1}'.format(path_leaf(targetDir), datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
-            moveFile(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
+            move_file(targetDir, os.path.join(os.path.dirname(targetDir), bakFilename))
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
@@ -1029,26 +1048,26 @@ def restoreSR(srcDir, dstDir):
 
             if os.path.exists(srcFile):
                 if os.path.isfile(dstFile):
-                    moveFile(dstFile, bakFile)
-                moveFile(srcFile, dstFile)
+                    move_file(dstFile, bakFile)
+                move_file(srcFile, dstFile)
 
         # databse
         if os.path.exists(os.path.join(srcDir, 'database')):
             if os.path.exists(os.path.join(dstDir, 'database')):
-                moveFile(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
-                                                                        .format('database',
+                move_file(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
+                                                                         .format('database',
                                                                                 datetime.datetime.now().strftime(
                                                                                     '%Y%m%d_%H%M%S'))))
-            moveFile(os.path.join(srcDir, 'database'), dstDir)
+            move_file(os.path.join(srcDir, 'database'), dstDir)
 
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
-                moveFile(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
-                                                                     .format('cache',
+                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
+                                                                      .format('cache',
                                                                              datetime.datetime.now().strftime(
                                                                                  '%Y%m%d_%H%M%S'))))
-            moveFile(os.path.join(srcDir, 'cache'), dstDir)
+            move_file(os.path.join(srcDir, 'cache'), dstDir)
 
         return True
     except Exception as e:
@@ -1357,7 +1376,7 @@ def restoreVersionedFile(backup_file, version):
         sickrage.app.log.debug("Trying to backup %s to %s.r%s before restoring backup"
                                % (new_file, new_file, version))
 
-        moveFile(new_file, new_file + '.' + 'r' + str(version))
+        move_file(new_file, new_file + '.' + 'r' + str(version))
     except Exception as e:
         sickrage.app.log.warning("Error while trying to backup file %s before proceeding with restore: %r"
                                  % (restore_file, e))

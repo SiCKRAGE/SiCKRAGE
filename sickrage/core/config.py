@@ -433,6 +433,7 @@ class Config(object):
         self.calendar_icons = False
         self.no_restart = False
         self.allowed_video_file_exts = []
+        self.strip_special_file_bits = False
         self.thetvdb_apitoken = ""
         self.trakt_api_key = '5c65f55e11d48c35385d9e8670615763a605fad28374c8ae553a7b7a50651ddd'
         self.trakt_api_secret = 'b53e32045ac122a445ef163e6d859403301ffe9b17fb8321d428531b69022a82'
@@ -830,7 +831,8 @@ class Config(object):
                 'keep_processed_dir': True,
                 'processor_follow_symlinks': False,
                 'allowed_extensions': 'srt,nfo,srr,sfv',
-                'view_changelog': False
+                'view_changelog': False,
+                'strip_special_file_bits': True
             },
             'NZBget': {
                 'nzbget_host': '',
@@ -1517,6 +1519,7 @@ class Config(object):
         self.random_user_agent = self.check_setting_bool('General', 'random_user_agent')
         self.allowed_extensions = self.check_setting_str('General', 'allowed_extensions')
         self.view_changelog = self.check_setting_bool('General', 'view_changelog')
+        self.strip_special_file_bits = self.check_setting_bool('General', 'strip_special_file_bits')
 
         # GUI SETTINGS
         self.gui_lang = self.check_setting_str('GUI', 'gui_lang')
@@ -2018,7 +2021,8 @@ class Config(object):
                 'processor_follow_symlinks': int(self.processor_follow_symlinks),
                 'delete_non_associated_files': int(self.delete_non_associated_files),
                 'allowed_extensions': self.allowed_extensions,
-                'view_changelog': int(self.view_changelog)
+                'view_changelog': int(self.view_changelog),
+                'strip_special_file_bits': int(self.strip_special_file_bits)
             },
             'GUI': {
                 'gui_lang': self.gui_lang,

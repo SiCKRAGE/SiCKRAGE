@@ -1216,6 +1216,21 @@
                     </div>
                 </div>
 
+                <div class="form-row form-group">
+                    <div class="col-lg-3 col-md-4 col-sm-5">
+                        <label class="component-title">${_('Strip special filesystem bits from files')}</label>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+                        <label class="form-check-label">
+                            <input type="checkbox" class="toggle color-primary is-material" name="strip_special_file_bits"
+                                   id="strip_special_file_bits" ${('', 'checked')[bool(sickrage.app.config.strip_special_file_bits)]}/>
+                            ${_('Strips special filesystem bits from files, if disabled will leave special bits intact.')}<br/>
+                            <div class="text-info">
+                                <b>${_('NOTE:')}</b> ${_('This will strip inherited permissions')}</div>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="col-md-12">
                         <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>

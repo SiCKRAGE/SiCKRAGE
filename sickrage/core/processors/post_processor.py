@@ -31,7 +31,8 @@ from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
     NoFreeSpaceException
 from sickrage.core.helpers import findCertainShow, show_names, replaceExtension, makeDir, \
-    chmodAsParent, moveFile, copyFile, hardlinkFile, moveAndSymlinkFile, remove_non_release_groups, remove_extension, \
+    chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
+    remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -365,7 +366,7 @@ class PostProcessor(object):
                 if not dir_exists:
                     sickrage.app.log.warning("Unable to create subtitles folder " + subs_new_path)
                 else:
-                    chmodAsParent(subs_new_path)
+                    chmod_as_parent(subs_new_path)
                 new_file_path = os.path.join(subs_new_path, new_file_name)
             else:
                 new_file_path = os.path.join(new_path, new_file_name)
@@ -386,8 +387,8 @@ class PostProcessor(object):
             self._log("Moving file from " + cur_file_path + " to " + new_file_path, sickrage.app.log.DEBUG)
 
             try:
-                moveFile(cur_file_path, new_file_path)
-                chmodAsParent(new_file_path)
+                move_file(cur_file_path, new_file_path)
+                chmod_as_parent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to move file {} to {}: {}".format(cur_file_path, new_file_path, e),
                           sickrage.app.log.WARNING)
@@ -410,8 +411,8 @@ class PostProcessor(object):
 
             self._log("Copying file from " + cur_file_path + " to " + new_file_path, sickrage.app.log.DEBUG)
             try:
-                copyFile(cur_file_path, new_file_path)
-                chmodAsParent(new_file_path)
+                copy_file(cur_file_path, new_file_path)
+                chmod_as_parent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to copy file {} to {}: {}".format(cur_file_path, new_file_path, e),
                           sickrage.app.log.WARNING)
@@ -438,8 +439,8 @@ class PostProcessor(object):
                 if os.path.exists(new_file_path):
                     os.remove(new_file_path)
 
-                hardlinkFile(cur_file_path, new_file_path)
-                chmodAsParent(new_file_path)
+                hardlink_file(cur_file_path, new_file_path)
+                chmod_as_parent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to hardlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
                           sickrage.app.log.WARNING)
@@ -463,8 +464,8 @@ class PostProcessor(object):
             self._log("Moving then symbolic linking file from " + cur_file_path + " to " + new_file_path,
                       sickrage.app.log.DEBUG)
             try:
-                moveAndSymlinkFile(cur_file_path, new_file_path)
-                chmodAsParent(new_file_path)
+                move_and_symlink_file(cur_file_path, new_file_path)
+                chmod_as_parent(new_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to move and symlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
                           sickrage.app.log.WARNING)
@@ -492,7 +493,7 @@ class PostProcessor(object):
                     os.remove(new_file_path)
 
                 symlink(cur_file_path, new_file_path)
-                chmodAsParent(cur_file_path)
+                chmod_as_parent(cur_file_path)
             except (IOError, OSError) as e:
                 self._log("Unable to symlink file {} to {}: {}".format(cur_file_path, new_file_path, e),
                           sickrage.app.log.WARNING)
@@ -1050,7 +1051,7 @@ class PostProcessor(object):
 
             try:
                 os.mkdir(ep_obj.show.location)
-                chmodAsParent(ep_obj.show.location)
+                chmod_as_parent(ep_obj.show.location)
 
                 # do the library update for synoindex
                 sickrage.app.notifier_providers['synoindex'].addFolder(ep_obj.show.location)

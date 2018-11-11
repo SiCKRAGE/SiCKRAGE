@@ -26,7 +26,7 @@ from xml.etree.ElementTree import ElementTree
 
 import fanart
 import sickrage
-from sickrage.core.helpers import chmodAsParent, replaceExtension, try_int
+from sickrage.core.helpers import chmod_as_parent, replaceExtension, try_int
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
 from sickrage.metadata.helpers import getShowImage
@@ -374,14 +374,14 @@ class GenericMetadata(object):
             if not os.path.isdir(nfo_file_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
-                chmodAsParent(nfo_file_dir)
+                chmod_as_parent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing show nfo file to " + nfo_file_path)
 
             with io.open(nfo_file_path, 'wb') as nfo_file:
                 data.write(nfo_file, encoding='utf-8')
 
-            chmodAsParent(nfo_file_path)
+            chmod_as_parent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
@@ -418,14 +418,14 @@ class GenericMetadata(object):
             if not os.path.isdir(nfo_file_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
-                chmodAsParent(nfo_file_dir)
+                chmod_as_parent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
             with io.open(nfo_file_path, 'wb') as nfo_file:
                 data.write(nfo_file, encoding='utf-8')
 
-            chmodAsParent(nfo_file_path)
+            chmod_as_parent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
@@ -603,12 +603,12 @@ class GenericMetadata(object):
             if not os.path.isdir(image_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + image_dir)
                 os.makedirs(image_dir)
-                chmodAsParent(image_dir)
+                chmod_as_parent(image_dir)
 
             with io.open(image_path, 'wb') as outFile:
                 outFile.write(image_data)
 
-            chmodAsParent(image_path)
+            chmod_as_parent(image_path)
         except IOError as e:
             sickrage.app.log.warning(
                 "Unable to write image to " + image_path + " - are you sure the show folder is writable? {}".format(e))

@@ -28,7 +28,7 @@ from subliminal import save_subtitles
 
 import sickrage
 from sickrage.core import makeDir
-from sickrage.core.helpers import chmodAsParent
+from sickrage.core.helpers import chmod_as_parent
 # register provider
 from sickrage.core.scene_exceptions import get_scene_exceptions
 from sickrage.subtitles.providers.utils import hash_itasa
@@ -241,7 +241,7 @@ def get_subtitles_path(video_path):
         if not dir_exists:
             sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
         else:
-            chmodAsParent(new_subtitles_path)
+            chmod_as_parent(new_subtitles_path)
     else:
         new_subtitles_path = os.path.dirname(video_path)
 
