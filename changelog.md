@@ -1,6 +1,7 @@
 # Changelog
 
-- * 23957a3 - 2018-11-11: Refactored naming convention of misc helper functions. Added ability to disable stripping of special permissions from files. 
+- * 80309e2 - 2018-11-11: Pre-Release v9.4.29.dev1 
+- * eca1d42 - 2018-11-11: Refactored naming convention of misc helper functions. Added ability to disable stripping of special permissions from files. 
 - * 63f98ef - 2018-11-11: Cleaned up subtitles code. 
 - * 1558dce - 2018-11-10: Fixed issue with displaying language flags in views 
 - * 0173a0f - 2018-11-10: Release v9.4.28 
