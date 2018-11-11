@@ -225,17 +225,35 @@ class srDatabase(object):
 
     def check_integrity(self):
         for index_name in self._indexes:
-            try:
-                for x in self.db.all(index_name):
-                    try:
-                        self.get('id', x.get('_id'))
-                    except (ValueError, TypeError) as e:
-                        self.delete(self.get(index_name, x.get('key')))
-            except Exception as e:
-                if index_name in self.db.indexes_names:
-                    self.db.destroy_index(self.db.indexes_names[index_name])
+            sickrage.app.log.debug('Checking data integrity for index {}'.format(index_name))
+
+            data = []
+            failed = False
+
+            # check integrity of index data
+            for x in self.db.all(index_name):
+                try:
+                    data += [self.get('id', x.get('_id'))]
+                except Exception:
+                    failed = True
+
+            # check if we failed integrity check, if so then destroy index
+            if failed and index_name in self.db.indexes_names:
+                self.db.destroy_index(self.db.indexes_names[index_name])
+
+            # check if index exists, if not then add it
+            if index_name not in self.db.indexes_names:
                 self.db.add_index(self._indexes[index_name](self.db.path, index_name))
-                #self.db.reindex_index(index_name)
+
+            # rebuild index if failed
+            if failed:
+                sickrage.app.log.debug('Failed data integrity check, rebuilding index {}'.format(index_name))
+                for x in data:
+                    del x['_id'], x['_rev']
+                    self.insert(x)
+
+            # cleanup
+            del data
 
     def migrate(self):
         if os.path.isfile(self.old_db_path):

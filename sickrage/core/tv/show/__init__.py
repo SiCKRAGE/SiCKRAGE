@@ -522,7 +522,7 @@ class TVShow(object):
                     "Found episode by absolute_number %s which is S%02dE%02d" % (
                         absolute_number, season or 0, episode or 0))
             elif len(dbData) > 1:
-                sickrage.app.log.error("Multiple entries for absolute number: " + str(
+                sickrage.app.log.warning("Multiple entries for absolute number: " + str(
                     absolute_number) + " in show: " + self.name + " found ")
                 return None
             else:
