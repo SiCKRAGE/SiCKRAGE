@@ -1,6 +1,7 @@
 # Changelog
 
-- * 70b919b - 2018-11-12: Pre-Release v9.4.31.dev1 
+- * c30ce54 - 2018-11-12: Pre-Release v9.4.31.dev2 
+- * bbac0e2 - 2018-11-12: Pre-Release v9.4.31.dev1 
 - * ae00748 - 2018-11-12: Updater now waits for show queue to finish before updating. 
 - * 34aa88c - 2018-11-12: Refactored show object class, cleaned up naming conventions for functions. 
 - * 753625d - 2018-11-12: Refactored queue current item property to always represent current running task. 
