@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-12 12:44-0800\n"
-"PO-Revision-Date: 2018-11-12 20:46\n"
+"POT-Creation-Date: 2018-11-12 13:56-0800\n"
+"PO-Revision-Date: 2018-11-12 21:58\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
@@ -639,8 +639,6 @@ msgstr "拆分顯示清單"
 msgid "Separate anime and normal shows in groups"
 msgstr "單獨的動漫和正常節目組"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:11
 #: sickrage/core/webserver/views/config/backup_restore.mako:26
@@ -6155,6 +6153,15 @@ msgstr "忽略"
 msgid "Episode snatched"
 msgstr "搶走的插曲"
 
+#: sickrage/core/version_updater.py:66 sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:88 sickrage/core/version_updater.py:92
+#: sickrage/core/version_updater.py:96 sickrage/core/version_updater.py:103
+#: sickrage/core/version_updater.py:108 sickrage/core/version_updater.py:187
+#: sickrage/core/version_updater.py:479 sickrage/core/version_updater.py:755
+msgid "Updater"
+msgstr ""
+
 #: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "新的更新找不到 SiCKRAGE，開始自動更新程式"
@@ -6179,32 +6186,44 @@ msgstr "配置備份成功，更新..."
 msgid "Config backup failed, aborting update"
 msgstr "配置備份失敗，中止更新"
 
-#: sickrage/core/version_updater.py:185
-msgid "Update Failed"
-msgstr "更新失敗"
+#: sickrage/core/version_updater.py:103
+msgid "We can't proceed with updating, post-processor is running"
+msgstr ""
 
-#: sickrage/core/version_updater.py:185
+#: sickrage/core/version_updater.py:108
+msgid "Waiting for jobs in show queue to finish before updating"
+msgstr ""
+
+#: sickrage/core/version_updater.py:187
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "更新不成功，不重新開機。請檢查您的日誌以瞭解更多資訊。"
 
-#: sickrage/core/version_updater.py:241
+#: sickrage/core/version_updater.py:243
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "無法找到您的 git 可執行-集從設置-通用-高級或 > 你 git 路徑刪除您.git 資料夾並從要啟用更新源運行。"
 
-#: sickrage/core/version_updater.py:288
+#: sickrage/core/version_updater.py:290
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "無法找到您的 pip 可執行檔-設置您 pip 路徑從設置-通用-高級 >"
 
-#: sickrage/core/version_updater.py:449 sickrage/core/version_updater.py:586
+#: sickrage/core/version_updater.py:451 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "有可用更新版本、 版本 {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:582
+#: sickrage/core/version_updater.py:479
+msgid "Updating SiCKRAGE from GIT servers"
+msgstr ""
+
+#: sickrage/core/version_updater.py:585
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "未知的當前版本號： 如果你從未使用過 SiCKRAGE 升級系統之前則不設置當前版本。&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:740
+#: sickrage/core/version_updater.py:743
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
+
+#: sickrage/core/version_updater.py:755
+msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
 #: sickrage/core/queues/search.py:213

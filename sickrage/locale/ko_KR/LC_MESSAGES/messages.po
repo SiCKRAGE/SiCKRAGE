@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-12 12:44-0800\n"
-"PO-Revision-Date: 2018-11-12 20:45\n"
+"POT-Creation-Date: 2018-11-12 13:56-0800\n"
+"PO-Revision-Date: 2018-11-12 21:57\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -639,8 +639,6 @@ msgstr "분할 보기 리스트"
 msgid "Separate anime and normal shows in groups"
 msgstr "별도 애니메이션 및 그룹에 정상 쇼"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:11
 #: sickrage/core/webserver/views/config/backup_restore.mako:26
@@ -6155,6 +6153,15 @@ msgstr "무시"
 msgid "Episode snatched"
 msgstr "납치 하는 에피소드"
 
+#: sickrage/core/version_updater.py:66 sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:88 sickrage/core/version_updater.py:92
+#: sickrage/core/version_updater.py:96 sickrage/core/version_updater.py:103
+#: sickrage/core/version_updater.py:108 sickrage/core/version_updater.py:187
+#: sickrage/core/version_updater.py:479 sickrage/core/version_updater.py:755
+msgid "Updater"
+msgstr ""
+
 #: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "새로운 업데이트는 자동 업데이트를 시작 하는 SiCKRAGE에 대 한 발견"
@@ -6179,32 +6186,44 @@ msgstr "구성 백업 성공, 업데이트..."
 msgid "Config backup failed, aborting update"
 msgstr "구성 백업 실패, 업데이트 중단"
 
-#: sickrage/core/version_updater.py:185
-msgid "Update Failed"
-msgstr "업데이트 실패"
+#: sickrage/core/version_updater.py:103
+msgid "We can't proceed with updating, post-processor is running"
+msgstr ""
 
-#: sickrage/core/version_updater.py:185
+#: sickrage/core/version_updater.py:108
+msgid "Waiting for jobs in show queue to finish before updating"
+msgstr ""
+
+#: sickrage/core/version_updater.py:187
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "업데이트 성공, 다시 시작 하지 않았다입니다. 자세한 내용은 로그를 확인 하십시오."
 
-#: sickrage/core/version_updater.py:241
+#: sickrage/core/version_updater.py:243
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "일반 고급 또는->-> 설정에서 git 경로 찾을 수 없습니다 당신의 자식 실행-설정.git 폴더를 삭제 하 고 업데이트를 원본에서 실행."
 
-#: sickrage/core/version_updater.py:288
+#: sickrage/core/version_updater.py:290
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에서-> 일반 고급->"
 
-#: sickrage/core/version_updater.py:449 sickrage/core/version_updater.py:586
+#: sickrage/core/version_updater.py:451 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:582
+#: sickrage/core/version_updater.py:479
+msgid "Updating SiCKRAGE from GIT servers"
+msgstr ""
+
+#: sickrage/core/version_updater.py:585
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "알 수 없는 현재 버전 번호: 만약 요 사용한 적이 전에 SiCKRAGE 업그레이드 시스템 현재 버전을 설정 하지 않으면 다음. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:740
+#: sickrage/core/version_updater.py:743
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
+
+#: sickrage/core/version_updater.py:755
+msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
 #: sickrage/core/queues/search.py:213

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-12 12:44-0800\n"
-"PO-Revision-Date: 2018-11-12 20:45\n"
+"POT-Creation-Date: 2018-11-12 13:56-0800\n"
+"PO-Revision-Date: 2018-11-12 21:57\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -639,8 +639,6 @@ msgstr "Σπλιτ εμφανίζονται λίστες"
 msgid "Separate anime and normal shows in groups"
 msgstr "Ξεχωριστό anime και κανονικές παραστάσεις σε ομάδες"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:11
 #: sickrage/core/webserver/views/config/backup_restore.mako:26
@@ -6155,6 +6153,15 @@ msgstr "Αγνοούνται"
 msgid "Episode snatched"
 msgstr "Άρπαξε το επεισόδιο"
 
+#: sickrage/core/version_updater.py:66 sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:88 sickrage/core/version_updater.py:92
+#: sickrage/core/version_updater.py:96 sickrage/core/version_updater.py:103
+#: sickrage/core/version_updater.py:108 sickrage/core/version_updater.py:187
+#: sickrage/core/version_updater.py:479 sickrage/core/version_updater.py:755
+msgid "Updater"
+msgstr ""
+
 #: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Νέα ενημερωμένη έκδοση που βρέθηκαν για SiCKRAGE, ξεκινώντας το αυτόματος-Updater-αυτοκίνητο"
@@ -6179,32 +6186,44 @@ msgstr "Config backup επιτυχής, ενημέρωση..."
 msgid "Config backup failed, aborting update"
 msgstr "Config δημιουργίας αντιγράφων ασφαλείας απέτυχε, ματαίωση ενημερωμένη έκδοση"
 
-#: sickrage/core/version_updater.py:185
-msgid "Update Failed"
-msgstr "Ενημέρωση απέτυχε"
+#: sickrage/core/version_updater.py:103
+msgid "We can't proceed with updating, post-processor is running"
+msgstr ""
 
-#: sickrage/core/version_updater.py:185
+#: sickrage/core/version_updater.py:108
+msgid "Waiting for jobs in show queue to finish before updating"
+msgstr ""
+
+#: sickrage/core/version_updater.py:187
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Η ενημερωμένη έκδοση δεν ήταν επιτυχής, δεν επανεκκίνηση. Ελέγξτε το αρχείο καταγραφής για περισσότερες πληροφορίες."
 
-#: sickrage/core/version_updater.py:241
+#: sickrage/core/version_updater.py:243
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Δεν μπορείτε να βρείτε σας git εκτελέσιμο - σετ σας git διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους ή διαγραφή του φακέλου .git και τρέχει από την πηγή για να ενεργοποιήσετε τις ενημερωμένες εκδόσεις."
 
-#: sickrage/core/version_updater.py:288
+#: sickrage/core/version_updater.py:290
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Δεν μπορείτε να βρείτε σας pip εκτελέσιμο - σετ σας pip διαδρομή από τις ρυθμίσεις-> γενικής-> για προχωρημένους"
 
-#: sickrage/core/version_updater.py:449 sickrage/core/version_updater.py:586
+#: sickrage/core/version_updater.py:451 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Υπάρχει νεότερη έκδοση διαθέσιμη, έκδοση {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:582
+#: sickrage/core/version_updater.py:479
+msgid "Updating SiCKRAGE from GIT servers"
+msgstr ""
+
+#: sickrage/core/version_updater.py:585
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Άγνωστο αριθμό της τρέχουσας έκδοσης: Εάν yo ποτέ δεν έχω χρησιμοποιήσει το σύστημα αναβάθμισης SiCKRAGE πριν από την τότε τρέχουσα έκδοση δεν έχει οριστεί. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:740
+#: sickrage/core/version_updater.py:743
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
+
+#: sickrage/core/version_updater.py:755
+msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
 #: sickrage/core/queues/search.py:213

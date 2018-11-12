@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-12 12:44-0800\n"
-"PO-Revision-Date: 2018-11-12 20:45\n"
+"POT-Creation-Date: 2018-11-12 13:56-0800\n"
+"PO-Revision-Date: 2018-11-12 21:56\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -639,8 +639,6 @@ msgstr "انقسام إظهار القوائم"
 msgid "Separate anime and normal shows in groups"
 msgstr "أنمي منفصلة ويظهر طبيعي في المجموعات"
 
-#: sickrage/core/version_updater.py:80 sickrage/core/version_updater.py:88
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:96
 #: sickrage/core/webserver/views/config/backup_restore.mako:4
 #: sickrage/core/webserver/views/config/backup_restore.mako:11
 #: sickrage/core/webserver/views/config/backup_restore.mako:26
@@ -6155,6 +6153,15 @@ msgstr "تجاهل"
 msgid "Episode snatched"
 msgstr "الحلقة انتزع"
 
+#: sickrage/core/version_updater.py:66 sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:80
+#: sickrage/core/version_updater.py:88 sickrage/core/version_updater.py:92
+#: sickrage/core/version_updater.py:96 sickrage/core/version_updater.py:103
+#: sickrage/core/version_updater.py:108 sickrage/core/version_updater.py:187
+#: sickrage/core/version_updater.py:479 sickrage/core/version_updater.py:755
+msgid "Updater"
+msgstr ""
+
 #: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "تحديث جديد سيكراجي، بدء تشغيل التحديث التلقائي"
@@ -6179,32 +6186,44 @@ msgstr "تكوين النسخ الاحتياطي الناجحة، تحديث..."
 msgid "Config backup failed, aborting update"
 msgstr "النسخ الاحتياطي الملف Config فشل، إحباط التحديث"
 
-#: sickrage/core/version_updater.py:185
-msgid "Update Failed"
-msgstr "فشل تحديث"
+#: sickrage/core/version_updater.py:103
+msgid "We can't proceed with updating, post-processor is running"
+msgstr ""
 
-#: sickrage/core/version_updater.py:185
+#: sickrage/core/version_updater.py:108
+msgid "Waiting for jobs in show queue to finish before updating"
+msgstr ""
+
+#: sickrage/core/version_updater.py:187
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "التحديث لم يكن ناجحاً، لا إعادة تشغيل. تحقق من السجل الخاص بك للحصول على مزيد من المعلومات."
 
-#: sickrage/core/version_updater.py:241
+#: sickrage/core/version_updater.py:243
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "غير قادر على العثور على جهاز بوابة القابل للتنفيذ--مجموعة المسار الخاص بك بوابة من إعدادات-> العامة-> أو خيارات متقدمة حذف المجلد.git الخاص بك وتشغيل من مصدر لتمكين التحديثات."
 
-#: sickrage/core/version_updater.py:288
+#: sickrage/core/version_updater.py:290
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "غير قادر على العثور على النقطة الخاصة بك القابل للتنفيذ--تعيين مسار النقطة الخاصة بك من إعدادات-> العامة-> خيارات متقدمة"
 
-#: sickrage/core/version_updater.py:449 sickrage/core/version_updater.py:586
+#: sickrage/core/version_updater.py:451 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "هناك إصدار أحدث المتاحة، الإصدار {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:582
+#: sickrage/core/version_updater.py:479
+msgid "Updating SiCKRAGE from GIT servers"
+msgstr ""
+
+#: sickrage/core/version_updater.py:585
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "رقم الإصدار الحالي غير معروف: إذا يو لم يسبق استخدام نظام الترقية قبل سيكراجي ثم لم يتم تعيين الإصدار الحالي. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:740
+#: sickrage/core/version_updater.py:743
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
+msgstr ""
+
+#: sickrage/core/version_updater.py:755
+msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
 #: sickrage/core/queues/search.py:213
