@@ -1,6 +1,16 @@
 # Changelog
 
-- * 1589213 - 2018-11-11: Release v9.4.30 
+- * fa636d3 - 2018-11-12: Release v9.4.31 
+- * fcdd0e0 - 2018-11-12: Added more UI notifications for version updater. 
+- * 971fc67 - 2018-11-12: Pre-Release v9.4.31.dev5 
+- * 4d0d839 - 2018-11-12: Pre-Release v9.4.31.dev4 
+- * 12f8ad6 - 2018-11-12: Pre-Release v9.4.31.dev3 
+- * 82115fc - 2018-11-12: Pre-Release v9.4.31.dev2 
+- * bbac0e2 - 2018-11-12: Pre-Release v9.4.31.dev1 
+- * ae00748 - 2018-11-12: Updater now waits for show queue to finish before updating. 
+- * 34aa88c - 2018-11-12: Refactored show object class, cleaned up naming conventions for functions. 
+- * 753625d - 2018-11-12: Refactored queue current item property to always represent current running task. 
+- * 8bd128e - 2018-11-11: Release v9.4.30 
 - * 90fdbb1 - 2018-11-11: Pre-Release v9.4.30.dev1 
 - * 007df0a - 2018-11-11: Refactored get, all, and get_many database functions. 
 - * f87d6ad - 2018-11-11: Release v9.4.29 

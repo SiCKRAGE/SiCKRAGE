@@ -821,7 +821,7 @@ class GenericMetadata(object):
         sickrage.app.log.debug("Searching for any " + img_type + " images on Fanart.tv for " + show.name)
 
         try:
-            indexerid = show.mapIndexers()[1]
+            indexerid = show.map_indexers()[1]
             if indexerid:
                 request = fanart.Request(
                     apikey=sickrage.app.config.fanart_api_key,

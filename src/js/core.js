@@ -43,6 +43,8 @@ $(document).ready(function ($) {
                 // Add handling for different kinds of events. For ex: {"event": "notification", "data": {"title": ..}}
                 if (msg.event === 'notification') {
                     SICKRAGE.notify(msg.data.type, msg.data.title, msg.data.body);
+                } else if (msg.event === 'redirect') {
+                    window.location.href = msg.data.url;
                 }
             };
         },

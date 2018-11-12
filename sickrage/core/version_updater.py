@@ -28,10 +28,12 @@ import subprocess
 import sys
 import tarfile
 import threading
+from time import sleep
 
 import sickrage
 from sickrage.core.helpers import backupSR
 from sickrage.core.websession import WebSession
+from sickrage.core.websocket import WebSocketMessage
 from sickrage.notifiers import Notifiers
 
 
@@ -61,48 +63,53 @@ class VersionUpdater(object):
                         return
 
                     sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    sickrage.app.alerts.message(_('New update found for SiCKRAGE, starting auto-updater'))
+                    sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
                     if self.update():
                         sickrage.app.log.info("Update was successful!")
-                        sickrage.app.alerts.message(_('Update was successful'))
+                        sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
                         sickrage.app.shutdown(restart=True)
                     else:
                         sickrage.app.log.info("Update failed!")
-                        sickrage.app.alerts.message(_('Update failed!'))
+                        sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
         finally:
             self.amActive = False
 
     def backup(self):
-        if self.safe_to_update():
-            # Do a system backup before update
-            sickrage.app.log.info("Config backup in progress...")
-            sickrage.app.alerts.message(_('Backup'), _('Config backup in progress...'))
-            try:
-                backupDir = os.path.join(sickrage.app.data_dir, 'backup')
-                if not os.path.isdir(backupDir):
-                    os.mkdir(backupDir)
+        # Do a system backup before update
+        sickrage.app.log.info("Config backup in progress...")
+        sickrage.app.alerts.message(_('Updater'), _('Config backup in progress...'))
+        try:
+            backupDir = os.path.join(sickrage.app.data_dir, 'backup')
+            if not os.path.isdir(backupDir):
+                os.mkdir(backupDir)
 
-                if backupSR(backupDir, keep_latest=True):
-                    sickrage.app.log.info("Config backup successful, updating...")
-                    sickrage.app.alerts.message(_('Backup'), _('Config backup successful, updating...'))
-                    return True
-                else:
-                    sickrage.app.log.warning("Config backup failed, aborting update")
-                    sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
-                    return False
-            except Exception as e:
-                sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
-                sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
+            if backupSR(backupDir, keep_latest=True):
+                sickrage.app.log.info("Config backup successful, updating...")
+                sickrage.app.alerts.message(_('Updater'), _('Config backup successful, updating...'))
+                return True
+            else:
+                sickrage.app.log.warning("Config backup failed, aborting update")
+                sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
                 return False
+        except Exception as e:
+            sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
+            sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
+            return False
 
     @staticmethod
     def safe_to_update():
-        if not sickrage.app.started:
-            return True
-        if not sickrage.app.auto_postprocessor.amActive:
-            return True
+        if sickrage.app.auto_postprocessor.amActive:
+            sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
+            sickrage.app.alerts.message(_('Updater'), _("We can't proceed with updating, post-processor is running"))
+            return False
 
-        sickrage.app.log.debug("We can't proceed with the update. Post-Processor is running")
+        sickrage.app.show_queue.pause()
+        sickrage.app.log.debug("Waiting for jobs in show queue to finish before updating")
+        sickrage.app.alerts.message(_('Updater'), _("Waiting for jobs in show queue to finish before updating"))
+        while sickrage.app.show_queue.is_busy:
+            sleep(1)
+
+        return True
 
     @staticmethod
     def find_install_type():
@@ -144,21 +151,41 @@ class VersionUpdater(object):
                 self.updater.set_newest_text()
             return True
 
-    def update(self):
-        if self.updater and self.backup():
+    def update(self, webui=False):
+        if self.updater:
+            # check if its safe to update
+            if not self.safe_to_update():
+                return False
+
+            # backup
+            if not self.backup():
+                return False
+
             # check for updates
-            if self.updater.need_update():
-                if self.updater.update():
-                    # Clean up after update
-                    to_clean = os.path.join(sickrage.app.cache_dir, 'mako')
+            if not self.updater.need_update():
+                return False
 
-                    for root, dirs, files in os.walk(to_clean, topdown=False):
-                        [os.remove(os.path.join(root, name)) for name in files]
-                        [shutil.rmtree(os.path.join(root, name)) for name in dirs]
+            # attempt update
+            if self.updater.update():
+                # Clean up after update
+                to_clean = os.path.join(sickrage.app.cache_dir, 'mako')
 
-                    sickrage.app.config.view_changelog = True
+                for root, dirs, files in os.walk(to_clean, topdown=False):
+                    [os.remove(os.path.join(root, name)) for name in files]
+                    [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
-                    return True
+                sickrage.app.config.view_changelog = True
+
+                if webui:
+                    sickrage.app.newest_version_string = None
+                    WebSocketMessage('redirect', {
+                        'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root, sickrage.app.pid)}).push()
+
+                return True
+
+            if webui:
+                sickrage.app.alerts.error(_("Updater"), _("Update wasn't successful, not restarting. Check your "
+                                                          "log for more information."))
 
     @property
     def version(self):
@@ -449,6 +476,7 @@ class GitUpdateManager(UpdateManager):
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
+            sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from GIT servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
             self.install_requirements()
             return True
@@ -724,6 +752,7 @@ class PipUpdateManager(UpdateManager):
         __, __, exit_status = self._pip_cmd(self._pip_path, 'install -U --no-cache-dir sickrage')
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from PyPi servers")
+            sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from PyPi servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
             return True
 

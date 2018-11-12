@@ -775,7 +775,7 @@ class PostProcessor(object):
 
             # now that we've figured out which episode this file is just load it manually
             try:
-                curEp = show.getEpisode(season, cur_episode)
+                curEp = show.get_episode(season, cur_episode)
             except EpisodeNotFoundException as e:
                 self._log("Unable to create episode: {}".format(e)), sickrage.app.log.DEBUG
                 raise EpisodePostProcessingFailedException()
@@ -1060,7 +1060,7 @@ class PostProcessor(object):
                     "Unable to create the show directory: " + ep_obj.show.location)
 
             # write metadata for the show (but not episode because it hasn't been fully processed)
-            ep_obj.show.writeMetadata(True)
+            ep_obj.show.write_metadata(True)
 
         # update the ep info before we rename so the quality & release name go into the name properly
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
@@ -1091,7 +1091,7 @@ class PostProcessor(object):
                 else:
                     cur_ep.release_group = ""
 
-                cur_ep.saveToDB()
+                cur_ep.save_to_db()
 
         # Just want to keep this consistent for failed handling right now
         releaseName = show_names.determineReleaseName(self.folder_path, self.nzb_name)
@@ -1164,13 +1164,13 @@ class PostProcessor(object):
                 with cur_ep.lock:
                     cur_ep.location = os.path.join(dest_path, new_file_name)
                     cur_ep.refreshSubtitles()
-                    cur_ep.downloadSubtitles()
+                    cur_ep.download_subtitles()
 
         # put the new location in the database
         for cur_ep in [ep_obj] + ep_obj.relatedEps:
             with cur_ep.lock:
                 cur_ep.location = os.path.join(dest_path, new_file_name)
-                cur_ep.saveToDB()
+                cur_ep.save_to_db()
 
         # set file modify stamp to show airdate
         if sickrage.app.config.airdate_episodes:

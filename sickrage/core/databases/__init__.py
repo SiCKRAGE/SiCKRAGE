@@ -346,7 +346,7 @@ class srDatabase(object):
     def all(self, *args, **kwargs):
         with_doc = kwargs.pop('with_doc', True)
         for data in self.db.all(*args, **kwargs):
-            if with_doc:
+            if with_doc :
                 try:
                     doc = self.db.get('id', data['_id'])
                     yield doc

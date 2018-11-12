@@ -317,7 +317,7 @@ class FailedHistory(object):
                 else:
                     sickrage.app.log.debug("WARNING: Episode not found in history. Setting it back to WANTED")
                     epObj.status = WANTED
-                    epObj.saveToDB()
+                    epObj.save_to_db()
 
         except EpisodeNotFoundException as e:
             sickrage.app.log.warning(
@@ -337,7 +337,7 @@ class FailedHistory(object):
             with epObj.lock:
                 quality = Quality.splitCompositeStatus(epObj.status)[1]
                 epObj.status = Quality.compositeStatus(FAILED, quality)
-                epObj.saveToDB()
+                epObj.save_to_db()
 
         except EpisodeNotFoundException as e:
             sickrage.app.log.warning(

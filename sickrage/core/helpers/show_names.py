@@ -170,7 +170,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
         # the search string for air by date shows is just
         seasonStrings = [str(ep_obj.airdate).split('-')[0]]
     elif show.is_anime:
-        seasonEps = show.getAllEpisodes(ep_obj.season)
+        seasonEps = show.get_all_episodes(ep_obj.season)
 
         # get show qualities
         anyQualities, bestQualities = Quality.splitQuality(show.quality)

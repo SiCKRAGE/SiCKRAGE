@@ -30,7 +30,7 @@ from sickrage.core.tv.show import TVShow
 class TVShowTests(tests.SiCKRAGETestDBCase):
     def test_init_indexerid(self):
         show = TVShow(1, 0001, "en")
-        show.saveToDB()
+        show.save_to_db()
         self.assertEqual(show.indexerid, 0001)
 
     def test_change_indexerid(self):
@@ -44,24 +44,24 @@ class TVShowTests(tests.SiCKRAGETestDBCase):
         show.airs = "monday"
         show.startyear = 1987
         show.indexerid = 0002
-        show.saveToDB()
+        show.save_to_db()
         self.assertEqual(show.indexerid, 0002)
 
     def test_set_name(self):
         show = TVShow(1, 0001, "en")
         show.name = "newName"
-        show.saveToDB()
+        show.save_to_db()
         self.assertEqual(show.name, "newName")
 
 
 class TVEpisodeTests(tests.SiCKRAGETestDBCase):
     def test_init_empty_db(self):
         show = TVShow(1, 0001, "en")
-        show.saveToDB()
+        show.save_to_db()
         ep = TVEpisode(show, 1, 1)
         ep.name = "asdasdasdajkaj"
-        ep.saveToDB()
-        ep.loadFromDB(1, 1)
+        ep.save_to_db()
+        ep.load_from_db(1, 1)
         self.assertEqual(ep.name, "asdasdasdajkaj")
 
 
@@ -76,7 +76,7 @@ class TVTests(tests.SiCKRAGETestDBCase):
         show.default_ep_status = "5"
         show.airs = "monday"
         show.startyear = 1987
-        show.saveToDB()
+        show.save_to_db()
         sickrage.app.showlist = [show]
 
 

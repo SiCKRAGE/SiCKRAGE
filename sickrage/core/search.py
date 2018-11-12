@@ -110,7 +110,7 @@ def snatchEpisode(result, endStatus=SNATCHED):
                 curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
 
             # save episode to DB
-            curEpObj.saveToDB()
+            curEpObj.save_to_db()
 
         if curEpObj.status not in Quality.DOWNLOADED:
             try:
@@ -446,7 +446,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                 anyWanted = False
                 for curEpNum in allEps:
                     for season in set([x.season for x in episodes]):
-                        if not show.wantEpisode(season, curEpNum, seasonQual, downCurQuality):
+                        if not show.want_episode(season, curEpNum, seasonQual, downCurQuality):
                             allWanted = False
                         else:
                             anyWanted = True
@@ -460,7 +460,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                     epObjs = []
                     for curEpNum in allEps:
                         for season in set([x.season for x in episodes]):
-                            epObjs.append(show.getEpisode(season, curEpNum))
+                            epObjs.append(show.get_episode(season, curEpNum))
 
                     bestSeasonResult.episodes = epObjs
 
@@ -497,7 +497,7 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, up
                         epObjs = []
                         for curEpNum in allEps:
                             for season in set([x.season for x in episodes]):
-                                epObjs.append(show.getEpisode(season, curEpNum))
+                                epObjs.append(show.get_episode(season, curEpNum))
                         bestSeasonResult.episodes = epObjs
 
                         if MULTI_EP_RESULT in found_results[providerObj.name]:

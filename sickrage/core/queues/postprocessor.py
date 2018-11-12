@@ -53,7 +53,7 @@ class PostProcessorQueue(srQueue):
         :param proc_type: processing type, auto/manual
         :return: instance of PostProcessorItem or None
         """
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item,
                           PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
                 return cur_item
@@ -61,7 +61,7 @@ class PostProcessorQueue(srQueue):
 
     @property
     def is_in_progress(self):
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item, PostProcessorItem):
                 return True
         return False
@@ -74,7 +74,7 @@ class PostProcessorQueue(srQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item, PostProcessorItem):
                 if cur_item.proc_type == 'auto':
                     length['auto'] += 1
@@ -116,7 +116,7 @@ class PostProcessorQueue(srQueue):
         item = self.find_in_queue(dirName, proc_type)
 
         if item:
-            if self.currentItem == item:
+            if self.current_item == item:
                 return logHelper("Directory {} is already being processed right now, please wait until it completes "
                                  "before trying again".format(dirName))
 

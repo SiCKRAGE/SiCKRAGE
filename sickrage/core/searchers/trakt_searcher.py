@@ -36,7 +36,7 @@ def setEpisodeToWanted(show, s, e):
     """
     Sets an episode to wanted, only if it is currently skipped
     """
-    epObj = show.getEpisode(int(s), int(e))
+    epObj = show.get_episode(int(s), int(e))
     if epObj:
         with epObj.lock:
             if epObj.status != SKIPPED or epObj.airdate == date.fromordinal(1):
@@ -46,7 +46,7 @@ def setEpisodeToWanted(show, s, e):
             # figure out what segment the episode is in and remember it so we can backlog it
 
             epObj.status = WANTED
-            epObj.saveToDB()
+            epObj.save_to_db()
 
         sickrage.app.search_queue.put(BacklogQueueItem(show, [epObj]))
 

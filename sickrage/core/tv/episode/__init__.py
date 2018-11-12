@@ -286,9 +286,9 @@ class TVEpisode(object):
         """Look for subtitles files and refresh the subtitles property"""
         self.subtitles, save_subtitles = refresh_subtitles(self)
         if save_subtitles:
-            self.saveToDB()
+            self.save_to_db()
 
-    def downloadSubtitles(self):
+    def download_subtitles(self):
         if not os.path.isfile(self.location):
             sickrage.app.log.debug("%s: Episode file doesn't exist, can't download subtitles for S%02dE%02d" %
                                    (self.show.indexerid, self.season or 0, self.episode or 0))
@@ -302,7 +302,7 @@ class TVEpisode(object):
 
         self.subtitles_searchcount += 1 if self.subtitles_searchcount else 1
         self.subtitles_lastsearch = datetime.datetime.now().strftime(dateTimeFormat)
-        self.saveToDB()
+        self.save_to_db()
 
         if newSubtitles:
             subtitleList = ", ".join([name_from_code(newSub) for newSub in newSubtitles])
@@ -352,9 +352,9 @@ class TVEpisode(object):
                    'db': False}
 
         for method, func in OrderedDict([
-            ('db', lambda: self.loadFromDB(season, episode)),
+            ('db', lambda: self.load_from_db(season, episode)),
             ('nfo', lambda: self.loadFromNFO(self.location)),
-            ('indexer', lambda: self.loadFromIndexer(season, episode)),
+            ('indexer', lambda: self.load_from_indexer(season, episode)),
         ]).items():
 
             try:
@@ -372,7 +372,7 @@ class TVEpisode(object):
         # we failed to populate the episode
         raise EpisodeNotFoundException("Couldn't find episode S%02dE%02d" % (season or 0, episode or 0))
 
-    def loadFromDB(self, season, episode):
+    def load_from_db(self, season, episode):
         sickrage.app.log.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
@@ -427,7 +427,7 @@ class TVEpisode(object):
 
             return True
 
-    def loadFromIndexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
+    def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
         indexer_name = IndexerApi(self.indexer).name
 
         season = (self.season, season)[season is not None]
@@ -679,7 +679,7 @@ class TVEpisode(object):
         self.createThumbnail(force)
 
         if self.checkForMetaFiles():
-            self.saveToDB()
+            self.save_to_db()
 
     def createNFO(self, force=False):
 
@@ -705,7 +705,7 @@ class TVEpisode(object):
             "Deleting %s S%02dE%02d from the DB" % (self.show.name, self.season or 0, self.episode or 0))
 
         # remove myself from the show dictionary
-        if self.show.getEpisode(self.season, self.episode, noCreate=True) == self:
+        if self.show.get_episode(self.season, self.episode, noCreate=True) == self:
             sickrage.app.log.debug("Removing myself from my show's list")
             del self.show.episodes[self.season][self.episode]
 
@@ -730,7 +730,7 @@ class TVEpisode(object):
 
         raise EpisodeDeletedException()
 
-    def saveToDB(self, force_save=False):
+    def save_to_db(self, force_save=False):
         """
         Saves this episode to the database if any of its data has been changed since the last save.
 
@@ -921,7 +921,7 @@ class TVEpisode(object):
         # save any changes to the database
         with self.lock:
             for relEp in [self] + self.relatedEps:
-                relEp.saveToDB()
+                relEp.save_to_db()
 
     def airdateModifyStamp(self):
         """

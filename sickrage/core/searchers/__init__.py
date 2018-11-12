@@ -63,7 +63,7 @@ def new_episode_finder():
             if air_time > curTime:
                 continue
 
-        ep_obj = show.getEpisode(int(episode['season']), int(episode['episode']))
+        ep_obj = show.get_episode(int(episode['season']), int(episode['episode']))
         with ep_obj.lock:
             ep_obj.status = show.default_ep_status if ep_obj.season else SKIPPED
             sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(
@@ -72,4 +72,4 @@ def new_episode_finder():
                 special='(specials are not supported)' if not ep_obj.season else '',
             ))
 
-            ep_obj.saveToDB()
+            ep_obj.save_to_db()

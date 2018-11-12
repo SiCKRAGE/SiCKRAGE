@@ -602,9 +602,9 @@ class Home(WebHandler):
             return _("Invalid show paramaters")
 
         if absolute:
-            epObj = showObj.getEpisode(absolute_number=int(absolute))
+            epObj = showObj.get_episode(absolute_number=int(absolute))
         elif season and episode:
-            epObj = showObj.getEpisode(int(season), int(episode))
+            epObj = showObj.get_episode(int(season), int(episode))
         else:
             return _("Invalid paramaters")
 
@@ -973,7 +973,7 @@ class Home(WebHandler):
         try:
             show = findCertainShow(int(show))
             show.notify_list = emails
-            show.saveToDB()
+            show.save_to_db()
         except Exception:
             return 'ERROR'
 
@@ -1084,13 +1084,11 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.app.pid):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        if sickrage.app.version_updater.update():
-            sickrage.app.newest_version_string = None
-            return self.restart(pid)
-        else:
-            self._genericMessage(_("Update Failed"),
-                                 _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect(self.previous_url())
+        sickrage.app.alerts.message(_('Updating SiCKRAGE'))
+
+        sickrage.app.event_queue.fire_event(sickrage.app.version_updater.update, webui=True)
+
+        return self.redirect(self.previous_url())
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1206,7 +1204,7 @@ class Home(WebHandler):
         }
 
         for curEp in episodeResults:
-            curEpCat = showObj.getOverview(int(curEp['status'] or -1))
+            curEpCat = showObj.get_overview(int(curEp['status'] or -1))
 
             if curEp['airdate'] != 1:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
@@ -1485,7 +1483,7 @@ class Home(WebHandler):
                               "you change the directory in SiCKRAGE.") % location)
 
             # save it to the DB
-            showObj.saveToDB()
+            showObj.save_to_db()
 
         # force the update
         if do_update:
@@ -1513,7 +1511,7 @@ class Home(WebHandler):
             return map(str, warnings + errors)
 
         if len(warnings) > 0:
-            sickrage.app.alerts.warning(
+            sickrage.app.alerts.message(
                 _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
                                                                                plural="" if len(warnings) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>{0}</li>'.format(warning) for warning in warnings]) + "</ul>")
@@ -1537,7 +1535,7 @@ class Home(WebHandler):
 
         showObj.paused = not showObj.paused
 
-        showObj.saveToDB()
+        showObj.save_to_db()
 
         sickrage.app.alerts.message(
             _('%s has been %s') % (showObj.name, (_('resumed'), _('paused'))[showObj.paused]))
@@ -1620,7 +1618,7 @@ class Home(WebHandler):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         # search and download subtitles
-        sickrage.app.show_queue.downloadSubtitles(showObj)
+        sickrage.app.show_queue.download_subtitles(showObj)
 
         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
 
@@ -1719,7 +1717,7 @@ class Home(WebHandler):
                             epInfo[0], epInfo[1]))
                     continue
 
-                epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
+                epObj = showObj.get_episode(int(epInfo[0]), int(epInfo[1]))
                 if not epObj:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
 
@@ -1780,7 +1778,7 @@ class Home(WebHandler):
                             epInfo[0], epInfo[1]))
                     continue
 
-                epObj = showObj.getEpisode(int(epInfo[0]), int(epInfo[1]))
+                epObj = showObj.get_episode(int(epInfo[0]), int(epInfo[1]))
 
                 if not epObj:
                     return self._genericMessage(_("Error"), _("Episode couldn't be retrieved"))
@@ -1820,7 +1818,7 @@ class Home(WebHandler):
                     epObj.status = int(status)
 
                     # save to database
-                    epObj.saveToDB()
+                    epObj.save_to_db()
 
                     trakt_data.append((epObj.season, epObj.episode))
 
@@ -1896,7 +1894,7 @@ class Home(WebHandler):
 
         ep_obj_rename_list = []
 
-        ep_obj_list = showObj.getAllEpisodes(has_location=True)
+        ep_obj_list = showObj.get_all_episodes(has_location=True)
 
         for cur_ep_obj in ep_obj_list:
             # Only want to rename if we have a location
@@ -1959,12 +1957,12 @@ class Home(WebHandler):
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
-            root_ep_obj = show_obj.getEpisode(int(epInfo[0]), int(epInfo[1]))
+            root_ep_obj = show_obj.get_episode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
 
             for cur_related_ep in (x for x in sickrage.app.main_db.all('tv_episodes')
                                    if x['location'] == ep_result[0]['location'] and x['episode'] != int(epInfo[1])):
-                related_ep_obj = show_obj.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
+                related_ep_obj = show_obj.get_episode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
                 if related_ep_obj not in root_ep_obj.relatedEps:
                     root_ep_obj.relatedEps.append(related_ep_obj)
 
@@ -2007,7 +2005,7 @@ class Home(WebHandler):
                                 'status': statusStrings[searchThread.segment.status],
                                 'quality': self.getQualityClass(searchThread.segment),
                                 'overview': Overview.overviewStrings[
-                                    showObj.getOverview(int(searchThread.segment.status or -1))]})
+                                    showObj.get_overview(int(searchThread.segment.status or -1))]})
             else:
                 for epObj in searchThread.segment:
                     results.append({'show': epObj.show.indexerid,
@@ -2017,7 +2015,7 @@ class Home(WebHandler):
                                     'searchstatus': searchstatus,
                                     'status': statusStrings[epObj.status],
                                     'quality': self.getQualityClass(epObj),
-                                    'overview': Overview.overviewStrings[showObj.getOverview(int(epObj.status or -1))]})
+                                    'overview': Overview.overviewStrings[showObj.get_overview(int(epObj.status or -1))]})
 
             return results
 
@@ -2031,7 +2029,7 @@ class Home(WebHandler):
         # Running Searches
         searchstatus = 'searching'
         if sickrage.app.search_queue.is_manualsearch_in_progress():
-            searchThread = sickrage.app.search_queue.currentItem
+            searchThread = sickrage.app.search_queue.current_item
 
             if searchThread.success:
                 searchstatus = 'finished'
@@ -2073,7 +2071,7 @@ class Home(WebHandler):
         ep_obj = self._getEpisode(show, season, episode)
         if isinstance(ep_obj, TVEpisode):
             try:
-                newSubtitles = ep_obj.downloadSubtitles()
+                newSubtitles = ep_obj.download_subtitles()
             except Exception:
                 return json_encode({'result': 'failure'})
 
@@ -3016,7 +3014,7 @@ class Manage(Home, WebRoot):
                 season, episode = epResult.split('x')
 
                 show = findCertainShow(int(cur_indexer_id))
-                show.getEpisode(int(season), int(episode)).downloadSubtitles()
+                show.get_episode(int(season), int(episode)).download_subtitles()
 
         return self.redirect('/manage/subtitleMissed/')
 
@@ -3051,7 +3049,7 @@ class Manage(Home, WebRoot):
 
             for curResult in sorted((e for e in sickrage.app.main_db.get_many('tv_episodes', curShow.indexerid)
                                      if curShow.paused == 0), key=lambda d: (d['season'], d['episode']), reverse=True):
-                curEpCat = curShow.getOverview(int(curResult["status"] or -1))
+                curEpCat = curShow.get_overview(int(curResult["status"] or -1))
                 if curEpCat:
                     epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
                     epCounts[curEpCat] += 1
@@ -3423,7 +3421,7 @@ class Manage(Home, WebRoot):
                 renames.append(showObj.name)
 
             if curShowID in toSubtitle:
-                sickrage.app.show_queue.downloadSubtitles(showObj)
+                sickrage.app.show_queue.download_subtitles(showObj)
                 subtitles.append(showObj.name)
 
         if errors:

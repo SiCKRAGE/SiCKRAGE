@@ -176,7 +176,7 @@ def splitNZBResult(result):
 
         wantEp = True
         for epNo in parse_result.episode_numbers:
-            if not result.extraInfo[0].wantEpisode(season, epNo, result.quality):
+            if not result.extraInfo[0].want_episode(season, epNo, result.quality):
                 sickrage.app.log.info(
                     "Ignoring result " + newNZB + " because we don't want an episode that is " +
                     Quality.qualityStrings[result.quality])
@@ -188,7 +188,7 @@ def splitNZBResult(result):
         # get all the associated episode objects
         epObjList = []
         for curEp in parse_result.episode_numbers:
-            epObjList.append(result.extraInfo[0].getEpisode(season, curEp))
+            epObjList.append(result.extraInfo[0].get_episode(season, curEp))
 
         # make a result
         curResult = classes.NZBDataSearchResult(epObjList)

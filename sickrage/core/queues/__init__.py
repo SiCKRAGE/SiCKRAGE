@@ -45,7 +45,7 @@ class srQueue(threading.Thread):
         self.daemon = True
         self._queue = PriorityQueue()
         self._result_queue = Queue()
-        self.currentItem = None
+        self._current_items = []
         self.min_priority = srQueuePriorities.EXTREME
         self.amActive = False
         self.lock = threading.Lock()
@@ -61,20 +61,18 @@ class srQueue(threading.Thread):
                 self.amActive = True
 
                 if not self.is_paused:
-                    if self.currentItem:
-                        if self.next_item_priority < self.currentItem.priority:
-                            __ = self.currentItem
-                            self.currentItem = self.get()
-                            self.currentItem.start()
-                            self.currentItem.join()
-                            self.currentItem = __
+                    if self.current_item:
+                        if self.next_item_priority < self.current_item.priority:
+                            self.current_item = self.get()
+                            self.current_item.start()
+                            self.current_item.join()
 
-                    if not self.currentItem or not self.currentItem.isAlive():
-                        if self.currentItem:
-                            self.currentItem = None
+                    if not self.current_item or not self.current_item.isAlive():
+                        if self.current_item:
+                            self.current_item = None
 
-                        self.currentItem = self.get()
-                        self.currentItem.start()
+                        self.current_item = self.get()
+                        self.current_item.start()
 
                 self.amActive = False
 
@@ -92,6 +90,18 @@ class srQueue(threading.Thread):
             priority = srQueuePriorities.LOW
 
         return priority
+
+    @property
+    def current_item(self):
+        if len(self._current_items):
+            return self._current_items[0]
+
+    @current_item.setter
+    def current_item(self, value):
+        if value:
+            self._current_items.insert(0, value)
+        else:
+            del self._current_items[0]
 
     def get(self, *args, **kwargs):
         __, __, item = self._queue.get(*args, **kwargs)
@@ -111,17 +121,21 @@ class srQueue(threading.Thread):
         return item
 
     @property
+    def is_busy(self):
+        return bool(len([x for x in self._current_items if x.isAlive()]))
+
+    @property
     def is_paused(self):
         return self.min_priority == srQueuePriorities.PAUSED
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.app.log.info("Pausing queue")
+        sickrage.app.log.info("Pausing {}".format(self.name))
         self.min_priority = srQueuePriorities.PAUSED
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.app.log.info("Unpausing queue")
+        sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = srQueuePriorities.EXTREME
 
     def shutdown(self):

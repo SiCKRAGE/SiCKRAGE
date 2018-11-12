@@ -265,7 +265,7 @@ class ProperSearcher(object):
                     continue
 
                 # make the result object
-                result = curProper.provider.getResult([curProper.show.getEpisode(curProper.season, curProper.episode)])
+                result = curProper.provider.getResult([curProper.show.get_episode(curProper.season, curProper.episode)])
                 result.show = curProper.show
                 result.url = curProper.url
                 result.name = curProper.name

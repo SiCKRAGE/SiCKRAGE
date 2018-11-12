@@ -15,7 +15,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+
 from __future__ import unicode_literals
+
+from functools import partial
 
 from sickrage.core.queues import srQueue, srQueueItem
 
@@ -24,8 +27,8 @@ class EventQueue(srQueue):
     def __init__(self):
         srQueue.__init__(self, "EVENTQUEUE")
 
-    def fire_event(self, event, force=False):
-        return self.put(EventQueueItem(event))
+    def fire_event(self, event, **kwargs):
+        return self.put(EventQueueItem(event, **kwargs))
 
 
 class EventQueueItem(srQueueItem):
@@ -33,9 +36,9 @@ class EventQueueItem(srQueueItem):
     Represents an event in the queue waiting to be executed
     """
 
-    def __init__(self, event):
+    def __init__(self, event, **kwargs):
         super(EventQueueItem, self).__init__('Firing Event')
-        self.event = event
+        self.event = partial(event, **kwargs)
 
     def run(self):
         self.event()

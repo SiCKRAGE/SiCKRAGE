@@ -288,7 +288,7 @@ class TVCache(object):
                 continue
 
             try:
-                result.episodes = [result.show.getEpisode(curSeason, int(curEp)) for curEp in
+                result.episodes = [result.show.get_episode(curSeason, int(curEp)) for curEp in
                                    filter(None, curResult["episodes"].split("|"))]
             except EpisodeNotFoundException:
                 continue
@@ -300,7 +300,7 @@ class TVCache(object):
             # make sure we want the episode
             wantEp = False
             for curEp in result.episodes:
-                if result.show.wantEpisode(curEp.season, curEp.episode, result.quality, manualSearch, downCurQuality):
+                if result.show.want_episode(curEp.season, curEp.episode, result.quality, manualSearch, downCurQuality):
                     wantEp = True
 
             if not wantEp:

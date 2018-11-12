@@ -94,20 +94,20 @@ class SearchQueue(srQueue):
 
     def is_manualsearch_in_progress(self):
         # Only referenced in webviews.py, only current running manualsearch or failedsearch is needed!!
-        if isinstance(self.currentItem, (ManualSearchQueueItem, FailedQueueItem)):
+        if isinstance(self.current_item, (ManualSearchQueueItem, FailedQueueItem)):
             return True
 
         return False
 
     def is_backlog_in_progress(self):
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item, BacklogQueueItem):
                 return True
 
         return False
 
     def is_dailysearch_in_progress(self):
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 return True
 
@@ -115,7 +115,7 @@ class SearchQueue(srQueue):
 
     def queue_length(self):
         length = {'backlog': 0, 'daily': 0, 'manual': 0, 'failed': 0}
-        for __, __, cur_item in self.queue + [(None, None, self.currentItem)]:
+        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
             if isinstance(cur_item, DailySearchQueueItem):
                 length['daily'] += 1
             elif isinstance(cur_item, BacklogQueueItem):

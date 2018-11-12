@@ -473,7 +473,7 @@ class Core(object):
         self.wserver.start()
 
         # fire off startup events
-        self.event_queue.fire_event(self.version_updater.run)
+        self.event_queue.fire_event(self.version_updater.run, force=True)
         self.event_queue.fire_event(self.tz_updater.run)
 
         # start ioloop
@@ -544,7 +544,7 @@ class Core(object):
         self.log.info("Saving all shows to the database")
         for show in self.showlist:
             try:
-                show.saveToDB()
+                show.save_to_db()
             except Exception:
                 continue
 

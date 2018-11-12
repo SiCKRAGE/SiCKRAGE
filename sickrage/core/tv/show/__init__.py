@@ -93,7 +93,7 @@ class TVShow(object):
         if findCertainShow(self.indexerid) is not None:
             raise MultipleShowObjectsException("Can't create a show if it already exists")
 
-        self.loadFromDB()
+        self.load_from_db()
 
     @property
     def name(self):
@@ -463,14 +463,14 @@ class TVShow(object):
             self._location = new_location
 
     # delete references to anything that's not in the internal lists
-    def flushEpisodes(self):
+    def flush_episodes(self):
         for curSeason in self.episodes:
             for curEp in self.episodes[curSeason]:
                 myEp = self.episodes[curSeason][curEp]
                 self.episodes[curSeason][curEp] = None
                 del myEp
 
-    def getAllEpisodes(self, season=None, has_location=False):
+    def get_all_episodes(self, season=None, has_location=False):
         results = []
         for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
             if season and x['season'] != season:
@@ -481,7 +481,7 @@ class TVShow(object):
 
         ep_list = []
         for cur_result in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            cur_ep = self.getEpisode(int(cur_result["season"]), int(cur_result["episode"]))
+            cur_ep = self.get_episode(int(cur_result["season"]), int(cur_result["episode"]))
             if not cur_ep:
                 continue
 
@@ -500,7 +500,7 @@ class TVShow(object):
                                                  and x['episode'] != cur_ep.episode], key=lambda d: d['episode'])
 
                     for cur_related_ep in related_eps_result:
-                        related_ep = self.getEpisode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
+                        related_ep = self.get_episode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
                         if related_ep and related_ep not in cur_ep.relatedEps:
                             cur_ep.relatedEps.append(related_ep)
 
@@ -508,10 +508,9 @@ class TVShow(object):
 
         return ep_list
 
-    def getEpisode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None, ):
-
+    def get_episode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None):
         # if we get an anime get the real season and episode
-        if self.is_anime and absolute_number is not None and not season and not episode:
+        if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
             dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
                       if x['absolute_number'] == absolute_number and x['season'] != 0]
 
@@ -584,7 +583,7 @@ class TVShow(object):
 
         return False
 
-    def writeShowNFO(self, force=False):
+    def write_show_nfo(self, force=False):
 
         result = False
 
@@ -598,20 +597,20 @@ class TVShow(object):
 
         return result
 
-    def writeMetadata(self, show_only=False, force=False):
+    def write_metadata(self, show_only=False, force=False):
 
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
             return
 
-        self.getImages()
+        self.get_images()
 
-        self.writeShowNFO(force)
+        self.write_show_nfo(force)
 
         if not show_only:
-            self.writeEpisodeNFOs(force)
+            self.write_episode_nfos(force)
 
-    def writeEpisodeNFOs(self, force=False):
+    def write_episode_nfos(self, force=False):
 
         if not os.path.isdir(self.location):
             sickrage.app.log.info(str(self.indexerid) + ": Show dir doesn't exist, skipping NFO generation")
@@ -626,10 +625,10 @@ class TVShow(object):
             sickrage.app.log.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
                 dbData["season"] or 0, dbData["episode"] or 0))
 
-            self.getEpisode(dbData["season"], dbData["episode"]).createMetaFiles(force)
+            self.get_episode(dbData["season"], dbData["episode"]).createMetaFiles(force)
 
     # find all media files in the show folder and create episodes for as many as possible
-    def loadEpisodesFromDir(self):
+    def load_episodes_from_dir(self):
         if not os.path.isdir(self.location):
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Show dir doesn't exist, not loading episodes from disk")
@@ -679,9 +678,9 @@ class TVShow(object):
                     sickrage.app.log.error("%s: Could not refresh subtitles" % self.indexerid)
                     sickrage.app.log.debug(traceback.format_exc())
 
-            curEpisode.saveToDB()
+            curEpisode.save_to_db()
 
-    def loadEpisodesFromDB(self):
+    def load_episodes_from_db(self):
         scannedEps = {}
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
@@ -700,7 +699,7 @@ class TVShow(object):
                     "{}: Loading episode S{:02d}E{:02d} info".format(self.indexerid, curSeason or 0, curEpisode or 0))
 
                 if deleteEp:
-                    self.getEpisode(curSeason, curEpisode).deleteEpisode()
+                    self.get_episode(curSeason, curEpisode).deleteEpisode()
 
                 scannedEps[curSeason][curEpisode] = True
             except EpisodeDeletedException:
@@ -708,7 +707,7 @@ class TVShow(object):
 
         return scannedEps
 
-    def loadEpisodesFromIndexer(self, cache=True):
+    def load_episodes_from_indexer(self, cache=True):
         scannedEps = {}
 
         lINDEXER_API_PARMS = IndexerApi(self.indexer).api_params.copy()
@@ -734,7 +733,7 @@ class TVShow(object):
                     continue
 
                 try:
-                    curEp = self.getEpisode(season, episode)
+                    curEp = self.get_episode(season, episode)
                 except EpisodeNotFoundException:
                     sickrage.app.log.info(
                         "%s: %s object for S%02dE%02d is incomplete, skipping this episode" % (
@@ -742,7 +741,7 @@ class TVShow(object):
                     continue
                 else:
                     try:
-                        curEp.loadFromIndexer(tvapi=t)
+                        curEp.load_from_indexer(tvapi=t)
                     except EpisodeDeletedException:
                         sickrage.app.log.info("The episode was deleted, skipping the rest of the load")
                         continue
@@ -751,18 +750,18 @@ class TVShow(object):
                     sickrage.app.log.debug("%s: Loading info from %s for episode S%02dE%02d" % (
                         self.indexerid, IndexerApi(self.indexer).name, season or 0, episode or 0))
 
-                    curEp.loadFromIndexer(season, episode, tvapi=t)
-                    curEp.saveToDB()
+                    curEp.load_from_indexer(season, episode, tvapi=t)
+                    curEp.save_to_db()
 
                 scannedEps[season][episode] = True
 
         # Done updating save last update date
         self.last_update = datetime.date.today().toordinal()
-        self.saveToDB()
+        self.save_to_db()
 
         return scannedEps
 
-    def getImages(self, fanart=None, poster=None):
+    def get_images(self, fanart=None, poster=None):
         fanart_result = poster_result = banner_result = False
         season_posters_result = season_banners_result = season_all_poster_result = season_all_banner_result = False
 
@@ -813,10 +812,10 @@ class TVShow(object):
             checkQualityAgain = False
             same_file = False
 
-            curEp = self.getEpisode(season, episode)
+            curEp = self.get_episode(season, episode)
             if not curEp:
                 try:
-                    curEp = self.getEpisode(season, episode, filename)
+                    curEp = self.get_episode(season, episode, filename)
                 except EpisodeNotFoundException:
                     sickrage.app.log.error("{}: Unable to figure out what this file is, skipping".format(self.indexerid))
                     continue
@@ -893,7 +892,7 @@ class TVShow(object):
                         curEp.status = Quality.compositeStatus(newStatus, newQuality)
 
             with curEp.lock:
-                curEp.saveToDB()
+                curEp.save_to_db()
 
         # creating metafiles on the root should be good enough
         if rootEp:
@@ -902,7 +901,7 @@ class TVShow(object):
 
         return rootEp
 
-    def loadFromDB(self, skipNFO=False):
+    def load_from_db(self, skipNFO=False):
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
         dbData = [x for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
@@ -951,7 +950,7 @@ class TVShow(object):
             # Get IMDb_info from database
             self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
 
-    def loadFromIndexer(self, cache=True, tvapi=None):
+    def load_from_indexer(self, cache=True, tvapi=None):
 
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
@@ -1004,7 +1003,7 @@ class TVShow(object):
                     self.indexer).name + " as it is temporarily disabled.")
 
         # save to database
-        self.saveToDB()
+        self.save_to_db()
 
     def load_imdb_info(self):
         if not self.imdbid:
@@ -1048,7 +1047,7 @@ class TVShow(object):
                 imdb_info.update(self.imdb_info)
                 sickrage.app.main_db.insert(imdb_info)
 
-    def deleteShow(self, full=False):
+    def delete_show(self, full=False):
         # choose delete or trash action
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
@@ -1120,18 +1119,18 @@ class TVShow(object):
                 "Removing show: {}, {} from watchlist".format(self.indexerid, self.name))
             sickrage.app.notifier_providers['trakt'].update_watchlist(self, update="remove")
 
-    def populateCache(self, force=False):
+    def populate_cache(self, force=False):
         sickrage.app.log.debug("Checking & filling cache for show " + self.name)
         image_cache.ImageCache().fill_cache(self, force)
 
-    def refreshDir(self):
+    def refresh_dir(self):
         # make sure the show dir is where we think it is unless dirs are created on the fly
         if not os.path.isdir(self.location) and not sickrage.app.config.create_missing_show_dirs:
             return False
 
         # load from dir
         try:
-            self.loadEpisodesFromDir()
+            self.load_episodes_from_dir()
         except Exception as e:
             sickrage.app.log.debug("Error searching dir for episodes: {}".format(e))
             sickrage.app.log.debug(traceback.format_exc())
@@ -1148,7 +1147,7 @@ class TVShow(object):
             episode = int(ep["episode"])
 
             try:
-                curEp = self.getEpisode(season, episode)
+                curEp = self.get_episode(season, episode)
             except EpisodeDeletedException:
                 sickrage.app.log.debug(
                     "The episode was deleted while we were refreshing it, moving on to the next one")
@@ -1184,14 +1183,14 @@ class TVShow(object):
                         curEp.release_name = ''
 
                         # save episode to DB
-                        curEp.saveToDB()
+                        curEp.save_to_db()
             else:
                 # the file exists, set its modify file stamp
                 if sickrage.app.config.airdate_episodes:
                     with curEp.lock:
                         curEp.airdateModifyStamp()
 
-    def downloadSubtitles(self):
+    def download_subtitles(self):
         if not os.path.isdir(self.location):
             sickrage.app.log.debug(str(self.indexerid) + ": Show dir doesn't exist, can't download subtitles")
             return
@@ -1199,20 +1198,20 @@ class TVShow(object):
         sickrage.app.log.debug("%s: Downloading subtitles" % self.indexerid)
 
         try:
-            episodes = self.getAllEpisodes(has_location=True)
+            episodes = self.get_all_episodes(has_location=True)
             if not episodes:
                 sickrage.app.log.debug(
                     "%s: No episodes to download subtitles for %s" % (self.indexerid, self.name))
                 return
 
             for episode in episodes:
-                episode.downloadSubtitles()
+                episode.download_subtitles()
 
         except Exception:
             sickrage.app.log.error(
                 "%s: Error occurred when downloading subtitles for %s" % (self.indexerid, self.name))
 
-    def saveToDB(self, force_save=False):
+    def save_to_db(self, force_save=False):
         if not self.dirty and not force_save:
             return
 
@@ -1302,7 +1301,7 @@ class TVShow(object):
 
         return result
 
-    def wantEpisode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
+    def want_episode(self, season, episode, quality, manualSearch=False, downCurQuality=False):
         sickrage.app.log.debug("Checking if found episode %s S%02dE%02d is wanted at quality %s" % (
             self.name, season or 0, episode or 0, Quality.qualityStrings[quality]))
 
@@ -1365,7 +1364,7 @@ class TVShow(object):
         sickrage.app.log.debug("None of the conditions were met, ignoring found episode")
         return False
 
-    def getOverview(self, epStatus):
+    def get_overview(self, epStatus):
         epStatus = try_int(epStatus) or UNKNOWN
 
         if epStatus == WANTED:
@@ -1415,7 +1414,7 @@ class TVShow(object):
         else:
             sickrage.app.log.error('Could not parse episode status into a valid overview status: {}'.format(epStatus))
 
-    def mapIndexers(self):
+    def map_indexers(self):
         mapped = {}
 
         # init mapped indexers object
@@ -1478,7 +1477,7 @@ class TVShow(object):
 
         if len(absolute_numbers):
             for absolute_number in absolute_numbers:
-                ep = self.getEpisode(absolute_number=absolute_number)
+                ep = self.get_episode(absolute_number=absolute_number)
                 if ep:
                     episodes.append(ep.episode)
                     season = ep.season
