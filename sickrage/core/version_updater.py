@@ -101,10 +101,10 @@ class VersionUpdater(object):
             sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
             return False
 
-        sickrage.app.show_queue.pause()
-        sickrage.app.log.debug("Waiting for show queue jobs to finish")
-        while sickrage.app.show_queue.is_busy:
-            sleep(1)
+        # sickrage.app.show_queue.pause()
+        # sickrage.app.log.debug("Waiting for show queue jobs to finish")
+        # while sickrage.app.show_queue.is_busy:
+        #     sleep(1)
 
         return True
 
