@@ -26,6 +26,7 @@ import time
 import traceback
 from sqlite3 import OperationalError
 
+from CodernityDB.database import RecordDeleted, RecordNotFound
 from CodernityDB.database_super_thread_safe import SuperThreadSafeDatabase
 from CodernityDB.index import IndexNotFoundException, IndexConflict, IndexException
 from CodernityDB.storage import IU_Storage
@@ -334,15 +335,48 @@ class srDatabase(object):
                 if os.path.isfile(self.old_db_path + '-shm'):
                     os.rename(self.old_db_path + '-shm', '{}-shm.{}_old'.format(self.old_db_path, random))
 
+    def delete_corrupted(self, _id, traceback_error=''):
+        try:
+            sickrage.app.log.debug('Deleted corrupted document "{}": {}'.format(_id, traceback_error))
+            corrupted = self.db.get('id', _id, with_storage=False)
+            self.db._delete_id_index(corrupted.get('_id'), corrupted.get('_rev'), None)
+        except:
+            log.debug('Failed deleting corrupted: {}'.format(traceback.format_exc()))
+
     def all(self, *args, **kwargs):
-        return (x['doc'] for x in self.db.all(with_doc=True, *args, **kwargs))
+        with_doc = kwargs.pop('with_doc', True)
+        for data in self.db.all(*args, **kwargs):
+            if with_doc:
+                try:
+                    doc = self.db.get('id', data['_id'])
+                    yield doc
+                except (RecordDeleted, RecordNotFound):
+                    sickrage.app.log.debug('Record not found, skipping: {}'.format(data['_id']))
+                except (ValueError, EOFError):
+                    self.delete_corrupted(data.get('_id'), traceback_error=traceback.format_exc(0))
+            else:
+                yield data
 
     def get_many(self, *args, **kwargs):
-        return (x['doc'] for x in self.db.get_many(with_doc=True, *args, **kwargs))
+        with_doc = kwargs.pop('with_doc', True)
+        for data in self.db.get_many(*args, **kwargs):
+            if with_doc:
+                try:
+                    doc = self.db.get('id', data['_id'])
+                    yield doc
+                except (RecordDeleted, RecordNotFound):
+                    sickrage.app.log.debug('Record not found, skipping: {}'.format(data['_id']))
+                except (ValueError, EOFError):
+                    self.delete_corrupted(data.get('_id'), traceback_error=traceback.format_exc(0))
+            else:
+                yield data
 
     def get(self, *args, **kwargs):
-        x = self.db.get(with_doc=True, *args, **kwargs)
-        return x.get('doc', x)
+        try:
+            x = self.db.get(with_doc=kwargs.get('with_doc', True), *args, **kwargs)
+            return x.get('doc', x)
+        except (RecordDeleted, RecordNotFound):
+            pass
 
     def delete(self, *args):
         return self.db.delete(*args)

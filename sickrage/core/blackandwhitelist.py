@@ -19,8 +19,6 @@
 
 from __future__ import unicode_literals
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from adba.aniDBerrors import AniDBCommandTimeoutError
 
@@ -85,10 +83,8 @@ class BlackAndWhiteList(object):
 
         :param table: database table remove keywords from
         """
-        try:
-            sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
-        except RecordNotFound:
-            pass
+        sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
+
 
     def _load_list(self, table):
         """

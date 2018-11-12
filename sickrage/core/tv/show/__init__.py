@@ -28,7 +28,7 @@ import threading
 import traceback
 
 import send2trash
-from CodernityDB.database import RecordNotFound, RevConflict
+from CodernityDB.database import RevConflict
 from unidecode import unidecode
 
 import sickrage
@@ -948,13 +948,10 @@ class TVShow(object):
             self.release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
-            try:
-                # Get IMDb_info from database
-                self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
-            except RecordNotFound:
-                pass
+            # Get IMDb_info from database
+            self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
 
-    def loadFromIndexer(self, cache=True, tvapi=None, cachedSeason=None):
+    def loadFromIndexer(self, cache=True, tvapi=None):
 
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
@@ -1039,14 +1036,15 @@ class TVShow(object):
 
             try:
                 dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                dbData.update(self.imdb_info)
-                sickrage.app.main_db.update(dbData)
+                if dbData:
+                    dbData.update(self.imdb_info)
+                    sickrage.app.main_db.update(dbData)
+                else:
+                    imdb_info.update(self.imdb_info)
+                    sickrage.app.main_db.insert(imdb_info)
             except RevConflict:
                 dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
                 sickrage.app.main_db.delete(dbData)
-                imdb_info.update(self.imdb_info)
-                sickrage.app.main_db.insert(imdb_info)
-            except RecordNotFound:
                 imdb_info.update(self.imdb_info)
                 sickrage.app.main_db.insert(imdb_info)
 
@@ -1256,11 +1254,11 @@ class TVShow(object):
             "search_delay": self.search_delay,
         }
 
-        try:
-            dbData = sickrage.app.main_db.get('tv_shows', self.indexerid)
+        dbData = sickrage.app.main_db.get('tv_shows', self.indexerid)
+        if dbData:
             dbData.update(tv_show)
             sickrage.app.main_db.update(dbData)
-        except RecordNotFound:
+        else:
             sickrage.app.main_db.insert(tv_show)
 
     def __str__(self):

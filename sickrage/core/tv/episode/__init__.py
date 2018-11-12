@@ -25,8 +25,6 @@ import threading
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
@@ -773,14 +771,12 @@ class TVEpisode(object):
             "release_group": self.release_group
         }
 
-        try:
-            for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid):
-                if x['indexerid'] == self.indexerid:
-                    x.update(tv_episode)
-                    sickrage.app.main_db.update(x)
-                    return
-            raise RecordNotFound
-        except RecordNotFound:
+        for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid):
+            if x['indexerid'] == self.indexerid:
+                x.update(tv_episode)
+                sickrage.app.main_db.update(x)
+                break
+        else:
             sickrage.app.main_db.insert(tv_episode)
 
     def fullPath(self):

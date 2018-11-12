@@ -22,8 +22,6 @@ import datetime
 import time
 
 import feedparser
-from CodernityDB.database import RecordNotFound
-from CodernityDB.index import IndexNotFoundException
 
 import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI
@@ -121,23 +119,23 @@ class TVCache(object):
 
     @property
     def last_update(self):
-        try:
-            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
+        dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
+        if dbData:
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
-        except (RecordNotFound, IndexNotFoundException):
+        else:
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_update.setter
     def last_update(self, toDate):
-        try:
-            dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
+        dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
+        if dbData:
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except (RecordNotFound, IndexNotFoundException):
+        else:
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,
@@ -146,23 +144,23 @@ class TVCache(object):
 
     @property
     def last_search(self):
-        try:
-            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
+        dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
+        if dbData:
             lastTime = int(dbData["time"])
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
-        except (RecordNotFound, IndexNotFoundException):
+        else:
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
     def last_search(self, toDate):
-        try:
-            dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
+        dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
+        if dbData:
             dbData['time'] = int(time.mktime(toDate.timetuple()))
             sickrage.app.cache_db.update(dbData)
-        except (RecordNotFound, IndexNotFoundException):
+        else:
             sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',
                 'provider': self.providerID,

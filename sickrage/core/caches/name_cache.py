@@ -22,8 +22,6 @@ from __future__ import unicode_literals
 import time
 from datetime import datetime, timedelta
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from sickrage.core.helpers import full_sanitizeSceneName
 from sickrage.core.helpers.encoding import strip_accents
@@ -55,16 +53,8 @@ class NameCache(object):
 
         self.cache[name] = int(indexer_id)
 
-        try:
-            if not len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
-                        if x['indexer_id'] == indexer_id]):
-                # insert name into cache
-                sickrage.app.cache_db.insert({
-                    '_t': 'scene_names',
-                    'indexer_id': indexer_id,
-                    'name': name
-                })
-        except RecordNotFound:
+        dbData = [x for x in sickrage.app.cache_db.get_many('scene_names', name) if x['indexer_id'] == indexer_id]
+        if not len(dbData):
             # insert name into cache
             sickrage.app.cache_db.insert({
                 '_t': 'scene_names',
@@ -102,12 +92,9 @@ class NameCache(object):
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
-            try:
-                if len([x for x in sickrage.app.cache_db.get_many('scene_names', name)
-                        if x['indexer_id'] == indexer_id]):
-                    continue
-            except RecordNotFound:
-                pass
+            dbData = [x for x in sickrage.app.cache_db.get_many('scene_names', name) if x['indexer_id'] == indexer_id]
+            if len(dbData):
+                continue
 
             # insert name into cache
             sickrage.app.cache_db.insert({
