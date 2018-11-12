@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 23:24-0800\n"
-"PO-Revision-Date: 2018-11-12 07:26\n"
+"POT-Creation-Date: 2018-11-12 11:36-0800\n"
+"PO-Revision-Date: 2018-11-12 19:38\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Ukrainian\n"
 "MIME-Version: 1.0\n"
@@ -6155,15 +6155,15 @@ msgstr "Ігноруються"
 msgid "Episode snatched"
 msgstr "Епізод схопив"
 
-#: sickrage/core/version_updater.py:64
+#: sickrage/core/version_updater.py:65
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Нове оновлення знайдено для SiCKRAGE, починаючи автоматичного оновлення"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:68
 msgid "Update was successful"
 msgstr "Оновлення була успішною"
 
-#: sickrage/core/version_updater.py:71
+#: sickrage/core/version_updater.py:72
 msgid "Update failed!"
 msgstr "Не вдалося оновити!"
 
@@ -6179,23 +6179,23 @@ msgstr "Config резервного копіювання успішним, он�
 msgid "Config backup failed, aborting update"
 msgstr "Config резервне копіювання не вдалося, переривання оновлення"
 
-#: sickrage/core/version_updater.py:216
+#: sickrage/core/version_updater.py:231
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Не вдалося знайти ваш git виконуваний - набір git шлях, від параметрів-> генерала-> додатково OR видалити папку .git і запустити з джерела, щоб увімкнути оновлення."
 
-#: sickrage/core/version_updater.py:263
+#: sickrage/core/version_updater.py:278
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Не вдалося знайти виконуваний ваш Піп-встановіть Піп шлях від параметрів-> генерала-> додатково"
 
-#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
+#: sickrage/core/version_updater.py:439 sickrage/core/version_updater.py:576
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Існує новіша версія доступна, версія {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:557
+#: sickrage/core/version_updater.py:572
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Невідомий номер поточної версії: Я ніколи не використовували SiCKRAGE оновлення системи перед, то поточна версія не встановлено. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:715
+#: sickrage/core/version_updater.py:730
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
@@ -6208,53 +6208,53 @@ msgstr "Ні завантажень не виявлено"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Не міг знайти завантаження для <i>%s</i>"
 
-#: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2659
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2659
 #: sickrage/core/webserver/views.py:2671
 msgid "Unable to add show"
 msgstr "Не вдалося додати шоу"
 
-#: sickrage/core/queues/show.py:291
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Показати у {} не має назви на {}, ймовірно неправильною мовою. . Nfo видалити і додати вручну в потрібну мову"
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "Показати "
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " увімкнено "
 
-#: sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " але не містить сезон/епізод."
 
-#: sickrage/core/queues/show.py:312
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Не вдалося подивитися шоу у {} з {} за допомогою Ідентифікатора {}, не використовуючи на NFO. Видалити. nfo і спробуйте додати вручну знову."
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "Не вдалося додати "
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " через помилку з "
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "Не вдалося додати шоу через помилку з "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "Показують пропущені"
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "Шоу в "
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " вже є у вашому списку Показати"
 

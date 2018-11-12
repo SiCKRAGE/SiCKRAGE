@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 23:24-0800\n"
-"PO-Revision-Date: 2018-11-12 07:25\n"
+"POT-Creation-Date: 2018-11-12 11:36-0800\n"
+"PO-Revision-Date: 2018-11-12 19:37\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -6155,15 +6155,15 @@ msgstr "Ignoreret"
 msgid "Episode snatched"
 msgstr "Episode snappede"
 
-#: sickrage/core/version_updater.py:64
+#: sickrage/core/version_updater.py:65
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Nye opdatering fundet for SiCKRAGE, start auto-updater"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:68
 msgid "Update was successful"
 msgstr "Opdateringen blev gennemført"
 
-#: sickrage/core/version_updater.py:71
+#: sickrage/core/version_updater.py:72
 msgid "Update failed!"
 msgstr "Opdateringen mislykkedes!"
 
@@ -6179,23 +6179,23 @@ msgstr "Config backup vellykket, opdatering..."
 msgid "Config backup failed, aborting update"
 msgstr "Config backup mislykkedes, afbrydes opdateringen"
 
-#: sickrage/core/version_updater.py:216
+#: sickrage/core/version_updater.py:231
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Stand til at finde din git eksekverbare - sæt din git sti fra indstillinger-> General-> avanceret eller slette mappen .git og køre fra kilde at aktivere opdateringer."
 
-#: sickrage/core/version_updater.py:263
+#: sickrage/core/version_updater.py:278
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Stand til at finde din pip eksekverbare - sæt din pip sti fra indstillinger-> General-> avanceret"
 
-#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
+#: sickrage/core/version_updater.py:439 sickrage/core/version_updater.py:576
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Der er en nyere version til rådighed, version {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:557
+#: sickrage/core/version_updater.py:572
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Ukendt aktuelle versionsnummer: hvis yo har aldrig brugt SiCKRAGE opgradere systemet før så aktuelle version ikke er angivet. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:715
+#: sickrage/core/version_updater.py:730
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
@@ -6208,53 +6208,53 @@ msgstr "Ingen downloads blev ikke fundet"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Kunne ikke finde en download for <i>%s</i>"
 
-#: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2659
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2659
 #: sickrage/core/webserver/views.py:2671
 msgid "Unable to add show"
 msgstr "Stand til at tilføje show"
 
-#: sickrage/core/queues/show.py:291
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Vis i {} har intet navn på {}, sandsynligvis det forkerte sprog. Slette .nfo og tilføje manuelt i det korrekte sprog"
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "Vis "
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " er på "
 
-#: sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " men indeholder ingen sæson/episode data."
 
-#: sickrage/core/queues/show.py:312
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Stand til at slå op Vis i {} på {} ved hjælp af ID {}, ikke bruger NFO. Slette .nfo og prøv at tilføje manuelt igen."
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "Kunne ikke tilføjes "
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " på grund af en fejl med "
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "Stand til at tilføje Vis på grund af en fejl med "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "Vis springes"
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "Vis i "
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " er allerede på listen Vis"
 

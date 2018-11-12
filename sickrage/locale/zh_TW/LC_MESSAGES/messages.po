@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 23:24-0800\n"
-"PO-Revision-Date: 2018-11-12 07:26\n"
+"POT-Creation-Date: 2018-11-12 11:36-0800\n"
+"PO-Revision-Date: 2018-11-12 19:38\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Traditional\n"
 "MIME-Version: 1.0\n"
@@ -6155,15 +6155,15 @@ msgstr "忽略"
 msgid "Episode snatched"
 msgstr "搶走的插曲"
 
-#: sickrage/core/version_updater.py:64
+#: sickrage/core/version_updater.py:65
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "新的更新找不到 SiCKRAGE，開始自動更新程式"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:68
 msgid "Update was successful"
 msgstr "已成功更新"
 
-#: sickrage/core/version_updater.py:71
+#: sickrage/core/version_updater.py:72
 msgid "Update failed!"
 msgstr "更新失敗 ！"
 
@@ -6179,23 +6179,23 @@ msgstr "配置備份成功，更新..."
 msgid "Config backup failed, aborting update"
 msgstr "配置備份失敗，中止更新"
 
-#: sickrage/core/version_updater.py:216
+#: sickrage/core/version_updater.py:231
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "無法找到您的 git 可執行-集從設置-通用-高級或 > 你 git 路徑刪除您.git 資料夾並從要啟用更新源運行。"
 
-#: sickrage/core/version_updater.py:263
+#: sickrage/core/version_updater.py:278
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "無法找到您的 pip 可執行檔-設置您 pip 路徑從設置-通用-高級 >"
 
-#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
+#: sickrage/core/version_updater.py:439 sickrage/core/version_updater.py:576
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "有可用更新版本、 版本 {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:557
+#: sickrage/core/version_updater.py:572
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "未知的當前版本號： 如果你從未使用過 SiCKRAGE 升級系統之前則不設置當前版本。&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:715
+#: sickrage/core/version_updater.py:730
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
@@ -6208,53 +6208,53 @@ msgstr "沒有下載被發現"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "找不到下載的 <i>%s</i>"
 
-#: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2659
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2659
 #: sickrage/core/webserver/views.py:2671
 msgid "Unable to add show"
 msgstr "無法添加顯示"
 
-#: sickrage/core/queues/show.py:291
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "顯示在 {} {}，可能錯誤的語言有沒有名字。刪除.nfo 和手動添加正確的語言"
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "顯示"
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr "位於"
 
-#: sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr "但不包含任何季節/集資料。"
 
-#: sickrage/core/queues/show.py:312
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "無法查找在 {} {} 使用 {ID}，不使用 NFO 上顯示。刪除.nfo，再次嘗試添加手動。"
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "無法添加"
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr "由於與錯誤"
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "無法添加顯示適當的錯誤"
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "顯示已跳過"
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "在顯示"
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr "已在你顯示清單中"
 

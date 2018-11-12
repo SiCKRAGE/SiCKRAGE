@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-11 23:24-0800\n"
-"PO-Revision-Date: 2018-11-12 07:25\n"
+"POT-Creation-Date: 2018-11-12 11:36-0800\n"
+"PO-Revision-Date: 2018-11-12 19:37\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -6155,15 +6155,15 @@ msgstr "Figyelmen kívül hagyva"
 msgid "Episode snatched"
 msgstr "Epizód kikapta"
 
-#: sickrage/core/version_updater.py:64
+#: sickrage/core/version_updater.py:65
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Új frissítés található SiCKRAGE, kezdve az auto-updater"
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:68
 msgid "Update was successful"
 msgstr "A frissítés sikeres volt."
 
-#: sickrage/core/version_updater.py:71
+#: sickrage/core/version_updater.py:72
 msgid "Update failed!"
 msgstr "Nem sikerült frissíteni!"
 
@@ -6179,23 +6179,23 @@ msgstr "Config backup sikeres frissítése..."
 msgid "Config backup failed, aborting update"
 msgstr "Config biztonsági mentés nem sikerült, a frissítés megszakítása"
 
-#: sickrage/core/version_updater.py:216
+#: sickrage/core/version_updater.py:231
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "Képtelen-hoz talál a git végrehajtható - készlet git utad-> általános-> vagy speciális beállítások törléséhez a .git mappában, és Futtatás a forráshelyről lehetővé teszi a frissítések."
 
-#: sickrage/core/version_updater.py:263
+#: sickrage/core/version_updater.py:278
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Képtelen-hoz talál a pip végrehajtható - a pip elérési útjának beállítása, a beállítások-általános--> speciális->"
 
-#: sickrage/core/version_updater.py:424 sickrage/core/version_updater.py:561
+#: sickrage/core/version_updater.py:439 sickrage/core/version_updater.py:576
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Van egy újabb verzió, verzió {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:557
+#: sickrage/core/version_updater.py:572
 msgid "Unknown current version number: If yo've never used the SiCKRAGE upgrade system before then current version is not set. &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Ismeretlen aktuális verziószám: Ha yo soha nem használtam a SiCKRAGE frissítés rendszer előtt, akkor a jelenlegi verzió nincs beállítva. &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:715
+#: sickrage/core/version_updater.py:730
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
@@ -6208,53 +6208,53 @@ msgstr "Letöltések nem találtak"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nem tudtam megtalálni a letöltés, a <i>%s</i>"
 
-#: sickrage/core/queues/show.py:290 sickrage/core/queues/show.py:300
-#: sickrage/core/queues/show.py:311 sickrage/core/webserver/views.py:2659
+#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2659
 #: sickrage/core/webserver/views.py:2671
 msgid "Unable to add show"
 msgstr "Nem lehet hozzáadni a Térkép"
 
-#: sickrage/core/queues/show.py:291
+#: sickrage/core/queues/show.py:294
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Show-ban {} {}, valószínűleg a rossz nyelv nincs neve van. .Nfo törlése és hozzáadása manuálisan a megfelelő nyelven"
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid "Show "
 msgstr "Térkép "
 
-#: sickrage/core/queues/show.py:301
+#: sickrage/core/queues/show.py:304
 msgid " is on "
 msgstr " a "
 
-#: sickrage/core/queues/show.py:303
+#: sickrage/core/queues/show.py:306
 msgid " but contains no season/episode data."
 msgstr " de nem tartalmaz/évad adatokat."
 
-#: sickrage/core/queues/show.py:312
+#: sickrage/core/queues/show.py:315
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Nem kereshető vissza a show-ban {} {}, azonosító {}, nem használ az NFO segítségével a. .Nfo törölni, és próbálja meg hozzáadni manuálisan újra."
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid "Unable to add "
 msgstr "Nem lehet adni. "
 
-#: sickrage/core/queues/show.py:375
+#: sickrage/core/queues/show.py:378
 msgid " due to an error with "
 msgstr " Hiba történt a "
 
-#: sickrage/core/queues/show.py:379
+#: sickrage/core/queues/show.py:382
 msgid "Unable to add show due to an error with "
 msgstr "Nem lehet hozzáadni a Térkép-hiba történt a "
 
-#: sickrage/core/queues/show.py:384
+#: sickrage/core/queues/show.py:387
 msgid "Show skipped"
 msgstr "A következő szálláshely kimarad"
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid "The show in "
 msgstr "A show-ban "
 
-#: sickrage/core/queues/show.py:385
+#: sickrage/core/queues/show.py:388
 msgid " is already in your show list"
 msgstr " van már-ban listád-Térkép"
 
