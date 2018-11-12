@@ -23,7 +23,6 @@ import re
 import threading
 from datetime import datetime
 
-from CodernityDB.database import RecordNotFound
 from dateutil import tz
 
 import sickrage
@@ -71,30 +70,23 @@ class TimeZoneUpdater(object):
         for network, timezone in d.items():
             existing = network in self.network_dict
             if not existing:
-                try:
-                    sickrage.app.cache_db.get('network_timezones', network)
-                except RecordNotFound:
+                if not sickrage.app.cache_db.get('network_timezones', network):
                     sickrage.app.cache_db.insert({
                         '_t': 'network_timezones',
                         'network_name': ss(network),
                         'timezone': timezone
                     })
             elif self.network_dict[network] is not timezone:
-                try:
-                    dbData = sickrage.app.cache_db.get('network_timezones', network)
+                dbData = sickrage.app.cache_db.get('network_timezones', network)
+                if dbData:
                     dbData['timezone'] = timezone
                     sickrage.app.cache_db.update(dbData)
-                except RecordNotFound:
-                    continue
 
             if existing:
                 del self.network_dict[network]
 
         for x in self.network_dict:
-            try:
-                sickrage.app.cache_db.delete(sickrage.app.cache_db.get('network_timezones', x))
-            except RecordNotFound:
-                continue
+            sickrage.app.cache_db.delete(sickrage.app.cache_db.get('network_timezones', x))
 
         self.load_network_dict()
 

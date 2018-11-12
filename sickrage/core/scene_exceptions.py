@@ -24,8 +24,6 @@ import re
 import threading
 import time
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from adba.aniDBAbstracter import Anime
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
@@ -51,12 +49,12 @@ def shouldRefresh(exList):
     """
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
-    try:
-        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
-        lastRefresh = int(dbData['last_refreshed'])
-        return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
-    except RecordNotFound:
+    dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
+    if not dbData:
         return True
+
+    lastRefresh = int(dbData['last_refreshed'])
+    return int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
 
 
 def setLastRefresh(exList):
@@ -65,11 +63,11 @@ def setLastRefresh(exList):
 
     :param exList: exception list to set refresh time
     """
-    try:
-        dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
+    dbData = sickrage.app.cache_db.get('scene_exceptions_refresh', exList)
+    if dbData:
         dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
         sickrage.app.cache_db.update(dbData)
-    except RecordNotFound:
+    else:
         sickrage.app.cache_db.insert({
             '_t': 'scene_exceptions_refresh',
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
@@ -122,12 +120,13 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
         _anidb_exceptions_fetcher()
 
     for cur_indexer_id, cur_exception_dict in exception_dict.items():
-        if not len(cur_exception_dict): continue
+        if not len(cur_exception_dict):
+            continue
 
-        try:
-            existing_exceptions = [x["show_name"] for x in
-                                   sickrage.app.cache_db.get_many('scene_exceptions', cur_indexer_id)]
-        except RecordNotFound:
+        existing_exceptions = [x["show_name"] for x in
+                               sickrage.app.cache_db.get_many('scene_exceptions', cur_indexer_id)]
+
+        if not len(existing_exceptions):
             continue
 
         for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():

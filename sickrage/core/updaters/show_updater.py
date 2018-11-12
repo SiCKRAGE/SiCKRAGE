@@ -22,8 +22,6 @@ import datetime
 import threading
 import time
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from sickrage.core.exceptions import CantRefreshShowException, CantUpdateShowException
 from sickrage.core.ui import ProgressIndicators, QueueProgressIndicator
@@ -47,10 +45,10 @@ class ShowUpdater(object):
 
         update_timestamp = int(time.mktime(datetime.datetime.now().timetuple()))
 
-        try:
-            dbData = sickrage.app.cache_db.get('lastUpdate', 'theTVDB')
+        dbData = sickrage.app.cache_db.get('lastUpdate', 'theTVDB')
+        if dbData:
             last_update = int(dbData['time'])
-        except RecordNotFound:
+        else:
             last_update = update_timestamp
             dbData = sickrage.app.cache_db.insert({
                 '_t': 'lastUpdate',

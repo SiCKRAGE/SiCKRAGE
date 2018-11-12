@@ -1,6 +1,7 @@
 # Changelog
 
-- * c1ad198 - 2018-11-11: Release v9.4.29 
+- * 0e4c60f - 2018-11-11: Refactored get, all, and get_many database functions. 
+- * f87d6ad - 2018-11-11: Release v9.4.29 
 - * 7d0812a - 2018-11-11: Pre-Release v9.4.29.dev2 
 - * 8028ae9 - 2018-11-11: Default subtitle language of English choosen if no language is specified in subtitle settings 
 - * 5eef56e - 2018-11-11: Pre-Release v9.4.29.dev1 

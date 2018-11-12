@@ -23,8 +23,6 @@ import datetime
 import time
 import traceback
 
-from CodernityDB.database import RecordNotFound
-
 import sickrage
 from sickrage.core.helpers import findCertainShow, try_int
 from sickrage.core.websession import WebSession
@@ -478,23 +476,23 @@ def xem_refresh(indexer_id, indexer, force=False):
 
     MAX_REFRESH_AGE_SECS = 86400  # 1 day
 
-    try:
-        dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
+    refresh = True
+
+    dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
+    if dbData:
         lastRefresh = try_int(dbData['last_refreshed'])
         refresh = int(time.mktime(datetime.datetime.today().timetuple())) > lastRefresh + MAX_REFRESH_AGE_SECS
-    except RecordNotFound:
-        refresh = True
 
     if refresh or force:
         sickrage.app.log.debug(
             'Looking up XEM scene mapping for show %s on %s' % (indexer_id, IndexerApi(indexer).name))
 
         # mark refreshed
-        try:
-            dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
+        dbData = sickrage.app.main_db.get('xem_refresh', indexer_id)
+        if dbData:
             dbData['last_refreshed'] = int(time.mktime(datetime.datetime.today().timetuple()))
             sickrage.app.main_db.update(dbData)
-        except RecordNotFound:
+        else:
             sickrage.app.main_db.insert({
                 '_t': 'xem_refresh',
                 'indexer': indexer,

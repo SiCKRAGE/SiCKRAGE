@@ -32,7 +32,6 @@ from urlparse import urlparse, urljoin
 import dateutil.tz
 import markdown2
 import tornado.locale
-from CodernityDB.database import RecordNotFound
 from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
@@ -3475,10 +3474,7 @@ class Manage(Home, WebRoot):
         toRemove = toRemove.split("|") if toRemove is not None else []
 
         for release in toRemove:
-            try:
-                [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('failed_snatches', release)]
-            except RecordNotFound:
-                continue
+            [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('failed_snatches', release)]
 
         if toRemove:
             return self.redirect('/manage/failedDownloads/')
