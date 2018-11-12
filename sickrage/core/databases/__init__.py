@@ -344,8 +344,9 @@ class srDatabase(object):
             log.debug('Failed deleting corrupted: {}'.format(traceback.format_exc()))
 
     def all(self, *args, **kwargs):
+        with_doc = kwargs.pop('with_doc', True)
         for data in self.db.all(*args, **kwargs):
-            if kwargs.pop('with_doc', True):
+            if with_doc:
                 try:
                     doc = self.db.get('id', data['_id'])
                     yield doc
@@ -357,8 +358,9 @@ class srDatabase(object):
                 yield data
 
     def get_many(self, *args, **kwargs):
+        with_doc = kwargs.pop('with_doc', True)
         for data in self.db.get_many(*args, **kwargs):
-            if kwargs.pop('with_doc', True):
+            if with_doc:
                 try:
                     doc = self.db.get('id', data['_id'])
                     yield doc
@@ -371,7 +373,7 @@ class srDatabase(object):
 
     def get(self, *args, **kwargs):
         try:
-            x = self.db.get(with_doc=kwargs.pop('with_doc', True), *args, **kwargs)
+            x = self.db.get(with_doc=kwargs.get('with_doc', True), *args, **kwargs)
             return x.get('doc', x)
         except (RecordDeleted, RecordNotFound):
             pass
