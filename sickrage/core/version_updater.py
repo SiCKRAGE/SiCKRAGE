@@ -73,36 +73,36 @@ class VersionUpdater(object):
             self.amActive = False
 
     def backup(self):
-        if self.safe_to_update():
-            # Do a system backup before update
-            sickrage.app.log.info("Config backup in progress...")
-            sickrage.app.alerts.message(_('Backup'), _('Config backup in progress...'))
-            try:
-                backupDir = os.path.join(sickrage.app.data_dir, 'backup')
-                if not os.path.isdir(backupDir):
-                    os.mkdir(backupDir)
+        # Do a system backup before update
+        sickrage.app.log.info("Config backup in progress...")
+        sickrage.app.alerts.message(_('Backup'), _('Config backup in progress...'))
+        try:
+            backupDir = os.path.join(sickrage.app.data_dir, 'backup')
+            if not os.path.isdir(backupDir):
+                os.mkdir(backupDir)
 
-                if backupSR(backupDir, keep_latest=True):
-                    sickrage.app.log.info("Config backup successful, updating...")
-                    sickrage.app.alerts.message(_('Backup'), _('Config backup successful, updating...'))
-                    return True
-                else:
-                    sickrage.app.log.warning("Config backup failed, aborting update")
-                    sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
-                    return False
-            except Exception as e:
-                sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
+            if backupSR(backupDir, keep_latest=True):
+                sickrage.app.log.info("Config backup successful, updating...")
+                sickrage.app.alerts.message(_('Backup'), _('Config backup successful, updating...'))
+                return True
+            else:
+                sickrage.app.log.warning("Config backup failed, aborting update")
                 sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
                 return False
+        except Exception as e:
+            sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
+            sickrage.app.alerts.message(_('Backup'), _('Config backup failed, aborting update'))
+            return False
 
     @staticmethod
     def safe_to_update():
-        if not sickrage.app.started:
-            return True
-        if not sickrage.app.auto_postprocessor.amActive:
-            return True
+        if sickrage.app.show_queue.is_busy:
+            sickrage.app.log.debug("We can't proceed with updating, show queue is busy")
+            return False
 
-        sickrage.app.log.debug("We can't proceed with the update. Post-Processor is running")
+        if sickrage.app.auto_postprocessor.amActive:
+            sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
+            return False
 
     @staticmethod
     def find_install_type():
@@ -145,20 +145,31 @@ class VersionUpdater(object):
             return True
 
     def update(self):
-        if self.updater and self.backup():
+        if self.updater:
+            # check if its safe to update
+            if not self.safe_to_update():
+                return False
+
+            # backup
+            if not self.backup():
+                return False
+
             # check for updates
-            if self.updater.need_update():
-                if self.updater.update():
-                    # Clean up after update
-                    to_clean = os.path.join(sickrage.app.cache_dir, 'mako')
+            if not self.updater.need_update():
+                return False
 
-                    for root, dirs, files in os.walk(to_clean, topdown=False):
-                        [os.remove(os.path.join(root, name)) for name in files]
-                        [shutil.rmtree(os.path.join(root, name)) for name in dirs]
+            # attempt update
+            if self.updater.update():
+                # Clean up after update
+                to_clean = os.path.join(sickrage.app.cache_dir, 'mako')
 
-                    sickrage.app.config.view_changelog = True
+                for root, dirs, files in os.walk(to_clean, topdown=False):
+                    [os.remove(os.path.join(root, name)) for name in files]
+                    [shutil.rmtree(os.path.join(root, name)) for name in dirs]
 
-                    return True
+                sickrage.app.config.view_changelog = True
+
+                return True
 
     @property
     def version(self):

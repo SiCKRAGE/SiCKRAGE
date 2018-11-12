@@ -44,6 +44,10 @@ class ShowQueue(srQueue):
         srQueue.__init__(self, "SHOWQUEUE")
 
     @property
+    def is_busy(self):
+        return bool(len(self._get_queue_items()))
+
+    @property
     def loading_show_list(self):
         return self._get_loading_show_list()
 
@@ -52,7 +56,7 @@ class ShowQueue(srQueue):
                                   x.action_id in actions] if show else False
 
     def _is_being(self, show, actions):
-        return self.currentItem is not None and show == self.currentItem.show and self.currentItem.action_id in actions
+        return self.current_item is not None and show == self.current_item.show and self.current_item.action_id in actions
 
     def is_in_update_queue(self, show):
         return self._is_in_queue(show, (ShowQueueActions.UPDATE, ShowQueueActions.FORCEUPDATE))
@@ -84,8 +88,11 @@ class ShowQueue(srQueue):
     def is_being_subtitled(self, show):
         return self._is_being(show, (ShowQueueActions.SUBTITLE,))
 
+    def _get_queue_items(self):
+        return [x for __, __, x in self.queue + [(None, None, self.current_item)] if x]
+
     def _get_loading_show_list(self):
-        return [x for __, __, x in self.queue + [(None, None, self.currentItem)] if x and x.is_loading]
+        return [x for x in self._get_queue_items() if x.is_loading]
 
     def updateShow(self, show, force=False):
         if self.is_being_added(show):
@@ -155,7 +162,7 @@ class ShowQueue(srQueue):
 
         # remove other queued actions for this show.
         for __, __, x in self.queue:
-            if x and x.show and x != self.currentItem and show.indexerid == x.show.indexerid:
+            if x and x.show and x != self.current_item and show.indexerid == x.show.indexerid:
                 self.queue.remove(x)
 
         return self.put(QueueItemRemove(show=show, full=full))
@@ -204,7 +211,7 @@ class ShowQueueItem(srQueueItem):
         self.show.flushEpisodes()
 
     def is_in_queue(self):
-        return self in sickrage.app.show_queue.queue + [sickrage.app.show_queue.currentItem]
+        return self in sickrage.app.show_queue.queue + [sickrage.app.show_queue.current_item]
 
     @property
     def show_name(self):

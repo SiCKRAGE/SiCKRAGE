@@ -122,36 +122,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                            % if sickrage.app.show_queue.currentItem is not None:
+                            % if sickrage.app.show_queue.current_item is not None:
                                 <tr>
                                 % try:
-                                    <% showindexerid = sickrage.app.show_queue.currentItem.show.indexerid %>
+                                    <% showindexerid = sickrage.app.show_queue.current_item.show.indexerid %>
                                     <td>${showindexerid}</td>
                                 % except Exception:
                                     <td></td>
                                 % endtry
                                 % try:
-                                    <% showname = sickrage.app.show_queue.currentItem.show.name %>
+                                    <% showname = sickrage.app.show_queue.current_item.show.name %>
                                     <td>${showname}</td>
                                 % except Exception:
-                                    % if sickrage.app.show_queue.currentItem.action_id == ShowQueueActions.ADD:
-                                        <td>${sickrage.app.show_queue.currentItem.showDir}</td>
+                                    % if sickrage.app.show_queue.current_item.action_id == ShowQueueActions.ADD:
+                                        <td>${sickrage.app.show_queue.current_item.showDir}</td>
                                     % else:
                                         <td></td>
                                     % endif
                                 % endtry
-                                    <td>${sickrage.app.show_queue.currentItem.is_alive()}</td>
-                                    % if sickrage.app.show_queue.currentItem.priority == 10:
+                                    <td>${sickrage.app.show_queue.current_item.is_alive()}</td>
+                                    % if sickrage.app.show_queue.current_item.priority == 10:
                                         <td>${_('LOW')}</td>
-                                    % elif sickrage.app.show_queue.currentItem.priority == 20:
+                                    % elif sickrage.app.show_queue.current_item.priority == 20:
                                         <td>${_('NORMAL')}</td>
-                                    % elif sickrage.app.show_queue.currentItem.priority == 30:
+                                    % elif sickrage.app.show_queue.current_item.priority == 30:
                                         <td>${_('HIGH')}</td>
                                     % else:
-                                        <td>${sickrage.app.show_queue.currentItem.priority}</td>
+                                        <td>${sickrage.app.show_queue.current_item.priority}</td>
                                     % endif
-                                    <td>${sickrage.app.show_queue.currentItem.added.strftime(dateTimeFormat)}</td>
-                                    <td>${ShowQueueActions.names[sickrage.app.show_queue.currentItem.action_id]}</td>
+                                    <td>${sickrage.app.show_queue.current_item.added.strftime(dateTimeFormat)}</td>
+                                    <td>${ShowQueueActions.names[sickrage.app.show_queue.current_item.action_id]}</td>
                                 </tr>
                             % endif
                             % for __, __, item in sickrage.app.show_queue.queue:

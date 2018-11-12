@@ -2031,7 +2031,7 @@ class Home(WebHandler):
         # Running Searches
         searchstatus = 'searching'
         if sickrage.app.search_queue.is_manualsearch_in_progress():
-            searchThread = sickrage.app.search_queue.currentItem
+            searchThread = sickrage.app.search_queue.current_item
 
             if searchThread.success:
                 searchstatus = 'finished'

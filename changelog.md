@@ -1,6 +1,7 @@
 # Changelog
 
-- * 1589213 - 2018-11-11: Release v9.4.30 
+- * e191b1e - 2018-11-12: Refactored queue current item property to always represent current running task. 
+- * 8bd128e - 2018-11-11: Release v9.4.30 
 - * 90fdbb1 - 2018-11-11: Pre-Release v9.4.30.dev1 
 - * 007df0a - 2018-11-11: Refactored get, all, and get_many database functions. 
 - * f87d6ad - 2018-11-11: Release v9.4.29 
