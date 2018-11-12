@@ -1084,13 +1084,11 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.app.pid):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        if sickrage.app.version_updater.update():
-            sickrage.app.newest_version_string = None
-            return self.restart(pid)
-        else:
-            self._genericMessage(_("Update Failed"),
-                                 _("Update wasn't successful, not restarting. Check your log for more information."))
-            return self.redirect(self.previous_url())
+        sickrage.app.alerts.message(_('Updating SiCKRAGE'))
+
+        sickrage.app.event_queue.fire_event(sickrage.app.version_updater.update, webui=True)
+
+        return self.redirect(self.previous_url())
 
     def verifyPath(self, path):
         if os.path.isfile(path):
@@ -1513,7 +1511,7 @@ class Home(WebHandler):
             return map(str, warnings + errors)
 
         if len(warnings) > 0:
-            sickrage.app.alerts.warning(
+            sickrage.app.alerts.message(
                 _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
                                                                                plural="" if len(warnings) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>{0}</li>'.format(warning) for warning in warnings]) + "</ul>")

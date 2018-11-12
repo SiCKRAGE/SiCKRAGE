@@ -1,6 +1,7 @@
 # Changelog
 
-- * 232f6ad - 2018-11-12: Pre-Release v9.4.31.dev3 
+- * c08794a - 2018-11-12: Pre-Release v9.4.31.dev4 
+- * 12f8ad6 - 2018-11-12: Pre-Release v9.4.31.dev3 
 - * 82115fc - 2018-11-12: Pre-Release v9.4.31.dev2 
 - * bbac0e2 - 2018-11-12: Pre-Release v9.4.31.dev1 
 - * ae00748 - 2018-11-12: Updater now waits for show queue to finish before updating. 

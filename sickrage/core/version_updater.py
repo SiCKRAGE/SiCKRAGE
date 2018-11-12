@@ -33,6 +33,7 @@ from time import sleep
 import sickrage
 from sickrage.core.helpers import backupSR
 from sickrage.core.websession import WebSession
+from sickrage.core.websocket import WebSocketMessage
 from sickrage.notifiers import Notifiers
 
 
@@ -101,10 +102,10 @@ class VersionUpdater(object):
             sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
             return False
 
-        # sickrage.app.show_queue.pause()
-        # sickrage.app.log.debug("Waiting for show queue jobs to finish")
-        # while sickrage.app.show_queue.is_busy:
-        #     sleep(1)
+        sickrage.app.show_queue.pause()
+        sickrage.app.log.debug("Waiting for show queue jobs to finish")
+        while sickrage.app.show_queue.is_busy:
+            sleep(1)
 
         return True
 
@@ -148,7 +149,7 @@ class VersionUpdater(object):
                 self.updater.set_newest_text()
             return True
 
-    def update(self):
+    def update(self, webui=False):
         if self.updater:
             # check if its safe to update
             if not self.safe_to_update():
@@ -173,7 +174,16 @@ class VersionUpdater(object):
 
                 sickrage.app.config.view_changelog = True
 
+                if webui:
+                    sickrage.app.newest_version_string = None
+                    WebSocketMessage('redirect', {
+                        'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root, sickrage.app.pid)}).push()
+
                 return True
+
+            if webui:
+                sickrage.app.alerts.error(_("Update Failed"), _("Update wasn't successful, not restarting. Check your "
+                                                                "log for more information."))
 
     @property
     def version(self):
