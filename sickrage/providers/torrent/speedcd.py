@@ -18,10 +18,7 @@
 
 from __future__ import unicode_literals
 
-import re
 from urlparse import urljoin
-
-from requests.utils import dict_from_cookiejar
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -38,37 +35,47 @@ class SpeedCDProvider(TorrentProvider):
             'search': '{base_url}/browse.php'.format(**self.urls),
         })
 
-        self.username = None
-        self.password = None
+        # self.username = None
+        # self.password = None
 
         self.freeleech = False
         self.minseed = None
         self.minleech = None
+
+        self.enable_cookies = True
+        self.required_cookies = ('inSpeed_uid', 'inSpeed_speedian')
 
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         self.cache = TVCache(self, min_time=20)
 
     def login(self):
-        if any(dict_from_cookiejar(self.session.cookies).values()):
-            return True
+        return self.cookie_login('log in')
 
-        login_params = {'username': self.username,
-                        'password': self.password}
-
-        try:
-            data = bs4_parser(self.session.get(self.urls['login']).text)
-            login_url = data.soup.find('form', id='loginform').get('action')
-            response = self.session.post(login_url, data=login_params, timeout=30).text
-        except Exception:
-            sickrage.app.log.warning("Unable to connect to provider")
-            return False
-
-        if re.search('Incorrect username or Password. Please try again.', response):
-            sickrage.app.log.warning("Invalid username or password. Check your settings")
-            return False
-
-        return True
+    # def login(self):
+    #     if any(dict_from_cookiejar(self.session.cookies).values()):
+    #         return True
+    #
+    #     login_params = {
+    #         'username': self.username,
+    #         'password': self.password
+    #     }
+    #
+    #     try:
+    #         with bs4_parser(self.session.get(self.urls['login']).text) as html:
+    #             login_url = urljoin(self.urls['base_url'], html.find('form', id='loginform').get('action'))
+    #             response = self.session.post(login_url, data=login_params, timeout=30).text
+    #     except Exception:
+    #         sickrage.app.log.warning("Unable to connect to provider")
+    #         self.session.cookies.clear()
+    #         return False
+    #
+    #     if 'logout.php' not in response.lower():
+    #         sickrage.app.log.warning("Invalid username or password, check your settings.")
+    #         self.session.cookies.clear()
+    #         return False
+    #
+    #     return True
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []

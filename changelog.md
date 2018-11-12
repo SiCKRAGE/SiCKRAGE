@@ -1,6 +1,7 @@
 # Changelog
 
-- * fa636d3 - 2018-11-12: Release v9.4.31 
+- * 65b6699 - 2018-11-12: Refactored speed.cd torrent provider to use cookie login. 
+- * 2abdafe - 2018-11-12: Release v9.4.31 
 - * fcdd0e0 - 2018-11-12: Added more UI notifications for version updater. 
 - * 971fc67 - 2018-11-12: Pre-Release v9.4.31.dev5 
 - * 4d0d839 - 2018-11-12: Pre-Release v9.4.31.dev4 
