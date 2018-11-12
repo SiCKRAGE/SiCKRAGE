@@ -44,10 +44,6 @@ class ShowQueue(srQueue):
         srQueue.__init__(self, "SHOWQUEUE")
 
     @property
-    def is_busy(self):
-        return bool(len(self._get_queue_items()))
-
-    @property
     def loading_show_list(self):
         return self._get_loading_show_list()
 

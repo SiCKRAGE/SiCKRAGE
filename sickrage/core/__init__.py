@@ -473,7 +473,7 @@ class Core(object):
         self.wserver.start()
 
         # fire off startup events
-        self.event_queue.fire_event(self.version_updater.run)
+        self.event_queue.fire_event(self.version_updater.run, force=True)
         self.event_queue.fire_event(self.tz_updater.run)
 
         # start ioloop

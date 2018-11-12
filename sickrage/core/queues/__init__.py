@@ -121,17 +121,21 @@ class srQueue(threading.Thread):
         return item
 
     @property
+    def is_busy(self):
+        return bool(len([x for x in self._current_items if x.isAlive()]))
+
+    @property
     def is_paused(self):
         return self.min_priority == srQueuePriorities.PAUSED
 
     def pause(self):
         """Pauses this queue"""
-        sickrage.app.log.info("Pausing queue")
+        sickrage.app.log.info("Pausing {}".format(self.name))
         self.min_priority = srQueuePriorities.PAUSED
 
     def unpause(self):
         """Unpauses this queue"""
-        sickrage.app.log.info("Unpausing queue")
+        sickrage.app.log.info("Un-pausing {}".format(self.name))
         self.min_priority = srQueuePriorities.EXTREME
 
     def shutdown(self):

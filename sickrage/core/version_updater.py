@@ -28,6 +28,7 @@ import subprocess
 import sys
 import tarfile
 import threading
+from time import sleep
 
 import sickrage
 from sickrage.core.helpers import backupSR
@@ -96,13 +97,16 @@ class VersionUpdater(object):
 
     @staticmethod
     def safe_to_update():
-        if sickrage.app.show_queue.is_busy:
-            sickrage.app.log.debug("We can't proceed with updating, show queue is busy")
-            return False
-
         if sickrage.app.auto_postprocessor.amActive:
             sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
             return False
+
+        sickrage.app.show_queue.pause()
+        sickrage.app.log.debug("Waiting for show queue jobs to finish")
+        while sickrage.app.show_queue.is_busy:
+            sleep(1)
+
+        return True
 
     @staticmethod
     def find_install_type():
