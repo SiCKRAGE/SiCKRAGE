@@ -32,7 +32,7 @@ from requests.utils import dict_from_cookiejar
 from urllib3 import disable_warnings
 
 import sickrage
-from sickrage.core.helpers import chmodAsParent, remove_file_failed
+from sickrage.core.helpers import chmod_as_parent, remove_file_failed
 from sickrage.core.helpers.encoding import to_unicode
 
 
@@ -113,7 +113,7 @@ class WebSession(Session):
                     if chunk:
                         f.write(chunk)
 
-            chmodAsParent(filename)
+            chmod_as_parent(filename)
         except Exception as e:
             sickrage.app.log.debug("Failed to download file from {} - ERROR: {}".format(url, e))
             remove_file_failed(filename)

@@ -24,7 +24,7 @@ import os
 
 import sickrage
 from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import chmodAsParent
+from sickrage.core.helpers import chmod_as_parent
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
@@ -312,7 +312,7 @@ class TIVOMetadata(GenericMetadata):
             if not os.path.isdir(nfo_file_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
-                chmodAsParent(nfo_file_dir)
+                chmod_as_parent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
@@ -320,7 +320,7 @@ class TIVOMetadata(GenericMetadata):
                 # Calling encode directly, b/c often descriptions have wonky characters.
                 nfo_file.write(data.encode("utf-8"))
 
-            chmodAsParent(nfo_file_path)
+            chmod_as_parent(nfo_file_path)
 
         except EnvironmentError as e:
             sickrage.app.log.warning(

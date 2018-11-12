@@ -668,10 +668,10 @@
                     % for flag in (epResult["subtitles"] or '').split(','):
                         % if sickrage.subtitles.name_from_code(flag).lower() != 'undetermined':
                             % if flag.strip() != 'und':
-                                <i class="sickrage-flags sickrage-flag-${flag}"
+                                <i class="sickrage-flags sickrage-flags-${flag}"
                                    title="${sickrage.subtitles.name_from_code(flag)}"></i>
                             % else:
-                                <i class="sickrage-flags sickrage-flag-${flag}"
+                                <i class="sickrage-flags sickrage-flags-${flag}"
                                    title="${sickrage.subtitles.name_from_code(flag)}"></i>
                             % endif
                         % else:

@@ -26,7 +26,7 @@ from datetime import date
 import sickrage
 from sickrage.core.common import Quality
 from sickrage.core.common import SKIPPED, WANTED, UNKNOWN
-from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmodAsParent
+from sickrage.core.helpers import findCertainShow, sanitizeFileName, makeDir, chmod_as_parent
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.indexers import IndexerApi
@@ -428,7 +428,7 @@ class TraktSearcher(object):
                     sickrage.app.log.warning("Unable to create the folder %s , can't add the show" % showPath)
                     return
                 else:
-                    chmodAsParent(showPath)
+                    chmod_as_parent(showPath)
 
                 sickrage.app.show_queue.addShow(int(indexer), int(indexer_id), showPath,
                                                 default_status=status,

@@ -76,7 +76,7 @@
                                             </td>
                                             <td class="table-fit" ${('', 'class="subtitles_column"')[curStatus == SUBTITLED]}>
                                                 % if curStatus == SUBTITLED:
-                                                    <i class="sickrage-flags sickrage-flag-${hItem['resource']}"></i>
+                                                    <i class="sickrage-flags sickrage-flags-${hItem['resource']}"></i>
                                                 % endif
                                                 <span style="cursor: help; vertical-align:middle;"
                                                       title="${os.path.basename(hItem['resource'])}">${statusStrings[curStatus]}</span>
@@ -183,7 +183,7 @@
                                                                style="vertical-align:middle;"
                                                                title="${action["provider"].capitalize()}: ${os.path.basename(action["resource"])}"></i>
                                                             <span style="vertical-align:middle;"> / </span>
-                                                            <i class="sickrage-flags sickrage-flag-${action['resource']}"></i>
+                                                            <i class="sickrage-flags sickrage-flags-${action['resource']}"></i>
                                                             &nbsp;
                                                         % endif
                                                     % endfor

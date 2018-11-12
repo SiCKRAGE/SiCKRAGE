@@ -58,7 +58,7 @@ from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     NoNFOException, CantRemoveShowException
-from sickrage.core.helpers import argToBool, backupSR, chmodAsParent, findCertainShow, generateApiKey, \
+from sickrage.core.helpers import argToBool, backupSR, chmod_as_parent, findCertainShow, generateApiKey, \
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
@@ -74,7 +74,7 @@ from sickrage.core.scene_exceptions import get_scene_exceptions, update_scene_ex
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, \
     get_scene_absolute_numbering_for_show, get_scene_numbering, \
     get_scene_numbering_for_show, get_xem_absolute_numbering_for_show, \
-    get_xem_numbering_for_show, set_scene_numbering
+    get_xem_numbering_for_show, set_scene_numbering, xem_refresh
 from sickrage.core.traktapi import srTraktAPI
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.coming_episodes import ComingEpisodes
@@ -1428,7 +1428,8 @@ class Home(WebHandler):
                     else:
                         showObj.release_groups.set_black_keywords([])
 
-        errors = []
+        warnings, errors = [], []
+
         with showObj.lock:
             newQuality = try_int(quality_preset, None)
             if not newQuality:
@@ -1465,7 +1466,7 @@ class Home(WebHandler):
             if os.path.normpath(showObj.location) != os.path.normpath(location):
                 sickrage.app.log.debug(os.path.normpath(showObj.location) + " != " + os.path.normpath(location))
                 if not os.path.isdir(location) and not sickrage.app.config.create_missing_show_dirs:
-                    errors.append("New location {} does not exist".format(location))
+                    warnings.append("New location {} does not exist".format(location))
 
                 # don't bother if we're going to update anyway
                 elif not do_update:
@@ -1480,7 +1481,7 @@ class Home(WebHandler):
                             # showObj.loadEpisodesFromIndexer()
                             # rescan the episodes in the new folder
                     except NoNFOException:
-                        errors.append(
+                        warnings.append(
                             _("The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before "
                               "you change the directory in SiCKRAGE.") % location)
 
@@ -1500,17 +1501,23 @@ class Home(WebHandler):
                 update_scene_exceptions(showObj.indexerid, exceptions_list)
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
-                errors.append(_("Unable to force an update on scene exceptions of the show."))
+                warnings.append(_("Unable to force an update on scene exceptions of the show."))
 
-        # if do_update_scene_numbering:
-        #     try:
-        #         xem_refresh(showObj.indexerid, showObj.indexer)
-        #         time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
-        #     except CantUpdateShowException as e:
-        #         errors.append(_("Unable to force an update on scene numbering of the show."))
+        if do_update_scene_numbering:
+            try:
+                xem_refresh(showObj.indexerid, showObj.indexer)
+                time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
+            except CantUpdateShowException as e:
+                warnings.append(_("Unable to force an update on scene numbering of the show."))
 
         if directCall:
-            return map(str, errors)
+            return map(str, warnings + errors)
+
+        if len(warnings) > 0:
+            sickrage.app.alerts.warning(
+                _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
+                                                                               plural="" if len(warnings) == 1 else "s"),
+                '<ul>' + '\n'.join(['<li>{0}</li>'.format(warning) for warning in warnings]) + "</ul>")
 
         if len(errors) > 0:
             sickrage.app.alerts.error(
@@ -2559,7 +2566,7 @@ class HomeAddShows(Home):
                 sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
                 return
 
-            chmodAsParent(show_dir)
+            chmod_as_parent(show_dir)
 
             sickrage.app.show_queue.addShow(indexer=1,
                                             indexer_id=int(indexer_id),
@@ -2669,7 +2676,7 @@ class HomeAddShows(Home):
                 # Don't redirect to default page because user wants to see the new show
                 return self.redirect("/home/")
             else:
-                chmodAsParent(show_dir)
+                chmod_as_parent(show_dir)
 
         # prepare the inputs for passing along
         scene = checkbox_to_value(scene)
@@ -3762,7 +3769,8 @@ class ConfigGeneral(Config):
                     indexer_timeout=None, download_url=None, rootDir=None, theme_name=None, default_page=None,
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, allowed_video_file_exts=None,
-                    enable_api_providers_cache=None, enable_upnp=None, web_external_port=None, **kwargs):
+                    enable_api_providers_cache=None, enable_upnp=None, web_external_port=None,
+                    strip_special_file_bits=None, **kwargs):
 
         results = []
 
@@ -3824,6 +3832,8 @@ class ConfigGeneral(Config):
         sickrage.app.config.trim_zero = checkbox_to_value(trim_zero)
 
         sickrage.app.config.allowed_video_file_exts = [x.lower() for x in allowed_video_file_exts.split(',')]
+
+        sickrage.app.config.strip_special_file_bits = checkbox_to_value(strip_special_file_bits)
 
         # sickrage.app.config.change_web_external_port(web_external_port)
 
@@ -4789,7 +4799,7 @@ class ConfigSubtitles(Config):
                                                        x.strip()]
 
         # Subtitle languages
-        sickrage.app.config.subtitles_languages = kwargs['subtitles_languages[]']
+        sickrage.app.config.subtitles_languages = kwargs.get('subtitles_languages[]', 'eng')
         if not isinstance(sickrage.app.config.subtitles_languages, list):
             sickrage.app.config.subtitles_languages = [sickrage.app.config.subtitles_languages]
 

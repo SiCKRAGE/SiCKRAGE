@@ -28,7 +28,7 @@ from hachoir_metadata import extractMetadata
 from hachoir_parser import guessParser
 
 import sickrage
-from sickrage.core.helpers import copyFile
+from sickrage.core.helpers import copy_file
 from sickrage.metadata import GenericMetadata
 
 
@@ -226,7 +226,7 @@ class ImageCache(object):
             os.makedirs(self._thumbnails_dir())
 
         sickrage.app.log.info("Copying from " + image_path + " to " + dest_path)
-        copyFile(image_path, dest_path)
+        copy_file(image_path, dest_path)
 
         return True
 

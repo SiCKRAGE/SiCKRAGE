@@ -24,14 +24,15 @@ import subprocess
 
 import subliminal
 from babelfish import language_converters, Language
-from guessit import guessit
 from subliminal import save_subtitles
 
 import sickrage
 from sickrage.core import makeDir
-from sickrage.core.helpers import chmodAsParent
-
+from sickrage.core.helpers import chmod_as_parent
 # register provider
+from sickrage.core.scene_exceptions import get_scene_exceptions
+from sickrage.subtitles.providers.utils import hash_itasa
+
 for provider in ['itasa = sickrage.subtitles.providers.itasa:ItaSAProvider',
                  'legendastv = subliminal.providers.legendastv:LegendasTVProvider',
                  'wizdom = sickrage.subtitles.providers.wizdom:WizdomProvider',
@@ -57,6 +58,7 @@ PROVIDER_URLS = {
 }
 
 subtitle_extensions = ['srt', 'sub', 'ass', 'idx', 'ssa']
+episode_refiners = ('metadata', 'release', 'tvepisode', 'tvdb', 'omdb')
 
 
 def sortedServiceList():
@@ -112,14 +114,23 @@ def download_subtitles(episode):
         return existing_subtitles, None
 
     provider_configs = {
-        'addic7ed': {'username': sickrage.app.config.addic7ed_user,
-                     'password': sickrage.app.config.addic7ed_pass},
-        'itasa': {'username': sickrage.app.config.itasa_user,
-                  'password': sickrage.app.config.itasa_pass},
-        'legendastv': {'username': sickrage.app.config.legendastv_user,
-                       'password': sickrage.app.config.legendastv_pass},
-        'opensubtitles': {'username': sickrage.app.config.opensubtitles_user,
-                          'password': sickrage.app.config.opensubtitles_pass}}
+        'addic7ed': {
+            'username': sickrage.app.config.addic7ed_user,
+            'password': sickrage.app.config.addic7ed_pass
+        },
+        'itasa': {
+            'username': sickrage.app.config.itasa_user,
+            'password': sickrage.app.config.itasa_pass
+        },
+        'legendastv': {
+            'username': sickrage.app.config.legendastv_user,
+            'password': sickrage.app.config.legendastv_pass
+        },
+        'opensubtitles': {
+            'username': sickrage.app.config.opensubtitles_user,
+            'password': sickrage.app.config.opensubtitles_pass
+        }
+    }
 
     pool = subliminal.ProviderPool(providers=providers, provider_configs=provider_configs)
 
@@ -177,7 +188,7 @@ def get_needed_languages(subtitles):
 
 
 def refresh_subtitles(episode):
-    video = get_video(episode.location)
+    video = get_video(episode.location, episode=episode)
     if not video:
         sickrage.app.log.debug("Exception caught in subliminal.scan_video, subtitles couldn't be refreshed")
         return episode.subtitles, None
@@ -195,6 +206,11 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
 
     try:
         video = subliminal.scan_video(video_path)
+    except Exception as error:
+        sickrage.app.log.debug('Exception: {}'.format(error))
+    else:
+        if video.size > 10485760:
+            video.hashes['itasa'] = hash_itasa(video_path)
 
         # external subtitles
         if subtitles:
@@ -205,19 +221,15 @@ def get_video(video_path, subtitles_path=None, subtitles=True, embedded_subtitle
             embedded_subtitles = bool(
                 not sickrage.app.config.embedded_subtitles_all and video_path.endswith('.mkv'))
 
-        # Let sickrage add more information to video file, based on the metadata.
-        if episode:
-            refine_video(video, episode)
+        subliminal.refine(video, episode_refiners=episode_refiners, embedded_subtitles=embedded_subtitles,
+                          release_name=episode.name, tv_episode=episode)
 
-        subliminal.refine(video, embedded_subtitles=embedded_subtitles)
-    except Exception as error:
-        sickrage.app.log.debug('Exception: {}'.format(error))
-        return None
+        video.alternative_series = list(get_scene_exceptions(episode.show.indexerid))
 
-    # remove format metadata
-    video.format = ""
+        # remove format metadata
+        video.format = ""
 
-    return video
+        return video
 
 
 def get_subtitles_path(video_path):
@@ -229,7 +241,7 @@ def get_subtitles_path(video_path):
         if not dir_exists:
             sickrage.app.log.warning('Unable to create subtitles folder {}'.format(new_subtitles_path))
         else:
-            chmodAsParent(new_subtitles_path)
+            chmod_as_parent(new_subtitles_path)
     else:
         new_subtitles_path = os.path.dirname(video_path)
 
@@ -315,40 +327,3 @@ def run_subs_extra_scripts(episode, found_subtitles, video, single=False):
 
             except Exception as e:
                 sickrage.app.log.info("Unable to run subs_extra_script: {}".format(e))
-
-
-def refine_video(video, episode):
-    # try to enrich video object using information in original filename
-    if episode.release_name:
-        guess_ep = subliminal.Episode.fromguess(None, guessit(episode.release_name))
-        for name in vars(guess_ep):
-            if getattr(guess_ep, name) and not getattr(video, name):
-                setattr(video, name, getattr(guess_ep, name))
-
-    # Use sickrage metadata
-    metadata_mapping = {
-        'episode': 'episode',
-        'release_group': 'release_group',
-        'season': 'season',
-        'series': 'show.name',
-        'series_imdb_id': 'show.imdbid',
-        'size': 'file_size',
-        'title': 'name',
-        'year': 'show.startyear'
-    }
-
-    def get_attr_value(obj, name):
-        value = None
-        for attr in name.split('.'):
-            if not value:
-                value = getattr(obj, attr, None)
-            else:
-                value = getattr(value, attr, None)
-
-        return value
-
-    for name in metadata_mapping:
-        if not getattr(video, name) and get_attr_value(episode, metadata_mapping[name]):
-            setattr(video, name, get_attr_value(episode, metadata_mapping[name]))
-        elif episode.show.subtitles_sr_metadata and get_attr_value(episode, metadata_mapping[name]):
-            setattr(video, name, get_attr_value(episode, metadata_mapping[name]))

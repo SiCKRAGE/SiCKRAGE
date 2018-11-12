@@ -40,7 +40,8 @@ from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
-from sickrage.core.helpers import chmodAsParent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, validate_url, \
+from sickrage.core.helpers import chmod_as_parent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, \
+    validate_url, \
     try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
@@ -819,7 +820,7 @@ class NZBProvider(GenericProvider):
                 with io.open(filename, 'w') as fileOut:
                     fileOut.write(result.extraInfo[0])
 
-                chmodAsParent(filename)
+                chmod_as_parent(filename)
 
                 return True
             except EnvironmentError as e:
@@ -935,7 +936,7 @@ class TorrentRssProvider(TorrentProvider):
             with io.open(dumpName, 'wb') as fileOut:
                 fileOut.write(data)
 
-            chmodAsParent(dumpName)
+            chmod_as_parent(dumpName)
 
             sickrage.app.log.info("Saved custom_torrent html dump %s " % dumpName)
         except IOError as e:

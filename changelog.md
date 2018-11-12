@@ -1,6 +1,13 @@
 # Changelog
 
-- * b07f692 - 2018-11-10: Release v9.4.28 
+- * c1ad198 - 2018-11-11: Release v9.4.29 
+- * 7d0812a - 2018-11-11: Pre-Release v9.4.29.dev2 
+- * 8028ae9 - 2018-11-11: Default subtitle language of English choosen if no language is specified in subtitle settings 
+- * 5eef56e - 2018-11-11: Pre-Release v9.4.29.dev1 
+- * eca1d42 - 2018-11-11: Refactored naming convention of misc helper functions. Added ability to disable stripping of special permissions from files. 
+- * 63f98ef - 2018-11-11: Cleaned up subtitles code. 
+- * 1558dce - 2018-11-10: Fixed issue with displaying language flags in views 
+- * 0173a0f - 2018-11-10: Release v9.4.28 
 - * c5ea143 - 2018-11-10: Release v9.4.27 
 - * 0f190e0 - 2018-11-10: Added function to check database index data integrity and rebuild if failed 
 - * 7c31b0c - 2018-11-10: Fixed issue for missing database indexes. 

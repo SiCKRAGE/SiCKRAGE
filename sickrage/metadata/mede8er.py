@@ -27,7 +27,7 @@ import sickrage
 from mediabrowser import MediaBrowserMetadata
 from sickrage.core.common import dateFormat
 from sickrage.core.exceptions import ShowNotFoundException
-from sickrage.core.helpers import replaceExtension, indentXML, chmodAsParent
+from sickrage.core.helpers import replaceExtension, indentXML, chmod_as_parent
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, \
     indexer_error, indexer_seasonnotfound, indexer_shownotfound
@@ -369,7 +369,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             if not os.path.isdir(nfo_file_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
-                chmodAsParent(nfo_file_dir)
+                chmod_as_parent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing show nfo file to " + nfo_file_path)
 
@@ -377,7 +377,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
             data.write(nfo_file)
             nfo_file.close()
-            chmodAsParent(nfo_file_path)
+            chmod_as_parent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.error(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))
@@ -414,7 +414,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
             if not os.path.isdir(nfo_file_dir):
                 sickrage.app.log.debug("Metadata dir didn't exist, creating it at " + nfo_file_dir)
                 os.makedirs(nfo_file_dir)
-                chmodAsParent(nfo_file_dir)
+                chmod_as_parent(nfo_file_dir)
 
             sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
@@ -422,7 +422,7 @@ class Mede8erMetadata(MediaBrowserMetadata):
 
             data.write(nfo_file)
             nfo_file.close()
-            chmodAsParent(nfo_file_path)
+            chmod_as_parent(nfo_file_path)
         except IOError as e:
             sickrage.app.log.warning(
                 "Unable to write file to " + nfo_file_path + " - are you sure the folder is writable? {}".format(e))

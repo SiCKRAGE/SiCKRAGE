@@ -46,7 +46,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     WANTED, dateFormat, dateTimeFormat, get_quality_string, statusStrings, \
     timeFormat
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
-from sickrage.core.helpers import chmodAsParent, findCertainShow, makeDir, \
+from sickrage.core.helpers import chmod_as_parent, findCertainShow, makeDir, \
     pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, app_statistics
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
@@ -2075,7 +2075,7 @@ class CMD_ShowAddNew(ApiCall):
                 return _responds(RESULT_FAILURE, {"path": showPath},
                                  "Unable to create the folder " + showPath + ", can't add the show")
             else:
-                chmodAsParent(showPath)
+                chmod_as_parent(showPath)
 
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,

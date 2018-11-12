@@ -34,7 +34,7 @@ from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
     touchFile, sanitizeSceneName, remove_non_release_groups, remove_extension, sanitizeFileName, \
-    safe_getattr, make_dirs, moveFile, delete_empty_folders
+    safe_getattr, make_dirs, move_file, delete_empty_folders
 from sickrage.core.nameparser import NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.processors.post_processor import PostProcessor
 from sickrage.core.scene_numbering import get_scene_absolute_numbering, get_scene_numbering
@@ -1390,7 +1390,7 @@ class TVEpisode(object):
         # move the file
         try:
             sickrage.app.log.info("Renaming file from %s to %s" % (cur_path, new_path))
-            moveFile(cur_path, new_path)
+            move_file(cur_path, new_path)
         except (OSError, IOError) as e:
             sickrage.app.log.warning("Failed renaming %s to %s : %r" % (cur_path, new_path, e))
             return False
