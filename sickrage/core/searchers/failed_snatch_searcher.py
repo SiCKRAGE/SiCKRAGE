@@ -77,7 +77,7 @@ class FailedSnatchSearcher(object):
             if not show or show.paused:
                 continue
 
-            ep_obj = show.getEpisode(int(episode['season']), int(episode['episode']))
+            ep_obj = show.get_episode(int(episode['season']), int(episode['episode']))
             if isinstance(ep_obj, TVEpisode):
                 curStatus, curQuality = Quality.splitCompositeStatus(ep_obj.status)
                 if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:

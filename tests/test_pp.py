@@ -52,11 +52,11 @@ class PPBasicTests(tests.SiCKRAGETestDBCase):
         show = TVShow(1, 3)
         show.name = self.SHOWNAME
         show.location = self.SHOWDIR
-        show.saveToDB()
+        show.save_to_db()
         sickrage.app.showlist = [show]
         ep = TVEpisode(show, self.SEASON, self.EPISODE)
         ep.name = "some ep name"
-        ep.saveToDB()
+        ep.save_to_db()
 
         sickrage.app.name_cache.put('show name', 3)
         self.post_processor = PostProcessor(self.FILEPATH, process_method='move')
@@ -73,7 +73,7 @@ class PPMultiEPTests(tests.SiCKRAGETestDBCase):
         show = TVShow(1, 3)
         show.name = self.SHOWNAME
         show.location = self.SHOWDIR
-        show.saveToDB()
+        show.save_to_db()
         sickrage.app.showlist = [show]
 
         sickrage.app.name_cache.put('show name', 3)

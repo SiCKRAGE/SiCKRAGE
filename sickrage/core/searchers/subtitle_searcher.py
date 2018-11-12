@@ -125,7 +125,7 @@ class SubtitleSearcher(object):
                     sickrage.app.log.debug('Show not found')
                     return
 
-                epObj = showObj.getEpisode(int(epToSub["season"]), int(epToSub["episode"]))
+                epObj = showObj.get_episode(int(epToSub["season"]), int(epToSub["episode"]))
                 if isinstance(epObj, str):
                     sickrage.app.log.debug('Episode not found')
                     return
@@ -133,7 +133,7 @@ class SubtitleSearcher(object):
                 existing_subtitles = epObj.subtitles
 
                 try:
-                    epObj.downloadSubtitles()
+                    epObj.download_subtitles()
                 except Exception as e:
                     sickrage.app.log.debug('Unable to find subtitles')
                     sickrage.app.log.debug(str(e))

@@ -104,7 +104,7 @@ class DailySearcher(object):
                 if curStatus == DOWNLOADED and show.skip_downloaded:
                     continue
 
-                epObj = show.getEpisode(int(dbData["season"]), int(dbData["episode"]))
+                epObj = show.get_episode(int(dbData["season"]), int(dbData["episode"]))
                 epObj.wantedQuality = [i for i in allQualities if (i > curQuality and i != Quality.UNKNOWN)]
                 wanted.append(epObj)
 

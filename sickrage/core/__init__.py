@@ -544,7 +544,7 @@ class Core(object):
         self.log.info("Saving all shows to the database")
         for show in self.showlist:
             try:
-                show.saveToDB()
+                show.save_to_db()
             except Exception:
                 continue
 

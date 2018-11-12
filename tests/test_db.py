@@ -33,7 +33,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
     def setUp(self):
         super(DBBasicTests, self).setUp()
         show = TVShow(1, 0001, "en")
-        show.saveToDB()
+        show.save_to_db()
         sickrage.app.showlist += [show]
 
         ep = TVEpisode(show, 1, 1)
@@ -41,19 +41,19 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
         ep.name = "test episode 1"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        ep.saveToDB()
+        ep.save_to_db()
         ep = TVEpisode(show, 1, 2)
         ep.indexerid = 2
         ep.name = "test episode 2"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        ep.saveToDB()
+        ep.save_to_db()
         ep = TVEpisode(show, 1, 3)
         ep.indexerid = 3
         ep.name = "test episode 3"
         ep.airdate = datetime.date.fromordinal(733832)
         ep.status = UNAIRED
-        ep.saveToDB()
+        ep.save_to_db()
 
     def test_unaired(self):
         count = 0
@@ -70,7 +70,7 @@ class DBBasicTests(tests.SiCKRAGETestDBCase):
                 ep.airdate = datetime.date.fromordinal(733832)
                 ep.status = UNAIRED
 
-                ep.saveToDB()
+                ep.save_to_db()
 
         self.assertEqual(count, 3)
 

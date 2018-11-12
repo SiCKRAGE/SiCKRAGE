@@ -398,7 +398,7 @@ class GenericProvider(object):
             # make sure we want the episode
             wantEp = False
             for epNo in actual_episodes:
-                if result.show.wantEpisode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
+                if result.show.want_episode(actual_season, epNo, result.quality, manualSearch, downCurQuality):
                     wantEp = True
 
             if not wantEp:
@@ -409,7 +409,7 @@ class GenericProvider(object):
             # make a result object
             result.episodes = []
             for curEp in actual_episodes:
-                result.episodes.append(result.show.getEpisode(actual_season, curEp))
+                result.episodes.append(result.show.get_episode(actual_season, curEp))
 
             sickrage.app.log.debug(
                 "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
@@ -442,7 +442,7 @@ class GenericProvider(object):
             if not show:
                 continue
 
-            ep_obj = show.getEpisode(int(episode["season"]), int(episode["episode"]))
+            ep_obj = show.get_episode(int(episode["season"]), int(episode["episode"]))
             for term in self.proper_strings:
                 search_strngs = self._get_episode_search_strings(ep_obj, add_string=term)
                 for item in self.search(search_strngs[0], ep_obj=ep_obj):

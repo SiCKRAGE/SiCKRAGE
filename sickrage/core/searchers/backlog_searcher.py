@@ -143,7 +143,7 @@ class BacklogSearcher(object):
             if curStatus == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.getEpisode(int(result["season"]), int(result["episode"]))
+            epObj = show.get_episode(int(result["season"]), int(result["episode"]))
             wanted.append(epObj)
 
         return wanted

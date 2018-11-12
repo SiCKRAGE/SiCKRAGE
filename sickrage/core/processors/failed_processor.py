@@ -19,7 +19,7 @@
 from __future__ import print_function, unicode_literals
 
 import sickrage
-from sickrage.core.common import Quality, WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
+from sickrage.core.common import Quality, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
 from sickrage.core.exceptions import FailedPostProcessingFailedException
 from sickrage.core.helpers import show_names
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
@@ -77,7 +77,7 @@ class FailedProcessor(object):
         sickrage.app.log.debug(" - " + str(parsed.air_date))
 
         for episode in parsed.episode_numbers:
-            segment = parsed.show.getEpisode(parsed.season_number, episode)
+            segment = parsed.show.get_episode(parsed.season_number, episode)
 
             curStatus, curQuality = Quality.splitCompositeStatus(segment.status)
             if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:

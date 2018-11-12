@@ -771,7 +771,7 @@ class CMD_EpisodeSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
-        epObj = showObj.getEpisode(int(self.s), int(self.e))
+        epObj = showObj.get_episode(int(self.s), int(self.e))
         if isinstance(epObj, str):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
@@ -835,13 +835,13 @@ class CMD_EpisodeSetStatus(ApiCall):
 
         ep_list = []
         if self.e:
-            epObj = showObj.getEpisode(self.s, self.e)
+            epObj = showObj.get_episode(self.s, self.e)
             if epObj is None:
                 return _responds(RESULT_FAILURE, msg="Episode not found")
             ep_list = [epObj]
         else:
             # get all episode numbers frome self,season
-            ep_list = showObj.getAllEpisodes(season=self.s)
+            ep_list = showObj.get_all_episodes(season=self.s)
 
         def _epResult(result_code, ep, msg=""):
             return {'season': ep.season, 'episode': ep.episode, 'status': _get_status_Strings(ep.status),
@@ -877,7 +877,7 @@ class CMD_EpisodeSetStatus(ApiCall):
                     continue
 
                 epObj.status = self.status
-                epObj.saveToDB()
+                epObj.save_to_db()
 
                 if self.status == WANTED:
                     start_backlog = True
@@ -926,7 +926,7 @@ class CMD_SubtitleSearch(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # retrieve the episode object and fail if we can't get one
-        epObj = showObj.getEpisode(int(self.s), int(self.e))
+        epObj = showObj.get_episode(int(self.s), int(self.e))
         if isinstance(epObj, str):
             return _responds(RESULT_FAILURE, msg="Episode not found")
 
@@ -934,7 +934,7 @@ class CMD_SubtitleSearch(ApiCall):
         previous_subtitles = epObj.subtitles
 
         try:
-            subtitles = epObj.downloadSubtitles()
+            subtitles = epObj.download_subtitles()
         except Exception:
             return _responds(RESULT_FAILURE, msg='Unable to find subtitles')
 
@@ -1105,7 +1105,7 @@ class CMD_Backlog(ApiCall):
             for e in sorted((e for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid) if s.paused == 0),
                             key=lambda d: (d['season'], d['episode']), reverse=True):
 
-                curEpCat = s.getOverview(int(e["status"] or -1))
+                curEpCat = s.get_overview(int(e["status"] or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
                     showEps += [e]
 
@@ -1798,7 +1798,7 @@ class CMD_Show(ApiCall):
         showDict["skip_downloaded"] = (0, 1)[showObj.skip_downloaded]
 
         showDict["indexerid"] = showObj.indexerid
-        showDict["tvdbid"] = showObj.mapIndexers()[1]
+        showDict["tvdbid"] = showObj.map_indexers()[1]
         showDict["imdbid"] = showObj.imdbid
 
         showDict["network"] = showObj.network
@@ -2312,7 +2312,7 @@ class CMD_ShowPause(ApiCall):
         else:
             showObj.paused = self.pause
 
-        showObj.saveToDB()
+        showObj.save_to_db()
 
         return _responds(RESULT_SUCCESS, msg='%s has been %s' % (showObj.name, ('resumed', 'paused')[showObj.paused]))
 
@@ -2672,7 +2672,7 @@ class CMD_Shows(ApiCall):
             if self.paused is not None and bool(self.paused) != bool(curShow.paused):
                 continue
 
-            indexerShow = curShow.mapIndexers()
+            indexerShow = curShow.map_indexers()
 
             showDict = {
                 "paused": (0, 1)[curShow.paused],

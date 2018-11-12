@@ -46,7 +46,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
 
         s = TVShow(1, indexerid)
         s.name = name
-        s.saveToDB()
+        s.save_to_db()
 
         result = show_names.allPossibleShowNames(s)
         self.assertTrue(len(set(expected).intersection(set(result))) == len(expected))
@@ -71,7 +71,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
             scene_name, show_name = testCase
             s = TVShow(1, 0)
             s.name = show_name
-            s.saveToDB()
+            s.save_to_db()
             self._test_isGoodName(scene_name, s)
 
     def test_sceneToNormalShowNames(self):
