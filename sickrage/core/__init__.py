@@ -95,7 +95,6 @@ class Core(object):
         self.web_port = None
         self.developer = None
         self.debug = None
-        self.newest_version = None
         self.newest_version_string = None
 
         self.naming_ep_type = ("%(seasonnumber)dx%(episodenumber)02d",
@@ -473,7 +472,7 @@ class Core(object):
         self.wserver.start()
 
         # fire off startup events
-        self.event_queue.fire_event(self.version_updater.run, force=True)
+        self.event_queue.fire_event(self.version_updater.run)
         self.event_queue.fire_event(self.tz_updater.run)
 
         # start ioloop

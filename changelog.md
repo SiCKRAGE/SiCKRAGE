@@ -1,6 +1,7 @@
 # Changelog
 
-- * 720e6c3 - 2018-11-12: Release v9.4.32 
+- * cb8e054 - 2018-11-12: Refactored new version string to web socket message. 
+- * d831f6f - 2018-11-12: Release v9.4.32 
 - * f298b17 - 2018-11-12: Refactored speed.cd torrent provider to use cookie login. 
 - * 2abdafe - 2018-11-12: Release v9.4.31 
 - * fcdd0e0 - 2018-11-12: Added more UI notifications for version updater. 

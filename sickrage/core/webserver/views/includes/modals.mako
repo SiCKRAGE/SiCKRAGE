@@ -6,8 +6,7 @@
                 <div class="modal-header bg-secondary">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body">
-                </div>
+                <div class="modal-body"></div>
             </div>
         </div>
     </div>
@@ -18,8 +17,7 @@
                 <div class="modal-header bg-secondary">
                     <h3 class="modal-title"></h3>
                 </div>
-                <div class="modal-body">
-                </div>
+                <div class="modal-body"></div>
                 <div class="modal-footer">
                     <input type="button" class="btn btn-success" value="${_('Ok')}"/>
                     <input type="button" class="btn btn-danger" value="${_('Cancel')}" data-dismiss="modal"/>
@@ -61,8 +59,12 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" href="#manualSearchModalQuality">${_('No')}</button>
-                    <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal" href="#manualSearchModalQuality">${_('Yes')}</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal"
+                            href="#manualSearchModalQuality">${_('No')}
+                    </button>
+                    <button type="button" class="btn btn-success" data-dismiss="modal" data-toggle="modal"
+                            href="#manualSearchModalQuality">${_('Yes')}
+                    </button>
                 </div>
             </div>
         </div>
