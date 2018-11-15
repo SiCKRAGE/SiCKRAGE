@@ -83,7 +83,9 @@ class BlackAndWhiteList(object):
 
         :param table: database table remove keywords from
         """
-        sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
+        dbData = sickrage.app.main_db.get(table, self.show_id)
+        if dbData:
+            sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
 
 
     def _load_list(self, table):

@@ -1043,7 +1043,8 @@ class TVShow(object):
                     sickrage.app.main_db.insert(imdb_info)
             except RevConflict:
                 dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                sickrage.app.main_db.delete(dbData)
+                if dbData:
+                    sickrage.app.main_db.delete(dbData)
                 imdb_info.update(self.imdb_info)
                 sickrage.app.main_db.insert(imdb_info)
 

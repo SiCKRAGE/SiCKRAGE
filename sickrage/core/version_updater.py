@@ -63,21 +63,25 @@ class VersionUpdater(object):
                         return
 
                     sickrage.app.log.info("New update found for SiCKRAGE, starting auto-updater ...")
-                    sickrage.app.alerts.message(_('Updater'), _('New update found for SiCKRAGE, starting auto-updater'))
+                    sickrage.app.alerts.message(_('Updater'),
+                                                _('New update found for SiCKRAGE, starting auto-updater'))
                     if self.update():
                         sickrage.app.log.info("Update was successful!")
-                        sickrage.app.alerts.message(_('Updater'), _('Update was successful'))
+                        sickrage.app.alerts.message(_('Updater'),
+                                                    _('Update was successful'))
                         sickrage.app.shutdown(restart=True)
                     else:
                         sickrage.app.log.info("Update failed!")
-                        sickrage.app.alerts.error(_('Updater'), _('Update failed!'))
+                        sickrage.app.alerts.error(_('Updater'),
+                                                  _('Update failed!'))
         finally:
             self.amActive = False
 
     def backup(self):
         # Do a system backup before update
         sickrage.app.log.info("Config backup in progress...")
-        sickrage.app.alerts.message(_('Updater'), _('Config backup in progress...'))
+        sickrage.app.alerts.message(_('Updater'),
+                                    _('Config backup in progress...'))
         try:
             backupDir = os.path.join(sickrage.app.data_dir, 'backup')
             if not os.path.isdir(backupDir):
@@ -85,27 +89,32 @@ class VersionUpdater(object):
 
             if backupSR(backupDir, keep_latest=True):
                 sickrage.app.log.info("Config backup successful, updating...")
-                sickrage.app.alerts.message(_('Updater'), _('Config backup successful, updating...'))
+                sickrage.app.alerts.message(_('Updater'),
+                                            _('Config backup successful, updating...'))
                 return True
             else:
                 sickrage.app.log.warning("Config backup failed, aborting update")
-                sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
+                sickrage.app.alerts.error(_('Updater'),
+                                          _('Config backup failed, aborting update'))
                 return False
         except Exception as e:
             sickrage.app.log.warning('Update: Config backup failed. Error: {}'.format(e))
-            sickrage.app.alerts.error(_('Updater'), _('Config backup failed, aborting update'))
+            sickrage.app.alerts.error(_('Updater'),
+                                      _('Config backup failed, aborting update'))
             return False
 
     @staticmethod
     def safe_to_update():
         if sickrage.app.auto_postprocessor.amActive:
             sickrage.app.log.debug("We can't proceed with updating, post-processor is running")
-            sickrage.app.alerts.message(_('Updater'), _("We can't proceed with updating, post-processor is running"))
+            sickrage.app.alerts.message(_('Updater'),
+                                        _("We can't proceed with updating, post-processor is running"))
             return False
 
         sickrage.app.show_queue.pause()
         sickrage.app.log.debug("Waiting for jobs in show queue to finish before updating")
-        sickrage.app.alerts.message(_('Updater'), _("Waiting for jobs in show queue to finish before updating"))
+        sickrage.app.alerts.message(_('Updater'),
+                                    _("Waiting for jobs in show queue to finish before updating"))
         while sickrage.app.show_queue.is_busy:
             sleep(1)
 
@@ -177,15 +186,14 @@ class VersionUpdater(object):
                 sickrage.app.config.view_changelog = True
 
                 if webui:
-                    sickrage.app.newest_version_string = None
-                    WebSocketMessage('redirect', {
-                        'url': '{}/home/restart/?pid={}'.format(sickrage.app.config.web_root, sickrage.app.pid)}).push()
+                    WebSocketMessage('task', {'cmd': 'restart'}).push()
 
                 return True
 
             if webui:
-                sickrage.app.alerts.error(_("Updater"), _("Update wasn't successful, not restarting. Check your "
-                                                          "log for more information."))
+                sickrage.app.alerts.error(_("Updater"),
+                                          _("Update wasn't successful, not restarting. Check your log for more "
+                                            "information."))
 
     @property
     def version(self):
@@ -242,10 +250,7 @@ class UpdateManager(object):
         # Still haven't found a working git
         error_message = _('Unable to find your git executable - Set your git path from Settings->General->Advanced OR '
                           'delete your .git folder and run from source to enable updates.')
-
-        sickrage.app.newest_version_string = error_message
-
-        return None
+        sickrage.app.alerts.error(_('Updater'), error_message)
 
     @property
     def _pip_path(self):
@@ -288,9 +293,7 @@ class UpdateManager(object):
 
         # Still haven't found a working git
         error_message = _('Unable to find your pip executable - Set your pip path from Settings->General->Advanced')
-        sickrage.app.newest_version_string = error_message
-
-        return None
+        sickrage.app.alerts.error(_('Updater'), error_message)
 
     @staticmethod
     def _git_cmd(git_path, args):
@@ -444,14 +447,10 @@ class GitUpdateManager(UpdateManager):
             return output.strip()
 
     def set_newest_text(self):
-        # if we're up to date then don't set this
-        sickrage.app.newest_version_string = None
-
         if self.version != self.get_newest_version:
             newest_text = _(
                 'There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>').format(
                 self.get_newest_version, self.get_update_url())
-
             sickrage.app.newest_version_string = newest_text
 
     def need_update(self):
@@ -476,7 +475,8 @@ class GitUpdateManager(UpdateManager):
                                                                                    self.current_branch))
         if exit_status == 0:
             sickrage.app.log.info("Updating SiCKRAGE from GIT servers")
-            sickrage.app.alerts.message(_('Updater'), _('Updating SiCKRAGE from GIT servers'))
+            sickrage.app.alerts.message(_('Updater'),
+                                        _('Updating SiCKRAGE from GIT servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
             self.install_requirements()
             return True
@@ -576,19 +576,12 @@ class SourceUpdateManager(UpdateManager):
             return self._find_installed_version()
 
     def set_newest_text(self):
-        # if we're up to date then don't set this
-        sickrage.app.newest_version_string = None
-
         if not self.version:
             sickrage.app.log.debug("Unknown current version number, don't know if we should update or not")
+            return
 
-            newest_text = _("Unknown current version number: If yo've never used the SiCKRAGE upgrade system before "
-                            "then current version is not set. &mdash; "
-                            "<a href=\"{}\">Update Now</a>").format(self.get_update_url())
-        else:
-            newest_text = _("There is a newer version available, version {} &mdash; "
-                            "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
-
+        newest_text = _("There is a newer version available, version {} &mdash; "
+                        "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
         sickrage.app.newest_version_string = newest_text
 
     def update(self):
@@ -732,17 +725,12 @@ class PipUpdateManager(UpdateManager):
             return self._find_installed_version()
 
     def set_newest_text(self):
-
-        # if we're up to date then don't set this
-        sickrage.app.newest_version_string = None
-
         if not self.version:
             sickrage.app.log.debug("Unknown current version number, don't know if we should update or not")
             return
-        else:
-            newest_text = _("New SiCKRAGE update found on PyPi servers, version {} &mdash; "
-                            "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
 
+        newest_text = _("New SiCKRAGE update found on PyPi servers, version {} &mdash; "
+                        "<a href=\"{}\">Update Now</a>").format(self.get_newest_version, self.get_update_url())
         sickrage.app.newest_version_string = newest_text
 
     def update(self):

@@ -1074,9 +1074,11 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.app.pid):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
+        sickrage.app.alerts.message(_("Updater"), _('Checking for updates'))
+
         # check for new app updates
-        if not sickrage.app.version_updater.check_for_new_version(True):
-            sickrage.app.alerts.message(_('No new updates!'))
+        if not sickrage.app.version_updater.check_for_new_version(force=True):
+            sickrage.app.alerts.message(_("Updater"), _('No new updates available!'))
 
         return self.redirect(self.previous_url())
 
@@ -1084,7 +1086,7 @@ class Home(WebHandler):
         if str(pid) != str(sickrage.app.pid):
             return self.redirect("/{}/".format(sickrage.app.config.default_page))
 
-        sickrage.app.alerts.message(_('Updating SiCKRAGE'))
+        sickrage.app.alerts.message(_("Updater"), _('Updating SiCKRAGE'))
 
         sickrage.app.event_queue.fire_event(sickrage.app.version_updater.update, webui=True)
 
@@ -1513,7 +1515,8 @@ class Home(WebHandler):
         if len(warnings) > 0:
             sickrage.app.alerts.message(
                 _('{num_warnings:d} warning{plural} while saving changes:').format(num_warnings=len(warnings),
-                                                                               plural="" if len(warnings) == 1 else "s"),
+                                                                                   plural="" if len(
+                                                                                       warnings) == 1 else "s"),
                 '<ul>' + '\n'.join(['<li>{0}</li>'.format(warning) for warning in warnings]) + "</ul>")
 
         if len(errors) > 0:
@@ -2015,7 +2018,8 @@ class Home(WebHandler):
                                     'searchstatus': searchstatus,
                                     'status': statusStrings[epObj.status],
                                     'quality': self.getQualityClass(epObj),
-                                    'overview': Overview.overviewStrings[showObj.get_overview(int(epObj.status or -1))]})
+                                    'overview': Overview.overviewStrings[
+                                        showObj.get_overview(int(epObj.status or -1))]})
 
             return results
 

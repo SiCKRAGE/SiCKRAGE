@@ -1,6 +1,10 @@
 # Changelog
 
-- * 720e6c3 - 2018-11-12: Release v9.4.32 
+- * fbe6cd3 - 2018-11-14: Release v9.4.34 
+- * 4478e39 - 2018-11-14: Release v9.4.33 
+- * 26b7be1 - 2018-11-14: Fixed NoneType issue with delete and update database function calls. 
+- * aaf7acf - 2018-11-12: Refactored new version string to web socket message. 
+- * d831f6f - 2018-11-12: Release v9.4.32 
 - * f298b17 - 2018-11-12: Refactored speed.cd torrent provider to use cookie login. 
 - * 2abdafe - 2018-11-12: Release v9.4.31 
 - * fcdd0e0 - 2018-11-12: Added more UI notifications for version updater. 

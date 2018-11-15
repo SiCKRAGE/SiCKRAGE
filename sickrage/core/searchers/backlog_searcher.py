@@ -163,5 +163,6 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
         dbData = sickrage.app.main_db.get('tv_shows', showid)
-        dbData['last_backlog_search'] = when
-        sickrage.app.main_db.update(dbData)
+        if dbData:
+            dbData['last_backlog_search'] = when
+            sickrage.app.main_db.update(dbData)
