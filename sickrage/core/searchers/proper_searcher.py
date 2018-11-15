@@ -295,8 +295,9 @@ class ProperSearcher(object):
         sickrage.app.log.debug("Setting the last proper search in database to " + str(when))
 
         dbData = sickrage.app.main_db.get('tv_shows', showid)
-        dbData['last_proper_search'] = when
-        sickrage.app.main_db.update(dbData)
+        if dbData:
+            dbData['last_proper_search'] = when
+            sickrage.app.main_db.update(dbData)
 
     @staticmethod
     def _get_lastProperSearch(showid):
