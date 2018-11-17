@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-17 11:25-0800\n"
-"PO-Revision-Date: 2018-11-17 19:26\n"
+"POT-Creation-Date: 2018-11-17 12:05-0800\n"
+"PO-Revision-Date: 2018-11-17 20:06\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -4521,27 +4521,27 @@ msgstr "Κωδικό πρόσβασης"
 msgid "You have reached this page by accident, please check the url."
 msgstr "Θα έχουν φτάσει αυτή τη σελίδα κατά λάθος, παρακαλώ ελέγξτε το url."
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "Παρουσιάστηκε ένα σφάλμα mako."
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "Αν αυτό συνέβη κατά τη διάρκεια μιας ενημερωμένης έκδοσης μια απλή σελίδα ανανέωση μπορεί να είναι η λύση."
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "Mako λάθη που συμβαίνουν κατά τη διάρκεια ενημερώσεις μπορεί να είναι ένα μία φορά λάθους αν υπήρχαν σημαντικές ui αλλάζει."
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "Εμφάνιση/απόκρυψη λάθους"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "Αρχείο"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "σε"
 

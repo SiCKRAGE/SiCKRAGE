@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-17 11:25-0800\n"
-"PO-Revision-Date: 2018-11-17 19:26\n"
+"POT-Creation-Date: 2018-11-17 12:05-0800\n"
+"PO-Revision-Date: 2018-11-17 20:07\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -4521,27 +4521,27 @@ msgstr "암호"
 msgid "You have reached this page by accident, please check the url."
 msgstr "당신이 실수로이 페이지에 도달 했습니다, 그리고 url을 확인 하시기 바랍니다."
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "Mako 오류가 발생 했습니다."
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "이 업데이트는 동안이 경우 간단한 페이지 새로 고침 솔루션 수 있습니다."
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "Mako 오류 업데이트 동안 발생 하는 오류 라면 중요 한 ui 변경 한 번 있을 수 있습니다."
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "표시/숨기기 오류"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "파일"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "에서"
 
