@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-16 22:30-0800\n"
-"PO-Revision-Date: 2018-11-17 06:33\n"
+"POT-Creation-Date: 2018-11-17 15:53-0800\n"
+"PO-Revision-Date: 2018-11-17 23:54\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -4358,7 +4358,7 @@ msgstr "使用高带宽分配，如果优先级高"
 msgid "Test Connection"
 msgstr "测试连接"
 
-#: sickrage/core/webserver/api.py:951
+#: sickrage/core/webserver/api.py:975
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:712
@@ -4521,27 +4521,27 @@ msgstr "密码"
 msgid "You have reached this page by accident, please check the url."
 msgstr "你偶然到达此页，请检查 url。"
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "尖吻鲭鲨出错。"
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "如果这发生在更新过程中简单的页面刷新可能是解决方案。"
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "在更新过程中发生的尖吻鲭鲨错误可能是错误，如果有重大 ui 更改一次。"
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "显示/隐藏错误"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "文件"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "在"
 

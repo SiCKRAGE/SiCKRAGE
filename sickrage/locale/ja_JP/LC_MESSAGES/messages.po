@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-16 22:30-0800\n"
-"PO-Revision-Date: 2018-11-17 06:32\n"
+"POT-Creation-Date: 2018-11-17 15:53-0800\n"
+"PO-Revision-Date: 2018-11-17 23:54\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -4358,7 +4358,7 @@ msgstr "高帯域幅の割り当てを使用して、優先度が高い場合"
 msgid "Test Connection"
 msgstr "接続のテスト"
 
-#: sickrage/core/webserver/api.py:951
+#: sickrage/core/webserver/api.py:975
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:712
@@ -4521,27 +4521,27 @@ msgstr "パスワード"
 msgid "You have reached this page by accident, please check the url."
 msgstr "あなたは偶然このページに達している、url を確認してください。"
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "マコのエラーが発生しました。"
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "これは、更新中に起こった場合単純なページ更新が解決策かもしれません。"
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "更新中に発生するマコ エラー エラーなら重要な ui を変更 1 つの時間があります。"
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "エラーの表示/非表示"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "ファイル"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "で"
 

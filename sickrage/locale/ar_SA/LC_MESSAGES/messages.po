@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-16 22:30-0800\n"
-"PO-Revision-Date: 2018-11-17 06:31\n"
+"POT-Creation-Date: 2018-11-17 15:53-0800\n"
+"PO-Revision-Date: 2018-11-17 23:53\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
@@ -4358,7 +4358,7 @@ msgstr "استخدام تخصيص عرض النطاق الترددي العال�
 msgid "Test Connection"
 msgstr "اختبار الاتصال"
 
-#: sickrage/core/webserver/api.py:951
+#: sickrage/core/webserver/api.py:975
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:712
@@ -4521,27 +4521,27 @@ msgstr "كلمة المرور"
 msgid "You have reached this page by accident, please check the url."
 msgstr "كنت قد وصلت إلى هذه الصفحة عن طريق الصدفة، الرجاء التحقق من url."
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "لقد حدث خطأ ماكو."
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "إذا كان هذا حدث أثناء تحديث إلى تحديث صفحة بسيطة قد يكون الحل."
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "قد يكون ماكو الأخطاء التي تحدث أثناء التحديثات مرة واحدة خطأ إذا كانت هناك واجهة مستخدم كبيرة يتغير."
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "إظهار/إخفاء الخطأ"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "الملف"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "في"
 

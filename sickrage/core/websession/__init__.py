@@ -62,7 +62,7 @@ class WebSession(Session):
         self.cloudflare = cloudflare
 
         # add hooks
-        self.hooks['response'] += [WebHooks.log_url, WebHooks.redirect_posts]
+        self.hooks['response'] += [WebHooks.log_url]
 
     @staticmethod
     def _get_ssl_cert(verify):
@@ -74,11 +74,17 @@ class WebSession(Session):
         """
         return certifi.where() if all([sickrage.app.config.ssl_verify, verify]) else False
 
-    def request(self, method, url, verify=False, random_ua=False, *args, **kwargs):
+    def request(self, method, url, verify=False, random_ua=False, allow_post_redirects=False, *args, **kwargs):
         self.headers.update({'Accept-Encoding': 'gzip, deflate',
                              'User-Agent': (sickrage.app.user_agent, UserAgent().random)[random_ua]})
 
-        if not verify: disable_warnings()
+        if not verify:
+            disable_warnings()
+
+        if allow_post_redirects and method == 'POST':
+            sickrage.app.log.debug('Retrieving redirect URL for {url}'.format(**{'url': url}))
+            response = super(WebSession, self).request(method, url, allow_redirects=False)
+            url = self.get_redirect_target(response) or url
 
         response = super(WebSession, self).request(method, url, verify=self._get_ssl_cert(verify), *args, **kwargs)
         if self.cloudflare:
@@ -153,34 +159,6 @@ class WebHooks(object):
                 sickrage.app.log.debug('With post data: {}'.format(request.body))
             else:
                 sickrage.app.log.debug('With post data: {}'.format(to_unicode(request.body)))
-
-    @staticmethod
-    def redirect_posts(resp, **kwargs):
-        """Response hook to handle post method for URLs that are redirected"""
-
-        if resp.request.method == 'POST' and resp.headers.get('Location'):
-            # Get the session used or create a new one
-            session = getattr(resp, 'session', requests.Session())
-
-            # Get the original request
-            original_request = resp.request
-
-            # Set new URL
-            location = resp.headers['Location']
-            sickrage.app.log.debug('URL redirection detected for {} to {}'.format(original_request.url, location))
-            original_request.url = location
-
-            # Remove hooks from original request
-            original_hooks = original_request.hooks
-            original_request.hooks = session.hooks
-
-            # Resend the request
-            resp = session.send(original_request, **kwargs)
-
-            # Add original hooks back to original request
-            resp.hooks = original_hooks
-
-        return resp
 
 
 class WebHelpers(object):

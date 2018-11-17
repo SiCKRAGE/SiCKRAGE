@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-16 22:30-0800\n"
-"PO-Revision-Date: 2018-11-17 06:32\n"
+"POT-Creation-Date: 2018-11-17 15:53-0800\n"
+"PO-Revision-Date: 2018-11-17 23:54\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -4358,7 +4358,7 @@ msgstr "használata magas sávszélesség kiosztás, ha magas prioritású"
 msgid "Test Connection"
 msgstr "Kapcsolat tesztelése"
 
-#: sickrage/core/webserver/api.py:951
+#: sickrage/core/webserver/api.py:975
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:712
@@ -4521,27 +4521,27 @@ msgstr "Jelszó"
 msgid "You have reached this page by accident, please check the url."
 msgstr "Ön elérte ezt az oldalt a baleset, kérjük, ellenőrizze az URL-t."
 
-#: sickrage/core/webserver/views/errors/500.mako:4
+#: sickrage/core/webserver/views/errors/500.mako:11
 msgid "A mako error has occured."
 msgstr "Makó-hiba történt."
 
-#: sickrage/core/webserver/views/errors/500.mako:5
+#: sickrage/core/webserver/views/errors/500.mako:12
 msgid "If this happened during an update a simple page refresh may be the solution."
 msgstr "Ha ez történt a frissítés során, egy egyszerű oldal frissítése lehet a megoldás."
 
-#: sickrage/core/webserver/views/errors/500.mako:6
-msgid "Mako errors that happen during updates may be a one time error if there were significant ui changes."
-msgstr "Makó hibák történik frissítések közben lehet, hogy hiba esetén, ha nem volt jelentős ui változások egy alkalommal."
+#: sickrage/core/webserver/views/errors/500.mako:13
+msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
+msgstr ""
 
-#: sickrage/core/webserver/views/errors/500.mako:9
+#: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
 msgstr "Hiba megjelenítése/elrejtése"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "File"
 msgstr "Fájl"
 
-#: sickrage/core/webserver/views/errors/500.mako:15
+#: sickrage/core/webserver/views/errors/500.mako:23
 msgid "in"
 msgstr "a"
 

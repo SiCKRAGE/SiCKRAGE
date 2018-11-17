@@ -19,8 +19,6 @@
 
 from __future__ import print_function, unicode_literals
 
-import json
-
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import convert_size
@@ -47,20 +45,20 @@ class DanishbitsProvider(TorrentProvider):
         })
 
         # Proper Strings
+        self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
         # Cache
         self.cache = TVCache(self)
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
         results = []
-        if not self.login():
-            return results
 
         # Search Params
         search_params = {
             'user': self.username,
             'passkey': self.passkey,
-            'search': search_strings,
+            'search': '.',
+            'latest': 'true'
         }
 
         for mode in search_strings:
@@ -68,11 +66,11 @@ class DanishbitsProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: {0}".format(search_string))
-
-                search_params['search'] = search_string
+                    search_params['latest'] = 'false'
+                    search_params['search'] = search_string
 
                 try:
-                    data = self.session.get(self.urls['search'], params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).json()
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -89,29 +87,34 @@ class DanishbitsProvider(TorrentProvider):
 
         results = []
 
-        torrents = json.loads(data)
+        for torrent in data.get('results', []):
+            try:
+                title = torrent.get('release_name')
+                download_url = torrent.get('download_url')
+                if not all([title, download_url]):
+                    continue
 
-        if 'results' in torrents:
-            for torrent in torrents['results']:
-                try:
-                    title = torrent['release_name']
-                    download_url = torrent['download_url']
-                    seeders = torrent['seeders']
-                    leechers = torrent['leechers']
+                seeders = torrent.get('seeders')
+                leechers = torrent.get('leechers')
 
-                    freeleech = torrent['freeleech']
-                    if self.freeleech and not freeleech:
-                        continue
+                freeleech = torrent.get('freeleech')
+                if self.freeleech and not freeleech:
+                    continue
 
-                    size = convert_size(torrent['size'], -1)
+                torrent_size = '{} MB'.format(torrent.get('size', -1))
+                size = convert_size(torrent_size, -1)
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                results += [{
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers
+                }]
 
-                    if mode != 'RSS':
-                        sickrage.app.log.debug("Found result: {}".format(title))
-                except Exception:
-                    sickrage.app.log.error('Failed parsing provider')
+                if mode != 'RSS':
+                    sickrage.app.log.debug("Found result: {}".format(title))
+            except Exception:
+                sickrage.app.log.error('Failed parsing provider')
 
         return results

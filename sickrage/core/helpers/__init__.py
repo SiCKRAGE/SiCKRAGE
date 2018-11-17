@@ -548,8 +548,9 @@ def move_and_symlink_file(src_file, dest_file):
             sickrage.app.log.warning('Failed to create symlink of {src} at {dest}. Error: {error!r}'.format(
                 **{'src': src_file, 'dest': dest_file, 'error': e}))
         else:
-            sickrage.app.log.warning("Failed to create symlink of {src} at {dest}. Error: {error!r}. Copying instead".format(
-                            **{'src': src_file, 'dest': dest_file, 'error': e}))
+            sickrage.app.log.warning(
+                "Failed to create symlink of {src} at {dest}. Error: {error!r}. Copying instead".format(
+                    **{'src': src_file, 'dest': dest_file, 'error': e}))
             copy_file(src_file, dest_file)
 
 
@@ -1002,6 +1003,9 @@ def backupSR(backupDir, keep_latest=False):
         for f in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
             os.remove(f)
 
+    if not os.path.exists(backupDir):
+        os.mkdir(backupDir)
+
     if keep_latest:
         _keep_latest_backup()
 
@@ -1056,8 +1060,8 @@ def restoreSR(srcDir, dstDir):
             if os.path.exists(os.path.join(dstDir, 'database')):
                 move_file(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
                                                                          .format('database',
-                                                                                datetime.datetime.now().strftime(
-                                                                                    '%Y%m%d_%H%M%S'))))
+                                                                                 datetime.datetime.now().strftime(
+                                                                                     '%Y%m%d_%H%M%S'))))
             move_file(os.path.join(srcDir, 'database'), dstDir)
 
         # cache
@@ -1065,8 +1069,8 @@ def restoreSR(srcDir, dstDir):
             if os.path.exists(os.path.join(dstDir, 'cache')):
                 move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
                                                                       .format('cache',
-                                                                             datetime.datetime.now().strftime(
-                                                                                 '%Y%m%d_%H%M%S'))))
+                                                                              datetime.datetime.now().strftime(
+                                                                                  '%Y%m%d_%H%M%S'))))
             move_file(os.path.join(srcDir, 'cache'), dstDir)
 
         return True

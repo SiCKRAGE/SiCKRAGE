@@ -1,4 +1,4 @@
-# coding=utf-8
+ # coding=utf-8
 # Author: Ludovic Reenaers <ludovic.reenaers@gmail.com>
 #
 # URL: https://sickrage.ca
@@ -27,9 +27,18 @@ import sickrage
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.helpers import bs4_parser, try_int, convert_size, validate_url
 from sickrage.providers import TorrentProvider
+ from __future__ import print_function, unicode_literals
+
+ import re
+ from urlparse import urljoin
+
+ import sickrage
+ from sickrage.core.caches.tv_cache import TVCache
+ from sickrage.core.helpers import bs4_parser, try_int, convert_size, validate_url
+ from sickrage.providers import TorrentProvider
 
 
-class Torrent9Provider(TorrentProvider):
+ class Torrent9Provider(TorrentProvider):
     def __init__(self):
         super(Torrent9Provider, self).__init__('Torrent9', 'ww1.torrent9.ph', False)
 

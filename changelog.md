@@ -1,6 +1,14 @@
 # Changelog
 
-- * 02fcf0a - 2018-11-16: Release v9.4.35 
+- * a2df6d9 - 2018-11-17: Release v9.4.36 
+- * 07947fd - 2018-11-17: Fixed issues with grabbing redirect url for session POST method. Fixed login issue for FileList. Fixed issue with parsing torrents from Zooqle and YGGTorrent. 
+- * 5acf339 - 2018-11-17: Pre-Release v9.4.36.dev3 
+- * 34dd950 - 2018-11-17: Fixed issue #322 - NoneType error when trying to view Trakt &#x60;most anticipated&#x60; shows due to indexer failing to have artwork available. Refactored error page to new UI look. 
+- * 3299a1e - 2018-11-17: Pre-Release v9.4.36.dev2 
+- * 9048cd4 - 2018-11-17: Refactored DanishBits torrent provider. 
+- * 3f51fb3 - 2018-11-17: Pre-Release v9.4.36.dev1 
+- * 9f9fcab - 2018-11-17: Added &#x60;backup&#x60; call to API, allows you to specify the folder you wish to backup your application data to. 
+- * c92467e - 2018-11-16: Release v9.4.35 
 - * 11ac4c6 - 2018-11-16: Fixed Mako error related to no imdb_info present. Refactored &#x60;episode_string_fallback&#x60; to list. 
 - * 70d42c2 - 2018-11-14: Release v9.4.34 
 - * 4478e39 - 2018-11-14: Release v9.4.33 

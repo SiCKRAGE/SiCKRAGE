@@ -47,7 +47,7 @@ from sickrage.core.common import ARCHIVED, DOWNLOADED, IGNORED, \
     timeFormat
 from sickrage.core.exceptions import CantUpdateShowException, CantRemoveShowException, CantRefreshShowException
 from sickrage.core.helpers import chmod_as_parent, findCertainShow, makeDir, \
-    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, app_statistics
+    pretty_filesize, sanitizeFileName, srdatetime, try_int, readFileBuffered, app_statistics, backupSR
 from sickrage.core.media.banner import Banner
 from sickrage.core.media.fanart import FanArt
 from sickrage.core.media.network import Network
@@ -625,6 +625,30 @@ class CMD_Help(ApiCall):
         else:
             out = _responds(RESULT_FAILURE, msg="No such cmd")
         return out
+
+
+class CMD_Backup(ApiCall):
+    _cmd = "backup"
+    _help = {
+        "desc": "Backup application data files",
+        "requiredParameters": {
+            "backup_dir": {"desc": "Directory to store backup files"},
+        }
+    }
+
+    def __init__(self, application, request, *args, **kwargs):
+        super(CMD_Backup, self).__init__(application, request, *args, **kwargs)
+        self.backup_dir, args = self.check_params("backup_dir", sickrage.app.data_dir, True, "string", [], *args,
+                                                  **kwargs)
+
+    def run(self):
+        """ Performs application backup """
+        if backupSR(self.backup_dir):
+            response = _responds(RESULT_SUCCESS, msg='Backup successful')
+        else:
+            response = _responds(RESULT_FAILURE, msg='Backup failed')
+
+        return response
 
 
 class CMD_ComingEpisodes(ApiCall):
@@ -1754,9 +1778,12 @@ class CMD_Show(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         showDict = {
-            "season_list": CMD_ShowSeasonList(self.application, self.request, **{"indexerid": self.indexerid}).run()[
-                "data"],
-            "cache": CMD_ShowCache(self.application, self.request, **{"indexerid": self.indexerid}).run()["data"]
+            "season_list": CMD_ShowSeasonList(self.application, self.request, **{
+                "indexerid": self.indexerid
+            }).run()["data"],
+            "cache": CMD_ShowCache(self.application, self.request, **{
+                "indexerid": self.indexerid
+            }).run()["data"]
         }
 
         genreList = []
@@ -1808,7 +1835,8 @@ class CMD_Show(ApiCall):
 
         if try_int(showObj.next_aired, 1) > 693595:
             dtEpisodeAirs = srdatetime.srDateTime(
-                sickrage.app.tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']), convert=True).dt
+                sickrage.app.tz_updater.parse_date_time(showObj.next_aired, showDict['airs'], showDict['network']),
+                convert=True).dt
             showDict['airs'] = srdatetime.srDateTime(dtEpisodeAirs).srftime(t_preset=timeFormat).lstrip('0').replace(
                 ' 0', ' ')
             showDict['next_ep_airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
@@ -2371,7 +2399,7 @@ class CMD_ShowSeasonList(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        seasonList = sorted((x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)),
+        seasonList = sorted(set(x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)),
                             key=lambda d: d, reverse=not self.sort == "asc")
 
         return _responds(RESULT_SUCCESS, seasonList)
@@ -2411,7 +2439,8 @@ class CMD_ShowSeasons(ApiCall):
 
                 if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
+                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network),
+                        convert=True).dt
                     row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2443,7 +2472,8 @@ class CMD_ShowSeasons(ApiCall):
                 row["quality"] = get_quality_string(quality)
                 if try_int(row['airdate'], 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network), convert=True).dt
+                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network),
+                        convert=True).dt
                     row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
                     row['airdate'] = 'Never'
@@ -2691,7 +2721,8 @@ class CMD_Shows(ApiCall):
 
             if try_int(curShow.next_aired, 1) > 693595:  # 1900
                 dtEpisodeAirs = srdatetime.srDateTime(
-                    sickrage.app.tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']), convert=True).dt
+                    sickrage.app.tz_updater.parse_date_time(curShow.next_aired, curShow.airs, showDict['network']),
+                    convert=True).dt
                 showDict['next_ep_airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
             else:
                 showDict['next_ep_airdate'] = ''
