@@ -48,23 +48,6 @@ class YggtorrentProvider(TorrentProvider):
         # Proper Strings
         self.proper_strings = ['PROPER', 'REPACK', 'REAL', 'RERIP']
 
-        # Miscellaneous Options
-        self.translation = {
-            'seconde': 'second',
-            'secondes': 'seconds',
-            'minute': 'minute',
-            'minutes': 'minutes',
-            'heure': 'hour',
-            'heures': 'hours',
-            'jour': 'day',
-            'jours': 'days',
-            'mois': 'month',
-            'an': 'year',
-            'année': 'year',
-            'ans': 'years',
-            'années': 'years'
-        }
-
         # Torrent Stats
         self.minseed = None
         self.minleech = None

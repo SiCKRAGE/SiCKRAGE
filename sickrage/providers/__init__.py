@@ -41,8 +41,7 @@ from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
 from sickrage.core.helpers import chmod_as_parent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, \
-    validate_url, \
-    try_int, convert_size
+    validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -178,7 +177,7 @@ class GenericProvider(object):
 
         for show_name in allPossibleShowNames(episode.show, episode.scene_season):
             episode_string = show_name + self.search_separator
-            episode_string_fallback = None
+            episode_string_fallbacks = []
 
             if episode.show.air_by_date:
                 episode_string += str(episode.airdate).replace('-', ' ')
@@ -187,14 +186,14 @@ class GenericProvider(object):
                 episode_string += ('|', ' ')[len(self.proper_strings) > 1]
                 episode_string += episode.airdate.strftime('%b')
             elif episode.show.anime:
-                # If the showname is a season scene exception, we want to use the indexer episode number.
+                # If the show name is a season scene exception, we want to use the indexer episode number.
                 if (episode.scene_season > 1 and
                         show_name in get_scene_exceptions(episode.show.indexerid, episode.scene_season)):
                     # This is apparently a season exception, let's use the scene_episode instead of absolute
                     ep = episode.scene_episode
                 else:
                     ep = episode.scene_absolute_number
-                episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
+                episode_string_fallbacks += [episode_string + '{episode:0>3}'.format(episode=ep)]
                 episode_string += '{episode:0>2}'.format(episode=ep)
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
@@ -204,11 +203,12 @@ class GenericProvider(object):
 
             if add_string:
                 episode_string += self.search_separator + add_string
-                if episode_string_fallback:
+                for i, episode_string_fallback in enumerate(episode_string_fallbacks):
                     episode_string_fallback += self.search_separator + add_string
+                    episode_string_fallbacks[i] = episode_string_fallback
 
             search_string['Episode'].append(episode_string.strip())
-            if episode_string_fallback:
+            for episode_string_fallback in episode_string_fallbacks:
                 search_string['Episode'].append(episode_string_fallback.strip())
 
         return [search_string]
@@ -331,7 +331,7 @@ class GenericProvider(object):
                 continue
 
             try:
-                parse_result = NameParser().parse(result.name)
+                parse_result = NameParser(showObj=show).parse(result.name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("{}".format(e))
                 continue
@@ -343,7 +343,7 @@ class GenericProvider(object):
             result.size = self._get_size(item)
             result.seeders, result.leechers = self._get_result_stats(item)
 
-            sickrage.app.log.debug("Adding item from search to cache: " + result.name)
+            sickrage.app.log.debug("Adding item from search to cache: {}".format(result.name))
             self.cache.addCacheEntry(result.name, result.url, result.seeders, result.leechers, result.size)
 
             if not result.show:
@@ -352,26 +352,26 @@ class GenericProvider(object):
             if not (result.show.air_by_date or result.show.sports):
                 if search_mode == 'sponly':
                     if len(parse_result.episode_numbers):
-                        sickrage.app.log.debug(
-                            "This is supposed to be a season pack search but the result " + result.name + " is not a valid season pack, skipping it")
+                        sickrage.app.log.debug("This is supposed to be a season pack search but the result {} is not "
+                                               "a valid season pack, skipping it".format(result.name))
                         continue
                     if len(parse_result.episode_numbers) and (
                             parse_result.season_number not in set([ep.season for ep in episodes])
                             or not [ep for ep in episodes if ep.scene_episode in parse_result.episode_numbers]):
-                        sickrage.app.log.debug(
-                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                        sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
+                                               "to snatch, ignoring".format(result.name))
                         continue
                 else:
                     if not len(parse_result.episode_numbers) and parse_result.season_number and not [ep for ep in
                                                                                                      episodes if
                                                                                                      ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
-                        sickrage.app.log.debug(
-                            "The result " + result.name + " doesn't seem to be a valid season that we are trying to snatch, ignoring")
+                        sickrage.app.log.debug("The result {} doesn't seem to be a valid season that we are trying to "
+                                               "snatch, ignoring".format(result.name))
                         continue
                     elif len(parse_result.episode_numbers) and not [ep for ep in episodes if
                                                                     ep.season == parse_result.season_number and ep.episode in parse_result.episode_numbers]:
-                        sickrage.app.log.debug(
-                            "The result " + result.name + " doesn't seem to be a valid episode that we are trying to snatch, ignoring")
+                        sickrage.app.log.debug("The result {} doesn't seem to be a valid episode that we are trying "
+                                               "to snatch, ignoring".format(result.name))
                         continue
 
                 # we just use the existing info for normal searches

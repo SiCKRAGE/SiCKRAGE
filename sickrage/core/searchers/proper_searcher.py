@@ -124,7 +124,7 @@ class ProperSearcher(object):
                     continue
 
                 name = self._genericName(x.name)
-                if not name in propers:
+                if name not in propers:
                     sickrage.app.log.debug("Found new proper: " + x.name)
                     x.provider = providerObj
                     propers[name] = x
