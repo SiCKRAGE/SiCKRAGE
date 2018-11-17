@@ -19,8 +19,6 @@
 
 from __future__ import unicode_literals
 
-import re
-
 from requests.compat import urljoin
 from requests.utils import dict_from_cookiejar
 
@@ -33,6 +31,7 @@ from sickrage.providers import TorrentProvider
 class FileListProvider(TorrentProvider):
     def __init__(self):
         super(FileListProvider, self).__init__('FileList', 'https://filelist.ro', True)
+
         # Credentials
         self.username = None
         self.password = None
@@ -59,19 +58,20 @@ class FileListProvider(TorrentProvider):
 
         login_params = {
             "username": self.username,
-            "password": self.password
+            "password": self.password,
+            "ssl": 'yes'
         }
 
         try:
             response = self.session.post(self.urls["login"], data=login_params).text
         except Exception:
             sickrage.app.log.warning("Unable to connect to provider")
+            self.session.cookies.clear()
             return False
 
-        if re.search("Invalid Username/password", response) \
-                or re.search("<title>Login :: FileList.ro</title>", response) \
-                or re.search("Login esuat!", response):
+        if 'logout.php' not in response:
             sickrage.app.log.warning("Invalid username or password. Check your settings")
+            self.session.cookies.clear()
             return False
 
         return True
@@ -94,12 +94,10 @@ class FileListProvider(TorrentProvider):
             for search_string in search_strings[mode]:
                 if mode != "RSS":
                     sickrage.app.log.debug("Search string: {}".format(search_string))
-
-                search_params["search"] = search_string
-                search_url = self.urls["search"]
+                    search_params["search"] = search_string
 
                 try:
-                    data = self.session.get(search_url, params=search_params).text
+                    data = self.session.get(self.urls['search'], params=search_params).text
                     results += self.parse(data, mode)
                 except Exception:
                     sickrage.app.log.debug("No data returned from provider")
@@ -116,7 +114,7 @@ class FileListProvider(TorrentProvider):
 
         results = []
 
-        with bs4_parser(data, "html5lib") as html:
+        with bs4_parser(data) as html:
             torrent_rows = html.find_all("div", class_="torrentrow")
 
             # Continue only if at least one Release is found
@@ -164,9 +162,13 @@ class FileListProvider(TorrentProvider):
                     torrent_size = cells[labels.index("Size")].find("span").get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != "RSS":
                         sickrage.app.log.debug("Found result: {}".format(title))

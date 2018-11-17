@@ -163,8 +163,8 @@ class ZooqleProvider(TorrentProvider):
 
         for item in data['entries']:
             try:
-                title = item['title']
-                download_url = item['torrent_magneturi']
+                title = item.get('title')
+                download_url = item.get('torrent_magneturi')
                 if not all([title, download_url]):
                     continue
 
@@ -172,9 +172,13 @@ class ZooqleProvider(TorrentProvider):
                 leechers = try_int(item['torrent_peers'])
                 size = try_int(item['torrent_contentlength'], -1)
 
-                results += [
-                    {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                ]
+                results += [{
+                    'title': title,
+                    'link': download_url,
+                    'size': size,
+                    'seeders': seeders,
+                    'leechers': leechers
+                }]
 
                 if mode != 'RSS':
                     sickrage.app.log.debug('Found result: {}'.format(title))
