@@ -1002,6 +1002,9 @@ def backupSR(backupDir, keep_latest=False):
         for f in sorted(glob.glob(os.path.join(backupDir, '*.zip')), key=os.path.getctime, reverse=True)[1:]:
             os.remove(f)
 
+    if not os.path.exists(backupDir):
+        os.mkdir(backupDir)
+
     if keep_latest:
         _keep_latest_backup()
 
