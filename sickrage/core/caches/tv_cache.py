@@ -186,10 +186,12 @@ class TVCache(object):
         if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID) if x['url'] == url]):
             return
 
-        # ignore invalid urls
-        if not validate_url(url) and not url.startswith('magnet') \
-                or is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
-            return
+        # ignore invalid and private IP address urls
+        if not validate_url(url):
+            if not url.startswith('magnet'):
+                return
+        elif is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
+                return
 
         try:
             # parse release name
@@ -263,10 +265,12 @@ class TVCache(object):
                                                and "|" + str(ep_obj.episode) + "|" in x['episodes']):
             result = self.provider.getResult()
 
-            # ignore invalid urls
-            if not validate_url(curResult["url"]) and not curResult["url"].startswith('magnet') \
-                    or is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
-                continue
+            # ignore invalid and private IP address urls
+            if not validate_url(curResult["url"]):
+                if not curResult["url"].startswith('magnet'):
+                    continue
+            elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
+                    continue
 
             # ignored/required words, and non-tv junk
             if not show_names.filterBadReleases(curResult["name"]):

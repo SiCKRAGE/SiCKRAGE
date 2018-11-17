@@ -241,7 +241,7 @@
                                                     </a>
                                                 % endfor
                                             % endif
-                                            % if 'Year' in show.imdb_info:
+                                            % if show.imdb_info and 'Year' in show.imdb_info:
                                                 % for imdbgenre in show.imdb_info['Genre'].replace('Sci-Fi','Science-Fiction').split(','):
                                                     <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                        target="_blank"
