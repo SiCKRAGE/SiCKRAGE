@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-14 21:40-0800\n"
-"PO-Revision-Date: 2018-11-15 05:41\n"
+"POT-Creation-Date: 2018-11-16 22:30-0800\n"
+"PO-Revision-Date: 2018-11-17 06:31\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -6580,11 +6580,11 @@ msgstr "SiCKRAGE redémarre"
 
 #: sickrage/core/webserver/views.py:1077
 msgid "Checking for updates"
-msgstr ""
+msgstr "Recherche de mises à jour"
 
 #: sickrage/core/webserver/views.py:1081
 msgid "No new updates available!"
-msgstr ""
+msgstr "Pas de nouvelle mise à jour !"
 
 #: sickrage/core/webserver/views.py:1089
 msgid "Updating SiCKRAGE"

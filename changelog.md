@@ -1,6 +1,7 @@
 # Changelog
 
-- * 225427c - 2018-11-16: Fixed Mako error related to no imdb_info present. Refactored &#x60;episode_string_fallback&#x60; to list. 
+- * 02fcf0a - 2018-11-16: Release v9.4.35 
+- * 11ac4c6 - 2018-11-16: Fixed Mako error related to no imdb_info present. Refactored &#x60;episode_string_fallback&#x60; to list. 
 - * 70d42c2 - 2018-11-14: Release v9.4.34 
 - * 4478e39 - 2018-11-14: Release v9.4.33 
 - * 26b7be1 - 2018-11-14: Fixed NoneType issue with delete and update database function calls. 
