@@ -1,6 +1,7 @@
 # Changelog
 
-- * c813015 - 2018-11-17: Pre-Release v9.4.36.dev2 
+- * 2dba8dd - 2018-11-17: Fixed issue #322 - NoneType error when trying to view Trakt &#x60;most anticipated&#x60; shows due to indexer failing to have artwork available. Refactored error page to new UI look. 
+- * 3299a1e - 2018-11-17: Pre-Release v9.4.36.dev2 
 - * 9048cd4 - 2018-11-17: Refactored DanishBits torrent provider. 
 - * 3f51fb3 - 2018-11-17: Pre-Release v9.4.36.dev1 
 - * 9f9fcab - 2018-11-17: Added &#x60;backup&#x60; call to API, allows you to specify the folder you wish to backup your application data to. 

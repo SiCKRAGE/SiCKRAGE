@@ -73,7 +73,7 @@ def indexerImage(id=None, which=None):
                     image_url = t.images(int(id), key_type=image_type)[0]['filename']
                     WebSession().download(image_url, image_path)
         except (KeyError, IndexError):
-            return
+            pass
 
         if image_type == 'banner':
             return Banner(int(id), media_format)
