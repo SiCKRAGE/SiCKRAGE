@@ -1,6 +1,7 @@
 # Changelog
 
-- * 616e1e5 - 2018-11-17: Added &#x60;backup&#x60; call to API, allows you to specify the folder you wish to backup your application data to. 
+- * cb3db6a - 2018-11-17: Pre-Release v9.4.36.dev1 
+- * 9f9fcab - 2018-11-17: Added &#x60;backup&#x60; call to API, allows you to specify the folder you wish to backup your application data to. 
 - * c92467e - 2018-11-16: Release v9.4.35 
 - * 11ac4c6 - 2018-11-16: Fixed Mako error related to no imdb_info present. Refactored &#x60;episode_string_fallback&#x60; to list. 
 - * 70d42c2 - 2018-11-14: Release v9.4.34 

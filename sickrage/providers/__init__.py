@@ -331,7 +331,7 @@ class GenericProvider(object):
                 continue
 
             try:
-                parse_result = NameParser(showObj=show).parse(result.name)
+                parse_result = NameParser(showObj=show, validate_show=True).parse(result.name)
             except (InvalidNameException, InvalidShowException) as e:
                 sickrage.app.log.debug("{}".format(e))
                 continue
