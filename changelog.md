@@ -1,6 +1,7 @@
 # Changelog
 
-- * 85ac1bc - 2018-11-17: Release v9.4.37 
+- * 3421341 - 2018-11-17: Release v9.4.38 
+- * ee79b9e - 2018-11-17: Release v9.4.37 
 - * 3c599a2 - 2018-11-17: Release v9.4.36 
 - * 07947fd - 2018-11-17: Fixed issues with grabbing redirect url for session POST method. Fixed login issue for FileList. Fixed issue with parsing torrents from Zooqle and YGGTorrent. 
 - * 5acf339 - 2018-11-17: Pre-Release v9.4.36.dev3 
