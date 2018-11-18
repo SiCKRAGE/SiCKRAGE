@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2c7138e - 2018-11-18: Fixed issues with quality settings via API. 
+- * 21246b6 - 2018-11-18: Refactored grunt python commands to use virtual environment. 
+- * c6c4b93 - 2018-11-18: Fixed issues with quality settings via API. 
 - * 4fff22e - 2018-11-18: Refactored misc API function names. 
 - * 8e81cad - 2018-11-18: Refactored code for API builder to display full URL. 
 - * eff3ee9 - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
