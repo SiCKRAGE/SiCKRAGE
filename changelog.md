@@ -1,6 +1,7 @@
 # Changelog
 
-- * b0b6ddd - 2018-11-18: Refactored misc API function names. 
+- * 2c7138e - 2018-11-18: Fixed issues with quality settings via API. 
+- * 4fff22e - 2018-11-18: Refactored misc API function names. 
 - * 8e81cad - 2018-11-18: Refactored code for API builder to display full URL. 
 - * eff3ee9 - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
 - * 0aa52f3 - 2018-11-17: Release v9.4.38 
