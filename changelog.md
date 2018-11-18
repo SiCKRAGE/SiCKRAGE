@@ -1,6 +1,7 @@
 # Changelog
 
-- * 179ed9a - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
+- * b21c682 - 2018-11-18: Refactored code for API builder to display full URL. 
+- * eff3ee9 - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
 - * 0aa52f3 - 2018-11-17: Release v9.4.38 
 - * ee79b9e - 2018-11-17: Release v9.4.37 
 - * 3c599a2 - 2018-11-17: Release v9.4.36 
