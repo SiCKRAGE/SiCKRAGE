@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-17 18:28-0800\n"
-"PO-Revision-Date: 2018-11-18 02:28\n"
+"POT-Creation-Date: 2018-11-18 10:29-0800\n"
+"PO-Revision-Date: 2018-11-18 18:30\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Arabic\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.5.1\n"
+"Generated-By: Babel 2.6.0\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: sickragetv\n"
@@ -392,34 +392,34 @@ msgid "Playground"
 msgstr "ملعب للأطفال"
 
 #: sickrage/core/webserver/views/api_builder.mako:91
-#: sickrage/core/webserver/views/api_builder.mako:133
+#: sickrage/core/webserver/views/api_builder.mako:132
 #: sickrage/core/webserver/views/config/providers.mako:165
 msgid "URL:"
 msgstr "URL:"
 
-#: sickrage/core/webserver/views/api_builder.mako:100
+#: sickrage/core/webserver/views/api_builder.mako:99
 msgid "Required parameters"
 msgstr "المعلمات المطلوبة"
 
-#: sickrage/core/webserver/views/api_builder.mako:109
+#: sickrage/core/webserver/views/api_builder.mako:108
 msgid "Optional parameters"
 msgstr "معلمات اختيارية"
 
-#: sickrage/core/webserver/views/api_builder.mako:123
+#: sickrage/core/webserver/views/api_builder.mako:122
 msgid "Call API"
 msgstr "استدعاء API"
 
-#: sickrage/core/webserver/views/api_builder.mako:131
+#: sickrage/core/webserver/views/api_builder.mako:130
 msgid "Response:"
 msgstr "الرد:"
 
-#: sickrage/core/webserver/views/api_builder.mako:137
+#: sickrage/core/webserver/views/api_builder.mako:136
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:74
 msgid "Clear"
 msgstr "واضحة"
 
-#: sickrage/core/webserver/views/api_builder.mako:168
-#: sickrage/core/webserver/views/api_builder.mako:198
+#: sickrage/core/webserver/views/api_builder.mako:167
+#: sickrage/core/webserver/views/api_builder.mako:197
 #: sickrage/core/webserver/views/includes/modals.mako:66
 #: sickrage/core/webserver/views/includes/modals.mako:88
 #: sickrage/core/webserver/views/manage/mass_edit.mako:149
@@ -433,8 +433,8 @@ msgstr "واضحة"
 msgid "Yes"
 msgstr "نعم"
 
-#: sickrage/core/webserver/views/api_builder.mako:170
-#: sickrage/core/webserver/views/api_builder.mako:197
+#: sickrage/core/webserver/views/api_builder.mako:169
+#: sickrage/core/webserver/views/api_builder.mako:196
 #: sickrage/core/webserver/views/includes/modals.mako:63
 #: sickrage/core/webserver/views/includes/modals.mako:87
 #: sickrage/core/webserver/views/manage/mass_edit.mako:150
@@ -448,11 +448,11 @@ msgstr "نعم"
 msgid "No"
 msgstr "لا"
 
-#: sickrage/core/webserver/views/api_builder.mako:217
+#: sickrage/core/webserver/views/api_builder.mako:216
 msgid "season"
 msgstr "الموسم"
 
-#: sickrage/core/webserver/views/api_builder.mako:223
+#: sickrage/core/webserver/views/api_builder.mako:222
 msgid "episode"
 msgstr "الحلقة"
 
@@ -4358,7 +4358,7 @@ msgstr "استخدام تخصيص عرض النطاق الترددي العال�
 msgid "Test Connection"
 msgstr "اختبار الاتصال"
 
-#: sickrage/core/webserver/api.py:975
+#: sickrage/core/webserver/api.py:1017
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
 #: sickrage/core/webserver/views/home/display_show.mako:712

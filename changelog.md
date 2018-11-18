@@ -1,6 +1,12 @@
 # Changelog
 
-- * 3421341 - 2018-11-17: Release v9.4.38 
+- * 0d6282b - 2018-11-18: Release v9.4.39 
+- * 4d3e19d - 2018-11-18: Refactored grunt python commands to use virtual environment. 
+- * c6c4b93 - 2018-11-18: Fixed issues with quality settings via API. 
+- * 4fff22e - 2018-11-18: Refactored misc API function names. 
+- * 8e81cad - 2018-11-18: Refactored code for API builder to display full URL. 
+- * eff3ee9 - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
+- * 0aa52f3 - 2018-11-17: Release v9.4.38 
 - * ee79b9e - 2018-11-17: Release v9.4.37 
 - * 3c599a2 - 2018-11-17: Release v9.4.36 
 - * 07947fd - 2018-11-17: Fixed issues with grabbing redirect url for session POST method. Fixed login issue for FileList. Fixed issue with parsing torrents from Zooqle and YGGTorrent. 

@@ -88,8 +88,7 @@
                                             <div class="col-md-12">
                                                 <h4>${_('Playground')}</h4>
                                                 <span>
-                                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${srWebRoot}
-                                                    /api/${apikey}/?cmd=${command}</kbd>
+                                                    ${_('URL:')} <kbd id="command-${command_id}-base-url">${request.protocol}://${request.host}${srWebRoot}/api/${apikey}/?cmd=${command}</kbd>
                                                 </span>
                                             </div>
                                         </div>
