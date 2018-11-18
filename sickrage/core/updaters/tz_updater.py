@@ -34,7 +34,6 @@ from sickrage.core.websession import WebSession
 class TimeZoneUpdater(object):
     def __init__(self):
         self.name = "TZUPDATER"
-        self.network_dict = {}
         self.time_regex = re.compile(r'(?P<hour>\d{1,2})(?:[:.]?(?P<minute>\d{2})?)? ?(?P<meridiem>[PA]\.? ?M?)?\b',
                                      re.I)
 
@@ -42,62 +41,46 @@ class TimeZoneUpdater(object):
         # set thread name
         threading.currentThread().setName(self.name)
 
-        self.update_network_dict()
+        self.update_network_timezones()
 
     # update the network timezone table
-    def update_network_dict(self):
+    def update_network_timezones(self):
         """Update timezone information from SR repositories"""
 
-        url = 'https://cdn.sickrage.ca/network_timezones/'
+        network_timezones = {}
 
         try:
-            url_data = WebSession().get(url).text
+            url_data = WebSession().get('https://cdn.sickrage.ca/network_timezones/').text
         except Exception:
-            sickrage.app.log.warning(
-                'Updating network timezones failed, this can happen from time to time. URL: %s' % url)
+            sickrage.app.log.warning('Updating network timezones failed.')
             return
 
-        d = {}
         try:
             for line in url_data.splitlines():
                 (key, val) = line.strip().rsplit(':', 1)
-                if key is None or val is None:
-                    continue
-                d[key] = val
+                if all([key, val]):
+                    network_timezones[key] = val
         except (IOError, OSError):
             pass
 
-        for network, timezone in d.items():
-            existing = network in self.network_dict
-            if not existing:
-                if not sickrage.app.cache_db.get('network_timezones', network):
-                    sickrage.app.cache_db.insert({
-                        '_t': 'network_timezones',
-                        'network_name': ss(network),
-                        'timezone': timezone
-                    })
-            elif self.network_dict[network] is not timezone:
-                dbData = sickrage.app.cache_db.get('network_timezones', network)
-                if dbData:
-                    dbData['timezone'] = timezone
-                    sickrage.app.cache_db.update(dbData)
+        for x in sickrage.app.cache_db.all('network_timezones'):
+            if x['network_name'] not in network_timezones:
+                sickrage.app.cache_db.delete(x)
 
-            if existing:
-                del self.network_dict[network]
+        for network, timezone in network_timezones.items():
+            dbData = sickrage.app.cache_db.get('network_timezones', network)
+            if not dbData:
+                sickrage.app.cache_db.insert({
+                    '_t': 'network_timezones',
+                    'network_name': ss(network),
+                    'timezone': timezone
+                })
+            elif dbData['timezone'] != timezone:
+                dbData['timezone'] = timezone
+                sickrage.app.cache_db.update(dbData)
 
-        for x in self.network_dict:
-            sickrage.app.cache_db.delete(sickrage.app.cache_db.get('network_timezones', x))
-
-        self.load_network_dict()
-
-    # load network timezones from db into dict
-    def load_network_dict(self):
-        """
-        Return network timezones from db
-        """
-
-        self.network_dict = dict(
-            [(x['network_name'], x['timezone']) for x in sickrage.app.cache_db.all('network_timezones')])
+        # cleanup
+        del network_timezones
 
     # get timezone of a network or return default timezone
     def get_network_timezone(self, network):
@@ -111,7 +94,7 @@ class TimeZoneUpdater(object):
             return sickrage.app.tz
 
         try:
-            return tz.gettz(self.network_dict[network]) or sickrage.app.tz
+            return tz.gettz(sickrage.app.cache_db.get('network_timezones', network)['timezone'])
         except Exception:
             return sickrage.app.tz
 
@@ -124,9 +107,6 @@ class TimeZoneUpdater(object):
         :param network: network to use as base
         :return: datetime object containing local time
         """
-
-        if not self.network_dict:
-            self.load_network_dict()
 
         parsed_time = self.time_regex.search(t)
         network_tz = self.get_network_timezone(network)

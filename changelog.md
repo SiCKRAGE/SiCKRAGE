@@ -1,6 +1,7 @@
 # Changelog
 
-- * 5e19197 - 2018-11-18: Fixed issue with database integrity checks. 
+- * 64071b7 - 2018-11-18: Refactored network timezone functions. 
+- * 79d9ea1 - 2018-11-18: Fixed issue with database integrity checks. 
 - * b005c24 - 2018-11-18: Refactored app to use pip2 instead of pip. Fixed issues with source upgrading. 
 - * 8d1c1a6 - 2018-11-18: Refactored pypi publish to use twine 
 - * d49c03b - 2018-11-18: Release v9.4.39 
