@@ -1,6 +1,7 @@
 # Changelog
 
-- * a2df6d9 - 2018-11-17: Release v9.4.36 
+- * 85ac1bc - 2018-11-17: Release v9.4.37 
+- * 3c599a2 - 2018-11-17: Release v9.4.36 
 - * 07947fd - 2018-11-17: Fixed issues with grabbing redirect url for session POST method. Fixed login issue for FileList. Fixed issue with parsing torrents from Zooqle and YGGTorrent. 
 - * 5acf339 - 2018-11-17: Pre-Release v9.4.36.dev3 
 - * 34dd950 - 2018-11-17: Fixed issue #322 - NoneType error when trying to view Trakt &#x60;most anticipated&#x60; shows due to indexer failing to have artwork available. Refactored error page to new UI look. 
