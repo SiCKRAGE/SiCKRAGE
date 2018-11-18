@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-18 10:29-0800\n"
-"PO-Revision-Date: 2018-11-18 18:30\n"
+"POT-Creation-Date: 2018-11-18 12:46-0800\n"
+"PO-Revision-Date: 2018-11-18 20:47\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -6153,75 +6153,75 @@ msgstr "無視されます。"
 msgid "Episode snatched"
 msgstr "誘拐のエピソード"
 
-#: sickrage/core/version_updater.py:66 sickrage/core/version_updater.py:70
-#: sickrage/core/version_updater.py:75 sickrage/core/version_updater.py:83
-#: sickrage/core/version_updater.py:92 sickrage/core/version_updater.py:97
-#: sickrage/core/version_updater.py:102 sickrage/core/version_updater.py:110
-#: sickrage/core/version_updater.py:116 sickrage/core/version_updater.py:194
-#: sickrage/core/version_updater.py:253 sickrage/core/version_updater.py:296
-#: sickrage/core/version_updater.py:478 sickrage/core/version_updater.py:743
+#: sickrage/core/version_updater.py:65 sickrage/core/version_updater.py:69
+#: sickrage/core/version_updater.py:74 sickrage/core/version_updater.py:82
+#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:96
+#: sickrage/core/version_updater.py:101 sickrage/core/version_updater.py:109
+#: sickrage/core/version_updater.py:115 sickrage/core/version_updater.py:193
+#: sickrage/core/version_updater.py:252 sickrage/core/version_updater.py:295
+#: sickrage/core/version_updater.py:477 sickrage/core/version_updater.py:728
 #: sickrage/core/webserver/views.py:1077 sickrage/core/webserver/views.py:1081
 #: sickrage/core/webserver/views.py:1089
 msgid "Updater"
 msgstr ""
 
-#: sickrage/core/version_updater.py:67
+#: sickrage/core/version_updater.py:66
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "新しい更新プログラムの自動アップデーターを起動 SiCKRAGE の発見"
 
-#: sickrage/core/version_updater.py:71
+#: sickrage/core/version_updater.py:70
 msgid "Update was successful"
 msgstr "正常に更新されました。"
 
-#: sickrage/core/version_updater.py:76
+#: sickrage/core/version_updater.py:75
 msgid "Update failed!"
 msgstr "更新に失敗しました!"
 
-#: sickrage/core/version_updater.py:84
+#: sickrage/core/version_updater.py:83
 msgid "Config backup in progress..."
 msgstr "設定バックアップ実行中."
 
-#: sickrage/core/version_updater.py:93
+#: sickrage/core/version_updater.py:92
 msgid "Config backup successful, updating..."
 msgstr "設定バックアップ成功、更新."
 
-#: sickrage/core/version_updater.py:98 sickrage/core/version_updater.py:103
+#: sickrage/core/version_updater.py:97 sickrage/core/version_updater.py:102
 msgid "Config backup failed, aborting update"
 msgstr "構成バックアップに失敗しました、更新を中止して"
 
-#: sickrage/core/version_updater.py:111
+#: sickrage/core/version_updater.py:110
 msgid "We can't proceed with updating, post-processor is running"
 msgstr ""
 
-#: sickrage/core/version_updater.py:117
+#: sickrage/core/version_updater.py:116
 msgid "Waiting for jobs in show queue to finish before updating"
 msgstr ""
 
-#: sickrage/core/version_updater.py:195
+#: sickrage/core/version_updater.py:194
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "更新には、成功、再起動していないのではなかった。詳細についてはログを確認します。"
 
-#: sickrage/core/version_updater.py:251
+#: sickrage/core/version_updater.py:250
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your .git folder and run from source to enable updates."
 msgstr "実行可能 - セット、git を見つけることができません詳細 OR-> 一般的な-> の設定から git パス .git フォルダーを削除、ソースから実行する更新を有効にします。"
 
-#: sickrage/core/version_updater.py:295
+#: sickrage/core/version_updater.py:294
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "見つけるのためにあなたの pip 実行可能 - 高度な-> 一般-> 設定から pip パスを設定できません。"
 
-#: sickrage/core/version_updater.py:451 sickrage/core/version_updater.py:583
+#: sickrage/core/version_updater.py:450 sickrage/core/version_updater.py:582
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "あるより新しいバージョン、バージョン {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:479
+#: sickrage/core/version_updater.py:478
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:732
+#: sickrage/core/version_updater.py:717
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:743
+#: sickrage/core/version_updater.py:728
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

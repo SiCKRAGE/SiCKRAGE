@@ -23,7 +23,6 @@ import os
 import platform
 import re
 import shutil
-import stat
 import subprocess
 import sys
 import tarfile
@@ -256,7 +255,7 @@ class UpdateManager(object):
     def _pip_path(self):
         test_cmd = '-V'
 
-        main_pip = sickrage.app.config.pip_path or 'pip'
+        main_pip = sickrage.app.config.pip_path or 'pip2'
 
         sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
         __, __, exit_status = self._pip_cmd(main_pip, test_cmd)
@@ -272,7 +271,7 @@ class UpdateManager(object):
 
         # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
         if platform.system().lower() == 'darwin':
-            alternative_pip.append('/usr/local/python2.7/bin/pip')
+            alternative_pip.append('/usr/local/python2.7/bin/pip2')
 
         if platform.system().lower() == 'windows':
             if main_pip != main_pip.lower():
@@ -593,7 +592,7 @@ class SourceUpdateManager(UpdateManager):
 
         try:
             # prepare the update dir
-            sr_update_dir = os.path.join(sickrage.PROG_DIR, 'sr-update')
+            sr_update_dir = os.path.join(sickrage.app.data_dir, 'sr-update')
 
             if os.path.isdir(sr_update_dir):
                 sickrage.app.log.info("Clearing out update folder " + sr_update_dir + " before extracting")
@@ -637,42 +636,28 @@ class SourceUpdateManager(UpdateManager):
             if len(update_dir_contents) != 1:
                 sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
                 return False
-            content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
 
             # walk temp folder and move files to main folder
-            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
+            content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
+            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
             for dirname, __, filenames in os.walk(content_dir):
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
-                    new_path = os.path.join(sickrage.PROG_DIR, dirname, curfile)
-
-                    # Avoid DLL access problem on WIN32/64
-                    # These files needing to be updated manually
-                    # or find a way to kill the access from memory
-                    if curfile in ('unrar.dll', 'unrar64.dll'):
-                        try:
-                            os.chmod(new_path, stat.S_IWRITE)
-                            os.remove(new_path)
-                            os.renames(old_path, new_path)
-                        except Exception as e:
-                            sickrage.app.log.debug("Unable to update " + new_path + ': ' + str(e))
-                            os.remove(old_path)  # Trash the updated file without moving in new path
-                        continue
+                    new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
 
                     if os.path.isfile(new_path):
                         os.remove(new_path)
                     os.renames(old_path, new_path)
 
+            # install requirements
+            self.install_requirements()
         except Exception as e:
             sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False
 
         # Notify update successful
         Notifiers.mass_notify_version_update(self.get_newest_version)
-
-        # install requirements
-        self.install_requirements()
 
         return True
 
