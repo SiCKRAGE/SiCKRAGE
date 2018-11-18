@@ -1,6 +1,7 @@
 # Changelog
 
-- * 0d6282b - 2018-11-18: Release v9.4.39 
+- * b50c775 - 2018-11-18: Refactored pypi publish to use twine 
+- * d49c03b - 2018-11-18: Release v9.4.39 
 - * 4d3e19d - 2018-11-18: Refactored grunt python commands to use virtual environment. 
 - * c6c4b93 - 2018-11-18: Fixed issues with quality settings via API. 
 - * 4fff22e - 2018-11-18: Refactored misc API function names. 

@@ -43,7 +43,9 @@ module.exports = function (grunt) {
             'babel_compile': {cmd: 'venv\\Scripts\\python setup.py compile_catalog'},
 
             // PyPi Commands
-            'pypi_publish': {cmd: 'venv\\Scripts\\python setup.py sdist bdist_wheel upload clean'},
+            'pypi_create': {cmd: 'venv\\Scripts\\python setup.py sdist bdist_wheel'},
+            'pypi_upload': {cmd: 'venv\\Scripts\\twine upload dist/*'},
+            'pypi_cleanup': {cmd: 'venv\\Scripts\\python setup.py clean'},
 
             // Git Commands
             'git': {
@@ -235,7 +237,9 @@ module.exports = function (grunt) {
             'exec:git_commit:Pre-Release v' + newVersion,
             'exec:git_last_tag', 'exec:git_list_changes', 'exec:git_tag',
             'exec:git_push:origin:develop:tags',
-            'exec:pypi_publish'
+            'exec:pypi_create',
+            'exec:pypi_upload',
+            'exec:pypi_cleanup'
         ];
 
         grunt.task.run(tasks);
@@ -274,7 +278,9 @@ module.exports = function (grunt) {
             'exec:git_flow_release_finish:' + newVersion + ':Release v' + newVersion,
             'exec:git_push:origin:develop:tags',
             'exec:git_push:origin:master:tags',
-            'exec:pypi_publish'
+            'exec:pypi_create',
+            'exec:pypi_upload',
+            'exec:pypi_cleanup'
         ];
 
         grunt.task.run(tasks);
