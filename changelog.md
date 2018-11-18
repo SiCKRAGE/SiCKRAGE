@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3421341 - 2018-11-17: Release v9.4.38 
+- * 179ed9a - 2018-11-17: Fixed freebsd init script, runs as sickrage user 
+- * 0aa52f3 - 2018-11-17: Release v9.4.38 
 - * ee79b9e - 2018-11-17: Release v9.4.37 
 - * 3c599a2 - 2018-11-17: Release v9.4.36 
 - * 07947fd - 2018-11-17: Fixed issues with grabbing redirect url for session POST method. Fixed login issue for FileList. Fixed issue with parsing torrents from Zooqle and YGGTorrent. 
