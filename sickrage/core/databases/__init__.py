@@ -234,7 +234,7 @@ class srDatabase(object):
             # check integrity of index data
             for x in self.db.all(index_name):
                 try:
-                    data += [self.get('id', x.get('_id'))]
+                    data += [self.db.get('id', x.get('_id'))]
                 except Exception:
                     failed = True
 
@@ -341,7 +341,7 @@ class srDatabase(object):
             corrupted = self.db.get('id', _id, with_storage=False)
             self.db._delete_id_index(corrupted.get('_id'), corrupted.get('_rev'), None)
         except:
-            log.debug('Failed deleting corrupted: {}'.format(traceback.format_exc()))
+            sickrage.app.log.debug('Failed deleting corrupted: {}'.format(traceback.format_exc()))
 
     def all(self, *args, **kwargs):
         with_doc = kwargs.pop('with_doc', True)
