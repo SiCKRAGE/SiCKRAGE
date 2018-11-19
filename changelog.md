@@ -1,6 +1,7 @@
 # Changelog
 
-- * 31a7f64 - 2018-11-18: Release v9.4.40 
+- * e29a2d2 - 2018-11-18: Refactored TorrentBytes provider. 
+- * 735245c - 2018-11-18: Release v9.4.40 
 - * b538435 - 2018-11-18: Refactored network timezone functions. 
 - * 79d9ea1 - 2018-11-18: Fixed issue with database integrity checks. 
 - * b005c24 - 2018-11-18: Refactored app to use pip2 instead of pip. Fixed issues with source upgrading. 

@@ -63,9 +63,8 @@ class TorrentBytesProvider(TorrentProvider):
             sickrage.app.log.warning("Unable to connect to provider")
             return False
 
-        if re.search('Username or password incorrect', response):
-            sickrage.app.log.warning(
-                "Invalid username or password. Check your settings")
+        if 'username or password incorrect' in response.lower():
+            sickrage.app.log.warning("Invalid username or password. Check your settings")
             return False
 
         return True
@@ -76,7 +75,13 @@ class TorrentBytesProvider(TorrentProvider):
         if not self.login():
             return results
 
-        search_params = {"c33": 1, "c38": 1, "c32": 1, "c37": 1, "c41": 1}
+        search_params = {
+            "c33": 1,
+            "c38": 1,
+            "c32": 1,
+            "c37": 1,
+            "c41": 1
+        }
 
         for mode in search_strings:
             sickrage.app.log.debug("Search Mode: %s" % mode)
@@ -114,11 +119,13 @@ class TorrentBytesProvider(TorrentProvider):
                 return results
 
             # "Type", "Name", Files", "Comm.", "Added", "TTL", "Size", "Snatched", "Seeders", "Leechers"
-            labels = [label.get_text(strip=True) for label in torrent_rows[0]("td")]
+            labels = [label.get_text(strip=True) for label in torrent_rows[0]('td')]
 
             for result in torrent_rows[1:]:
                 try:
-                    cells = result("td")
+                    cells = result('td')
+                    if len(cells) < len(labels):
+                        continue
 
                     link = cells[labels.index("Name")].find("a", href=re.compile(r"download.php\?id="))["href"]
                     download_url = urljoin(self.urls['base_url'], link)
@@ -136,12 +143,17 @@ class TorrentBytesProvider(TorrentProvider):
 
                     seeders = try_int(cells[labels.index("Seeders")].get_text(strip=True))
                     leechers = try_int(cells[labels.index("Leechers")].get_text(strip=True))
+
                     torrent_size = cells[labels.index("Size")].get_text(strip=True)
                     size = convert_size(torrent_size, -1)
 
-                    results += [
-                        {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-                    ]
+                    results += [{
+                        'title': title,
+                        'link': download_url,
+                        'size': size,
+                        'seeders': seeders,
+                        'leechers': leechers
+                    }]
 
                     if mode != "RSS":
                         sickrage.app.log.debug("Found result: {}".format(title))
