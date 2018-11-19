@@ -1,6 +1,7 @@
 # Changelog
 
-- * e29a2d2 - 2018-11-18: Refactored TorrentBytes provider. 
+- * 54bc669 - 2018-11-18: Added &#x60;dist&#x60; folder to .gitignore 
+- * 4956499 - 2018-11-18: Refactored TorrentBytes provider. 
 - * 735245c - 2018-11-18: Release v9.4.40 
 - * b538435 - 2018-11-18: Refactored network timezone functions. 
 - * 79d9ea1 - 2018-11-18: Fixed issue with database integrity checks. 
