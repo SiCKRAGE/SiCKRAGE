@@ -1,6 +1,7 @@
 # Changelog
 
-- * fd576b2ba - 2018-11-20: Fixed residual issue causing shows not to update from changes made to network timezone updater in previous update. 
+- * e41e559d4 - 2018-11-20: Release v9.4.41 
+- * 461d0cc74 - 2018-11-20: Fixed residual issue causing shows not to update from changes made to network timezone updater in previous update. 
 - * 0d519ffe7 - 2018-11-18: Pre-Release v9.4.41.dev1 
 - * c578ff0ee - 2018-11-18: Fixed show refreshes to work when show is paused if end-user edits, manually rescans, or mass updates. 
 - * 49bf50161 - 2018-11-18: Added &#x60;dist&#x60; folder to .gitignore 
