@@ -28,13 +28,10 @@ from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
 
 def new_episode_finder():
     curDate = datetime.date.today()
-    if sickrage.app.tz_updater.network_dict:
-        curDate += datetime.timedelta(days=1)
-    else:
-        curDate += datetime.timedelta(days=2)
+    curDate += datetime.timedelta(days=1)
+    curTime = datetime.datetime.now(sickrage.app.tz)
 
     show = None
-    curTime = datetime.datetime.now(sickrage.app.tz)
 
     for episode in sickrage.app.main_db.all('tv_episodes'):
         if not all([episode['status'] == UNAIRED, episode['season'] > 0, episode['airdate'] > 1]):

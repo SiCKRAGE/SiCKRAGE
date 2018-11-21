@@ -1030,18 +1030,15 @@ class TVEpisode(object):
         def release_group(show, name):
             if name:
                 name = remove_non_release_groups(remove_extension(name))
-            else:
-                return ""
 
-            try:
-                parse_result = NameParser(name, showObj=show, naming_pattern=True).parse(name)
-            except (InvalidNameException, InvalidShowException) as e:
-                sickrage.app.log.debug("Unable to get parse release_group: {}".format(e))
-                return ''
+                try:
+                    parse_result = NameParser(name, showObj=show, naming_pattern=True).parse(name)
+                    if parse_result.release_group:
+                        return parse_result.release_group
+                except (InvalidNameException, InvalidShowException) as e:
+                    sickrage.app.log.debug("Unable to get parse release_group: {}".format(e))
 
-            if not parse_result.release_group:
-                return ''
-            return parse_result.release_group
+            return ''
 
         __, epQual = Quality.splitCompositeStatus(self.status)
 
