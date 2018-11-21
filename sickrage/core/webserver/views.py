@@ -1441,7 +1441,7 @@ class Home(WebHandler):
             if bool(showObj.flatten_folders) != bool(flatten_folders):
                 showObj.flatten_folders = flatten_folders
                 try:
-                    sickrage.app.show_queue.refreshShow(showObj)
+                    sickrage.app.show_queue.refreshShow(showObj, True)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh this show: {}").format(e))
 
@@ -1473,7 +1473,7 @@ class Home(WebHandler):
                     try:
                         showObj.location = location
                         try:
-                            sickrage.app.show_queue.refreshShow(showObj)
+                            sickrage.app.show_queue.refreshShow(showObj, True)
                         except CantRefreshShowException as e:
                             errors.append(_("Unable to refresh this show:{}").format(e))
                             # grab updated info from TVDB
@@ -1582,7 +1582,7 @@ class Home(WebHandler):
             return self._genericMessage(_("Error"), _("Unable to find the specified show"))
 
         try:
-            sickrage.app.show_queue.refreshShow(showObj)
+            sickrage.app.show_queue.refreshShow(showObj, True)
         except CantRefreshShowException as e:
             sickrage.app.alerts.error(_('Unable to refresh this show.'), str(e))
 
@@ -3415,7 +3415,7 @@ class Manage(Home, WebRoot):
             # don't bother refreshing shows that were updated anyway
             if curShowID in toRefresh and curShowID not in toUpdate:
                 try:
-                    sickrage.app.show_queue.refreshShow(showObj)
+                    sickrage.app.show_queue.refreshShow(showObj, True)
                     refreshes.append(showObj.name)
                 except CantRefreshShowException as e:
                     errors.append(_("Unable to refresh show ") + showObj.name + ": {}".format(e))

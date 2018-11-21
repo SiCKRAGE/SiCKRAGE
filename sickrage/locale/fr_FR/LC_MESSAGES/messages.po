@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-18 12:46-0800\n"
-"PO-Revision-Date: 2018-11-18 20:46\n"
+"POT-Creation-Date: 2018-11-20 19:23-0800\n"
+"PO-Revision-Date: 2018-11-21 03:23\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -4531,7 +4531,7 @@ msgstr "Si cela se produisait pendant une mise à jour un rafraîchissement de p
 
 #: sickrage/core/webserver/views/errors/500.mako:13
 msgid "Mako errors that happen during updates may be a one time error if there were significant UI changes."
-msgstr ""
+msgstr "Mako erreurs qui se produisent lors des mises à jour peut être une erreur si il y avait des changements de l'INTERFACE."
 
 #: sickrage/core/webserver/views/errors/500.mako:16
 msgid "Show/Hide Error"
