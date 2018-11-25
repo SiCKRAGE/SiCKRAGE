@@ -1,6 +1,7 @@
 # Changelog
 
-- * 95615ac - 2018-11-25: Fixed episode search string fallback. Added touch file helper function. 
+- * 8b4d821 - 2018-11-25: Release v9.4.43 
+- * db39bd2 - 2018-11-25: Fixed episode search string fallback. Added touch file helper function. 
 - * 6f17262 - 2018-11-24: Shows now flagged with &#x60;scene numbering&#x60; will display and search by episode scene numbers. 
 - * c5327f5 - 2018-11-24: Added ability to add new shows using quicksearch. Bugfixed Torrent9 provider. 
 - * dff28fe - 2018-11-20: Release v9.4.41 
