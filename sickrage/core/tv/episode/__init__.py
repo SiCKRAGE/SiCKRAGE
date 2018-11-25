@@ -816,6 +816,8 @@ class TVEpisode(object):
             return self._format_pattern('%SN - %AB - %EN')
         elif self.show.air_by_date:
             return self._format_pattern('%SN - %AD - %EN')
+        elif self.show.scene:
+            return self._format_pattern('%SN - %XSx%0XE - %EN')
 
         return self._format_pattern('%SN - %Sx%0E - %EN')
 

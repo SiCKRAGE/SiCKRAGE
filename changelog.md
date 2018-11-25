@@ -1,6 +1,7 @@
 # Changelog
 
-- * 83d2cdf - 2018-11-24: Added ability to add new shows using quicksearch. Bugfixed Torrent9 provider. 
+- * 8e27f3b - 2018-11-24: Shows now flagged with &#x60;scene numbering&#x60; will display and search by episode scene numbers. 
+- * c5327f5 - 2018-11-24: Added ability to add new shows using quicksearch. Bugfixed Torrent9 provider. 
 - * dff28fe - 2018-11-20: Release v9.4.41 
 - * 461d0cc - 2018-11-20: Fixed residual issue causing shows not to update from changes made to network timezone updater in previous update. 
 - * 0d519ff - 2018-11-18: Pre-Release v9.4.41.dev1 
