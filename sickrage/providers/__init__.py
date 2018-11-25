@@ -177,7 +177,7 @@ class GenericProvider(object):
 
         for show_name in allPossibleShowNames(episode.show, episode.scene_season):
             episode_string = show_name + self.search_separator
-            episode_string_fallbacks = []
+            episode_string_fallback = None
 
             if episode.show.air_by_date:
                 episode_string += str(episode.airdate).replace('-', ' ')
@@ -193,8 +193,8 @@ class GenericProvider(object):
                     ep = episode.scene_episode
                 else:
                     ep = episode.scene_absolute_number
-                episode_string_fallbacks += [episode_string + '{episode:0>3}'.format(episode=ep)]
                 episode_string += '{episode:0>2}'.format(episode=ep)
+                episode_string_fallback = episode_string + '{episode:0>3}'.format(episode=ep)
             else:
                 episode_string += sickrage.app.naming_ep_type[2] % {
                     'seasonnumber': episode.scene_season,
@@ -203,12 +203,10 @@ class GenericProvider(object):
 
             if add_string:
                 episode_string += self.search_separator + add_string
-                for i, episode_string_fallback in enumerate(episode_string_fallbacks):
-                    episode_string_fallback += self.search_separator + add_string
-                    episode_string_fallbacks[i] = episode_string_fallback
+                episode_string_fallback += self.search_separator + add_string
 
             search_string['Episode'].append(episode_string.strip())
-            for episode_string_fallback in episode_string_fallbacks:
+            if episode_string_fallback:
                 search_string['Episode'].append(episode_string_fallback.strip())
 
         return [search_string]

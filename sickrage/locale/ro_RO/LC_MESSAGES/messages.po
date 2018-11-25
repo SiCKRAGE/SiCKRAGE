@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-20 19:23-0800\n"
-"PO-Revision-Date: 2018-11-21 03:23\n"
+"POT-Creation-Date: 2018-11-25 10:41-0800\n"
+"PO-Revision-Date: 2018-11-25 18:41\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -17,327 +17,327 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: ro_RO\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:322 src/js/core.js:431
+#: sickrage/core/webserver/views/layouts/main.mako:322 src/js/core.js:444
 msgid "Shutdown"
 msgstr "Shutdown"
 
-#: src/js/core.js:432
+#: src/js/core.js:445
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Eşti tu sure tu nevoie la spre shutdown SiCKRAGE?"
 
-#: sickrage/core/webserver/views/layouts/main.mako:318 src/js/core.js:437
+#: sickrage/core/webserver/views/layouts/main.mako:318 src/js/core.js:450
 msgid "Restart"
 msgstr "Reporniţi"
 
-#: src/js/core.js:438
+#: src/js/core.js:451
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Sunteţi sigur că doriţi să reporniţi SiCKRAGE?"
 
-#: src/js/core.js:443
+#: src/js/core.js:456
 msgid "Submit Errors"
 msgstr "Prezintă erori"
 
-#: src/js/core.js:444
+#: src/js/core.js:457
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:444
+#: src/js/core.js:457
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:444
+#: src/js/core.js:457
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:563 src/js/core.js:574 src/js/core.js:595
+#: src/js/core.js:576 src/js/core.js:587 src/js/core.js:608
 msgid "Searching"
 msgstr "Căutarea"
 
-#: src/js/core.js:569 src/js/core.js:600
+#: src/js/core.js:582 src/js/core.js:613
 msgid "Queued"
 msgstr "Coada de aşteptare"
 
 #: sickrage/core/webserver/views/home/display_show.mako:705
 #: sickrage/core/webserver/views/includes/modals.mako:52
 #: sickrage/core/webserver/views/includes/modals.mako:77
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:604
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:617
 msgid "Manual Search"
 msgstr "Căutare manuală"
 
-#: sickrage/core/webserver/views/home/index.mako:300 src/js/core.js:629
-#: src/js/core.js:774 src/js/core.js:817
+#: sickrage/core/webserver/views/home/index.mako:300 src/js/core.js:642
+#: src/js/core.js:787 src/js/core.js:830
 msgid "loading"
 msgstr "încărcare"
 
-#: src/js/core.js:833
+#: src/js/core.js:846
 msgid "Choose Directory"
 msgstr "Alege Director"
 
-#: sickrage/core/webserver/views.py:3629 src/js/core.js:1473
+#: sickrage/core/webserver/views.py:3640 src/js/core.js:1486
 msgid "Clear History"
 msgstr "Ştergeţi istoricul"
 
-#: src/js/core.js:1474
+#: src/js/core.js:1487
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Sunt sigur doriţi să ştergeţi tot Istoricul de download?"
 
-#: sickrage/core/webserver/views.py:3631 src/js/core.js:1479
+#: sickrage/core/webserver/views.py:3642 src/js/core.js:1492
 msgid "Trim History"
 msgstr "Tăiaţi istorie"
 
-#: src/js/core.js:1480
+#: src/js/core.js:1493
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Sunt sigur că doriţi să tăiaţi toate Descărcaţi istorie mai vechi de 30 zile?"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2177
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2190
 msgid "Remove Show"
 msgstr "Elimina Arată"
 
-#: src/js/core.js:2178
+#: src/js/core.js:2191
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2178
+#: src/js/core.js:2191
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2178
+#: src/js/core.js:2191
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2231 src/js/core.js:2263
+#: src/js/core.js:2244 src/js/core.js:2276
 msgid "Update failed."
 msgstr "Actualizarea nu a reușit."
 
-#: src/js/core.js:2274
+#: src/js/core.js:2287
 msgid "Select Show Location"
 msgstr "Selectaţi Arată locaţia"
 
-#: src/js/core.js:2416
+#: src/js/core.js:2429
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2432
+#: src/js/core.js:2445
 msgid "Select Unprocessed Episode Folder"
 msgstr "Selectaţi folderul neprelucrate episod"
 
-#: src/js/core.js:2799
+#: src/js/core.js:2812
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "căutare a expirat, încercaţi creşterea timeout pentru indexare"
 
-#: src/js/core.js:2803
+#: src/js/core.js:2816
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2807
+#: src/js/core.js:2820
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2826
+#: src/js/core.js:2839
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2828
+#: src/js/core.js:2841
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2837
+#: src/js/core.js:2850
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2877
+#: src/js/core.js:2890
 msgid "Saved Defaults"
 msgstr "Salvat setările implicite"
 
-#: src/js/core.js:2877
+#: src/js/core.js:2890
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Setările implicite \"Adauga Arată\" au fost setat la selecţiile dvs. curent."
 
-#: src/js/core.js:2934
+#: src/js/core.js:2947
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2976
+#: src/js/core.js:2989
 msgid "Reset Config to Defaults"
 msgstr "Configurare Reiniţializare la valorile implicite"
 
-#: src/js/core.js:2977
+#: src/js/core.js:2990
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Sigur reinițializați config la valorile implicite?"
 
-#: src/js/core.js:3072
+#: src/js/core.js:3085
 msgid "Select path to pip"
 msgstr "Selectaţi calea către todica"
 
-#: src/js/core.js:3080 src/js/core.js:3106 src/js/core.js:3897 src/js/core.js:3915
-#: src/js/core.js:3936 src/js/core.js:3958 src/js/core.js:3981 src/js/core.js:4003
-#: src/js/core.js:4031 src/js/core.js:4048 src/js/core.js:4092 src/js/core.js:4177
-#: src/js/core.js:4235 src/js/core.js:4252 src/js/core.js:4282 src/js/core.js:4312
-#: src/js/core.js:4369 src/js/core.js:4445 src/js/core.js:4464 src/js/core.js:4480
+#: src/js/core.js:3093 src/js/core.js:3119 src/js/core.js:3910 src/js/core.js:3928
+#: src/js/core.js:3949 src/js/core.js:3971 src/js/core.js:3994 src/js/core.js:4016
+#: src/js/core.js:4044 src/js/core.js:4061 src/js/core.js:4105 src/js/core.js:4190
+#: src/js/core.js:4248 src/js/core.js:4265 src/js/core.js:4295 src/js/core.js:4325
+#: src/js/core.js:4382 src/js/core.js:4458 src/js/core.js:4477 src/js/core.js:4493
 msgid "Please fill out the necessary fields above."
 msgstr "Vă rugăm să completaţi câmpurile necesare mai sus."
 
-#: src/js/core.js:3098
+#: src/js/core.js:3111
 msgid "Select path to git"
 msgstr "Selectaţi calea spre git"
 
-#: src/js/core.js:3145
+#: src/js/core.js:3158
 msgid "Select Subtitles Download Directory"
 msgstr "Selectaţi subtitrari Download Director"
 
-#: src/js/core.js:3261
+#: src/js/core.js:3274
 msgid "Select .nzb blackhole/watch location"
 msgstr "Selectaţi locaţia de blackhole/uita-te la .nzb"
 
-#: src/js/core.js:3262
+#: src/js/core.js:3275
 msgid "Select .torrent blackhole/watch location"
 msgstr "Selectaţi locaţia de blackhole/ceas .torrent"
 
-#: src/js/core.js:3263
+#: src/js/core.js:3276
 msgid "Select .torrent download location"
 msgstr "Selectati locatia de download .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3330
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3343
 msgid "Minimum seeding time is"
 msgstr "Minim însămânţarea timp este"
 
-#: src/js/core.js:3332
+#: src/js/core.js:3345
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL-ul la clientul uTorrent (de exemplu, http://localhost:8000)"
 
-#: src/js/core.js:3335
+#: src/js/core.js:3348
 msgid "Stop seeding when inactive for"
 msgstr "Oprire însămânţarea când inactiv pentru"
 
-#: src/js/core.js:3341
+#: src/js/core.js:3354
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL-ul pentru clientul de transmisie (de exemplu, http://localhost:9091)"
 
-#: src/js/core.js:3351
+#: src/js/core.js:3364
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL-ul pentru clientul de potopul (de exemplu, http://localhost:8112)"
 
-#: src/js/core.js:3360
+#: src/js/core.js:3373
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP sau Hostname al dumneavoastră Daemon Potopul (de exemplu, scgi://localhost:58846)"
 
-#: src/js/core.js:3367
+#: src/js/core.js:3380
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL-ul la clientul Synology DS (de exemplu, http://localhost:5000)"
 
-#: src/js/core.js:3372
+#: src/js/core.js:3385
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3372
+#: src/js/core.js:3385
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3382
+#: src/js/core.js:3395
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL-ul la clientul qbittorrent (de exemplu, http://localhost: 8080)"
 
-#: src/js/core.js:3392
+#: src/js/core.js:3405
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL-ul pentru al tău MLDonkey (ex. http://localhost:4080)"
 
-#: src/js/core.js:3403
+#: src/js/core.js:3416
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL-ul dumneavoastră client putio (de exemplu, http://localhost: 8080)"
 
-#: src/js/core.js:3572
+#: src/js/core.js:3585
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3573
+#: src/js/core.js:3586
 msgid "Select TV Download Directory"
 msgstr "Selectaţi directorul de Download TV"
 
-#: src/js/core.js:3574
+#: src/js/core.js:3587
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3588
+#: src/js/core.js:3601
 msgid "Unrar Executable not found."
 msgstr "Unrar executabil negăsit."
 
-#: src/js/core.js:3631 src/js/core.js:3666 src/js/core.js:3701 src/js/core.js:3752
+#: src/js/core.js:3644 src/js/core.js:3679 src/js/core.js:3714 src/js/core.js:3765
 msgid "This pattern is invalid."
 msgstr "Acest model nu este validă."
 
-#: src/js/core.js:3635 src/js/core.js:3670 src/js/core.js:3705 src/js/core.js:3756
+#: src/js/core.js:3648 src/js/core.js:3683 src/js/core.js:3718 src/js/core.js:3769
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Acest model ar fi nevalidă fără foldere, folosind-o va forţa \"Aplatiza\" off pentru toate programele."
 
-#: src/js/core.js:3639 src/js/core.js:3674 src/js/core.js:3709 src/js/core.js:3761
+#: src/js/core.js:3652 src/js/core.js:3687 src/js/core.js:3722 src/js/core.js:3774
 msgid "This pattern is valid."
 msgstr "Acest model este valabil."
 
-#: src/js/core.js:4085
+#: src/js/core.js:4098
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirma autorizarea"
 
-#: src/js/core.js:4142 src/js/core.js:4196
+#: src/js/core.js:4155 src/js/core.js:4209
 msgid "Please fill in the Popcorn IP address"
 msgstr "Vă rugăm să completaţi adresa IP de Popcorn"
 
-#: src/js/core.js:4379
+#: src/js/core.js:4392
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Verificaţi numele pe lista neagră; valoarea trebuie să fie un melc trakt"
 
-#: src/js/core.js:4411
+#: src/js/core.js:4424
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4414
+#: src/js/core.js:4427
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4416
+#: src/js/core.js:4429
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4422
+#: src/js/core.js:4435
 msgid "Enter an email address to send the test to:"
 msgstr "Introduceţi o adresă de e-mail pentru a trimite testul:"
 
-#: src/js/core.js:4424
+#: src/js/core.js:4437
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4494
+#: src/js/core.js:4507
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Dispozitiv lista actualizată. Vă rugăm să alegeţi un dispozitiv pentru a împinge."
 
-#: src/js/core.js:4555
+#: src/js/core.js:4568
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Nu furnizează o cheie Pushbullet api"
 
-#: src/js/core.js:4585
+#: src/js/core.js:4598
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Nu uitaţi să salvaţi setările de pushbullet noi."
 
-#: src/js/core.js:4657
+#: src/js/core.js:4670
 msgid "Select backup folder to save to"
 msgstr "Selectaţi folderul copie de rezervă pentru a salva"
 
-#: src/js/core.js:4662
+#: src/js/core.js:4675
 msgid "Select backup files to restore"
 msgstr "Selectaţi fişierele de rezervă pentru a restabili"
 
-#: src/js/core.js:5207
+#: src/js/core.js:5220
 msgid "No providers available to configure."
 msgstr "Nici furnizorii disponibile pentru a configura."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5417
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5430
 msgid "Mass Delete"
 msgstr "Şterge în masă"
 
-#: src/js/core.js:5418
+#: src/js/core.js:5431
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Aţi selectat ştergeţi prezintă.  Sunteţi sigur că doriţi să continuaţi? Toate fişierele vor fi eliminate din sistem."
 
-#: src/js/core.js:5495
+#: src/js/core.js:5508
 msgid "DELETED"
 msgstr ""
 
@@ -766,7 +766,7 @@ msgstr "Spectacole"
 msgid "Schedule"
 msgstr "Programul"
 
-#: sickrage/core/webserver/views.py:3641 sickrage/core/webserver/views.py:3642
+#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
 #: sickrage/core/webserver/views/config/general.mako:148
 #: sickrage/core/webserver/views/layouts/main.mako:223
 msgid "History"
@@ -3572,7 +3572,7 @@ msgstr "Cel puţin un furnizor este necesară, dar două sunt recomandate."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "Furnizorii de NZB/Torrent poate fi toggled în"
 
-#: sickrage/core/webserver/views.py:3674 sickrage/core/webserver/views.py:3953
+#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:3964
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:248
 msgid "Search Clients"
@@ -4761,7 +4761,7 @@ msgstr "Smuls:"
 msgid "Select Filtered Episodes"
 msgstr "Selectaţi filtrate episoade"
 
-#: sickrage/core/webserver/views.py:4910
+#: sickrage/core/webserver/views.py:4921
 #: sickrage/core/webserver/views/home/display_show.mako:449
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4820,7 +4820,7 @@ msgstr "AIRDATE"
 msgid "Download"
 msgstr "Descarca"
 
-#: sickrage/core/webserver/views.py:1036 sickrage/core/webserver/views.py:1037
+#: sickrage/core/webserver/views.py:1047 sickrage/core/webserver/views.py:1048
 #: sickrage/core/webserver/views/home/display_show.mako:553
 #: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4845,7 +4845,7 @@ msgstr "Necunoscut"
 msgid "Retry Download"
 msgstr "Reîncercaţi Descărcare"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Pagina principală"
@@ -4971,7 +4971,7 @@ msgstr "utilizaţi comanda DVD în loc de a comanda de aer"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "O \"forţă complet Update\" este necesar, şi în cazul în care aveţi episoade existente trebuie să sortaţi-le manual."
 
-#: sickrage/core/webserver/views.py:3680 sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4858
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:266
@@ -5293,7 +5293,7 @@ msgstr "Efectuarea Restart"
 msgid "Daily Search"
 msgstr "Căutaţi zilnic"
 
-#: sickrage/core/webserver/views.py:4950
+#: sickrage/core/webserver/views.py:4961
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Restante"
@@ -5318,7 +5318,7 @@ msgstr "Procesul de post"
 msgid "Subtitles Finder"
 msgstr "Subtitrari Finder"
 
-#: sickrage/core/webserver/views.py:4958
+#: sickrage/core/webserver/views.py:4969
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "TRakt Checker"
@@ -5351,7 +5351,7 @@ msgstr "nu"
 msgid "True"
 msgstr "Adevărat"
 
-#: sickrage/core/webserver/views.py:4953
+#: sickrage/core/webserver/views.py:4964
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Arată coada"
@@ -5529,7 +5529,7 @@ msgstr "<p>Select dumneavoastră preferat fansub grupuri din <b>Available Groups
 msgid "Whitelist"
 msgstr "Lista albă"
 
-#: sickrage/core/webserver/views.py:1173
+#: sickrage/core/webserver/views.py:1184
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5621,7 +5621,7 @@ msgstr "Directoarele rădăcină"
 msgid "New"
 msgstr "Noi"
 
-#: sickrage/core/webserver/views.py:1136 sickrage/core/webserver/views.py:1922
+#: sickrage/core/webserver/views.py:1147 sickrage/core/webserver/views.py:1933
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5647,7 +5647,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "Arată Lista"
 
-#: sickrage/core/webserver/views.py:2292 sickrage/core/webserver/views.py:2293
+#: sickrage/core/webserver/views.py:2303 sickrage/core/webserver/views.py:2304
 #: sickrage/core/webserver/views/layouts/main.mako:145
 msgid "Add Shows"
 msgstr "Adauga spectacole"
@@ -5662,18 +5662,18 @@ msgstr "Manual post-procesare"
 msgid "Manage"
 msgstr "Gestiona"
 
-#: sickrage/core/webserver/views.py:3463 sickrage/core/webserver/views.py:3464
+#: sickrage/core/webserver/views.py:3474 sickrage/core/webserver/views.py:3475
 #: sickrage/core/webserver/views/layouts/main.mako:171
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Masă Update"
 
-#: sickrage/core/webserver/views.py:3071 sickrage/core/webserver/views.py:3072
+#: sickrage/core/webserver/views.py:3082 sickrage/core/webserver/views.py:3083
 #: sickrage/core/webserver/views/layouts/main.mako:174
 msgid "Backlog Overview"
 msgstr "Privire de ansamblu restante"
 
-#: sickrage/core/webserver/views.py:3513 sickrage/core/webserver/views.py:3514
+#: sickrage/core/webserver/views.py:3524 sickrage/core/webserver/views.py:3525
 #: sickrage/core/webserver/views/layouts/main.mako:177
 msgid "Manage Queues"
 msgstr "Gestiona cozi"
@@ -5702,7 +5702,7 @@ msgstr "Actualizare Renate"
 msgid "Manage Torrents"
 msgstr "Gestiona torente"
 
-#: sickrage/core/webserver/views.py:3488 sickrage/core/webserver/views.py:3489
+#: sickrage/core/webserver/views.py:3499 sickrage/core/webserver/views.py:3500
 #: sickrage/core/webserver/views/layouts/main.mako:208
 msgid "Failed Downloads"
 msgstr "Descărcări eşuate"
@@ -5715,12 +5715,12 @@ msgstr "Gestionare a ratat subtitrare"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3671
+#: sickrage/core/webserver/views.py:3682
 #: sickrage/core/webserver/views/layouts/main.mako:239
 msgid "Help and Info"
 msgstr "Ajutor şi Info"
 
-#: sickrage/core/webserver/views.py:3672
+#: sickrage/core/webserver/views.py:3683
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "General"
 msgstr "Generale"
@@ -5729,28 +5729,28 @@ msgstr "Generale"
 msgid "Backup and Restore"
 msgstr "Backup şi restaurare"
 
-#: sickrage/core/webserver/views.py:3675 sickrage/core/webserver/views.py:4253
+#: sickrage/core/webserver/views.py:3686 sickrage/core/webserver/views.py:4264
 #: sickrage/core/webserver/views/layouts/main.mako:251
 msgid "Search Providers"
 msgstr "Furnizorii de căutare"
 
-#: sickrage/core/webserver/views.py:3676 sickrage/core/webserver/views.py:4759
+#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4770
 #: sickrage/core/webserver/views/layouts/main.mako:254
 msgid "Subtitles Settings"
 msgstr "Setările de subtitrari"
 
-#: sickrage/core/webserver/views.py:3677 sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4897
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Quality Settings"
 msgstr "Setările de calitate"
 
-#: sickrage/core/webserver/views.py:2256 sickrage/core/webserver/views.py:2257
-#: sickrage/core/webserver/views.py:3678 sickrage/core/webserver/views.py:4058
+#: sickrage/core/webserver/views.py:2267 sickrage/core/webserver/views.py:2268
+#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4069
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Post-procesare"
 
-#: sickrage/core/webserver/views.py:3679 sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4424
 #: sickrage/core/webserver/views/layouts/main.mako:263
 msgid "Notifications"
 msgstr "Notificări"
@@ -5951,7 +5951,7 @@ msgstr "Situat în cazul în care aceste spectacole sunt puse ca Show.03.02.2010
 msgid "Search for subtitles."
 msgstr "Cautare pentru subtitrari."
 
-#: sickrage/core/webserver/views.py:3221 sickrage/core/webserver/views.py:3222
+#: sickrage/core/webserver/views.py:3232 sickrage/core/webserver/views.py:3233
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Masa de editare"
@@ -5991,7 +5991,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "Nu în curs"
 
-#: sickrage/core/webserver/views.py:1170
+#: sickrage/core/webserver/views.py:1181
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -6016,7 +6016,7 @@ msgstr "Căutaţi propers dezactivat"
 msgid "Post-Processor:"
 msgstr "Post-procesor:"
 
-#: sickrage/core/webserver/views.py:4954
+#: sickrage/core/webserver/views.py:4965
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Coada de căutare"
@@ -6160,8 +6160,8 @@ msgstr "Episod smuls"
 #: sickrage/core/version_updater.py:115 sickrage/core/version_updater.py:193
 #: sickrage/core/version_updater.py:252 sickrage/core/version_updater.py:295
 #: sickrage/core/version_updater.py:477 sickrage/core/version_updater.py:728
-#: sickrage/core/webserver/views.py:1077 sickrage/core/webserver/views.py:1081
-#: sickrage/core/webserver/views.py:1089
+#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1092
+#: sickrage/core/webserver/views.py:1100
 msgid "Updater"
 msgstr ""
 
@@ -6235,8 +6235,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nu a putut găsi un drum liber pentru <i>%s</i>"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2661
-#: sickrage/core/webserver/views.py:2673
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2672
+#: sickrage/core/webserver/views.py:2684
 msgid "Unable to add show"
 msgstr "Imposibil de adăugat Arată"
 
@@ -6300,913 +6300,913 @@ msgstr "API-cheie nu a generat"
 msgid "API Builder"
 msgstr "Constructor de API"
 
-#: sickrage/core/webserver/views.py:597
+#: sickrage/core/webserver/views.py:608
 msgid "Invalid show parameters"
 msgstr "Parametrii Arată în nevalid"
 
-#: sickrage/core/webserver/views.py:602
+#: sickrage/core/webserver/views.py:613
 msgid "Invalid show paramaters"
 msgstr "Invalid Arată parametri"
 
-#: sickrage/core/webserver/views.py:609
+#: sickrage/core/webserver/views.py:620
 msgid "Invalid paramaters"
 msgstr "Parametri în nevalid"
 
-#: sickrage/core/webserver/views.py:612 sickrage/core/webserver/views.py:1725
-#: sickrage/core/webserver/views.py:1787
+#: sickrage/core/webserver/views.py:623 sickrage/core/webserver/views.py:1736
+#: sickrage/core/webserver/views.py:1798
 msgid "Episode couldn't be retrieved"
 msgstr "Episod nu a putut fi refolosit"
 
-#: sickrage/core/webserver/views.py:650
+#: sickrage/core/webserver/views.py:661
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Eroare: Cererea neacceptată. Trimite solicitare jsonp cu \"srcallback\" variabilă în şirul de interogare."
 
-#: sickrage/core/webserver/views.py:686
+#: sickrage/core/webserver/views.py:697
 msgid "Success. Connected and authenticated"
 msgstr "Succesul. Conectat şi autentificat"
 
-#: sickrage/core/webserver/views.py:688
+#: sickrage/core/webserver/views.py:699
 msgid "Authentication failed. SABnzbd expects "
 msgstr "Autentificare a eşuat. SABnzbd se aşteaptă "
 
-#: sickrage/core/webserver/views.py:688
+#: sickrage/core/webserver/views.py:699
 msgid " as authentication method, "
 msgstr " ca metodă de autentificare, "
 
-#: sickrage/core/webserver/views.py:691
+#: sickrage/core/webserver/views.py:702
 msgid "Unable to connect to host"
 msgstr "Incapabil să se conecteze la gazdă"
 
-#: sickrage/core/webserver/views.py:709
+#: sickrage/core/webserver/views.py:720
 msgid "SMS sent successfully"
 msgstr "SMS trimis cu succes"
 
-#: sickrage/core/webserver/views.py:711
+#: sickrage/core/webserver/views.py:722
 msgid "Problem sending SMS: "
 msgstr "Problema trimiterea SMS: "
 
-#: sickrage/core/webserver/views.py:718
+#: sickrage/core/webserver/views.py:729
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Telegrama notificare a reuşit. Verifica clienţii telegrama dumneavoastră să vă asiguraţi că acesta a lucrat"
 
-#: sickrage/core/webserver/views.py:720
+#: sickrage/core/webserver/views.py:731
 msgid "Error sending Telegram notification: {message}"
 msgstr "Eroare trimiterea notificării telegrama: {message}"
 
-#: sickrage/core/webserver/views.py:727
+#: sickrage/core/webserver/views.py:738
 msgid "Join notification succeeded. Check your Join clients to make sure it worked"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:729
+#: sickrage/core/webserver/views.py:740
 msgid "Error sending Join notification: {message}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:739
+#: sickrage/core/webserver/views.py:750
 msgid " with password: "
 msgstr " cu parola: "
 
-#: sickrage/core/webserver/views.py:742
+#: sickrage/core/webserver/views.py:753
 msgid "Registered and Tested growl successfully "
 msgstr "Înregistrat şi testat cu succes bodogăni "
 
-#: sickrage/core/webserver/views.py:744
+#: sickrage/core/webserver/views.py:755
 msgid "Registration and Testing of growl failed "
 msgstr "Înregistrare şi testarea de growl nu a reușit "
 
-#: sickrage/core/webserver/views.py:751
+#: sickrage/core/webserver/views.py:762
 msgid "Test prowl notice sent successfully"
 msgstr "Test panda notificare trimis cu succes"
 
-#: sickrage/core/webserver/views.py:753
+#: sickrage/core/webserver/views.py:764
 msgid "Test prowl notice failed"
 msgstr "Test panda notificare nu a reușit"
 
-#: sickrage/core/webserver/views.py:760
+#: sickrage/core/webserver/views.py:771
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Notificare de Boxcar2 a reuşit. Verifica clientii dumneavoastra Boxcar2 să vă asiguraţi că acesta a lucrat"
 
-#: sickrage/core/webserver/views.py:762
+#: sickrage/core/webserver/views.py:773
 msgid "Error sending Boxcar2 notification"
 msgstr "Eroare trimitere Boxcar2 notificare"
 
-#: sickrage/core/webserver/views.py:769
+#: sickrage/core/webserver/views.py:780
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Pushover notificare a reuşit. Verifica clienţii Pushover dumneavoastră să vă asiguraţi că acesta a lucrat"
 
-#: sickrage/core/webserver/views.py:771
+#: sickrage/core/webserver/views.py:782
 msgid "Error sending Pushover notification"
 msgstr "Eroare trimitere Pushover notificare"
 
-#: sickrage/core/webserver/views.py:783
+#: sickrage/core/webserver/views.py:794
 msgid "Key verification successful"
 msgstr "Cheie verificare succes"
 
-#: sickrage/core/webserver/views.py:785
+#: sickrage/core/webserver/views.py:796
 msgid "Unable to verify key"
 msgstr "Imposibilitatea de a verifica cheie"
 
-#: sickrage/core/webserver/views.py:792
+#: sickrage/core/webserver/views.py:803
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Tweet de succes, de a verifica twitter pentru a vă asigura că a lucrat"
 
-#: sickrage/core/webserver/views.py:794
+#: sickrage/core/webserver/views.py:805
 msgid "Error sending tweet"
 msgstr "Eroare trimitere tweet"
 
-#: sickrage/core/webserver/views.py:799
+#: sickrage/core/webserver/views.py:810
 msgid "Please enter a valid account sid"
 msgstr "Vă rugăm să introduceţi un valabil cont sid"
 
-#: sickrage/core/webserver/views.py:802
+#: sickrage/core/webserver/views.py:813
 msgid "Please enter a valid auth token"
 msgstr "Vă rugăm să introduceţi un token valid auth"
 
-#: sickrage/core/webserver/views.py:805
+#: sickrage/core/webserver/views.py:816
 msgid "Please enter a valid phone sid"
 msgstr "Vă rugăm să introduceţi un valabil telefon sid"
 
-#: sickrage/core/webserver/views.py:808
+#: sickrage/core/webserver/views.py:819
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Vă rugăm să formatați numărul de telefon ca \"+ 1-###-###-###\""
 
-#: sickrage/core/webserver/views.py:812
+#: sickrage/core/webserver/views.py:823
 msgid "Authorization successful and number ownership verified"
 msgstr "Autorizaţia de succes şi numărul proprietate verificate"
 
-#: sickrage/core/webserver/views.py:814
+#: sickrage/core/webserver/views.py:825
 msgid "Error sending sms"
 msgstr "Eroare trimitere sms"
 
-#: sickrage/core/webserver/views.py:820
+#: sickrage/core/webserver/views.py:831
 msgid "Slack message successful"
 msgstr "Moale mesajul de succes"
 
-#: sickrage/core/webserver/views.py:822
+#: sickrage/core/webserver/views.py:833
 msgid "Slack message failed"
 msgstr "Mesaj moale nu a reușit"
 
-#: sickrage/core/webserver/views.py:828
+#: sickrage/core/webserver/views.py:839
 msgid "Discord message successful"
 msgstr "Mesaj de discordie succes"
 
-#: sickrage/core/webserver/views.py:830
+#: sickrage/core/webserver/views.py:841
 msgid "Discord message failed"
 msgstr "Mesaj discordiei nu a reușit"
 
-#: sickrage/core/webserver/views.py:841
+#: sickrage/core/webserver/views.py:852
 msgid "Test KODI notice sent successfully to "
 msgstr "Test Mia Ciordas notificare trimisă cu succes "
 
-#: sickrage/core/webserver/views.py:843
+#: sickrage/core/webserver/views.py:854
 msgid "Test KODI notice failed to "
 msgstr "Test Mia Ciordas notificare nu a reuşit să "
 
-#: sickrage/core/webserver/views.py:858
+#: sickrage/core/webserver/views.py:869
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Test de succes notificare trimis Plex client... "
 
-#: sickrage/core/webserver/views.py:860
+#: sickrage/core/webserver/views.py:871
 msgid "Test failed for Plex client ... "
 msgstr "Test nereușit pentru Plex client... "
 
-#: sickrage/core/webserver/views.py:863
+#: sickrage/core/webserver/views.py:874
 msgid "Tested Plex client(s): "
 msgstr "Clienti(cu) Plex testate: "
 
-#: sickrage/core/webserver/views.py:878
+#: sickrage/core/webserver/views.py:889
 msgid "Successful test of Plex server(s) ... "
 msgstr "Încercare de succes de Plex serverele... "
 
-#: sickrage/core/webserver/views.py:881
+#: sickrage/core/webserver/views.py:892
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Test nereușit, No Plex Media Server gazdă specificat"
 
-#: sickrage/core/webserver/views.py:883
+#: sickrage/core/webserver/views.py:894
 msgid "Test failed for Plex server(s) ... "
 msgstr "Test nereușit pentru Plex serverele... "
 
-#: sickrage/core/webserver/views.py:887
+#: sickrage/core/webserver/views.py:898
 msgid "Tested Plex Media Server host(s): "
 msgstr "Testat Plex Media Server Host(uri): "
 
-#: sickrage/core/webserver/views.py:895
+#: sickrage/core/webserver/views.py:906
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Încercat trimiterea de notificări desktop prin intermediul libnotify"
 
-#: sickrage/core/webserver/views.py:904 sickrage/core/webserver/views.py:937
+#: sickrage/core/webserver/views.py:915 sickrage/core/webserver/views.py:948
 msgid "Test notice sent successfully to "
 msgstr "Test de notificare trimisă cu succes "
 
-#: sickrage/core/webserver/views.py:906 sickrage/core/webserver/views.py:939
+#: sickrage/core/webserver/views.py:917 sickrage/core/webserver/views.py:950
 msgid "Test notice failed to "
 msgstr "Test de notificare nu a reuşit să "
 
-#: sickrage/core/webserver/views.py:913
+#: sickrage/core/webserver/views.py:924
 msgid "Successfully started the scan update"
 msgstr "Cu succes a inceput update a scanda"
 
-#: sickrage/core/webserver/views.py:915
+#: sickrage/core/webserver/views.py:926
 msgid "Test failed to start the scan update"
 msgstr "Testul nu a pornit, actualizare de scanare"
 
-#: sickrage/core/webserver/views.py:923
+#: sickrage/core/webserver/views.py:934
 msgid "Got settings from"
 msgstr "Ai setări de"
 
-#: sickrage/core/webserver/views.py:928
+#: sickrage/core/webserver/views.py:939
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Nu a reuşit! Asiguraţi-vă că dumneavoastră Popcorn este şi NMJ se execută. (a se vedea Jurnalul de erori &-> depanare pentru informatii detaliate)"
 
-#: sickrage/core/webserver/views.py:956
+#: sickrage/core/webserver/views.py:967
 msgid "Trakt Authorized"
 msgstr "TRakt autorizate"
 
-#: sickrage/core/webserver/views.py:957
+#: sickrage/core/webserver/views.py:968
 msgid "Trakt Not Authorized!"
 msgstr "TRakt neautorizate!"
 
-#: sickrage/core/webserver/views.py:984
+#: sickrage/core/webserver/views.py:995
 msgid "Test email sent successfully! Check inbox."
 msgstr "Test e-mail trimis cu succes! Verificaţi mesajele primite."
 
-#: sickrage/core/webserver/views.py:986
+#: sickrage/core/webserver/views.py:997
 #, python-format
 msgid "ERROR: %s"
 msgstr "EROARE: %s"
 
-#: sickrage/core/webserver/views.py:993
+#: sickrage/core/webserver/views.py:1004
 msgid "Test NMA notice sent successfully"
 msgstr "Test ANM notificare trimis cu succes"
 
-#: sickrage/core/webserver/views.py:995
+#: sickrage/core/webserver/views.py:1006
 msgid "Test NMA notice failed"
 msgstr "Test ANM notificare nu a reușit"
 
-#: sickrage/core/webserver/views.py:1001
+#: sickrage/core/webserver/views.py:1012
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Notificare de Pushalot a reuşit. Verifica clientii dumneavoastra Pushalot să vă asiguraţi că acesta a lucrat"
 
-#: sickrage/core/webserver/views.py:1003
+#: sickrage/core/webserver/views.py:1014
 msgid "Error sending Pushalot notification"
 msgstr "Eroare trimitere Pushalot notificare"
 
-#: sickrage/core/webserver/views.py:1009
+#: sickrage/core/webserver/views.py:1020
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Notificare de Pushbullet a reuşit. Verifica aparatul să vă asiguraţi că acesta a lucrat"
 
-#: sickrage/core/webserver/views.py:1011
+#: sickrage/core/webserver/views.py:1022
 msgid "Error sending Pushbullet notification"
 msgstr "Eroare trimitere Pushbullet notificare"
 
-#: sickrage/core/webserver/views.py:1019
+#: sickrage/core/webserver/views.py:1030
 msgid "Error getting Pushbullet devices"
 msgstr "Eroare la obţinerea Pushbullet dispozitive"
 
-#: sickrage/core/webserver/views.py:1049
+#: sickrage/core/webserver/views.py:1060
 msgid "Shutting down"
 msgstr "Închiderea"
 
-#: sickrage/core/webserver/views.py:1049
+#: sickrage/core/webserver/views.py:1060
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE se închide"
 
-#: sickrage/core/webserver/views.py:1060
+#: sickrage/core/webserver/views.py:1071
 msgid "Restarting"
 msgstr "Repornirea"
 
-#: sickrage/core/webserver/views.py:1060
+#: sickrage/core/webserver/views.py:1071
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE este repornirea"
 
-#: sickrage/core/webserver/views.py:1077
+#: sickrage/core/webserver/views.py:1088
 msgid "Checking for updates"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1081
+#: sickrage/core/webserver/views.py:1092
 msgid "No new updates available!"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1089
+#: sickrage/core/webserver/views.py:1100
 msgid "Updating SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1097
+#: sickrage/core/webserver/views.py:1108
 msgid "Successfully found {path}"
 msgstr "Cu succes găsit {path}"
 
-#: sickrage/core/webserver/views.py:1099
+#: sickrage/core/webserver/views.py:1110
 msgid "Failed to find {path}"
 msgstr "Nu a reușit să găsească {path}"
 
-#: sickrage/core/webserver/views.py:1102
+#: sickrage/core/webserver/views.py:1113
 msgid "Installing SiCKRAGE requirements"
 msgstr "Instalarea SiCKRAGE cerinţele"
 
-#: sickrage/core/webserver/views.py:1104
+#: sickrage/core/webserver/views.py:1115
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "Nu a reuşit să instalaţi SiCKRAGE cerinţele"
 
-#: sickrage/core/webserver/views.py:1106
+#: sickrage/core/webserver/views.py:1117
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "Instalat cu succes cerinţele de SiCKRAGE!"
 
-#: sickrage/core/webserver/views.py:1112
+#: sickrage/core/webserver/views.py:1123
 msgid "Checking out branch: "
 msgstr "Verificat ramură: "
 
-#: sickrage/core/webserver/views.py:1114
+#: sickrage/core/webserver/views.py:1125
 msgid "Branch checkout successful, restarting: "
 msgstr "Filiala checkout succes, repornirea: "
 
-#: sickrage/core/webserver/views.py:1117
+#: sickrage/core/webserver/views.py:1128
 msgid "Already on branch: "
 msgstr "Deja pe ramură: "
 
-#: sickrage/core/webserver/views.py:1123 sickrage/core/webserver/views.py:1128
-#: sickrage/core/webserver/views.py:1310 sickrage/core/webserver/views.py:1319
-#: sickrage/core/webserver/views.py:1532 sickrage/core/webserver/views.py:1537
-#: sickrage/core/webserver/views.py:1550 sickrage/core/webserver/views.py:1555
-#: sickrage/core/webserver/views.py:1577 sickrage/core/webserver/views.py:1582
-#: sickrage/core/webserver/views.py:1595 sickrage/core/webserver/views.py:1600
-#: sickrage/core/webserver/views.py:1616 sickrage/core/webserver/views.py:1621
-#: sickrage/core/webserver/views.py:1694 sickrage/core/webserver/views.py:1697
-#: sickrage/core/webserver/views.py:1701 sickrage/core/webserver/views.py:1703
-#: sickrage/core/webserver/views.py:1706 sickrage/core/webserver/views.py:1725
-#: sickrage/core/webserver/views.py:1743 sickrage/core/webserver/views.py:1746
-#: sickrage/core/webserver/views.py:1751 sickrage/core/webserver/views.py:1754
-#: sickrage/core/webserver/views.py:1759 sickrage/core/webserver/views.py:1761
-#: sickrage/core/webserver/views.py:1764 sickrage/core/webserver/views.py:1787
-#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1893
-#: sickrage/core/webserver/views.py:1896 sickrage/core/webserver/views.py:1939
-#: sickrage/core/webserver/views.py:1945 sickrage/core/webserver/views.py:1948
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:1134 sickrage/core/webserver/views.py:1139
+#: sickrage/core/webserver/views.py:1321 sickrage/core/webserver/views.py:1330
+#: sickrage/core/webserver/views.py:1543 sickrage/core/webserver/views.py:1548
+#: sickrage/core/webserver/views.py:1561 sickrage/core/webserver/views.py:1566
+#: sickrage/core/webserver/views.py:1588 sickrage/core/webserver/views.py:1593
+#: sickrage/core/webserver/views.py:1606 sickrage/core/webserver/views.py:1611
+#: sickrage/core/webserver/views.py:1627 sickrage/core/webserver/views.py:1632
+#: sickrage/core/webserver/views.py:1705 sickrage/core/webserver/views.py:1708
+#: sickrage/core/webserver/views.py:1712 sickrage/core/webserver/views.py:1714
+#: sickrage/core/webserver/views.py:1717 sickrage/core/webserver/views.py:1736
+#: sickrage/core/webserver/views.py:1754 sickrage/core/webserver/views.py:1757
+#: sickrage/core/webserver/views.py:1762 sickrage/core/webserver/views.py:1765
+#: sickrage/core/webserver/views.py:1770 sickrage/core/webserver/views.py:1772
+#: sickrage/core/webserver/views.py:1775 sickrage/core/webserver/views.py:1798
+#: sickrage/core/webserver/views.py:1899 sickrage/core/webserver/views.py:1904
+#: sickrage/core/webserver/views.py:1907 sickrage/core/webserver/views.py:1950
+#: sickrage/core/webserver/views.py:1956 sickrage/core/webserver/views.py:1959
+#: sickrage/core/webserver/views.py:4971
 msgid "Error"
 msgstr "Eroare"
 
-#: sickrage/core/webserver/views.py:1123 sickrage/core/webserver/views.py:1532
-#: sickrage/core/webserver/views.py:1550 sickrage/core/webserver/views.py:1577
-#: sickrage/core/webserver/views.py:1595 sickrage/core/webserver/views.py:1616
+#: sickrage/core/webserver/views.py:1134 sickrage/core/webserver/views.py:1543
+#: sickrage/core/webserver/views.py:1561 sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1606 sickrage/core/webserver/views.py:1627
 msgid "Invalid show ID"
 msgstr "Arată invalid ID"
 
-#: sickrage/core/webserver/views.py:1128 sickrage/core/webserver/views.py:1893
-#: sickrage/core/webserver/views.py:1944
+#: sickrage/core/webserver/views.py:1139 sickrage/core/webserver/views.py:1904
+#: sickrage/core/webserver/views.py:1955
 msgid "Show not in show list"
 msgstr "Arată nu în listă Arată"
 
-#: sickrage/core/webserver/views.py:1144
+#: sickrage/core/webserver/views.py:1155
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Acest spectacol este în proces de a fi descărcat - info de mai jos este incompleta."
 
-#: sickrage/core/webserver/views.py:1147
+#: sickrage/core/webserver/views.py:1158
 msgid "The information on this page is in the process of being updated."
 msgstr "Informaţiile de pe această pagină este în curs de actualizare."
 
-#: sickrage/core/webserver/views.py:1150
+#: sickrage/core/webserver/views.py:1161
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Episoadele de mai jos sunt în prezent reîmprospătează de pe disc"
 
-#: sickrage/core/webserver/views.py:1153
+#: sickrage/core/webserver/views.py:1164
 msgid "Currently downloading subtitles for this show"
 msgstr "În prezent descărcarea subtitrari pentru acest spectacol"
 
-#: sickrage/core/webserver/views.py:1156
+#: sickrage/core/webserver/views.py:1167
 msgid "This show is queued to be refreshed."
 msgstr "Acest spectacol este din coada de aşteptare pentru a fi reactualizat."
 
-#: sickrage/core/webserver/views.py:1159
+#: sickrage/core/webserver/views.py:1170
 msgid "This show is queued and awaiting an update."
 msgstr "Acest spectacol este din coada de aşteptare şi aşteaptă o actualizare."
 
-#: sickrage/core/webserver/views.py:1162
+#: sickrage/core/webserver/views.py:1173
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Acest spectacol este din coada de aşteptare şi aşteaptă subtitrare download."
 
-#: sickrage/core/webserver/views.py:1167
+#: sickrage/core/webserver/views.py:1178
 msgid "Resume"
 msgstr "CV-ul"
 
-#: sickrage/core/webserver/views.py:1175
+#: sickrage/core/webserver/views.py:1186
 msgid "Re-scan files"
 msgstr "Re-scanare a fişierelor"
 
-#: sickrage/core/webserver/views.py:1177
+#: sickrage/core/webserver/views.py:1188
 msgid "Full Update"
 msgstr "Actualizare completa"
 
-#: sickrage/core/webserver/views.py:1181
+#: sickrage/core/webserver/views.py:1192
 msgid "Update show in KODI"
 msgstr "Actualizare Arată în zaharia"
 
-#: sickrage/core/webserver/views.py:1184
+#: sickrage/core/webserver/views.py:1195
 msgid "Update show in Emby"
 msgstr "Actualizare Arată în Renate"
 
-#: sickrage/core/webserver/views.py:1186 sickrage/core/webserver/views.py:1930
-#: sickrage/core/webserver/views.py:1931
+#: sickrage/core/webserver/views.py:1197 sickrage/core/webserver/views.py:1941
+#: sickrage/core/webserver/views.py:1942
 msgid "Preview Rename"
 msgstr "Previzualizare Redenumire"
 
-#: sickrage/core/webserver/views.py:1192
+#: sickrage/core/webserver/views.py:1203
 msgid "Download Subtitles"
 msgstr "Descarca subtitrari"
 
-#: sickrage/core/webserver/views.py:1306
+#: sickrage/core/webserver/views.py:1317
 msgid "Invalid show ID: "
 msgstr "ID-ul arată în nevalid: "
 
-#: sickrage/core/webserver/views.py:1315
+#: sickrage/core/webserver/views.py:1326
 msgid "Unable to find the specified show: "
 msgstr "Imposibil de găsit Arată specificate: "
 
-#: sickrage/core/webserver/views.py:1335
+#: sickrage/core/webserver/views.py:1346
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "Măsură să retreive grupurile de Fansub la AniDB."
 
-#: sickrage/core/webserver/views.py:1351 sickrage/core/webserver/views.py:1352
 #: sickrage/core/webserver/views.py:1362 sickrage/core/webserver/views.py:1363
+#: sickrage/core/webserver/views.py:1373 sickrage/core/webserver/views.py:1374
 msgid "Edit Show"
 msgstr "Editare Arată"
 
-#: sickrage/core/webserver/views.py:1446
+#: sickrage/core/webserver/views.py:1457
 msgid "Unable to refresh this show: {}"
 msgstr "Imposibil de reîmprospătat acest spectacol: {}"
 
-#: sickrage/core/webserver/views.py:1478
+#: sickrage/core/webserver/views.py:1489
 msgid "Unable to refresh this show:{}"
 msgstr "Imposibil de reîmprospătat această Arată :{}"
 
-#: sickrage/core/webserver/views.py:1484
+#: sickrage/core/webserver/views.py:1495
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Dosar la %s nu conţine un tvshow.nfo - copia fişierele în acest dosar, înainte de a vă schimba directorul în SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1496 sickrage/core/webserver/views.py:3413
+#: sickrage/core/webserver/views.py:1507 sickrage/core/webserver/views.py:3424
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1503
+#: sickrage/core/webserver/views.py:1514
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Imposibil pentru a forţa o actualizare pe scena excepţii de spectacol."
 
-#: sickrage/core/webserver/views.py:1510
+#: sickrage/core/webserver/views.py:1521
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "Imposibil pentru a forţa o actualizare pe scena numerotare de spectacol."
 
-#: sickrage/core/webserver/views.py:1517
+#: sickrage/core/webserver/views.py:1528
 msgid "{num_warnings:d} warning{plural} while saving changes:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1524 sickrage/core/webserver/views.py:3338
+#: sickrage/core/webserver/views.py:1535 sickrage/core/webserver/views.py:3349
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} în timp ce salvarea modificărilor:"
 
-#: sickrage/core/webserver/views.py:1537 sickrage/core/webserver/views.py:1555
-#: sickrage/core/webserver/views.py:1582 sickrage/core/webserver/views.py:1600
-#: sickrage/core/webserver/views.py:1621
+#: sickrage/core/webserver/views.py:1548 sickrage/core/webserver/views.py:1566
+#: sickrage/core/webserver/views.py:1593 sickrage/core/webserver/views.py:1611
+#: sickrage/core/webserver/views.py:1632
 msgid "Unable to find the specified show"
 msgstr "Imposibil de găsit Arată specificat"
 
-#: sickrage/core/webserver/views.py:1544
+#: sickrage/core/webserver/views.py:1555
 #, python-format
 msgid "%s has been %s"
 msgstr "%s a fost %s"
 
-#: sickrage/core/webserver/views.py:1544
+#: sickrage/core/webserver/views.py:1555
 msgid "resumed"
 msgstr "a reluat"
 
-#: sickrage/core/webserver/views.py:1544
+#: sickrage/core/webserver/views.py:1555
 msgid "paused"
 msgstr "în pauză"
 
-#: sickrage/core/webserver/views.py:1560
+#: sickrage/core/webserver/views.py:1571
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s a fost %s %s"
 
-#: sickrage/core/webserver/views.py:1563
+#: sickrage/core/webserver/views.py:1574
 msgid "deleted"
 msgstr "elimină"
 
-#: sickrage/core/webserver/views.py:1563
+#: sickrage/core/webserver/views.py:1574
 msgid "trashed"
 msgstr "aruncată la coş"
 
-#: sickrage/core/webserver/views.py:1564
+#: sickrage/core/webserver/views.py:1575
 msgid "(media untouched)"
 msgstr "(media neatins)"
 
-#: sickrage/core/webserver/views.py:1564
+#: sickrage/core/webserver/views.py:1575
 msgid "(with all related media)"
 msgstr "(cu toate legate de mass-media)"
 
-#: sickrage/core/webserver/views.py:1568
+#: sickrage/core/webserver/views.py:1579
 msgid "Unable to delete this show."
 msgstr "Imposibil de șters acest spectacol."
 
-#: sickrage/core/webserver/views.py:1587
+#: sickrage/core/webserver/views.py:1598
 msgid "Unable to refresh this show."
 msgstr "Imposibil de reîmprospătat acest spectacol."
 
-#: sickrage/core/webserver/views.py:1606
+#: sickrage/core/webserver/views.py:1617
 msgid "Unable to update this show."
 msgstr "Imposibilitatea de a actualiza acest spectacol."
 
-#: sickrage/core/webserver/views.py:1645
+#: sickrage/core/webserver/views.py:1656
 msgid "Library update command sent to KODI host(s): "
 msgstr "Biblioteca actualizare comanda trimisă zaharia Host(uri): "
 
-#: sickrage/core/webserver/views.py:1647
+#: sickrage/core/webserver/views.py:1658
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Imposibilitatea de a contacta una sau mai multe Host(uri) marian: "
 
-#: sickrage/core/webserver/views.py:1657
+#: sickrage/core/webserver/views.py:1668
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Biblioteca actualizare comanda trimisă Plex Media Server gazdă: "
 
-#: sickrage/core/webserver/views.py:1661
+#: sickrage/core/webserver/views.py:1672
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Imposibilitatea de a contacta Plex Media Server gazdă: "
 
-#: sickrage/core/webserver/views.py:1673
+#: sickrage/core/webserver/views.py:1684
 msgid "Library update command sent to Emby host: "
 msgstr "Biblioteca actualizare comanda trimisă Renate gazdă: "
 
-#: sickrage/core/webserver/views.py:1676
+#: sickrage/core/webserver/views.py:1687
 msgid "Unable to contact Emby host: "
 msgstr "Imposibilitatea de a contacta Renate gazdă: "
 
-#: sickrage/core/webserver/views.py:1686
+#: sickrage/core/webserver/views.py:1697
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Sincronizarea Trakt cu SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1692 sickrage/core/webserver/views.py:1741
-#: sickrage/core/webserver/views.py:1938
+#: sickrage/core/webserver/views.py:1703 sickrage/core/webserver/views.py:1752
+#: sickrage/core/webserver/views.py:1949
 msgid "You must specify a show and at least one episode"
 msgstr "Trebuie să specificați un spectacol şi cel puţin un episod"
 
-#: sickrage/core/webserver/views.py:1749
+#: sickrage/core/webserver/views.py:1760
 msgid "Invalid status"
 msgstr "Stare nevalidă"
 
-#: sickrage/core/webserver/views.py:1844
+#: sickrage/core/webserver/views.py:1855
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Întârzierile a început automat pentru următoarele sezoane de "
 
-#: sickrage/core/webserver/views.py:1851 sickrage/core/webserver/views.py:1871
+#: sickrage/core/webserver/views.py:1862 sickrage/core/webserver/views.py:1882
 msgid "Season "
 msgstr "Sezon "
 
-#: sickrage/core/webserver/views.py:1858
+#: sickrage/core/webserver/views.py:1869
 msgid "Backlog started"
 msgstr "Întârzierile a început"
 
-#: sickrage/core/webserver/views.py:1864
+#: sickrage/core/webserver/views.py:1875
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "Se reîncearcă Căutaţi a fost pornit automat pentru sezonul următor de "
 
-#: sickrage/core/webserver/views.py:1878
+#: sickrage/core/webserver/views.py:1889
 msgid "Retry Search started"
 msgstr "Reîncercare căutare a început"
 
-#: sickrage/core/webserver/views.py:1888
+#: sickrage/core/webserver/views.py:1899
 msgid "You must specify a show"
 msgstr "Trebuie să specificați un spectacol"
 
-#: sickrage/core/webserver/views.py:1896 sickrage/core/webserver/views.py:1948
+#: sickrage/core/webserver/views.py:1907 sickrage/core/webserver/views.py:1959
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "Imposibil de redenumit episoade, atunci când Arată dir lipseşte."
 
-#: sickrage/core/webserver/views.py:2084
+#: sickrage/core/webserver/views.py:2095
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Noi subtitrari descărcat: %s"
 
-#: sickrage/core/webserver/views.py:2086
+#: sickrage/core/webserver/views.py:2097
 msgid "No subtitles downloaded"
 msgstr "Nr subtitrari descărcat"
 
-#: sickrage/core/webserver/views.py:2208 sickrage/core/webserver/views.py:2212
+#: sickrage/core/webserver/views.py:2219 sickrage/core/webserver/views.py:2223
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2208
+#: sickrage/core/webserver/views.py:2219
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2212
+#: sickrage/core/webserver/views.py:2223
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2281
+#: sickrage/core/webserver/views.py:2292
 msgid "Postprocessing results"
 msgstr "Postprocesare rezultate"
 
-#: sickrage/core/webserver/views.py:2341
+#: sickrage/core/webserver/views.py:2352
 msgid "No folders selected."
 msgstr "Nici foldere selectate."
 
-#: sickrage/core/webserver/views.py:2477 sickrage/core/webserver/views.py:2478
+#: sickrage/core/webserver/views.py:2488 sickrage/core/webserver/views.py:2489
 msgid "New Show"
 msgstr "Noul Show"
 
-#: sickrage/core/webserver/views.py:2542 sickrage/core/webserver/views.py:2543
+#: sickrage/core/webserver/views.py:2553 sickrage/core/webserver/views.py:2554
 msgid "Existing Show"
 msgstr "Existente Arată"
 
-#: sickrage/core/webserver/views.py:2584 sickrage/core/webserver/views.py:2726
+#: sickrage/core/webserver/views.py:2595 sickrage/core/webserver/views.py:2737
 msgid "Adding Show"
 msgstr "Adăugarea Arată"
 
-#: sickrage/core/webserver/views.py:2584 sickrage/core/webserver/views.py:2726
+#: sickrage/core/webserver/views.py:2595 sickrage/core/webserver/views.py:2737
 msgid "Adding the specified show into "
 msgstr "Adăugarea Arată specificate în "
 
-#: sickrage/core/webserver/views.py:2587
+#: sickrage/core/webserver/views.py:2598
 msgid "No root directories setup, please go back and add one."
 msgstr "Nici o directoare de rădăcină de instalare, mergeţi înapoi şi adăugaţi una."
 
-#: sickrage/core/webserver/views.py:2638
+#: sickrage/core/webserver/views.py:2649
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Eroare necunoscută. Imposibil de adăugat Arată din cauza probleme cu Arată selecţie."
 
-#: sickrage/core/webserver/views.py:2662
+#: sickrage/core/webserver/views.py:2673
 msgid "Folder "
 msgstr "Pliant "
 
-#: sickrage/core/webserver/views.py:2662
+#: sickrage/core/webserver/views.py:2673
 msgid " exists already"
 msgstr " există deja"
 
-#: sickrage/core/webserver/views.py:2674
+#: sickrage/core/webserver/views.py:2685
 msgid "Unable to create the folder , can't add the show"
 msgstr "Imposibil de creat folderul, nu puteţi adăuga show"
 
-#: sickrage/core/webserver/views.py:2801
+#: sickrage/core/webserver/views.py:2812
 msgid "Shows Added"
 msgstr "Prezinta adăugat"
 
-#: sickrage/core/webserver/views.py:2802
+#: sickrage/core/webserver/views.py:2813
 msgid "Automatically added "
 msgstr "Adaugă automat "
 
-#: sickrage/core/webserver/views.py:2803
+#: sickrage/core/webserver/views.py:2814
 msgid " from their existing metadata files"
 msgstr " la fişierele lor existente de metadate"
 
-#: sickrage/core/webserver/views.py:2985 sickrage/core/webserver/views.py:2986
+#: sickrage/core/webserver/views.py:2996 sickrage/core/webserver/views.py:2997
 msgid "Missing Subtitles"
 msgstr "Lipsesc subtitrari"
 
-#: sickrage/core/webserver/views.py:3421
+#: sickrage/core/webserver/views.py:3432
 msgid "Unable to refresh show "
 msgstr "Imposibil de reîmprospătat Arată "
 
-#: sickrage/core/webserver/views.py:3432
+#: sickrage/core/webserver/views.py:3443
 msgid "Errors encountered"
 msgstr "Erori întâlnite"
 
-#: sickrage/core/webserver/views.py:3438
+#: sickrage/core/webserver/views.py:3449
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3443
+#: sickrage/core/webserver/views.py:3454
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3448
+#: sickrage/core/webserver/views.py:3459
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3453
+#: sickrage/core/webserver/views.py:3464
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3458
+#: sickrage/core/webserver/views.py:3469
 msgid "The following actions were queued:"
 msgstr "Următoarele acţiuni au fost în coada de aşteptare:"
 
-#: sickrage/core/webserver/views.py:3524
+#: sickrage/core/webserver/views.py:3535
 msgid "Backlog search started"
 msgstr "Restante Căutaţi a început"
 
-#: sickrage/core/webserver/views.py:3532
+#: sickrage/core/webserver/views.py:3543
 msgid "Daily search started"
 msgstr "Căutaţi zilnică a început"
 
-#: sickrage/core/webserver/views.py:3540
+#: sickrage/core/webserver/views.py:3551
 msgid "Find propers search started"
 msgstr "Găsi propers căutare a început"
 
-#: sickrage/core/webserver/views.py:3651
+#: sickrage/core/webserver/views.py:3662
 msgid "History cleared"
 msgstr "Istoria eliminate"
 
-#: sickrage/core/webserver/views.py:3658
+#: sickrage/core/webserver/views.py:3669
 msgid "Removed history entries older than 30 days"
 msgstr "Eliminat Istoricul intrări mai vechi de 30 zile"
 
-#: sickrage/core/webserver/views.py:3673 sickrage/core/webserver/views.py:3893
+#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3904
 msgid "Backup/Restore"
 msgstr "Copiere de rezervă/restaurare"
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:3690
+#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:3701
 msgid "Configuration"
 msgstr "Configurare"
 
-#: sickrage/core/webserver/views.py:3698
+#: sickrage/core/webserver/views.py:3709
 msgid "Configuration Reset to Defaults"
 msgstr "Configurare Reiniţializare la valorile implicite"
 
-#: sickrage/core/webserver/views.py:3711
+#: sickrage/core/webserver/views.py:3722
 msgid "Config - General"
 msgstr "Config - General"
 
-#: sickrage/core/webserver/views.py:3712
+#: sickrage/core/webserver/views.py:3723
 msgid "General Configuration"
 msgstr "Configurare generala"
 
-#: sickrage/core/webserver/views.py:3875 sickrage/core/webserver/views.py:4040
-#: sickrage/core/webserver/views.py:4171 sickrage/core/webserver/views.py:4395
-#: sickrage/core/webserver/views.py:4741 sickrage/core/webserver/views.py:4829
-#: sickrage/core/webserver/views.py:4868
+#: sickrage/core/webserver/views.py:3886 sickrage/core/webserver/views.py:4051
+#: sickrage/core/webserver/views.py:4182 sickrage/core/webserver/views.py:4406
+#: sickrage/core/webserver/views.py:4752 sickrage/core/webserver/views.py:4840
+#: sickrage/core/webserver/views.py:4879
 msgid "Error(s) Saving Configuration"
 msgstr "Erori de configurare de economisire"
 
-#: sickrage/core/webserver/views.py:3877
+#: sickrage/core/webserver/views.py:3888
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:3892
+#: sickrage/core/webserver/views.py:3903
 msgid "Config - Backup/Restore"
 msgstr "Config - copiere de rezervă/restaurare"
 
-#: sickrage/core/webserver/views.py:3905
+#: sickrage/core/webserver/views.py:3916
 msgid "Backup SUCCESSFUL"
 msgstr "Backup succes"
 
-#: sickrage/core/webserver/views.py:3907
+#: sickrage/core/webserver/views.py:3918
 msgid "Backup FAILED!"
 msgstr "Copie de rezervă a EŞUAT!"
 
-#: sickrage/core/webserver/views.py:3909
+#: sickrage/core/webserver/views.py:3920
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Trebuie să alegeţi un folder pentru a salva al tău copie de rezervă la prima!"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3939
 msgid "Successfully extracted restore files to "
 msgstr "Fişierele de restaurare cu succes extrase "
 
-#: sickrage/core/webserver/views.py:3929
+#: sickrage/core/webserver/views.py:3940
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage pentru a finaliza procesul de restaurare."
 
-#: sickrage/core/webserver/views.py:3931
+#: sickrage/core/webserver/views.py:3942
 msgid "Restore FAILED"
 msgstr "Pauză nu a reuşit"
 
-#: sickrage/core/webserver/views.py:3933
+#: sickrage/core/webserver/views.py:3944
 msgid "You need to select a backup file to restore!"
 msgstr "Trebuie să selectaţi un fişier copie de rezervă pentru a restabili!"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3963
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
-#: sickrage/core/webserver/views.py:4086
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4097
 msgid "Unable to create directory "
 msgstr "Imposibil de creat Director "
 
-#: sickrage/core/webserver/views.py:3978 sickrage/core/webserver/views.py:3981
-#: sickrage/core/webserver/views.py:4086
+#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
+#: sickrage/core/webserver/views.py:4097
 msgid ", dir not changed."
 msgstr ", dir nu s-a schimbat."
 
-#: sickrage/core/webserver/views.py:4042
+#: sickrage/core/webserver/views.py:4053
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4057
+#: sickrage/core/webserver/views.py:4068
 msgid "Config - Post Processing"
 msgstr "Config - Post procesare"
 
-#: sickrage/core/webserver/views.py:4097
+#: sickrage/core/webserver/views.py:4108
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Despachetarea neacceptată, dezactivarea despacheta setare"
 
-#: sickrage/core/webserver/views.py:4132 sickrage/core/webserver/views.py:4143
+#: sickrage/core/webserver/views.py:4143 sickrage/core/webserver/views.py:4154
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Aţi încercat un anime nevalidă numirea config, nu salvarea setărilor denumire de economisire"
 
-#: sickrage/core/webserver/views.py:4134 sickrage/core/webserver/views.py:4145
+#: sickrage/core/webserver/views.py:4145 sickrage/core/webserver/views.py:4156
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Ai incercat salvarea o configurare nevalidă denumire, nu salvarea setărilor denumire"
 
-#: sickrage/core/webserver/views.py:4151
+#: sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Aţi încercat un config nevalidă aer de data denumire, de economisire nu salva setările de aer de la data"
 
-#: sickrage/core/webserver/views.py:4157
+#: sickrage/core/webserver/views.py:4168
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Aţi încercat un sport nevalidă numirea config, nu salvarea setărilor de sport de economisire"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4184
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4252
+#: sickrage/core/webserver/views.py:4263
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4293
+#: sickrage/core/webserver/views.py:4304
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nici un nume de furnizor"
 
-#: sickrage/core/webserver/views.py:4295
+#: sickrage/core/webserver/views.py:4306
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Nici un furnizor de URL-ul specificat"
 
-#: sickrage/core/webserver/views.py:4297
+#: sickrage/core/webserver/views.py:4308
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Nici un furnizor de Api-cheie specificat"
 
-#: sickrage/core/webserver/views.py:4397
+#: sickrage/core/webserver/views.py:4408
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4412
+#: sickrage/core/webserver/views.py:4423
 msgid "Config - Notifications"
 msgstr "Config - notificări"
 
-#: sickrage/core/webserver/views.py:4743
+#: sickrage/core/webserver/views.py:4754
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4758
+#: sickrage/core/webserver/views.py:4769
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4831
+#: sickrage/core/webserver/views.py:4842
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4846
+#: sickrage/core/webserver/views.py:4857
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4870
+#: sickrage/core/webserver/views.py:4881
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] de configurare salvat"
 
-#: sickrage/core/webserver/views.py:4885
+#: sickrage/core/webserver/views.py:4896
 msgid "Config - Quality Settings"
 msgstr "Config - setările de calitate"
 
-#: sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:4908
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[SETĂRI DE CALITATE] Configurare salvat"
 
-#: sickrage/core/webserver/views.py:4949
+#: sickrage/core/webserver/views.py:4960
 msgid "Daily Searcher"
 msgstr "Căutarea de zi cu zi"
 
-#: sickrage/core/webserver/views.py:4951
+#: sickrage/core/webserver/views.py:4962
 msgid "Show Updater"
 msgstr "Arată Updater"
 
-#: sickrage/core/webserver/views.py:4952
+#: sickrage/core/webserver/views.py:4963
 msgid "Check Version"
 msgstr "Verificaţi versiunea"
 
-#: sickrage/core/webserver/views.py:4955
+#: sickrage/core/webserver/views.py:4966
 msgid "Find Propers"
 msgstr "Găsi Propers"
 
-#: sickrage/core/webserver/views.py:4956
+#: sickrage/core/webserver/views.py:4967
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4957
+#: sickrage/core/webserver/views.py:4968
 msgid "Find Subtitles"
 msgstr "Găseşte subtitrari"
 
-#: sickrage/core/webserver/views.py:4959
+#: sickrage/core/webserver/views.py:4970
 msgid "Event"
 msgstr "Eveniment"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4972
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4973
 msgid "Thread"
 msgstr "Fir"
 

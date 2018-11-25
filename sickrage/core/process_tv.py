@@ -482,7 +482,8 @@ def already_postprocessed(dirName, videofile, force, result):
                   if h['season'] == e['season'] and h['episode'] == e['episode']
                      and e['status'] in Quality.DOWNLOADED):
 
-            # If we find a showid, a season number, and one or more episode numbers then we need to use those in the query
+            # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
+            # query
             if parse_result and (parse_result.indexerid and
                                  parse_result.episode_numbers and
                                  parse_result.season_number):
@@ -492,6 +493,10 @@ def already_postprocessed(dirName, videofile, force, result):
                     return True
             else:
                 return True
+
+    # Checks for processed file marker
+    if os.path.isfile(os.path.join(dirName, videofile + '.sr_processed')):
+        return True
 
     return False
 
