@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8e27f3b - 2018-11-24: Shows now flagged with &#x60;scene numbering&#x60; will display and search by episode scene numbers. 
+- * 95615ac - 2018-11-25: Fixed episode search string fallback. Added touch file helper function. 
+- * 6f17262 - 2018-11-24: Shows now flagged with &#x60;scene numbering&#x60; will display and search by episode scene numbers. 
 - * c5327f5 - 2018-11-24: Added ability to add new shows using quicksearch. Bugfixed Torrent9 provider. 
 - * dff28fe - 2018-11-20: Release v9.4.41 
 - * 461d0cc - 2018-11-20: Fixed residual issue causing shows not to update from changes made to network timezone updater in previous update. 

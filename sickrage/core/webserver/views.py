@@ -1398,7 +1398,7 @@ class Home(WebHandler):
         else:
             do_update = True
 
-        if scene == showObj.scene and anime == showObj.anime:
+        if scene == showObj.scene or anime == showObj.anime:
             do_update_scene_numbering = False
         else:
             do_update_scene_numbering = True
@@ -1515,7 +1515,7 @@ class Home(WebHandler):
 
         if do_update_scene_numbering:
             try:
-                xem_refresh(showObj.indexerid, showObj.indexer)
+                xem_refresh(showObj.indexerid, showObj.indexer, True)
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
                 warnings.append(_("Unable to force an update on scene numbering of the show."))

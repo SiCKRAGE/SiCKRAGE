@@ -1858,3 +1858,7 @@ def episode_num(season=None, episode=None, **kwargs):
     elif numbering == 'absolute':
         if not (season and episode) and (season or episode):
             return '{0:0>3}'.format(season or episode)
+
+
+def touch_file(file):
+    io.open(file, 'a').close()
