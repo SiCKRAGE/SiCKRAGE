@@ -371,6 +371,7 @@ def findCertainShow(indexerid, return_show_object=True):
     """
     Find a show by indexer ID in the show list
 
+    :param return_show_object: returns a show object if True
     :param showList: List of shows to search in (needle)
     :param indexerid: Show to look for
     :return: result list

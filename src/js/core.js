@@ -175,15 +175,28 @@ $(document).ready(function ($) {
                     });
 
                     if (item.category === 'shows') {
-                        $a.attr({
-                            href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}`,
-                            class: 'btn btn-dark btn-block d-inline-block text-left'
-                        });
+                        if (item.showid) {
+                            $a.attr({
+                                href: `${SICKRAGE.srWebRoot}/home/displayShow?show=${item.showid}`,
+                                class: 'btn btn-dark btn-block d-inline-block text-left'
+                            });
+                        } else {
+                            $a.attr({
+                                href: `${SICKRAGE.srWebRoot}/home/addShows/newShow?search_string=${item.name}`,
+                                class: 'btn btn-dark btn-block d-inline-block text-left'
+                            });
+                        }
 
                         $li.append($a);
                         $li.find('a').append($('<div class="row"><div class="col-2"><div id="show-img"></div></div><div class="col-10"><div class="row"><strong id="show-name" class="text-white text-truncate"></strong></div><div class="row"><strong id="show-seasons" class="text-secondary"></strong></div></div></div>'));
                         $li.find('#show-img').append($img);
-                        $li.find('#show-name').append(item.name);
+
+                        if (item.showid) {
+                            $li.find('#show-name').append(item.name);
+                        } else {
+                            $li.find('#show-name').append('Add new show: ' + item.name);
+                        }
+
                         $li.find('#show-seasons').append(item.seasons + ' seasons');
                     } else {
                         $a.attr({

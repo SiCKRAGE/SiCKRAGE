@@ -564,8 +564,19 @@ class WebRoot(WebHandler):
         return self.redirect('/logout/')
 
     def quicksearch_json(self, term):
-        return json_encode(
-            sickrage.app.quicksearch_cache.get_shows(term) + sickrage.app.quicksearch_cache.get_episodes(term))
+        shows = sickrage.app.quicksearch_cache.get_shows(term)
+        episodes = sickrage.app.quicksearch_cache.get_episodes(term)
+
+        if not len(shows):
+            shows = [{
+                'category': 'shows',
+                'showid': '',
+                'name': term,
+                'img': '/images/poster-thumb.png',
+                'seasons': 0,
+            }]
+
+        return json_encode(shows + episodes)
 
 
 @Route('/browser(/?.*)')
