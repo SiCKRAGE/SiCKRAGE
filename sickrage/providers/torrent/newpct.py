@@ -64,7 +64,7 @@ class NewpctProvider(TorrentProvider):
 
         for show_name in allPossibleShowNames(episode.show, episode.scene_season):
             for season_string in season_strings:
-                season_string = season_string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                season_string = season_string % (show_name.replace(' ', '-'), episode.scene_season, episode.scene_episode)
                 search_strings['Season'].append(season_string.strip())
 
         return [search_strings]
@@ -88,7 +88,7 @@ class NewpctProvider(TorrentProvider):
 
         for show_name in allPossibleShowNames(episode.show, episode.scene_season):
             for episode_string in episode_strings:
-                episode_string = episode_string % (show_name.replace(' ', '-'), episode.season, episode.episode)
+                episode_string = episode_string % (show_name.replace(' ', '-'), episode.scene_season, episode.scene_episode)
                 search_strings['Episode'].append(episode_string.strip())
 
         return [search_strings]

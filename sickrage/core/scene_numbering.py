@@ -380,7 +380,8 @@ def get_scene_numbering_for_show(indexer_id, indexer):
         episode = try_int(dbData['episode'])
         scene_season = try_int(dbData['scene_season'])
         scene_episode = try_int(dbData['scene_episode'])
-        if try_int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0: continue
+        if try_int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0:
+            continue
 
         result[(season, episode)] = (scene_season, scene_episode)
 
@@ -407,7 +408,8 @@ def get_xem_numbering_for_show(indexer_id, indexer):
         episode = try_int(dbData.get('episode'))
         scene_season = try_int(dbData.get('scene_season'))
         scene_episode = try_int(dbData.get('scene_episode'))
-        if try_int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0: continue
+        if try_int(dbData['indexer']) != indexer or (scene_season or scene_episode) == 0:
+            continue
 
         result[(season, episode)] = (scene_season, scene_episode)
 
@@ -430,7 +432,8 @@ def get_scene_absolute_numbering_for_show(indexer_id, indexer):
     for dbData in sickrage.app.main_db.get_many('scene_numbering', indexer_id):
         absolute_number = try_int(dbData.get('absolute_number'))
         scene_absolute_number = try_int(dbData.get('scene_absolute_number'))
-        if try_int(dbData.get('indexer')) != indexer or scene_absolute_number == 0: continue
+        if try_int(dbData.get('indexer')) != indexer or scene_absolute_number == 0:
+            continue
 
         result[absolute_number] = scene_absolute_number
 

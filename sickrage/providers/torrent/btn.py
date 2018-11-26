@@ -168,8 +168,8 @@ class BTNProvider(TorrentProvider):
         else:
             search_name = '{type} {number}'.format(
                 type=season,
-                number=ep_obj.season if season else episode_num(
-                    ep_obj.season, ep_obj.episode
+                number=ep_obj.scene_season if season else episode_num(
+                    ep_obj.scene_season, ep_obj.scene_episode
                 ),
             ).strip()
 
