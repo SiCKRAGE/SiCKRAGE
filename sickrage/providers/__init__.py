@@ -410,8 +410,10 @@ class GenericProvider(object):
                 result.episodes.append(result.show.get_episode(actual_season, curEp))
 
             sickrage.app.log.debug(
-                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name, Quality.qualityStrings[result.quality],
-                                                                 result.url))
+                "FOUND RESULT:[{}] QUALITY:[{}] URL:[{}]".format(result.name,
+                                                                 Quality.qualityStrings[result.quality],
+                                                                 result.url)
+            )
 
             if len(result.episodes) == 1:
                 epNum = result.episodes[0].episode
@@ -421,7 +423,7 @@ class GenericProvider(object):
                 sickrage.app.log.debug(
                     "Separating multi-episode result to check for later - result contains episodes: " + str(
                         parse_result.episode_numbers))
-            elif len(result.episodes) == 0:
+            else:
                 epNum = SEASON_RESULT
                 sickrage.app.log.debug("Separating full season result to check for later")
 

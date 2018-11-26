@@ -245,15 +245,16 @@ class TVCache(object):
             pass
 
     def search_cache(self, ep_obj, manualSearch=False, downCurQuality=False):
+        season = ep_obj.scene_season if ep_obj.show.scene else ep_obj.season
+        episode = ep_obj.scene_episode if ep_obj.show.scene else ep_obj.episode
+
         neededEps = {}
         dbData = []
 
         # get data from external database
         if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
             try:
-                dbData += ProviderCacheAPI().get(self.providerID,
-                                                 ep_obj.show.indexerid,
-                                                 ep_obj.season, ep_obj.episode)['data']
+                dbData += ProviderCacheAPI().get(self.providerID, ep_obj.show.indexerid, season, episode)['data']
             except Exception:
                 pass
 
@@ -261,8 +262,8 @@ class TVCache(object):
         dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
 
         # for each cache entry
-        for curResult in (x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == ep_obj.season
-                                               and "|" + str(ep_obj.episode) + "|" in x['episodes']):
+        for curResult in (x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == season
+                                               and "|" + str(episode) + "|" in x['episodes']):
             result = self.provider.getResult()
 
             # ignore invalid and private IP address urls
@@ -304,7 +305,11 @@ class TVCache(object):
             # make sure we want the episode
             wantEp = False
             for curEp in result.episodes:
-                if result.show.want_episode(curEp.season, curEp.episode, result.quality, manualSearch, downCurQuality):
+                if result.show.want_episode(curEp.season,
+                                            curEp.episode,
+                                            result.quality,
+                                            manualSearch,
+                                            downCurQuality):
                     wantEp = True
 
             if not wantEp:

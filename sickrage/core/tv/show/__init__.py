@@ -1339,8 +1339,8 @@ class TVShow(object):
         curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
-        if epStatus in (WANTED, SKIPPED, UNKNOWN):
-            sickrage.app.log.debug("Existing episode status is wanted/skipped/unknown, getting found episode")
+        if epStatus == WANTED:
+            sickrage.app.log.debug("Existing episode status is WANTED, getting found episode")
             return True
         elif manualSearch:
             if (downCurQuality and quality >= curQuality) or (not downCurQuality and quality > curQuality):

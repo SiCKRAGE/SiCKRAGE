@@ -53,6 +53,9 @@ class TVEpisode(object):
         self._season = season
         self._episode = episode
         self._absolute_number = 0
+        self._scene_season = 0
+        self._scene_episode = 0
+        self._scene_absolute_number = 0
         self._description = ""
         self._subtitles = []
         self._subtitles_searchcount = 0
@@ -70,9 +73,6 @@ class TVEpisode(object):
         self._location = file
 
         self.show = show
-        self.scene_season = 0
-        self.scene_episode = 0
-        self.scene_absolute_number = 0
 
         self.populateEpisode(self.season, self.episode)
 
@@ -119,6 +119,36 @@ class TVEpisode(object):
         if self._absolute_number != value:
             self.dirty = True
         self._absolute_number = value
+
+    @property
+    def scene_season(self):
+        if self._scene_season:
+            return self._scene_season
+        return self._season
+
+    @scene_season.setter
+    def scene_season(self, value):
+        self._scene_season = value
+
+    @property
+    def scene_episode(self):
+        if self._scene_episode:
+            return self._scene_episode
+        return self._episode
+
+    @scene_episode.setter
+    def scene_episode(self, value):
+        self._scene_episode = value
+
+    @property
+    def scene_absolute_number(self):
+        if self._scene_absolute_number:
+            return self._scene_absolute_number
+        return self._absolute_number
+
+    @scene_absolute_number.setter
+    def scene_absolute_number(self, value):
+        self._scene_absolute_number = value
 
     @property
     def description(self):
@@ -407,19 +437,19 @@ class TVEpisode(object):
             self._is_proper = try_int(dbData[0]["is_proper"], self.is_proper)
             self._version = try_int(dbData[0]["version"], self.version)
 
-            self.scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
-            self.scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
-            self.scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
+            self._scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
+            self._scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
+            self._scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
 
-            if self.scene_absolute_number == 0:
-                self.scene_absolute_number = get_scene_absolute_numbering(
+            if self._scene_absolute_number == 0:
+                self._scene_absolute_number = get_scene_absolute_numbering(
                     self.show.indexerid,
                     self.show.indexer,
                     self.absolute_number
                 )
 
-            if self.scene_season == 0 or self.scene_episode == 0:
-                self.scene_season, self.scene_episode = get_scene_numbering(
+            if self._scene_season == 0 or self._scene_episode == 0:
+                self._scene_season, self._scene_episode = get_scene_numbering(
                     self.show.indexerid,
                     self.show.indexer,
                     self.season, self.episode
@@ -816,8 +846,6 @@ class TVEpisode(object):
             return self._format_pattern('%SN - %AB - %EN')
         elif self.show.air_by_date:
             return self._format_pattern('%SN - %AD - %EN')
-        elif self.show.scene:
-            return self._format_pattern('%SN - %XSx%0XE - %EN')
 
         return self._format_pattern('%SN - %Sx%0E - %EN')
 
