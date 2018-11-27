@@ -390,7 +390,7 @@ class NameParser(object):
 
             if bestResult.show.is_scene and not skip_scene_detection:
                 sickrage.app.log.debug(
-                    "Converted parsed result {} into {}".format(bestResult.original_name, bestResult))
+                    "Scene converted parsed result {} into {}".format(bestResult.original_name, bestResult))
 
         # CPU sleep
         time.sleep(0.02)

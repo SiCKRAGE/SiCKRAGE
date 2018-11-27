@@ -1,6 +1,7 @@
 # Changelog
 
-- * 75e5100 - 2018-11-25: Release v9.4.44 
+- * 06ca72d - 2018-11-26: Fixed Windows unicode issue with tzlocal. 
+- * d07ac9d - 2018-11-25: Release v9.4.44 
 - * 29011fc - 2018-11-25: Fixed issues with searching by scene numbers. 
 - * 5882a99 - 2018-11-25: Release v9.4.43 
 - * db39bd2 - 2018-11-25: Fixed episode search string fallback. Added touch file helper function. 

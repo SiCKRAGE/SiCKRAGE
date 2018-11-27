@@ -85,7 +85,10 @@ class Core(object):
         self.pid = os.getpid()
         self.showlist = []
 
-        self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
+        try:
+            self.tz = tz.tzwinlocal() if tz.tzwinlocal else tz.tzlocal()
+        except Exception:
+            self.tz = tz.tzlocal()
 
         self.config_file = None
         self.data_dir = None
