@@ -1,6 +1,7 @@
 # Changelog
 
-- * 694a0e3 - 2018-11-26: Release v9.4.45 
+- * 5061118 - 2018-11-28: Release v9.4.46 
+- * e444d97 - 2018-11-26: Release v9.4.45 
 - * 20da5e1 - 2018-11-26: Fixed Windows unicode issue with tzlocal. 
 - * d07ac9d - 2018-11-25: Release v9.4.44 
 - * 29011fc - 2018-11-25: Fixed issues with searching by scene numbers. 
