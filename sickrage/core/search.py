@@ -167,14 +167,14 @@ def pickBestResult(results, show):
             continue
 
         # check if seeders meet out minimum requirements, disgard result if it does not
-        if hasattr(cur_result.provider, 'minseed') and cur_result.seeders not in (-1, None):
+        if hasattr(cur_result.provider, 'minseed') and cur_result.seeders not in (-1, None, ''):
             if int(cur_result.seeders) < int(cur_result.provider.minseed):
                 sickrage.app.log.info("Discarding torrent because it doesn't meet the minimum seeders: {}. Seeders:  "
                                       "{}".format(cur_result.name, cur_result.seeders))
                 continue
 
         # check if leechers meet out minimum requirements, disgard result if it does not
-        if hasattr(cur_result.provider, 'minleech') and cur_result.leechers not in (-1, None):
+        if hasattr(cur_result.provider, 'minleech') and cur_result.leechers not in (-1, None, ''):
             if int(cur_result.leechers) < int(cur_result.provider.minleech):
                 sickrage.app.log.info("Discarding torrent because it doesn't meet the minimum leechers: {}. Leechers:  "
                                       "{}".format(cur_result.name, cur_result.leechers))
