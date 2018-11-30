@@ -1,6 +1,8 @@
 # Changelog
 
-- * 5061118 - 2018-11-28: Release v9.4.46 
+- * f748a5c - 2018-11-29: Release v9.4.47 
+- * 58c1f5e - 2018-11-29: Added code to ensure seeders, leechers, and size are always integer values before being added to cache. 
+- * 80b928a - 2018-11-28: Release v9.4.46 
 - * e444d97 - 2018-11-26: Release v9.4.45 
 - * 20da5e1 - 2018-11-26: Fixed Windows unicode issue with tzlocal. 
 - * d07ac9d - 2018-11-25: Release v9.4.44 

@@ -111,9 +111,13 @@ class BTNProvider(TorrentProvider):
             leechers = try_int(row.get('Leechers'))
             size = try_int(row.get('Size'), -1)
 
-            results += [
-                {'title': title, 'link': download_url, 'size': size, 'seeders': seeders, 'leechers': leechers}
-            ]
+            results += [{
+                'title': title,
+                'link': download_url,
+                'size': size,
+                'seeders': seeders,
+                'leechers': leechers
+            }]
 
             sickrage.app.log.debug("Found result: {}".format(title))
 

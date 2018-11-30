@@ -27,7 +27,7 @@ import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI
 from sickrage.core.common import Quality
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
-from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private
+from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private, try_int
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
 from sickrage.core.websession import WebSession
 
@@ -225,9 +225,9 @@ class TVCache(object):
                         'quality': quality,
                         'release_group': release_group,
                         'version': version,
-                        'seeders': seeders,
-                        'leechers': leechers,
-                        'size': size
+                        'seeders': try_int(seeders),
+                        'leechers': try_int(leechers),
+                        'size': try_int(size, -1)
                     }
 
                     # add to internal database

@@ -34,8 +34,8 @@ class DanishbitsProvider(TorrentProvider):
         self.passkey = None
 
         # Torrent Stats
-        self.minseed = 0
-        self.minleech = 0
+        self.minseed = None
+        self.minleech = None
         self.freeleech = True
 
         # URLs
