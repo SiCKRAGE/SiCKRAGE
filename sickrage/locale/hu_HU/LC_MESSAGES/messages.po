@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-11-30 19:46-0800\n"
-"PO-Revision-Date: 2018-12-01 03:48\n"
+"POT-Creation-Date: 2018-12-01 11:03-0800\n"
+"PO-Revision-Date: 2018-12-01 19:04\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "betöltése"
 msgid "Choose Directory"
 msgstr "Válassza ki a könyvtár"
 
-#: sickrage/core/webserver/views.py:3640 src/js/core.js:1482
+#: sickrage/core/webserver/views.py:3613 src/js/core.js:1482
 msgid "Clear History"
 msgstr "Előzmények törlése"
 
@@ -81,7 +81,7 @@ msgstr "Előzmények törlése"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Az biztos, hogy egyértelmű, az összes letöltési előzményeit?"
 
-#: sickrage/core/webserver/views.py:3642 src/js/core.js:1488
+#: sickrage/core/webserver/views.py:3615 src/js/core.js:1488
 msgid "Trim History"
 msgstr "Történetében Trim"
 
@@ -121,223 +121,223 @@ msgstr ""
 msgid "Select Unprocessed Episode Folder"
 msgstr "Válasszon mappát a feldolgozatlan epizód"
 
-#: src/js/core.js:2808
+#: src/js/core.js:2822
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "keresési időtúllépés, próbálja meg a növekvő időtúllépés indexelője"
 
-#: src/js/core.js:2812
+#: src/js/core.js:2826
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2816
+#: src/js/core.js:2830
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2835
+#: src/js/core.js:2849
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2837
+#: src/js/core.js:2851
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2846
+#: src/js/core.js:2860
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2886
+#: src/js/core.js:2900
 msgid "Saved Defaults"
 msgstr "Mentett alapértelmezett"
 
-#: src/js/core.js:2886
+#: src/js/core.js:2900
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Az \"add Térkép\" alapértelmezett hoztak, hogy a jelenlegi beállításokat."
 
-#: src/js/core.js:2943
+#: src/js/core.js:2957
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2985
+#: src/js/core.js:2999
 msgid "Reset Config to Defaults"
 msgstr "Config Alapértelmezések visszaállítása"
 
-#: src/js/core.js:2986
+#: src/js/core.js:3000
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Biztos vagy benne, hogy a config visszaállítja az alapértelmezett?"
 
-#: src/js/core.js:3081
+#: src/js/core.js:3095
 msgid "Select path to pip"
 msgstr "Válassza ki a pip elérési útja"
 
-#: src/js/core.js:3089 src/js/core.js:3115 src/js/core.js:3906 src/js/core.js:3924
-#: src/js/core.js:3945 src/js/core.js:3967 src/js/core.js:3990 src/js/core.js:4012
-#: src/js/core.js:4040 src/js/core.js:4057 src/js/core.js:4101 src/js/core.js:4186
-#: src/js/core.js:4244 src/js/core.js:4261 src/js/core.js:4291 src/js/core.js:4321
-#: src/js/core.js:4378 src/js/core.js:4454 src/js/core.js:4473 src/js/core.js:4489
+#: src/js/core.js:3103 src/js/core.js:3129 src/js/core.js:3920 src/js/core.js:3938
+#: src/js/core.js:3959 src/js/core.js:3981 src/js/core.js:4004 src/js/core.js:4026
+#: src/js/core.js:4054 src/js/core.js:4071 src/js/core.js:4115 src/js/core.js:4200
+#: src/js/core.js:4258 src/js/core.js:4275 src/js/core.js:4305 src/js/core.js:4335
+#: src/js/core.js:4392 src/js/core.js:4468 src/js/core.js:4487 src/js/core.js:4503
 msgid "Please fill out the necessary fields above."
 msgstr "Kérjük, töltse ki a szükséges mezőket a fenti."
 
-#: src/js/core.js:3107
+#: src/js/core.js:3121
 msgid "Select path to git"
 msgstr "Válassza ki a kerti ösvény-hoz git"
 
-#: src/js/core.js:3154
+#: src/js/core.js:3168
 msgid "Select Subtitles Download Directory"
 msgstr "Jelölje be a feliratok letöltési könyvtárat"
 
-#: src/js/core.js:3270
+#: src/js/core.js:3284
 msgid "Select .nzb blackhole/watch location"
 msgstr "Válassza ki a .nzb blackhole/óra helye"
 
-#: src/js/core.js:3271
+#: src/js/core.js:3285
 msgid "Select .torrent blackhole/watch location"
 msgstr "Válassza ki a .torrent blackhole/óra helye"
 
-#: src/js/core.js:3272
+#: src/js/core.js:3286
 msgid "Select .torrent download location"
 msgstr "Válassza ki a .torrent letölt elhelyezés"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3339
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3353
 msgid "Minimum seeding time is"
 msgstr "Vetés ideje minimum"
 
-#: src/js/core.js:3341
+#: src/js/core.js:3355
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL-az uTorrent kliens (pl. http://localhost:8000)"
 
-#: src/js/core.js:3344
+#: src/js/core.js:3358
 msgid "Stop seeding when inactive for"
 msgstr "Hagyja abba, amikor inaktív, a vetés"
 
-#: src/js/core.js:3350
+#: src/js/core.js:3364
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL-címet, az átviteli kliens (pl. http://localhost:9091)"
 
-#: src/js/core.js:3360
+#: src/js/core.js:3374
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL-az özönvíz kliens (pl. http://localhost:8112)"
 
-#: src/js/core.js:3369
+#: src/js/core.js:3383
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP vagy gépnév az özönvíz démon (pl. scgi://localhost:58846)"
 
-#: src/js/core.js:3376
+#: src/js/core.js:3390
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL-t a Synology DS client (pl. http://localhost:5000)"
 
-#: src/js/core.js:3381
+#: src/js/core.js:3395
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3381
+#: src/js/core.js:3395
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3391
+#: src/js/core.js:3405
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL-t a qbittorrent ügyfél (pl. localhost8080:)"
 
-#: src/js/core.js:3401
+#: src/js/core.js:3415
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL-t az MLDonkey (pl. http://localhost:4080)"
 
-#: src/js/core.js:3412
+#: src/js/core.js:3426
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL-t a putio ügyfél (pl. localhost8080:)"
 
-#: src/js/core.js:3581
+#: src/js/core.js:3595
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3582
+#: src/js/core.js:3596
 msgid "Select TV Download Directory"
 msgstr "Válassza ki a TV letöltési könyvtárat"
 
-#: src/js/core.js:3583
+#: src/js/core.js:3597
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3597
+#: src/js/core.js:3611
 msgid "Unrar Executable not found."
 msgstr "Feltár végrehajtható fájl nem található."
 
-#: src/js/core.js:3640 src/js/core.js:3675 src/js/core.js:3710 src/js/core.js:3761
+#: src/js/core.js:3654 src/js/core.js:3689 src/js/core.js:3724 src/js/core.js:3775
 msgid "This pattern is invalid."
 msgstr "Ez a minta érvénytelen."
 
-#: src/js/core.js:3644 src/js/core.js:3679 src/js/core.js:3714 src/js/core.js:3765
+#: src/js/core.js:3658 src/js/core.js:3693 src/js/core.js:3728 src/js/core.js:3779
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Érvénytelen lenne, ez a minta a mappák nélkül használ ez akarat kényszerít \"Lelapul\" ki minden mutatja."
 
-#: src/js/core.js:3648 src/js/core.js:3683 src/js/core.js:3718 src/js/core.js:3770
+#: src/js/core.js:3662 src/js/core.js:3697 src/js/core.js:3732 src/js/core.js:3784
 msgid "This pattern is valid."
 msgstr "Ez a minta az érvényes."
 
-#: src/js/core.js:4094
+#: src/js/core.js:4108
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> igazol engedély"
 
-#: src/js/core.js:4151 src/js/core.js:4205
+#: src/js/core.js:4165 src/js/core.js:4219
 msgid "Please fill in the Popcorn IP address"
 msgstr "Kérjük, töltse ki a Popcorn IP-cím"
 
-#: src/js/core.js:4388
+#: src/js/core.js:4402
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Ellenőrizze a feketelista neve; értéket kell, hogy legyenek a trakt csiga"
 
-#: src/js/core.js:4420
+#: src/js/core.js:4434
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4423
+#: src/js/core.js:4437
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4425
+#: src/js/core.js:4439
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4431
+#: src/js/core.js:4445
 msgid "Enter an email address to send the test to:"
 msgstr "Adjon meg egy e-mail címét, hogy küldje a vizsgálat:"
 
-#: src/js/core.js:4433
+#: src/js/core.js:4447
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4503
+#: src/js/core.js:4517
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Eszközlista frissítése. Válasszon ki egy eszközt, hogy álljon."
 
-#: src/js/core.js:4564
+#: src/js/core.js:4578
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Nem ad a Pushbullet api-kulcs"
 
-#: src/js/core.js:4594
+#: src/js/core.js:4608
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Ne felejtsd el menteni az új pushbullet-beállításokat."
 
-#: src/js/core.js:4666
+#: src/js/core.js:4680
 msgid "Select backup folder to save to"
 msgstr "Válassza ki a biztonságimásolat-mappába való mentéséhez"
 
-#: src/js/core.js:4671
+#: src/js/core.js:4685
 msgid "Select backup files to restore"
 msgstr "Válassza ki a biztonságimásolat-fájlok"
 
-#: src/js/core.js:5216
+#: src/js/core.js:5230
 msgid "No providers available to configure."
 msgstr "Nincs elérhető-szolgáltatók konfigurálásához."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5426
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5440
 msgid "Mass Delete"
 msgstr "Tömeges törlése"
 
-#: src/js/core.js:5427
+#: src/js/core.js:5441
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Törölje a show(s) választotta.  Biztosan folytatja? Minden fájl törlődik a rendszer."
 
-#: src/js/core.js:5504
+#: src/js/core.js:5518
 msgid "DELETED"
 msgstr ""
 
@@ -766,7 +766,7 @@ msgstr "Műsorok"
 msgid "Schedule"
 msgstr "Menetrend"
 
-#: sickrage/core/webserver/views.py:3652 sickrage/core/webserver/views.py:3653
+#: sickrage/core/webserver/views.py:3625 sickrage/core/webserver/views.py:3626
 #: sickrage/core/webserver/views/config/general.mako:149
 #: sickrage/core/webserver/views/layouts/main.mako:223
 msgid "History"
@@ -3572,7 +3572,7 @@ msgstr "Szükség legalább egy, de két ajánlott."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent szolgáltatók lehet toggled a"
 
-#: sickrage/core/webserver/views.py:3685 sickrage/core/webserver/views.py:3964
+#: sickrage/core/webserver/views.py:3658 sickrage/core/webserver/views.py:3937
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:248
 msgid "Search Clients"
@@ -4761,7 +4761,7 @@ msgstr "Ruházata:"
 msgid "Select Filtered Episodes"
 msgstr "Jelölje be a szűrt epizódok"
 
-#: sickrage/core/webserver/views.py:4921
+#: sickrage/core/webserver/views.py:4894
 #: sickrage/core/webserver/views/home/display_show.mako:449
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4828,7 +4828,7 @@ msgid "Status"
 msgstr "Állapot"
 
 #: sickrage/core/webserver/views/home/display_show.mako:555
-#: sickrage/core/webserver/views/home/new_show.mako:115
+#: sickrage/core/webserver/views/home/new_show.mako:125
 msgid "Search"
 msgstr "Szálláshelyek keresése"
 
@@ -4845,7 +4845,7 @@ msgstr "Ismeretlen"
 msgid "Retry Download"
 msgstr "Újra megpróbál letölt"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4947
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Fő"
@@ -4971,7 +4971,7 @@ msgstr "helyett a légi sorrendben használja a DVD rendelés"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "A \"teljes frissítésének kikényszerítése\", és ha már meglévő epizódok kell rendezni őket manuálisan."
 
-#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4858
+#: sickrage/core/webserver/views.py:3664 sickrage/core/webserver/views.py:4831
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:266
@@ -5200,44 +5200,40 @@ msgstr ""
 msgid "Custom Options"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/new_show.mako:44
+#: sickrage/core/webserver/views/home/new_show.mako:68
 msgid "Find a show"
 msgstr "Talál egy Térkép"
 
-#: sickrage/core/webserver/views/home/new_show.mako:51
-msgid "Show retrieved from existing metadata:"
-msgstr "A lap eredeti címe: a meglévő metaadatokat Térkép:"
-
-#: sickrage/core/webserver/views/home/new_show.mako:83
+#: sickrage/core/webserver/views/home/new_show.mako:93
 msgid "Please choose a show"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/new_show.mako:98
+#: sickrage/core/webserver/views/home/new_show.mako:108
 msgid "Choose language"
 msgstr "Válasszon nyelvet"
 
-#: sickrage/core/webserver/views/home/new_show.mako:118
-#: sickrage/core/webserver/views/home/new_show.mako:144
+#: sickrage/core/webserver/views/home/new_show.mako:129
+#: sickrage/core/webserver/views/home/new_show.mako:155
 msgid "Next"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/new_show.mako:121
+#: sickrage/core/webserver/views/home/new_show.mako:133
 msgid "Skip Show"
 msgstr "Ugrás Térkép"
 
-#: sickrage/core/webserver/views/home/new_show.mako:128
+#: sickrage/core/webserver/views/home/new_show.mako:141
 msgid "Pick a folder"
 msgstr "Válasszon egy mappát"
 
-#: sickrage/core/webserver/views/home/new_show.mako:133
+#: sickrage/core/webserver/views/home/new_show.mako:148
 msgid "Pre-chosen Destination Folder:"
 msgstr "Előre kiválasztott célmappába:"
 
-#: sickrage/core/webserver/views/home/new_show.mako:151
+#: sickrage/core/webserver/views/home/new_show.mako:162
 msgid "Custom options"
 msgstr "Egyéni beállítások"
 
-#: sickrage/core/webserver/views/home/new_show.mako:160
+#: sickrage/core/webserver/views/home/new_show.mako:171
 msgid "Finish!"
 msgstr ""
 
@@ -5293,7 +5289,7 @@ msgstr "Rendszerindításának végrehajtása"
 msgid "Daily Search"
 msgstr "Napi keresés"
 
-#: sickrage/core/webserver/views.py:4961
+#: sickrage/core/webserver/views.py:4934
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Lemaradás"
@@ -5318,7 +5314,7 @@ msgstr "Post eljárás"
 msgid "Subtitles Finder"
 msgstr "Feliratok kereső"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4942
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt jelenléti ellenőr"
@@ -5351,7 +5347,7 @@ msgstr "nem"
 msgid "True"
 msgstr "Igaz"
 
-#: sickrage/core/webserver/views.py:4964
+#: sickrage/core/webserver/views.py:4937
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Térkép-várólista"
@@ -5662,18 +5658,18 @@ msgstr "Kézi Utófeldolgozás"
 msgid "Manage"
 msgstr "Kezelése"
 
-#: sickrage/core/webserver/views.py:3474 sickrage/core/webserver/views.py:3475
+#: sickrage/core/webserver/views.py:3447 sickrage/core/webserver/views.py:3448
 #: sickrage/core/webserver/views/layouts/main.mako:171
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Mass Update"
 
-#: sickrage/core/webserver/views.py:3082 sickrage/core/webserver/views.py:3083
+#: sickrage/core/webserver/views.py:3055 sickrage/core/webserver/views.py:3056
 #: sickrage/core/webserver/views/layouts/main.mako:174
 msgid "Backlog Overview"
 msgstr "Elmaradás – áttekintés"
 
-#: sickrage/core/webserver/views.py:3524 sickrage/core/webserver/views.py:3525
+#: sickrage/core/webserver/views.py:3497 sickrage/core/webserver/views.py:3498
 #: sickrage/core/webserver/views/layouts/main.mako:177
 msgid "Manage Queues"
 msgstr "Várólisták kezelése"
@@ -5702,7 +5698,7 @@ msgstr "Frissítés Emby"
 msgid "Manage Torrents"
 msgstr "Özön kezelése"
 
-#: sickrage/core/webserver/views.py:3499 sickrage/core/webserver/views.py:3500
+#: sickrage/core/webserver/views.py:3472 sickrage/core/webserver/views.py:3473
 #: sickrage/core/webserver/views/layouts/main.mako:208
 msgid "Failed Downloads"
 msgstr "Sikertelen letöltések"
@@ -5715,12 +5711,12 @@ msgstr "Nem fogadott felirat kezelése"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3682
+#: sickrage/core/webserver/views.py:3655
 #: sickrage/core/webserver/views/layouts/main.mako:239
 msgid "Help and Info"
 msgstr "Súgó és információ"
 
-#: sickrage/core/webserver/views.py:3683
+#: sickrage/core/webserver/views.py:3656
 #: sickrage/core/webserver/views/layouts/main.mako:242
 msgid "General"
 msgstr "Általános"
@@ -5729,28 +5725,28 @@ msgstr "Általános"
 msgid "Backup and Restore"
 msgstr "Biztonsági mentés és visszaállítás"
 
-#: sickrage/core/webserver/views.py:3686 sickrage/core/webserver/views.py:4264
+#: sickrage/core/webserver/views.py:3659 sickrage/core/webserver/views.py:4237
 #: sickrage/core/webserver/views/layouts/main.mako:251
 msgid "Search Providers"
 msgstr "Keresésszolgáltatók"
 
-#: sickrage/core/webserver/views.py:3687 sickrage/core/webserver/views.py:4770
+#: sickrage/core/webserver/views.py:3660 sickrage/core/webserver/views.py:4743
 #: sickrage/core/webserver/views/layouts/main.mako:254
 msgid "Subtitles Settings"
 msgstr "Felirat beállítás"
 
-#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:4897
+#: sickrage/core/webserver/views.py:3661 sickrage/core/webserver/views.py:4870
 #: sickrage/core/webserver/views/layouts/main.mako:257
 msgid "Quality Settings"
 msgstr "Minőségi beállítások"
 
 #: sickrage/core/webserver/views.py:2267 sickrage/core/webserver/views.py:2268
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:4069
+#: sickrage/core/webserver/views.py:3662 sickrage/core/webserver/views.py:4042
 #: sickrage/core/webserver/views/layouts/main.mako:260
 msgid "Post Processing"
 msgstr "Utómunka"
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4424
+#: sickrage/core/webserver/views.py:3663 sickrage/core/webserver/views.py:4397
 #: sickrage/core/webserver/views/layouts/main.mako:263
 msgid "Notifications"
 msgstr "Értesítések"
@@ -5951,7 +5947,7 @@ msgstr "Állítsa be, ha ezek a show is megjelent Show.03.02.2010, mint a Show.S
 msgid "Search for subtitles."
 msgstr "Keressük meg a feliratok."
 
-#: sickrage/core/webserver/views.py:3232 sickrage/core/webserver/views.py:3233
+#: sickrage/core/webserver/views.py:3205 sickrage/core/webserver/views.py:3206
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Tömeges szerkesztése"
@@ -6016,7 +6012,7 @@ msgstr "Propers keresés fogyatékkal élők"
 msgid "Post-Processor:"
 msgstr "Utó-feldolgozó:"
 
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:4938
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Várólista keresése"
@@ -6235,8 +6231,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nem tudtam megtalálni a letöltés, a <i>%s</i>"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2672
-#: sickrage/core/webserver/views.py:2684
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2645
+#: sickrage/core/webserver/views.py:2657
 msgid "Unable to add show"
 msgstr "Nem lehet hozzáadni a Térkép"
 
@@ -6639,7 +6635,7 @@ msgstr "Már a kirendeltség: "
 #: sickrage/core/webserver/views.py:1899 sickrage/core/webserver/views.py:1904
 #: sickrage/core/webserver/views.py:1907 sickrage/core/webserver/views.py:1950
 #: sickrage/core/webserver/views.py:1956 sickrage/core/webserver/views.py:1959
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4944
 msgid "Error"
 msgstr "Hiba"
 
@@ -6741,7 +6737,7 @@ msgstr "Nem sikerült frissíteni ezen a kiállításon :{}"
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "A %s mappa nem tartalmaz egy tvshow.nfo - a fájlok másolása ebbe a mappába, mielőtt módosítaná a könyvtárban található SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1507 sickrage/core/webserver/views.py:3424
+#: sickrage/core/webserver/views.py:1507 sickrage/core/webserver/views.py:3397
 msgid "Unable to update show: {}"
 msgstr "Nem lehet frissíteni a sorozatot: {error}"
 
@@ -6757,7 +6753,7 @@ msgstr "Nem lehet kényszeríteni egy frissítést a jelenet számozása a show.
 msgid "{num_warnings:d} warning{plural} while saving changes:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1535 sickrage/core/webserver/views.py:3349
+#: sickrage/core/webserver/views.py:1535 sickrage/core/webserver/views.py:3322
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} változtatások mentése közben:"
 
@@ -6907,306 +6903,306 @@ msgstr "Utófeldolgozó eredmények"
 msgid "No folders selected."
 msgstr "Nincs mappa kijelölve."
 
-#: sickrage/core/webserver/views.py:2488 sickrage/core/webserver/views.py:2489
+#: sickrage/core/webserver/views.py:2481 sickrage/core/webserver/views.py:2482
 msgid "New Show"
 msgstr "Új Térkép"
 
-#: sickrage/core/webserver/views.py:2553 sickrage/core/webserver/views.py:2554
+#: sickrage/core/webserver/views.py:2546 sickrage/core/webserver/views.py:2547
 msgid "Existing Show"
 msgstr "Meglévő Térkép"
 
-#: sickrage/core/webserver/views.py:2595 sickrage/core/webserver/views.py:2737
-msgid "Adding Show"
-msgstr "Térkép hozzáadása"
-
-#: sickrage/core/webserver/views.py:2595 sickrage/core/webserver/views.py:2737
-msgid "Adding the specified show into "
-msgstr "Hozzáadja a megadott Térkép "
-
-#: sickrage/core/webserver/views.py:2598
+#: sickrage/core/webserver/views.py:2568
 msgid "No root directories setup, please go back and add one."
 msgstr "Nem gyökér címtárak beállít, lépjen vissza, és adjunk hozzá egy."
 
-#: sickrage/core/webserver/views.py:2649
+#: sickrage/core/webserver/views.py:2623
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Ismeretlen hiba történt. Nem lehet hozzáadni a Térkép a Térkép kiválasztás probléma miatt."
 
-#: sickrage/core/webserver/views.py:2673
+#: sickrage/core/webserver/views.py:2646
 msgid "Folder "
 msgstr "Mappa "
 
-#: sickrage/core/webserver/views.py:2673
+#: sickrage/core/webserver/views.py:2646
 msgid " exists already"
 msgstr " már létezik"
 
-#: sickrage/core/webserver/views.py:2685
+#: sickrage/core/webserver/views.py:2658
 msgid "Unable to create the folder , can't add the show"
 msgstr "Nem sikerült létrehozni a mappát nem lehet hozzáadni a Térkép"
 
-#: sickrage/core/webserver/views.py:2812
+#: sickrage/core/webserver/views.py:2710
+msgid "Adding Show"
+msgstr "Térkép hozzáadása"
+
+#: sickrage/core/webserver/views.py:2710
+msgid "Adding the specified show into "
+msgstr "Hozzáadja a megadott Térkép "
+
+#: sickrage/core/webserver/views.py:2785
 msgid "Shows Added"
 msgstr "Azt mutatja, hogy a hozzáadott"
 
-#: sickrage/core/webserver/views.py:2813
+#: sickrage/core/webserver/views.py:2786
 msgid "Automatically added "
 msgstr "Automatikusan "
 
-#: sickrage/core/webserver/views.py:2814
+#: sickrage/core/webserver/views.py:2787
 msgid " from their existing metadata files"
 msgstr " a meglévő metaadat-fájlokból"
 
-#: sickrage/core/webserver/views.py:2996 sickrage/core/webserver/views.py:2997
+#: sickrage/core/webserver/views.py:2969 sickrage/core/webserver/views.py:2970
 msgid "Missing Subtitles"
 msgstr "Hiányzó feliratok"
 
-#: sickrage/core/webserver/views.py:3432
+#: sickrage/core/webserver/views.py:3405
 msgid "Unable to refresh show "
 msgstr "Nem sikerült frissíteni a Térkép "
 
-#: sickrage/core/webserver/views.py:3443
+#: sickrage/core/webserver/views.py:3416
 msgid "Errors encountered"
 msgstr "Hiba"
 
-#: sickrage/core/webserver/views.py:3449
+#: sickrage/core/webserver/views.py:3422
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3454
+#: sickrage/core/webserver/views.py:3427
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3459
+#: sickrage/core/webserver/views.py:3432
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3464
+#: sickrage/core/webserver/views.py:3437
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3469
+#: sickrage/core/webserver/views.py:3442
 msgid "The following actions were queued:"
 msgstr "Sorba állított a következő műveleteket:"
 
-#: sickrage/core/webserver/views.py:3535
+#: sickrage/core/webserver/views.py:3508
 msgid "Backlog search started"
 msgstr "Lemaradás kutatás kezdődött"
 
-#: sickrage/core/webserver/views.py:3543
+#: sickrage/core/webserver/views.py:3516
 msgid "Daily search started"
 msgstr "Elkezdtem napi keresés"
 
-#: sickrage/core/webserver/views.py:3551
+#: sickrage/core/webserver/views.py:3524
 msgid "Find propers search started"
 msgstr "Propers keresés kezdte találni"
 
-#: sickrage/core/webserver/views.py:3662
+#: sickrage/core/webserver/views.py:3635
 msgid "History cleared"
 msgstr "Törölve története"
 
-#: sickrage/core/webserver/views.py:3669
+#: sickrage/core/webserver/views.py:3642
 msgid "Removed history entries older than 30 days"
 msgstr "Eltávolított történelem tételek 30 napnál régebbi"
 
-#: sickrage/core/webserver/views.py:3684 sickrage/core/webserver/views.py:3904
+#: sickrage/core/webserver/views.py:3657 sickrage/core/webserver/views.py:3877
 msgid "Backup/Restore"
 msgstr "Biztonsági mentés és visszaállítás"
 
-#: sickrage/core/webserver/views.py:3700 sickrage/core/webserver/views.py:3701
+#: sickrage/core/webserver/views.py:3673 sickrage/core/webserver/views.py:3674
 msgid "Configuration"
 msgstr "Konfiguráció"
 
-#: sickrage/core/webserver/views.py:3709
+#: sickrage/core/webserver/views.py:3682
 msgid "Configuration Reset to Defaults"
 msgstr "Konfiguráció visszaállítása az alapértékekre"
 
-#: sickrage/core/webserver/views.py:3722
+#: sickrage/core/webserver/views.py:3695
 msgid "Config - General"
 msgstr "Config - általános"
 
-#: sickrage/core/webserver/views.py:3723
+#: sickrage/core/webserver/views.py:3696
 msgid "General Configuration"
 msgstr "Általános beállítások"
 
-#: sickrage/core/webserver/views.py:3886 sickrage/core/webserver/views.py:4051
-#: sickrage/core/webserver/views.py:4182 sickrage/core/webserver/views.py:4406
-#: sickrage/core/webserver/views.py:4752 sickrage/core/webserver/views.py:4840
-#: sickrage/core/webserver/views.py:4879
+#: sickrage/core/webserver/views.py:3859 sickrage/core/webserver/views.py:4024
+#: sickrage/core/webserver/views.py:4155 sickrage/core/webserver/views.py:4379
+#: sickrage/core/webserver/views.py:4725 sickrage/core/webserver/views.py:4813
+#: sickrage/core/webserver/views.py:4852
 msgid "Error(s) Saving Configuration"
 msgstr "Mentése konfigurációs hiba"
 
-#: sickrage/core/webserver/views.py:3888
+#: sickrage/core/webserver/views.py:3861
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:3903
+#: sickrage/core/webserver/views.py:3876
 msgid "Config - Backup/Restore"
 msgstr "Config - biztonsági mentés és visszaállítás"
 
-#: sickrage/core/webserver/views.py:3916
+#: sickrage/core/webserver/views.py:3889
 msgid "Backup SUCCESSFUL"
 msgstr "Biztonsági mentés sikeres"
 
-#: sickrage/core/webserver/views.py:3918
+#: sickrage/core/webserver/views.py:3891
 msgid "Backup FAILED!"
 msgstr "Hát nem sikerült!"
 
-#: sickrage/core/webserver/views.py:3920
+#: sickrage/core/webserver/views.py:3893
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Ki kell választani egy mappába, hogy a biztonsági mentés az első!"
 
-#: sickrage/core/webserver/views.py:3939
+#: sickrage/core/webserver/views.py:3912
 msgid "Successfully extracted restore files to "
 msgstr "Sikeresen kibontott visszaad fájlokat "
 
-#: sickrage/core/webserver/views.py:3940
+#: sickrage/core/webserver/views.py:3913
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage a visszaállítás befejezéséhez."
 
-#: sickrage/core/webserver/views.py:3942
+#: sickrage/core/webserver/views.py:3915
 msgid "Restore FAILED"
 msgstr "SIKERTELEN visszaállítás"
 
-#: sickrage/core/webserver/views.py:3944
+#: sickrage/core/webserver/views.py:3917
 msgid "You need to select a backup file to restore!"
 msgstr "Ki kell választania egy biztonságimásolat-fájl visszaállítása!"
 
-#: sickrage/core/webserver/views.py:3963
+#: sickrage/core/webserver/views.py:3936
 msgid "Config - Search Clients"
 msgstr "Beállítás - Kereső szolgáltatók"
 
-#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
-#: sickrage/core/webserver/views.py:4097
+#: sickrage/core/webserver/views.py:3962 sickrage/core/webserver/views.py:3965
+#: sickrage/core/webserver/views.py:4070
 msgid "Unable to create directory "
 msgstr "Nem lehet létrehozni a könyvtárat "
 
-#: sickrage/core/webserver/views.py:3989 sickrage/core/webserver/views.py:3992
-#: sickrage/core/webserver/views.py:4097
+#: sickrage/core/webserver/views.py:3962 sickrage/core/webserver/views.py:3965
+#: sickrage/core/webserver/views.py:4070
 msgid ", dir not changed."
 msgstr ", dir, nem változott."
 
-#: sickrage/core/webserver/views.py:4053
+#: sickrage/core/webserver/views.py:4026
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4068
+#: sickrage/core/webserver/views.py:4041
 msgid "Config - Post Processing"
 msgstr "Config - utómunka"
 
-#: sickrage/core/webserver/views.py:4108
+#: sickrage/core/webserver/views.py:4081
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Nem támogatja a kicsomagolás, kicsomagolni letiltása beállítást"
 
-#: sickrage/core/webserver/views.py:4143 sickrage/core/webserver/views.py:4154
+#: sickrage/core/webserver/views.py:4116 sickrage/core/webserver/views.py:4127
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Ön próbált, megtakarítás egy érvénytelen anime config elnevezés, nem a névadási beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4145 sickrage/core/webserver/views.py:4156
+#: sickrage/core/webserver/views.py:4118 sickrage/core/webserver/views.py:4129
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Próbált egy érvénytelen elnevezési config mentése nem a névadási beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4162
+#: sickrage/core/webserver/views.py:4135
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Próbálta mentése egy érvénytelen levegő határidő elnevezési config, nem az a levegő határidő-beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4168
+#: sickrage/core/webserver/views.py:4141
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Próbált egy érvénytelen sport elnevezési config, nem menti a sport beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4184
+#: sickrage/core/webserver/views.py:4157
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4263
+#: sickrage/core/webserver/views.py:4236
 msgid "Config - Search Providers"
 msgstr "Beállítás - Kereső szolgáltatók"
 
-#: sickrage/core/webserver/views.py:4304
+#: sickrage/core/webserver/views.py:4277
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nincs a megadott szolgáltatónév"
 
-#: sickrage/core/webserver/views.py:4306
+#: sickrage/core/webserver/views.py:4279
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Nincs megadva szolgáltató URL-címe"
 
-#: sickrage/core/webserver/views.py:4308
+#: sickrage/core/webserver/views.py:4281
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Nincs megadva szolgáltató Api-kulcs"
 
-#: sickrage/core/webserver/views.py:4408
+#: sickrage/core/webserver/views.py:4381
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4423
+#: sickrage/core/webserver/views.py:4396
 msgid "Config - Notifications"
 msgstr "Config - értesítések"
 
-#: sickrage/core/webserver/views.py:4754
+#: sickrage/core/webserver/views.py:4727
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4769
+#: sickrage/core/webserver/views.py:4742
 msgid "Config - Subtitles Settings"
 msgstr "Beállítás - Felírat Beállítás"
 
-#: sickrage/core/webserver/views.py:4842
+#: sickrage/core/webserver/views.py:4815
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4857
+#: sickrage/core/webserver/views.py:4830
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4881
+#: sickrage/core/webserver/views.py:4854
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4896
+#: sickrage/core/webserver/views.py:4869
 msgid "Config - Quality Settings"
 msgstr "Config - minőségi beállítások"
 
-#: sickrage/core/webserver/views.py:4908
+#: sickrage/core/webserver/views.py:4881
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[MINŐSÉGI BEÁLLÍTÁSOK] Beállítások mentése"
 
-#: sickrage/core/webserver/views.py:4960
+#: sickrage/core/webserver/views.py:4933
 msgid "Daily Searcher"
 msgstr "Napi kereső"
 
-#: sickrage/core/webserver/views.py:4962
+#: sickrage/core/webserver/views.py:4935
 msgid "Show Updater"
 msgstr "Térkép-Updater"
 
-#: sickrage/core/webserver/views.py:4963
+#: sickrage/core/webserver/views.py:4936
 msgid "Check Version"
 msgstr "Ellenőriz változat"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4939
 msgid "Find Propers"
 msgstr "Még Propers"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4940
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4941
 msgid "Find Subtitles"
 msgstr "Meg a feliratok"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4943
 msgid "Event"
 msgstr "Esemény"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4945
 msgid "Tornado"
 msgstr "Tornádó"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4946
 msgid "Thread"
 msgstr "Szál"
 
