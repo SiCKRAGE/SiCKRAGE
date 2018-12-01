@@ -43,7 +43,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="enable_api_providers_cache">
-                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_api_providers_cache"
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="enable_api_providers_cache"
                                    id="enable_api_providers_cache" ${('', 'checked')[bool(sickrage.app.config.enable_api_providers_cache)]}/>
                             ${_('Enable provider cache ?')}
                         </label>
@@ -672,7 +673,8 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label for="fanart_background">
-                            <input type="checkbox" class="enabler toggle color-primary is-material" name="fanart_background"
+                            <input type="checkbox" class="enabler toggle color-primary is-material"
+                                   name="fanart_background"
 
                                    id="fanart_background" ${('', 'checked')[bool(sickrage.app.config.fanart_background)]}>
                             ${_('on the show summary page')}
@@ -1222,9 +1224,11 @@
                     </div>
                     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
                         <label class="form-check-label">
-                            <input type="checkbox" class="toggle color-primary is-material" name="strip_special_file_bits"
+                            <input type="checkbox" class="toggle color-primary is-material"
+                                   name="strip_special_file_bits"
                                    id="strip_special_file_bits" ${('', 'checked')[bool(sickrage.app.config.strip_special_file_bits)]}/>
-                            ${_('Strips special filesystem bits from files, if disabled will leave special bits intact.')}<br/>
+                            ${_('Strips special filesystem bits from files, if disabled will leave special bits intact.')}
+                            <br/>
                             <div class="text-info">
                                 <b>${_('NOTE:')}</b> ${_('This will strip inherited permissions')}</div>
                         </label>
@@ -1299,7 +1303,8 @@
 
         % if sickrage.app.version_updater.updater.type == "git":
         <%
-            git_branch = sickrage.app.version_updater.updater.remote_branches
+            git_branches = sickrage.app.version_updater.updater.remote_branches
+            git_current_branch = sickrage.app.version_updater.updater.current_branch
         %>
 
             <hr/>
@@ -1324,13 +1329,13 @@
                                         </div>
                                         <select id="branchVersion" class="form-control"
                                                 title=${_('GIT Branch Version')}>
-                                            % if git_branch:
-                                                % for cur_branch in git_branch:
-                                                    % if sickrage.app.developer:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>
-                                                    % elif cur_branch in ['master', 'develop']:
-                                                        <option value="${cur_branch}" ${('', 'selected')[sickrage.app.version_updater.updater.current_branch == cur_branch]}>${cur_branch}</option>
-                                                    % endif
+                                            % if git_branches:
+                                                % for git_branch in git_branches:
+                                                <%
+                                                    if not sickrage.app.developer and git_branch not in ['master', 'develop']:
+                                                        next
+                                                %>
+                                                    <option value="${git_branch}" ${('', 'selected')[git_current_branch == git_branch]}>${git_branch}</option>
                                                 % endfor
                                             % endif
                                         </select>
@@ -1340,15 +1345,11 @@
                             <p></p>
                             <div class="form-row">
                                 <div class="col-md-12">
-                                    % if not git_branch:
-                                        <input class="btn btn-inline" type="button" id="branchCheckout"
-                                               value="Checkout Branch" disabled>
-                                        <label for="branchCheckout">${_('Error: No branches found.')}</label>
-                                    % else:
-                                        <input class="btn btn-inline" type="button" id="branchCheckout"
-                                               value="Checkout Branch">
-                                        <label for="branchCheckout">${_('select branch to use (restart required)')}</label>
-                                    % endif
+                                    <input class="btn btn-inline" type="button" id="branchCheckout"
+                                           value="Checkout Branch" ${('', 'disabled')[not git_branches]}>
+                                    <label for="branchCheckout">
+                                        ${(_('select branch to use (restart required)'), _('Error: No branches found.'))[not git_branches]}
+                                    </label>
                                 </div>
                             </div>
                         </div>

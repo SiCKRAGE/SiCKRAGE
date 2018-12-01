@@ -134,7 +134,7 @@ class VersionUpdater(object):
         # default to source install type
         install_type = SourceUpdateManager()
 
-        if os.path.isdir(os.path.join(os.path.dirname(sickrage.PROG_DIR), '.git')):
+        if os.path.isdir(os.path.join(sickrage.MAIN_DIR, '.git')):
             # GIT install type
             install_type = GitUpdateManager()
         elif PipUpdateManager().version:
@@ -213,14 +213,11 @@ class UpdateManager(object):
 
         main_git = sickrage.app.config.git_path or 'git'
 
-        sickrage.app.log.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
-        __, __, exit_status = self._git_cmd(main_git, test_cmd)
-
+        # sickrage.app.log.debug("Checking if we can use git commands: " + main_git + ' ' + test_cmd)
+        __, __, exit_status = self._git_cmd(main_git, test_cmd, silent=True)
         if exit_status == 0:
-            sickrage.app.log.debug("Using: " + main_git)
+            # sickrage.app.log.debug("Using: " + main_git)
             return main_git
-        else:
-            sickrage.app.log.debug("Not using: " + main_git)
 
         # trying alternatives
         alternative_git = []
@@ -237,18 +234,18 @@ class UpdateManager(object):
             sickrage.app.log.debug("Trying known alternative git locations")
 
             for cur_git in alternative_git:
-                sickrage.app.log.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
+                # sickrage.app.log.debug("Checking if we can use git commands: " + cur_git + ' ' + test_cmd)
                 __, __, exit_status = self._git_cmd(cur_git, test_cmd)
-
                 if exit_status == 0:
-                    sickrage.app.log.debug("Using: " + cur_git)
+                    # sickrage.app.log.debug("Using: " + cur_git)
                     return cur_git
-                else:
-                    sickrage.app.log.debug("Not using: " + cur_git)
 
         # Still haven't found a working git
         error_message = _('Unable to find your git executable - Set your git path from Settings->General->Advanced OR '
-                          'delete your .git folder and run from source to enable updates.')
+                          'delete your {git_folder} folder and run from source to enable updates.'.format(**{
+            'git_folder': os.path.join(sickrage.MAIN_DIR, '.git')
+        }))
+
         sickrage.app.alerts.error(_('Updater'), error_message)
 
     @property
@@ -257,14 +254,11 @@ class UpdateManager(object):
 
         main_pip = sickrage.app.config.pip_path or 'pip2'
 
-        sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
-        __, __, exit_status = self._pip_cmd(main_pip, test_cmd)
-
+        # sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
+        __, __, exit_status = self._pip_cmd(main_pip, test_cmd, silent=True)
         if exit_status == 0:
-            sickrage.app.log.debug("Using: " + main_pip)
+            # sickrage.app.log.debug("Using: " + main_pip)
             return main_pip
-        else:
-            sickrage.app.log.debug("Not using: " + main_pip)
 
         # trying alternatives
         alternative_pip = []
@@ -281,21 +275,19 @@ class UpdateManager(object):
             sickrage.app.log.debug("Trying known alternative pip locations")
 
             for cur_pip in alternative_pip:
-                sickrage.app.log.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
+                # sickrage.app.log.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
                 __, __, exit_status = self._pip_cmd(cur_pip, test_cmd)
-
                 if exit_status == 0:
-                    sickrage.app.log.debug("Using: " + cur_pip)
+                    # sickrage.app.log.debug("Using: " + cur_pip)
                     return cur_pip
-                else:
-                    sickrage.app.log.debug("Not using: " + cur_pip)
 
         # Still haven't found a working git
         error_message = _('Unable to find your pip executable - Set your pip path from Settings->General->Advanced')
+
         sickrage.app.alerts.error(_('Updater'), error_message)
 
     @staticmethod
-    def _git_cmd(git_path, args):
+    def _git_cmd(git_path, args, silent=False):
         output = err = None
 
         if not git_path:
@@ -306,9 +298,11 @@ class UpdateManager(object):
         cmd = [git_path] + args.split()
 
         try:
-            sickrage.app.log.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
+            if not silent:
+                sickrage.app.log.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.MAIN_DIR)
+
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 shell=(sys.platform == 'win32'), cwd=sickrage.PROG_DIR)
+                                 shell=(sys.platform == 'win32'), cwd=sickrage.MAIN_DIR)
             output, err = p.communicate()
             exit_status = p.returncode
 
@@ -320,7 +314,8 @@ class UpdateManager(object):
             exit_status = 1
 
         if exit_status == 0:
-            sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
+            if not silent:
+                sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         elif exit_status == 1:
             if output:
@@ -342,7 +337,7 @@ class UpdateManager(object):
         return output, err, exit_status
 
     @staticmethod
-    def _pip_cmd(pip_path, args):
+    def _pip_cmd(pip_path, args, silent=False):
         output = err = None
 
         if not pip_path:
@@ -353,9 +348,11 @@ class UpdateManager(object):
         cmd = [pip_path] + args.split()
 
         try:
-            sickrage.app.log.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.PROG_DIR)
+            if not silent:
+                sickrage.app.log.debug("Executing " + ' '.join(cmd) + " with your shell in " + sickrage.MAIN_DIR)
+
             p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                 shell=(sys.platform == 'win32'), cwd=sickrage.PROG_DIR)
+                                 shell=(sys.platform == 'win32'), cwd=sickrage.MAIN_DIR)
             output, err = p.communicate()
             exit_status = p.returncode
 
@@ -366,7 +363,8 @@ class UpdateManager(object):
             exit_status = 1
 
         if exit_status == 0:
-            sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
+            if not silent:
+                sickrage.app.log.debug(' '.join(cmd) + " : returned successful")
             exit_status = 0
         else:
             sickrage.app.log.debug(' '.join(cmd) + " returned : " + str(output) + ", treat as error for now")
@@ -556,8 +554,7 @@ class SourceUpdateManager(UpdateManager):
 
     @staticmethod
     def _find_installed_version():
-        with io.open(os.path.join(sickrage.PROG_DIR, 'version.txt')) as f:
-            return f.read().strip() or ""
+        return sickrage.version() or ""
 
     def need_update(self):
         try:

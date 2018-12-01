@@ -1329,15 +1329,9 @@ $(document).ready(function ($) {
                             }
                         }())
                     });
-
-                    SICKRAGE.ajax_search.ajaxEpSearch();
                 }
 
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['banner', 'poster'])) {
-                    SICKRAGE.ajax_search.ajaxEpSearch({
-                        'size': 16,
-                        'loadingIcon': 'fas fa-spinner fa-spin fa-fw'
-                    });
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
                         $(this).next('.ep_summary').slideToggle('normal', function () {
@@ -1356,6 +1350,8 @@ $(document).ready(function ($) {
                     // call this function to copy the column selection code into the popover
                     $.tablesorter.columnSelector.attachTo($('#showListTable'), '#popover-target');
                 });
+
+                SICKRAGE.ajax_search.init();
             },
 
             history: function () {
