@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9780b9d - 2018-11-30: Pre-Release v9.4.48.dev1 
+- * 73b8296 - 2018-11-30: Adding shows from trakt or imdb now prompt for show settings. 
+- * 23e7005 - 2018-11-30: Pre-Release v9.4.48.dev1 
 - * b266867 - 2018-11-29: Release v9.4.47 
 - * 58c1f5e - 2018-11-29: Added code to ensure seeders, leechers, and size are always integer values before being added to cache. 
 - * 80b928a - 2018-11-28: Release v9.4.46 

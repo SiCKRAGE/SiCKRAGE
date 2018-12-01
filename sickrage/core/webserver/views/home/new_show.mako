@@ -39,28 +39,38 @@
 
                 <form class="needs-validation" id="addShowForm" method="post"
                       action="${srWebRoot}/home/addShows/addNewShow">
-                    <div class="card setup-content active" id="step-1">
-                        <div class="card-header">
-                            <h3 class="card-title">${_('Find a show')}</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-group">
-                                <input type="hidden" id="indexer_timeout"
-                                       value="${sickrage.app.config.indexer_timeout}"/>
-                                % if use_provided_info:
-                                ${_('Show retrieved from existing metadata:')}
-                                    <a href="${anon_url(IndexerApi(provided_indexer).config['show_url'], provided_indexer_id)}">
-                                        ${provided_indexer_name}
-                                    </a>
-                                    <input type="hidden" id="indexerLang" name="indexerLang"
-                                           value="${sickrage.app.config.indexer_default_language}"/>
-                                    <input type="hidden" id="whichSeries" name="whichSeries"
-                                           value="${provided_indexer_id}"/>
-                                    <input type="hidden" id="providedIndexer" name="providedIndexer"
-                                           value="${provided_indexer}"/>
-                                    <input type="hidden" id="providedName"
-                                           value="${provided_indexer_name}"/>
-                                % else:
+
+                    % if use_provided_info:
+                        <input type="hidden" id="indexerLang" name="indexerLang"
+                               value="${sickrage.app.config.indexer_default_language}"/>
+                        <input type="hidden" id="whichSeries" name="whichSeries"
+                               value="${provided_indexer_id}"/>
+                        <input type="hidden" id="providedIndexer" name="providedIndexer"
+                               value="${provided_indexer}"/>
+                        <input type="hidden" id="providedName" name="providedName"
+                               value="${provided_indexer_name}"/>
+                    % endif
+
+                    % if provided_show_dir:
+                        <input type="hidden" id="fullShowPath" name="fullShowPath"
+                               value="${provided_show_dir}"/><br>
+                    % endif
+
+                    % for curNextDir in other_shows:
+                        <input type="hidden" name="other_shows" value="${curNextDir}"/>
+                    % endfor
+
+                    <input type="hidden" name="skipShow" id="skipShow" value=""/>
+
+                    % if not use_provided_info:
+                        <div class="card setup-content active" id="step-1">
+                            <div class="card-header">
+                                <h3 class="card-title">${_('Find a show')}</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <input type="hidden" id="indexer_timeout"
+                                           value="${sickrage.app.config.indexer_timeout}"/>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="input-group">
@@ -107,21 +117,24 @@
                                     </div>
                                     <p>
                                     <div id="messages"></div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-success btn-inline ${('', 'disabled')[use_provided_info]}"
+                                        type="button" id="searchName">
+                                    ${_('Search')}
+                                </button>
+                                <button class="btn btn-primary nextBtn ${('', 'disabled')[not use_provided_info]} pull-right"
+                                        type="button">
+                                    ${_('Next')}
+                                </button>
+                                % if provided_show_dir:
+                                    <input class="btn float-right" type="button" id="skipShowButton"
+                                           value="${_('Skip Show')}"/>
                                 % endif
                             </div>
                         </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success btn-inline" type="button" id="searchName">
-                                ${_('Search')}
-                            </button>
-                            <button class="btn btn-primary nextBtn disabled pull-right" type="button">
-                                ${_('Next')}
-                            </button>
-                            % if provided_show_dir:
-                                <input class="btn float-right" type="button" id="skipShowButton" value="${_('Skip Show')}"/>
-                            % endif
-                        </div>
-                    </div>
+                    % endif
 
                     <div class="card setup-content" id="step-2">
                         <div class="card-header">
@@ -129,13 +142,11 @@
                         </div>
                         <div class="card-body">
                             <div class="form-group">
-                                % if provided_show_dir:
+                                % if not provided_show_dir:
+                                    <%include file="../includes/root_dirs.mako"/>
+                                % else:
                                 ${_('Pre-chosen Destination Folder:')}
                                     <b>${provided_show_dir}</b><br/>
-                                    <input type="hidden" id="fullShowPath" name="fullShowPath"
-                                           value="${provided_show_dir}"/><br>
-                                % else:
-                                    <%include file="../includes/root_dirs.mako"/>
                                 % endif
                             </div>
                         </div>
@@ -161,11 +172,6 @@
                             </button>
                         </div>
                     </div>
-
-                    % for curNextDir in other_shows:
-                        <input type="hidden" name="other_shows" value="${curNextDir}"/>
-                    % endfor
-                    <input type="hidden" name="skipShow" id="skipShow" value=""/>
                 </form>
             </div>
         </div>
