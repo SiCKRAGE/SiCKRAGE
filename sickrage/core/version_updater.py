@@ -18,7 +18,6 @@
 
 from __future__ import unicode_literals
 
-import io
 import os
 import platform
 import re
@@ -377,9 +376,22 @@ class UpdateManager(object):
         return "{}/home/update/?pid={}".format(sickrage.app.config.web_root, sickrage.app.pid)
 
     def install_requirements(self):
-        __, __, exit_status = self._pip_cmd(self._pip_path,
-                                            'install --no-cache-dir --user -r {}'.format(sickrage.REQS_FILE))
-        return (False, True)[exit_status == 0]
+        for req_file in ['requirements.txt', sickrage.REQS_FILE]:
+            __, __, exit_status = self._pip_cmd(self._pip_path,
+                                                'install --no-cache-dir -r {}'.format(req_file))
+
+            if exit_status != 0:
+                __, __, exit_status = self._pip_cmd(self._pip_path,
+                                                    'install --no-cache-dir --user -r {}'.format(req_file))
+
+            if exit_status == 0:
+                return True
+
+        sickrage.app.log.warning('Unable to update requirements using {req_file}'.format(**{
+            'req_file': sickrage.REQS_FILE
+        }))
+
+        return False
 
 
 class GitUpdateManager(UpdateManager):
@@ -475,8 +487,7 @@ class GitUpdateManager(UpdateManager):
             sickrage.app.alerts.message(_('Updater'),
                                         _('Updating SiCKRAGE from GIT servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
-            self.install_requirements()
-            return True
+            return self.install_requirements()
 
         return False
 
@@ -520,8 +531,7 @@ class GitUpdateManager(UpdateManager):
 
             __, __, exit_status = self._git_cmd(self._git_path, 'checkout -f ' + branch)
             if exit_status == 0:
-                self.install_requirements()
-                return True
+                return self.install_requirements()
 
         return False
 
@@ -648,7 +658,8 @@ class SourceUpdateManager(UpdateManager):
                     os.renames(old_path, new_path)
 
             # install requirements
-            self.install_requirements()
+            if not self.install_requirements():
+                return False
         except Exception as e:
             sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False
