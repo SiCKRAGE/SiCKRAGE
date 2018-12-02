@@ -199,7 +199,6 @@ class BaseHandler(RequestHandler):
         return self.render_string(template_name, **kwargs)
 
     def worker(self, function, **kwargs):
-        threading.currentThread().setName("TORNADO")
         kwargs = recursive_unicode(kwargs)
         for arg, value in kwargs.items():
             if len(value) == 1:
@@ -230,12 +229,16 @@ class WebHandler(BaseHandler):
     @authenticated
     @tornado.gen.coroutine
     def get(self, *args, **kwargs):
-        self.write(self.route())
+        result = self.route()
+        if result:
+            self.write(result)
 
     @authenticated
     @tornado.gen.coroutine
     def post(self, *args, **kwargs):
-        self.write(self.route())
+        result = self.route()
+        if result:
+            self.write(result)
 
     def route(self):
         # route -> method obj
