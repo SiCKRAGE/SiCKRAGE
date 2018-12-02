@@ -1,6 +1,7 @@
 # Changelog
 
-- * 25eb633 - 2018-12-01: Updated message regarding installation of requirements if needed. 
+- * ba34491 - 2018-12-01: Pre-Release v9.4.48.dev7 
+- * bb861f9 - 2018-12-01: Updated message regarding installation of requirements if needed. 
 - * 2165268 - 2018-12-01: Updated HTTPS handling for web server 
 - * 7c81274 - 2018-12-01: Pre-Release v9.4.48.dev6 
 - * 7322bff - 2018-12-01: Pre-Release v9.4.48.dev5 
