@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-01 11:03-0800\n"
-"PO-Revision-Date: 2018-12-01 19:03\n"
+"POT-Creation-Date: 2018-12-01 21:08-0800\n"
+"PO-Revision-Date: 2018-12-02 05:08\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Romanian\n"
 "MIME-Version: 1.0\n"
@@ -6149,75 +6149,75 @@ msgstr "Ignorat"
 msgid "Episode snatched"
 msgstr "Episod smuls"
 
-#: sickrage/core/version_updater.py:65 sickrage/core/version_updater.py:69
-#: sickrage/core/version_updater.py:74 sickrage/core/version_updater.py:82
-#: sickrage/core/version_updater.py:91 sickrage/core/version_updater.py:96
-#: sickrage/core/version_updater.py:101 sickrage/core/version_updater.py:109
-#: sickrage/core/version_updater.py:115 sickrage/core/version_updater.py:193
-#: sickrage/core/version_updater.py:249 sickrage/core/version_updater.py:287
-#: sickrage/core/version_updater.py:475 sickrage/core/version_updater.py:725
+#: sickrage/core/version_updater.py:64 sickrage/core/version_updater.py:68
+#: sickrage/core/version_updater.py:73 sickrage/core/version_updater.py:81
+#: sickrage/core/version_updater.py:90 sickrage/core/version_updater.py:95
+#: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
+#: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
+#: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
+#: sickrage/core/version_updater.py:487 sickrage/core/version_updater.py:736
 #: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1092
 #: sickrage/core/webserver/views.py:1100
 msgid "Updater"
 msgstr ""
 
-#: sickrage/core/version_updater.py:66
+#: sickrage/core/version_updater.py:65
 msgid "New update found for SiCKRAGE, starting auto-updater"
 msgstr "Nou update pentru SiCKRAGE, începând cu auto-updater"
 
-#: sickrage/core/version_updater.py:70
+#: sickrage/core/version_updater.py:69
 msgid "Update was successful"
 msgstr "Actualizare reușită"
 
-#: sickrage/core/version_updater.py:75
+#: sickrage/core/version_updater.py:74
 msgid "Update failed!"
 msgstr "Actualizarea nu a reușit!"
 
-#: sickrage/core/version_updater.py:83
+#: sickrage/core/version_updater.py:82
 msgid "Config backup in progress..."
 msgstr "Config backup în curs..."
 
-#: sickrage/core/version_updater.py:92
+#: sickrage/core/version_updater.py:91
 msgid "Config backup successful, updating..."
 msgstr "Config backup succes, actualizarea..."
 
-#: sickrage/core/version_updater.py:97 sickrage/core/version_updater.py:102
+#: sickrage/core/version_updater.py:96 sickrage/core/version_updater.py:101
 msgid "Config backup failed, aborting update"
 msgstr "Config copie de rezervă a eşuat, abandonare actualizare"
 
-#: sickrage/core/version_updater.py:110
+#: sickrage/core/version_updater.py:109
 msgid "We can't proceed with updating, post-processor is running"
 msgstr ""
 
-#: sickrage/core/version_updater.py:116
+#: sickrage/core/version_updater.py:115
 msgid "Waiting for jobs in show queue to finish before updating"
 msgstr ""
 
-#: sickrage/core/version_updater.py:194
+#: sickrage/core/version_updater.py:193
 msgid "Update wasn't successful, not restarting. Check your log for more information."
 msgstr "Actualizare nu a reuşit, nu repornirea. Verificati log-ul pentru mai multe informaţii."
 
-#: sickrage/core/version_updater.py:246
+#: sickrage/core/version_updater.py:245
 msgid "Unable to find your git executable - Set your git path from Settings->General->Advanced OR delete your {git_folder} folder and run from source to enable updates."
 msgstr ""
 
-#: sickrage/core/version_updater.py:285
+#: sickrage/core/version_updater.py:284
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Imposibilitatea de a găsi dumneavoastră pip executabil - Set calea ta de pip din setările-> General-> avansat"
 
-#: sickrage/core/version_updater.py:448 sickrage/core/version_updater.py:579
+#: sickrage/core/version_updater.py:460 sickrage/core/version_updater.py:589
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Există o versiune mai nouă disponibilă, versiunea {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:476
+#: sickrage/core/version_updater.py:488
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:714
+#: sickrage/core/version_updater.py:725
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:725
+#: sickrage/core/version_updater.py:736
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

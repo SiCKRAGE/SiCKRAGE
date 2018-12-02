@@ -1,6 +1,7 @@
 # Changelog
 
-- * bbf52a5 - 2018-12-01: Updated requirements Added multiple methods to help install requirements.txt Updating fails if installing/updating requirements fails 
+- * 64bb9e6 - 2018-12-01: Pre-Release v9.4.48.dev3 
+- * c3de274 - 2018-12-01: Updated requirements Added multiple methods to help install requirements.txt Updating fails if installing/updating requirements fails 
 - * 99e28af - 2018-12-01: Pre-Release v9.4.48.dev2 
 - * bb367fd - 2018-11-30: Adding shows from trakt or imdb now prompt for show settings. 
 - * 23e7005 - 2018-11-30: Pre-Release v9.4.48.dev1 
