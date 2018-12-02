@@ -1,6 +1,7 @@
 # Changelog
 
-- * 23e7be0 - 2018-12-02: Reverted tornado back to v4.5.2 
+- * 0a44429 - 2018-12-02: Pre-Release v9.4.48.dev8 
+- * 977b8be - 2018-12-02: Reverted tornado back to v4.5.2 
 - * 4e68fe8 - 2018-12-01: Pre-Release v9.4.48.dev7 
 - * bb861f9 - 2018-12-01: Updated message regarding installation of requirements if needed. 
 - * 2165268 - 2018-12-01: Updated HTTPS handling for web server 
