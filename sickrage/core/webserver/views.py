@@ -31,15 +31,12 @@ from urlparse import urlparse, urljoin
 
 import dateutil.tz
 import markdown2
+import tornado.gen
 import tornado.locale
-from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
-from tornado.gen import coroutine
-from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -87,7 +84,6 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.executor = ThreadPoolExecutor(cpu_count())
         self.startTime = time.time()
 
         # template settings
@@ -202,7 +198,6 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
-    @run_on_executor
     def worker(self, function, **kwargs):
         threading.currentThread().setName("TORNADO")
         kwargs = recursive_unicode(kwargs)
@@ -232,17 +227,15 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     @authenticated
+    @tornado.gen.coroutine
     def get(self, *args, **kwargs):
-        result = yield self.route()
-        if result: self.write(result)
+        self.write(self.route())
 
-    @coroutine
     @authenticated
+    @tornado.gen.coroutine
     def post(self, *args, **kwargs):
-        result = yield self.route()
-        if result: self.write(result)
+        self.write(self.route())
 
     def route(self):
         # route -> method obj
@@ -251,7 +244,8 @@ class WebHandler(BaseHandler):
             getattr(self, 'index', None)
         )
 
-        if method: return self.worker(method, **self.request.arguments)
+        if method:
+            return self.worker(method, **self.request.arguments)
 
     def _genericMessage(self, subject, message):
         return self.render(
