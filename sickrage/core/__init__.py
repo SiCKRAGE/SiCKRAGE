@@ -480,8 +480,9 @@ class Core(object):
 
         # launch browser window
         if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
-            self.event_queue.fire_event(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
-                                        sickrage.app.config.web_host, sickrage.app.config.web_port)
+            self.event_queue.fire_event(lambda: launch_browser(('http', 'https')[sickrage.app.config.enable_https],
+                                                               sickrage.app.config.web_host,
+                                                               sickrage.app.config.web_port))
 
         # start ioloop
         self.io_loop.start()
