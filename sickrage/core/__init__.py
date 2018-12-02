@@ -208,9 +208,9 @@ class Core(object):
             if os.path.isfile(os.path.join(self.data_dir, 'sickrage.db')):
                 helpers.move_file(os.path.join(self.data_dir, 'sickrage.db'),
                                   os.path.join(self.data_dir, '{}.bak-{}'
-                                              .format('sickrage.db',
-                                                      datetime.datetime.now().strftime(
-                                                          '%Y%m%d_%H%M%S'))))
+                                               .format('sickrage.db',
+                                                       datetime.datetime.now().strftime(
+                                                           '%Y%m%d_%H%M%S'))))
 
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
@@ -471,12 +471,17 @@ class Core(object):
         self.postprocessor_queue.start()
         self.event_queue.start()
 
+        # fire off startup events
+        self.event_queue.fire_event(self.version_updater.run)
+        self.event_queue.fire_event(self.tz_updater.run)
+
         # start webserver
         self.wserver.start()
 
-        # fire off startup events
-        # self.event_queue.fire_event(self.version_updater.run)
-        self.event_queue.fire_event(self.tz_updater.run)
+        # launch browser window
+        if all([not sickrage.app.no_launch, sickrage.app.config.launch_browser]):
+            self.event_queue.fire_event(launch_browser, ('http', 'https')[sickrage.app.config.enable_https],
+                                        sickrage.app.config.web_host, sickrage.app.config.web_port)
 
         # start ioloop
         self.io_loop.start()

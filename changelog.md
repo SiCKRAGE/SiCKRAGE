@@ -1,6 +1,7 @@
 # Changelog
 
-- * 213c10c - 2018-12-01: Pre-Release v9.4.48.dev4 
+- * 17e07b8 - 2018-12-01: Pre-Release v9.4.48.dev5 
+- * dfcf530 - 2018-12-01: Pre-Release v9.4.48.dev4 
 - * 6fb14eb - 2018-12-01: Pre-Release v9.4.48.dev3 
 - * c3de274 - 2018-12-01: Updated requirements Added multiple methods to help install requirements.txt Updating fails if installing/updating requirements fails 
 - * 99e28af - 2018-12-01: Pre-Release v9.4.48.dev2 
