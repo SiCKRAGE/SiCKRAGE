@@ -81,7 +81,7 @@ class Core(object):
     def __init__(self):
         self.started = False
         self.daemon = None
-        self.io_loop = IOLoop()
+        self.io_loop = None
         self.pid = os.getpid()
         self.showlist = []
 
@@ -155,6 +155,7 @@ class Core(object):
 
     def start(self):
         self.started = True
+        self.io_loop = IOLoop.current()
 
         # thread name
         threading.currentThread().setName('CORE')
@@ -545,7 +546,8 @@ class Core(object):
 
         self.started = False
 
-        self.io_loop.stop()
+        if self.io_loop:
+            self.io_loop.stop()
 
     def save_all(self):
         # write all shows
