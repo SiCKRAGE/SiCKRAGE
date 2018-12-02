@@ -21,14 +21,14 @@ from __future__ import unicode_literals
 import os
 import shutil
 import socket
-import threading
+import ssl
 
 import tornado.locale
 from tornado.httpserver import HTTPServer
 from tornado.web import Application, RedirectHandler, StaticFileHandler
 
 import sickrage
-from sickrage.core.helpers import create_https_certificates, launch_browser
+from sickrage.core.helpers import create_https_certificates
 from sickrage.core.webserver.api import ApiHandler
 from sickrage.core.webserver.routes import Route
 from sickrage.core.webserver.views import CalendarHandler, LoginHandler, LogoutHandler
@@ -172,11 +172,14 @@ class WebServer(object):
         # Web Handlers
         self.app.add_handlers('.*$', Route.get_routes(sickrage.app.config.web_root))
 
-        self.server = HTTPServer(self.app, xheaders=sickrage.app.config.handle_reverse_proxy)
-        if sickrage.app.config.enable_https: self.server.ssl_options = {
-            "certfile": sickrage.app.config.https_cert,
-            "keyfile": sickrage.app.config.https_key
-        }
+        # HTTPS Cert/Key object
+        ssl_ctx = None
+        if sickrage.app.config.enable_https:
+            ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+            ssl_ctx.load_cert_chain(sickrage.app.config.https_cert, sickrage.app.config.https_key)
+
+        # Web Server
+        self.server = HTTPServer(self.app, ssl_options=ssl_ctx, xheaders=sickrage.app.config.handle_reverse_proxy)
 
         try:
             self.server.listen(sickrage.app.config.web_port)
@@ -193,15 +196,6 @@ class WebServer(object):
                 "SiCKRAGE :: URL:[{}://{}:{}{}]".format(('http', 'https')[sickrage.app.config.enable_https],
                                                         sickrage.app.config.web_host, sickrage.app.config.web_port,
                                                         sickrage.app.config.web_root))
-
-            # launch browser window
-            if all([not sickrage.app.no_launch,
-                    sickrage.app.config.launch_browser]) or sickrage.app.config.view_changelog:
-                threading.Thread(None, lambda: launch_browser(
-                    ('http', 'https')[sickrage.app.config.enable_https],
-                    sickrage.app.config.web_host,
-                    sickrage.app.config.web_port
-                ), name="LAUNCH-BROWSER").start()
         except socket.error as e:
             sickrage.app.log.warning(e.strerror)
             raise SystemExit
