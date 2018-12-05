@@ -1,6 +1,7 @@
 # Changelog
 
-- * 09a9331 - 2018-12-02: Pre-Release v9.4.48.dev9 
+- * cde6d47 - 2018-12-04: Cleaned up mass edit view code. Fixed bug with comparing minseed and minleech values. 
+- * b55a806 - 2018-12-02: Pre-Release v9.4.48.dev9 
 - * ade442d - 2018-12-02: Upgraded to Tornado 5.1.1 Refactored IOLoop placement. 
 - * 97cf604 - 2018-12-02: Pre-Release v9.4.48.dev8 
 - * 977b8be - 2018-12-02: Reverted tornado back to v4.5.2 
