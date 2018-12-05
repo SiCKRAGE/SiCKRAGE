@@ -1,6 +1,7 @@
 # Changelog
 
-- * 817bd5d - 2018-12-04: Release v9.4.48 
+- * dbaa83e - 2018-12-04: Refactored display show view header 
+- * 5663214 - 2018-12-04: Release v9.4.48 
 - * e0fd191 - 2018-12-04: Cleaned up mass edit view code. Fixed bug with comparing minseed and minleech values. 
 - * b55a806 - 2018-12-02: Pre-Release v9.4.48.dev9 
 - * ade442d - 2018-12-02: Upgraded to Tornado 5.1.1 Refactored IOLoop placement. 
