@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.4.48.dev9\n"
+"Project-Id-Version: sickrage 9.4.48\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-02 12:03-0800\n"
+"POT-Creation-Date: 2018-12-04 23:10-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -433,7 +433,7 @@ msgstr ""
 #: sickrage/core/webserver/views/manage/mass_edit.mako:230
 #: sickrage/core/webserver/views/manage/mass_edit.mako:246
 #: sickrage/core/webserver/views/manage/mass_edit.mako:264
-#: sickrage/core/webserver/views/manage/mass_edit.mako:282
+#: sickrage/core/webserver/views/manage/mass_edit.mako:284
 msgid "Yes"
 msgstr ""
 
@@ -448,7 +448,7 @@ msgstr ""
 #: sickrage/core/webserver/views/manage/mass_edit.mako:231
 #: sickrage/core/webserver/views/manage/mass_edit.mako:247
 #: sickrage/core/webserver/views/manage/mass_edit.mako:265
-#: sickrage/core/webserver/views/manage/mass_edit.mako:283
+#: sickrage/core/webserver/views/manage/mass_edit.mako:285
 msgid "No"
 msgstr ""
 
@@ -633,7 +633,7 @@ msgstr ""
 #: sickrage/core/webserver/views/config/subtitles.mako:316
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
-#: sickrage/core/webserver/views/manage/mass_edit.mako:291
+#: sickrage/core/webserver/views/manage/mass_edit.mako:294
 msgid "Save Changes"
 msgstr ""
 
@@ -4562,7 +4562,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
-#: sickrage/core/webserver/views/manage/mass_edit.mako:276
+#: sickrage/core/webserver/views/manage/mass_edit.mako:278
 msgid "Subtitles"
 msgstr ""
 
@@ -5084,7 +5084,7 @@ msgstr ""
 #: sickrage/core/webserver/views/home/edit_show.mako:207
 #: sickrage/core/webserver/views/home/edit_show.mako:225
 #: sickrage/core/webserver/views/manage/mass_edit.mako:251
-#: sickrage/core/webserver/views/manage/mass_edit.mako:269
+#: sickrage/core/webserver/views/manage/mass_edit.mako:270
 msgid ""
 "In case of an air date conflict between regular and special episodes, the "
 "later will be ignored."
@@ -6067,7 +6067,7 @@ msgstr ""
 #: sickrage/core/webserver/views/manage/mass_edit.mako:228
 #: sickrage/core/webserver/views/manage/mass_edit.mako:244
 #: sickrage/core/webserver/views/manage/mass_edit.mako:262
-#: sickrage/core/webserver/views/manage/mass_edit.mako:280
+#: sickrage/core/webserver/views/manage/mass_edit.mako:282
 msgid "Keep"
 msgstr ""
 
@@ -6107,7 +6107,7 @@ msgstr ""
 msgid "Set if these shows are released as Show.03.02.2010 rather than Show.S02E03."
 msgstr ""
 
-#: sickrage/core/webserver/views/manage/mass_edit.mako:285
+#: sickrage/core/webserver/views/manage/mass_edit.mako:287
 msgid "Search for subtitles."
 msgstr ""
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-02 12:03-0800\n"
-"PO-Revision-Date: 2018-12-02 20:05\n"
+"POT-Creation-Date: 2018-12-04 23:10-0800\n"
+"PO-Revision-Date: 2018-12-05 07:13\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -429,7 +429,7 @@ msgstr "Jasne"
 #: sickrage/core/webserver/views/manage/mass_edit.mako:230
 #: sickrage/core/webserver/views/manage/mass_edit.mako:246
 #: sickrage/core/webserver/views/manage/mass_edit.mako:264
-#: sickrage/core/webserver/views/manage/mass_edit.mako:282
+#: sickrage/core/webserver/views/manage/mass_edit.mako:284
 msgid "Yes"
 msgstr "Tak"
 
@@ -444,7 +444,7 @@ msgstr "Tak"
 #: sickrage/core/webserver/views/manage/mass_edit.mako:231
 #: sickrage/core/webserver/views/manage/mass_edit.mako:247
 #: sickrage/core/webserver/views/manage/mass_edit.mako:265
-#: sickrage/core/webserver/views/manage/mass_edit.mako:283
+#: sickrage/core/webserver/views/manage/mass_edit.mako:285
 msgid "No"
 msgstr "Nr"
 
@@ -627,7 +627,7 @@ msgstr "Czy chcesz dodać odcinki postprocessingu do MyList?"
 #: sickrage/core/webserver/views/config/subtitles.mako:316
 #: sickrage/core/webserver/views/home/edit_show.mako:415
 #: sickrage/core/webserver/views/layouts/config.mako:24
-#: sickrage/core/webserver/views/manage/mass_edit.mako:291
+#: sickrage/core/webserver/views/manage/mass_edit.mako:294
 msgid "Save Changes"
 msgstr "Zapisz zmiany"
 
@@ -4441,7 +4441,7 @@ msgstr "Katalogu, gdzie powinny być przechowywane SickRage swoje"
 #: sickrage/core/webserver/views/home/display_show.mako:552
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
-#: sickrage/core/webserver/views/manage/mass_edit.mako:276
+#: sickrage/core/webserver/views/manage/mass_edit.mako:278
 msgid "Subtitles"
 msgstr "Napisy"
 
@@ -4945,7 +4945,7 @@ msgstr "Sprawdź, czy Pokaż jest wydany jako Show.03.02.2010 zamiast Show.S02E0
 #: sickrage/core/webserver/views/home/edit_show.mako:207
 #: sickrage/core/webserver/views/home/edit_show.mako:225
 #: sickrage/core/webserver/views/manage/mass_edit.mako:251
-#: sickrage/core/webserver/views/manage/mass_edit.mako:269
+#: sickrage/core/webserver/views/manage/mass_edit.mako:270
 msgid "In case of an air date conflict between regular and special episodes, the later will be ignored."
 msgstr "W przypadku konfliktu Data powietrza między regularnych i specjalnych odcinków później będą ignorowane."
 
@@ -5907,7 +5907,7 @@ msgstr "Niestandardowe"
 #: sickrage/core/webserver/views/manage/mass_edit.mako:228
 #: sickrage/core/webserver/views/manage/mass_edit.mako:244
 #: sickrage/core/webserver/views/manage/mass_edit.mako:262
-#: sickrage/core/webserver/views/manage/mass_edit.mako:280
+#: sickrage/core/webserver/views/manage/mass_edit.mako:282
 msgid "Keep"
 msgstr "Zachować"
 
@@ -5943,7 +5943,7 @@ msgstr "Ustaw, jeśli te programy są sportowych lub imprez MMA wydany jako Show
 msgid "Set if these shows are released as Show.03.02.2010 rather than Show.S02E03."
 msgstr "Ustaw, jeśli te programy są wydany jako Show.03.02.2010 zamiast Show.S02E03."
 
-#: sickrage/core/webserver/views/manage/mass_edit.mako:285
+#: sickrage/core/webserver/views/manage/mass_edit.mako:287
 msgid "Search for subtitles."
 msgstr "Szukaj napisów."
 
