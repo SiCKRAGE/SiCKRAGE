@@ -36,8 +36,9 @@ MAIN_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(o
 PROG_DIR = os.path.abspath(os.path.realpath(os.path.expanduser(os.path.dirname(__file__))))
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
 LIBS_DIR = os.path.join(PROG_DIR, 'libs')
-REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
+VERSION_FILE = os.path.join(PROG_DIR, 'version.txt')
 CHANGELOG_FILE = os.path.join(MAIN_DIR, 'changelog.md')
+REQS_FILE = os.path.join(MAIN_DIR, 'requirements.txt')
 
 
 class Daemon(object):
@@ -187,7 +188,7 @@ def check_requirements():
 
 def version():
     # Get the version number
-    with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'version.txt'))) as f:
+    with io.open(VERSION_FILE) as f:
         return f.read()
 
 
@@ -320,8 +321,7 @@ def main():
     except ImportError:
         traceback.print_exc()
         if os.path.isfile(REQS_FILE):
-            print("Failed to import required libs, please run "
-                  "'pip install --user -U -r {}' from console".format(REQS_FILE))
+            print('Failed to import required libs, please run "pip install -r {}" from console'.format(REQS_FILE))
     except Exception:
         traceback.print_exc()
 

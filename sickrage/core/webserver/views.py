@@ -31,15 +31,12 @@ from urlparse import urlparse, urljoin
 
 import dateutil.tz
 import markdown2
+import tornado.gen
 import tornado.locale
-from concurrent.futures import ThreadPoolExecutor
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
-from tornado.concurrent import run_on_executor
 from tornado.escape import json_encode, recursive_unicode
-from tornado.gen import coroutine
-from tornado.process import cpu_count
 from tornado.web import RequestHandler, authenticated
 
 import sickrage
@@ -87,7 +84,6 @@ from sickrage.providers import NewznabProvider, TorrentRssProvider
 class BaseHandler(RequestHandler):
     def __init__(self, application, request, **kwargs):
         super(BaseHandler, self).__init__(application, request, **kwargs)
-        self.executor = ThreadPoolExecutor(cpu_count())
         self.startTime = time.time()
 
         # template settings
@@ -202,9 +198,7 @@ class BaseHandler(RequestHandler):
     def render(self, template_name, **kwargs):
         return self.render_string(template_name, **kwargs)
 
-    @run_on_executor
     def worker(self, function, **kwargs):
-        threading.currentThread().setName("TORNADO")
         kwargs = recursive_unicode(kwargs)
         for arg, value in kwargs.items():
             if len(value) == 1:
@@ -232,17 +226,19 @@ class WebHandler(BaseHandler):
     def __init__(self, *args, **kwargs):
         super(WebHandler, self).__init__(*args, **kwargs)
 
-    @coroutine
     @authenticated
+    @tornado.gen.coroutine
     def get(self, *args, **kwargs):
-        result = yield self.route()
-        if result: self.write(result)
+        result = self.route()
+        if result:
+            self.write(result)
 
-    @coroutine
     @authenticated
+    @tornado.gen.coroutine
     def post(self, *args, **kwargs):
-        result = yield self.route()
-        if result: self.write(result)
+        result = self.route()
+        if result:
+            self.write(result)
 
     def route(self):
         # route -> method obj
@@ -251,7 +247,8 @@ class WebHandler(BaseHandler):
             getattr(self, 'index', None)
         )
 
-        if method: return self.worker(method, **self.request.arguments)
+        if method:
+            return self.worker(method, **self.request.arguments)
 
     def _genericMessage(self, subject, message):
         return self.render(
@@ -2423,8 +2420,8 @@ class HomeAddShows(Home):
                             showid = i
 
                 cur_dir['existing_info'] = (showid, show_name, indexer)
-
-                if showid and findCertainShow(showid): cur_dir['added_already'] = True
+                if showid and findCertainShow(showid):
+                    cur_dir['added_already'] = True
 
         return self.render(
             "/home/mass_add_table.mako",
@@ -2441,23 +2438,17 @@ class HomeAddShows(Home):
 
         indexer, show_dir, indexer_id, show_name = self.split_extra_show(show_to_add)
 
+        use_provided_info = False
         if indexer_id and indexer and show_name:
             use_provided_info = True
-        else:
-            use_provided_info = False
 
         # use the given show_dir for the indexer search if available
-        if not show_dir:
-            if search_string:
-                default_show_name = search_string
-            else:
-                default_show_name = ''
-
-        elif not show_name:
+        default_show_name = show_name or ''
+        if not show_dir and search_string:
+            default_show_name = search_string
+        elif not show_name and show_dir:
             default_show_name = re.sub(r' \(\d{4}\)', '',
                                        os.path.basename(os.path.normpath(show_dir)).replace('.', ' '))
-        else:
-            default_show_name = show_name
 
         # carry a list of other dirs if given
         if not other_shows:
@@ -2466,8 +2457,7 @@ class HomeAddShows(Home):
             other_shows = [other_shows]
 
         provided_indexer_id = int(indexer_id or 0)
-        provided_indexer_name = show_name
-
+        provided_indexer_name = show_name or ''
         provided_indexer = int(indexer or sickrage.app.config.indexer_default)
 
         return self.render(
@@ -2565,53 +2555,34 @@ class HomeAddShows(Home):
         if findCertainShow(int(indexer_id)):
             return
 
+        location = None
         if sickrage.app.config.root_dirs:
             root_dirs = sickrage.app.config.root_dirs.split('|')
             location = root_dirs[int(root_dirs[0]) + 1]
-        else:
-            location = None
 
-        if location:
-            show_dir = os.path.join(location, sanitizeFileName(showName))
-            dir_exists = makeDir(show_dir)
-            if not dir_exists:
-                sickrage.app.log.warning("Unable to create the folder " + show_dir + ", can't add the show")
-                return
-
-            chmod_as_parent(show_dir)
-
-            sickrage.app.show_queue.addShow(indexer=1,
-                                            indexer_id=int(indexer_id),
-                                            showDir=show_dir,
-                                            default_status=sickrage.app.config.status_default,
-                                            quality=sickrage.app.config.quality_default,
-                                            flatten_folders=sickrage.app.config.flatten_folders_default,
-                                            subtitles=sickrage.app.config.subtitles_default,
-                                            anime=sickrage.app.config.anime_default,
-                                            scene=sickrage.app.config.scene_default,
-                                            default_status_after=sickrage.app.config.status_default_after,
-                                            skip_downloaded=sickrage.app.config.skip_downloaded_default)
-
-            sickrage.app.alerts.message(_('Adding Show'), _('Adding the specified show into ') + show_dir)
-        else:
+        if not location:
             sickrage.app.log.warning("There was an error creating the show, no root directory setting found")
             return _('No root directories setup, please go back and add one.')
 
-        # done adding show
-        return self.redirect('/home/')
+        show_dir = os.path.join(location, sanitizeFileName(showName))
+
+        return self.newShow('1|{show_dir}|{indexer_id}|{show_name}'.format(**{
+            'show_dir': '',
+            'indexer_id': indexer_id,
+            'show_name': showName
+        }))
 
     def addNewShow(self, whichSeries=None, indexerLang=None, rootDir=None, defaultStatus=None,
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    subtitles_sr_metadata=None, fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None,
                    anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None,
-                   skip_downloaded=None):
+                   skip_downloaded=None, providedName=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
         """
 
-        if indexerLang is None:
-            indexerLang = sickrage.app.config.indexer_default_language
+        indexerLang = indexerLang or sickrage.app.config.indexer_default_language
 
         # grab our list of other dirs if given
         if not other_shows:
@@ -2636,12 +2607,12 @@ class HomeAddShows(Home):
             return finishAddShow()
 
         # sanity check on our inputs
-        if not any([rootDir, fullShowPath, whichSeries]):
+        if not whichSeries or not any([rootDir, fullShowPath, providedName]):
             return self.redirect("/home/")
 
         # figure out what show we're adding and where
         series_pieces = whichSeries.split('|')
-        if (whichSeries and rootDir) or (whichSeries and fullShowPath and len(series_pieces) > 1):
+        if (whichSeries and rootDir or whichSeries and fullShowPath) and len(series_pieces) > 1:
             if len(series_pieces) < 6:
                 sickrage.app.log.error(
                     'Unable to add show due to show selection. Not anough arguments: %s' % (repr(series_pieces)))
@@ -2653,13 +2624,12 @@ class HomeAddShows(Home):
             indexer_id = int(series_pieces[3])
             show_name = series_pieces[4]
         else:
-            # if no indexer was provided use the default indexer set in General settings
-            if not providedIndexer:
-                providedIndexer = sickrage.app.config.indexer_default
-
-            indexer = int(providedIndexer)
+            indexer = int(providedIndexer or sickrage.app.config.indexer_default)
             indexer_id = int(whichSeries)
-            show_name = os.path.basename(os.path.normpath(fullShowPath))
+            if fullShowPath:
+                show_name = os.path.basename(os.path.normpath(fullShowPath))
+            else:
+                show_name = providedName
 
         # use the whole path if it's given, or else append the show name to the root dir to get the full show path
         if fullShowPath:

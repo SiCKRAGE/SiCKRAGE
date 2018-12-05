@@ -1,6 +1,23 @@
 # Changelog
 
-- * f748a5c - 2018-11-29: Release v9.4.47 
+- * 817bd5d - 2018-12-04: Release v9.4.48 
+- * e0fd191 - 2018-12-04: Cleaned up mass edit view code. Fixed bug with comparing minseed and minleech values. 
+- * b55a806 - 2018-12-02: Pre-Release v9.4.48.dev9 
+- * ade442d - 2018-12-02: Upgraded to Tornado 5.1.1 Refactored IOLoop placement. 
+- * 97cf604 - 2018-12-02: Pre-Release v9.4.48.dev8 
+- * 977b8be - 2018-12-02: Reverted tornado back to v4.5.2 
+- * 4e68fe8 - 2018-12-01: Pre-Release v9.4.48.dev7 
+- * bb861f9 - 2018-12-01: Updated message regarding installation of requirements if needed. 
+- * 2165268 - 2018-12-01: Updated HTTPS handling for web server 
+- * 7c81274 - 2018-12-01: Pre-Release v9.4.48.dev6 
+- * 7322bff - 2018-12-01: Pre-Release v9.4.48.dev5 
+- * dfcf530 - 2018-12-01: Pre-Release v9.4.48.dev4 
+- * 6fb14eb - 2018-12-01: Pre-Release v9.4.48.dev3 
+- * c3de274 - 2018-12-01: Updated requirements Added multiple methods to help install requirements.txt Updating fails if installing/updating requirements fails 
+- * 99e28af - 2018-12-01: Pre-Release v9.4.48.dev2 
+- * bb367fd - 2018-11-30: Adding shows from trakt or imdb now prompt for show settings. 
+- * 23e7005 - 2018-11-30: Pre-Release v9.4.48.dev1 
+- * b266867 - 2018-11-29: Release v9.4.47 
 - * 58c1f5e - 2018-11-29: Added code to ensure seeders, leechers, and size are always integer values before being added to cache. 
 - * 80b928a - 2018-11-28: Release v9.4.46 
 - * e444d97 - 2018-11-26: Release v9.4.45 

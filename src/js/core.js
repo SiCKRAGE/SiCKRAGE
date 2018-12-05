@@ -504,8 +504,8 @@ $(document).ready(function ($) {
                 });
 
                 $('.modal').on('shown.bs.modal', function () {
-                  $('body').addClass('modal-open');
-                  $('body').removeAttr('style');
+                    $('body').addClass('modal-open');
+                    $('body').removeAttr('style');
                 })
 
                 SICKRAGE.browser.init();
@@ -1329,15 +1329,9 @@ $(document).ready(function ($) {
                             }
                         }())
                     });
-
-                    SICKRAGE.ajax_search.ajaxEpSearch();
                 }
 
                 if (SICKRAGE.isMeta('sickrage.COMING_EPS_LAYOUT', ['banner', 'poster'])) {
-                    SICKRAGE.ajax_search.ajaxEpSearch({
-                        'size': 16,
-                        'loadingIcon': 'fas fa-spinner fa-spin fa-fw'
-                    });
                     $('.ep_summary').hide();
                     $('.ep_summaryTrigger').click(function () {
                         $(this).next('.ep_summary').slideToggle('normal', function () {
@@ -1356,6 +1350,8 @@ $(document).ready(function ($) {
                     // call this function to copy the column selection code into the popover
                     $.tablesorter.columnSelector.attachTo($('#showListTable'), '#popover-target');
                 });
+
+                SICKRAGE.ajax_search.init();
             },
 
             history: function () {
@@ -2595,10 +2591,26 @@ $(document).ready(function ($) {
                     SICKRAGE.home.add_show_options();
                     SICKRAGE.quality_chooser.init();
 
-                    if ($('input:hidden[name=whichSeries]').length && $('#fullShowPath').length) {
-                        $('.setup-content #step-1').hide();
-                        $('.setup-content #step-2').show();
+                    if ($('input:hidden[name=whichSeries]').length) {
+                        $('#addShowForm')[0].classList.add('was-validated');
+
+                        SICKRAGE.home.update_bwlist($('#providedName').val());
+
+                        navListItems.addClass('disabled');
+                        navListItems.removeClass('btn-success').addClass('btn-dark');
+
+                        if ($('#fullShowPath').length) {
+                            $('div.setup-panel div a[href="#step-3"]').removeClass('btn-dark').addClass('btn-success');
+                            allWells.hide();
+                            $('#step-3').show();
+                        } else {
+                            $('div.setup-panel div a[href="#step-2"]').removeClass('btn-dark').addClass('btn-success');
+                            allWells.hide();
+                            $('#step-2').show();
+                        }
                     }
+
+                    $('#nameToSearch').focus();
 
                     $('#searchName').click(function () {
                         if ($('#addShowForm')[0].checkValidity() === true) {
@@ -2652,8 +2664,6 @@ $(document).ready(function ($) {
                         if (isValid) nextStepWizard.removeClass('disabled').trigger('click');
                     });
 
-                    $('div.setup-panel div a.btn-success').trigger('click');
-
                     $('#searchName').on('click', function () {
                         $('#searchName').prop('disabled', true);
                         SICKRAGE.home.new_show.searchIndexers();
@@ -2665,8 +2675,6 @@ $(document).ready(function ($) {
                         $('#addShowForm').submit();
                     });
 
-                    $('#nameToSearch').focus();
-
                     $('#nameToSearch').keypress(function (e) {
                         var keycode = (e.keyCode ? e.keyCode : e.which);
                         if (keycode === 13) {
@@ -2674,6 +2682,8 @@ $(document).ready(function ($) {
                             $('#searchName').click();
                         }
                     });
+
+                    $('div.setup-panel div a.btn-success').trigger('click');
                 },
 
                 searchIndexers: function () {
@@ -2963,7 +2973,7 @@ $(document).ready(function ($) {
                     });
                 });
 
-                if( $('#pip_path').length ){
+                if ($('#pip_path').length) {
                     $('#pip_path').fileBrowser({
                         title: gt('Select path to pip'),
                         key: 'pip_path',
@@ -2989,7 +2999,7 @@ $(document).ready(function ($) {
                     });
                 }
 
-                if( $('#git_path').length ) {
+                if ($('#git_path').length) {
                     $('#git_path').fileBrowser({
                         title: gt('Select path to git'),
                         key: 'git_path',
