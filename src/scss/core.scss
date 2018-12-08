@@ -308,7 +308,7 @@ input[type=checkbox].toggle {
 
 .btn {
   @extend .btn-primary;
-  @extend .shadow;
+  @extend .shadow-lg;
 }
 
 .input-group-append, .input-group-prepend {
@@ -392,9 +392,11 @@ input[type=checkbox].toggle {
 
 .dropdown-menu {
   @extend .bg-dark;
+
   .dropdown-item {
     @extend .text-white;
   }
+
   .dropdown-item:hover {
     @extend .bg-dark;
   }
@@ -410,4 +412,8 @@ input[type=checkbox].toggle {
     @extend .mt-1;
     @extend .mb-1;
   }
+}
+
+.show-legend {
+  @extend .pr-5;
 }

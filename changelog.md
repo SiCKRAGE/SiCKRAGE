@@ -1,5 +1,6 @@
 # Changelog
 
+- * e7965db - 2018-12-08: Refactoed display show view 
 - * c1aed13 - 2018-12-08: Release v9.4.49 
 - * 854687c - 2018-12-08: Added GKTorrent provider. 
 - * 5592614 - 2018-12-08: Fixed login issues for Speed.cd torrent provider. 
