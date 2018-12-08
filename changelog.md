@@ -1,6 +1,9 @@
 # Changelog
 
-- * dbaa83e - 2018-12-04: Refactored display show view header 
+- * c1aed13 - 2018-12-08: Release v9.4.49 
+- * 854687c - 2018-12-08: Added GKTorrent provider. 
+- * 5592614 - 2018-12-08: Fixed login issues for Speed.cd torrent provider. 
+- * 60cabed - 2018-12-04: Refactored display show view header 
 - * 5663214 - 2018-12-04: Release v9.4.48 
 - * e0fd191 - 2018-12-04: Cleaned up mass edit view code. Fixed bug with comparing minseed and minleech values. 
 - * b55a806 - 2018-12-02: Pre-Release v9.4.48.dev9 
