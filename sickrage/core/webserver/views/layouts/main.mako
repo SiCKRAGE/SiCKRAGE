@@ -111,18 +111,10 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li>
-                            <div class="input-group input-group-lg">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text bg-dark text-white-50" style="border: none">
-                                        <i class="fas fa-search"></i>
-                                    </div>
-                                </div>
-                                <input id="quicksearch" class="form-control bg-dark text-white-50"
-                                       style="width:350px;border: none;" type="search">
-                                <div class="input-group-append">
-                                    <div class="input-group-text bg-dark text-white-50" style="border: none">
-                                        <i id="quicksearch-icon"></i>
-                                    </div>
+                            <div class="quicksearch-container">
+                                <div class="quicksearch-input-container">
+                                    <i class="fas fa-search m-2"></i>
+                                    <input id="quicksearch" class="quicksearch-input" type="search">
                                 </div>
                             </div>
                         </li>
