@@ -131,20 +131,20 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHome">
                                 <a class="dropdown-item" href="${srWebRoot}/home/">
-                                    <i class="fas fa-home"></i>&nbsp;${_('Show List')}
+                                    <i class="fas fa-fw fa-home"></i>&nbsp;${_('Show List')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/addShows/">
-                                    <i class="fas fa-tv"></i>&nbsp;${_('Add Shows')}
+                                    <i class="fas fa-fw fa-tv"></i>&nbsp;${_('Add Shows')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/postprocess/">
-                                    <i class="fas fa-folder-open"></i>&nbsp;${_('Manual Post-Processing')}
+                                    <i class="fas fa-fw fa-folder-open"></i>&nbsp;${_('Manual Post-Processing')}
                                 </a>
                                 % if sickrage.app.config.shows_recent:
                                     <div class="dropdown-divider"></div>
                                 % for recentShow in sickrage.app.config.shows_recent:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/home/displayShow/?show=${recentShow['indexerid']}">
-                                        <i class="fas fa-tv"></i>&nbsp;${recentShow['name']|trim,h}
+                                        <i class="fas fa-fw fa-tv"></i>&nbsp;${recentShow['name']|trim,h}
                                     </a>
                                 % endfor
                                 % endif
@@ -160,48 +160,48 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
                                 <a class="dropdown-item" href="${srWebRoot}/manage/">
-                                    <i class="fas fa-diagnoses"></i>&nbsp;${_('Mass Update')}
+                                    <i class="fas fa-fw fa-diagnoses"></i>&nbsp;${_('Mass Update')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/backlogOverview/">
-                                    <i class="fas fa-backward"></i>&nbsp;${_('Backlog Overview')}
+                                    <i class="fas fa-fw fa-backward"></i>&nbsp;${_('Backlog Overview')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/manageQueues/">
-                                    <i class="fas fa-list"></i>&nbsp;${_('Manage Queues')}
+                                    <i class="fas fa-fw fa-list"></i>&nbsp;${_('Manage Queues')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/manage/episodeStatuses/">
-                                    <i class="fas fa-th-list"></i>&nbsp;${_('Episode Status Management')}
+                                    <i class="fas fa-fw fa-th-list"></i>&nbsp;${_('Episode Status Management')}
                                 </a>
                                 % if sickrage.app.config.use_trakt and sickrage.app.config.trakt_oauth_token != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/syncTrakt/">
-                                        <i class="fas fa-sync"></i>&nbsp;${_('Sync Trakt')}
+                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Sync Trakt')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_plex and sickrage.app.config.plex_server_host != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updatePLEX/">
-                                        <i class="fas fa-sync"></i>&nbsp;${_('Update PLEX')}
+                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update PLEX')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_kodi and sickrage.app.config.kodi_host != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updateKODI/">
-                                        <i class="fas fa-sync"></i>&nbsp;${_('Update KODI')}
+                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update KODI')}
                                     </a>
                                 % endif
                                 % if sickrage.app.config.use_emby and sickrage.app.config.emby_host != "" and sickrage.app.config.emby_apikey != "":
                                     <a class="dropdown-item" href="${srWebRoot}/home/updateEMBY/">
-                                        <i class="fas fa-sync"></i>&nbsp;${_('Update Emby')}
+                                        <i class="fas fa-fw fa-sync"></i>&nbsp;${_('Update Emby')}
                                     </a>
                                 % endif
                                 % if torrent_webui_url:
                                     <a class="dropdown-item" href="${torrent_webui_url}" target="_blank">
-                                        <i class="fas fa-video"></i>&nbsp;${_('Manage Torrents')}
+                                        <i class="fas fa-fw fa-video"></i>&nbsp;${_('Manage Torrents')}
                                     </a>
                                 % endif
                                 <a class="dropdown-item" href="${srWebRoot}/manage/failedDownloads/">
-                                    <i class="fas fa-first-aid"></i>&nbsp;${_('Failed Downloads')}
+                                    <i class="fas fa-fw fa-first-aid"></i>&nbsp;${_('Failed Downloads')}
                                 </a>
                                 % if sickrage.app.config.use_subtitles:
                                     <a class="dropdown-item" href="${srWebRoot}/manage/subtitleMissed/">
-                                        <i class="fas fa-question"></i>&nbsp;${_('Missed Subtitle Management')}
+                                        <i class="fas fa-fw fa-question"></i>&nbsp;${_('Missed Subtitle Management')}
                                     </a>
                                 % endif
                             </div>
@@ -222,40 +222,40 @@
                                     ${_('Config')}
                                 </span>
                                 <span class="d-sm-none d-md-block">
-                                    <i class="fas fa-2x fa-cogs"></i>
+                                    <i class="fas fa-fw fa-2x fa-cogs"></i>
                                 </span>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarConfig">
                                 <a class="dropdown-item" href="${srWebRoot}/config/">
-                                    <i class="fas fa-info"></i>&nbsp;${_('Help and Info')}
+                                    <i class="fas fa-fw fa-info"></i>&nbsp;${_('Help and Info')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/general/">
-                                    <i class="fas fa-wrench"></i>&nbsp;${_('General')}
+                                    <i class="fas fa-fw fa-wrench"></i>&nbsp;${_('General')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/backuprestore/">
-                                    <i class="fas fa-upload"></i>&nbsp;${_('Backup and Restore')}
+                                    <i class="fas fa-fw fa-upload"></i>&nbsp;${_('Backup and Restore')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/search/">
-                                    <i class="fas fa-binoculars"></i>&nbsp;${_('Search Clients')}
+                                    <i class="fas fa-fw fa-binoculars"></i>&nbsp;${_('Search Clients')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/providers/">
-                                    <i class="fas fa-share-alt"></i>&nbsp;${_('Search Providers')}
+                                    <i class="fas fa-fw fa-share-alt"></i>&nbsp;${_('Search Providers')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/subtitles/">
-                                    <i class="fas fa-closed-captioning"></i>&nbsp;${_('Subtitles Settings')}
+                                    <i class="fas fa-fw fa-closed-captioning"></i>&nbsp;${_('Subtitles Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/qualitySettings/">
-                                    <i class="fas fa-wrench"></i>&nbsp;${_('Quality Settings')}
+                                    <i class="fas fa-fw fa-wrench"></i>&nbsp;${_('Quality Settings')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/postProcessing/">
-                                    <i class="fas fa-folder-open"></i>&nbsp;${_('Post Processing')}
+                                    <i class="fas fa-fw fa-folder-open"></i>&nbsp;${_('Post Processing')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/notifications/">
-                                    <i class="fas fa-bell"></i>&nbsp;${_('Notifications')}
+                                    <i class="fas fa-fw fa-bell"></i>&nbsp;${_('Notifications')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/config/anime/">
-                                    <i class="fas fa-eye"></i>&nbsp;${_('Anime')}
+                                    <i class="fas fa-fw fa-eye"></i>&nbsp;${_('Anime')}
                                 </a>
                             </div>
                         </li>
@@ -275,55 +275,55 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
                                 <a class="dropdown-item" href="${srWebRoot}/IRC/">
-                                    <i class="fas fa-hashtag"></i>&nbsp;${_('IRC')}
+                                    <i class="fas fa-fw fa-hashtag"></i>&nbsp;${_('IRC')}
                                 </a>
                                 <a class="dropdown-item" href="#" id="changelog">
-                                    <i class="fas fa-globe"></i>&nbsp;${_('Changelog')}
+                                    <i class="fas fa-fw fa-globe"></i>&nbsp;${_('Changelog')}
                                 </a>
                                 <a class="dropdown-item" href="https://www.paypal.me/sickrage" rel="noreferrer"
                                    onclick="window.open('${sickrage.app.config.anon_redirect}' + this.href); return false;">
-                                    <i class="fas fa-donate"></i>&nbsp;${_('Donate')}
+                                    <i class="fas fa-fw fa-donate"></i>&nbsp;${_('Donate')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 %if numErrors:
                                     <a class="dropdown-item" href="${srWebRoot}/logs/">
-                                        <i class="fas fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
+                                        <i class="fas fa-fw fa-exclamation-circle"></i>&nbsp;${_('View Errors')}
                                         <span class="badge badge-danger">${numErrors}</span>
                                     </a>
                                 %endif
                                 %if numWarnings:
                                     <a class="dropdown-item"
                                        href="${srWebRoot}/logs/?level=${sickrage.app.log.WARNING}">
-                                        <i class="fas fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
+                                        <i class="fas fa-fw fa-exclamation-triangle"></i>&nbsp;${_('View Warnings')}
                                         <span class="badge badge-warning">${numWarnings}</span>
                                     </a>
                                 %endif
                                 <a class="dropdown-item" href="${srWebRoot}/logs/viewlog/">
-                                    <i class="fas fa-file-archive"></i>&nbsp;${_('View Log')}
+                                    <i class="fas fa-fw fa-file-archive"></i>&nbsp;${_('View Log')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${srWebRoot}/home/updateCheck?pid=${srPID}">
-                                    <i class="fas fa-check-square"></i>&nbsp;${_('Check For Updates')}
+                                    <i class="fas fa-fw fa-check-square"></i>&nbsp;${_('Check For Updates')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/restart/?pid=${srPID}"
                                    class="confirm restart">
-                                    <i class="fas fa-redo"></i>&nbsp;${_('Restart')}
+                                    <i class="fas fa-fw fa-redo"></i>&nbsp;${_('Restart')}
                                 </a>
                                 <a class="dropdown-item" href="${srWebRoot}/home/shutdown/?pid=${srPID}"
                                    class="confirm shutdown">
-                                    <i class="fas fa-power-off"></i>&nbsp;${_('Shutdown')}
+                                    <i class="fas fa-fw fa-power-off"></i>&nbsp;${_('Shutdown')}
                                 </a>
                                 % if sickrage.app.config.app_sub == current_user.get('sub'):
                                     <a class="dropdown-item" href="${srWebRoot}/unlink" class="confirm logout">
-                                        <i class="fas fa-unlink"></i>&nbsp;${_('Unlink Account')}
+                                        <i class="fas fa-fw fa-unlink"></i>&nbsp;${_('Unlink Account')}
                                     </a>
                                 % endif
                                 <a class="dropdown-item" href="${srWebRoot}/logout" class="confirm logout">
-                                    <i class="fas fa-sign-out-alt"></i>&nbsp;${_('Logout')}
+                                    <i class="fas fa-fw fa-sign-out-alt"></i>&nbsp;${_('Logout')}
                                 </a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="${srWebRoot}/home/status/">
-                                    <i class="fas fa-server"></i>&nbsp;${_('Server Status')}
+                                    <i class="fas fa-fw fa-server"></i>&nbsp;${_('Server Status')}
                                 </a>
                             </div>
                         </li>

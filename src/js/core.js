@@ -227,7 +227,7 @@ $(document).ready(function ($) {
                     return false;
                 },
                 open: function () {
-                    $(".quicksearch-input-container").append('<button type="button" class="quicksearch-input-btn"><i class="fas fa-times-circle m-2"></i></button>');
+                    $(".quicksearch-input-container").append('<button type="button" class="quicksearch-input-btn"><i class="fas fa-1x fa-times-circle text-white m-2" aria-hidden="true"></i></button>');
                     $("ul.ui-menu").width($(this).innerWidth());
                     $("ul.ui-menu").css('border', 'none');
                     $("ul.ui-menu").css('outline', 'none');

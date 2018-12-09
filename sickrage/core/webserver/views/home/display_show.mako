@@ -113,354 +113,356 @@
             </div>
 
             <div class="row">
-                <div class="col-auto offset-1 d-none d-lg-block" style="height: 50px">
-                    <img class="rounded shadow-lg"
-                         src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
-                </div>
-                <div class="col mb-2">
-                    <div class="row">
-                        <div class="col-auto">
-                            % if show.imdb_info and 'imdbRating' in show.imdb_info:
-                            <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars and " + str(show.imdb_info['imdbVotes']) + " Votes" %>
-                                <span id="imdbstars"
-                                      data-imdb-rating="${show.imdb_info['imdbRating']}"
-                                      title="${rating_tip}"></span>
-                            % endif
+                <div class="col-lg-10 mx-auto">
+                    <div class="row mb-1">
+                        <div class="col-auto d-none d-lg-block" style="height: 5px">
+                            <img class="rounded shadow-lg"
+                                 src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
                         </div>
-
-                        <div class="col-auto">
-                            (<span>${show.startyear}</span>) -
-
-                            <span>
-                                % if show.runtime:
-                                    ${show.runtime} ${_('minutes')}
-                                % else:
-                                    <span style="color: red;"><b>${_('UNKNOWN')}</b></span>
-                                % endif
-                            </span>
-
-                            % if show.imdbid:
-                                <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}"
-                                   rel="noreferrer"
-                                   onclick="window.open(this.href, '_blank'); return false;"
-                                   title="http://www.imdb.com/title/${show.imdbid}">
-                                    <i class="sickrage-core sickrage-core-imdb"
-                                       style="margin-top: -1px; vertical-align:middle;"></i>
-                                </a>
-                            % endif
-
-                            % if xem_numbering or xem_absolute_numbering:
-                                <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
-                                   rel="noreferrer"
-                                   onclick="window.open(this.href, '_blank'); return false;"
-                                   title="http://thexem.de/search?q-${show.name}">
-                                    <i class="sickrage-core sickrage-core-xem"
-                                       style="margin-top: -1px; vertical-align:middle;"></i>
-                                </a>
-                            % endif
-
-                            <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
-                               onclick="window.open(this.href, '_blank'); return false;"
-                               title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>">
-                                <i class="sickrage-core sickrage-core-${IndexerApi(show.indexer).name.lower()}"
-                                   style="margin-top: -1px; vertical-align:middle;"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <ul class="list-group d-inline">
-                                % if not show.imdbid and show.genre:
-                                    % for genre in show.genre.split(','):
-                                        <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
-                                           target="_blank"
-                                           title="View other popular ${genre} shows on trakt.tv.">
-                                            <li class="fas fa-tag badge badge-primary p-2"> ${genre}</li>
-                                        </a>
-                                    % endfor
-                                % endif
-                                % if show.imdb_info and 'Year' in show.imdb_info:
-                                    % for imdbgenre in show.imdb_info['Genre'].replace('Sci-Fi','Science-Fiction').split(','):
-                                        <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
-                                           target="_blank"
-                                           title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                            <li class="fas fa-tag badge badge-primary p-2"> ${imdbgenre}</li>
-                                        </a>
-                                    % endfor
-                                % endif
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col d-lg-none d-xl-flex">
-                    <img class="rounded shadow-lg img-banner"
-                         src="${srWebRoot}${showImage(show.indexerid, 'banner').url}"/>
-                </div>
-            </div>
-
-            <div class="row bg-dark border border-white pb-5 pt-5">
-                <div class="col">
-                    <div class="row">
                         <div class="col">
                             <div class="row">
-                                <div class="col-lg-6 col-xl-5 offset-lg-5 offset-xl-4">
-                                    <div>
-                                        <i>${show.overview}</i>
-                                    </div>
-                                    <br/>
-                                    <table>
-                                        <tr>
-                                            <td class="show-legend">${_('Quality:')}</td>
-                                            <td>
-                                                <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
-                                                % if show.quality in qualityPresets:
-                                                    ${renderQualityPill(show.quality)}
-                                                % else:
-                                                    % if anyQualities:
-                                                        <i>Allowed:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
-                                                    % endif
-                                                    % if bestQualities:
-                                                        <i>Preferred:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
-                                                    % endif
-                                                % endif
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="show-legend">${_('Show Status:')}</td>
-                                            <td>${show.status}</td>
-                                        </tr>
-
-                                        % if show.network and show.airs:
-                                            <tr>
-                                                <td class="show-legend">${_('Originally Airs:')}</td>
-                                                <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}
-                                                    on ${show.network}</td>
-                                            </tr>
-                                        % elif show.network:
-                                            <tr>
-                                                <td class="show-legend">${_('Originally Airs:')}</td>
-                                                <td>${show.network}</td>
-                                            </tr>
-                                        % elif show.airs:
-                                            <tr>
-                                                <td class="show-legend">${_('Originally Airs:')}</td>
-
-                                                <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}</td>
-                                            </tr>
-                                        % endif
-
-                                        <tr>
-                                            <td class="show-legend">${_('Default EP Status:')}</td>
-                                            <td>${statusStrings[show.default_ep_status]}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="show-legend">${_('Location:')}</td>
-                                            % if os.path.isdir(showLoc):
-                                                <td>${showLoc}</td>
-                                            % else:
-                                                <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
-                                            % endif
-                                        </tr>
-
-                                        <tr>
-                                            <td class="show-legend">${_('Size:')}</td>
-                                            <td>${pretty_filesize(show.show_size)}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="show-legend">${_('Scene Name:')}</td>
-                                            <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
-                                        </tr>
-
-                                        <tr>
-                                            <td class="show-legend">${_('Search Delay:')}</td>
-                                            <td>${show.search_delay} day(s)</td>
-                                        </tr>
-
-                                        % if show.rls_require_words:
-                                            <tr>
-                                                <td class="show-legend">${_('Required Words:')}</td>
-                                                <td>${show.rls_require_words}</td>
-                                            </tr>
-                                        % endif
-
-                                        % if show.rls_ignore_words:
-                                            <tr>
-                                                <td class="show-legend">${_('Ignored Words:')}</td>
-                                                <td>${show.rls_ignore_words}</td>
-                                            </tr>
-                                        % endif
-
-                                        % if bwl and bwl.whitelist:
-                                            <tr>
-                                                <td class="show-legend">${_('Wanted Group')}${("", "s")[len(bwl.whitelist) > 1]}
-                                                    :
-                                                </td>
-                                                <td>${', '.join(bwl.whitelist)}</td>
-                                            </tr>
-                                        % endif
-
-                                        % if bwl and bwl.blacklist:
-                                            <tr>
-                                                <td class="show-legend">${_('Unwanted Group')}${("", "s")[len(bwl.blacklist) > 1]}
-                                                    :
-                                                </td>
-                                                <td>${', '.join(bwl.blacklist)}</td>
-                                            </tr>
-                                        % endif
-                                    </table>
+                                <div class="col-auto">
+                                    % if show.imdb_info and 'imdbRating' in show.imdb_info:
+                                    <% rating_tip = str(show.imdb_info['imdbRating']) + " / 10" + " Stars and " + str(show.imdb_info['imdbVotes']) + " Votes" %>
+                                        <span id="imdbstars"
+                                              data-imdb-rating="${show.imdb_info['imdbRating']}"
+                                              title="${rating_tip}"></span>
+                                    % endif
                                 </div>
 
-                                <div class="col offset-lg-5 offset-xl-0">
-                                    <table>
-                                        <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
-                                        <tr>
-                                            <td class="show-legend">${_('Info Language:')}</td>
-                                            <td>
-                                                <i class="sickrage-flags sickrage-flags-${info_flag}"></i>
-                                            </td>
-                                        </tr>
-                                        % if sickrage.app.config.use_subtitles:
-                                            <tr>
-                                                <td class="show-legend">${_('Subtitles:')}</td>
-                                                <td>
-                                                    <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
-                                                </td>
-                                            </tr>
+                                <div class="col-auto">
+                                    (<span>${show.startyear}</span>) -
+
+                                    <span>
+                                        % if show.runtime:
+                                            ${show.runtime} ${_('minutes')}
+                                        % else:
+                                            <span style="color: red;"><b>${_('UNKNOWN')}</b></span>
                                         % endif
-                                        <tr>
-                                            <td class="show-legend">${_('Subtitles Metadata:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Season Folders:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Paused:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Air-by-Date:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Sports:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Anime:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('DVD Order:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Scene Numbering:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="show-legend">${_('Skip Downloaded:')}</td>
-                                            <td>
-                                                <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    </span>
+
+                                    % if show.imdbid:
+                                        <a href="${anon_url('http://www.imdb.com/title/', show.imdbid)}"
+                                           rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;"
+                                           title="http://www.imdb.com/title/${show.imdbid}">
+                                            <i class="sickrage-core sickrage-core-imdb"
+                                               style="margin-top: -1px; vertical-align:middle;"></i>
+                                        </a>
+                                    % endif
+
+                                    % if xem_numbering or xem_absolute_numbering:
+                                        <a href="${anon_url('http://thexem.de/search?q=', show.name)}"
+                                           rel="noreferrer"
+                                           onclick="window.open(this.href, '_blank'); return false;"
+                                           title="http://thexem.de/search?q-${show.name}">
+                                            <i class="sickrage-core sickrage-core-xem"
+                                               style="margin-top: -1px; vertical-align:middle;"></i>
+                                        </a>
+                                    % endif
+
+                                    <a href="${anon_url(IndexerApi(show.indexer).config['show_url'], show.indexerid)}"
+                                       onclick="window.open(this.href, '_blank'); return false;"
+                                       title="<% IndexerApi(show.indexer).config["show_url"] + str(show.indexerid) %>">
+                                        <i class="sickrage-core sickrage-core-${IndexerApi(show.indexer).name.lower()}"
+                                           style="margin-top: -1px; vertical-align:middle;"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col">
+                                    <ul class="list-group d-inline">
+                                        % if not show.imdbid and show.genre:
+                                            % for genre in show.genre.split(','):
+                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', genre.lower())}"
+                                                   target="_blank"
+                                                   title="View other popular ${genre} shows on trakt.tv.">
+                                                    <li class="fas fa-tag fa-1x badge badge-primary p-2"> ${genre}</li>
+                                                </a>
+                                            % endfor
+                                        % endif
+                                        % if show.imdb_info and 'Year' in show.imdb_info:
+                                            % for imdbgenre in show.imdb_info['Genre'].replace('Sci-Fi','Science-Fiction').split(','):
+                                                <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
+                                                   target="_blank"
+                                                   title="View other popular ${imdbgenre} shows on trakt.tv.">
+                                                    <li class="fas fa-tag fa-1x badge badge-primary p-2"> ${imdbgenre}</li>
+                                                </a>
+                                            % endfor
+                                        % endif
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto d-lg-none d-xl-flex">
+                            <img class="rounded shadow-lg img-banner"
+                                 src="${srWebRoot}${showImage(show.indexerid, 'banner').url}"/>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row bg-dark border border-white">
-                <div class="col-lg-10 mx-auto m-1">
+            <div class="row bg-dark border border-white pt-2 pt-xl-4 pt-xxxl-5 pb-2 pb-xl-4 pb-xxxl-5">
+                <div class="col-lg-6 col-xl-7 offset-0 offset-lg-5 offset-xl-4 offset-xxxl-3">
                     <div class="row">
-                        <div class="col-md-auto my-auto">
-                            <div class="input-group float-md-left">
-                                <select id="statusSelect" title="Change selected episode statuses" class="form-control">
-                                    <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                                    % if sickrage.app.developer:
-                                        <% availableStatus.append(UNAIRED) %>
-                                    % endif
-                                    % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
-                                        % if curStatus not in [DOWNLOADED, ARCHIVED]:
-                                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
-                                        % endif
-                                    % endfor
-                                </select>
-                                <div class="input-group-append">
-                                    <button id="changeStatus" class="btn fas fa-play"></button>
-                                </div>
-                            </div>
-                            <input type="hidden" id="showID" value="${show.indexerid}"/>
-                            <input type="hidden" id="indexer" value="${show.indexer}"/>
-                        </div>
                         <div class="col">
-                            <div class="d-inline-flex float-md-right">
-                                <h5 class="my-auto mr-2">
-                                    <span class="badge missed">
-                                        <input type="checkbox" id="missed" checked/>
-                                        ${_('Missed:')} <b>${epCounts[Overview.MISSED]}</b>
-                                    </span>
-                                    <span class="badge wanted">
-                                        <input type="checkbox" id="wanted" checked/>
-                                        ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
-                                    </span>
-                                    <span class="badge qual">
-                                        <input type="checkbox" id="qual" checked/>
-                                        ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
-                                    </span>
-                                    <span class="badge good">
-                                        <input type="checkbox" id="good" checked/>
-                                        ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
-                                    </span>
-                                    <span class="badge skipped">
-                                        <input type="checkbox" id="skipped" checked/>
-                                        ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
-                                    </span>
-                                    <span class="badge snatched">
-                                        <input type="checkbox" id="snatched" checked/>
-                                        <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
-                                        ${_('Snatched:')} <b>${total_snatched}</b>
-                                    </span>
-                                </h5>
-                                <div class="btn-group-md d-sm-inline-flex d-md-inline-block my-auto">
-                                    <button class="btn" id="popover">
-                                        ${_('Select Columns')} <b class="fas fa-caret-down"></b>
-                                    </button>
-                                    <button class="btn seriesCheck">
-                                        ${_('Select Episodes')}
-                                    </button>
-                                    <button class="btn clearAll">
-                                        ${_('Clear All')}
-                                    </button>
-                                </div>
+                            <div>
+                                <i>${show.overview}</i>
                             </div>
+                            <br/>
+                            <table>
+                                <tr>
+                                    <td class="show-legend">${_('Quality:')}</td>
+                                    <td>
+                                        <% anyQualities, bestQualities = Quality.splitQuality(int(show.quality)) %>
+                                        % if show.quality in qualityPresets:
+                                            ${renderQualityPill(show.quality)}
+                                        % else:
+                                            % if anyQualities:
+                                                <i>Allowed:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(anyQualities)])}${("", "<br>")[bool(bestQualities)]}
+                                            % endif
+                                            % if bestQualities:
+                                                <i>Preferred:</i> ${", ".join([capture(renderQualityPill, x) for x in sorted(bestQualities)])}
+                                            % endif
+                                        % endif
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="show-legend">${_('Show Status:')}</td>
+                                    <td>${show.status}</td>
+                                </tr>
+
+                                % if show.network and show.airs:
+                                    <tr>
+                                        <td class="show-legend">${_('Originally Airs:')}</td>
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span> ", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}
+                                            on ${show.network}</td>
+                                    </tr>
+                                % elif show.network:
+                                    <tr>
+                                        <td class="show-legend">${_('Originally Airs:')}</td>
+                                        <td>${show.network}</td>
+                                    </tr>
+                                % elif show.airs:
+                                    <tr>
+                                        <td class="show-legend">${_('Originally Airs:')}</td>
+
+                                        <td>${show.airs} ${("<span style='color: red;'><b>(invalid Timeformat)</b></span>", "")[sickrage.app.tz_updater.test_timeformat(show.airs)]}</td>
+                                    </tr>
+                                % endif
+
+                                <tr>
+                                    <td class="show-legend">${_('Default EP Status:')}</td>
+                                    <td>${statusStrings[show.default_ep_status]}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="show-legend">${_('Location:')}</td>
+                                    % if os.path.isdir(showLoc):
+                                        <td>${showLoc}</td>
+                                    % else:
+                                        <td><span style="color: red;">${showLoc}</span> (${_('Missing')})</td>
+                                    % endif
+                                </tr>
+
+                                <tr>
+                                    <td class="show-legend">${_('Size:')}</td>
+                                    <td>${pretty_filesize(show.show_size)}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="show-legend">${_('Scene Name:')}</td>
+                                    <td>${(show.name, " | ".join(show.exceptions))[show.exceptions != 0]}</td>
+                                </tr>
+
+                                <tr>
+                                    <td class="show-legend">${_('Search Delay:')}</td>
+                                    <td>${show.search_delay} day(s)</td>
+                                </tr>
+
+                                % if show.rls_require_words:
+                                    <tr>
+                                        <td class="show-legend">${_('Required Words:')}</td>
+                                        <td>${show.rls_require_words}</td>
+                                    </tr>
+                                % endif
+
+                                % if show.rls_ignore_words:
+                                    <tr>
+                                        <td class="show-legend">${_('Ignored Words:')}</td>
+                                        <td>${show.rls_ignore_words}</td>
+                                    </tr>
+                                % endif
+
+                                % if bwl and bwl.whitelist:
+                                    <tr>
+                                        <td class="show-legend">${_('Wanted Group')}${("", "s")[len(bwl.whitelist) > 1]}
+                                            :
+                                        </td>
+                                        <td>${', '.join(bwl.whitelist)}</td>
+                                    </tr>
+                                % endif
+
+                                % if bwl and bwl.blacklist:
+                                    <tr>
+                                        <td class="show-legend">${_('Unwanted Group')}${("", "s")[len(bwl.blacklist) > 1]}
+                                            :
+                                        </td>
+                                        <td>${', '.join(bwl.blacklist)}</td>
+                                    </tr>
+                                % endif
+                            </table>
+                        </div>
+
+                        <div class="col-auto">
+                            <table>
+                                <% info_flag = sickrage.subtitles.code_from_code(show.lang) if show.lang else '' %>
+                                <tr>
+                                    <td class="show-legend">${_('Info Language:')}</td>
+                                    <td>
+                                        <i class="sickrage-flags sickrage-flags-${info_flag}"></i>
+                                    </td>
+                                </tr>
+                                % if sickrage.app.config.use_subtitles:
+                                    <tr>
+                                        <td class="show-legend">${_('Subtitles:')}</td>
+                                        <td>
+                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
+                                        </td>
+                                    </tr>
+                                % endif
+                                <tr>
+                                    <td class="show-legend">${_('Subtitles Metadata:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Season Folders:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Paused:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Air-by-Date:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Sports:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Anime:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('DVD Order:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Scene Numbering:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="show-legend">${_('Skip Downloaded:')}</td>
+                                    <td>
+                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="row bg-dark border border-white">
+        <div class="col-lg-10 mx-auto m-1">
+            <div class="row">
+                <div class="col-md-auto my-auto">
+                    <div class="input-group float-md-left">
+                        <select id="statusSelect" title="Change selected episode statuses" class="form-control">
+                            <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
+                            % if sickrage.app.developer:
+                                <% availableStatus.append(UNAIRED) %>
+                            % endif
+                            % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
+                                % if curStatus not in [DOWNLOADED, ARCHIVED]:
+                                    <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                % endif
+                            % endfor
+                        </select>
+                        <div class="input-group-append">
+                            <button id="changeStatus" class="btn fas fa-play"></button>
+                        </div>
+                    </div>
+                    <input type="hidden" id="showID" value="${show.indexerid}"/>
+                    <input type="hidden" id="indexer" value="${show.indexer}"/>
+                </div>
+                <div class="col">
+                    <div class="d-inline-flex float-md-right">
+                        <h5 class="my-auto mr-2">
+                                    <span class="badge missed">
+                                        <input type="checkbox" id="missed" checked/>
+                                        ${_('Missed:')} <b>${epCounts[Overview.MISSED]}</b>
+                                    </span>
+                            <span class="badge wanted">
+                                        <input type="checkbox" id="wanted" checked/>
+                                ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
+                                    </span>
+                            <span class="badge qual">
+                                        <input type="checkbox" id="qual" checked/>
+                                ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
+                                    </span>
+                            <span class="badge good">
+                                        <input type="checkbox" id="good" checked/>
+                                ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
+                                    </span>
+                            <span class="badge skipped">
+                                        <input type="checkbox" id="skipped" checked/>
+                                ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
+                                    </span>
+                            <span class="badge snatched">
+                                        <input type="checkbox" id="snatched" checked/>
+                                <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
+                                ${_('Snatched:')} <b>${total_snatched}</b>
+                                    </span>
+                        </h5>
+                        <div class="btn-group-md d-sm-inline-flex d-md-inline-block my-auto">
+                            <button class="btn" id="popover">
+                                ${_('Columns')} <b class="fas fa-caret-down"></b>
+                            </button>
+                            <button class="btn seriesCheck">
+                                ${_('Select Episodes')}
+                            </button>
+                            <button class="btn clearAll">
+                                ${_('Clear All')}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
     </div>
 
     <div class="row">

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 55729fa - 2018-12-09: Refactored quicksearch menu 
+- * 98056c7 - 2018-12-09: Refactored menu icons to be fixed-width 
+- * c97cce5 - 2018-12-09: Refactored quicksearch menu 
 - * b3b4d7a - 2018-12-08: Refactoed display show view 
 - * c1aed13 - 2018-12-08: Release v9.4.49 
 - * 854687c - 2018-12-08: Added GKTorrent provider. 

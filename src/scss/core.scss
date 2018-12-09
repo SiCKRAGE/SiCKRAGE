@@ -1,3 +1,31 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+/* set the overriding variables */
+$grid-breakpoints: (
+        xxxs: 0,
+        xxs: 320px,
+        xs: 568px,
+        sm: 667px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1440px,
+        xxxl: 1600px
+);
+
+$container-max-widths: (
+        xxxs: 0,
+        xxs: 320px,
+        xs: 568px,
+        sm: 667px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1440px,
+        xxxl: 1600px
+);
+
 @import "~bootstrap/scss/bootstrap";
 @import "~tablesorter/dist/css/theme.bootstrap_4.min.css";
 @import "~tokenfield/dist/tokenfield.css";
