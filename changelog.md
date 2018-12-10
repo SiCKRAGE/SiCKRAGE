@@ -1,6 +1,7 @@
 # Changelog
 
-- * c3c6c26 - 2018-12-09: Release v9.4.52 
+- * 9409223 - 2018-12-10: Release v9.4.53 
+- * 7dd5263 - 2018-12-09: Release v9.4.52 
 - * c65074d - 2018-12-09: Fixed issues with display show poster positioning 
 - * 65486af - 2018-12-09: Release v9.4.51 
 - * 7d3dbc3 - 2018-12-09: Added gradient effect to badges. 

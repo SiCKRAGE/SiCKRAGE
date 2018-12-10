@@ -202,9 +202,9 @@
                 </div>
             </div>
 
-            <div class="row bg-dark border border-white pt-5 pb-5">
+            <div class="row bg-dark border border-white">
                 <div class="col-lg-6 col-xl-7 offset-0 offset-lg-5 offset-xl-4 offset-xxxl-3">
-                    <div class="row">
+                    <div class="row" style="margin-bottom: 100px">
                         <div class="col">
                             <div>
                                 <i>${show.overview}</i>
