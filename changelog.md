@@ -1,6 +1,7 @@
 # Changelog
 
-- * c663c1f - 2018-12-09: Release v9.4.50 
+- * b08a2ab - 2018-12-09: Added gradient effect to badges. 
+- * 8bfcd44 - 2018-12-09: Release v9.4.50 
 - * 30193ca - 2018-12-09: Added gradient effect to buttons. 
 - * 2d4e3dc - 2018-12-09: Refactored menu icons to be fixed-width 
 - * c97cce5 - 2018-12-09: Refactored quicksearch menu 
