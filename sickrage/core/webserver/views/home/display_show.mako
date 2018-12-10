@@ -116,7 +116,7 @@
                 <div class="col-lg-10 mx-auto">
                     <div class="row mb-1">
                         <div class="col-auto d-none d-lg-block" style="height: 5px">
-                            <img class="rounded shadow-lg"
+                            <img class="shadow-lg rounded"
                                  src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
                         </div>
                         <div class="col">
