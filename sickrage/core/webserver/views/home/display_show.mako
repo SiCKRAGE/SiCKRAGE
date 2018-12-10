@@ -115,8 +115,8 @@
             <div class="row">
                 <div class="col-lg-10 mx-auto">
                     <div class="row mb-1">
-                        <div class="col-auto d-none d-lg-block" style="height: 5px">
-                            <img class="shadow-lg rounded"
+                        <div class="col-auto d-none d-lg-block">
+                            <img class="shadow-lg rounded" style="margin-bottom: -400px"
                                  src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
                         </div>
                         <div class="col">
@@ -202,7 +202,7 @@
                 </div>
             </div>
 
-            <div class="row bg-dark border border-white pt-2 pt-xl-4 pt-xxxl-5 pb-2 pb-xl-4 pb-xxxl-5">
+            <div class="row bg-dark border border-white pt-5 pb-5">
                 <div class="col-lg-6 col-xl-7 offset-0 offset-lg-5 offset-xl-4 offset-xxxl-3">
                     <div class="row">
                         <div class="col">
