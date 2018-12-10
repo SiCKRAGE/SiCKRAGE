@@ -1,8 +1,14 @@
 # Changelog
 
-- * 2f70c45 - 2018-12-08: Release v9.4.49 
+- * c663c1f - 2018-12-09: Release v9.4.50 
+- * 30193ca - 2018-12-09: Added gradient effect to buttons. 
+- * 2d4e3dc - 2018-12-09: Refactored menu icons to be fixed-width 
+- * c97cce5 - 2018-12-09: Refactored quicksearch menu 
+- * b3b4d7a - 2018-12-08: Refactoed display show view 
+- * c1aed13 - 2018-12-08: Release v9.4.49 
 - * 854687c - 2018-12-08: Added GKTorrent provider. 
 - * 5592614 - 2018-12-08: Fixed login issues for Speed.cd torrent provider. 
+- * 60cabed - 2018-12-04: Refactored display show view header 
 - * 5663214 - 2018-12-04: Release v9.4.48 
 - * e0fd191 - 2018-12-04: Cleaned up mass edit view code. Fixed bug with comparing minseed and minleech values. 
 - * b55a806 - 2018-12-02: Pre-Release v9.4.48.dev9 

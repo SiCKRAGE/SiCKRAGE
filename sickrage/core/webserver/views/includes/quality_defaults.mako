@@ -44,7 +44,7 @@
             cssClass = "Custom"
             qualityString = "Custom"
 
-        cssClass = "badge text-white " + cssClass
+        cssClass = "badge p-1 align-middle text-white " + cssClass
         if overrideClass:
             cssClass = overrideClass
     %>

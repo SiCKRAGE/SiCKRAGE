@@ -1,3 +1,31 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+/* set the overriding variables */
+$grid-breakpoints: (
+        xxxs: 0,
+        xxs: 320px,
+        xs: 568px,
+        sm: 667px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1440px,
+        xxxl: 1600px
+);
+
+$container-max-widths: (
+        xxxs: 0,
+        xxs: 320px,
+        xs: 568px,
+        sm: 667px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1440px,
+        xxxl: 1600px
+);
+
 @import "~bootstrap/scss/bootstrap";
 @import "~tablesorter/dist/css/theme.bootstrap_4.min.css";
 @import "~tokenfield/dist/tokenfield.css";
@@ -308,7 +336,9 @@ input[type=checkbox].toggle {
 
 .btn {
   @extend .btn-primary;
-  @extend .shadow;
+  @extend .shadow-lg;
+  background-image: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2) 49%, rgba(0,0,0,0.15) 51%, rgba(0,0,0,0.05));
+  background-repeat: repeat-x;
 }
 
 .input-group-append, .input-group-prepend {
@@ -392,9 +422,11 @@ input[type=checkbox].toggle {
 
 .dropdown-menu {
   @extend .bg-dark;
+
   .dropdown-item {
     @extend .text-white;
   }
+
   .dropdown-item:hover {
     @extend .bg-dark;
   }
@@ -410,4 +442,72 @@ input[type=checkbox].toggle {
     @extend .mt-1;
     @extend .mb-1;
   }
+}
+
+.show-legend {
+  @extend .pr-5;
+}
+
+.quicksearch-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+  width: 360px;
+  height: 40px;
+  vertical-align: super;
+}
+
+.quicksearch-input-container {
+  font-size: 13px;
+  font-family: Open Sans Semibold, Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-flow: row nowrap;
+  flex-flow: row nowrap;
+  padding: 4px;
+  height: 40px;
+  border-radius: 4px;
+  background: hsla(0, 0%, 100%, .08);
+  color: #eee;
+  -webkit-transition: background-color .2s, color .2s;
+  transition: background-color .2s, color .2s;
+}
+
+.quicksearch-input {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  height: 100%;
+  outline: 0;
+  border: none;
+  background: transparent;
+  color: #eee;
+}
+
+.quicksearch-input-btn {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  text-align: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-transition: color .2s;
+  transition: color .2s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }

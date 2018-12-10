@@ -22,7 +22,6 @@ import datetime
 import io
 import os
 import re
-import threading
 import time
 import traceback
 import urllib
@@ -1127,6 +1126,8 @@ class Home(WebHandler):
         return self.redirect(self.previous_url())
 
     def displayShow(self, show=None):
+        submenu = []
+
         if show is None:
             return self._genericMessage(_("Error"), _("Invalid show ID"))
         else:
@@ -1140,9 +1141,11 @@ class Home(WebHandler):
 
         seasonResults = list({x['season'] for x in episodeResults})
 
-        submenu = [
-            {'title': _('Edit'), 'path': '/home/editShow?show=%d' % showObj.indexerid,
-             'icon': 'fas fa-edit'}]
+        submenu.append({
+            'title': _('Edit'),
+            'path': '/home/editShow?show=%d' % showObj.indexerid,
+            'icon': 'fas fa-edit'
+        })
 
         showLoc = showObj.location
 
@@ -1172,33 +1175,65 @@ class Home(WebHandler):
         if not sickrage.app.show_queue.is_being_added(showObj):
             if not sickrage.app.show_queue.is_being_updated(showObj):
                 if showObj.paused:
-                    submenu.append({'title': _('Resume'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'fas fa-play'})
+                    submenu.append({
+                        'title': _('Resume'),
+                        'path': '/home/togglePause?show=%d' % showObj.indexerid,
+                        'icon': 'fas fa-play'
+                    })
                 else:
-                    submenu.append({'title': _('Pause'), 'path': '/home/togglePause?show=%d' % showObj.indexerid,
-                                    'icon': 'fas fa-pause'})
+                    submenu.append({
+                        'title': _('Pause'),
+                        'path': '/home/togglePause?show=%d' % showObj.indexerid,
+                        'icon': 'fas fa-pause'
+                    })
 
-                submenu.append({'title': _('Remove'), 'path': '/home/deleteShow?show=%d' % showObj.indexerid,
-                                'class': 'removeshow', 'confirm': True, 'icon': 'fas fa-trash'})
-                submenu.append({'title': _('Re-scan files'), 'path': '/home/refreshShow?show=%d' % showObj.indexerid,
-                                'icon': 'fas fa-compass'})
-                submenu.append({'title': _('Full Update'),
-                                'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
-                                'icon': 'fas fa-sync'})
-                submenu.append(
-                    {'title': _('Update show in KODI'), 'path': '/home/updateKODI?show=%d' % showObj.indexerid,
-                     'requires': self.haveKODI(), 'icon': 'fas fa-tv'})
-                submenu.append(
-                    {'title': _('Update show in Emby'), 'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
-                     'requires': self.haveEMBY(), 'icon': 'fas fa-tv'})
-                submenu.append({'title': _('Preview Rename'), 'path': '/home/testRename?show=%d' % showObj.indexerid,
-                                'icon': 'fas fa-tag'})
+                submenu.append({
+                    'title': _('Remove'),
+                    'path': '/home/deleteShow?show=%d' % showObj.indexerid,
+                    'class': 'removeshow',
+                    'confirm': True,
+                    'icon': 'fas fa-trash'
+                })
 
-                if sickrage.app.config.use_subtitles and not sickrage.app.show_queue.is_being_subtitled(
-                        showObj) and showObj.subtitles:
-                    submenu.append(
-                        {'title': _('Download Subtitles'), 'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
-                         'icon': 'fas fa-comment'})
+                submenu.append({
+                    'title': _('Re-scan files'),
+                    'path': '/home/refreshShow?show=%d' % showObj.indexerid,
+                    'icon': 'fas fa-compass'
+                })
+
+                submenu.append({
+                    'title': _('Full Update'),
+                    'path': '/home/updateShow?show=%d&amp;force=1' % showObj.indexerid,
+                    'icon': 'fas fa-sync'
+                })
+
+                submenu.append({
+                    'title': _('Update show in KODI'),
+                    'path': '/home/updateKODI?show=%d' % showObj.indexerid,
+                    'requires': self.haveKODI(),
+                    'icon': 'fas fa-tv'
+                })
+
+                submenu.append({
+                    'title': _('Update show in Emby'),
+                    'path': '/home/updateEMBY?show=%d' % showObj.indexerid,
+                    'requires': self.haveEMBY(),
+                    'icon': 'fas fa-tv'
+                })
+
+                submenu.append({
+                    'title': _('Preview Rename'),
+                    'path': '/home/testRename?show=%d' % showObj.indexerid,
+                    'icon': 'fas fa-tag'
+                })
+
+                if sickrage.app.config.use_subtitles and showObj.subtitles:
+                    if not sickrage.app.show_queue.is_being_subtitled(showObj):
+                        submenu.append({
+                            'title': _('Download Subtitles'),
+                            'path': '/home/subtitleShow?show=%d' % showObj.indexerid,
+                            'icon': 'fas fa-comment'
+                        })
 
         epCats = {}
         epCounts = {

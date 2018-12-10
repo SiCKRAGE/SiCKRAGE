@@ -227,19 +227,16 @@ $(document).ready(function ($) {
                     return false;
                 },
                 open: function () {
-                    //$("#quicksearch-icon").removeClass('fas fa-spinner fa-spin');
-                    $("#quicksearch-icon").addClass('fas fa-times');
+                    $(".quicksearch-input-container").append('<button type="button" class="quicksearch-input-btn"><i class="fas fa-1x fa-times-circle text-white m-2" aria-hidden="true"></i></button>');
                     $("ul.ui-menu").width($(this).innerWidth());
                     $("ul.ui-menu").css('border', 'none');
                     $("ul.ui-menu").css('outline', 'none');
                     $("ul.ui-menu").addClass('bg-dark shadow rounded');
-
+                    $(".quicksearch-input-btn").click(function () {
+                        $('#quicksearch').catcomplete('close').val('');
+                        $(this).remove();
+                    });
                 }
-            });
-
-            $("#quicksearch-icon").click(function () {
-                $('#quicksearch').catcomplete('close').val('');
-                $("#quicksearch-icon").removeClass();
             });
         },
 
