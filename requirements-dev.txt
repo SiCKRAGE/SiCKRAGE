@@ -1,3 +1,4 @@
 twine
 crowdin-cli-py
 babel
+wheel
