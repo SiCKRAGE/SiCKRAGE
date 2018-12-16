@@ -1,6 +1,7 @@
 # Changelog
 
-- * 68fda89 - 2018-12-16: Release v9.4.54 
+- * 51265f9 - 2018-12-16: Moved columns button in display show view. 
+- * 5e64b16 - 2018-12-16: Release v9.4.54 
 - * 76c2230 - 2018-12-16: Refactored display show view. Fixed issue with gktorrent. Fixed issue with newpct. 
 - * 91bc24c - 2018-12-10: Release v9.4.53 
 - * 7dd5263 - 2018-12-09: Release v9.4.52 

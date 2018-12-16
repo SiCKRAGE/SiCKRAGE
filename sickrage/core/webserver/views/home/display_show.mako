@@ -430,6 +430,9 @@
 
                         <div class="col-auto my-auto">
                             <div class="btn-group-sm">
+                                <button class="btn" id="popover">
+                                    ${_('Filter Columns')} <b class="fas fa-caret-down"></b>
+                                </button>
                                 <button class="btn seriesCheck">
                                     ${_('Select Episodes')}
                                 </button>
@@ -544,9 +547,6 @@
                                         data-target="#collapseSeason-${epResult['season']}">${_('Show Episodes')}</button>
                             %endif
                         % endif
-                        <button class="btn btn-sm float-right" id="popover">
-                            ${_('Columns')} <b class="fas fa-caret-down"></b>
-                        </button>
                     </div>
                 </div>
 
