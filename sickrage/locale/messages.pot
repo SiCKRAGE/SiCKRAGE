@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.4.54\n"
+"Project-Id-Version: sickrage 9.4.55\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-16 12:09-0800\n"
+"POT-Creation-Date: 2018-12-16 12:43-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4874,33 +4874,33 @@ msgid "Snatched:"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:434
+msgid "Filter Columns"
+msgstr ""
+
+#: sickrage/core/webserver/views/home/display_show.mako:437
 msgid "Select Episodes"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:4926
-#: sickrage/core/webserver/views/home/display_show.mako:437
+#: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:532
+#: sickrage/core/webserver/views/home/display_show.mako:535
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:532
+#: sickrage/core/webserver/views/home/display_show.mako:535
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:539
+#: sickrage/core/webserver/views/home/display_show.mako:542
 msgid "Hide Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:544
+#: sickrage/core/webserver/views/home/display_show.mako:547
 msgid "Show Episodes"
-msgstr ""
-
-#: sickrage/core/webserver/views/home/display_show.mako:548
-msgid "Columns"
 msgstr ""
 
 #: sickrage/core/webserver/views/home/display_show.mako:562
