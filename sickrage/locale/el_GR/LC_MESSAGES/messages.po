@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-09 23:59-0800\n"
-"PO-Revision-Date: 2018-12-10 08:00\n"
+"POT-Creation-Date: 2018-12-16 12:09-0800\n"
+"PO-Revision-Date: 2018-12-16 20:10\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -17,327 +17,327 @@ msgstr ""
 "X-Crowdin-File: messages.pot\n"
 "Language: el_GR\n"
 
-#: sickrage/core/webserver/views/layouts/main.mako:314 src/js/core.js:440
+#: sickrage/core/webserver/views/layouts/main.mako:317 src/js/core.js:465
 msgid "Shutdown"
 msgstr "Τερματισμός λειτουργίας"
 
-#: src/js/core.js:441
+#: src/js/core.js:466
 msgid "Are you sure you want to shutdown SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κλείσει SiCKRAGE;"
 
-#: sickrage/core/webserver/views/layouts/main.mako:310 src/js/core.js:446
+#: sickrage/core/webserver/views/layouts/main.mako:313 src/js/core.js:471
 msgid "Restart"
 msgstr "Επανεκκίνηση"
 
-#: src/js/core.js:447
+#: src/js/core.js:472
 msgid "Are you sure you want to restart SiCKRAGE ?"
 msgstr "Είστε βέβαιοι ότι θέλετε να κάνετε επανεκκίνηση του SiCKRAGE;"
 
-#: src/js/core.js:452
+#: src/js/core.js:477
 msgid "Submit Errors"
 msgstr "Υποβολή σφάλματα"
 
-#: src/js/core.js:453
+#: src/js/core.js:478
 msgid "Are you sure you want to submit these errors ?"
 msgstr ""
 
-#: src/js/core.js:453
+#: src/js/core.js:478
 msgid "Make sure SiCKRAGE is updated and trigger"
 msgstr ""
 
-#: src/js/core.js:453
+#: src/js/core.js:478
 msgid "this error with debug enabled before submitting"
 msgstr ""
 
-#: src/js/core.js:572 src/js/core.js:583 src/js/core.js:604
+#: src/js/core.js:599 src/js/core.js:610 src/js/core.js:631
 msgid "Searching"
 msgstr "Αναζήτηση"
 
-#: src/js/core.js:578 src/js/core.js:609
+#: src/js/core.js:605 src/js/core.js:636
 msgid "Queued"
 msgstr "Στην ουρά"
 
-#: sickrage/core/webserver/views/home/display_show.mako:719
+#: sickrage/core/webserver/views/home/display_show.mako:725
 #: sickrage/core/webserver/views/includes/modals.mako:52
 #: sickrage/core/webserver/views/includes/modals.mako:77
-#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:613
+#: sickrage/core/webserver/views/schedule.mako:196 src/js/core.js:640
 msgid "Manual Search"
 msgstr "Χειροκίνητη αναζήτηση"
 
-#: sickrage/core/webserver/views/home/index.mako:300 src/js/core.js:638
-#: src/js/core.js:783 src/js/core.js:826
+#: sickrage/core/webserver/views/home/index.mako:300 src/js/core.js:665
+#: src/js/core.js:810 src/js/core.js:853
 msgid "loading"
 msgstr "φόρτωση"
 
-#: src/js/core.js:842
+#: src/js/core.js:869
 msgid "Choose Directory"
 msgstr "Επιλέξτε κατάλογο"
 
-#: sickrage/core/webserver/views.py:3645 src/js/core.js:1478
+#: sickrage/core/webserver/views.py:3645 src/js/core.js:1505
 msgid "Clear History"
 msgstr "Εκκαθάριση ιστορικού"
 
-#: src/js/core.js:1479
+#: src/js/core.js:1506
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να καταργήσετε την επιλογή όλων κατεβάσετε ιστορία;"
 
-#: sickrage/core/webserver/views.py:3647 src/js/core.js:1484
+#: sickrage/core/webserver/views.py:3647 src/js/core.js:1511
 msgid "Trim History"
 msgstr "Τελειώματα ιστορία"
 
-#: src/js/core.js:1485
+#: src/js/core.js:1512
 msgid "Are you sure you want to trim all download history older than 30 days ?"
 msgstr "Είναι βέβαιοι ότι θέλετε να τακτοποιήσει όλων κατεβάσετε ιστορία που είναι παλαιότερες από 30 ημέρες;"
 
-#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2182
+#: sickrage/core/webserver/views/home/trakt_shows.mako:111 src/js/core.js:2209
 msgid "Remove Show"
 msgstr "Καταργήσετε Show"
 
-#: src/js/core.js:2183
+#: src/js/core.js:2210
 msgid "Are you sure you want to remove"
 msgstr ""
 
-#: src/js/core.js:2183
+#: src/js/core.js:2210
 msgid " from the database?"
 msgstr ""
 
-#: src/js/core.js:2183
+#: src/js/core.js:2210
 msgid "Check to delete files as well. IRREVERSIBLE"
 msgstr ""
 
-#: src/js/core.js:2236 src/js/core.js:2268
+#: src/js/core.js:2263 src/js/core.js:2295
 msgid "Update failed."
 msgstr "Η ενημέρωση απέτυχε."
 
-#: src/js/core.js:2279
+#: src/js/core.js:2306
 msgid "Select Show Location"
 msgstr "Επιλέξτε Εμφάνιση της θέσης"
 
-#: src/js/core.js:2421
+#: src/js/core.js:2448
 msgid "loading folders..."
 msgstr ""
 
-#: src/js/core.js:2437
+#: src/js/core.js:2464
 msgid "Select Unprocessed Episode Folder"
 msgstr "Επιλέξτε φάκελο αμεταποίητα επεισόδιο"
 
-#: src/js/core.js:2818
+#: src/js/core.js:2845
 msgid "search timed out, try increasing timeout for indexer"
 msgstr "έληξε το χρονικό όριο της αναζήτησης, δοκιμάστε αυξανόμενη χρονικού ορίου για δεικτοδότη"
 
-#: src/js/core.js:2822
+#: src/js/core.js:2849
 msgid "Search Results:"
 msgstr ""
 
-#: src/js/core.js:2826
+#: src/js/core.js:2853
 msgid "No results found, try a different search or language."
 msgstr ""
 
-#: src/js/core.js:2845
+#: src/js/core.js:2872
 msgid " (will debut on "
 msgstr ""
 
-#: src/js/core.js:2847
+#: src/js/core.js:2874
 msgid " (started on "
 msgstr ""
 
-#: src/js/core.js:2856
+#: src/js/core.js:2883
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2896
+#: src/js/core.js:2923
 msgid "Saved Defaults"
 msgstr "Αποθηκευμένες προεπιλογές"
 
-#: src/js/core.js:2896
+#: src/js/core.js:2923
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "«Προσθέστε Εμφάνιση» προεπιλογές σας έχουν οριστεί σε τρέχουσες επιλογές σας."
 
-#: src/js/core.js:2953
+#: src/js/core.js:2980
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:2995
+#: src/js/core.js:3022
 msgid "Reset Config to Defaults"
 msgstr "Config επαναφορά στις προεπιλογές"
 
-#: src/js/core.js:2996
+#: src/js/core.js:3023
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Είστε βέβαιοι ότι θέλετε να επαναφέρετε config προεπιλογές;"
 
-#: src/js/core.js:3091
+#: src/js/core.js:3118
 msgid "Select path to pip"
 msgstr "Επιλέξτε διαδρομή pip"
 
-#: src/js/core.js:3099 src/js/core.js:3125 src/js/core.js:3916 src/js/core.js:3934
-#: src/js/core.js:3955 src/js/core.js:3977 src/js/core.js:4000 src/js/core.js:4022
-#: src/js/core.js:4050 src/js/core.js:4067 src/js/core.js:4111 src/js/core.js:4196
-#: src/js/core.js:4254 src/js/core.js:4271 src/js/core.js:4301 src/js/core.js:4331
-#: src/js/core.js:4388 src/js/core.js:4464 src/js/core.js:4483 src/js/core.js:4499
+#: src/js/core.js:3126 src/js/core.js:3152 src/js/core.js:3943 src/js/core.js:3961
+#: src/js/core.js:3982 src/js/core.js:4004 src/js/core.js:4027 src/js/core.js:4049
+#: src/js/core.js:4077 src/js/core.js:4094 src/js/core.js:4138 src/js/core.js:4223
+#: src/js/core.js:4281 src/js/core.js:4298 src/js/core.js:4328 src/js/core.js:4358
+#: src/js/core.js:4415 src/js/core.js:4491 src/js/core.js:4510 src/js/core.js:4526
 msgid "Please fill out the necessary fields above."
 msgstr "Παρακαλούμε συμπληρώστε τα απαραίτητα πεδία παραπάνω."
 
-#: src/js/core.js:3117
+#: src/js/core.js:3144
 msgid "Select path to git"
 msgstr "Επιλέξτε διαδρομή git"
 
-#: src/js/core.js:3164
+#: src/js/core.js:3191
 msgid "Select Subtitles Download Directory"
 msgstr "Επιλέξτε υπότιτλοι Κατέβασμα καταλόγου"
 
-#: src/js/core.js:3280
+#: src/js/core.js:3307
 msgid "Select .nzb blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία blackhole/ρολόι .nzb"
 
-#: src/js/core.js:3281
+#: src/js/core.js:3308
 msgid "Select .torrent blackhole/watch location"
 msgstr "Επιλέξτε τοποθεσία .torrent blackhole/ρολόι"
 
-#: src/js/core.js:3282
+#: src/js/core.js:3309
 msgid "Select .torrent download location"
 msgstr "Επιλέξτε θέση λήψης .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3349
+#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3376
 msgid "Minimum seeding time is"
 msgstr "Ελάχιστο σπορά χρόνος είναι"
 
-#: src/js/core.js:3351
+#: src/js/core.js:3378
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "Διεύθυνση URL για το uTorrent πρόγραμμα-πελάτη (π.χ. http://localhost:8000)"
 
-#: src/js/core.js:3354
+#: src/js/core.js:3381
 msgid "Stop seeding when inactive for"
 msgstr "Σταματήσω σπορά όταν ανενεργός για"
 
-#: src/js/core.js:3360
+#: src/js/core.js:3387
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας μετάδοσης (π.χ. http://localhost:9091)"
 
-#: src/js/core.js:3370
+#: src/js/core.js:3397
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "Διεύθυνση URL για το χείμαρρο πελάτη σας (π.χ. http://localhost:8112)"
 
-#: src/js/core.js:3379
+#: src/js/core.js:3406
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "Διεύθυνση IP ή όνομα κεντρικού υπολογιστή του σας κατακλύζω δαίμονα (π.χ. scgi://localhost:58846)"
 
-#: src/js/core.js:3386
+#: src/js/core.js:3413
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας Synology DS (π.χ. http://localhost:5000)"
 
-#: src/js/core.js:3391
+#: src/js/core.js:3418
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3391
+#: src/js/core.js:3418
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3401
+#: src/js/core.js:3428
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να τον πελάτη σας qbittorrent (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:3411
+#: src/js/core.js:3438
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "Διεύθυνση URL για να σας: MLDonkey (π.χ. http://localhost:4080)"
 
-#: src/js/core.js:3422
+#: src/js/core.js:3449
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Διεύθυνση URL για να σας putio προγράμματος-πελάτη (π.χ. http://localhost: 8080)"
 
-#: src/js/core.js:3591
+#: src/js/core.js:3618
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3592
+#: src/js/core.js:3619
 msgid "Select TV Download Directory"
 msgstr "Επιλέξτε κατάλογο λήψης Τηλεόρασης"
 
-#: src/js/core.js:3593
+#: src/js/core.js:3620
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3607
+#: src/js/core.js:3634
 msgid "Unrar Executable not found."
 msgstr "Unrar εκτελέσιμο αρχείο δεν βρέθηκε."
 
-#: src/js/core.js:3650 src/js/core.js:3685 src/js/core.js:3720 src/js/core.js:3771
+#: src/js/core.js:3677 src/js/core.js:3712 src/js/core.js:3747 src/js/core.js:3798
 msgid "This pattern is invalid."
 msgstr "Αυτό το πρότυπο δεν είναι έγκυρη."
 
-#: src/js/core.js:3654 src/js/core.js:3689 src/js/core.js:3724 src/js/core.js:3775
+#: src/js/core.js:3681 src/js/core.js:3716 src/js/core.js:3751 src/js/core.js:3802
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Αυτό το μοτίβο θα είναι άκυρη χωρίς τους φακέλους, χρησιμοποιώντας το θα αναγκάσει «Ισιώστε» για όλες τις παραστάσεις."
 
-#: src/js/core.js:3658 src/js/core.js:3693 src/js/core.js:3728 src/js/core.js:3780
+#: src/js/core.js:3685 src/js/core.js:3720 src/js/core.js:3755 src/js/core.js:3807
 msgid "This pattern is valid."
 msgstr "Αυτό το μοτίβο είναι έγκυρη."
 
-#: src/js/core.js:4104
+#: src/js/core.js:4131
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> επιβεβαιώστε εξουσιοδότησης"
 
-#: src/js/core.js:4161 src/js/core.js:4215
+#: src/js/core.js:4188 src/js/core.js:4242
 msgid "Please fill in the Popcorn IP address"
 msgstr "Παρακαλούμε συμπληρώστε τη διεύθυνση IP του ποπ κορν"
 
-#: src/js/core.js:4398
+#: src/js/core.js:4425
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Ελέγξτε το όνομα μαύρη λίστα? η τιμή πρέπει να είναι ένα γυμνοσάλιαγκα trakt"
 
-#: src/js/core.js:4430
+#: src/js/core.js:4457
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4433
+#: src/js/core.js:4460
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4435
+#: src/js/core.js:4462
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4441
+#: src/js/core.js:4468
 msgid "Enter an email address to send the test to:"
 msgstr "Πληκτρολογήστε μια διεύθυνση ηλεκτρονικού ταχυδρομείου για να στείλετε το τεστ για να:"
 
-#: src/js/core.js:4443
+#: src/js/core.js:4470
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4513
+#: src/js/core.js:4540
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Λίστα συσκευών ενημερώνεται. Παρακαλώ επιλέξτε μια συσκευή για να ωθήσει."
 
-#: src/js/core.js:4574
+#: src/js/core.js:4601
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Δεν μπορείτε να δώσετε ένα κλειδί Pushbullet api"
 
-#: src/js/core.js:4604
+#: src/js/core.js:4631
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Μην ξεχάσετε να αποθηκεύσετε τις ρυθμίσεις σας με τη νέα pushbullet."
 
-#: src/js/core.js:4676
+#: src/js/core.js:4703
 msgid "Select backup folder to save to"
 msgstr "Επιλέξτε το φάκελο αντιγράφων ασφαλείας για να αποθηκεύσετε"
 
-#: src/js/core.js:4681
+#: src/js/core.js:4708
 msgid "Select backup files to restore"
 msgstr "Επιλέξτε τα αρχεία αντιγράφων ασφαλείας για επαναφορά"
 
-#: src/js/core.js:5226
+#: src/js/core.js:5253
 msgid "No providers available to configure."
 msgstr "Υπάρχουν διαθέσιμες για να ρυθμίσετε παροχείς."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5436
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5463
 msgid "Mass Delete"
 msgstr "Μαζική διαγραφή"
 
-#: src/js/core.js:5437
+#: src/js/core.js:5464
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Έχετε επιλέξει να διαγράψετε παρουσίαζει(-ουν).  Είστε βέβαιοι ότι θέλετε να συνεχίσετε; Όλα τα αρχεία θα αφαιρεθεί από το σύστημά σας."
 
-#: src/js/core.js:5514
+#: src/js/core.js:5541
 msgid "DELETED"
 msgstr ""
 
@@ -358,7 +358,7 @@ msgid "Parameters"
 msgstr "Παράμετροι"
 
 #: sickrage/core/webserver/views/api_builder.mako:72
-#: sickrage/core/webserver/views/home/display_show.mako:562
+#: sickrage/core/webserver/views/home/display_show.mako:568
 #: sickrage/core/webserver/views/home/imdb_shows.mako:11
 #: sickrage/core/webserver/views/home/index.mako:25
 #: sickrage/core/webserver/views/home/trakt_shows.mako:20
@@ -475,7 +475,7 @@ msgstr "Χρόνος"
 
 #: sickrage/core/webserver/views/history.mako:55
 #: sickrage/core/webserver/views/history.mako:119
-#: sickrage/core/webserver/views/home/display_show.mako:558
+#: sickrage/core/webserver/views/home/display_show.mako:564
 #: sickrage/core/webserver/views/home/test_renaming.mako:100
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:78
 msgid "Episode"
@@ -499,7 +499,7 @@ msgstr "Ποιότητα"
 
 #: sickrage/core/common.py:181 sickrage/core/common.py:616
 #: sickrage/core/webserver/views/history.mako:120
-#: sickrage/core/webserver/views/layouts/main.mako:382
+#: sickrage/core/webserver/views/layouts/main.mako:385
 msgid "Snatched"
 msgstr "Άρπαξε"
 
@@ -754,25 +754,25 @@ msgid "when launching SickRage interface"
 msgstr "κατά την εκκίνηση του SickRage διασύνδεση"
 
 #: sickrage/core/webserver/views/config/general.mako:143
-#: sickrage/core/webserver/views/layouts/main.mako:129
-#: sickrage/core/webserver/views/layouts/main.mako:375
+#: sickrage/core/webserver/views/layouts/main.mako:132
+#: sickrage/core/webserver/views/layouts/main.mako:378
 msgid "Shows"
 msgstr "Δείχνει"
 
 #: sickrage/core/webserver/views.py:544 sickrage/core/webserver/views.py:545
 #: sickrage/core/webserver/views/config/general.mako:146
-#: sickrage/core/webserver/views/layouts/main.mako:211
+#: sickrage/core/webserver/views/layouts/main.mako:214
 msgid "Schedule"
 msgstr "Χρονοδιάγραμμα"
 
 #: sickrage/core/webserver/views.py:3657 sickrage/core/webserver/views.py:3658
 #: sickrage/core/webserver/views/config/general.mako:149
-#: sickrage/core/webserver/views/layouts/main.mako:215
+#: sickrage/core/webserver/views/layouts/main.mako:218
 msgid "History"
 msgstr "Ιστορία"
 
 #: sickrage/core/webserver/views/config/general.mako:152
-#: sickrage/core/webserver/views/layouts/main.mako:278
+#: sickrage/core/webserver/views/layouts/main.mako:281
 msgid "IRC"
 msgstr "IRC"
 
@@ -3282,7 +3282,7 @@ msgstr "Episode_Name"
 #: sickrage/core/webserver/views/config/postprocessing.mako:805
 #: sickrage/core/webserver/views/config/postprocessing.mako:1018
 #: sickrage/core/webserver/views/config/postprocessing.mako:1258
-#: sickrage/core/webserver/views/home/display_show.mako:215
+#: sickrage/core/webserver/views/home/display_show.mako:216
 msgid "Quality:"
 msgstr "Ποιότητα:"
 
@@ -3573,7 +3573,7 @@ msgstr "NZB/Torrent πάροχοι μπορούν να επιλεχτούν γι
 
 #: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:3969
 #: sickrage/core/webserver/views/config/providers.mako:76
-#: sickrage/core/webserver/views/layouts/main.mako:240
+#: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
 msgstr "Αναζήτηση πελατών"
 
@@ -4360,7 +4360,7 @@ msgstr "Δοκιμή σύνδεσης"
 #: sickrage/core/webserver/api.py:1017
 #: sickrage/core/webserver/views/config/subtitles.mako:10
 #: sickrage/core/webserver/views/config/subtitles.mako:26
-#: sickrage/core/webserver/views/home/display_show.mako:726
+#: sickrage/core/webserver/views/home/display_show.mako:732
 msgid "Subtitles Search"
 msgstr "Υπότιτλους αναζήτησης"
 
@@ -4437,7 +4437,7 @@ msgid "The directory where SickRage should store your"
 msgstr "Ο κατάλογος όπου θα πρέπει να αποθηκεύσετε τα SickRage σας"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:128
-#: sickrage/core/webserver/views/home/display_show.mako:566
+#: sickrage/core/webserver/views/home/display_show.mako:572
 #: sickrage/core/webserver/views/home/edit_show.mako:148
 #: sickrage/core/webserver/views/includes/add_show_options.mako:10
 #: sickrage/core/webserver/views/manage/mass_edit.mako:278
@@ -4604,227 +4604,227 @@ msgstr "Εμφάνιση αφιερώματα:"
 msgid "Season:"
 msgstr "Σεζόν:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:138
+#: sickrage/core/webserver/views/home/display_show.mako:134
 msgid "minutes"
 msgstr "λεπτά"
 
-#: sickrage/core/webserver/views/home/display_show.mako:140
+#: sickrage/core/webserver/views/home/display_show.mako:136
 msgid "UNKNOWN"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:232
+#: sickrage/core/webserver/views/home/display_show.mako:233
 msgid "Show Status:"
 msgstr "Εμφάνιση κατάστασης:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:238
-#: sickrage/core/webserver/views/home/display_show.mako:244
-#: sickrage/core/webserver/views/home/display_show.mako:249
+#: sickrage/core/webserver/views/home/display_show.mako:239
+#: sickrage/core/webserver/views/home/display_show.mako:245
+#: sickrage/core/webserver/views/home/display_show.mako:250
 msgid "Originally Airs:"
 msgstr "Αρχικά βγήκε στον αέρα:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:256
+#: sickrage/core/webserver/views/home/display_show.mako:257
 msgid "Default EP Status:"
 msgstr "Προεπιλεγμένη κατάσταση EP:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:261
+#: sickrage/core/webserver/views/home/display_show.mako:262
 msgid "Location:"
 msgstr "Τοποθεσία:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:265
+#: sickrage/core/webserver/views/home/display_show.mako:266
 #: sickrage/core/webserver/views/home/status.mako:219
 #: sickrage/core/webserver/views/home/status.mako:230
 msgid "Missing"
 msgstr "Λείπει"
 
-#: sickrage/core/webserver/views/home/display_show.mako:270
+#: sickrage/core/webserver/views/home/display_show.mako:271
 msgid "Size:"
 msgstr "Μέγεθος:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:275
+#: sickrage/core/webserver/views/home/display_show.mako:276
 msgid "Scene Name:"
 msgstr "Όνομα σκηνή:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:280
+#: sickrage/core/webserver/views/home/display_show.mako:281
 msgid "Search Delay:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:286
+#: sickrage/core/webserver/views/home/display_show.mako:287
 msgid "Required Words:"
 msgstr "Λέξεις που απαιτούνται:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:293
+#: sickrage/core/webserver/views/home/display_show.mako:294
 msgid "Ignored Words:"
 msgstr "Λέξεις που παραβλέφθηκαν:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:300
+#: sickrage/core/webserver/views/home/display_show.mako:301
 msgid "Wanted Group"
 msgstr "Ομάδα ήθελε"
 
-#: sickrage/core/webserver/views/home/display_show.mako:309
+#: sickrage/core/webserver/views/home/display_show.mako:310
 msgid "Unwanted Group"
 msgstr "Ανεπιθύμητα ομάδα"
 
-#: sickrage/core/webserver/views/home/display_show.mako:322
+#: sickrage/core/webserver/views/home/display_show.mako:323
 msgid "Info Language:"
 msgstr "Πληροφορίες γλώσσας:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:329
+#: sickrage/core/webserver/views/home/display_show.mako:330
 msgid "Subtitles:"
 msgstr "Υπότιτλοι:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:336
+#: sickrage/core/webserver/views/home/display_show.mako:337
 msgid "Subtitles Metadata:"
 msgstr "Υπότιτλοι μετα-δεδομένων:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:342
+#: sickrage/core/webserver/views/home/display_show.mako:343
 msgid "Season Folders:"
 msgstr "Σεζόν φακέλους:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:348
+#: sickrage/core/webserver/views/home/display_show.mako:349
 msgid "Paused:"
 msgstr "Παύση:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:354
+#: sickrage/core/webserver/views/home/display_show.mako:355
 msgid "Air-by-Date:"
 msgstr "Air ημερομηνία:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:360
+#: sickrage/core/webserver/views/home/display_show.mako:361
 msgid "Sports:"
 msgstr "Σπορ:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:366
+#: sickrage/core/webserver/views/home/display_show.mako:367
 msgid "Anime:"
 msgstr "Κινούμενο Σχέδιο:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:372
+#: sickrage/core/webserver/views/home/display_show.mako:373
 msgid "DVD Order:"
 msgstr "Παραγγελία DVD:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:378
+#: sickrage/core/webserver/views/home/display_show.mako:379
 msgid "Scene Numbering:"
 msgstr "Σκηνή αρίθμηση:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:384
+#: sickrage/core/webserver/views/home/display_show.mako:385
 msgid "Skip Downloaded:"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:425
+#: sickrage/core/webserver/views/home/display_show.mako:404
 msgid "Missed:"
 msgstr "Χάσει:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:429
+#: sickrage/core/webserver/views/home/display_show.mako:408
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:24
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:65
 msgid "Wanted:"
 msgstr "Ήθελε:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:433
+#: sickrage/core/webserver/views/home/display_show.mako:412
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:25
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:67
 msgid "Low Quality:"
 msgstr "Χαμηλής ποιότητας:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:437
+#: sickrage/core/webserver/views/home/display_show.mako:416
 msgid "Downloaded:"
 msgstr "Κατέβηκε:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:441
+#: sickrage/core/webserver/views/home/display_show.mako:420
 msgid "Skipped:"
 msgstr "Που παραλείφθηκαν:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:446
+#: sickrage/core/webserver/views/home/display_show.mako:425
 msgid "Snatched:"
 msgstr "Άρπαξε:"
 
-#: sickrage/core/webserver/views/home/display_show.mako:451
-msgid "Columns"
-msgstr ""
-
-#: sickrage/core/webserver/views/home/display_show.mako:454
+#: sickrage/core/webserver/views/home/display_show.mako:434
 msgid "Select Episodes"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:4926
-#: sickrage/core/webserver/views/home/display_show.mako:457
+#: sickrage/core/webserver/views/home/display_show.mako:437
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
 msgstr "Απαλοιφή όλων"
 
-#: sickrage/core/webserver/views/home/display_show.mako:530
+#: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Specials"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:530
+#: sickrage/core/webserver/views/home/display_show.mako:532
 msgid "Season"
 msgstr ""
 
-#: sickrage/core/webserver/views/home/display_show.mako:537
+#: sickrage/core/webserver/views/home/display_show.mako:539
 msgid "Hide Episodes"
 msgstr "Απόκρυψη επεισόδια"
 
-#: sickrage/core/webserver/views/home/display_show.mako:542
+#: sickrage/core/webserver/views/home/display_show.mako:544
 msgid "Show Episodes"
 msgstr "Εμφάνιση επεισοδίων"
 
-#: sickrage/core/webserver/views/home/display_show.mako:556
+#: sickrage/core/webserver/views/home/display_show.mako:548
+msgid "Columns"
+msgstr ""
+
+#: sickrage/core/webserver/views/home/display_show.mako:562
 msgid "NFO"
 msgstr "NFO"
 
-#: sickrage/core/webserver/views/home/display_show.mako:557
+#: sickrage/core/webserver/views/home/display_show.mako:563
 msgid "TBN"
 msgstr "TBN"
 
-#: sickrage/core/webserver/views/home/display_show.mako:559
+#: sickrage/core/webserver/views/home/display_show.mako:565
 msgid "Absolute"
 msgstr "Απόλυτη"
 
-#: sickrage/core/webserver/views/home/display_show.mako:560
+#: sickrage/core/webserver/views/home/display_show.mako:566
 #: sickrage/core/webserver/views/manage/mass_update.mako:70
 msgid "Scene"
 msgstr "Σκηνή"
 
-#: sickrage/core/webserver/views/home/display_show.mako:561
+#: sickrage/core/webserver/views/home/display_show.mako:567
 msgid "Scene Absolute"
 msgstr "Η απόλυτη σκηνή"
 
-#: sickrage/core/webserver/views/home/display_show.mako:563
+#: sickrage/core/webserver/views/home/display_show.mako:569
 #: sickrage/core/webserver/views/home/index.mako:289
 #: sickrage/core/webserver/views/manage/failed_downloads.mako:35
 msgid "Size"
 msgstr "Μέγεθος"
 
-#: sickrage/core/webserver/views/home/display_show.mako:564
+#: sickrage/core/webserver/views/home/display_show.mako:570
 #: sickrage/core/webserver/views/manage/backlog_overview.mako:80
 msgid "Airdate"
 msgstr "Airdate"
 
-#: sickrage/core/webserver/views/home/display_show.mako:565
-#: sickrage/core/webserver/views/home/display_show.mako:676
+#: sickrage/core/webserver/views/home/display_show.mako:571
+#: sickrage/core/webserver/views/home/display_show.mako:682
 msgid "Download"
 msgstr "Λήψη"
 
 #: sickrage/core/webserver/views.py:1043 sickrage/core/webserver/views.py:1044
-#: sickrage/core/webserver/views/home/display_show.mako:567
+#: sickrage/core/webserver/views/home/display_show.mako:573
 #: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: sickrage/core/webserver/views/home/display_show.mako:569
+#: sickrage/core/webserver/views/home/display_show.mako:575
 #: sickrage/core/webserver/views/home/new_show.mako:125
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: sickrage/core/webserver/views/home/display_show.mako:662
+#: sickrage/core/webserver/views/home/display_show.mako:668
 msgid "Never"
 msgstr "Ποτέ δεν"
 
 #: sickrage/core/common.py:614
-#: sickrage/core/webserver/views/home/display_show.mako:692
+#: sickrage/core/webserver/views/home/display_show.mako:698
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: sickrage/core/webserver/views/home/display_show.mako:712
+#: sickrage/core/webserver/views/home/display_show.mako:718
 msgid "Retry Download"
 msgstr "Επανάληψη λήψης"
 
@@ -4957,7 +4957,7 @@ msgstr "Μια «πλήρη ενημέρωση δύναμη» είναι ανα�
 #: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4863
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
-#: sickrage/core/webserver/views/layouts/main.mako:258
+#: sickrage/core/webserver/views/layouts/main.mako:261
 #: sickrage/core/webserver/views/manage/mass_edit.mako:224
 #: sickrage/core/webserver/views/manage/mass_update.mako:71
 msgid "Anime"
@@ -5151,7 +5151,7 @@ msgstr "Λήψεις"
 
 #: sickrage/core/webserver/views/home/index.mako:290
 #: sickrage/core/webserver/views/home/status.mako:42
-#: sickrage/core/webserver/views/layouts/main.mako:376
+#: sickrage/core/webserver/views/layouts/main.mako:379
 msgid "Active"
 msgstr "Ενεργό"
 
@@ -5622,185 +5622,185 @@ msgstr "Όλα τα μη-απόλυτη φάκελο τοποθεσίες είν
 msgid "SiCKRAGE"
 msgstr "SiCKRAGE"
 
-#: sickrage/core/webserver/views/layouts/main.mako:134
+#: sickrage/core/webserver/views/layouts/main.mako:137
 msgid "Show List"
 msgstr "Εμφάνιση λίστας"
 
 #: sickrage/core/webserver/views.py:2335 sickrage/core/webserver/views.py:2336
-#: sickrage/core/webserver/views/layouts/main.mako:137
+#: sickrage/core/webserver/views/layouts/main.mako:140
 msgid "Add Shows"
 msgstr "Προσθέστε εκπομπές"
 
-#: sickrage/core/webserver/views/layouts/main.mako:140
+#: sickrage/core/webserver/views/layouts/main.mako:143
 msgid "Manual Post-Processing"
 msgstr "Εγχειρίδιο μετα-επεξεργασία"
 
-#: sickrage/core/webserver/views/layouts/main.mako:158
+#: sickrage/core/webserver/views/layouts/main.mako:161
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:37
 #: sickrage/core/webserver/views/manage/subtitles_missed.mako:49
 msgid "Manage"
 msgstr "Διαχείριση"
 
 #: sickrage/core/webserver/views.py:3479 sickrage/core/webserver/views.py:3480
-#: sickrage/core/webserver/views/layouts/main.mako:163
+#: sickrage/core/webserver/views/layouts/main.mako:166
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Μαζικής ενημέρωσης"
 
 #: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
-#: sickrage/core/webserver/views/layouts/main.mako:166
+#: sickrage/core/webserver/views/layouts/main.mako:169
 msgid "Backlog Overview"
 msgstr "Επισκόπηση της λίστας εκκρεμοτήτων"
 
 #: sickrage/core/webserver/views.py:3529 sickrage/core/webserver/views.py:3530
-#: sickrage/core/webserver/views/layouts/main.mako:169
+#: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Manage Queues"
 msgstr "Διαχείριση ουρών"
 
-#: sickrage/core/webserver/views/layouts/main.mako:172
+#: sickrage/core/webserver/views/layouts/main.mako:175
 msgid "Episode Status Management"
 msgstr "Διαχείριση κατάστασης επεισόδιο"
 
-#: sickrage/core/webserver/views/layouts/main.mako:176
+#: sickrage/core/webserver/views/layouts/main.mako:179
 msgid "Sync Trakt"
 msgstr "Trakt συγχρονισμού"
 
-#: sickrage/core/webserver/views/layouts/main.mako:181
+#: sickrage/core/webserver/views/layouts/main.mako:184
 msgid "Update PLEX"
 msgstr "Ενημερωμένη έκδοση PLEX"
 
-#: sickrage/core/webserver/views/layouts/main.mako:186
+#: sickrage/core/webserver/views/layouts/main.mako:189
 msgid "Update KODI"
 msgstr "Ενημερωμένη έκδοση KODI"
 
-#: sickrage/core/webserver/views/layouts/main.mako:191
+#: sickrage/core/webserver/views/layouts/main.mako:194
 msgid "Update Emby"
 msgstr "Η ενημερωμένη έκδοση Emby"
 
-#: sickrage/core/webserver/views/layouts/main.mako:196
+#: sickrage/core/webserver/views/layouts/main.mako:199
 msgid "Manage Torrents"
 msgstr "Διαχειριστεί Torrents"
 
 #: sickrage/core/webserver/views.py:3504 sickrage/core/webserver/views.py:3505
-#: sickrage/core/webserver/views/layouts/main.mako:200
+#: sickrage/core/webserver/views/layouts/main.mako:203
 msgid "Failed Downloads"
 msgstr "Αποτυχημένες λήψεις"
 
-#: sickrage/core/webserver/views/layouts/main.mako:204
+#: sickrage/core/webserver/views/layouts/main.mako:207
 msgid "Missed Subtitle Management"
 msgstr "Αναπάντητες υπότιτλος διαχείρισης"
 
-#: sickrage/core/webserver/views/layouts/main.mako:222
+#: sickrage/core/webserver/views/layouts/main.mako:225
 msgid "Config"
 msgstr "Config"
 
 #: sickrage/core/webserver/views.py:3687
-#: sickrage/core/webserver/views/layouts/main.mako:231
+#: sickrage/core/webserver/views/layouts/main.mako:234
 msgid "Help and Info"
 msgstr "Βοήθεια και πληροφορίες"
 
 #: sickrage/core/webserver/views.py:3688
-#: sickrage/core/webserver/views/layouts/main.mako:234
+#: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "Γενικά"
 
-#: sickrage/core/webserver/views/layouts/main.mako:237
+#: sickrage/core/webserver/views/layouts/main.mako:240
 msgid "Backup and Restore"
 msgstr "Δημιουργία αντιγράφων ασφαλείας και επαναφοράς"
 
 #: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4269
-#: sickrage/core/webserver/views/layouts/main.mako:243
+#: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "Υπηρεσίες παροχής αναζήτησης"
 
 #: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4775
-#: sickrage/core/webserver/views/layouts/main.mako:246
+#: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "Ρυθμίσεις υποτίτλων"
 
 #: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4902
-#: sickrage/core/webserver/views/layouts/main.mako:249
+#: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Ρυθμίσεις για την ποιότητα"
 
 #: sickrage/core/webserver/views.py:2299 sickrage/core/webserver/views.py:2300
 #: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4074
-#: sickrage/core/webserver/views/layouts/main.mako:252
+#: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "Μετά την επεξεργασία"
 
 #: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4429
-#: sickrage/core/webserver/views/layouts/main.mako:255
+#: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
 
-#: sickrage/core/webserver/views/layouts/main.mako:267
+#: sickrage/core/webserver/views/layouts/main.mako:270
 msgid "Tools"
 msgstr "Εργαλεία"
 
-#: sickrage/core/webserver/views/layouts/main.mako:281
+#: sickrage/core/webserver/views/layouts/main.mako:284
 msgid "Changelog"
 msgstr "Αρχείο καταγραφής αλλαγών"
 
-#: sickrage/core/webserver/views/layouts/main.mako:285
+#: sickrage/core/webserver/views/layouts/main.mako:288
 msgid "Donate"
 msgstr "Δωρεά"
 
-#: sickrage/core/webserver/views/layouts/main.mako:290
+#: sickrage/core/webserver/views/layouts/main.mako:293
 msgid "View Errors"
 msgstr "Προβολή σφαλμάτων"
 
-#: sickrage/core/webserver/views/layouts/main.mako:297
+#: sickrage/core/webserver/views/layouts/main.mako:300
 msgid "View Warnings"
 msgstr "Δείτε προειδοποιήσεις"
 
-#: sickrage/core/webserver/views/layouts/main.mako:302
+#: sickrage/core/webserver/views/layouts/main.mako:305
 msgid "View Log"
 msgstr "Προβολή αρχείου καταγραφής"
 
-#: sickrage/core/webserver/views/layouts/main.mako:306
+#: sickrage/core/webserver/views/layouts/main.mako:309
 msgid "Check For Updates"
 msgstr "Έλεγχος για ενημερωμένες εκδόσεις"
 
-#: sickrage/core/webserver/views/layouts/main.mako:318
+#: sickrage/core/webserver/views/layouts/main.mako:321
 msgid "Unlink Account"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:322
+#: sickrage/core/webserver/views/layouts/main.mako:325
 msgid "Logout"
 msgstr "Αποσύνδεση"
 
-#: sickrage/core/webserver/views/layouts/main.mako:326
+#: sickrage/core/webserver/views/layouts/main.mako:329
 msgid "Server Status"
 msgstr "Κατάσταση διακομιστή"
 
-#: sickrage/core/webserver/views/layouts/main.mako:384
+#: sickrage/core/webserver/views/layouts/main.mako:387
 msgid "Episodes Downloaded"
 msgstr "Επεισόδια κατεβάσετε"
 
-#: sickrage/core/webserver/views/layouts/main.mako:385
+#: sickrage/core/webserver/views/layouts/main.mako:388
 msgid "Overall Downloaded"
 msgstr "Συνολική λήψη"
 
-#: sickrage/core/webserver/views/layouts/main.mako:390
+#: sickrage/core/webserver/views/layouts/main.mako:393
 #: sickrage/core/webserver/views/manage/queues.mako:35
 msgid "Daily Search:"
 msgstr "Καθημερινή αναζήτηση:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:393
+#: sickrage/core/webserver/views/layouts/main.mako:396
 #: sickrage/core/webserver/views/manage/queues.mako:17
 msgid "Backlog Search:"
 msgstr "Αναζήτηση λίστας εκκρεμοτήτων:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:396
+#: sickrage/core/webserver/views/layouts/main.mako:399
 msgid "Memory used:"
 msgstr ""
 
-#: sickrage/core/webserver/views/layouts/main.mako:400
+#: sickrage/core/webserver/views/layouts/main.mako:403
 msgid "Load time:"
 msgstr "Χρόνος φόρτωσης:"
 
-#: sickrage/core/webserver/views/layouts/main.mako:407
+#: sickrage/core/webserver/views/layouts/main.mako:410
 msgid "Now:"
 msgstr "Τώρα:"
 
