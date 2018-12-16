@@ -98,8 +98,11 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark navbar-default py-0">
             <div class="container-fluid">
-                <a class="navbar-brand" href="${srWebRoot}/home/">
+                <a class="navbar-brand d-none d-xl-block" href="${srWebRoot}/home/">
                     <img alt="SiCKRAGE" src="${srWebRoot}/images/logo.png" style="width: 400px;height: 50px;"/>
+                </a>
+                <a class="navbar-brand d-xl-none" href="${srWebRoot}/home/">
+                    <img alt="SiCKRAGE" src="${srWebRoot}/images/logo-badge.png" style="width: 50px;height: 50px;"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent"

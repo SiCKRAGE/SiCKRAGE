@@ -1,6 +1,7 @@
 # Changelog
 
-- * 9409223 - 2018-12-10: Release v9.4.53 
+- * 8ec11a1 - 2018-12-16: Refactored display show view. Fixed issue with gktorrent. Fixed issue with newpct. 
+- * 91bc24c - 2018-12-10: Release v9.4.53 
 - * 7dd5263 - 2018-12-09: Release v9.4.52 
 - * c65074d - 2018-12-09: Fixed issues with display show poster positioning 
 - * 65486af - 2018-12-09: Release v9.4.51 
