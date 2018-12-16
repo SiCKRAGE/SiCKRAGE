@@ -23,7 +23,7 @@
 
 <%block name="content">
     <div class="row">
-        <div class="col-lg-12 mx-auto">
+        <div class="col mx-auto">
             <div class="row">
                 <!-- Alert -->
                 % if show_message:
@@ -115,11 +115,7 @@
             <div class="row">
                 <div class="col-lg-10 mx-auto">
                     <div class="row mb-1">
-                        <div class="col-auto d-none d-lg-block">
-                            <img class="shadow-lg rounded" style="margin-bottom: -400px"
-                                 src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
-                        </div>
-                        <div class="col">
+                        <div class="col my-auto">
                             <div class="row">
                                 <div class="col-auto">
                                     % if show.imdb_info and 'imdbRating' in show.imdb_info:
@@ -186,7 +182,7 @@
                                                 <a href="${anon_url('http://trakt.tv/shows/popular/?genres=', imdbgenre.lower())}"
                                                    target="_blank"
                                                    title="View other popular ${imdbgenre} shows on trakt.tv.">
-                                                    <li class="fas fa-tag fa-1x badge badge-primary p-2"> ${imdbgenre}</li>
+                                                    <li class="fas fa-tag badge badge-primary p-1"> ${imdbgenre}</li>
                                                 </a>
                                             % endfor
                                         % endif
@@ -194,7 +190,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-auto d-lg-none d-xl-flex">
+                        <div class="col-auto my-auto d-lg-none d-xl-flex">
                             <img class="rounded shadow-lg img-banner"
                                  src="${srWebRoot}${showImage(show.indexerid, 'banner').url}"/>
                         </div>
@@ -202,14 +198,19 @@
                 </div>
             </div>
 
-            <div class="row bg-dark border border-white">
-                <div class="col-lg-6 col-xl-7 offset-0 offset-lg-5 offset-xl-4 offset-xxxl-3">
-                    <div class="row" style="margin-bottom: 100px">
+            <div class="row bg-dark border-top border-bottom border-white  pt-2 pb-2">
+                <div class="col-lg-10 mx-auto">
+                    <div class="row">
+                        <div class="col-auto d-none d-lg-block">
+                            <img class="shadow-lg rounded"
+                                 src="${srWebRoot}${showImage(show.indexerid, 'poster_thumb').url}"/>
+                        </div>
+
                         <div class="col">
-                            <div>
-                                <i>${show.overview}</i>
-                            </div>
-                            <br/>
+                            <p class="text-viewer">
+                                ${show.overview}
+                            </p>
+
                             <table>
                                 <tr>
                                     <td class="show-legend">${_('Quality:')}</td>
@@ -328,62 +329,62 @@
                                     <tr>
                                         <td class="show-legend">${_('Subtitles:')}</td>
                                         <td>
-                                            <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
+                                            <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles)]}"></i>
                                         </td>
                                     </tr>
                                 % endif
                                 <tr>
                                     <td class="show-legend">${_('Subtitles Metadata:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.subtitles_sr_metadata)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Season Folders:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(not show.flatten_folders or sickrage.app.config.naming_force_folders)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Paused:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.paused)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Air-by-Date:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.air_by_date)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Sports:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.is_sports)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Anime:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.is_anime)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('DVD Order:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.dvdorder)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Scene Numbering:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.scene)]}"></i>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="show-legend">${_('Skip Downloaded:')}</td>
                                     <td>
-                                        <i class="fa ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
+                                        <i class="fas ${("fa-times text-danger", "fa-check text-success")[bool(show.skip_downloaded)]}"></i>
                                     </td>
                                 </tr>
                             </table>
@@ -391,78 +392,78 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row bg-dark border border-white">
-        <div class="col-lg-10 mx-auto m-1">
-            <div class="row">
-                <div class="col-md-auto my-auto">
-                    <div class="input-group float-md-left">
-                        <select id="statusSelect" title="Change selected episode statuses" class="form-control">
-                            <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
-                            % if sickrage.app.developer:
-                                <% availableStatus.append(UNAIRED) %>
-                            % endif
-                            % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
-                                % if curStatus not in [DOWNLOADED, ARCHIVED]:
-                                    <option value="${curStatus}">${statusStrings[curStatus]}</option>
-                                % endif
-                            % endfor
-                        </select>
-                        <div class="input-group-append">
-                            <button id="changeStatus" class="btn fas fa-play"></button>
-                        </div>
-                    </div>
-                    <input type="hidden" id="showID" value="${show.indexerid}"/>
-                    <input type="hidden" id="indexer" value="${show.indexer}"/>
-                </div>
-                <div class="col">
-                    <div class="d-inline-flex float-md-right">
-                        <h5 class="my-auto mr-2">
+            <div class="row bg-dark border-top border-bottom border-white p-1">
+                <div class="col-lg-10 mx-auto">
+                    <div class="row">
+                        <div class="col">
+                            <div class="d-inline-flex" id="checkboxControls">
+                                <h5 class="my-auto">
                                     <span class="badge missed">
                                         <input type="checkbox" id="missed" checked/>
                                         ${_('Missed:')} <b>${epCounts[Overview.MISSED]}</b>
                                     </span>
-                            <span class="badge wanted">
+                                    <span class="badge wanted">
                                         <input type="checkbox" id="wanted" checked/>
-                                ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
+                                        ${_('Wanted:')} <b>${epCounts[Overview.WANTED]}</b>
                                     </span>
-                            <span class="badge qual">
+                                    <span class="badge qual">
                                         <input type="checkbox" id="qual" checked/>
-                                ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
+                                        ${_('Low Quality:')} <b>${epCounts[Overview.QUAL]}</b>
                                     </span>
-                            <span class="badge good">
+                                    <span class="badge good">
                                         <input type="checkbox" id="good" checked/>
-                                ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
+                                        ${_('Downloaded:')} <b>${epCounts[Overview.GOOD]}</b>
                                     </span>
-                            <span class="badge skipped">
+                                    <span class="badge skipped">
                                         <input type="checkbox" id="skipped" checked/>
-                                ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
+                                        ${_('Skipped:')} <b>${epCounts[Overview.SKIPPED]}</b>
                                     </span>
-                            <span class="badge snatched">
+                                    <span class="badge snatched">
                                         <input type="checkbox" id="snatched" checked/>
-                                <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
-                                ${_('Snatched:')} <b>${total_snatched}</b>
+                                        <% total_snatched = epCounts[Overview.SNATCHED] + epCounts[Overview.SNATCHED_PROPER] + epCounts[Overview.SNATCHED_BEST] %>
+                                        ${_('Snatched:')} <b>${total_snatched}</b>
                                     </span>
-                        </h5>
-                        <div class="btn-group-md d-sm-inline-flex d-md-inline-block my-auto">
-                            <button class="btn" id="popover">
-                                ${_('Columns')} <b class="fas fa-caret-down"></b>
-                            </button>
-                            <button class="btn seriesCheck">
-                                ${_('Select Episodes')}
-                            </button>
-                            <button class="btn clearAll">
-                                ${_('Clear All')}
-                            </button>
+                                </h5>
+                            </div>
+                        </div>
+
+                        <div class="col-auto my-auto">
+                            <div class="btn-group-sm">
+                                <button class="btn seriesCheck">
+                                    ${_('Select Episodes')}
+                                </button>
+                                <button class="btn clearAll">
+                                    ${_('Clear All')}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-auto my-auto">
+                            <div class="input-group input-group-sm">
+                                <select id="statusSelect" title="Change selected episode statuses"
+                                        class="form-control">
+                                    <% availableStatus = [WANTED, SKIPPED, IGNORED, FAILED] %>
+                                    % if sickrage.app.developer:
+                                        <% availableStatus.append(UNAIRED) %>
+                                    % endif
+                                    % for curStatus in availableStatus + sorted(Quality.DOWNLOADED) + sorted(Quality.ARCHIVED):
+                                        % if curStatus not in [DOWNLOADED, ARCHIVED]:
+                                            <option value="${curStatus}">${statusStrings[curStatus]}</option>
+                                        % endif
+                                    % endfor
+                                </select>
+                                <div class="input-group-append">
+                                    <button id="changeStatus" class="btn fas fa-play"></button>
+                                </div>
+                            </div>
+                            <input type="hidden" id="showID" value="${show.indexerid}"/>
+                            <input type="hidden" id="indexer" value="${show.indexer}"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    </div>
     </div>
 
     <div class="row">
@@ -524,26 +525,31 @@
             % endif
 
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col">
                         <br/>
-                        <h3 style="display: inline;"><a
-                                name="season-${epResult["season"]}"></a>${(_("Specials"), _("Season") + ' ' + str(epResult["season"]))[int
-                        (epResult["season"]) > 0]}</h3>
+                        <h3 style="display: inline;">
+                            <a name="season-${epResult["season"]}"></a>
+                            ${(_("Specials"), _("Season") + ' ' + str(epResult["season"]))[int (epResult["season"]) > 0]}
+                        </h3>
                         % if not sickrage.app.config.display_all_seasons:
                             % if curSeason == -1:
                                 <button id="showseason-${epResult['season']}" type="button"
-                                        class="btn btn-xs text-right"
+                                        class="btn btn-sm text-right"
                                         data-toggle="collapse" data-target="#collapseSeason-${epResult['season']}"
                                         aria-expanded="true">${_('Hide Episodes')}</button>
                             %else:
                                 <button id="showseason-${epResult['season']}" type="button"
-                                        class="btn btn-xs text-right"
+                                        class="btn btn-sm text-right"
                                         data-toggle="collapse"
                                         data-target="#collapseSeason-${epResult['season']}">${_('Show Episodes')}</button>
                             %endif
                         % endif
+                        <button class="btn btn-sm float-right" id="popover">
+                            ${_('Columns')} <b class="fas fa-caret-down"></b>
+                        </button>
                     </div>
                 </div>
+
             <div class="row">
             <div class="col-md-12">
             <div class="table-responsive">

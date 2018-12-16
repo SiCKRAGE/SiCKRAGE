@@ -35,17 +35,17 @@ module.exports = function (grunt) {
         },
         exec: {
             // Translations
-            'crowdin_upload_sources': {cmd: 'venv\\Scripts\\crowdin-cli-py upload sources'},
-            'crowdin_upload_translations': {cmd: 'venv\\Scripts\\crowdin-cli-py upload translations'},
-            'crowdin_download_translations': {cmd: 'venv\\Scripts\\crowdin-cli-py download'},
-            'babel_extract': {cmd: 'venv\\Scripts\\python setup.py extract_messages'},
-            'babel_update': {cmd: 'venv\\Scripts\\python setup.py update_catalog'},
-            'babel_compile': {cmd: 'venv\\Scripts\\python setup.py compile_catalog'},
+            'crowdin_upload_sources': {cmd: 'crowdin-cli-py upload sources'},
+            'crowdin_upload_translations': {cmd: 'crowdin-cli-py upload translations'},
+            'crowdin_download_translations': {cmd: 'crowdin-cli-py download'},
+            'babel_extract': {cmd: 'python setup.py extract_messages'},
+            'babel_update': {cmd: 'python setup.py update_catalog'},
+            'babel_compile': {cmd: 'python setup.py compile_catalog'},
 
             // PyPi Commands
-            'pypi_create': {cmd: 'venv\\Scripts\\python setup.py sdist bdist_wheel'},
-            'pypi_upload': {cmd: 'venv\\Scripts\\twine upload dist/*'},
-            'pypi_cleanup': {cmd: 'venv\\Scripts\\python setup.py clean'},
+            'pypi_create': {cmd: 'python setup.py sdist bdist_wheel'},
+            'pypi_upload': {cmd: 'twine upload dist/*'},
+            'pypi_cleanup': {cmd: 'python setup.py clean'},
 
             // Git Commands
             'git': {

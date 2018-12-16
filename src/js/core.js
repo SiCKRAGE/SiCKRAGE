@@ -53,6 +53,31 @@ $(document).ready(function ($) {
             };
         },
 
+        text_viewer: function () {
+            var minimized_elements = $('p.text-viewer');
+
+            minimized_elements.each(function(){
+                var t = $(this).text();
+                if(t.length < 500) return;
+
+                $(this).html(
+                    t.slice(0,500)+'<span>... </span><a href="#" class="read-more"> Read More</a>'+
+                    '<span style="display:none;">'+ t.slice(500,t.length)+' <a href="#" class="read-less"> Read Less </a></span>'
+                );
+            });
+
+            $('a.read-more', minimized_elements).click(function(event){
+                event.preventDefault();
+                $(this).hide().prev().hide();
+                $(this).next().show();
+            });
+
+            $('a.read-less', minimized_elements).click(function(event){
+                event.preventDefault();
+                $(this).parent().hide().prev().show().prev().show();
+            });
+        },
+
         notify: function (type, title, message) {
             PNotify.modules.Desktop.permission();
             new PNotify({
@@ -513,6 +538,8 @@ $(document).ready(function ($) {
                     $("#changelogModal").find('.modal-body').load(SICKRAGE.srWebRoot + '/changes');
                     $("#changelogModal").modal();
                 });
+
+                SICKRAGE.text_viewer();
             }
         },
 
