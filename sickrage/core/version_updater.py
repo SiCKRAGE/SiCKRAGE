@@ -446,7 +446,7 @@ class GitUpdateManager(UpdateManager):
         # get all new info from server
         output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
-            sickrage.app.log.warning("Unable to contact server, can't check for update")
+            sickrage.app.log.warning("Unable to contact server, can't check for update, Output: {}".format(output))
             return
 
         # get latest commit_hash from remote

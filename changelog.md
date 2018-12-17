@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ae401d - 2018-12-16: Release v9.4.55 
+- * e357517 - 2018-12-17: Added output logging for when version updating fails during GIT 
+- * 3865c15 - 2018-12-16: Release v9.4.55 
 - * 164c01f - 2018-12-16: Moved columns button in display show view. 
 - * 5e64b16 - 2018-12-16: Release v9.4.54 
 - * 76c2230 - 2018-12-16: Refactored display show view. Fixed issue with gktorrent. Fixed issue with newpct. 
