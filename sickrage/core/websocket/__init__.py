@@ -1,6 +1,6 @@
 import json
 
-from tornado.websocket import WebSocketHandler
+from tornado.websocket import WebSocketHandler, WebSocketClosedError
 
 import sickrage
 
@@ -18,11 +18,11 @@ class WebSocketUIHandler(WebSocketHandler):
         """Client connected to the WebSocket."""
         clients.add(self)
 
-        # for n in sickrage.app.alerts.get_notifications(self.request.remote_ip):
-        #     try:
-        #         self.write_message(WebSocketMessage('notification', n.data).json())
-        #     except WebSocketClosedError:
-        #         pass
+        for n in sickrage.app.alerts.get_notifications(self.request.remote_ip):
+            try:
+                self.write_message(WebSocketMessage('notification', n.data).json())
+            except WebSocketClosedError:
+                pass
 
     def on_message(self, message):
         """Received a message from the client."""
