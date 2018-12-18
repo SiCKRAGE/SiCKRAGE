@@ -1,6 +1,7 @@
 # Changelog
 
-- * e357517 - 2018-12-17: Added output logging for when version updating fails during GIT 
+- * 1d012df - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
+- * f1b35f7 - 2018-12-17: Added output logging for when version updating fails during GIT 
 - * 3865c15 - 2018-12-16: Release v9.4.55 
 - * 164c01f - 2018-12-16: Moved columns button in display show view. 
 - * 5e64b16 - 2018-12-16: Release v9.4.54 

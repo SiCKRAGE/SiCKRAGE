@@ -1333,7 +1333,7 @@
                                                 % for git_branch in git_branches:
                                                 <%
                                                     if not sickrage.app.developer and git_branch not in ['master', 'develop']:
-                                                        next
+                                                        continue
                                                 %>
                                                     <option value="${git_branch}" ${('', 'selected')[git_current_branch == git_branch]}>${git_branch}</option>
                                                 % endfor
