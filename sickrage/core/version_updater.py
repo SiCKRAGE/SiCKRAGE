@@ -377,7 +377,7 @@ class UpdateManager(object):
 
     def install_requirements(self):
         for req_file in ['requirements.txt', sickrage.REQS_FILE]:
-            __, __, exit_status = self._pip_cmd(self._pip_path,
+            output, __, exit_status = self._pip_cmd(self._pip_path,
                                                 'install --no-cache-dir -r {}'.format(req_file))
 
             if exit_status != 0:
@@ -390,6 +390,8 @@ class UpdateManager(object):
         sickrage.app.log.warning('Unable to update requirements using {req_file}'.format(**{
             'req_file': sickrage.REQS_FILE
         }))
+
+        sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
 
         return False
 
@@ -447,6 +449,7 @@ class GitUpdateManager(UpdateManager):
         output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
             sickrage.app.log.warning("Unable to contact server, can't check for update")
+            sickrage.app.log.debug("GIT CMD OUTPUT: {}".format(output.strip()))
             return
 
         # get latest commit_hash from remote
