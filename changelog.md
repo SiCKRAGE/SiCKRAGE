@@ -1,6 +1,7 @@
 # Changelog
 
-- * b654124 - 2018-12-18: Version bump 
+- * ca4eb83 - 2018-12-18: Version bump 
+- * a0f802e - 2018-12-18: Version bump 
 - * 2dc5526 - 2018-12-17: Version bump for testing 
 - * 2231b5d - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
 - * 1d012df - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
