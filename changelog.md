@@ -1,6 +1,7 @@
 # Changelog
 
-- * b1187b6 - 2018-12-17: Added code back to carry over notifications when a page refresh occurs 
+- * bbfb36d - 2018-12-17: Pre-Release v9.4.56.dev1 
+- * cda49c8 - 2018-12-17: Added code back to carry over notifications when a page refresh occurs 
 - * 1d012df - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
 - * 3865c15 - 2018-12-16: Release v9.4.55 
 - * 164c01f - 2018-12-16: Moved columns button in display show view. 
