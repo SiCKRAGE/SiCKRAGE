@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.4.56.dev1\n"
+"Project-Id-Version: sickrage 9.4.56.dev2\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-17 21:07-0800\n"
+"POT-Creation-Date: 2018-12-18 11:11-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6302,7 +6302,7 @@ msgstr ""
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:487 sickrage/core/version_updater.py:736
+#: sickrage/core/version_updater.py:490 sickrage/core/version_updater.py:739
 #: sickrage/core/webserver/views.py:1084 sickrage/core/webserver/views.py:1088
 #: sickrage/core/webserver/views.py:1096
 msgid "Updater"
@@ -6357,23 +6357,23 @@ msgid ""
 "Settings->General->Advanced"
 msgstr ""
 
-#: sickrage/core/version_updater.py:460 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:463 sickrage/core/version_updater.py:592
 msgid ""
 "There is a newer version available, version {} &mdash; <a href=\"{}\">Update "
 "Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:488
+#: sickrage/core/version_updater.py:491
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:725
+#: sickrage/core/version_updater.py:728
 msgid ""
 "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a "
 "href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:736
+#: sickrage/core/version_updater.py:739
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

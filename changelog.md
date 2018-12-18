@@ -1,6 +1,7 @@
 # Changelog
 
-- * d1e0a2b - 2018-12-18: Added extra debug logging to version updater. 
+- * b6bd78f - 2018-12-18: Pre-Release v9.4.56.dev2 
+- * c86e064 - 2018-12-18: Added extra debug logging to version updater. 
 - * 65c449e - 2018-12-17: Pre-Release v9.4.56.dev1 
 - * cda49c8 - 2018-12-17: Added code back to carry over notifications when a page refresh occurs 
 - * 1d012df - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
