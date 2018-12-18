@@ -479,10 +479,10 @@
             <%
                 epStr = str(epResult["season"]) + "x" + str(epResult["episode"])
                 if not epStr in epCats:
-                    next
+                    continue
 
                 if not sickrage.app.config.display_show_specials and int(epResult["season"]) == 0:
-                    next
+                    continue
 
                 scene = False
                 scene_anime = False

@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3ae401d - 2018-12-16: Release v9.4.55 
+- * 61140e5 - 2018-12-17: Reverted usage of &#x60;next&#x60; to &#x60;continue&#x60; in mako views 
+- * 3865c15 - 2018-12-16: Release v9.4.55 
 - * 164c01f - 2018-12-16: Moved columns button in display show view. 
 - * 5e64b16 - 2018-12-16: Release v9.4.54 
 - * 76c2230 - 2018-12-16: Refactored display show view. Fixed issue with gktorrent. Fixed issue with newpct. 
