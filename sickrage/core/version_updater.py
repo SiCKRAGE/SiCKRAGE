@@ -378,7 +378,7 @@ class UpdateManager(object):
     def install_requirements(self):
         for req_file in ['requirements.txt', sickrage.REQS_FILE]:
             output, __, exit_status = self._pip_cmd(self._pip_path,
-                                                'install --no-cache-dir -r {}'.format(req_file))
+                                                    'install --no-cache-dir -r {}'.format(req_file))
 
             if exit_status != 0:
                 __, __, exit_status = self._pip_cmd(self._pip_path,
@@ -386,6 +386,9 @@ class UpdateManager(object):
 
             if exit_status == 0:
                 return True
+
+        sickrage.app.alerts.error(_('Updater'),
+                                  _('Failed to update requirements'))
 
         sickrage.app.log.warning('Unable to update requirements using {req_file}'.format(**{
             'req_file': sickrage.REQS_FILE

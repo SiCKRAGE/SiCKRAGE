@@ -1,6 +1,7 @@
 # Changelog
 
-- * b6bd78f - 2018-12-18: Pre-Release v9.4.56.dev2 
+- * 3e9f813 - 2018-12-18: Added notification error alert for requirements installation during version updating 
+- * 8087452 - 2018-12-18: Pre-Release v9.4.56.dev2 
 - * c86e064 - 2018-12-18: Added extra debug logging to version updater. 
 - * 65c449e - 2018-12-17: Pre-Release v9.4.56.dev1 
 - * cda49c8 - 2018-12-17: Added code back to carry over notifications when a page refresh occurs 
