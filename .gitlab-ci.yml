@@ -1,28 +1,26 @@
-image: docker:latest
-
-services:
-  - name: docker:dind
-
 before_script:
   - apk add --no-cache py-pip
-  - pip install docker-compose
-  - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
 
-build-master:
+variables:
+  CONTAINER_IMAGE: sickrage/sickrage:`cat sickrage/version.txt`
+  CONTAINER_IMAGE_LATEST: sickrage/sickrage:latest
+
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+  - docker:dind
+
+build:
   stage: build
+  image: docker:latest
   script:
-    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` -t sickrage/sickrage:latest .
-    - docker push "sickrage/sickrage:latest"
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host -t $CONTAINER_IMAGE_LATEST .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_LATEST}
   only:
     - master
   except:
     - tags
-
-#build-dev:
-#  stage: build
-#  script:
-#    - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` -t sickrage/sickrage:$CI_COMMIT_REF_SLUG .
-#    - docker push sickrage/sickrage:$CI_COMMIT_REF_SLUG
-#  except:
-#    - master
-#    - tags
