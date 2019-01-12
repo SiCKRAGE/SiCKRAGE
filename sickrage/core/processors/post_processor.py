@@ -1138,7 +1138,6 @@ class PostProcessor(object):
                     raise EpisodePostProcessingFailedException("File is locked for reading")
                 self._copy(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                            sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
-                self._add_processed_marker_file(self.file_path)
             elif self.process_method == self.PROCESS_METHOD_MOVE:
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
@@ -1147,23 +1146,23 @@ class PostProcessor(object):
             elif self.process_method == self.PROCESS_METHOD_HARDLINK:
                 self._hardlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                                sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
-                self._add_processed_marker_file(self.file_path)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK:
                 if isFileLocked(self.file_path, True):
                     raise EpisodePostProcessingFailedException("File is locked for reading/writing")
                 self._moveAndSymlink(self.file_path, dest_path, new_base_name,
                                      sickrage.app.config.move_associated_files,
                                      sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
-                self._add_processed_marker_file(self.file_path)
             elif self.process_method == self.PROCESS_METHOD_SYMLINK_REVERSED:
                 self._symlink(self.file_path, dest_path, new_base_name, sickrage.app.config.move_associated_files,
                               sickrage.app.config.use_subtitles and ep_obj.show.subtitles)
-                self._add_processed_marker_file(self.file_path)
             else:
                 sickrage.app.log.error("Unknown process method: " + str(self.process_method))
                 raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
         except (OSError, IOError):
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
+
+        # add processed marker file
+        self._add_processed_marker_file(self.file_path)
 
         # download subtitles
         if sickrage.app.config.use_subtitles and ep_obj.show.subtitles:
