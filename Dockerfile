@@ -9,7 +9,7 @@ LABEL build_version="Version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 # install app
 COPY . /opt/sickrage/
 
-RUN apk add --no-cache build-base
+RUN apk add --no-cache build-base git
 RUN pip install -U pip setuptools
 RUN pip install -r /opt/sickrage/requirements.txt
 
