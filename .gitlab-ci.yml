@@ -16,7 +16,7 @@ build:
   image: docker:latest
   script:
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build -t $CONTAINER_IMAGE_LATEST .
+    - docker build --network host -t $CONTAINER_IMAGE_LATEST .
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_LATEST}
