@@ -12,7 +12,9 @@ build-master:
   stage: build
   script:
     - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` --build-arg VERSION=`cat sickrage/version.txt` -t sickrage/sickrage:latest .
-    - docker push "sickrage/sickrage:latest"
+    - docker tag sickrage/sickrage:`cat sickrage/version.txt`
+    - docker push sickrage/sickrage:`cat sickrage/version.txt`
+    - docker push sickrage/sickrage:latest
   only:
     - master
   except:
