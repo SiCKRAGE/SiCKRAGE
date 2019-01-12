@@ -2,7 +2,7 @@ before_script:
   - apk add --no-cache py-pip
 
 variables:
-  CONTAINER_IMAGE: sickrage/sickrage:`cat sickrage/version.txt`
+  CONTAINER_IMAGE: sickrage/sickrage:${cat sickrage/version.txt}
   CONTAINER_IMAGE_LATEST: sickrage/sickrage:latest
 
   DOCKER_DRIVER: overlay2
