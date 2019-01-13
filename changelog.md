@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7b6b1aa - 2019-01-12: Pre-Release v9.4.56.dev4 
+- * bc951ab - 2019-01-12: Added static app_id to RARBG torrent provider 
+- * 14f8938 - 2019-01-12: Pre-Release v9.4.56.dev4 
 - * c0aa31a - 2019-01-12: Added branch version checking for source installs 
 - * 79db85e - 2019-01-12: Pre-Release v9.4.56.dev3 
 - * a26f1df - 2019-01-12: Building of DEV docker images now implemented 

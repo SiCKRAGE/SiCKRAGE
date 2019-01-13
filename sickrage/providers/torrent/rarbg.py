@@ -43,6 +43,8 @@ class RarbgProvider(TorrentProvider):
         self.token = None
         self.token_expires = None
 
+        self.app_id = 'sickrage-{}'.format(uuid.uuid1())
+
         self.proper_strings = ['{{PROPER|REPACK|REAL|RERIP}}']
 
         self.cache = TVCache(self)
@@ -54,7 +56,7 @@ class RarbgProvider(TorrentProvider):
         login_params = {
             'get_token': 'get_token',
             'format': 'json',
-            'app_id': 'sickrage-{}'.format(uuid.uuid1()),
+            'app_id': self.app_id,
         }
 
         try:
@@ -80,7 +82,7 @@ class RarbgProvider(TorrentProvider):
 
         # Search Params
         search_params = {
-            'app_id': 'sickrage',
+            'app_id': self.app_id,
             'category': 'tv',
             'min_seeders': try_int(self.minseed),
             'min_leechers': try_int(self.minleech),
