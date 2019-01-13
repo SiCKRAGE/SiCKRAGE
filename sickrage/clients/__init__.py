@@ -200,13 +200,13 @@ class GenericClient(object):
 
         try:
             self.response = self.session.request(method.upper(),
-                                                                 self.url,
-                                                                 params=params,
-                                                                 data=data,
-                                                                 auth=(self.username, self.password),
-                                                                 timeout=120,
-                                                                 verify=False,
-                                                                 *args, **kwargs)
+                                                 self.url,
+                                                 params=params,
+                                                 data=data,
+                                                 auth=(self.username, self.password),
+                                                 timeout=120,
+                                                 verify=False,
+                                                 *args, **kwargs)
         except Exception:
             return False
 

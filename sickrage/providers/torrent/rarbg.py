@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 
 import datetime
+import uuid
 from time import sleep
 
 import sickrage
@@ -53,7 +54,7 @@ class RarbgProvider(TorrentProvider):
         login_params = {
             'get_token': 'get_token',
             'format': 'json',
-            'app_id': 'sickrage',
+            'app_id': 'sickrage-{}'.format(uuid.uuid1()),
         }
 
         try:
