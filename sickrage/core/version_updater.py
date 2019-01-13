@@ -580,10 +580,10 @@ class SourceUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/sickrage/version.txt"
+        git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/sickrage/version.txt"
 
         try:
-            return WebSession().get(git_version_url).text
+            return WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
         except Exception:
             return self._find_installed_version()
 
