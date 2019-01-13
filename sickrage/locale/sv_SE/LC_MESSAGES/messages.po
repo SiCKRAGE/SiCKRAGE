@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-18 11:11-0800\n"
-"PO-Revision-Date: 2018-12-18 19:14\n"
+"POT-Creation-Date: 2019-01-12 20:26-0800\n"
+"PO-Revision-Date: 2019-01-13 04:41\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -6142,9 +6142,9 @@ msgstr "Avsnitt ryckt"
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:490 sickrage/core/version_updater.py:739
-#: sickrage/core/webserver/views.py:1084 sickrage/core/webserver/views.py:1088
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
+#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1084
+#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
 
@@ -6192,19 +6192,23 @@ msgstr ""
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Kunde inte hitta din programfil för git - Välj sökvägen till den på inställningar-> Allmänt-> Avancerat"
 
-#: sickrage/core/version_updater.py:463 sickrage/core/version_updater.py:592
+#: sickrage/core/version_updater.py:391
+msgid "Failed to update requirements"
+msgstr ""
+
+#: sickrage/core/version_updater.py:466 sickrage/core/version_updater.py:595
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Det finns en nyare version tillgänglig, version {} &mdash; <a href=\"{}\">Uppdatera nu</a>"
 
-#: sickrage/core/version_updater.py:491
+#: sickrage/core/version_updater.py:494
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:728
+#: sickrage/core/version_updater.py:731
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Ny uppdatering för SiCKRAGE finns på PyPi-servrar, version {} &mdash; <a href=\"{}\">Uppdatera nu</a>"
 
-#: sickrage/core/version_updater.py:739
+#: sickrage/core/version_updater.py:742
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

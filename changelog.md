@@ -1,6 +1,7 @@
 # Changelog
 
-- * f2f18e5 - 2019-01-12: Building of DEV docker images now implemented 
+- * 7a85b32 - 2019-01-12: Pre-Release v9.4.56.dev3 
+- * a26f1df - 2019-01-12: Building of DEV docker images now implemented 
 - * baf04a1 - 2019-01-12: Fixed issue with connecting to RARBG torrent provider 
 - * 831f077 - 2019-01-13: Update .gitlab-ci.yml 
 - * 7c6290c - 2019-01-13: Update .gitlab-ci.yml 
