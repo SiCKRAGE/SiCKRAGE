@@ -3,7 +3,6 @@ before_script:
 
 variables:
   CONTAINER_IMAGE: sickrage/sickrage
-  CONTAINER_IMAGE_LATEST: sickrage/sickrage:latest
 
   DOCKER_DRIVER: overlay2
   DOCKER_HOST: tcp://localhost:2375
@@ -17,10 +16,10 @@ build:
   script:
     - echo $CONTAINER_IMAGE
     - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
-    - docker build --network host -t $CONTAINER_IMAGE_LATEST .
-    - docker tag ${CONTAINER_IMAGE}:$(cat sickrage/version.txt) ${CONTAINER_IMAGE_LATEST}
-    - docker push ${CONTAINER_IMAGE}:$(cat sickrage/version.txt)
-    - docker push ${CONTAINER_IMAGE_LATEST}
+    - docker build --network host -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:latest
   only:
     - master
   except:
