@@ -320,7 +320,7 @@
                                             <div class="col-auto justify-content-center align-self-center">
                                                 <a href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
                                                     <img class="rounded shadow"
-                                                         src="${srWebRoot}${srWebRoot}${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster']).url}"/>
+                                                         src="${srWebRoot}${showImage(cur_result['showid'], (layout, 'poster_thumb')[layout == 'poster']).url}"/>
                                                 </a>
                                             </div>
                                             <div class="col text-dark font-weight-bold">
@@ -440,7 +440,7 @@
                                                                     <a title="${cur_result['show_name']}"
                                                                        href="${srWebRoot}/home/displayShow?show=${cur_result['showid']}">
                                                                         <img class="rounded shadow"
-                                                                             src="${srWebRoot}${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb').url}"/>
+                                                                             src="${srWebRoot}${showImage(cur_result['showid'], 'poster_thumb').url}"/>
                                                                     </a>
                                                                     <div class="small">
                                                                     <span class="airtime">
