@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4d59361 - 2019-01-12: Pre-Release v9.4.56.dev5 
+- * 985021c - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
+- * 25bcd7f - 2019-01-12: Pre-Release v9.4.56.dev5 
 - * c94aafe - 2019-01-12: Added static app_id to RARBG torrent provider 
 - * 14f8938 - 2019-01-12: Pre-Release v9.4.56.dev4 
 - * c0aa31a - 2019-01-12: Added branch version checking for source installs 

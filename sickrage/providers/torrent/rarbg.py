@@ -118,7 +118,7 @@ class RarbgProvider(TorrentProvider):
                     continue
 
                 # sleep 5 secs per request
-                sleep(5)
+                sleep(2)
 
                 try:
                     data = self.session.get(self.urls['api'], params=search_params, random_ua=True).json()
