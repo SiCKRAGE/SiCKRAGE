@@ -377,8 +377,8 @@ class UpdateManager(object):
 
     def install_requirements(self):
         for req_file in ['requirements.txt', sickrage.REQS_FILE]:
-            __, __, exit_status = self._pip_cmd(self._pip_path,
-                                                'install --no-cache-dir -r {}'.format(req_file))
+            output, __, exit_status = self._pip_cmd(self._pip_path,
+                                                    'install --no-cache-dir -r {}'.format(req_file))
 
             if exit_status != 0:
                 __, __, exit_status = self._pip_cmd(self._pip_path,
@@ -387,9 +387,14 @@ class UpdateManager(object):
             if exit_status == 0:
                 return True
 
+        sickrage.app.alerts.error(_('Updater'),
+                                  _('Failed to update requirements'))
+
         sickrage.app.log.warning('Unable to update requirements using {req_file}'.format(**{
             'req_file': sickrage.REQS_FILE
         }))
+
+        sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
 
         return False
 
@@ -447,6 +452,7 @@ class GitUpdateManager(UpdateManager):
         output, __, exit_status = self._git_cmd(self._git_path, 'remote update')
         if not exit_status == 0:
             sickrage.app.log.warning("Unable to contact server, can't check for update")
+            sickrage.app.log.debug("GIT CMD OUTPUT: {}".format(output.strip()))
             return
 
         # get latest commit_hash from remote
@@ -574,10 +580,10 @@ class SourceUpdateManager(UpdateManager):
             return False
 
     def _check_for_new_version(self):
-        git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/master/sickrage/version.txt"
+        git_version_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/sickrage/version.txt"
 
         try:
-            return WebSession().get(git_version_url).text
+            return WebSession().get(git_version_url.format(('master', 'develop')['dev' in self.version])).text
         except Exception:
             return self._find_installed_version()
 

@@ -22,5 +22,6 @@ build:
     - docker push $CONTAINER_IMAGE:latest
   only:
     - master
+    - develop
   except:
     - tags

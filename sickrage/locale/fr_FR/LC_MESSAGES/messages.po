@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-16 12:42-0800\n"
-"PO-Revision-Date: 2018-12-16 20:43\n"
+"POT-Creation-Date: 2019-01-20 14:36-0800\n"
+"PO-Revision-Date: 2019-01-20 22:37\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -3062,7 +3062,7 @@ msgstr "Supprimer non les fichiers associés"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:254
 msgid "delete non associated files while post processing?"
-msgstr ""
+msgstr "supprimer les fichier srt/srr/sfv/etc pendant le post-traitement ?"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:260
 msgid "Change File Date"
@@ -3094,15 +3094,15 @@ msgstr "TV téléchargement Dir"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:302
 msgid "Only works with RAR archives"
-msgstr ""
+msgstr "Fonctionne uniquement avec les archives RAR"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:309
 msgid "Unpack Directory"
-msgstr ""
+msgstr "Répertoire de décompression"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:321
 msgid "Choose a path to unpack files, leave blank to unpack in download dir"
-msgstr ""
+msgstr "Choisir un chemin pour décompresser les fichiers, laisser vide pour décompresser dans le répertoire de téléchargement"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:327
 msgid "Delete RAR contents"
@@ -3126,11 +3126,11 @@ msgstr "Peut être substituée à l’aide de manuel Post traitement"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:355
 msgid "Follow symbolic-links"
-msgstr ""
+msgstr "Suivre les liens symboliques"
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:361
 msgid "Enable only if you know what <b>circular symbolic links</b> are,<br/>and can <b>verify that you have none</b>."
-msgstr ""
+msgstr "<b> Experts Seulement. </b> <br> Activer uniquement si vous savez quels sont<b> les liens symboliques circulaires </b>, <br>et vous pouvez <b> vérifier que vous n'en avez pas </b>."
 
 #: sickrage/core/webserver/views/config/postprocessing.mako:368
 msgid "Delete Failed"
@@ -3635,15 +3635,15 @@ msgstr "Mode de recherche secours"
 
 #: sickrage/core/webserver/views/config/providers.mako:246
 msgid "when searching for a complete season depending on search mode you may"
-msgstr ""
+msgstr "lors de la recherche pour une saison complète en fonction du mode de recherche vous pouvez"
 
 #: sickrage/core/webserver/views/config/providers.mako:248
 msgid "return no results, this helps by restarting the search using the opposite"
-msgstr ""
+msgstr "pas de résultats de recherche, ce qui contribue par le redémarrage de la recherche"
 
 #: sickrage/core/webserver/views/config/providers.mako:250
 msgid "search mode."
-msgstr ""
+msgstr "mode de recherche."
 
 #: sickrage/core/webserver/views/config/providers.mako:259
 #: sickrage/core/webserver/views/config/providers.mako:385
@@ -3685,7 +3685,7 @@ msgstr "URL personnalisée :"
 
 #: sickrage/core/webserver/views/config/providers.mako:436
 msgid "Provider custom url"
-msgstr ""
+msgstr "Fournisseur url personnalisée"
 
 #: sickrage/core/webserver/views/config/providers.mako:447
 msgid "Api key:"
@@ -3693,7 +3693,7 @@ msgstr "Clé de l’API :"
 
 #: sickrage/core/webserver/views/config/providers.mako:457
 msgid "Provider API key"
-msgstr ""
+msgstr "Fournisseur de clé API"
 
 #: sickrage/core/webserver/views/config/providers.mako:468
 msgid "Digest:"
@@ -3709,7 +3709,7 @@ msgstr "Hachage :"
 
 #: sickrage/core/webserver/views/config/providers.mako:499
 msgid "Provider hash"
-msgstr ""
+msgstr "Hachage du Fournisseur"
 
 #: sickrage/core/webserver/views/config/providers.mako:520
 msgid "Provider username"
@@ -4335,7 +4335,7 @@ msgstr "où le client torrent sauvera téléchargés (vide pour défaut de clien
 
 #: sickrage/core/webserver/views/config/search.mako:978
 msgid "the destination has to be a shared folder for Synology DS devices"
-msgstr ""
+msgstr "la destination doit être un dossier partagé sur Synology DS"
 
 #: sickrage/core/webserver/views/config/search.mako:1007
 msgid "Start torrent paused"
@@ -4386,7 +4386,7 @@ msgstr "Langues de sous-titres"
 
 #: sickrage/core/webserver/views/config/subtitles.mako:57
 msgid "Leave empty to default language to English."
-msgstr ""
+msgstr "Laisser vide pour la langue par défaut est l'anglais."
 
 #: sickrage/core/webserver/views/config/subtitles.mako:63
 msgid "Subtitles History"
@@ -4554,7 +4554,7 @@ msgstr "Personnaliser les Options"
 
 #: sickrage/core/webserver/views/home/add_existing_shows.mako:49
 msgid "SiCKRAGE can add existing shows, using the current options, by using locally stored NFO/XML metadata to eliminate user interaction. If you would rather have SiCKRAGE prompt you to customize each show, then use the checkbox below."
-msgstr ""
+msgstr "SickRage peut ajouter des séries existantes, en utilisant les options actuelles, à l'aide de métadonnées NFO/XML stockées localement pour éliminer l'interaction utilisateur.\\n Si vous préférez que SickRage vous invite à personnaliser chaque série, utilisez la case ci-dessous."
 
 #: sickrage/core/webserver/views/home/add_existing_shows.mako:56
 msgid "Prompt me to set settings for each show"
@@ -4706,7 +4706,7 @@ msgstr "Scène de numérotation :"
 
 #: sickrage/core/webserver/views/home/display_show.mako:385
 msgid "Skip Downloaded:"
-msgstr ""
+msgstr "Ignorer les épisodes déjà téléchargés:"
 
 #: sickrage/core/webserver/views/home/display_show.mako:404
 msgid "Missed:"
@@ -4738,11 +4738,11 @@ msgstr "Arraché :"
 
 #: sickrage/core/webserver/views/home/display_show.mako:434
 msgid "Filter Columns"
-msgstr ""
+msgstr "Filtrer les colonnes"
 
 #: sickrage/core/webserver/views/home/display_show.mako:437
 msgid "Select Episodes"
-msgstr ""
+msgstr "Sélectionnez les épisodes"
 
 #: sickrage/core/webserver/views.py:4926
 #: sickrage/core/webserver/views/home/display_show.mako:440
@@ -4752,7 +4752,7 @@ msgstr "Effacer tout"
 
 #: sickrage/core/webserver/views/home/display_show.mako:535
 msgid "Specials"
-msgstr ""
+msgstr "Spéciaux"
 
 #: sickrage/core/webserver/views/home/display_show.mako:535
 msgid "Season"
@@ -4851,7 +4851,7 @@ msgstr "Voir la carte"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:63
 msgid "Location for where your show resides on your device"
-msgstr ""
+msgstr "Emplacement ' où votre série réside sur votre appareil"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:72
 #: sickrage/core/webserver/views/includes/add_show_options.mako:108
@@ -4881,7 +4881,7 @@ msgstr ""
 #: sickrage/core/webserver/views/manage/mass_edit.mako:143
 #: sickrage/core/webserver/views/manage/mass_update.mako:73
 msgid "Skip downloaded"
-msgstr ""
+msgstr "Ignorer les épisodes déjà téléchargés"
 
 #: sickrage/core/webserver/views/home/edit_show.mako:141
 msgid "Skips updating quality of old/new downloaded episodes"
@@ -5181,7 +5181,7 @@ msgstr ""
 
 #: sickrage/core/webserver/views/home/new_show.mako:34
 msgid "Custom Options"
-msgstr ""
+msgstr "Options personnalisées"
 
 #: sickrage/core/webserver/views/home/new_show.mako:68
 msgid "Find a show"
@@ -6138,9 +6138,9 @@ msgstr "Épisode arraché"
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:487 sickrage/core/version_updater.py:736
-#: sickrage/core/webserver/views.py:1084 sickrage/core/webserver/views.py:1088
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
+#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1084
+#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
 
@@ -6189,19 +6189,23 @@ msgstr "Impossible de trouver l'exécutable git - Définir le chemin du binaire 
 msgid "Unable to find your pip executable - Set your pip path from Settings->General->Advanced"
 msgstr "Impossible de trouver votre pip exécutable - ensemble votre chemin pip de paramètres-> générale-> avancé"
 
-#: sickrage/core/version_updater.py:460 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:391
+msgid "Failed to update requirements"
+msgstr ""
+
+#: sickrage/core/version_updater.py:466 sickrage/core/version_updater.py:595
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Il y a une version plus récente disponible, la version {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:488
+#: sickrage/core/version_updater.py:494
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:725
+#: sickrage/core/version_updater.py:731
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:736
+#: sickrage/core/version_updater.py:742
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

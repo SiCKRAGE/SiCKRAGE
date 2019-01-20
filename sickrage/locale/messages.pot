@@ -1,14 +1,14 @@
 # Translations template for sickrage.
-# Copyright (C) 2018 SiCKRAGE
+# Copyright (C) 2019 SiCKRAGE
 # This file is distributed under the same license as the sickrage project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sickrage 9.4.55\n"
+"Project-Id-Version: sickrage 9.4.56\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2018-12-16 12:43-0800\n"
+"POT-Creation-Date: 2019-01-20 14:36-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6302,9 +6302,9 @@ msgstr ""
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:487 sickrage/core/version_updater.py:736
-#: sickrage/core/webserver/views.py:1084 sickrage/core/webserver/views.py:1088
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
+#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1084
+#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
 
@@ -6357,23 +6357,27 @@ msgid ""
 "Settings->General->Advanced"
 msgstr ""
 
-#: sickrage/core/version_updater.py:460 sickrage/core/version_updater.py:589
+#: sickrage/core/version_updater.py:391
+msgid "Failed to update requirements"
+msgstr ""
+
+#: sickrage/core/version_updater.py:466 sickrage/core/version_updater.py:595
 msgid ""
 "There is a newer version available, version {} &mdash; <a href=\"{}\">Update "
 "Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:488
+#: sickrage/core/version_updater.py:494
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:725
+#: sickrage/core/version_updater.py:731
 msgid ""
 "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a "
 "href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:736
+#: sickrage/core/version_updater.py:742
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
