@@ -1,6 +1,7 @@
 # Changelog
 
-- * e76d15a - 2019-01-20: Fixed typo in show schedule page, double web roots. 
+- * 359f452 - 2019-01-20: Release v9.4.56 
+- * a2596ce - 2019-01-20: Fixed typo in show schedule page, double web roots. 
 - * 468c19e - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
 - * 25bcd7f - 2019-01-12: Pre-Release v9.4.56.dev5 
 - * c94aafe - 2019-01-12: Added static app_id to RARBG torrent provider 
