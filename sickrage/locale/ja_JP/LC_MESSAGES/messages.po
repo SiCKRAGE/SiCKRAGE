@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-01-20 14:36-0800\n"
-"PO-Revision-Date: 2019-01-20 22:38\n"
+"POT-Creation-Date: 2019-01-21 23:29-0800\n"
+"PO-Revision-Date: 2019-01-22 07:31\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "読み込み"
 msgid "Choose Directory"
 msgstr "ディレクトリを選択します。"
 
-#: sickrage/core/webserver/views.py:3645 src/js/core.js:1505
+#: sickrage/core/webserver/views.py:3646 src/js/core.js:1505
 msgid "Clear History"
 msgstr "履歴のクリア"
 
@@ -81,7 +81,7 @@ msgstr "履歴のクリア"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "履歴をダウンロードするすべてをクリアしてもよろしいですか。"
 
-#: sickrage/core/webserver/views.py:3647 src/js/core.js:1511
+#: sickrage/core/webserver/views.py:3648 src/js/core.js:1511
 msgid "Trim History"
 msgstr "歴史をトリムします。"
 
@@ -759,13 +759,13 @@ msgstr "SickRage インタ フェースを起動するとき"
 msgid "Shows"
 msgstr "示しています"
 
-#: sickrage/core/webserver/views.py:544 sickrage/core/webserver/views.py:545
+#: sickrage/core/webserver/views.py:545 sickrage/core/webserver/views.py:546
 #: sickrage/core/webserver/views/config/general.mako:146
 #: sickrage/core/webserver/views/layouts/main.mako:214
 msgid "Schedule"
 msgstr "スケジュール"
 
-#: sickrage/core/webserver/views.py:3657 sickrage/core/webserver/views.py:3658
+#: sickrage/core/webserver/views.py:3658 sickrage/core/webserver/views.py:3659
 #: sickrage/core/webserver/views/config/general.mako:149
 #: sickrage/core/webserver/views/layouts/main.mako:218
 msgid "History"
@@ -3571,7 +3571,7 @@ msgstr "プロバイダーが少なくとも 1 つは必要ですが、2 つを�
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/急流プロバイダーに切り替えることができます。"
 
-#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:3969
+#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:3970
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4744,7 +4744,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4926
+#: sickrage/core/webserver/views.py:4927
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4803,7 +4803,7 @@ msgstr "放送日時"
 msgid "Download"
 msgstr "ダウンロード"
 
-#: sickrage/core/webserver/views.py:1043 sickrage/core/webserver/views.py:1044
+#: sickrage/core/webserver/views.py:1044 sickrage/core/webserver/views.py:1045
 #: sickrage/core/webserver/views/home/display_show.mako:573
 #: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4828,7 +4828,7 @@ msgstr "不明"
 msgid "Retry Download"
 msgstr "ダウンロードを再試行します。"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4980
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "メイン"
@@ -4954,7 +4954,7 @@ msgstr "空気順序の代わりに DVD の注文を使用します。"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "「力のフル更新」は、必要に応じて、手動でそれらをソートする必要があります既存のエピソードがあれば。"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4864
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5272,7 +5272,7 @@ msgstr "再起動の実行"
 msgid "Daily Search"
 msgstr "毎日検索"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4967
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "バックログ"
@@ -5297,7 +5297,7 @@ msgstr "ポスト プロセス"
 msgid "Subtitles Finder"
 msgstr "字幕ファインダー"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4975
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt チェッカー"
@@ -5330,7 +5330,7 @@ msgstr "違います"
 msgid "True"
 msgstr "真"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "キューを表示します。"
@@ -5508,7 +5508,7 @@ msgstr "<p>Select 最寄りのファンサブ <b>Available Groups</b> からグ�
 msgid "Whitelist"
 msgstr "ホワイト リスト"
 
-#: sickrage/core/webserver/views.py:1191
+#: sickrage/core/webserver/views.py:1192
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5600,7 +5600,7 @@ msgstr "ルート ディレクトリ"
 msgid "New"
 msgstr "新機能"
 
-#: sickrage/core/webserver/views.py:1145 sickrage/core/webserver/views.py:1965
+#: sickrage/core/webserver/views.py:1146 sickrage/core/webserver/views.py:1966
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5626,7 +5626,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "リストを表示します。"
 
-#: sickrage/core/webserver/views.py:2335 sickrage/core/webserver/views.py:2336
+#: sickrage/core/webserver/views.py:2336 sickrage/core/webserver/views.py:2337
 #: sickrage/core/webserver/views/layouts/main.mako:140
 msgid "Add Shows"
 msgstr "ショーを追加します。"
@@ -5641,18 +5641,18 @@ msgstr "手動の後処理"
 msgid "Manage"
 msgstr "管理"
 
-#: sickrage/core/webserver/views.py:3479 sickrage/core/webserver/views.py:3480
+#: sickrage/core/webserver/views.py:3480 sickrage/core/webserver/views.py:3481
 #: sickrage/core/webserver/views/layouts/main.mako:166
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "大量の更新"
 
-#: sickrage/core/webserver/views.py:3087 sickrage/core/webserver/views.py:3088
+#: sickrage/core/webserver/views.py:3088 sickrage/core/webserver/views.py:3089
 #: sickrage/core/webserver/views/layouts/main.mako:169
 msgid "Backlog Overview"
 msgstr "バックログの概要"
 
-#: sickrage/core/webserver/views.py:3529 sickrage/core/webserver/views.py:3530
+#: sickrage/core/webserver/views.py:3530 sickrage/core/webserver/views.py:3531
 #: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Manage Queues"
 msgstr "キューを管理します。"
@@ -5681,7 +5681,7 @@ msgstr "更新 Emby"
 msgid "Manage Torrents"
 msgstr "急流を管理します。"
 
-#: sickrage/core/webserver/views.py:3504 sickrage/core/webserver/views.py:3505
+#: sickrage/core/webserver/views.py:3505 sickrage/core/webserver/views.py:3506
 #: sickrage/core/webserver/views/layouts/main.mako:203
 msgid "Failed Downloads"
 msgstr "失敗したダウンロード"
@@ -5694,12 +5694,12 @@ msgstr "逃された字幕の管理"
 msgid "Config"
 msgstr "設定"
 
-#: sickrage/core/webserver/views.py:3687
+#: sickrage/core/webserver/views.py:3688
 #: sickrage/core/webserver/views/layouts/main.mako:234
 msgid "Help and Info"
 msgstr "ヘルプと情報"
 
-#: sickrage/core/webserver/views.py:3688
+#: sickrage/core/webserver/views.py:3689
 #: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "一般的です"
@@ -5708,28 +5708,28 @@ msgstr "一般的です"
 msgid "Backup and Restore"
 msgstr "バックアップと復元"
 
-#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4270
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "検索プロバイダー"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4775
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4776
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "字幕設定"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4903
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "品質の設定"
 
-#: sickrage/core/webserver/views.py:2299 sickrage/core/webserver/views.py:2300
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4074
+#: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4075
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "ポスト処理"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4429
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4430
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "通知"
@@ -5930,7 +5930,7 @@ msgstr "これらのショーは Show.S02E03 ではなく Show.03.02.2010 とし
 msgid "Search for subtitles."
 msgstr "字幕を検索します。"
 
-#: sickrage/core/webserver/views.py:3237 sickrage/core/webserver/views.py:3238
+#: sickrage/core/webserver/views.py:3238 sickrage/core/webserver/views.py:3239
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "一括編集"
@@ -5970,7 +5970,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "進行中でないです。"
 
-#: sickrage/core/webserver/views.py:1185
+#: sickrage/core/webserver/views.py:1186
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5995,7 +5995,7 @@ msgstr "Propers 検索が無効になっています。"
 msgid "Post-Processor:"
 msgstr "ポスト プロセッサ:"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4971
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "検索キュー"
@@ -6139,8 +6139,8 @@ msgstr "誘拐のエピソード"
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
 #: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
-#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1084
-#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
+#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1085
+#: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1097
 msgid "Updater"
 msgstr ""
 
@@ -6218,8 +6218,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "<i>%s</i> のダウンロードを見つけることができなかった"
 
 #: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2677
-#: sickrage/core/webserver/views.py:2689
+#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2678
+#: sickrage/core/webserver/views.py:2690
 msgid "Unable to add show"
 msgstr "ショーを追加できません。"
 
@@ -6267,926 +6267,926 @@ msgstr "ショー"
 msgid " is already in your show list"
 msgstr "既に表示リストは、します。"
 
-#: sickrage/core/webserver/views.py:113 sickrage/core/webserver/views.py:114
+#: sickrage/core/webserver/views.py:114 sickrage/core/webserver/views.py:115
 msgid "HTTP Error 404"
 msgstr "HTTP エラー 404"
 
-#: sickrage/core/webserver/views.py:191 sickrage/core/webserver/views.py:192
+#: sickrage/core/webserver/views.py:192 sickrage/core/webserver/views.py:193
 msgid "HTTP Error 500"
 msgstr "HTTP エラー 500"
 
-#: sickrage/core/webserver/views.py:442
+#: sickrage/core/webserver/views.py:443
 msgid "API Key not generated"
 msgstr "API キーは生成されません。"
 
-#: sickrage/core/webserver/views.py:446 sickrage/core/webserver/views.py:447
+#: sickrage/core/webserver/views.py:447 sickrage/core/webserver/views.py:448
 msgid "API Builder"
 msgstr "API ビルダー"
 
-#: sickrage/core/webserver/views.py:604
+#: sickrage/core/webserver/views.py:605
 msgid "Invalid show parameters"
 msgstr "無効なパラメーターを表示します。"
 
-#: sickrage/core/webserver/views.py:609
+#: sickrage/core/webserver/views.py:610
 msgid "Invalid show paramaters"
 msgstr "無効なパラメーターを示す"
 
-#: sickrage/core/webserver/views.py:616
+#: sickrage/core/webserver/views.py:617
 msgid "Invalid paramaters"
 msgstr "無効なパラメーター"
 
-#: sickrage/core/webserver/views.py:619 sickrage/core/webserver/views.py:1768
-#: sickrage/core/webserver/views.py:1830
+#: sickrage/core/webserver/views.py:620 sickrage/core/webserver/views.py:1769
+#: sickrage/core/webserver/views.py:1831
 msgid "Episode couldn't be retrieved"
 msgstr "エピソードを取得できませんでした。"
 
-#: sickrage/core/webserver/views.py:657
+#: sickrage/core/webserver/views.py:658
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "エラー: サポートされていない要求。クエリ文字列に 'srcallback' 変数に jsonp 要求を送信します。"
 
-#: sickrage/core/webserver/views.py:693
+#: sickrage/core/webserver/views.py:694
 msgid "Success. Connected and authenticated"
 msgstr "成功。接続し、認証"
 
-#: sickrage/core/webserver/views.py:695
+#: sickrage/core/webserver/views.py:696
 msgid "Authentication failed. SABnzbd expects "
 msgstr "認証に失敗しました。SABnzbd 期待します。"
 
-#: sickrage/core/webserver/views.py:695
+#: sickrage/core/webserver/views.py:696
 msgid " as authentication method, "
 msgstr "認証方法として"
 
-#: sickrage/core/webserver/views.py:698
+#: sickrage/core/webserver/views.py:699
 msgid "Unable to connect to host"
 msgstr "ホストに接続できません。"
 
-#: sickrage/core/webserver/views.py:716
+#: sickrage/core/webserver/views.py:717
 msgid "SMS sent successfully"
 msgstr "SMS が正常に送信されました。"
 
-#: sickrage/core/webserver/views.py:718
+#: sickrage/core/webserver/views.py:719
 msgid "Problem sending SMS: "
 msgstr "問題は、SMS を送信する:"
 
-#: sickrage/core/webserver/views.py:725
+#: sickrage/core/webserver/views.py:726
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "電報通知が成功しました。それが働いたことを確認するように電報クライアントをチェックします。"
 
-#: sickrage/core/webserver/views.py:727
+#: sickrage/core/webserver/views.py:728
 msgid "Error sending Telegram notification: {message}"
 msgstr "電報通知の送信エラー: {message}"
 
-#: sickrage/core/webserver/views.py:734
+#: sickrage/core/webserver/views.py:735
 msgid "Join notification succeeded. Check your Join clients to make sure it worked"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:736
+#: sickrage/core/webserver/views.py:737
 msgid "Error sending Join notification: {message}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:746
+#: sickrage/core/webserver/views.py:747
 msgid " with password: "
 msgstr "パスワード。"
 
-#: sickrage/core/webserver/views.py:749
+#: sickrage/core/webserver/views.py:750
 msgid "Registered and Tested growl successfully "
 msgstr "登録し、テストが正常にうなり声"
 
-#: sickrage/core/webserver/views.py:751
+#: sickrage/core/webserver/views.py:752
 msgid "Registration and Testing of growl failed "
 msgstr "登録およびうなり声のテストに失敗しました"
 
-#: sickrage/core/webserver/views.py:758
+#: sickrage/core/webserver/views.py:759
 msgid "Test prowl notice sent successfully"
 msgstr "正常に送信テスト徘徊お知らせ"
 
-#: sickrage/core/webserver/views.py:760
+#: sickrage/core/webserver/views.py:761
 msgid "Test prowl notice failed"
 msgstr "失敗したテスト徘徊お知らせ"
 
-#: sickrage/core/webserver/views.py:767
+#: sickrage/core/webserver/views.py:768
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 通知が成功しました。Boxcar2 クライアントがそれが働いたかどうかを確認するをチェックします。"
 
-#: sickrage/core/webserver/views.py:769
+#: sickrage/core/webserver/views.py:770
 msgid "Error sending Boxcar2 notification"
 msgstr "Boxcar2 通知を送信中にエラー"
 
-#: sickrage/core/webserver/views.py:776
+#: sickrage/core/webserver/views.py:777
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "成功通知をだまされやすい人。それが働いたかどうかを確認するあなたのだまされやすい人のクライアントをチェックします。"
 
-#: sickrage/core/webserver/views.py:778
+#: sickrage/core/webserver/views.py:779
 msgid "Error sending Pushover notification"
 msgstr "エラーの送信通知をだまされやすい人"
 
-#: sickrage/core/webserver/views.py:790
+#: sickrage/core/webserver/views.py:791
 msgid "Key verification successful"
 msgstr "成功したキーの確認"
 
-#: sickrage/core/webserver/views.py:792
+#: sickrage/core/webserver/views.py:793
 msgid "Unable to verify key"
 msgstr "キーを確認できません。"
 
-#: sickrage/core/webserver/views.py:799
+#: sickrage/core/webserver/views.py:800
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "成功のつぶやき、それ仕事を確認するあなたの twitter をチェック"
 
-#: sickrage/core/webserver/views.py:801
+#: sickrage/core/webserver/views.py:802
 msgid "Error sending tweet"
 msgstr "エラー送信つぶやき"
 
-#: sickrage/core/webserver/views.py:806
+#: sickrage/core/webserver/views.py:807
 msgid "Please enter a valid account sid"
 msgstr "入力してください有効なアカウント sid"
 
-#: sickrage/core/webserver/views.py:809
+#: sickrage/core/webserver/views.py:810
 msgid "Please enter a valid auth token"
 msgstr "有効な認証トークンを入力してください。"
 
-#: sickrage/core/webserver/views.py:812
+#: sickrage/core/webserver/views.py:813
 msgid "Please enter a valid phone sid"
 msgstr "入力してください有効な sid を携帯電話"
 
-#: sickrage/core/webserver/views.py:815
+#: sickrage/core/webserver/views.py:816
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "くださいと電話番号をフォーマット\"+1-###-###-###」"
 
-#: sickrage/core/webserver/views.py:819
+#: sickrage/core/webserver/views.py:820
 msgid "Authorization successful and number ownership verified"
 msgstr "承認成功し番号所有権が確認され"
 
-#: sickrage/core/webserver/views.py:821
+#: sickrage/core/webserver/views.py:822
 msgid "Error sending sms"
 msgstr "Sms を送信中にエラー"
 
-#: sickrage/core/webserver/views.py:827
+#: sickrage/core/webserver/views.py:828
 msgid "Slack message successful"
 msgstr "スラック メッセージ成功"
 
-#: sickrage/core/webserver/views.py:829
+#: sickrage/core/webserver/views.py:830
 msgid "Slack message failed"
 msgstr "余裕のメッセージが失敗しました"
 
-#: sickrage/core/webserver/views.py:835
+#: sickrage/core/webserver/views.py:836
 msgid "Discord message successful"
 msgstr "不一致メッセージ成功"
 
-#: sickrage/core/webserver/views.py:837
+#: sickrage/core/webserver/views.py:838
 msgid "Discord message failed"
 msgstr "不一致メッセージが失敗しました"
 
-#: sickrage/core/webserver/views.py:848
+#: sickrage/core/webserver/views.py:849
 msgid "Test KODI notice sent successfully to "
 msgstr "正常に送信テスト KODI 通知"
 
-#: sickrage/core/webserver/views.py:850
+#: sickrage/core/webserver/views.py:851
 msgid "Test KODI notice failed to "
 msgstr "テスト KODI 通知に失敗しました"
 
-#: sickrage/core/webserver/views.py:865
+#: sickrage/core/webserver/views.py:866
 msgid "Successful test notice sent to Plex client ... "
 msgstr "成功したテストのお知らせプレックス クライアントに送信."
 
-#: sickrage/core/webserver/views.py:867
+#: sickrage/core/webserver/views.py:868
 msgid "Test failed for Plex client ... "
 msgstr "プレックスのクライアントのテストに失敗しました."
 
-#: sickrage/core/webserver/views.py:870
+#: sickrage/core/webserver/views.py:871
 msgid "Tested Plex client(s): "
 msgstr "テスト プレックス クライアント:"
 
-#: sickrage/core/webserver/views.py:885
+#: sickrage/core/webserver/views.py:886
 msgid "Successful test of Plex server(s) ... "
 msgstr "プレックス サーバーのテストに成功."
 
-#: sickrage/core/webserver/views.py:888
+#: sickrage/core/webserver/views.py:889
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "テストが失敗した、プレックス メディア サーバーがないホストを指定"
 
-#: sickrage/core/webserver/views.py:890
+#: sickrage/core/webserver/views.py:891
 msgid "Test failed for Plex server(s) ... "
 msgstr "プレックス サーバーのテストに失敗しました."
 
-#: sickrage/core/webserver/views.py:894
+#: sickrage/core/webserver/views.py:895
 msgid "Tested Plex Media Server host(s): "
 msgstr "テスト ・ プレックス メディア サーバ ・ ホスト:"
 
-#: sickrage/core/webserver/views.py:902
+#: sickrage/core/webserver/views.py:903
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Libnotify によるデスクトップ通知を送信しようとしました"
 
-#: sickrage/core/webserver/views.py:911 sickrage/core/webserver/views.py:944
+#: sickrage/core/webserver/views.py:912 sickrage/core/webserver/views.py:945
 msgid "Test notice sent successfully to "
 msgstr "正常に送信テストのお知らせ"
 
-#: sickrage/core/webserver/views.py:913 sickrage/core/webserver/views.py:946
+#: sickrage/core/webserver/views.py:914 sickrage/core/webserver/views.py:947
 msgid "Test notice failed to "
 msgstr "テスト通知に失敗しました"
 
-#: sickrage/core/webserver/views.py:920
+#: sickrage/core/webserver/views.py:921
 msgid "Successfully started the scan update"
 msgstr "正常にスキャンの更新を開始"
 
-#: sickrage/core/webserver/views.py:922
+#: sickrage/core/webserver/views.py:923
 msgid "Test failed to start the scan update"
 msgstr "テストはスキャンの更新を開始できませんでした。"
 
-#: sickrage/core/webserver/views.py:930
+#: sickrage/core/webserver/views.py:931
 msgid "Got settings from"
 msgstr "設定を持ってください。"
 
-#: sickrage/core/webserver/views.py:935
+#: sickrage/core/webserver/views.py:936
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "失敗しました。あなたのポップコーンは NMJ が実行されていることを確認します。(詳しくは-> デバッグ ログ ・ エラーを参照してください)"
 
-#: sickrage/core/webserver/views.py:963
+#: sickrage/core/webserver/views.py:964
 msgid "Trakt Authorized"
 msgstr "承認 Trakt"
 
-#: sickrage/core/webserver/views.py:964
+#: sickrage/core/webserver/views.py:965
 msgid "Trakt Not Authorized!"
 msgstr "Trakt 権限がありません!"
 
-#: sickrage/core/webserver/views.py:991
+#: sickrage/core/webserver/views.py:992
 msgid "Test email sent successfully! Check inbox."
 msgstr "正常に送信された電子メールをテストする!受信トレイを確認します。"
 
-#: sickrage/core/webserver/views.py:993
+#: sickrage/core/webserver/views.py:994
 #, python-format
 msgid "ERROR: %s"
 msgstr "エラー: %s"
 
-#: sickrage/core/webserver/views.py:1000
+#: sickrage/core/webserver/views.py:1001
 msgid "Test NMA notice sent successfully"
 msgstr "テスト NMA 通知が正常に送信されます。"
 
-#: sickrage/core/webserver/views.py:1002
+#: sickrage/core/webserver/views.py:1003
 msgid "Test NMA notice failed"
 msgstr "テスト NMA 通知に失敗しました"
 
-#: sickrage/core/webserver/views.py:1008
+#: sickrage/core/webserver/views.py:1009
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot 通知が成功しました。Pushalot クライアントがそれが働いたかどうかを確認するをチェックします。"
 
-#: sickrage/core/webserver/views.py:1010
+#: sickrage/core/webserver/views.py:1011
 msgid "Error sending Pushalot notification"
 msgstr "Pushalot 通知を送信中にエラー"
 
-#: sickrage/core/webserver/views.py:1016
+#: sickrage/core/webserver/views.py:1017
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet 通知が成功しました。それが働いたかどうかを確認するお使いのデバイスを確認してください。"
 
-#: sickrage/core/webserver/views.py:1018
+#: sickrage/core/webserver/views.py:1019
 msgid "Error sending Pushbullet notification"
 msgstr "Pushbullet 通知を送信中にエラー"
 
-#: sickrage/core/webserver/views.py:1026
+#: sickrage/core/webserver/views.py:1027
 msgid "Error getting Pushbullet devices"
 msgstr "Pushbullet デバイスの取得エラー"
 
-#: sickrage/core/webserver/views.py:1056
+#: sickrage/core/webserver/views.py:1057
 msgid "Shutting down"
 msgstr "シャット ダウン"
 
-#: sickrage/core/webserver/views.py:1056
+#: sickrage/core/webserver/views.py:1057
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE のシャット ダウン"
 
-#: sickrage/core/webserver/views.py:1067
+#: sickrage/core/webserver/views.py:1068
 msgid "Restarting"
 msgstr "再起動"
 
-#: sickrage/core/webserver/views.py:1067
+#: sickrage/core/webserver/views.py:1068
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE を再起動します。"
 
-#: sickrage/core/webserver/views.py:1084
+#: sickrage/core/webserver/views.py:1085
 msgid "Checking for updates"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1088
+#: sickrage/core/webserver/views.py:1089
 msgid "No new updates available!"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1096
+#: sickrage/core/webserver/views.py:1097
 msgid "Updating SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1104
+#: sickrage/core/webserver/views.py:1105
 msgid "Successfully found {path}"
 msgstr "正常に {path} を発見します。"
 
-#: sickrage/core/webserver/views.py:1106
+#: sickrage/core/webserver/views.py:1107
 msgid "Failed to find {path}"
 msgstr "{path} が見つかりませんでした。"
 
-#: sickrage/core/webserver/views.py:1109
+#: sickrage/core/webserver/views.py:1110
 msgid "Installing SiCKRAGE requirements"
 msgstr "SiCKRAGE 要件をインストールします。"
 
-#: sickrage/core/webserver/views.py:1111
+#: sickrage/core/webserver/views.py:1112
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "SiCKRAGE 要件をインストールに失敗しました"
 
-#: sickrage/core/webserver/views.py:1113
+#: sickrage/core/webserver/views.py:1114
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "SiCKRAGE 要件を正常にインストール!"
 
-#: sickrage/core/webserver/views.py:1119
+#: sickrage/core/webserver/views.py:1120
 msgid "Checking out branch: "
 msgstr "ブランチをチェックします。"
 
-#: sickrage/core/webserver/views.py:1121
+#: sickrage/core/webserver/views.py:1122
 msgid "Branch checkout successful, restarting: "
 msgstr "分岐のチェック アウト成功、再起動:"
 
-#: sickrage/core/webserver/views.py:1124
+#: sickrage/core/webserver/views.py:1125
 msgid "Already on branch: "
 msgstr "既に上支店。"
 
-#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1137
-#: sickrage/core/webserver/views.py:1353 sickrage/core/webserver/views.py:1362
-#: sickrage/core/webserver/views.py:1575 sickrage/core/webserver/views.py:1580
-#: sickrage/core/webserver/views.py:1593 sickrage/core/webserver/views.py:1598
-#: sickrage/core/webserver/views.py:1620 sickrage/core/webserver/views.py:1625
-#: sickrage/core/webserver/views.py:1638 sickrage/core/webserver/views.py:1643
-#: sickrage/core/webserver/views.py:1659 sickrage/core/webserver/views.py:1664
-#: sickrage/core/webserver/views.py:1737 sickrage/core/webserver/views.py:1740
-#: sickrage/core/webserver/views.py:1744 sickrage/core/webserver/views.py:1746
-#: sickrage/core/webserver/views.py:1749 sickrage/core/webserver/views.py:1768
-#: sickrage/core/webserver/views.py:1786 sickrage/core/webserver/views.py:1789
-#: sickrage/core/webserver/views.py:1794 sickrage/core/webserver/views.py:1797
-#: sickrage/core/webserver/views.py:1802 sickrage/core/webserver/views.py:1804
-#: sickrage/core/webserver/views.py:1807 sickrage/core/webserver/views.py:1830
-#: sickrage/core/webserver/views.py:1931 sickrage/core/webserver/views.py:1936
-#: sickrage/core/webserver/views.py:1939 sickrage/core/webserver/views.py:1982
-#: sickrage/core/webserver/views.py:1988 sickrage/core/webserver/views.py:1991
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:1133 sickrage/core/webserver/views.py:1138
+#: sickrage/core/webserver/views.py:1354 sickrage/core/webserver/views.py:1363
+#: sickrage/core/webserver/views.py:1576 sickrage/core/webserver/views.py:1581
+#: sickrage/core/webserver/views.py:1594 sickrage/core/webserver/views.py:1599
+#: sickrage/core/webserver/views.py:1621 sickrage/core/webserver/views.py:1626
+#: sickrage/core/webserver/views.py:1639 sickrage/core/webserver/views.py:1644
+#: sickrage/core/webserver/views.py:1660 sickrage/core/webserver/views.py:1665
+#: sickrage/core/webserver/views.py:1738 sickrage/core/webserver/views.py:1741
+#: sickrage/core/webserver/views.py:1745 sickrage/core/webserver/views.py:1747
+#: sickrage/core/webserver/views.py:1750 sickrage/core/webserver/views.py:1769
+#: sickrage/core/webserver/views.py:1787 sickrage/core/webserver/views.py:1790
+#: sickrage/core/webserver/views.py:1795 sickrage/core/webserver/views.py:1798
+#: sickrage/core/webserver/views.py:1803 sickrage/core/webserver/views.py:1805
+#: sickrage/core/webserver/views.py:1808 sickrage/core/webserver/views.py:1831
+#: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
+#: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
+#: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
+#: sickrage/core/webserver/views.py:4977
 msgid "Error"
 msgstr "エラー"
 
-#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1575
-#: sickrage/core/webserver/views.py:1593 sickrage/core/webserver/views.py:1620
-#: sickrage/core/webserver/views.py:1638 sickrage/core/webserver/views.py:1659
+#: sickrage/core/webserver/views.py:1133 sickrage/core/webserver/views.py:1576
+#: sickrage/core/webserver/views.py:1594 sickrage/core/webserver/views.py:1621
+#: sickrage/core/webserver/views.py:1639 sickrage/core/webserver/views.py:1660
 msgid "Invalid show ID"
 msgstr "無効な ID を表示します。"
 
-#: sickrage/core/webserver/views.py:1137 sickrage/core/webserver/views.py:1936
-#: sickrage/core/webserver/views.py:1987
+#: sickrage/core/webserver/views.py:1138 sickrage/core/webserver/views.py:1937
+#: sickrage/core/webserver/views.py:1988
 msgid "Show not in show list"
 msgstr "ショーのリストにない表示します。"
 
-#: sickrage/core/webserver/views.py:1155
+#: sickrage/core/webserver/views.py:1156
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "このショーは、現在進行中です - 以下の情報が完了。"
 
-#: sickrage/core/webserver/views.py:1158
+#: sickrage/core/webserver/views.py:1159
 msgid "The information on this page is in the process of being updated."
 msgstr "このページの情報は更新中です。"
 
-#: sickrage/core/webserver/views.py:1161
+#: sickrage/core/webserver/views.py:1162
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "次のエピソードが現在ディスクから更新されています。"
 
-#: sickrage/core/webserver/views.py:1164
+#: sickrage/core/webserver/views.py:1165
 msgid "Currently downloading subtitles for this show"
 msgstr "現在、この番組の字幕をダウンロード"
 
-#: sickrage/core/webserver/views.py:1167
+#: sickrage/core/webserver/views.py:1168
 msgid "This show is queued to be refreshed."
 msgstr "このショーは、更新するキューです。"
 
-#: sickrage/core/webserver/views.py:1170
+#: sickrage/core/webserver/views.py:1171
 msgid "This show is queued and awaiting an update."
 msgstr "このショーは、キューに入れられた更新を待っていると。"
 
-#: sickrage/core/webserver/views.py:1173
+#: sickrage/core/webserver/views.py:1174
 msgid "This show is queued and awaiting subtitles download."
 msgstr "このショーは、キューに入っているし、待っている字幕をダウンロードします。"
 
-#: sickrage/core/webserver/views.py:1179
+#: sickrage/core/webserver/views.py:1180
 msgid "Resume"
 msgstr "再開"
 
-#: sickrage/core/webserver/views.py:1199
+#: sickrage/core/webserver/views.py:1200
 msgid "Re-scan files"
 msgstr "ファイルの再スキャン"
 
-#: sickrage/core/webserver/views.py:1205
+#: sickrage/core/webserver/views.py:1206
 msgid "Full Update"
 msgstr "フル更新"
 
-#: sickrage/core/webserver/views.py:1211
+#: sickrage/core/webserver/views.py:1212
 msgid "Update show in KODI"
 msgstr "KODI の更新を"
 
-#: sickrage/core/webserver/views.py:1218
+#: sickrage/core/webserver/views.py:1219
 msgid "Update show in Emby"
 msgstr "Emby で更新を"
 
-#: sickrage/core/webserver/views.py:1225 sickrage/core/webserver/views.py:1973
-#: sickrage/core/webserver/views.py:1974
+#: sickrage/core/webserver/views.py:1226 sickrage/core/webserver/views.py:1974
+#: sickrage/core/webserver/views.py:1975
 msgid "Preview Rename"
 msgstr "プレビューの変更"
 
-#: sickrage/core/webserver/views.py:1233
+#: sickrage/core/webserver/views.py:1234
 msgid "Download Subtitles"
 msgstr "字幕をダウンロードします。"
 
-#: sickrage/core/webserver/views.py:1349
+#: sickrage/core/webserver/views.py:1350
 msgid "Invalid show ID: "
 msgstr "無効な ID を表示します。"
 
-#: sickrage/core/webserver/views.py:1358
+#: sickrage/core/webserver/views.py:1359
 msgid "Unable to find the specified show: "
 msgstr "指定したショーを見つけることができません。"
 
-#: sickrage/core/webserver/views.py:1378
+#: sickrage/core/webserver/views.py:1379
 msgid "Unable to retreive Fansub Groups from AniDB."
 msgstr "AniDB からファンサブ グループを取得できません。"
 
-#: sickrage/core/webserver/views.py:1394 sickrage/core/webserver/views.py:1395
-#: sickrage/core/webserver/views.py:1405 sickrage/core/webserver/views.py:1406
+#: sickrage/core/webserver/views.py:1395 sickrage/core/webserver/views.py:1396
+#: sickrage/core/webserver/views.py:1406 sickrage/core/webserver/views.py:1407
 msgid "Edit Show"
 msgstr "ショーを編集します。"
 
-#: sickrage/core/webserver/views.py:1489
+#: sickrage/core/webserver/views.py:1490
 msgid "Unable to refresh this show: {}"
 msgstr "このショーを更新できませんでした: {}"
 
-#: sickrage/core/webserver/views.py:1521
+#: sickrage/core/webserver/views.py:1522
 msgid "Unable to refresh this show:{}"
 msgstr ":{} この番組を更新できません。"
 
-#: sickrage/core/webserver/views.py:1527
+#: sickrage/core/webserver/views.py:1528
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "%s でフォルダーを含まない、tvshow.nfo - SiCKRAGE でディレクトリを変更する前に、そのフォルダーにファイルをコピーします。"
 
-#: sickrage/core/webserver/views.py:1539 sickrage/core/webserver/views.py:3429
+#: sickrage/core/webserver/views.py:1540 sickrage/core/webserver/views.py:3430
 msgid "Unable to update show: {}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1546
+#: sickrage/core/webserver/views.py:1547
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "ショーのシーン例外に強制的に更新できません。"
 
-#: sickrage/core/webserver/views.py:1553
+#: sickrage/core/webserver/views.py:1554
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "ショーのシーン番号の表示を強制的に更新することができません。"
 
-#: sickrage/core/webserver/views.py:1560
+#: sickrage/core/webserver/views.py:1561
 msgid "{num_warnings:d} warning{plural} while saving changes:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1567 sickrage/core/webserver/views.py:3354
+#: sickrage/core/webserver/views.py:1568 sickrage/core/webserver/views.py:3355
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "変更の保存中 {num_errors:d} error{plural}:"
 
-#: sickrage/core/webserver/views.py:1580 sickrage/core/webserver/views.py:1598
-#: sickrage/core/webserver/views.py:1625 sickrage/core/webserver/views.py:1643
-#: sickrage/core/webserver/views.py:1664
+#: sickrage/core/webserver/views.py:1581 sickrage/core/webserver/views.py:1599
+#: sickrage/core/webserver/views.py:1626 sickrage/core/webserver/views.py:1644
+#: sickrage/core/webserver/views.py:1665
 msgid "Unable to find the specified show"
 msgstr "指定したショーを見つけることができません。"
 
-#: sickrage/core/webserver/views.py:1587
+#: sickrage/core/webserver/views.py:1588
 #, python-format
 msgid "%s has been %s"
 msgstr "%s は %s をされています。"
 
-#: sickrage/core/webserver/views.py:1587
+#: sickrage/core/webserver/views.py:1588
 msgid "resumed"
 msgstr "再開"
 
-#: sickrage/core/webserver/views.py:1587
+#: sickrage/core/webserver/views.py:1588
 msgid "paused"
 msgstr "一時停止"
 
-#: sickrage/core/webserver/views.py:1603
+#: sickrage/core/webserver/views.py:1604
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s は、%s %s をされています。"
 
-#: sickrage/core/webserver/views.py:1606
+#: sickrage/core/webserver/views.py:1607
 msgid "deleted"
 msgstr "削除"
 
-#: sickrage/core/webserver/views.py:1606
+#: sickrage/core/webserver/views.py:1607
 msgid "trashed"
 msgstr "ゴミ箱に移動"
 
-#: sickrage/core/webserver/views.py:1607
+#: sickrage/core/webserver/views.py:1608
 msgid "(media untouched)"
 msgstr "(そのままメディア)"
 
-#: sickrage/core/webserver/views.py:1607
+#: sickrage/core/webserver/views.py:1608
 msgid "(with all related media)"
 msgstr "(すべての関連するメディア)"
 
-#: sickrage/core/webserver/views.py:1611
+#: sickrage/core/webserver/views.py:1612
 msgid "Unable to delete this show."
 msgstr "この番組を削除できません。"
 
-#: sickrage/core/webserver/views.py:1630
+#: sickrage/core/webserver/views.py:1631
 msgid "Unable to refresh this show."
 msgstr "このショーを更新できませんでした。"
 
-#: sickrage/core/webserver/views.py:1649
+#: sickrage/core/webserver/views.py:1650
 msgid "Unable to update this show."
 msgstr "このショーを更新できません。"
 
-#: sickrage/core/webserver/views.py:1688
+#: sickrage/core/webserver/views.py:1689
 msgid "Library update command sent to KODI host(s): "
 msgstr "KODI ホストにライブラリの更新コマンドが送信されます。"
 
-#: sickrage/core/webserver/views.py:1690
+#: sickrage/core/webserver/views.py:1691
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "1 つまたは複数の KODI ホストに接続できません。"
 
-#: sickrage/core/webserver/views.py:1700
+#: sickrage/core/webserver/views.py:1701
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "ライブラリ更新コマンドがプレックス メディア サーバー ホストに送信:"
 
-#: sickrage/core/webserver/views.py:1704
+#: sickrage/core/webserver/views.py:1705
 msgid "Unable to contact Plex Media Server host: "
 msgstr "プレックス メディア サーバー ホストに接続できません。"
 
-#: sickrage/core/webserver/views.py:1716
+#: sickrage/core/webserver/views.py:1717
 msgid "Library update command sent to Emby host: "
 msgstr "ライブラリ更新コマンドは、Emby ホストに送信されます。"
 
-#: sickrage/core/webserver/views.py:1719
+#: sickrage/core/webserver/views.py:1720
 msgid "Unable to contact Emby host: "
 msgstr "Emby ホストに接続できません。"
 
-#: sickrage/core/webserver/views.py:1729
+#: sickrage/core/webserver/views.py:1730
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "SiCKRAGE と同期の Trakt"
 
-#: sickrage/core/webserver/views.py:1735 sickrage/core/webserver/views.py:1784
-#: sickrage/core/webserver/views.py:1981
+#: sickrage/core/webserver/views.py:1736 sickrage/core/webserver/views.py:1785
+#: sickrage/core/webserver/views.py:1982
 msgid "You must specify a show and at least one episode"
 msgstr "見ると、少なくとも 1 つのエピソードを指定する必要があります。"
 
-#: sickrage/core/webserver/views.py:1792
+#: sickrage/core/webserver/views.py:1793
 msgid "Invalid status"
 msgstr "無効な状態"
 
-#: sickrage/core/webserver/views.py:1887
+#: sickrage/core/webserver/views.py:1888
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "バックログの次の季節の開始自動的に"
 
-#: sickrage/core/webserver/views.py:1894 sickrage/core/webserver/views.py:1914
+#: sickrage/core/webserver/views.py:1895 sickrage/core/webserver/views.py:1915
 msgid "Season "
 msgstr "シーズン"
 
-#: sickrage/core/webserver/views.py:1901
+#: sickrage/core/webserver/views.py:1902
 msgid "Backlog started"
 msgstr "バックログを開始"
 
-#: sickrage/core/webserver/views.py:1907
+#: sickrage/core/webserver/views.py:1908
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "次のシーズンに向けて自動的に開始された検索を再試行中"
 
-#: sickrage/core/webserver/views.py:1921
+#: sickrage/core/webserver/views.py:1922
 msgid "Retry Search started"
 msgstr "再試行検索を開始"
 
-#: sickrage/core/webserver/views.py:1931
+#: sickrage/core/webserver/views.py:1932
 msgid "You must specify a show"
 msgstr "ショーを指定する必要があります。"
 
-#: sickrage/core/webserver/views.py:1939 sickrage/core/webserver/views.py:1991
+#: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1992
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "エピソードがショー ディレクトリが存在しない場合、名前を変更できません。"
 
-#: sickrage/core/webserver/views.py:2127
+#: sickrage/core/webserver/views.py:2128
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "新しい字幕ダウンロード: %s"
 
-#: sickrage/core/webserver/views.py:2129
+#: sickrage/core/webserver/views.py:2130
 msgid "No subtitles downloaded"
 msgstr "ダウンロード字幕なし"
 
-#: sickrage/core/webserver/views.py:2251 sickrage/core/webserver/views.py:2255
+#: sickrage/core/webserver/views.py:2252 sickrage/core/webserver/views.py:2256
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2251
+#: sickrage/core/webserver/views.py:2252
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2255
+#: sickrage/core/webserver/views.py:2256
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2324
+#: sickrage/core/webserver/views.py:2325
 msgid "Postprocessing results"
 msgstr "後処理の結果"
 
-#: sickrage/core/webserver/views.py:2384
+#: sickrage/core/webserver/views.py:2385
 msgid "No folders selected."
 msgstr "フォルダーが選択されていません。"
 
-#: sickrage/core/webserver/views.py:2513 sickrage/core/webserver/views.py:2514
+#: sickrage/core/webserver/views.py:2514 sickrage/core/webserver/views.py:2515
 msgid "New Show"
 msgstr "新番組"
 
-#: sickrage/core/webserver/views.py:2578 sickrage/core/webserver/views.py:2579
+#: sickrage/core/webserver/views.py:2579 sickrage/core/webserver/views.py:2580
 msgid "Existing Show"
 msgstr "既存のショー"
 
-#: sickrage/core/webserver/views.py:2600
+#: sickrage/core/webserver/views.py:2601
 msgid "No root directories setup, please go back and add one."
 msgstr "ルート ディレクトリのセットアップ、戻って追加してください 1 つ。"
 
-#: sickrage/core/webserver/views.py:2655
+#: sickrage/core/webserver/views.py:2656
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "不明なエラー。ショーの選択に問題があるため表示を追加できません。"
 
-#: sickrage/core/webserver/views.py:2678
+#: sickrage/core/webserver/views.py:2679
 msgid "Folder "
 msgstr "フォルダー"
 
-#: sickrage/core/webserver/views.py:2678
+#: sickrage/core/webserver/views.py:2679
 msgid " exists already"
 msgstr "既に存在します。"
 
-#: sickrage/core/webserver/views.py:2690
+#: sickrage/core/webserver/views.py:2691
 msgid "Unable to create the folder , can't add the show"
 msgstr "作成できません。、フォルダーはショーに追加できません。"
 
-#: sickrage/core/webserver/views.py:2742
+#: sickrage/core/webserver/views.py:2743
 msgid "Adding Show"
 msgstr "ショーを追加します。"
 
-#: sickrage/core/webserver/views.py:2742
+#: sickrage/core/webserver/views.py:2743
 msgid "Adding the specified show into "
 msgstr "指定されたショーを追加します。"
 
-#: sickrage/core/webserver/views.py:2817
+#: sickrage/core/webserver/views.py:2818
 msgid "Shows Added"
 msgstr "追加を示しています"
 
-#: sickrage/core/webserver/views.py:2818
+#: sickrage/core/webserver/views.py:2819
 msgid "Automatically added "
 msgstr "自動的に追加されます。"
 
-#: sickrage/core/webserver/views.py:2819
+#: sickrage/core/webserver/views.py:2820
 msgid " from their existing metadata files"
 msgstr "既存のメタデータ ファイルから"
 
-#: sickrage/core/webserver/views.py:3001 sickrage/core/webserver/views.py:3002
+#: sickrage/core/webserver/views.py:3002 sickrage/core/webserver/views.py:3003
 msgid "Missing Subtitles"
 msgstr "字幕がありません。"
 
-#: sickrage/core/webserver/views.py:3437
+#: sickrage/core/webserver/views.py:3438
 msgid "Unable to refresh show "
 msgstr "表示を更新できません。"
 
-#: sickrage/core/webserver/views.py:3448
+#: sickrage/core/webserver/views.py:3449
 msgid "Errors encountered"
 msgstr "エラーが発生しました"
 
-#: sickrage/core/webserver/views.py:3454
+#: sickrage/core/webserver/views.py:3455
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Updates</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3459
+#: sickrage/core/webserver/views.py:3460
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Refreshes</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3464
+#: sickrage/core/webserver/views.py:3465
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Renames</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3469
+#: sickrage/core/webserver/views.py:3470
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Subtitles</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3474
+#: sickrage/core/webserver/views.py:3475
 msgid "The following actions were queued:"
 msgstr "次の操作がキューに入れられました。"
 
-#: sickrage/core/webserver/views.py:3540
+#: sickrage/core/webserver/views.py:3541
 msgid "Backlog search started"
 msgstr "バックログの検索開始"
 
-#: sickrage/core/webserver/views.py:3548
+#: sickrage/core/webserver/views.py:3549
 msgid "Daily search started"
 msgstr "毎日検索を開始"
 
-#: sickrage/core/webserver/views.py:3556
+#: sickrage/core/webserver/views.py:3557
 msgid "Find propers search started"
 msgstr "Propers 検索開始"
 
-#: sickrage/core/webserver/views.py:3667
+#: sickrage/core/webserver/views.py:3668
 msgid "History cleared"
 msgstr "履歴をクリア"
 
-#: sickrage/core/webserver/views.py:3674
+#: sickrage/core/webserver/views.py:3675
 msgid "Removed history entries older than 30 days"
 msgstr "30 日より古いの削除された履歴エントリ"
 
-#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:3909
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:3910
 msgid "Backup/Restore"
 msgstr "バックアップ/復元"
 
-#: sickrage/core/webserver/views.py:3705 sickrage/core/webserver/views.py:3706
+#: sickrage/core/webserver/views.py:3706 sickrage/core/webserver/views.py:3707
 msgid "Configuration"
 msgstr "構成"
 
-#: sickrage/core/webserver/views.py:3714
+#: sickrage/core/webserver/views.py:3715
 msgid "Configuration Reset to Defaults"
 msgstr "デフォルト構成のリセット"
 
-#: sickrage/core/webserver/views.py:3727
+#: sickrage/core/webserver/views.py:3728
 msgid "Config - General"
 msgstr "設定 - 全般"
 
-#: sickrage/core/webserver/views.py:3728
+#: sickrage/core/webserver/views.py:3729
 msgid "General Configuration"
 msgstr "全般的なコンフィグレーション"
 
-#: sickrage/core/webserver/views.py:3891 sickrage/core/webserver/views.py:4056
-#: sickrage/core/webserver/views.py:4187 sickrage/core/webserver/views.py:4411
-#: sickrage/core/webserver/views.py:4757 sickrage/core/webserver/views.py:4845
-#: sickrage/core/webserver/views.py:4884
+#: sickrage/core/webserver/views.py:3892 sickrage/core/webserver/views.py:4057
+#: sickrage/core/webserver/views.py:4188 sickrage/core/webserver/views.py:4412
+#: sickrage/core/webserver/views.py:4758 sickrage/core/webserver/views.py:4846
+#: sickrage/core/webserver/views.py:4885
 msgid "Error(s) Saving Configuration"
 msgstr "構成の保存エラー"
 
-#: sickrage/core/webserver/views.py:3893
+#: sickrage/core/webserver/views.py:3894
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] 構成を保存"
 
-#: sickrage/core/webserver/views.py:3908
+#: sickrage/core/webserver/views.py:3909
 msgid "Config - Backup/Restore"
 msgstr "構成のバックアップ/復元"
 
-#: sickrage/core/webserver/views.py:3921
+#: sickrage/core/webserver/views.py:3922
 msgid "Backup SUCCESSFUL"
 msgstr "成功したバックアップ"
 
-#: sickrage/core/webserver/views.py:3923
+#: sickrage/core/webserver/views.py:3924
 msgid "Backup FAILED!"
 msgstr "バックアップに失敗しました!"
 
-#: sickrage/core/webserver/views.py:3925
+#: sickrage/core/webserver/views.py:3926
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "最初に、バックアップを保存するフォルダーを選択する必要があります!"
 
-#: sickrage/core/webserver/views.py:3944
+#: sickrage/core/webserver/views.py:3945
 msgid "Successfully extracted restore files to "
 msgstr "ファイルの正常に抽出された復元先"
 
-#: sickrage/core/webserver/views.py:3945
+#: sickrage/core/webserver/views.py:3946
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "復元を完了する <br>Restart の sickrage。"
 
-#: sickrage/core/webserver/views.py:3947
+#: sickrage/core/webserver/views.py:3948
 msgid "Restore FAILED"
 msgstr "復元に失敗しました"
 
-#: sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3950
 msgid "You need to select a backup file to restore!"
 msgstr "復元するバックアップ ファイルを選択する必要があります!"
 
-#: sickrage/core/webserver/views.py:3968
+#: sickrage/core/webserver/views.py:3969
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3994 sickrage/core/webserver/views.py:3997
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
+#: sickrage/core/webserver/views.py:4103
 msgid "Unable to create directory "
 msgstr "ディレクトリを作成できません。"
 
-#: sickrage/core/webserver/views.py:3994 sickrage/core/webserver/views.py:3997
-#: sickrage/core/webserver/views.py:4102
+#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
+#: sickrage/core/webserver/views.py:4103
 msgid ", dir not changed."
 msgstr "、ディレクトリは変更されません。"
 
-#: sickrage/core/webserver/views.py:4058
+#: sickrage/core/webserver/views.py:4059
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4073
+#: sickrage/core/webserver/views.py:4074
 msgid "Config - Post Processing"
 msgstr "設定 - ポスト処理"
 
-#: sickrage/core/webserver/views.py:4113
+#: sickrage/core/webserver/views.py:4114
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "解凍できません、設定をアンパックを無効にします。"
 
-#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
+#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "あなたは、config を命名、名前付け設定を保存していない無効なキャラクターを保存しようと"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4151 sickrage/core/webserver/views.py:4162
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "しようと、無効な名前付け設定を保存しない名前付け設定を保存"
 
-#: sickrage/core/webserver/views.py:4167
+#: sickrage/core/webserver/views.py:4168
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "あなたは、空気で日付設定を保存しない無効な日付による空気の名前付け設定の保存試してください。"
 
-#: sickrage/core/webserver/views.py:4173
+#: sickrage/core/webserver/views.py:4174
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "構成に名前を付ける、スポーツ設定を保存しない無効なスポーツを保存しよう"
 
-#: sickrage/core/webserver/views.py:4189
+#: sickrage/core/webserver/views.py:4190
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4268
+#: sickrage/core/webserver/views.py:4269
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4309
+#: sickrage/core/webserver/views.py:4310
 msgid "\n"
 "No Provider Name specified"
 msgstr "指定されたプロバイダー名がいません"
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4312
 msgid "\n"
 "No Provider Url specified"
 msgstr "指定されたプロバイダー Url がいません。"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4314
 msgid "\n"
 "No Provider Api key specified"
 msgstr "指定されたプロバイダーの Api キーがありません。"
 
-#: sickrage/core/webserver/views.py:4413
+#: sickrage/core/webserver/views.py:4414
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4428
+#: sickrage/core/webserver/views.py:4429
 msgid "Config - Notifications"
 msgstr "設定 - 通知"
 
-#: sickrage/core/webserver/views.py:4759
+#: sickrage/core/webserver/views.py:4760
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4774
+#: sickrage/core/webserver/views.py:4775
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4847
+#: sickrage/core/webserver/views.py:4848
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4862
+#: sickrage/core/webserver/views.py:4863
 msgid "Config - Anime"
 msgstr "設定 - キャラクター"
 
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:4887
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 構成を保存"
 
-#: sickrage/core/webserver/views.py:4901
+#: sickrage/core/webserver/views.py:4902
 msgid "Config - Quality Settings"
 msgstr "設定 - 品質の設定"
 
-#: sickrage/core/webserver/views.py:4913
+#: sickrage/core/webserver/views.py:4914
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[品質設定]構成が保存されました"
 
-#: sickrage/core/webserver/views.py:4965
+#: sickrage/core/webserver/views.py:4966
 msgid "Daily Searcher"
 msgstr "毎日サーチャー"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4968
 msgid "Show Updater"
 msgstr "アップデーターを表示します。"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4969
 msgid "Check Version"
 msgstr "バージョンを確認します。"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4972
 msgid "Find Propers"
 msgstr "Propers を見つける"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4973
 msgid "Postprocessor"
 msgstr "ポスト プロセッサ"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4974
 msgid "Find Subtitles"
 msgstr "字幕を見つける"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4976
 msgid "Event"
 msgstr "イベント"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4978
 msgid "Tornado"
 msgstr "竜巻"
 
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4979
 msgid "Thread"
 msgstr "スレッド"
 
