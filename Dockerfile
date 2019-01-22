@@ -1,10 +1,10 @@
-FROM python:2.7.15-alpine3.8
+FROM python:2.7.15
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
 # install app
 COPY . /opt/sickrage/
 
-RUN apk add --no-cache libffi-dev openssl-dev libxml2-dev libxslt-dev linux-headers build-base git
+RUN apt-get update && apt-get install -y libffi-dev libssl-dev python-psutil python-lxml python-cffi python-cryptography build-essential git
 RUN pip install -U pip setuptools
 RUN pip install -r /opt/sickrage/requirements.txt
 

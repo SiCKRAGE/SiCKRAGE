@@ -1,6 +1,7 @@
 # Changelog
 
-- * 276ee99 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
+- * fde52fe - 2019-01-21: Updated Dockerfile. 
+- * ae5c478 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
 - * b2b9f0d - 2019-01-20: Release v9.4.56 
 - * a2596ce - 2019-01-20: Fixed typo in show schedule page, double web roots. 
 - * 468c19e - 2019-01-19: Decreased sleep timer from 5s to 2s for RARBG. Updated keycloak client requirement version. 
