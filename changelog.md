@@ -1,6 +1,7 @@
 # Changelog
 
-- * 4c4b447 - 2019-01-22: Pre-Release v9.4.58.dev1 
+- * d2bccf7 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
+- * c128f16 - 2019-01-22: Pre-Release v9.4.58.dev1 
 - * 8913178 - 2019-01-21: Release v9.4.57 
 - * f065a3e - 2019-01-21: Updated Dockerfile. 
 - * ae5c478 - 2019-01-21: Fixed auth issue causing redirect to home page every 5 minutes. 
