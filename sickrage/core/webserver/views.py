@@ -32,6 +32,7 @@ import dateutil.tz
 import markdown2
 import tornado.gen
 import tornado.locale
+from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
@@ -144,12 +145,12 @@ class BaseHandler(RequestHandler):
         try:
             try:
                 return sickrage.app.oidc_client.userinfo(self.get_secure_cookie('sr_access_token'))
-            except HTTPError:
+            except (KeycloakClientError, HTTPError):
                 token = sickrage.app.oidc_client.refresh_token(self.get_secure_cookie('sr_refresh_token'))
                 self.set_secure_cookie('sr_access_token', token['access_token'])
                 self.set_secure_cookie('sr_refresh_token', token['refresh_token'])
                 return sickrage.app.oidc_client.userinfo(token['access_token'])
-        except Exception:
+        except Exception as e:
             pass
 
     def render_string(self, template_name, **kwargs):
