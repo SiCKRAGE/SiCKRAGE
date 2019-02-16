@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-01-22 01:57-0800\n"
-"PO-Revision-Date: 2019-01-22 09:58\n"
+"POT-Creation-Date: 2019-02-15 22:48-0800\n"
+"PO-Revision-Date: 2019-02-16 06:50\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Polish\n"
 "MIME-Version: 1.0\n"
@@ -6217,53 +6217,53 @@ msgstr "Znaleziono nie pliki do pobrania"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nie mogłem znaleźć do pobrania dla <i>%s</i>"
 
-#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2678
+#: sickrage/core/queues/show.py:294 sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2678
 #: sickrage/core/webserver/views.py:2690
 msgid "Unable to add show"
 msgstr "Nie można dodać Pokaż"
 
-#: sickrage/core/queues/show.py:294
+#: sickrage/core/queues/show.py:295
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Pokaż w {} ma bez nazwy na {}, prawdopodobnie niewłaściwy język. Usunąć .nfo i dodać ręcznie w odpowiednim języku"
 
-#: sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:305
 msgid "Show "
 msgstr "Pokaż "
 
-#: sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:305
 msgid " is on "
 msgstr " jest na "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:307
 msgid " but contains no season/episode data."
 msgstr " ale zawiera dane nie sezon, odcinek."
 
-#: sickrage/core/queues/show.py:315
+#: sickrage/core/queues/show.py:316
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Nie można na wystawie w {} na {} przy użyciu {ID}, nie za pomocą NFO. Usunąć .nfo i spróbuj ponownie dodać ręcznie."
 
-#: sickrage/core/queues/show.py:378
+#: sickrage/core/queues/show.py:379
 msgid "Unable to add "
 msgstr "Nie można dodać "
 
-#: sickrage/core/queues/show.py:378
+#: sickrage/core/queues/show.py:379
 msgid " due to an error with "
 msgstr " ze względu na błąd z "
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid "Unable to add show due to an error with "
 msgstr "Nie można dodać Pokaż ze względu na błąd z "
 
-#: sickrage/core/queues/show.py:387
+#: sickrage/core/queues/show.py:388
 msgid "Show skipped"
 msgstr "Pokaż pomijane"
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:389
 msgid "The show in "
 msgstr "Pokaż w "
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:389
 msgid " is already in your show list"
 msgstr " jest już na liście Pokaż"
 

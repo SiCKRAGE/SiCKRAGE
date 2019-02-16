@@ -1,6 +1,7 @@
 # Changelog
 
-- * 875074a - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
+- * 34d5d01 - 2019-02-15: Pre-Release v9.4.59.dev1 
+- * 141d1ce - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
 - * d41e525 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
 - * 9a10462 - 2019-01-22: Release v9.4.58 
 - * 92b5423 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
