@@ -77,9 +77,10 @@ class ShowUpdater(object):
                     continue
 
             try:
-                stale = (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7
-                if show.indexerid in updated_shows or stale:
-                    pi_list.append(sickrage.app.show_queue.updateShow(show, False))
+                if show.indexerid in updated_shows:
+                    pi_list.append(sickrage.app.show_queue.updateShow(show, indexer_update_only=True, force=False))
+                elif (datetime.datetime.now() - datetime.datetime.fromordinal(show.last_update)).days >= 7:
+                    pi_list.append(sickrage.app.show_queue.updateShow(show, force=False))
                 else:
                     pi_list.append(sickrage.app.show_queue.refreshShow(show, False))
             except (CantUpdateShowException, CantRefreshShowException) as e:

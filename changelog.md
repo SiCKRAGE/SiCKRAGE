@@ -1,6 +1,7 @@
 # Changelog
 
-- * c815554 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
+- * 875074a - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
+- * d41e525 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
 - * 9a10462 - 2019-01-22: Release v9.4.58 
 - * 92b5423 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
 - * c128f16 - 2019-01-22: Pre-Release v9.4.58.dev1 

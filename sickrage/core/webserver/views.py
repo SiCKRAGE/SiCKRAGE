@@ -1534,7 +1534,7 @@ class Home(WebHandler):
         # force the update
         if do_update:
             try:
-                sickrage.app.show_queue.updateShow(showObj, True)
+                sickrage.app.show_queue.updateShow(showObj, force=True)
                 time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             except CantUpdateShowException as e:
                 errors.append(_("Unable to update show: {}").format(e))
@@ -1645,7 +1645,7 @@ class Home(WebHandler):
 
         # force the update
         try:
-            sickrage.app.show_queue.updateShow(showObj, bool(force))
+            sickrage.app.show_queue.updateShow(showObj, force=bool(force))
         except CantUpdateShowException as e:
             sickrage.app.alerts.error(_("Unable to update this show."), str(e))
 
@@ -3424,7 +3424,7 @@ class Manage(Home, WebRoot):
 
             if curShowID in toUpdate:
                 try:
-                    sickrage.app.show_queue.updateShow(showObj, True)
+                    sickrage.app.show_queue.updateShow(showObj, force=True)
                     updates.append(showObj.name)
                 except CantUpdateShowException as e:
                     errors.append(_("Unable to update show: {}").format(e))
