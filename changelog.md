@@ -1,6 +1,13 @@
 # Changelog
 
-- * 55e7878 - 2019-01-22: Release v9.4.58 
+- * 7948642 - 2019-02-17: Release v9.4.59 
+- * 993ca34 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
+- * 01ad8b6 - 2019-02-15: Pre-Release v9.4.59.dev3 
+- * 3af8cda - 2019-02-15: Removed redundant automatic show refreshes as these happen during automatic show updates 
+- * 0a29873 - 2019-02-15: Pre-Release v9.4.59.dev1 
+- * 141d1ce - 2019-02-15: Only update indexer details for shows when performing show updates on shows marked as updated on indexer, full updates performed every 7 days. 
+- * d41e525 - 2019-02-11: Fixed issue with &quot;unable to verify the download url&quot; 
+- * 9a10462 - 2019-01-22: Release v9.4.58 
 - * 92b5423 - 2019-01-22: Dockerfile default TZ set to Canada/Pacific 
 - * c128f16 - 2019-01-22: Pre-Release v9.4.58.dev1 
 - * 8913178 - 2019-01-21: Release v9.4.57 

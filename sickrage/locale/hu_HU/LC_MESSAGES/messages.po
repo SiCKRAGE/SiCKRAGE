@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-01-22 01:57-0800\n"
-"PO-Revision-Date: 2019-01-22 09:58\n"
+"POT-Creation-Date: 2019-02-17 16:32-0800\n"
+"PO-Revision-Date: 2019-02-18 00:33\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -6217,53 +6217,53 @@ msgstr "Letöltések nem találtak"
 msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Nem tudtam megtalálni a letöltés, a <i>%s</i>"
 
-#: sickrage/core/queues/show.py:293 sickrage/core/queues/show.py:303
-#: sickrage/core/queues/show.py:314 sickrage/core/webserver/views.py:2678
+#: sickrage/core/queues/show.py:294 sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2678
 #: sickrage/core/webserver/views.py:2690
 msgid "Unable to add show"
 msgstr "Nem lehet hozzáadni a Térkép"
 
-#: sickrage/core/queues/show.py:294
+#: sickrage/core/queues/show.py:295
 msgid "Show in {} has no name on {}, probably the wrong language. Delete .nfo and add manually in the correct language"
 msgstr "Show-ban {} {}, valószínűleg a rossz nyelv nincs neve van. .Nfo törlése és hozzáadása manuálisan a megfelelő nyelven"
 
-#: sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:305
 msgid "Show "
 msgstr "Térkép "
 
-#: sickrage/core/queues/show.py:304
+#: sickrage/core/queues/show.py:305
 msgid " is on "
 msgstr " a "
 
-#: sickrage/core/queues/show.py:306
+#: sickrage/core/queues/show.py:307
 msgid " but contains no season/episode data."
 msgstr " de nem tartalmaz/évad adatokat."
 
-#: sickrage/core/queues/show.py:315
+#: sickrage/core/queues/show.py:316
 msgid "Unable to look up the show in {} on {} using ID {}, not using the NFO. Delete .nfo and try adding manually again."
 msgstr "Nem kereshető vissza a show-ban {} {}, azonosító {}, nem használ az NFO segítségével a. .Nfo törölni, és próbálja meg hozzáadni manuálisan újra."
 
-#: sickrage/core/queues/show.py:378
+#: sickrage/core/queues/show.py:379
 msgid "Unable to add "
 msgstr "Nem lehet adni. "
 
-#: sickrage/core/queues/show.py:378
+#: sickrage/core/queues/show.py:379
 msgid " due to an error with "
 msgstr " Hiba történt a "
 
-#: sickrage/core/queues/show.py:382
+#: sickrage/core/queues/show.py:383
 msgid "Unable to add show due to an error with "
 msgstr "Nem lehet hozzáadni a Térkép-hiba történt a "
 
-#: sickrage/core/queues/show.py:387
+#: sickrage/core/queues/show.py:388
 msgid "Show skipped"
 msgstr "A következő szálláshely kimarad"
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:389
 msgid "The show in "
 msgstr "A show-ban "
 
-#: sickrage/core/queues/show.py:388
+#: sickrage/core/queues/show.py:389
 msgid " is already in your show list"
 msgstr " van már-ban listád-Térkép"
 

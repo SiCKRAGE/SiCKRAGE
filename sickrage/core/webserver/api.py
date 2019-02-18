@@ -2654,7 +2654,7 @@ class CMD_ShowUpdate(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         try:
-            sickrage.app.show_queue.updateShow(showObj, True)  # @UndefinedVariable
+            sickrage.app.show_queue.updateShow(showObj, force=True)
             return _responds(RESULT_SUCCESS, msg=str(showObj.name) + " has queued to be updated")
         except CantUpdateShowException as e:
             sickrage.app.log.debug("API::Unable to update show: {}".format(e))

@@ -90,7 +90,7 @@ class ShowQueue(srQueue):
     def _get_loading_show_list(self):
         return [x for x in self._get_queue_items() if x.is_loading]
 
-    def updateShow(self, show, force=False):
+    def updateShow(self, show, indexer_update_only=False, force=False):
         if self.is_being_added(show):
             raise CantUpdateShowException("{} is still being added, please wait until it is finished before trying to "
                                           "update.".format(show.name))
@@ -103,7 +103,8 @@ class ShowQueue(srQueue):
             raise CantUpdateShowException("{} is in the process of being updated, can't update again until "
                                           "it's done.".format(show.name))
 
-        return self.put(QueueItemForceUpdate(show)) if force else self.put(QueueItemUpdate(show))
+        return self.put(QueueItemForceUpdate(show, indexer_update_only)) if force else self.put(
+            QueueItemUpdate(show, indexer_update_only))
 
     def refreshShow(self, show, force=False):
         if (self.is_being_refreshed(show) or self.is_in_refresh_queue(show)) and not force:
@@ -552,8 +553,9 @@ class QueueItemSubtitle(ShowQueueItem):
 
 
 class QueueItemUpdate(ShowQueueItem):
-    def __init__(self, show=None, action_id=ShowQueueActions.UPDATE):
+    def __init__(self, show=None, indexer_update_only=False, action_id=ShowQueueActions.UPDATE):
         super(QueueItemUpdate, self).__init__(show, action_id)
+        self.indexer_update_only = indexer_update_only
         self.force = False
 
     def run(self):
@@ -574,8 +576,9 @@ class QueueItemUpdate(ShowQueueItem):
             return
 
         try:
-            sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
-            self.show.load_imdb_info()
+            if not self.indexer_update_only:
+                sickrage.app.log.debug("Attempting to retrieve show info from IMDb")
+                self.show.load_imdb_info()
         except Exception as e:
             sickrage.app.log.warning("Error loading IMDb info for {}: {}".format(IndexerApi(self.show.indexer).name, e))
 
@@ -620,12 +623,14 @@ class QueueItemUpdate(ShowQueueItem):
             "Finished updates in {}s for show: {}".format(round(time.time() - start_time, 2), self.show.name))
 
         # refresh show
-        sickrage.app.show_queue.refreshShow(self.show, self.force)
+        if not self.indexer_update_only:
+            sickrage.app.show_queue.refreshShow(self.show, self.force)
 
 
 class QueueItemForceUpdate(QueueItemUpdate):
-    def __init__(self, show=None):
-        super(QueueItemForceUpdate, self).__init__(show, ShowQueueActions.FORCEUPDATE)
+    def __init__(self, show=None, indexer_update_only=False):
+        super(QueueItemForceUpdate, self).__init__(show, indexer_update_only, ShowQueueActions.FORCEUPDATE)
+        self.indexer_update_only = indexer_update_only
         self.force = True
 
 

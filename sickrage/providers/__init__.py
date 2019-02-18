@@ -653,15 +653,13 @@ class TorrentProvider(GenericProvider):
                 info_hash = b16encode(b32decode(info_hash)).upper()
 
             if info_hash:
-                torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
-                result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
-
                 try:
                     # add to external api database
                     TorrentCacheAPI().add(url)
                     result = verify_torrent(b64decode(TorrentCacheAPI().get(info_hash)['data']['content']).strip())
                 except Exception:
-                    pass
+                    torrent_url = "https://itorrents.org/torrent/{info_hash}.torrent".format(info_hash=info_hash)
+                    result = verify_torrent(super(TorrentProvider, self).get_content(torrent_url))
 
         if not result:
             result = verify_torrent(super(TorrentProvider, self).get_content(url))

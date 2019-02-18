@@ -104,14 +104,12 @@ class Torrent9Provider(TorrentProvider):
                 try:
                     info_cell = cells[0].a
                     title = info_cell.get_text()
-                    download_url = info_cell.get('href')
+                    download_url = self._get_download_link(urljoin(self.urls['base_url'], info_cell.get('href')))
                     if not all([title, download_url]):
                         continue
 
                     title = '{name} {codec}'.format(name=title, codec='x264')
 
-                    download_name = download_url.rsplit('/', 1)[1]
-                    download_url = self.urls['download'] % download_name
                     if self.custom_url:
                         if not validate_url(self.custom_url):
                             sickrage.app.log.warning("Invalid custom url: {}".format(self.custom_url))
@@ -138,3 +136,21 @@ class Torrent9Provider(TorrentProvider):
                     sickrage.app.log.error("Failed parsing provider")
 
         return results
+
+    def _get_download_link(self, url, download_type="torrent"):
+        data = self.session.get(url).text
+
+        links = {
+            "torrent": "",
+            "magnet": "",
+        }
+
+        with bs4_parser(data) as html:
+            for download in html.findAll('a', {'class': 'download'}):
+                link = download['href']
+                if link.startswith("magnet"):
+                    links["magnet"] = link
+                elif link.startswith("/downloading"):
+                    links["torrent"] = urljoin(self.urls['base_url'], link)
+
+        return links[download_type]
