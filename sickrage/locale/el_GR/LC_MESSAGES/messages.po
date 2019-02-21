@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-17 16:32-0800\n"
-"PO-Revision-Date: 2019-02-18 00:33\n"
+"POT-Creation-Date: 2019-02-20 20:47-0800\n"
+"PO-Revision-Date: 2019-02-21 04:48\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -197,7 +197,7 @@ msgstr "Επιλέξτε τοποθεσία .torrent blackhole/ρολόι"
 msgid "Select .torrent download location"
 msgstr "Επιλέξτε θέση λήψης .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:986 src/js/core.js:3376
+#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3376
 msgid "Minimum seeding time is"
 msgstr "Ελάχιστο σπορά χρόνος είναι"
 
@@ -548,8 +548,8 @@ msgstr "AniDB είναι μη κερδοσκοπική βάση δεδομένω
 
 #: sickrage/core/webserver/views/config/anime.mako:30
 #: sickrage/core/webserver/views/config/postprocessing.mako:33
-#: sickrage/core/webserver/views/config/search.mako:332
-#: sickrage/core/webserver/views/config/search.mako:759
+#: sickrage/core/webserver/views/config/search.mako:320
+#: sickrage/core/webserver/views/config/search.mako:747
 #: sickrage/core/webserver/views/config/subtitles.mako:35
 #: sickrage/core/webserver/views/home/status.mako:41
 msgid "Enabled"
@@ -617,10 +617,10 @@ msgstr "Θέλετε να προσθέσετε τα PostProcessed επεισόδ
 #: sickrage/core/webserver/views/config/providers.mako:124
 #: sickrage/core/webserver/views/config/providers.mako:936
 #: sickrage/core/webserver/views/config/quality_settings.mako:57
-#: sickrage/core/webserver/views/config/search.mako:311
-#: sickrage/core/webserver/views/config/search.mako:736
-#: sickrage/core/webserver/views/config/search.mako:813
-#: sickrage/core/webserver/views/config/search.mako:1043
+#: sickrage/core/webserver/views/config/search.mako:299
+#: sickrage/core/webserver/views/config/search.mako:724
+#: sickrage/core/webserver/views/config/search.mako:801
+#: sickrage/core/webserver/views/config/search.mako:1031
 #: sickrage/core/webserver/views/config/subtitles.mako:209
 #: sickrage/core/webserver/views/config/subtitles.mako:259
 #: sickrage/core/webserver/views/config/subtitles.mako:316
@@ -1014,7 +1014,7 @@ msgstr "εμφανίζετε ημερομηνίες και ώρες σε ζών�
 #: sickrage/core/webserver/views/config/postprocessing.mako:1365
 #: sickrage/core/webserver/views/config/postprocessing.mako:1380
 #: sickrage/core/webserver/views/config/postprocessing.mako:1394
-#: sickrage/core/webserver/views/config/search.mako:978
+#: sickrage/core/webserver/views/config/search.mako:966
 #: sickrage/core/webserver/views/config/subtitles.mako:57
 #: sickrage/core/webserver/views/config/subtitles.mako:129
 #: sickrage/core/webserver/views/config/subtitles.mako:173
@@ -1657,10 +1657,10 @@ msgstr "KODI όνομα χρήστη"
 #: sickrage/core/webserver/views/config/notifications.mako:454
 #: sickrage/core/webserver/views/config/notifications.mako:470
 #: sickrage/core/webserver/views/config/notifications.mako:1178
-#: sickrage/core/webserver/views/config/search.mako:412
-#: sickrage/core/webserver/views/config/search.mako:430
-#: sickrage/core/webserver/views/config/search.mako:905
-#: sickrage/core/webserver/views/config/search.mako:922
+#: sickrage/core/webserver/views/config/search.mako:400
+#: sickrage/core/webserver/views/config/search.mako:418
+#: sickrage/core/webserver/views/config/search.mako:893
+#: sickrage/core/webserver/views/config/search.mako:910
 msgid "blank = no authentication"
 msgstr "κενό = χωρίς έλεγχο ταυτότητας"
 
@@ -1690,8 +1690,8 @@ msgstr "KODI κωδικού πρόσβασης"
 #: sickrage/core/webserver/views/config/notifications.mako:3387
 #: sickrage/core/webserver/views/config/notifications.mako:3491
 #: sickrage/core/webserver/views/config/notifications.mako:3665
-#: sickrage/core/webserver/views/config/search.mako:727
-#: sickrage/core/webserver/views/config/search.mako:1033
+#: sickrage/core/webserver/views/config/search.mako:715
+#: sickrage/core/webserver/views/config/search.mako:1021
 msgid "Click below to test"
 msgstr "Κάντε κλικ παρακάτω για να δοκιμάσετε"
 
@@ -2251,12 +2251,12 @@ msgid "Moderate"
 msgstr "Μέτρια"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1868
-#: sickrage/core/webserver/views/config/search.mako:708
+#: sickrage/core/webserver/views/config/search.mako:696
 msgid "Normal"
 msgstr "Κανονική λειτουργία"
 
 #: sickrage/core/webserver/views/config/notifications.mako:1871
-#: sickrage/core/webserver/views/config/search.mako:711
+#: sickrage/core/webserver/views/config/search.mako:699
 msgid "High"
 msgstr "Υψηλή"
 
@@ -3945,12 +3945,12 @@ msgid "Search Settings"
 msgstr "Ρυθμίσεις αναζήτησης"
 
 #: sickrage/core/webserver/views/config/search.mako:9
-#: sickrage/core/webserver/views/config/search.mako:322
+#: sickrage/core/webserver/views/config/search.mako:310
 msgid "NZB Clients"
 msgstr "Πελατών NZB"
 
 #: sickrage/core/webserver/views/config/search.mako:10
-#: sickrage/core/webserver/views/config/search.mako:749
+#: sickrage/core/webserver/views/config/search.mako:737
 msgid "Torrent Clients"
 msgstr "Πελάτες torrent"
 
@@ -3986,374 +3986,366 @@ msgstr "Ενεργοποιήσετε cache RSS υπηρεσία παροχής"
 msgid "enables/disables provider RSS feed caching"
 msgstr "Ενεργοποιεί/απενεργοποιεί την υπηρεσία παροχής RSS feed προσωρινής αποθήκευσης"
 
-#: sickrage/core/webserver/views/config/search.mako:62
-msgid "Enable provider RSS cache for valid shows only"
-msgstr "Ενεργοποιήσετε cache RSS υπηρεσία παροχής για έγκυρες παραστάσεις μόνο"
-
-#: sickrage/core/webserver/views/config/search.mako:68
-msgid "enables/disables caching of shows already added to SiCKRAGE, speeds up searches"
-msgstr "Ενεργοποιεί/απενεργοποιεί την προσωρινή αποθήκευση του δείχνει ήδη προσθέσει στο SiCKRAGE, επιταχύνει τις αναζητήσεις"
-
-#: sickrage/core/webserver/views/config/search.mako:75
+#: sickrage/core/webserver/views/config/search.mako:63
 msgid "Download UNVERIFIED torrent magnet links"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:82
+#: sickrage/core/webserver/views/config/search.mako:70
 msgid "enables/disables downloading of unverified torrent magnet links via clients"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:89
+#: sickrage/core/webserver/views/config/search.mako:77
 msgid "Convert provider torrent file links to magnetic links"
 msgstr "Μετατροπή υπηρεσίας παροχής αρχείου torrent δεσμοί μαγνητικό συνδέσεις"
 
-#: sickrage/core/webserver/views/config/search.mako:95
+#: sickrage/core/webserver/views/config/search.mako:83
 msgid "enables/disables converting of public torrent provider file links to magnetic links"
 msgstr "Ενεργοποιεί/απενεργοποιεί τη μετατροπή από δημόσια torrent αρχείο παροχής συνδέσεις μαγνητικό συνδέσεις"
 
-#: sickrage/core/webserver/views/config/search.mako:102
+#: sickrage/core/webserver/views/config/search.mako:90
 msgid "Enable failed snatch handling"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:108
+#: sickrage/core/webserver/views/config/search.mako:96
 msgid "enables/disables failed snatch handling, automatically retries failed snatches"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:116
+#: sickrage/core/webserver/views/config/search.mako:104
 msgid "Check for failed snatches aged"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:144
+#: sickrage/core/webserver/views/config/search.mako:132
 msgid "Check propers every:"
 msgstr "Ελέγξτε propers κάθε:"
 
-#: sickrage/core/webserver/views/config/search.mako:155
+#: sickrage/core/webserver/views/config/search.mako:143
 msgid "24 hours"
 msgstr "24 ώρες"
 
-#: sickrage/core/webserver/views/config/search.mako:155
+#: sickrage/core/webserver/views/config/search.mako:143
 msgid "4 hours"
 msgstr "4 ώρες"
 
-#: sickrage/core/webserver/views/config/search.mako:155
+#: sickrage/core/webserver/views/config/search.mako:143
 msgid "90 mins"
 msgstr "90 λεπτά"
 
-#: sickrage/core/webserver/views/config/search.mako:155
+#: sickrage/core/webserver/views/config/search.mako:143
 msgid "45 mins"
 msgstr "45 λεπτά"
 
-#: sickrage/core/webserver/views/config/search.mako:155
+#: sickrage/core/webserver/views/config/search.mako:143
 msgid "15 mins"
 msgstr "15 λεπτά"
 
-#: sickrage/core/webserver/views/config/search.mako:167
+#: sickrage/core/webserver/views/config/search.mako:155
 msgid "Backlog search frequency"
 msgstr "Συχνότητα αναζήτησης λίστας εκκρεμοτήτων"
 
-#: sickrage/core/webserver/views/config/search.mako:179
-#: sickrage/core/webserver/views/config/search.mako:205
+#: sickrage/core/webserver/views/config/search.mako:167
+#: sickrage/core/webserver/views/config/search.mako:193
 msgid "time in minutes"
 msgstr "ώρα σε λεπτά"
 
-#: sickrage/core/webserver/views/config/search.mako:193
+#: sickrage/core/webserver/views/config/search.mako:181
 msgid "Daily search frequency"
 msgstr "Καθημερινή συχνότητα αναζήτησης"
 
-#: sickrage/core/webserver/views/config/search.mako:219
+#: sickrage/core/webserver/views/config/search.mako:207
 msgid "Usenet retention"
 msgstr "Usenet κατακράτηση"
 
-#: sickrage/core/webserver/views/config/search.mako:244
+#: sickrage/core/webserver/views/config/search.mako:232
 msgid "Ignore words"
 msgstr "Παράβλεψη λέξεων"
 
-#: sickrage/core/webserver/views/config/search.mako:253
-#: sickrage/core/webserver/views/config/search.mako:271
+#: sickrage/core/webserver/views/config/search.mako:241
+#: sickrage/core/webserver/views/config/search.mako:259
 #: sickrage/core/webserver/views/home/edit_show.mako:314
 #: sickrage/core/webserver/views/home/edit_show.mako:335
 msgid "ex. word1,word2,word3"
 msgstr "ex. λέξη1 λέξη2, word3"
 
-#: sickrage/core/webserver/views/config/search.mako:262
+#: sickrage/core/webserver/views/config/search.mako:250
 msgid "Require words"
 msgstr "Απαιτούν λέξεις"
 
-#: sickrage/core/webserver/views/config/search.mako:280
+#: sickrage/core/webserver/views/config/search.mako:268
 msgid "Ignore language names in subbed results"
 msgstr "Αγνοήστε τα ονόματα γλωσσών subbed αποτελέσματα"
 
-#: sickrage/core/webserver/views/config/search.mako:289
+#: sickrage/core/webserver/views/config/search.mako:277
 msgid "ex. lang1,lang2,lang3"
 msgstr "π.χ. lang1, lang2, lang3"
 
-#: sickrage/core/webserver/views/config/search.mako:298
+#: sickrage/core/webserver/views/config/search.mako:286
 msgid "Allow high priority"
 msgstr "Επιτρέπει την υψηλής προτεραιότητας"
 
-#: sickrage/core/webserver/views/config/search.mako:304
+#: sickrage/core/webserver/views/config/search.mako:292
 msgid "Set downloads of recently aired episodes to high priority"
 msgstr "Σετ λήψεις πρόσφατα αερίζεται επεισοδίων σε υψηλή προτεραιότητα"
 
-#: sickrage/core/webserver/views/config/search.mako:324
+#: sickrage/core/webserver/views/config/search.mako:312
 msgid "How to handle NZB search results for clients."
 msgstr "Πώς να χειριστείτε NZB αποτελέσματα αναζήτησης για τους πελάτες."
 
-#: sickrage/core/webserver/views/config/search.mako:338
+#: sickrage/core/webserver/views/config/search.mako:326
 msgid "enable NZB searches"
 msgstr "Ενεργοποίηση NZB αναζητήσεις"
 
-#: sickrage/core/webserver/views/config/search.mako:346
+#: sickrage/core/webserver/views/config/search.mako:334
 msgid "Send .nzb files to:"
 msgstr "Στείλετε τα αρχεία .nzb:"
 
-#: sickrage/core/webserver/views/config/search.mako:366
-#: sickrage/core/webserver/views/config/search.mako:794
+#: sickrage/core/webserver/views/config/search.mako:354
+#: sickrage/core/webserver/views/config/search.mako:782
 msgid "Black hole folder location"
 msgstr "Θέση φακέλου μαύρη τρύπα"
 
-#: sickrage/core/webserver/views/config/search.mako:376
-#: sickrage/core/webserver/views/config/search.mako:805
+#: sickrage/core/webserver/views/config/search.mako:364
+#: sickrage/core/webserver/views/config/search.mako:793
 msgid "files are stored at this location for external software to find and use"
 msgstr "τα αρχεία αποθηκεύονται σε αυτήν τη θέση για εξωτερικό λογισμικό για να βρείτε και να χρησιμοποιήσετε"
 
-#: sickrage/core/webserver/views/config/search.mako:386
+#: sickrage/core/webserver/views/config/search.mako:374
 msgid "SABnzbd server URL"
 msgstr "Διεύθυνση URL διακομιστή: SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:395
+#: sickrage/core/webserver/views/config/search.mako:383
 msgid "ex. http://localhost:8080/"
 msgstr "ex. http://localhost: 8080 /"
 
-#: sickrage/core/webserver/views/config/search.mako:403
+#: sickrage/core/webserver/views/config/search.mako:391
 msgid "SABnzbd username"
 msgstr "Όνομα χρήστη: SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:421
+#: sickrage/core/webserver/views/config/search.mako:409
 msgid "SABnzbd password"
 msgstr "Κωδικός: SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:439
+#: sickrage/core/webserver/views/config/search.mako:427
 msgid "SABnzbd API key"
 msgstr "Κλειδί API: SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:457
+#: sickrage/core/webserver/views/config/search.mako:445
 msgid "Use SABnzbd category"
 msgstr "Κατηγορία: SABnzbd χρήση"
 
-#: sickrage/core/webserver/views/config/search.mako:466
-#: sickrage/core/webserver/views/config/search.mako:484
-#: sickrage/core/webserver/views/config/search.mako:625
-#: sickrage/core/webserver/views/config/search.mako:643
+#: sickrage/core/webserver/views/config/search.mako:454
+#: sickrage/core/webserver/views/config/search.mako:472
+#: sickrage/core/webserver/views/config/search.mako:613
+#: sickrage/core/webserver/views/config/search.mako:631
 msgid "ex. TV"
 msgstr "π.χ. τηλεόραση"
 
-#: sickrage/core/webserver/views/config/search.mako:475
+#: sickrage/core/webserver/views/config/search.mako:463
 msgid "Use SABnzbd category (backlog episodes)"
 msgstr "Χρήση: SABnzbd κατηγορία (ανεκτέλεστο επεισόδια)"
 
-#: sickrage/core/webserver/views/config/search.mako:493
+#: sickrage/core/webserver/views/config/search.mako:481
 msgid "Use SABnzbd category for anime"
 msgstr "Κατηγορία: SABnzbd χρήση για anime"
 
-#: sickrage/core/webserver/views/config/search.mako:502
-#: sickrage/core/webserver/views/config/search.mako:522
-#: sickrage/core/webserver/views/config/search.mako:661
-#: sickrage/core/webserver/views/config/search.mako:680
+#: sickrage/core/webserver/views/config/search.mako:490
+#: sickrage/core/webserver/views/config/search.mako:510
+#: sickrage/core/webserver/views/config/search.mako:649
+#: sickrage/core/webserver/views/config/search.mako:668
 msgid "ex. anime"
 msgstr "Κινούμενο σχέδιο π.χ."
 
-#: sickrage/core/webserver/views/config/search.mako:512
+#: sickrage/core/webserver/views/config/search.mako:500
 msgid "Use SABnzbd category for anime (backlog episodes)"
 msgstr "Κατηγορία: SABnzbd χρήση για anime (ανεκτέλεστο επεισόδια)"
 
-#: sickrage/core/webserver/views/config/search.mako:532
+#: sickrage/core/webserver/views/config/search.mako:520
 msgid "Use forced priority"
 msgstr "Αναγκαστική χρήση προτεραιότητας"
 
-#: sickrage/core/webserver/views/config/search.mako:538
+#: sickrage/core/webserver/views/config/search.mako:526
 msgid "enable to change priority from HIGH to FORCED"
 msgstr "επιτρέπουν να αλλάξετε προτεραιότητας από υψηλό σε ΑΝΑΓΚΑΣΤΙΚΉ"
 
-#: sickrage/core/webserver/views/config/search.mako:548
+#: sickrage/core/webserver/views/config/search.mako:536
 msgid "Connect using HTTPS"
 msgstr "Συνδεθείτε χρησιμοποιώντας το HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:554
+#: sickrage/core/webserver/views/config/search.mako:542
 msgid "enable secure control"
 msgstr "ενεργοποίηση ασφαλούς ελέγχου"
 
-#: sickrage/core/webserver/views/config/search.mako:561
+#: sickrage/core/webserver/views/config/search.mako:549
 msgid "NZBget host:port"
 msgstr "NZBget κεντρικός υπολογιστής: θύρα"
 
-#: sickrage/core/webserver/views/config/search.mako:570
+#: sickrage/core/webserver/views/config/search.mako:558
 msgid "ex. localhost:6789"
 msgstr "π.χ. localhost:6789"
 
-#: sickrage/core/webserver/views/config/search.mako:580
+#: sickrage/core/webserver/views/config/search.mako:568
 msgid "NZBget username"
 msgstr "NZBget όνομα χρήστη"
 
-#: sickrage/core/webserver/views/config/search.mako:589
+#: sickrage/core/webserver/views/config/search.mako:577
 msgid "default = nzbget"
 msgstr "προεπιλογή = nzbget"
 
-#: sickrage/core/webserver/views/config/search.mako:598
+#: sickrage/core/webserver/views/config/search.mako:586
 msgid "NZBget password"
 msgstr "Κωδικός NZBget"
 
-#: sickrage/core/webserver/views/config/search.mako:607
+#: sickrage/core/webserver/views/config/search.mako:595
 msgid "default = tegbzn6789"
 msgstr "προεπιλογή = tegbzn6789"
 
-#: sickrage/core/webserver/views/config/search.mako:616
+#: sickrage/core/webserver/views/config/search.mako:604
 msgid "Use NZBget category"
 msgstr "Χρήση NZBget κατηγορία"
 
-#: sickrage/core/webserver/views/config/search.mako:634
+#: sickrage/core/webserver/views/config/search.mako:622
 msgid "Use NZBget category (backlog episodes)"
 msgstr "Χρήση NZBget κατηγορία (ανεκτέλεστο επεισόδια)"
 
-#: sickrage/core/webserver/views/config/search.mako:652
+#: sickrage/core/webserver/views/config/search.mako:640
 msgid "Use NZBget category for anime"
 msgstr "Χρήση NZBget κατηγορία για anime"
 
-#: sickrage/core/webserver/views/config/search.mako:670
+#: sickrage/core/webserver/views/config/search.mako:658
 msgid "Use NZBget category for anime (backlog episodes)"
 msgstr "Χρήση NZBget κατηγορία για anime (ανεκτέλεστο επεισόδια)"
 
-#: sickrage/core/webserver/views/config/search.mako:689
+#: sickrage/core/webserver/views/config/search.mako:677
 msgid "NZBget priority"
 msgstr "NZBget προτεραιότητα"
 
-#: sickrage/core/webserver/views/config/search.mako:702
+#: sickrage/core/webserver/views/config/search.mako:690
 msgid "Very low"
 msgstr "Πολύ χαμηλή"
 
-#: sickrage/core/webserver/views/config/search.mako:705
+#: sickrage/core/webserver/views/config/search.mako:693
 msgid "Low"
 msgstr "Χαμηλή"
 
-#: sickrage/core/webserver/views/config/search.mako:714
+#: sickrage/core/webserver/views/config/search.mako:702
 msgid "Very high"
 msgstr "Πολύ υψηλή"
 
-#: sickrage/core/webserver/views/config/search.mako:717
+#: sickrage/core/webserver/views/config/search.mako:705
 #: sickrage/core/webserver/views/manage/queues.mako:23
 #: sickrage/core/webserver/views/manage/queues.mako:41
 msgid "Force"
 msgstr "Δύναμη"
 
-#: sickrage/core/webserver/views/config/search.mako:733
+#: sickrage/core/webserver/views/config/search.mako:721
 msgid "Test SABnzbd"
 msgstr "Τεστ: SABnzbd"
 
-#: sickrage/core/webserver/views/config/search.mako:751
+#: sickrage/core/webserver/views/config/search.mako:739
 msgid "How to handle Torrent search results for clients."
 msgstr "Τρόπος χειρισμού των αποτελεσμάτων αναζήτησης Torrent για υπολογιστές-πελάτες."
 
-#: sickrage/core/webserver/views/config/search.mako:765
+#: sickrage/core/webserver/views/config/search.mako:753
 msgid "Enable torrent searches"
 msgstr "Ενεργοποίηση των αναζητήσεων torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:773
+#: sickrage/core/webserver/views/config/search.mako:761
 msgid "Send .torrent files to:"
 msgstr "Στείλτε αρχεία .torrent για να:"
 
-#: sickrage/core/webserver/views/config/search.mako:819
+#: sickrage/core/webserver/views/config/search.mako:807
 msgid "Torrent host:port"
 msgstr "Κεντρικός υπολογιστής: θύρα torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:828
+#: sickrage/core/webserver/views/config/search.mako:816
 msgid "ex. http://localhost:8000/"
 msgstr "π.χ. http://localhost:8000 /"
 
-#: sickrage/core/webserver/views/config/search.mako:838
+#: sickrage/core/webserver/views/config/search.mako:826
 msgid "Torrent RPC URL"
 msgstr "Διεύθυνση URL του torrent RPC"
 
-#: sickrage/core/webserver/views/config/search.mako:847
+#: sickrage/core/webserver/views/config/search.mako:835
 msgid "ex. transmission"
 msgstr "μετάδοση ex."
 
-#: sickrage/core/webserver/views/config/search.mako:857
+#: sickrage/core/webserver/views/config/search.mako:845
 msgid "HTTP Authentication"
 msgstr "HTTP έλεγχος ταυτότητας"
 
-#: sickrage/core/webserver/views/config/search.mako:866
+#: sickrage/core/webserver/views/config/search.mako:854
 msgid "None"
 msgstr "Κανένας"
 
-#: sickrage/core/webserver/views/config/search.mako:866
+#: sickrage/core/webserver/views/config/search.mako:854
 msgid "Basic"
 msgstr "Βασική"
 
-#: sickrage/core/webserver/views/config/search.mako:866
+#: sickrage/core/webserver/views/config/search.mako:854
 msgid "Digest"
 msgstr "Digest"
 
-#: sickrage/core/webserver/views/config/search.mako:878
+#: sickrage/core/webserver/views/config/search.mako:866
 msgid "Verify certificate"
 msgstr "Επαλήθευση πιστοποιητικού"
 
-#: sickrage/core/webserver/views/config/search.mako:885
+#: sickrage/core/webserver/views/config/search.mako:873
 msgid "disable if you get \"Deluge: Authentication Error\" in your log"
 msgstr "απενεργοποιήσετε, εάν μπορείτε να πάρετε «Κατακλυσμό: σφάλμα ελέγχου ταυτότητας» στο αρχείο καταγραφής σας"
 
-#: sickrage/core/webserver/views/config/search.mako:888
+#: sickrage/core/webserver/views/config/search.mako:876
 msgid "Verify SSL certificates for HTTPS requests"
 msgstr "Επαληθεύει πιστοποιητικά SSL για αιτήσεις HTTPS"
 
-#: sickrage/core/webserver/views/config/search.mako:896
+#: sickrage/core/webserver/views/config/search.mako:884
 msgid "Client username"
 msgstr "Όνομα χρήστη του υπολογιστή-πελάτη"
 
-#: sickrage/core/webserver/views/config/search.mako:913
+#: sickrage/core/webserver/views/config/search.mako:901
 msgid "Client password"
 msgstr "Κωδικός πρόσβασης υπολογιστή-πελάτη"
 
-#: sickrage/core/webserver/views/config/search.mako:930
+#: sickrage/core/webserver/views/config/search.mako:918
 msgid "Add label to torrent"
 msgstr "Προσθέστε ετικέτα στο χείμαρρο"
 
-#: sickrage/core/webserver/views/config/search.mako:939
-#: sickrage/core/webserver/views/config/search.mako:957
+#: sickrage/core/webserver/views/config/search.mako:927
+#: sickrage/core/webserver/views/config/search.mako:945
 msgid "blank spaces are not allowed"
 msgstr "δεν επιτρέπονται κενά διαστήματα"
 
-#: sickrage/core/webserver/views/config/search.mako:948
+#: sickrage/core/webserver/views/config/search.mako:936
 msgid "Add anime label to torrent"
 msgstr "Προσθέσετε ετικέτα anime σε torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:966
+#: sickrage/core/webserver/views/config/search.mako:954
 msgid "Downloaded files location"
 msgstr "Ληφθέντα αρχεία τοποθεσία"
 
-#: sickrage/core/webserver/views/config/search.mako:976
+#: sickrage/core/webserver/views/config/search.mako:964
 msgid "where the torrent client will save downloaded files (blank for client default)"
 msgstr "όπου θα αποθηκεύσετε τον πελάτη torrent κατεβάσει αρχεία (κενό για το προεπιλεγμένο πρόγραμμα-πελάτης)"
 
-#: sickrage/core/webserver/views/config/search.mako:978
+#: sickrage/core/webserver/views/config/search.mako:966
 msgid "the destination has to be a shared folder for Synology DS devices"
 msgstr ""
 
-#: sickrage/core/webserver/views/config/search.mako:1007
+#: sickrage/core/webserver/views/config/search.mako:995
 msgid "Start torrent paused"
 msgstr "Παύση χείμαρρο έναρξης"
 
-#: sickrage/core/webserver/views/config/search.mako:1013
+#: sickrage/core/webserver/views/config/search.mako:1001
 msgid "add .torrent to client but do <b>not</b> start downloading"
 msgstr "Προσθέστε .torrent πελάτη αλλά κάνουν <b>not</b> αρχίσει η λήψη"
 
-#: sickrage/core/webserver/views/config/search.mako:1020
+#: sickrage/core/webserver/views/config/search.mako:1008
 msgid "Allow high bandwidth"
 msgstr "Επιτρέπουν υψηλού εύρους ζώνης"
 
-#: sickrage/core/webserver/views/config/search.mako:1026
+#: sickrage/core/webserver/views/config/search.mako:1014
 msgid "use high bandwidth allocation if priority is high"
 msgstr "χρησιμοποιεί υψηλού εύρους ζώνης εκχώρηση αν η προτεραιότητα είναι υψηλή"
 
-#: sickrage/core/webserver/views/config/search.mako:1040
+#: sickrage/core/webserver/views/config/search.mako:1028
 msgid "Test Connection"
 msgstr "Δοκιμή σύνδεσης"
 
@@ -4744,7 +4736,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4927
+#: sickrage/core/webserver/views.py:4926
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4828,7 +4820,7 @@ msgstr "Άγνωστο"
 msgid "Retry Download"
 msgstr "Επανάληψη λήψης"
 
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:4979
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Κύρια"
@@ -4954,7 +4946,7 @@ msgstr "Χρησιμοποιήστε τη σειρά DVD αντί για τη σ
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Μια «πλήρη ενημέρωση δύναμη» είναι αναγκαία, και εάν έχετε υπάρχοντα επεισόδια θα πρέπει να τους ταξινομήσετε με μη αυτόματο τρόπο."
 
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4863
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5272,7 +5264,7 @@ msgstr "Εκτελώντας επανεκκίνηση"
 msgid "Daily Search"
 msgstr "Καθημερινή Αναζήτηση"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4966
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Λίστα εκκρεμοτήτων"
@@ -5297,7 +5289,7 @@ msgstr "Διαδικασία post"
 msgid "Subtitles Finder"
 msgstr "Εύρεση υπότιτλων"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5330,7 +5322,7 @@ msgstr "Όχι"
 msgid "True"
 msgstr "Αλήθεια"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4969
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Προβολή ουράς"
@@ -5708,28 +5700,28 @@ msgstr "Γενικά"
 msgid "Backup and Restore"
 msgstr "Δημιουργία αντιγράφων ασφαλείας και επαναφοράς"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4269
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "Υπηρεσίες παροχής αναζήτησης"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4776
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4775
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "Ρυθμίσεις υποτίτλων"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4902
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Ρυθμίσεις για την ποιότητα"
 
 #: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4074
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "Μετά την επεξεργασία"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4430
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4429
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "Ειδοποιήσεις"
@@ -5995,7 +5987,7 @@ msgstr "Αναζήτηση propers, άτομα με ειδικές ανάγκε�
 msgid "Post-Processor:"
 msgstr "Μετα-επεξεργαστή:"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Αναζήτηση ουρά"
@@ -6622,7 +6614,7 @@ msgstr "Ήδη στο υποκατάστημα: "
 #: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
 #: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
 #: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4976
 msgid "Error"
 msgstr "Σφάλμα"
 
@@ -7010,10 +7002,10 @@ msgstr "Config - γενικά"
 msgid "General Configuration"
 msgstr "Γενική διαμόρφωση"
 
-#: sickrage/core/webserver/views.py:3892 sickrage/core/webserver/views.py:4057
-#: sickrage/core/webserver/views.py:4188 sickrage/core/webserver/views.py:4412
-#: sickrage/core/webserver/views.py:4758 sickrage/core/webserver/views.py:4846
-#: sickrage/core/webserver/views.py:4885
+#: sickrage/core/webserver/views.py:3892 sickrage/core/webserver/views.py:4056
+#: sickrage/core/webserver/views.py:4187 sickrage/core/webserver/views.py:4411
+#: sickrage/core/webserver/views.py:4757 sickrage/core/webserver/views.py:4845
+#: sickrage/core/webserver/views.py:4884
 msgid "Error(s) Saving Configuration"
 msgstr "Σφάλματα αποθήκευσης ρύθμισης παραμέτρων"
 
@@ -7058,138 +7050,138 @@ msgid "Config - Search Clients"
 msgstr ""
 
 #: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:4102
 msgid "Unable to create directory "
 msgstr "Δεν είναι δυνατή η δημιουργία καταλόγου "
 
 #: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
-#: sickrage/core/webserver/views.py:4103
+#: sickrage/core/webserver/views.py:4102
 msgid ", dir not changed."
 msgstr ", dir δεν άλλαξε."
 
-#: sickrage/core/webserver/views.py:4059
+#: sickrage/core/webserver/views.py:4058
 msgid "[SEARCH] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [SEARCH]"
 
-#: sickrage/core/webserver/views.py:4074
+#: sickrage/core/webserver/views.py:4073
 msgid "Config - Post Processing"
 msgstr "Config - μετά την επεξεργασία"
 
-#: sickrage/core/webserver/views.py:4114
+#: sickrage/core/webserver/views.py:4113
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Αποσυσκευασία δεν υποστηρίζεται, απενεργοποίηση απλήρωτος ρύθμιση"
 
-#: sickrage/core/webserver/views.py:4149 sickrage/core/webserver/views.py:4160
+#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Προσπαθήσατε να εξοικονόμησης ένα έγκυρο anime ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας ονομασίας"
 
-#: sickrage/core/webserver/views.py:4151 sickrage/core/webserver/views.py:4162
+#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Έχετε δοκιμάσει εξοικονόμηση μια έγκυρη ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας ονομασίας"
 
-#: sickrage/core/webserver/views.py:4168
+#: sickrage/core/webserver/views.py:4167
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Που προσπαθήσατε να αποθηκεύσετε μια έγκυρη ημερομηνία αέρα ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας αέρα-από-ημερομηνία"
 
-#: sickrage/core/webserver/views.py:4174
+#: sickrage/core/webserver/views.py:4173
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Προσπαθήσατε να εξοικονόμησης ένα έγκυρο σπορ ονομασίας config, δεν αποθηκεύει τις ρυθμίσεις σας σπορ"
 
-#: sickrage/core/webserver/views.py:4190
+#: sickrage/core/webserver/views.py:4189
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [POST-PROCESSING]"
 
-#: sickrage/core/webserver/views.py:4269
+#: sickrage/core/webserver/views.py:4268
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4310
+#: sickrage/core/webserver/views.py:4309
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Δεν έχει καθοριστεί όνομα υπηρεσίας παροχής"
 
-#: sickrage/core/webserver/views.py:4312
+#: sickrage/core/webserver/views.py:4311
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Δεν καθορίζεται Url υπηρεσία παροχής"
 
-#: sickrage/core/webserver/views.py:4314
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Κανένα κλειδί Api της υπηρεσίας παροχής που καθορίζεται"
 
-#: sickrage/core/webserver/views.py:4414
+#: sickrage/core/webserver/views.py:4413
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [PROVIDERS]"
 
-#: sickrage/core/webserver/views.py:4429
+#: sickrage/core/webserver/views.py:4428
 msgid "Config - Notifications"
 msgstr "Config - ειδοποιήσεις"
 
-#: sickrage/core/webserver/views.py:4760
+#: sickrage/core/webserver/views.py:4759
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [NOTIFICATIONS]"
 
-#: sickrage/core/webserver/views.py:4775
+#: sickrage/core/webserver/views.py:4774
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4848
+#: sickrage/core/webserver/views.py:4847
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [SUBTITLES]"
 
-#: sickrage/core/webserver/views.py:4863
+#: sickrage/core/webserver/views.py:4862
 msgid "Config - Anime"
 msgstr "Config - κινούμενο σχέδιο"
 
-#: sickrage/core/webserver/views.py:4887
+#: sickrage/core/webserver/views.py:4886
 msgid "[ANIME] Configuration Saved"
 msgstr "Αποθηκεύτηκε σε διαμόρφωση [ANIME]"
 
-#: sickrage/core/webserver/views.py:4902
+#: sickrage/core/webserver/views.py:4901
 msgid "Config - Quality Settings"
 msgstr "Config - ρυθμίσεις για την ποιότητα"
 
-#: sickrage/core/webserver/views.py:4914
+#: sickrage/core/webserver/views.py:4913
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[ΡΥΘΜΊΣΕΙΣ ΠΟΙΌΤΗΤΑΣ] Ρύθμιση παραμέτρων που Αποθηκεύτηκε"
 
-#: sickrage/core/webserver/views.py:4966
+#: sickrage/core/webserver/views.py:4965
 msgid "Daily Searcher"
 msgstr "Καθημερινή Searcher"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4967
 msgid "Show Updater"
 msgstr "Εμφάνιση Updater"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4968
 msgid "Check Version"
 msgstr "Έλεγχος έκδοσης"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4971
 msgid "Find Propers"
 msgstr "Βρείτε Propers"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4972
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4973
 msgid "Find Subtitles"
 msgstr "Βρείτε υπότιτλους"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4975
 msgid "Event"
 msgstr "Εκδήλωση"
 
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4977
 msgid "Tornado"
 msgstr "Ανεμοστρόβιλος"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4978
 msgid "Thread"
 msgstr "Το νήμα"
 

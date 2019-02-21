@@ -1,6 +1,7 @@
 # Changelog
 
-- * ed98996 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
+- * 52fdbec - 2019-02-20: Release v9.4.60 
+- * e9b99d5 - 2019-02-20: Only shows in library are cached. Calls to the API for caching provider results are now done in the background. Fixed cross-link device issues for version updater. 
 - * 13659fe - 2019-02-17: Release v9.4.59 
 - * 993ca34 - 2019-02-17: Fixed &quot;unable to verify the download url&quot; for Torrent9 provider 
 - * 01ad8b6 - 2019-02-15: Pre-Release v9.4.59.dev3 
