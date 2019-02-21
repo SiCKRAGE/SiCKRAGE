@@ -661,7 +661,7 @@ class SourceUpdateManager(UpdateManager):
 
                     if os.path.isfile(new_path):
                         os.remove(new_path)
-                    os.renames(old_path, new_path)
+                    shutil.move(old_path, new_path)
 
             # install requirements
             if not self.install_requirements():

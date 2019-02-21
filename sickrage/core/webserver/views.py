@@ -3986,7 +3986,7 @@ class ConfigSearch(Config):
                    torrent_label=None, torrent_label_anime=None, torrent_path=None, torrent_verify_cert=None,
                    torrent_seed_time=None, torrent_paused=None, torrent_high_bandwidth=None,
                    torrent_rpcurl=None, torrent_auth_type=None, ignore_words=None, require_words=None,
-                   ignored_subs_list=None, enable_rss_cache=None, enable_rss_cache_valid_shows=None,
+                   ignored_subs_list=None, enable_rss_cache=None,
                    torrent_file_to_magnet=None, download_unverified_magnet_link=None):
 
         results = []
@@ -4011,7 +4011,6 @@ class ConfigSearch(Config):
         sickrage.app.config.ignored_subs_list = ignored_subs_list if ignored_subs_list else ""
         sickrage.app.config.randomize_providers = checkbox_to_value(randomize_providers)
         sickrage.app.config.enable_rss_cache = checkbox_to_value(enable_rss_cache)
-        sickrage.app.config.enable_rss_cache_valid_shows = checkbox_to_value(enable_rss_cache_valid_shows)
         sickrage.app.config.torrent_file_to_magnet = checkbox_to_value(torrent_file_to_magnet)
         sickrage.app.config.download_unverified_magnet_link = checkbox_to_value(download_unverified_magnet_link)
         sickrage.app.config.download_propers = checkbox_to_value(download_propers)

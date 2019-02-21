@@ -57,18 +57,6 @@
                         </label>
                     </div>
                 </div>
-                <div class="form-row form-group">
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Enable provider RSS cache for valid shows only')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="enable_rss_cache_valid_shows">
-                            <input type="checkbox" class="enabler toggle color-primary is-material" name="enable_rss_cache_valid_shows" id="enable_rss_cache_valid_shows"
-                                   ${('', 'checked')[bool(sickrage.app.config.enable_rss_cache_valid_shows)]}/>
-                            ${_('enables/disables caching of shows already added to SiCKRAGE, speeds up searches')}
-                        </label>
-                    </div>
-                </div>
 
                 <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
