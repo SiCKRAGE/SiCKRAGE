@@ -6,7 +6,7 @@ ENV TZ 'Canada/Pacific'
 # install app
 COPY . /opt/sickrage/
 
-RUN apk add --update --no-cache libffi-dev openssl-dev libxml2-dev libxslt-dev linux-headers build-base git tzdata
+RUN apk add --update --no-cache libffi-dev openssl-dev libxml2-dev libxslt-dev linux-headers build-base git tzdata unrar
 RUN pip install -U pip setuptools
 RUN pip install -r /opt/sickrage/requirements.txt
 

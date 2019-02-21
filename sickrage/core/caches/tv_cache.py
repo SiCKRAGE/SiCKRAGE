@@ -195,7 +195,7 @@ class TVCache(object):
 
         try:
             # parse release name
-            parse_result = NameParser(validate_show=sickrage.app.config.enable_rss_cache_valid_shows).parse(name)
+            parse_result = NameParser(validate_show=True).parse(name)
             if parse_result.series_name and parse_result.quality != Quality.UNKNOWN:
                 season = parse_result.season_number if parse_result.season_number else 1
                 episodes = parse_result.episode_numbers
@@ -236,7 +236,7 @@ class TVCache(object):
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
                         try:
-                            ProviderCacheAPI().add(dbData)
+                            sickrage.app.event_queue.fire_event(ProviderCacheAPI().add, data=dbData)
                         except Exception:
                             pass
 
