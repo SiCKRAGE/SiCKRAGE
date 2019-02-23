@@ -1,6 +1,7 @@
 # Changelog
 
-- * e9b416c - 2019-02-23: Release v9.4.62 
+- * 448ec7c - 2019-02-23: Release v9.4.63 
+- * e648c9e - 2019-02-23: Release v9.4.62 
 - * 04b3d37 - 2019-02-23: Pre-Release v9.4.62.dev1 
 - * 1e6bcf9 - 2019-02-23: Release v9.4.62 
 - * e39f7d8 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
