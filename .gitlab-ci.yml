@@ -1,0 +1,26 @@
+before_script:
+  - apk add --no-cache py-pip
+
+variables:
+  CONTAINER_IMAGE: sickrage/sickrage
+
+  DOCKER_DRIVER: overlay2
+  DOCKER_HOST: tcp://localhost:2375
+
+services:
+  - docker:dind
+
+build:
+  stage: build
+  image: docker:latest
+  script:
+    - echo $CONTAINER_IMAGE
+    - echo -n $CI_REGISTRY_PASSWORD | docker login -u "$CI_REGISTRY_USER" --password-stdin
+    - docker build --network host -t $CONTAINER_IMAGE:$(cat sickrage/version.txt) .
+    - docker tag $CONTAINER_IMAGE:$(cat sickrage/version.txt) $CONTAINER_IMAGE:latest
+    - docker push $CONTAINER_IMAGE:$(cat sickrage/version.txt)
+    - docker push $CONTAINER_IMAGE:latest
+  only:
+    - master
+  except:
+    - tags
