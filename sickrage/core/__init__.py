@@ -67,6 +67,7 @@ from sickrage.core.searchers.subtitle_searcher import SubtitleSearcher
 from sickrage.core.searchers.trakt_searcher import TraktSearcher
 from sickrage.core.tv.show import TVShow
 from sickrage.core.ui import Notifications
+from sickrage.core.updaters.rsscache_updater import RSSCacheUpdater
 from sickrage.core.updaters.show_updater import ShowUpdater
 from sickrage.core.updaters.tz_updater import TimeZoneUpdater
 from sickrage.core.upnp import UPNPClient
@@ -143,6 +144,7 @@ class Core(object):
         self.version_updater = None
         self.show_updater = None
         self.tz_updater = None
+        self.rsscache_updater = None
         self.daily_searcher = None
         self.backlog_searcher = None
         self.proper_searcher = None
@@ -182,6 +184,7 @@ class Core(object):
         self.version_updater = VersionUpdater()
         self.show_updater = ShowUpdater()
         self.tz_updater = TimeZoneUpdater()
+        self.rsscache_updater = RSSCacheUpdater()
         self.daily_searcher = DailySearcher()
         self.failed_snatch_searcher = FailedSnatchSearcher()
         self.backlog_searcher = BacklogSearcher()
@@ -372,6 +375,16 @@ class Core(object):
             ),
             name=self.show_updater.name,
             id=self.show_updater.name
+        )
+
+        # add rss cache updater job
+        self.scheduler.add_job(
+            self.rsscache_updater.run,
+            IntervalTrigger(
+                minutes=15,
+            ),
+            name=self.rsscache_updater.name,
+            id=self.rsscache_updater.name
         )
 
         # add daily search job
