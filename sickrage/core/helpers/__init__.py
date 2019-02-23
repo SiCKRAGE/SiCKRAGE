@@ -395,6 +395,18 @@ def findCertainShow(indexerid, return_show_object=True):
     raise MultipleShowObjectsException()
 
 
+def search_showlist_by_name(term):
+    results = [show for show in sickrage.app.showlist if show.name.lower() == term.lower()]
+
+    if not results:
+        return None
+
+    if len(results) == 1:
+        return results[0]
+
+    raise MultipleShowObjectsException()
+
+
 def makeDir(path):
     """
     Make a directory on the filesystem
