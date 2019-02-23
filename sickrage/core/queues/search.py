@@ -173,7 +173,7 @@ class DailySearchQueueItem(srQueueItem):
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + self.show.name + "]")
+                sickrage.app.log.info("No needed episodes found during daily search for: [" + self.show.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:
@@ -241,7 +241,7 @@ class BacklogQueueItem(srQueueItem):
         try:
             sickrage.app.log.info("Starting backlog search for: [" + self.show.name + "]")
 
-            search_result = searchProviders(self.show, self.segment, manualSearch=False)
+            search_result = searchProviders(self.show, self.segment, manualSearch=False, updateCache=False)
             if search_result:
                 for result in search_result:
                     # just use the first result for now
@@ -251,7 +251,8 @@ class BacklogQueueItem(srQueueItem):
                     # give the CPU a break
                     time.sleep(cpu_presets[sickrage.app.config.cpu_preset])
             else:
-                sickrage.app.log.info("Unable to find search results for: [" + self.show.name + "]")
+                sickrage.app.log.info(
+                    "No needed episodes found during backlog search for: [" + self.show.name + "]")
         except Exception:
             sickrage.app.log.debug(traceback.format_exc())
         finally:

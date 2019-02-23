@@ -63,9 +63,9 @@ class TVCache(object):
     def check_item(self, title, url):
         return True
 
-    def update(self, force=False):
+    def update(self):
         # check if we should update
-        if self.should_update() or force:
+        if self.should_update():
             try:
                 data = self._get_rss_data()
                 if not self._check_auth(data):
@@ -168,8 +168,7 @@ class TVCache(object):
             })
 
     def should_update(self):
-        if sickrage.app.developer:
-            return True
+        if sickrage.app.developer: return True
 
         # if we've updated recently then skip the update
         if datetime.datetime.today() - self.last_update < datetime.timedelta(minutes=self.min_time):

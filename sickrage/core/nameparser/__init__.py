@@ -28,13 +28,13 @@ from dateutil import parser
 
 import sickrage
 from sickrage.core.common import Quality
-from sickrage.core.exceptions import MultipleShowObjectsException
-from sickrage.core.helpers import findCertainShow, remove_extension, search_showlist_by_name
+from sickrage.core.helpers import findCertainShow, full_sanitizeSceneName, remove_extension
 from sickrage.core.helpers.encoding import strip_accents
 from sickrage.core.nameparser import regexes
 from sickrage.core.scene_exceptions import get_scene_exception_by_name
 from sickrage.core.scene_numbering import get_absolute_number_from_season_and_episode, get_indexer_absolute_numbering, \
     get_indexer_numbering
+from sickrage.core.traktapi import srTraktAPI
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_episodenotfound, indexer_error
 
@@ -71,11 +71,10 @@ class NameParser(object):
         def scene_exception_lookup(term):
             return get_scene_exception_by_name(term)[0]
 
-        def showlist_lookup(term):
-            try:
-                return search_showlist_by_name(term).indexerid
-            except MultipleShowObjectsException:
-                return None
+        def indexer_lookup(term):
+            show_id1 = int(IndexerApi().searchForShowID(full_sanitizeSceneName(term))[2])
+            show_id2 = int(srTraktAPI()['search'].query(full_sanitizeSceneName(term), 'show')[0].ids['tvdb'])
+            return (None, show_id1)[show_id1 == show_id2]
 
         show_names.append(strip_accents(name))
         show_names.append(strip_accents(name).replace("'", " "))
@@ -84,7 +83,7 @@ class NameParser(object):
             lookup_list = [
                 lambda: cache_lookup(show_name),
                 lambda: scene_exception_lookup(show_name),
-                lambda: showlist_lookup(show_name),
+                lambda: indexer_lookup(show_name),
             ]
 
             # lookup show id

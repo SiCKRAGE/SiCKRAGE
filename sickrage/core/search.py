@@ -305,7 +305,7 @@ def isFirstBestMatch(result):
     return False
 
 
-def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, cacheOnly=False):
+def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, updateCache=True, cacheOnly=False):
     """
     Walk providers for information on shows
 
@@ -358,6 +358,10 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
 
                 try:
                     threading.currentThread().setName(origThreadName + "::[" + providerObj.name + "]")
+
+                    # update provider RSS cache
+                    if sickrage.app.config.enable_rss_cache and updateCache:
+                        providerObj.cache.update()
 
                     if len(episodes):
                         if search_mode == 'eponly':
