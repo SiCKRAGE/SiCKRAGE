@@ -1975,7 +1975,7 @@ class CMD_ShowAddNew(ApiCall):
                 "desc": "True if episodes should be archived when first match is downloaded, False otherwise"
             },
             "add_show_year": {
-                "desc": "True if show year should be appended to show folder, False otherwise"
+                "desc": "True if show year should be appended to show folder name, False otherwise"
             },
         }
     }

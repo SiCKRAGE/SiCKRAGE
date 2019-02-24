@@ -650,18 +650,10 @@ class SourceUpdateManager(UpdateManager):
                 sickrage.app.log.warning("Invalid update data, update failed: " + str(update_dir_contents))
                 return False
 
-            # walk temp folder and move files to main folder
+            # move update folder to main app folder
             content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
-            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
-            for dirname, __, filenames in os.walk(content_dir):
-                dirname = dirname[len(content_dir) + 1:]
-                for curfile in filenames:
-                    old_path = os.path.join(content_dir, dirname, curfile)
-                    new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
-
-                    if os.path.isfile(new_path):
-                        os.remove(new_path)
-                    shutil.move(old_path, new_path)
+            sickrage.app.log.info("Moving folder " + content_dir + " to " + sickrage.MAIN_DIR)
+            shutil.move(content_dir, sickrage.MAIN_DIR)
 
             # install requirements
             if not self.install_requirements():

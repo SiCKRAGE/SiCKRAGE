@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7dd9d9b - 2019-02-23: Pre-Release v9.4.69.dev1 
+- * eb10a43 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
+- * 2f89453 - 2019-02-23: Pre-Release v9.4.69.dev1 
 - * 8324c57 - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
 - * c3441ed - 2019-02-23: Release v9.4.68 
 - * 3f6df12 - 2019-02-23: Release v9.4.67 

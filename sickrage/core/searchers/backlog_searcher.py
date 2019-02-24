@@ -98,9 +98,9 @@ class BacklogSearcher(object):
             self._last_backlog_search = self._get_last_backlog_search(curShow.indexerid)
 
             segments = self._get_segments(curShow, from_date)
-            sickrage.app.search_queue.put(BacklogQueueItem(curShow, segments))
-
-            if not segments:
+            if segments:
+                sickrage.app.search_queue.put(BacklogQueueItem(curShow, segments))
+            else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
             # don't consider this an actual backlog search if we only did recent eps
