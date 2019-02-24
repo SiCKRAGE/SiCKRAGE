@@ -95,10 +95,11 @@ class GKTorrentProvider(TorrentProvider):
                     continue
 
                 try:
+                    title = download_url = None
                     info_cell = cells[0].a
-
-                    title = info_cell.get_text()
-                    download_url = self._get_download_link(urljoin(self.urls['base_url'], info_cell.get('href')))
+                    if info_cell:
+                        title = info_cell.get_text()
+                        download_url = self._get_download_link(urljoin(self.urls['base_url'], info_cell.get('href')))
                     if not all([title, download_url]):
                         continue
 
