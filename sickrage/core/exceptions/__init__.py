@@ -113,3 +113,10 @@ class NoFreeSpaceException(SickRageException):
     """
     No free space left
     """
+
+
+class AnidbAdbaConnectionException(SickRageException):
+    """
+    Connection exceptions raised while trying to communicate with the Anidb UDP api.
+    More info on the api: https://wiki.anidb.net/w/API.
+    """

@@ -34,6 +34,7 @@ from sickrage.core.helpers import findCertainShow, show_names, replaceExtension,
     chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
     remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
+from sickrage.core.helpers.anidb import set_up_anidb_connection
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
@@ -644,7 +645,7 @@ class PostProcessor(object):
 
         :param filePath: file to add to mylist
         """
-        if sickrage.app.adba_connection:
+        if set_up_anidb_connection():
             if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
                 self.anidbEpisode = self._build_anidb_episode(sickrage.app.adba_connection, filePath)
 

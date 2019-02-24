@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import sickrage
-from adba.aniDBerrors import AniDBCommandTimeoutError
 
 
 class BlackAndWhiteList(object):
@@ -87,7 +86,6 @@ class BlackAndWhiteList(object):
         if dbData:
             sickrage.app.main_db.delete(sickrage.app.main_db.get(table, self.show_id))
 
-
     def _load_list(self, table):
         """
         DB: Fetch keywords for current show
@@ -143,32 +141,3 @@ class BlackAndWhiteList(object):
 
 class BlackWhitelistNoShowIDException(Exception):
     """No show_id was given"""
-
-
-def short_group_names(groups):
-    """
-    Find AniDB short group names for release groups
-
-    :param groups: list of groups to find short group names for
-    :return: list of shortened group names
-    """
-    groups = groups.split(",")
-    shortGroupList = []
-    if sickrage.app.adba_connection:
-        for groupName in groups:
-            try:
-                group = sickrage.app.adba_connection.group(gname=groupName)
-            except AniDBCommandTimeoutError:
-                sickrage.app.log.debug("Timeout while loading group from AniDB. Trying next group")
-            except Exception:
-                sickrage.app.log.debug("Failed while loading group from AniDB. Trying next group")
-            else:
-                for line in group.datalines:
-                    if line["shortname"]:
-                        shortGroupList.append(line["shortname"])
-                    else:
-                        if groupName not in shortGroupList:
-                            shortGroupList.append(groupName)
-    else:
-        shortGroupList = groups
-    return shortGroupList

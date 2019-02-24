@@ -1,6 +1,7 @@
 # Changelog
 
-- * 3a00fef - 2019-02-24: Fixed KeyError for twitter notifier. 
+- * ca574bf - 2019-02-24: Refactored AniDB code. 
+- * 41039e5 - 2019-02-24: Fixed KeyError for twitter notifier. 
 - * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
 - * ffd8fa4 - 2019-02-24: Release v9.4.73 
 - * 47572b6 - 2019-02-24: Release v9.4.72 
