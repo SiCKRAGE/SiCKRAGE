@@ -660,7 +660,7 @@ class SourceUpdateManager(UpdateManager):
                     old_path = os.path.join(content_dir, dirname, curfile)
                     new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
 
-                    if os.path.isfile(new_path):
+                    if os.path.isfile(new_path) and os.path.exists(new_path):
                         os.remove(new_path)
 
                     shutil.move(old_path, new_path)

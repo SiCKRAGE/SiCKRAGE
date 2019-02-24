@@ -1,6 +1,7 @@
 # Changelog
 
-- * 2e5bf58 - 2019-02-24: Release v9.4.72 
+- * 24af3a5 - 2019-02-24: Release v9.4.73 
+- * 47572b6 - 2019-02-24: Release v9.4.72 
 - * b86d9d2 - 2019-02-23: Release v9.4.71 
 - * 342b1de - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
 - * ea526d2 - 2019-02-23: Release v9.4.70 
