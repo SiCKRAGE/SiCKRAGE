@@ -1,3 +1,9 @@
+# SR AniDB Files    #
+######################
+/Session.cfg
+/sickrage/libs/adba/anime-list.xml
+/sickrage/libs/adba/animetitles.xml
+
 # SR GitLab Files    #
 ######################
 /.gitlab/
