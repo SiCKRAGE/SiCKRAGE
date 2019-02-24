@@ -184,7 +184,7 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
-        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID) if x['url'] == url]):
+        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID) if x.get('url') == url]):
             return
 
         # ignore invalid and private IP address urls
@@ -192,7 +192,7 @@ class TVCache(object):
             if not url.startswith('magnet'):
                 return
         elif is_ip_private(url.split(r'//')[-1].split(r'/')[0]):
-                return
+            return
 
         try:
             # parse release name
@@ -263,8 +263,9 @@ class TVCache(object):
         dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
 
         # for each cache entry
-        for curResult in (x for x in dbData if x['indexerid'] == ep_obj.show.indexerid and x['season'] == season
-                                               and "|" + str(episode) + "|" in x['episodes']):
+        for curResult in (x for x in dbData if
+                          x.get('indexerid') == ep_obj.show.indexerid and x.get('season') == season and "|{}|".format(
+                              episode) in x.get('episodes', [])):
             result = self.provider.getResult()
 
             # ignore invalid and private IP address urls
@@ -272,7 +273,7 @@ class TVCache(object):
                 if not curResult["url"].startswith('magnet'):
                     continue
             elif is_ip_private(curResult["url"].split(r'//')[-1].split(r'/')[0]):
-                    continue
+                continue
 
             # ignored/required words, and non-tv junk
             if not show_names.filterBadReleases(curResult["name"]):
