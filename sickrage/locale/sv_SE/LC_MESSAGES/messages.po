@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-24 00:57-0800\n"
-"PO-Revision-Date: 2019-02-24 08:59\n"
+"POT-Creation-Date: 2019-02-24 11:18-0800\n"
+"PO-Revision-Date: 2019-02-24 19:20\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "laddar"
 msgid "Choose Directory"
 msgstr "Välj katalog"
 
-#: sickrage/core/webserver/views.py:3648 src/js/core.js:1505
+#: sickrage/core/webserver/views.py:3644 src/js/core.js:1505
 msgid "Clear History"
 msgstr "Rensa historik"
 
@@ -81,7 +81,7 @@ msgstr "Rensa historik"
 msgid "Are you sure you want to clear all download history ?"
 msgstr "Är du säker på att du vill rensa all nedladdningshistorik?"
 
-#: sickrage/core/webserver/views.py:3650 src/js/core.js:1511
+#: sickrage/core/webserver/views.py:3646 src/js/core.js:1511
 msgid "Trim History"
 msgstr "Trimma historik"
 
@@ -759,13 +759,13 @@ msgstr "när SiCKRAGEs gränssnitt startar"
 msgid "Shows"
 msgstr "Serier"
 
-#: sickrage/core/webserver/views.py:545 sickrage/core/webserver/views.py:546
+#: sickrage/core/webserver/views.py:544 sickrage/core/webserver/views.py:545
 #: sickrage/core/webserver/views/config/general.mako:146
 #: sickrage/core/webserver/views/layouts/main.mako:214
 msgid "Schedule"
 msgstr "Schema"
 
-#: sickrage/core/webserver/views.py:3660 sickrage/core/webserver/views.py:3661
+#: sickrage/core/webserver/views.py:3656 sickrage/core/webserver/views.py:3657
 #: sickrage/core/webserver/views/config/general.mako:149
 #: sickrage/core/webserver/views/layouts/main.mako:218
 msgid "History"
@@ -3571,7 +3571,7 @@ msgstr "Minst en leverantör krävs men två rekommenderas."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent-leverantörer kan växlas i"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3974
+#: sickrage/core/webserver/views.py:3689 sickrage/core/webserver/views.py:3970
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4736,7 +4736,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4930
+#: sickrage/core/webserver/views.py:4926
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4795,7 +4795,7 @@ msgstr "Fox"
 msgid "Download"
 msgstr "Ladda ner"
 
-#: sickrage/core/webserver/views.py:1044 sickrage/core/webserver/views.py:1045
+#: sickrage/core/webserver/views.py:1043 sickrage/core/webserver/views.py:1044
 #: sickrage/core/webserver/views/home/display_show.mako:573
 #: sickrage/core/webserver/views/home/index.mako:291
 #: sickrage/core/webserver/views/manage/mass_update.mako:77
@@ -4820,7 +4820,7 @@ msgstr "Okänd"
 msgid "Retry Download"
 msgstr "Försök ladda ner"
 
-#: sickrage/core/webserver/views.py:4983
+#: sickrage/core/webserver/views.py:4979
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Main"
@@ -4945,7 +4945,7 @@ msgstr "använd DVD-sortering i stället för sändningsdatum"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "En \"Tvinga fullständig uppdatering\" är nödvändig och om du har existerande avsnitt måste du sortera dem manuellt."
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4867
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4863
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5263,7 +5263,7 @@ msgstr "Utför omstart"
 msgid "Daily Search"
 msgstr "Dagliga Sök"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4966
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Eftersläpningen"
@@ -5288,7 +5288,7 @@ msgstr "Efterbearbetning"
 msgid "Subtitles Finder"
 msgstr "Undertext-sökare"
 
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt-kontroll"
@@ -5321,7 +5321,7 @@ msgstr "Nej"
 msgid "True"
 msgstr "Sant"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4969
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Seriekö"
@@ -5511,7 +5511,7 @@ msgstr "<p>Välj dina föredragna fansub-grupper från de <b>Tillgängliga grupp
 msgid "Whitelist"
 msgstr "Vitlista"
 
-#: sickrage/core/webserver/views.py:1192
+#: sickrage/core/webserver/views.py:1191
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:40
 #: sickrage/core/webserver/views/includes/blackwhitelist.mako:86
 msgid "Remove"
@@ -5603,7 +5603,7 @@ msgstr "Rotkataloger"
 msgid "New"
 msgstr "Nya"
 
-#: sickrage/core/webserver/views.py:1146 sickrage/core/webserver/views.py:1966
+#: sickrage/core/webserver/views.py:1145 sickrage/core/webserver/views.py:1959
 #: sickrage/core/webserver/views/includes/root_dirs.mako:37
 #: sickrage/core/webserver/views/manage/mass_edit.mako:73
 msgid "Edit"
@@ -5629,7 +5629,7 @@ msgstr "SiCKRAGE"
 msgid "Show List"
 msgstr "Serielista"
 
-#: sickrage/core/webserver/views.py:2336 sickrage/core/webserver/views.py:2337
+#: sickrage/core/webserver/views.py:2332 sickrage/core/webserver/views.py:2333
 #: sickrage/core/webserver/views/layouts/main.mako:140
 msgid "Add Shows"
 msgstr "Lägg till serier"
@@ -5644,18 +5644,18 @@ msgstr "Manuell efterbehandling"
 msgid "Manage"
 msgstr "Hantera"
 
-#: sickrage/core/webserver/views.py:3482 sickrage/core/webserver/views.py:3483
+#: sickrage/core/webserver/views.py:3478 sickrage/core/webserver/views.py:3479
 #: sickrage/core/webserver/views/layouts/main.mako:166
 #: sickrage/core/webserver/views/manage/mass_update.mako:13
 msgid "Mass Update"
 msgstr "Massuppdatering"
 
-#: sickrage/core/webserver/views.py:3090 sickrage/core/webserver/views.py:3091
+#: sickrage/core/webserver/views.py:3086 sickrage/core/webserver/views.py:3087
 #: sickrage/core/webserver/views/layouts/main.mako:169
 msgid "Backlog Overview"
 msgstr "Backlog Översikt"
 
-#: sickrage/core/webserver/views.py:3532 sickrage/core/webserver/views.py:3533
+#: sickrage/core/webserver/views.py:3528 sickrage/core/webserver/views.py:3529
 #: sickrage/core/webserver/views/layouts/main.mako:172
 msgid "Manage Queues"
 msgstr "Hantera köer"
@@ -5684,7 +5684,7 @@ msgstr "Uppdatera Emby"
 msgid "Manage Torrents"
 msgstr "Hantera Torrents"
 
-#: sickrage/core/webserver/views.py:3507 sickrage/core/webserver/views.py:3508
+#: sickrage/core/webserver/views.py:3503 sickrage/core/webserver/views.py:3504
 #: sickrage/core/webserver/views/layouts/main.mako:203
 msgid "Failed Downloads"
 msgstr "Misslyckade nedladdningar"
@@ -5697,12 +5697,12 @@ msgstr "Hantera saknade undertexter"
 msgid "Config"
 msgstr "Config"
 
-#: sickrage/core/webserver/views.py:3690
+#: sickrage/core/webserver/views.py:3686
 #: sickrage/core/webserver/views/layouts/main.mako:234
 msgid "Help and Info"
 msgstr "Hjälp och Info"
 
-#: sickrage/core/webserver/views.py:3691
+#: sickrage/core/webserver/views.py:3687
 #: sickrage/core/webserver/views/layouts/main.mako:237
 msgid "General"
 msgstr "Allmänt"
@@ -5711,28 +5711,28 @@ msgstr "Allmänt"
 msgid "Backup and Restore"
 msgstr "Säkerhetskopiering och återställning"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4273
+#: sickrage/core/webserver/views.py:3690 sickrage/core/webserver/views.py:4269
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "Sökleverantörer"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4779
+#: sickrage/core/webserver/views.py:3691 sickrage/core/webserver/views.py:4775
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "Inställningar för undertexter"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4906
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:4902
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Kvalitetsinställningar"
 
-#: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4078
+#: sickrage/core/webserver/views.py:2296 sickrage/core/webserver/views.py:2297
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:4074
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "Efterbearbetning"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4433
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4429
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "Meddelanden"
@@ -5933,7 +5933,7 @@ msgstr "Ange om dessa serier är släppta som Show.03.02.2010 istället för Sho
 msgid "Search for subtitles."
 msgstr "Söka efter textremsor."
 
-#: sickrage/core/webserver/views.py:3240 sickrage/core/webserver/views.py:3241
+#: sickrage/core/webserver/views.py:3236 sickrage/core/webserver/views.py:3237
 #: sickrage/core/webserver/views/manage/mass_update.mako:12
 msgid "Mass Edit"
 msgstr "Mass redigera"
@@ -5973,7 +5973,7 @@ msgstr ""
 msgid "Not in progress"
 msgstr "Inte pågående"
 
-#: sickrage/core/webserver/views.py:1186
+#: sickrage/core/webserver/views.py:1185
 #: sickrage/core/webserver/views/manage/queues.mako:27
 #: sickrage/core/webserver/views/manage/queues.mako:45
 #: sickrage/core/webserver/views/manage/queues.mako:81
@@ -5998,7 +5998,7 @@ msgstr "Proper-Sök inaktiverad"
 msgid "Post-Processor:"
 msgstr "Efterbearbetning:"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Sök kö"
@@ -6142,8 +6142,8 @@ msgstr "Avsnitt ryckt"
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
 #: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:494
-#: sickrage/core/version_updater.py:744 sickrage/core/webserver/views.py:1085
-#: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1097
+#: sickrage/core/version_updater.py:744 sickrage/core/webserver/views.py:1084
+#: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
 
@@ -6221,8 +6221,8 @@ msgid "Couldn't find a download for <i>%s</i>"
 msgstr "Kunde inte hitta en nedladdning för <i>%s</i>"
 
 #: sickrage/core/queues/show.py:294 sickrage/core/queues/show.py:304
-#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2680
-#: sickrage/core/webserver/views.py:2692
+#: sickrage/core/queues/show.py:315 sickrage/core/webserver/views.py:2676
+#: sickrage/core/webserver/views.py:2688
 msgid "Unable to add show"
 msgstr "Det gick inte att lägga till serien"
 
@@ -6270,929 +6270,925 @@ msgstr "Serien i "
 msgid " is already in your show list"
 msgstr " finns redan i din serielista"
 
-#: sickrage/core/webserver/views.py:114 sickrage/core/webserver/views.py:115
+#: sickrage/core/webserver/views.py:113 sickrage/core/webserver/views.py:114
 msgid "HTTP Error 404"
 msgstr "Http-fel 404"
 
-#: sickrage/core/webserver/views.py:192 sickrage/core/webserver/views.py:193
+#: sickrage/core/webserver/views.py:191 sickrage/core/webserver/views.py:192
 msgid "HTTP Error 500"
 msgstr "Http-fel 500"
 
-#: sickrage/core/webserver/views.py:443
+#: sickrage/core/webserver/views.py:442
 msgid "API Key not generated"
 msgstr "API-nyckel genereras inte"
 
-#: sickrage/core/webserver/views.py:447 sickrage/core/webserver/views.py:448
+#: sickrage/core/webserver/views.py:446 sickrage/core/webserver/views.py:447
 msgid "API Builder"
 msgstr "API-Builder"
 
-#: sickrage/core/webserver/views.py:605
+#: sickrage/core/webserver/views.py:604
 msgid "Invalid show parameters"
 msgstr "Felaktiga parametrar för serie"
 
-#: sickrage/core/webserver/views.py:610
+#: sickrage/core/webserver/views.py:609
 msgid "Invalid show paramaters"
 msgstr "Felaktiga parametrar för serie"
 
-#: sickrage/core/webserver/views.py:617
+#: sickrage/core/webserver/views.py:616
 msgid "Invalid paramaters"
 msgstr "Ogiltiga parametrar"
 
-#: sickrage/core/webserver/views.py:620 sickrage/core/webserver/views.py:1769
-#: sickrage/core/webserver/views.py:1831
+#: sickrage/core/webserver/views.py:619 sickrage/core/webserver/views.py:1762
+#: sickrage/core/webserver/views.py:1824
 msgid "Episode couldn't be retrieved"
 msgstr "Episod kunde inte hämtas"
 
-#: sickrage/core/webserver/views.py:658
+#: sickrage/core/webserver/views.py:657
 msgid "Error: Unsupported Request. Send jsonp request with 'srcallback' variable in the query string."
 msgstr "Fel: Felaktigt begäran. Skicka jsonp begäran med 'srcallback' variabeln i frågesträngen."
 
-#: sickrage/core/webserver/views.py:694
+#: sickrage/core/webserver/views.py:693
 msgid "Success. Connected and authenticated"
 msgstr "Framgång. Ansluten och autentiserade"
 
-#: sickrage/core/webserver/views.py:696
+#: sickrage/core/webserver/views.py:695
 msgid "Authentication failed. SABnzbd expects "
 msgstr "Autentiseringen misslyckades. SABnzbd förväntar sig "
 
-#: sickrage/core/webserver/views.py:696
+#: sickrage/core/webserver/views.py:695
 msgid " as authentication method, "
 msgstr " som autentiseringsmetod, "
 
-#: sickrage/core/webserver/views.py:699
+#: sickrage/core/webserver/views.py:698
 msgid "Unable to connect to host"
 msgstr "Det gick inte att ansluta till värden"
 
-#: sickrage/core/webserver/views.py:717
+#: sickrage/core/webserver/views.py:716
 msgid "SMS sent successfully"
 msgstr "SMS som skickats"
 
-#: sickrage/core/webserver/views.py:719
+#: sickrage/core/webserver/views.py:718
 msgid "Problem sending SMS: "
 msgstr "Problem med att skicka SMS: "
 
-#: sickrage/core/webserver/views.py:726
+#: sickrage/core/webserver/views.py:725
 msgid "Telegram notification succeeded. Check your Telegram clients to make sure it worked"
 msgstr "Telegram anmälan lyckades. Kontrollera din Telegram klienter att se till att det fungerade"
 
-#: sickrage/core/webserver/views.py:728
+#: sickrage/core/webserver/views.py:727
 msgid "Error sending Telegram notification: {message}"
 msgstr "Fel att skicka Telegram anmälan: {message}"
 
-#: sickrage/core/webserver/views.py:735
+#: sickrage/core/webserver/views.py:734
 msgid "Join notification succeeded. Check your Join clients to make sure it worked"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:737
+#: sickrage/core/webserver/views.py:736
 msgid "Error sending Join notification: {message}"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:747
+#: sickrage/core/webserver/views.py:746
 msgid " with password: "
 msgstr " med lösenord: "
 
-#: sickrage/core/webserver/views.py:750
+#: sickrage/core/webserver/views.py:749
 msgid "Registered and Tested growl successfully "
 msgstr "Registrerade och testad Morra framgångsrikt "
 
-#: sickrage/core/webserver/views.py:752
+#: sickrage/core/webserver/views.py:751
 msgid "Registration and Testing of growl failed "
 msgstr "Registrering och testning av growl misslyckades "
 
-#: sickrage/core/webserver/views.py:759
+#: sickrage/core/webserver/views.py:758
 msgid "Test prowl notice sent successfully"
 msgstr "Testa prowl meddelande skickats"
 
-#: sickrage/core/webserver/views.py:761
+#: sickrage/core/webserver/views.py:760
 msgid "Test prowl notice failed"
 msgstr "Testa prowl meddelande misslyckades"
 
-#: sickrage/core/webserver/views.py:768
+#: sickrage/core/webserver/views.py:767
 msgid "Boxcar2 notification succeeded. Check your Boxcar2 clients to make sure it worked"
 msgstr "Boxcar2 anmälan lyckades. Kontrollera din Boxcar2 klienter att se till att det fungerade"
 
-#: sickrage/core/webserver/views.py:770
+#: sickrage/core/webserver/views.py:769
 msgid "Error sending Boxcar2 notification"
 msgstr "Fel vid sändning av Boxcar2 anmälan"
 
-#: sickrage/core/webserver/views.py:777
+#: sickrage/core/webserver/views.py:776
 msgid "Pushover notification succeeded. Check your Pushover clients to make sure it worked"
 msgstr "Pushover meddelande lyckades. Kontrollera din Pushover klienter att se till att det fungerade"
 
-#: sickrage/core/webserver/views.py:779
+#: sickrage/core/webserver/views.py:778
 msgid "Error sending Pushover notification"
 msgstr "Sändande Pushover meddelande"
 
-#: sickrage/core/webserver/views.py:791
+#: sickrage/core/webserver/views.py:790
 msgid "Key verification successful"
 msgstr "Verifiering framgångsrika"
 
-#: sickrage/core/webserver/views.py:793
+#: sickrage/core/webserver/views.py:792
 msgid "Unable to verify key"
 msgstr "Det gick inte att verifiera nyckeln"
 
-#: sickrage/core/webserver/views.py:800
+#: sickrage/core/webserver/views.py:799
 msgid "Tweet successful, check your twitter to make sure it worked"
 msgstr "Tweet framgångsrika, kontrollera din twitter för att se till att det fungerade"
 
-#: sickrage/core/webserver/views.py:802
+#: sickrage/core/webserver/views.py:801
 msgid "Error sending tweet"
 msgstr "Fel skicka tweet"
 
-#: sickrage/core/webserver/views.py:807
+#: sickrage/core/webserver/views.py:806
 msgid "Please enter a valid account sid"
 msgstr "Ange ett giltigt konto sid"
 
-#: sickrage/core/webserver/views.py:810
+#: sickrage/core/webserver/views.py:809
 msgid "Please enter a valid auth token"
 msgstr "Vänligen ange en giltig auth-token"
 
-#: sickrage/core/webserver/views.py:813
+#: sickrage/core/webserver/views.py:812
 msgid "Please enter a valid phone sid"
 msgstr "Vänligen ange ett giltigt telefon-sid"
 
-#: sickrage/core/webserver/views.py:816
+#: sickrage/core/webserver/views.py:815
 msgid "Please format the phone number as \"+1-###-###-####\""
 msgstr "Vänligen formatera telefonnummer som ”+1-###-###-###”"
 
-#: sickrage/core/webserver/views.py:820
+#: sickrage/core/webserver/views.py:819
 msgid "Authorization successful and number ownership verified"
 msgstr "Autentisering lyckades och numrets ägarskap verifierades"
 
-#: sickrage/core/webserver/views.py:822
+#: sickrage/core/webserver/views.py:821
 msgid "Error sending sms"
 msgstr "Fel vid skickande av sms"
 
-#: sickrage/core/webserver/views.py:828
+#: sickrage/core/webserver/views.py:827
 msgid "Slack message successful"
 msgstr "Slack-meddelande lyckades"
 
-#: sickrage/core/webserver/views.py:830
+#: sickrage/core/webserver/views.py:829
 msgid "Slack message failed"
 msgstr "Slack-meddelande misslyckades"
 
-#: sickrage/core/webserver/views.py:836
+#: sickrage/core/webserver/views.py:835
 msgid "Discord message successful"
 msgstr "Discord-meddelande lyckades"
 
-#: sickrage/core/webserver/views.py:838
+#: sickrage/core/webserver/views.py:837
 msgid "Discord message failed"
 msgstr "Discord-meddelande misslyckades"
 
-#: sickrage/core/webserver/views.py:849
+#: sickrage/core/webserver/views.py:848
 msgid "Test KODI notice sent successfully to "
 msgstr "KODI test-notifiering lyckades till "
 
-#: sickrage/core/webserver/views.py:851
+#: sickrage/core/webserver/views.py:850
 msgid "Test KODI notice failed to "
 msgstr "KODI test-notifiering misslyckades till "
 
-#: sickrage/core/webserver/views.py:866
+#: sickrage/core/webserver/views.py:865
 msgid "Successful test notice sent to Plex client ... "
 msgstr "Testmeddelande skickades till Plex-klient... "
 
-#: sickrage/core/webserver/views.py:868
+#: sickrage/core/webserver/views.py:867
 msgid "Test failed for Plex client ... "
 msgstr "Testet misslyckades till Plex-klient... "
 
-#: sickrage/core/webserver/views.py:871
+#: sickrage/core/webserver/views.py:870
 msgid "Tested Plex client(s): "
 msgstr "Testade Plexklient(er): "
 
-#: sickrage/core/webserver/views.py:886
+#: sickrage/core/webserver/views.py:885
 msgid "Successful test of Plex server(s) ... "
 msgstr "Lyckat test av Plex servrar... "
 
-#: sickrage/core/webserver/views.py:889
+#: sickrage/core/webserver/views.py:888
 msgid "Test failed, No Plex Media Server host specified"
 msgstr "Test misslyckades. Ingen specificerad Plex Media Server vald"
 
-#: sickrage/core/webserver/views.py:891
+#: sickrage/core/webserver/views.py:890
 msgid "Test failed for Plex server(s) ... "
 msgstr "Testet misslyckades för Plex servrar... "
 
-#: sickrage/core/webserver/views.py:895
+#: sickrage/core/webserver/views.py:894
 msgid "Tested Plex Media Server host(s): "
 msgstr "Testade Plex Media Server Värd(ar): "
 
-#: sickrage/core/webserver/views.py:903
+#: sickrage/core/webserver/views.py:902
 msgid "Tried sending desktop notification via libnotify"
 msgstr "Försökte skicka skrivbordsnotifiering via libnotify"
 
-#: sickrage/core/webserver/views.py:912 sickrage/core/webserver/views.py:945
+#: sickrage/core/webserver/views.py:911 sickrage/core/webserver/views.py:944
 msgid "Test notice sent successfully to "
 msgstr "Testmeddelande skickat till "
 
-#: sickrage/core/webserver/views.py:914 sickrage/core/webserver/views.py:947
+#: sickrage/core/webserver/views.py:913 sickrage/core/webserver/views.py:946
 msgid "Test notice failed to "
 msgstr "Testmeddeland misslyckades till "
 
-#: sickrage/core/webserver/views.py:921
+#: sickrage/core/webserver/views.py:920
 msgid "Successfully started the scan update"
 msgstr "Lyckad start av skanningsuppdateringen"
 
-#: sickrage/core/webserver/views.py:923
+#: sickrage/core/webserver/views.py:922
 msgid "Test failed to start the scan update"
 msgstr "Misslyckades att starta test av skanningsuppdateringen"
 
-#: sickrage/core/webserver/views.py:931
+#: sickrage/core/webserver/views.py:930
 msgid "Got settings from"
 msgstr "Fick inställningar från"
 
-#: sickrage/core/webserver/views.py:936
+#: sickrage/core/webserver/views.py:935
 msgid "Failed! Make sure your Popcorn is on and NMJ is running. (see Log & Errors -> Debug for detailed info)"
 msgstr "Misslyckades! Kontrollera att dina Popcorn är på och NMJ körs. (se logga & fel-> Debug för detaljerad information)"
 
-#: sickrage/core/webserver/views.py:964
+#: sickrage/core/webserver/views.py:963
 msgid "Trakt Authorized"
 msgstr "Trakt auktoriserad"
 
-#: sickrage/core/webserver/views.py:965
+#: sickrage/core/webserver/views.py:964
 msgid "Trakt Not Authorized!"
 msgstr "Trakt inte auktoriserad!"
 
-#: sickrage/core/webserver/views.py:992
+#: sickrage/core/webserver/views.py:991
 msgid "Test email sent successfully! Check inbox."
 msgstr "E-posttest lyckades! Kolla inkorgen."
 
-#: sickrage/core/webserver/views.py:994
+#: sickrage/core/webserver/views.py:993
 #, python-format
 msgid "ERROR: %s"
 msgstr "FEL: %s"
 
-#: sickrage/core/webserver/views.py:1001
+#: sickrage/core/webserver/views.py:1000
 msgid "Test NMA notice sent successfully"
 msgstr "NMA-testnotis skickades framgångsrikt"
 
-#: sickrage/core/webserver/views.py:1003
+#: sickrage/core/webserver/views.py:1002
 msgid "Test NMA notice failed"
 msgstr "NMA-testnotis misslyckades"
 
-#: sickrage/core/webserver/views.py:1009
+#: sickrage/core/webserver/views.py:1008
 msgid "Pushalot notification succeeded. Check your Pushalot clients to make sure it worked"
 msgstr "Pushalot-notifiering lyckades. Kolla din Pushalot-klient för att säkerställa att det funkade"
 
-#: sickrage/core/webserver/views.py:1011
+#: sickrage/core/webserver/views.py:1010
 msgid "Error sending Pushalot notification"
 msgstr "Fel vid sändning av Pushalot-notis"
 
-#: sickrage/core/webserver/views.py:1017
+#: sickrage/core/webserver/views.py:1016
 msgid "Pushbullet notification succeeded. Check your device to make sure it worked"
 msgstr "Pushbullet notifiering lyckades. Kontrollera din enhet för att säkerställa att det funkade"
 
-#: sickrage/core/webserver/views.py:1019
+#: sickrage/core/webserver/views.py:1018
 msgid "Error sending Pushbullet notification"
 msgstr "Ett fel uppstod vid sändning av Pushbullet-notifiering"
 
-#: sickrage/core/webserver/views.py:1027
+#: sickrage/core/webserver/views.py:1026
 msgid "Error getting Pushbullet devices"
 msgstr "Fel vid hämtning av Pushbullet-enheter"
 
-#: sickrage/core/webserver/views.py:1057
+#: sickrage/core/webserver/views.py:1056
 msgid "Shutting down"
 msgstr "Stänger ner"
 
-#: sickrage/core/webserver/views.py:1057
+#: sickrage/core/webserver/views.py:1056
 msgid "SiCKRAGE is shutting down"
 msgstr "SiCKRAGE stängs ner"
 
-#: sickrage/core/webserver/views.py:1068
+#: sickrage/core/webserver/views.py:1067
 msgid "Restarting"
 msgstr "Startar om"
 
-#: sickrage/core/webserver/views.py:1068
+#: sickrage/core/webserver/views.py:1067
 msgid "SiCKRAGE is restarting"
 msgstr "SiCKRAGE startas om"
 
-#: sickrage/core/webserver/views.py:1085
+#: sickrage/core/webserver/views.py:1084
 msgid "Checking for updates"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1089
+#: sickrage/core/webserver/views.py:1088
 msgid "No new updates available!"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1097
+#: sickrage/core/webserver/views.py:1096
 msgid "Updating SiCKRAGE"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1105
+#: sickrage/core/webserver/views.py:1104
 msgid "Successfully found {path}"
 msgstr "Framgångsrikt hittat {path}"
 
-#: sickrage/core/webserver/views.py:1107
+#: sickrage/core/webserver/views.py:1106
 msgid "Failed to find {path}"
 msgstr "Det gick inte att hitta {path}"
 
-#: sickrage/core/webserver/views.py:1110
+#: sickrage/core/webserver/views.py:1109
 msgid "Installing SiCKRAGE requirements"
 msgstr "Installerar SiCKRAGE beroenden"
 
-#: sickrage/core/webserver/views.py:1112
+#: sickrage/core/webserver/views.py:1111
 msgid "Failed to install SiCKRAGE requirements"
 msgstr "Misslyckades med att installera SiCKRAGE beroenden"
 
-#: sickrage/core/webserver/views.py:1114
+#: sickrage/core/webserver/views.py:1113
 msgid "Installed SiCKRAGE requirements successfully!"
 msgstr "SiCKRAGE beroenden har installerats!"
 
-#: sickrage/core/webserver/views.py:1120
+#: sickrage/core/webserver/views.py:1119
 msgid "Checking out branch: "
 msgstr "Checkar ut gren: "
 
-#: sickrage/core/webserver/views.py:1122
+#: sickrage/core/webserver/views.py:1121
 msgid "Branch checkout successful, restarting: "
 msgstr "Lyckades med utcheckning av gren, startar om: "
 
-#: sickrage/core/webserver/views.py:1125
+#: sickrage/core/webserver/views.py:1124
 msgid "Already on branch: "
 msgstr "Redan på gren: "
 
-#: sickrage/core/webserver/views.py:1133 sickrage/core/webserver/views.py:1138
-#: sickrage/core/webserver/views.py:1354 sickrage/core/webserver/views.py:1363
-#: sickrage/core/webserver/views.py:1576 sickrage/core/webserver/views.py:1581
-#: sickrage/core/webserver/views.py:1594 sickrage/core/webserver/views.py:1599
-#: sickrage/core/webserver/views.py:1621 sickrage/core/webserver/views.py:1626
-#: sickrage/core/webserver/views.py:1639 sickrage/core/webserver/views.py:1644
-#: sickrage/core/webserver/views.py:1660 sickrage/core/webserver/views.py:1665
-#: sickrage/core/webserver/views.py:1738 sickrage/core/webserver/views.py:1741
-#: sickrage/core/webserver/views.py:1745 sickrage/core/webserver/views.py:1747
-#: sickrage/core/webserver/views.py:1750 sickrage/core/webserver/views.py:1769
-#: sickrage/core/webserver/views.py:1787 sickrage/core/webserver/views.py:1790
-#: sickrage/core/webserver/views.py:1795 sickrage/core/webserver/views.py:1798
-#: sickrage/core/webserver/views.py:1803 sickrage/core/webserver/views.py:1805
-#: sickrage/core/webserver/views.py:1808 sickrage/core/webserver/views.py:1831
-#: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
-#: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
-#: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1137
+#: sickrage/core/webserver/views.py:1352 sickrage/core/webserver/views.py:1361
+#: sickrage/core/webserver/views.py:1569 sickrage/core/webserver/views.py:1574
+#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1592
+#: sickrage/core/webserver/views.py:1614 sickrage/core/webserver/views.py:1619
+#: sickrage/core/webserver/views.py:1632 sickrage/core/webserver/views.py:1637
+#: sickrage/core/webserver/views.py:1653 sickrage/core/webserver/views.py:1658
+#: sickrage/core/webserver/views.py:1731 sickrage/core/webserver/views.py:1734
+#: sickrage/core/webserver/views.py:1738 sickrage/core/webserver/views.py:1740
+#: sickrage/core/webserver/views.py:1743 sickrage/core/webserver/views.py:1762
+#: sickrage/core/webserver/views.py:1780 sickrage/core/webserver/views.py:1783
+#: sickrage/core/webserver/views.py:1788 sickrage/core/webserver/views.py:1791
+#: sickrage/core/webserver/views.py:1796 sickrage/core/webserver/views.py:1798
+#: sickrage/core/webserver/views.py:1801 sickrage/core/webserver/views.py:1824
+#: sickrage/core/webserver/views.py:1925 sickrage/core/webserver/views.py:1930
+#: sickrage/core/webserver/views.py:1933 sickrage/core/webserver/views.py:1976
+#: sickrage/core/webserver/views.py:1982 sickrage/core/webserver/views.py:1985
+#: sickrage/core/webserver/views.py:4976
 msgid "Error"
 msgstr "Fel"
 
-#: sickrage/core/webserver/views.py:1133 sickrage/core/webserver/views.py:1576
-#: sickrage/core/webserver/views.py:1594 sickrage/core/webserver/views.py:1621
-#: sickrage/core/webserver/views.py:1639 sickrage/core/webserver/views.py:1660
+#: sickrage/core/webserver/views.py:1132 sickrage/core/webserver/views.py:1569
+#: sickrage/core/webserver/views.py:1587 sickrage/core/webserver/views.py:1614
+#: sickrage/core/webserver/views.py:1632 sickrage/core/webserver/views.py:1653
 msgid "Invalid show ID"
 msgstr "Ogiltigt serie-ID"
 
-#: sickrage/core/webserver/views.py:1138 sickrage/core/webserver/views.py:1937
-#: sickrage/core/webserver/views.py:1988
+#: sickrage/core/webserver/views.py:1137 sickrage/core/webserver/views.py:1930
+#: sickrage/core/webserver/views.py:1981
 msgid "Show not in show list"
 msgstr "Serie finns inte med på serielistan"
 
-#: sickrage/core/webserver/views.py:1156
+#: sickrage/core/webserver/views.py:1155
 msgid "This show is in the process of being downloaded - the info below is incomplete."
 msgstr "Denna serie håller på att laddas ner. Informationen nedan är ofullständig."
 
-#: sickrage/core/webserver/views.py:1159
+#: sickrage/core/webserver/views.py:1158
 msgid "The information on this page is in the process of being updated."
 msgstr "Informationen på denna sida håller på att uppdateras."
 
-#: sickrage/core/webserver/views.py:1162
+#: sickrage/core/webserver/views.py:1161
 msgid "The episodes below are currently being refreshed from disk"
 msgstr "Avsnitten nedan uppdateras för närvarande från disk"
 
-#: sickrage/core/webserver/views.py:1165
+#: sickrage/core/webserver/views.py:1164
 msgid "Currently downloading subtitles for this show"
 msgstr "Laddar ner undertexter för denna serie"
 
-#: sickrage/core/webserver/views.py:1168
+#: sickrage/core/webserver/views.py:1167
 msgid "This show is queued to be refreshed."
 msgstr "Denna serie står i kö för att bli uppdaterad."
 
-#: sickrage/core/webserver/views.py:1171
+#: sickrage/core/webserver/views.py:1170
 msgid "This show is queued and awaiting an update."
 msgstr "Denna serie står i kö för att uppdateras."
 
-#: sickrage/core/webserver/views.py:1174
+#: sickrage/core/webserver/views.py:1173
 msgid "This show is queued and awaiting subtitles download."
 msgstr "Denna serie står i kö för att ladda ner undertexter."
 
-#: sickrage/core/webserver/views.py:1180
+#: sickrage/core/webserver/views.py:1179
 msgid "Resume"
 msgstr "Återuppta"
 
-#: sickrage/core/webserver/views.py:1200
+#: sickrage/core/webserver/views.py:1199
 msgid "Re-scan files"
 msgstr "Re-Scan filer"
 
-#: sickrage/core/webserver/views.py:1206
+#: sickrage/core/webserver/views.py:1205
 msgid "Full Update"
 msgstr "Fullständig uppdatering"
 
-#: sickrage/core/webserver/views.py:1212
+#: sickrage/core/webserver/views.py:1211
 msgid "Update show in KODI"
 msgstr "Uppdatera serie i KODI"
 
-#: sickrage/core/webserver/views.py:1219
+#: sickrage/core/webserver/views.py:1218
 msgid "Update show in Emby"
 msgstr "Uppdatera serie i Emby"
 
-#: sickrage/core/webserver/views.py:1226 sickrage/core/webserver/views.py:1974
-#: sickrage/core/webserver/views.py:1975
+#: sickrage/core/webserver/views.py:1225 sickrage/core/webserver/views.py:1967
+#: sickrage/core/webserver/views.py:1968
 msgid "Preview Rename"
 msgstr "Förhandsgranska Byt namn"
 
-#: sickrage/core/webserver/views.py:1234
+#: sickrage/core/webserver/views.py:1233
 msgid "Download Subtitles"
 msgstr "Ladda ner undertexter"
 
-#: sickrage/core/webserver/views.py:1350
+#: sickrage/core/webserver/views.py:1348
 msgid "Invalid show ID: "
 msgstr "Ogiltigt serie-ID: "
 
-#: sickrage/core/webserver/views.py:1359
+#: sickrage/core/webserver/views.py:1357
 msgid "Unable to find the specified show: "
 msgstr "Det gick inte att hitta den angivna serien: "
 
-#: sickrage/core/webserver/views.py:1379
-msgid "Unable to retreive Fansub Groups from AniDB."
-msgstr "Det går inte att retreive Fansub grupper från AniDB."
-
-#: sickrage/core/webserver/views.py:1395 sickrage/core/webserver/views.py:1396
-#: sickrage/core/webserver/views.py:1406 sickrage/core/webserver/views.py:1407
+#: sickrage/core/webserver/views.py:1388 sickrage/core/webserver/views.py:1389
+#: sickrage/core/webserver/views.py:1399 sickrage/core/webserver/views.py:1400
 msgid "Edit Show"
 msgstr "Redigera serie"
 
-#: sickrage/core/webserver/views.py:1490
+#: sickrage/core/webserver/views.py:1483
 msgid "Unable to refresh this show: {}"
 msgstr "Kan inte att uppdatera denna serie: {}"
 
-#: sickrage/core/webserver/views.py:1522
+#: sickrage/core/webserver/views.py:1515
 msgid "Unable to refresh this show:{}"
 msgstr "Kan inte att uppdatera denna serie:{}"
 
-#: sickrage/core/webserver/views.py:1528
+#: sickrage/core/webserver/views.py:1521
 #, python-format
 msgid "The folder at %s doesn't contain a tvshow.nfo - copy your files to that folder before you change the directory in SiCKRAGE."
 msgstr "Mappen %s innehåller inte en tvshow.nfo - kopiera dina filer till mappen innan du ändrar katalogen i SiCKRAGE."
 
-#: sickrage/core/webserver/views.py:1540 sickrage/core/webserver/views.py:3432
+#: sickrage/core/webserver/views.py:1533 sickrage/core/webserver/views.py:3428
 msgid "Unable to update show: {}"
 msgstr "Kan inte uppdatera serie: {0}"
 
-#: sickrage/core/webserver/views.py:1547
+#: sickrage/core/webserver/views.py:1540
 msgid "Unable to force an update on scene exceptions of the show."
 msgstr "Det går inte att framtvinga en uppdatering av sceneundantag av serien."
 
-#: sickrage/core/webserver/views.py:1554
+#: sickrage/core/webserver/views.py:1547
 msgid "Unable to force an update on scene numbering of the show."
 msgstr "Kan inte att framtvinga en uppdatering av scenenumrering av denna serie."
 
-#: sickrage/core/webserver/views.py:1561
+#: sickrage/core/webserver/views.py:1554
 msgid "{num_warnings:d} warning{plural} while saving changes:"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:1568 sickrage/core/webserver/views.py:3357
+#: sickrage/core/webserver/views.py:1561 sickrage/core/webserver/views.py:3353
 msgid "{num_errors:d} error{plural} while saving changes:"
 msgstr "{num_errors:d} error{plural} samtidigt som du sparar ändringarna:"
 
-#: sickrage/core/webserver/views.py:1581 sickrage/core/webserver/views.py:1599
-#: sickrage/core/webserver/views.py:1626 sickrage/core/webserver/views.py:1644
-#: sickrage/core/webserver/views.py:1665
+#: sickrage/core/webserver/views.py:1574 sickrage/core/webserver/views.py:1592
+#: sickrage/core/webserver/views.py:1619 sickrage/core/webserver/views.py:1637
+#: sickrage/core/webserver/views.py:1658
 msgid "Unable to find the specified show"
 msgstr "Kan inte att hitta den angivna serien"
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1581
 #, python-format
 msgid "%s has been %s"
 msgstr "%s har varit %s"
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1581
 msgid "resumed"
 msgstr "återupptas"
 
-#: sickrage/core/webserver/views.py:1588
+#: sickrage/core/webserver/views.py:1581
 msgid "paused"
 msgstr "pausad"
 
-#: sickrage/core/webserver/views.py:1604
+#: sickrage/core/webserver/views.py:1597
 #, python-format
 msgid "%s has been %s %s"
 msgstr "%s har varit %s %s"
 
-#: sickrage/core/webserver/views.py:1607
+#: sickrage/core/webserver/views.py:1600
 msgid "deleted"
 msgstr "bort"
 
-#: sickrage/core/webserver/views.py:1607
+#: sickrage/core/webserver/views.py:1600
 msgid "trashed"
 msgstr "skrotade"
 
-#: sickrage/core/webserver/views.py:1608
+#: sickrage/core/webserver/views.py:1601
 msgid "(media untouched)"
 msgstr "(media orörd)"
 
-#: sickrage/core/webserver/views.py:1608
+#: sickrage/core/webserver/views.py:1601
 msgid "(with all related media)"
 msgstr "(med alla relaterade media)"
 
-#: sickrage/core/webserver/views.py:1612
+#: sickrage/core/webserver/views.py:1605
 msgid "Unable to delete this show."
 msgstr "Kan inte att radera denna serie."
 
-#: sickrage/core/webserver/views.py:1631
+#: sickrage/core/webserver/views.py:1624
 msgid "Unable to refresh this show."
 msgstr "Kan inte att uppdatera denna serie."
 
-#: sickrage/core/webserver/views.py:1650
+#: sickrage/core/webserver/views.py:1643
 msgid "Unable to update this show."
 msgstr "Kan inte uppdatera denna serie."
 
-#: sickrage/core/webserver/views.py:1689
+#: sickrage/core/webserver/views.py:1682
 msgid "Library update command sent to KODI host(s): "
 msgstr "Bibliotek update kommandot skickas till KODI-värddatorer: "
 
-#: sickrage/core/webserver/views.py:1691
+#: sickrage/core/webserver/views.py:1684
 msgid "Unable to contact one or more KODI host(s): "
 msgstr "Det gick inte att kontakta en eller flera KODI-värddatorer: "
 
-#: sickrage/core/webserver/views.py:1701
+#: sickrage/core/webserver/views.py:1694
 msgid "Library update command sent to Plex Media Server host: "
 msgstr "Bibliotek update kommandot skickas till Plex Media Server värd: "
 
-#: sickrage/core/webserver/views.py:1705
+#: sickrage/core/webserver/views.py:1698
 msgid "Unable to contact Plex Media Server host: "
 msgstr "Det gick inte att kontakta Plex Media Server värd: "
 
-#: sickrage/core/webserver/views.py:1717
+#: sickrage/core/webserver/views.py:1710
 msgid "Library update command sent to Emby host: "
 msgstr "Bibliotek update kommandot skickas till Emby värd: "
 
-#: sickrage/core/webserver/views.py:1720
+#: sickrage/core/webserver/views.py:1713
 msgid "Unable to contact Emby host: "
 msgstr "Det gick inte att kontakta Emby värd: "
 
-#: sickrage/core/webserver/views.py:1730
+#: sickrage/core/webserver/views.py:1723
 msgid "Syncing Trakt with SiCKRAGE"
 msgstr "Synkroniserar Trakt med SiCKRAGE"
 
-#: sickrage/core/webserver/views.py:1736 sickrage/core/webserver/views.py:1785
-#: sickrage/core/webserver/views.py:1982
+#: sickrage/core/webserver/views.py:1729 sickrage/core/webserver/views.py:1778
+#: sickrage/core/webserver/views.py:1975
 msgid "You must specify a show and at least one episode"
 msgstr "Du måste välja en serie och minst ett avsnitt"
 
-#: sickrage/core/webserver/views.py:1793
+#: sickrage/core/webserver/views.py:1786
 msgid "Invalid status"
 msgstr "Ogiltig status"
 
-#: sickrage/core/webserver/views.py:1888
+#: sickrage/core/webserver/views.py:1881
 msgid "Backlog was automatically started for the following seasons of "
 msgstr "Eftersläpningen startades automatiskt för de följande säsongerna av "
 
-#: sickrage/core/webserver/views.py:1895 sickrage/core/webserver/views.py:1915
+#: sickrage/core/webserver/views.py:1888 sickrage/core/webserver/views.py:1908
 msgid "Season "
 msgstr "Säsong "
 
-#: sickrage/core/webserver/views.py:1902
+#: sickrage/core/webserver/views.py:1895
 msgid "Backlog started"
 msgstr "Eftersläpningen började"
 
-#: sickrage/core/webserver/views.py:1908
+#: sickrage/core/webserver/views.py:1901
 msgid "Retrying Search was automatically started for the following season of "
 msgstr "Försöker igen Sök startades automatiskt för den följande säsongen av "
 
-#: sickrage/core/webserver/views.py:1922
+#: sickrage/core/webserver/views.py:1915
 msgid "Retry Search started"
 msgstr "Försök igen Sök började"
 
-#: sickrage/core/webserver/views.py:1932
+#: sickrage/core/webserver/views.py:1925
 msgid "You must specify a show"
 msgstr "Du måste välja en serie"
 
-#: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1992
+#: sickrage/core/webserver/views.py:1933 sickrage/core/webserver/views.py:1985
 msgid "Can't rename episodes when the show dir is missing."
 msgstr "Kan inte byta namn på avsnitt när seriens katalog saknas."
 
-#: sickrage/core/webserver/views.py:2128
+#: sickrage/core/webserver/views.py:2121
 #, python-format
 msgid "New subtitles downloaded: %s"
 msgstr "Nya undertexter hämtade: %s"
 
-#: sickrage/core/webserver/views.py:2130
+#: sickrage/core/webserver/views.py:2123
 msgid "No subtitles downloaded"
 msgstr "Inga undertexter hämtade"
 
-#: sickrage/core/webserver/views.py:2252 sickrage/core/webserver/views.py:2256
+#: sickrage/core/webserver/views.py:2248 sickrage/core/webserver/views.py:2252
 msgid "Google Drive Sync"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2252
+#: sickrage/core/webserver/views.py:2248
 msgid "Syncing app data to Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2256
+#: sickrage/core/webserver/views.py:2252
 msgid "Syncing app data from Google Drive"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:2325
+#: sickrage/core/webserver/views.py:2321
 msgid "Postprocessing results"
 msgstr "Postprocessing resultat"
 
-#: sickrage/core/webserver/views.py:2385
+#: sickrage/core/webserver/views.py:2381
 msgid "No folders selected."
 msgstr "Inga mappar valts."
 
-#: sickrage/core/webserver/views.py:2514 sickrage/core/webserver/views.py:2515
+#: sickrage/core/webserver/views.py:2510 sickrage/core/webserver/views.py:2511
 msgid "New Show"
 msgstr "Ny Serie"
 
-#: sickrage/core/webserver/views.py:2579 sickrage/core/webserver/views.py:2580
+#: sickrage/core/webserver/views.py:2575 sickrage/core/webserver/views.py:2576
 msgid "Existing Show"
 msgstr "Existerande Serie"
 
-#: sickrage/core/webserver/views.py:2601
+#: sickrage/core/webserver/views.py:2597
 msgid "No root directories setup, please go back and add one."
 msgstr "Ingen rotkataloger setup, gå tillbaka och lägga till en."
 
-#: sickrage/core/webserver/views.py:2656
+#: sickrage/core/webserver/views.py:2652
 msgid "Unknown error. Unable to add show due to problem with show selection."
 msgstr "Okänt fel. Misslyckades att lägga till serie på grund av problem med val av serie."
 
-#: sickrage/core/webserver/views.py:2681
+#: sickrage/core/webserver/views.py:2677
 msgid "Folder "
 msgstr "Mappen "
 
-#: sickrage/core/webserver/views.py:2681
+#: sickrage/core/webserver/views.py:2677
 msgid " exists already"
 msgstr " redan finns"
 
-#: sickrage/core/webserver/views.py:2693
+#: sickrage/core/webserver/views.py:2689
 msgid "Unable to create the folder , can't add the show"
 msgstr "Kan inte skapa mapp , kan inte lägga till serien"
 
-#: sickrage/core/webserver/views.py:2745
+#: sickrage/core/webserver/views.py:2741
 msgid "Adding Show"
 msgstr "Lägger till serie"
 
-#: sickrage/core/webserver/views.py:2745
+#: sickrage/core/webserver/views.py:2741
 msgid "Adding the specified show into "
 msgstr "Lägger till den angivna serien i "
 
-#: sickrage/core/webserver/views.py:2820
+#: sickrage/core/webserver/views.py:2816
 msgid "Shows Added"
 msgstr "Serier tillagda"
 
-#: sickrage/core/webserver/views.py:2821
+#: sickrage/core/webserver/views.py:2817
 msgid "Automatically added "
 msgstr "Läggs automatiskt "
 
-#: sickrage/core/webserver/views.py:2822
+#: sickrage/core/webserver/views.py:2818
 msgid " from their existing metadata files"
 msgstr " från deras befintliga metadatafiler"
 
-#: sickrage/core/webserver/views.py:3004 sickrage/core/webserver/views.py:3005
+#: sickrage/core/webserver/views.py:3000 sickrage/core/webserver/views.py:3001
 msgid "Missing Subtitles"
 msgstr "Saknade undertexter"
 
-#: sickrage/core/webserver/views.py:3440
+#: sickrage/core/webserver/views.py:3436
 msgid "Unable to refresh show "
 msgstr "Kan inte att uppdatera serien "
 
-#: sickrage/core/webserver/views.py:3451
+#: sickrage/core/webserver/views.py:3447
 msgid "Errors encountered"
 msgstr "Fel uppstod"
 
-#: sickrage/core/webserver/views.py:3457
+#: sickrage/core/webserver/views.py:3453
 msgid "<br><b>Updates</b><br><ul><li>"
 msgstr "<br><b>Uppdateringar</b> <br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3462
+#: sickrage/core/webserver/views.py:3458
 msgid "<br><b>Refreshes</b><br><ul><li>"
 msgstr "<br><b>Uppdateringar</b> <br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3467
+#: sickrage/core/webserver/views.py:3463
 msgid "<br><b>Renames</b><br><ul><li>"
 msgstr "<br><b>Namnändringar</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3472
+#: sickrage/core/webserver/views.py:3468
 msgid "<br><b>Subtitles</b><br><ul><li>"
 msgstr "<br><b>Undertexter</b><br><ul><li>"
 
-#: sickrage/core/webserver/views.py:3477
+#: sickrage/core/webserver/views.py:3473
 msgid "The following actions were queued:"
 msgstr "Följande åtgärder köades:"
 
-#: sickrage/core/webserver/views.py:3543
+#: sickrage/core/webserver/views.py:3539
 msgid "Backlog search started"
 msgstr "Backlog-sökning började"
 
-#: sickrage/core/webserver/views.py:3551
+#: sickrage/core/webserver/views.py:3547
 msgid "Daily search started"
 msgstr "Daglig sökning startades"
 
-#: sickrage/core/webserver/views.py:3559
+#: sickrage/core/webserver/views.py:3555
 msgid "Find propers search started"
 msgstr "Proper-sök startad"
 
-#: sickrage/core/webserver/views.py:3670
+#: sickrage/core/webserver/views.py:3666
 msgid "History cleared"
 msgstr "Historik rensad"
 
-#: sickrage/core/webserver/views.py:3677
+#: sickrage/core/webserver/views.py:3673
 msgid "Removed history entries older than 30 days"
 msgstr "Tog bort historik äldre än 30 dagar"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3914
+#: sickrage/core/webserver/views.py:3688 sickrage/core/webserver/views.py:3910
 msgid "Backup/Restore"
 msgstr "Säkerhetskopiering/återställning"
 
-#: sickrage/core/webserver/views.py:3708 sickrage/core/webserver/views.py:3709
+#: sickrage/core/webserver/views.py:3704 sickrage/core/webserver/views.py:3705
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: sickrage/core/webserver/views.py:3717
+#: sickrage/core/webserver/views.py:3713
 msgid "Configuration Reset to Defaults"
 msgstr "Konfiguration Återställ till standardvärden"
 
-#: sickrage/core/webserver/views.py:3730
+#: sickrage/core/webserver/views.py:3726
 msgid "Config - General"
 msgstr "Konfig - Allmänt"
 
-#: sickrage/core/webserver/views.py:3731
+#: sickrage/core/webserver/views.py:3727
 msgid "General Configuration"
 msgstr "Allmän konfiguration"
 
-#: sickrage/core/webserver/views.py:3896 sickrage/core/webserver/views.py:4060
-#: sickrage/core/webserver/views.py:4191 sickrage/core/webserver/views.py:4415
-#: sickrage/core/webserver/views.py:4761 sickrage/core/webserver/views.py:4849
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:3892 sickrage/core/webserver/views.py:4056
+#: sickrage/core/webserver/views.py:4187 sickrage/core/webserver/views.py:4411
+#: sickrage/core/webserver/views.py:4757 sickrage/core/webserver/views.py:4845
+#: sickrage/core/webserver/views.py:4884
 msgid "Error(s) Saving Configuration"
 msgstr "Fel när konfiguration skulle sparas"
 
-#: sickrage/core/webserver/views.py:3898
+#: sickrage/core/webserver/views.py:3894
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:3913
+#: sickrage/core/webserver/views.py:3909
 msgid "Config - Backup/Restore"
 msgstr "Konfig - säkerhetskopiering/återställning"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3922
 msgid "Backup SUCCESSFUL"
 msgstr "Säkerhetskopiering LYCKADES"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3924
 msgid "Backup FAILED!"
 msgstr "Säkerhetskopiering MISSLYCKADES!"
 
-#: sickrage/core/webserver/views.py:3930
+#: sickrage/core/webserver/views.py:3926
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Du måste välja en mapp att spara säkerhetskopian till först!"
 
-#: sickrage/core/webserver/views.py:3949
+#: sickrage/core/webserver/views.py:3945
 msgid "Successfully extracted restore files to "
 msgstr "Extraherade återställningsfiler till "
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3946
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Starta om SiCKRAGE att slutföra återställningen."
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3948
 msgid "Restore FAILED"
 msgstr "Återställningen misslyckades"
 
-#: sickrage/core/webserver/views.py:3954
+#: sickrage/core/webserver/views.py:3950
 msgid "You need to select a backup file to restore!"
 msgstr "Du måste välja en säkerhetskopia att återställa!"
 
-#: sickrage/core/webserver/views.py:3973
+#: sickrage/core/webserver/views.py:3969
 msgid "Config - Search Clients"
 msgstr "Konfig - Sökklienter"
 
-#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
-#: sickrage/core/webserver/views.py:4106
+#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
+#: sickrage/core/webserver/views.py:4102
 msgid "Unable to create directory "
 msgstr "Det gick inte att skapa katalog "
 
-#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
-#: sickrage/core/webserver/views.py:4106
+#: sickrage/core/webserver/views.py:3995 sickrage/core/webserver/views.py:3998
+#: sickrage/core/webserver/views.py:4102
 msgid ", dir not changed."
 msgstr ", mapp inte ändrad."
 
-#: sickrage/core/webserver/views.py:4062
+#: sickrage/core/webserver/views.py:4058
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4077
+#: sickrage/core/webserver/views.py:4073
 msgid "Config - Post Processing"
 msgstr "Konfig - efterbearbetning"
 
-#: sickrage/core/webserver/views.py:4117
+#: sickrage/core/webserver/views.py:4113
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Uppackning stöds inte, inaktiverar uppackningsinställning"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4148 sickrage/core/webserver/views.py:4159
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Du försökte spara en ogiltig namngivningskonfigurering för anime, sparar inte namngivningsinställningarna"
 
-#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
+#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Du försökte spara en ogiltig namngivningskonfigurering, sparar inte dina namngivningsinställningar"
 
-#: sickrage/core/webserver/views.py:4171
+#: sickrage/core/webserver/views.py:4167
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Du försökte spara en ogiltig namngivningskonfigurering för sändningsdatum, sparar inte namngivningsinställningarna"
 
-#: sickrage/core/webserver/views.py:4177
+#: sickrage/core/webserver/views.py:4173
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Du försökte spara en ogiltig namngivningskonfigurering för sportserier, sparar inte namngivningsinställningarna"
 
-#: sickrage/core/webserver/views.py:4193
+#: sickrage/core/webserver/views.py:4189
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4272
+#: sickrage/core/webserver/views.py:4268
 msgid "Config - Search Providers"
 msgstr "Konfig - Sökleverantörer"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4309
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Inget leverantörsnamn specificerat"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4311
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Ingen leverantörsadress specificerad"
 
-#: sickrage/core/webserver/views.py:4317
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Ingen API-nyckel för leverantör angiven"
 
-#: sickrage/core/webserver/views.py:4417
+#: sickrage/core/webserver/views.py:4413
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4432
+#: sickrage/core/webserver/views.py:4428
 msgid "Config - Notifications"
 msgstr "Config - meddelanden"
 
-#: sickrage/core/webserver/views.py:4763
+#: sickrage/core/webserver/views.py:4759
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4778
+#: sickrage/core/webserver/views.py:4774
 msgid "Config - Subtitles Settings"
 msgstr "Konfig - Undertextinställningar"
 
-#: sickrage/core/webserver/views.py:4851
+#: sickrage/core/webserver/views.py:4847
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4866
+#: sickrage/core/webserver/views.py:4862
 msgid "Config - Anime"
 msgstr "Konfig - Anime"
 
-#: sickrage/core/webserver/views.py:4890
+#: sickrage/core/webserver/views.py:4886
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4905
+#: sickrage/core/webserver/views.py:4901
 msgid "Config - Quality Settings"
 msgstr "Konfig - kvalitetsinställningar"
 
-#: sickrage/core/webserver/views.py:4917
+#: sickrage/core/webserver/views.py:4913
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[INSTÄLLNINGAR] Konfiguration Sparad"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4965
 msgid "Daily Searcher"
 msgstr "Daglig Sökning"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4967
 msgid "Show Updater"
 msgstr "Serieuppdateraren"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4968
 msgid "Check Version"
 msgstr "Kontrollera Version"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4971
 msgid "Find Propers"
 msgstr "Hitta Propers"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4972
 msgid "Postprocessor"
 msgstr "Postprocessor"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4973
 msgid "Find Subtitles"
 msgstr "Hitta undertexter"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4975
 msgid "Event"
 msgstr "Händelse"
 
-#: sickrage/core/webserver/views.py:4981
+#: sickrage/core/webserver/views.py:4977
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4982
+#: sickrage/core/webserver/views.py:4978
 msgid "Thread"
 msgstr "Gänga"
 

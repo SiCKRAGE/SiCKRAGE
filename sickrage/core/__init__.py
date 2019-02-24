@@ -39,7 +39,6 @@ from fake_useragent import UserAgent
 from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
-import adba
 import sickrage
 from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
@@ -295,17 +294,6 @@ class Core(object):
                 shutil.rmtree(os.path.join(sickrage.app.cache_dir, folder), ignore_errors=True)
             except Exception:
                 continue
-
-        # init anidb connection
-        if self.config.use_anidb:
-            def anidb_logger(msg):
-                return self.log.debug("AniDB: {} ".format(msg))
-
-            try:
-                self.adba_connection = adba.Connection(keepAlive=True, log=anidb_logger)
-                self.adba_connection.auth(self.config.anidb_username, self.config.anidb_password)
-            except Exception as e:
-                self.log.warning("AniDB exception msg: %r " % repr(e))
 
         if self.config.web_port < 21 or self.config.web_port > 65535:
             self.config.web_port = 8081

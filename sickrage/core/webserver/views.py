@@ -41,24 +41,23 @@ from tornado.web import RequestHandler, authenticated
 
 import sickrage
 import sickrage.subtitles
-from adba import aniDBAbstracter
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core import API, google_drive
-from sickrage.core.blackandwhitelist import BlackAndWhiteList, \
-    short_group_names
+from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
-    NoNFOException, CantRemoveShowException
+    NoNFOException, CantRemoveShowException, AnidbAdbaConnectionException
 from sickrage.core.helpers import argToBool, backupSR, chmod_as_parent, findCertainShow, generateApiKey, \
     getDiskSpaceUsage, makeDir, readFileBuffered, \
     remove_article, restoreConfigZip, \
     sanitizeFileName, clean_url, try_int, torrent_webui_url, checkbox_to_value, clean_host, \
     clean_hosts, app_statistics
+from sickrage.core.helpers.anidb import short_group_names, get_release_groups_for_anime
 from sickrage.core.helpers.browser import foldersAtPath
 from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
@@ -1345,7 +1344,6 @@ class Home(WebHandler):
         if anyQualities is None:
             anyQualities = []
 
-        anidb_failed = False
         if show is None:
             errString = _("Invalid show ID: ") + str(show)
             if directCall:
@@ -1370,15 +1368,10 @@ class Home(WebHandler):
                 whitelist = showObj.release_groups.whitelist
                 blacklist = showObj.release_groups.blacklist
 
-                if sickrage.app.adba_connection and not anidb_failed:
-                    try:
-                        anime = aniDBAbstracter.Anime(sickrage.app.adba_connection, name=showObj.name)
-                        groups = anime.get_groups()
-                    except Exception as e:
-                        anidb_failed = True
-                        sickrage.app.alerts.error(_('Unable to retreive Fansub Groups from AniDB.'))
-                        sickrage.app.log.debug(
-                            'Unable to retreive Fansub Groups from AniDB. Error is {}'.format(e))
+                try:
+                    groups = get_release_groups_for_anime(showObj.name)
+                except AnidbAdbaConnectionException as e:
+                    sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
 
             with showObj.lock:
                 scene_exceptions = get_scene_exceptions(showObj.indexerid)
@@ -2230,11 +2223,14 @@ class Home(WebHandler):
 
     @staticmethod
     def fetch_releasegroups(show_name):
-        sickrage.app.log.info('ReleaseGroups: %s' % show_name)
-        if sickrage.app.adba_connection:
-            anime = aniDBAbstracter.Anime(sickrage.app.adba_connection, name=show_name)
-            groups = anime.get_groups()
-            sickrage.app.log.info('ReleaseGroups: %s' % groups)
+        sickrage.app.log.info('ReleaseGroups: {}'.format(show_name))
+
+        try:
+            groups = get_release_groups_for_anime(show_name)
+            sickrage.app.log.info('ReleaseGroups: {}'.format(groups))
+        except AnidbAdbaConnectionException as e:
+            sickrage.app.log.debug('Unable to get ReleaseGroups: {}'.format(e))
+        else:
             return json_encode({'result': 'success', 'groups': groups})
 
         return json_encode({'result': 'failure'})

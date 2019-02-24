@@ -1,6 +1,14 @@
 # Changelog
 
-- * 24af3a5 - 2019-02-24: Release v9.4.73 
+- * 6b8c9b2 - 2019-02-24: Release v9.4.74 
+- * b690738 - 2019-02-24: Fixed issue with default add show options and add show year feature. 
+- * 90fa33d - 2019-02-24: Pre-Release v9.4.74.dev2 
+- * b2896ad - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
+- * 1ebefb4 - 2019-02-24: Pre-Release v9.4.74.dev1 
+- * c26e5b1 - 2019-02-24: Refactored AniDB code. 
+- * 41039e5 - 2019-02-24: Fixed KeyError for twitter notifier. 
+- * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
+- * ffd8fa4 - 2019-02-24: Release v9.4.73 
 - * 47572b6 - 2019-02-24: Release v9.4.72 
 - * b86d9d2 - 2019-02-23: Release v9.4.71 
 - * 342b1de - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
