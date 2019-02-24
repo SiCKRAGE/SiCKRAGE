@@ -1,6 +1,7 @@
 # Changelog
 
-- * 37a3e12 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
+- * 195b16e - 2019-02-24: Release v9.4.76 
+- * ed84483 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 
 - * abe73d7 - 2019-02-24: Release v9.4.75 
 - * f4b1e65 - 2019-02-24: Fixed issue with scene exceptions not being retrieved. Fixed issues with AniDB and Anime shows. Builds name cache and retrieves exceptions on startup as a background task. 
 - * 78d6b6e - 2019-02-24: Release v9.4.74 
