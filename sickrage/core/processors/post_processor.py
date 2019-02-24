@@ -632,13 +632,13 @@ class PostProcessor(object):
         if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
             self.anidbEpisode = get_anime_episode(filePath)
             if self.anidbEpisode:
-                self._log("Adding the file to the anidb mylist", sickrage.app.log.DEBUG)
+                self._log("Adding the file to the AniDB MyList", sickrage.app.log.DEBUG)
 
                 try:
-                    # status of 1 sets the status of the file to "internal HDD"
-                    self.anidbEpisode.add_to_mylist(status=1)
+                    # state of 1 sets the state of the file to "internal HDD"
+                    self.anidbEpisode.add_to_mylist(state=1)
                 except Exception as e:
-                    self._log("exception msg: " + str(e))
+                    self.log('Exception message: {0!r}'.format(e))
 
     def _find_info(self):
         """

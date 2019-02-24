@@ -330,11 +330,11 @@ class NameParser(object):
                     new_season_numbers.append(s)
 
             elif bestResult.show.is_anime and bestResult.ab_episode_numbers:
-                scene_season = get_scene_exception_by_name(bestResult.series_name)[1]
                 for epAbsNo in bestResult.ab_episode_numbers:
                     a = epAbsNo
 
                     if bestResult.show.is_scene:
+                        scene_season = get_scene_exception_by_name(bestResult.series_name)[1]
                         a = get_indexer_absolute_numbering(bestResult.show.indexerid,
                                                            bestResult.show.indexer, epAbsNo,
                                                            True, scene_season)
