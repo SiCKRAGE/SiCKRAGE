@@ -1,6 +1,9 @@
 # Changelog
 
-- * 9b3bf61 - 2019-02-23: Release v9.4.69 
+- * 70c9691 - 2019-02-23: Release v9.4.70 
+- * 2e4fa85 - 2019-02-23: Pre-Release v9.4.70.dev1 
+- * 4a8b635 - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
+- * 502eb01 - 2019-02-23: Release v9.4.69 
 - * ffa69b5 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
 - * 2f89453 - 2019-02-23: Pre-Release v9.4.69.dev1 
 - * 8324c57 - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 

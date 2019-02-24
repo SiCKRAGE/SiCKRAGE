@@ -394,7 +394,8 @@ class UpdateManager(object):
             'req_file': sickrage.REQS_FILE
         }))
 
-        sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
+        if output:
+            sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
 
         return False
 

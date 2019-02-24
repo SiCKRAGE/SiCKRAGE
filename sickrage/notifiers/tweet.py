@@ -145,7 +145,7 @@ class TwitterNotifier(Notifiers):
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
-            api.PostDirectMessage(dmdest, message.encode('utf8')[:139])
+            api.PostDirectMessage(message.encode('utf8')[:139], dmdest)
         except Exception as e:
             sickrage.app.log.error("Error Sending Tweet (DM): {}".format(e))
             return False
