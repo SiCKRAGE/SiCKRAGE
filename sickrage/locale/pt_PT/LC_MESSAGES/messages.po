@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 21:23-0800\n"
-"PO-Revision-Date: 2019-02-24 05:26\n"
+"POT-Creation-Date: 2019-02-23 23:02-0800\n"
+"PO-Revision-Date: 2019-02-24 07:04\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
@@ -145,199 +145,199 @@ msgstr ""
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Saved Defaults"
 msgstr "Salvo os padrões"
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "Os padrões de \"Adicionar programa\" foram criados para suas seleções atuais."
 
-#: src/js/core.js:2980
+#: src/js/core.js:2981
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:3022
+#: src/js/core.js:3023
 msgid "Reset Config to Defaults"
 msgstr "Redefinir a configuração para os padrões"
 
-#: src/js/core.js:3023
+#: src/js/core.js:3024
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Tem certeza de que deseja redefinir config para os padrões?"
 
-#: src/js/core.js:3118
+#: src/js/core.js:3119
 msgid "Select path to pip"
 msgstr "Selecione o caminho para o pip"
 
-#: src/js/core.js:3126 src/js/core.js:3152 src/js/core.js:3943 src/js/core.js:3961
-#: src/js/core.js:3982 src/js/core.js:4004 src/js/core.js:4027 src/js/core.js:4049
-#: src/js/core.js:4077 src/js/core.js:4094 src/js/core.js:4138 src/js/core.js:4223
-#: src/js/core.js:4281 src/js/core.js:4298 src/js/core.js:4328 src/js/core.js:4358
-#: src/js/core.js:4415 src/js/core.js:4491 src/js/core.js:4510 src/js/core.js:4526
+#: src/js/core.js:3127 src/js/core.js:3153 src/js/core.js:3944 src/js/core.js:3962
+#: src/js/core.js:3983 src/js/core.js:4005 src/js/core.js:4028 src/js/core.js:4050
+#: src/js/core.js:4078 src/js/core.js:4095 src/js/core.js:4139 src/js/core.js:4224
+#: src/js/core.js:4282 src/js/core.js:4299 src/js/core.js:4329 src/js/core.js:4359
+#: src/js/core.js:4416 src/js/core.js:4492 src/js/core.js:4511 src/js/core.js:4527
 msgid "Please fill out the necessary fields above."
 msgstr "Por favor, preencha os campos necessários acima."
 
-#: src/js/core.js:3144
+#: src/js/core.js:3145
 msgid "Select path to git"
 msgstr "Selecione o caminho para git"
 
-#: src/js/core.js:3191
+#: src/js/core.js:3192
 msgid "Select Subtitles Download Directory"
 msgstr "Diretório de Download selecione legendas"
 
-#: src/js/core.js:3307
+#: src/js/core.js:3308
 msgid "Select .nzb blackhole/watch location"
 msgstr "Selecionar local de blackhole/relógio NZB"
 
-#: src/js/core.js:3308
+#: src/js/core.js:3309
 msgid "Select .torrent blackhole/watch location"
 msgstr "Selecione torrent blackhole/relógio local"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3310
 msgid "Select .torrent download location"
 msgstr "Selecionar local de download torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3376
+#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3377
 msgid "Minimum seeding time is"
 msgstr "É o mínimo tempo de semeadura"
 
-#: src/js/core.js:3378
+#: src/js/core.js:3379
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "URL para seu cliente uTorrent (por exemplo, http://localhost:8000/)"
 
-#: src/js/core.js:3381
+#: src/js/core.js:3382
 msgid "Stop seeding when inactive for"
 msgstr "Parar a propagação quando inativo para"
 
-#: src/js/core.js:3387
+#: src/js/core.js:3388
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL para seu cliente de transmissão (por exemplo, http://localhost:9091)"
 
-#: src/js/core.js:3397
+#: src/js/core.js:3398
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "URL para seu cliente de dilúvio (por exemplo, http://localhost:8112)"
 
-#: src/js/core.js:3406
+#: src/js/core.js:3407
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP ou nome do host do seu Daemon do dilúvio (por exemplo, scgi://localhost:58846)"
 
-#: src/js/core.js:3413
+#: src/js/core.js:3414
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "URL para seu cliente Synology DS (por exemplo, http://localhost:5000)"
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3428
+#: src/js/core.js:3429
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente qbittorrent (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:3438
+#: src/js/core.js:3439
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "URL para seu MLDonkey (por exemplo, http://localhost:4080)"
 
-#: src/js/core.js:3449
+#: src/js/core.js:3450
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "URL para seu cliente putio (por exemplo, http://localhost:8080/)"
 
-#: src/js/core.js:3618
+#: src/js/core.js:3619
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3619
+#: src/js/core.js:3620
 msgid "Select TV Download Directory"
 msgstr "Selecione o diretório de Download TV"
 
-#: src/js/core.js:3620
+#: src/js/core.js:3621
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3634
+#: src/js/core.js:3635
 msgid "Unrar Executable not found."
 msgstr "Unrar executável não encontrado."
 
-#: src/js/core.js:3677 src/js/core.js:3712 src/js/core.js:3747 src/js/core.js:3798
+#: src/js/core.js:3678 src/js/core.js:3713 src/js/core.js:3748 src/js/core.js:3799
 msgid "This pattern is invalid."
 msgstr "Este padrão é inválido."
 
-#: src/js/core.js:3681 src/js/core.js:3716 src/js/core.js:3751 src/js/core.js:3802
+#: src/js/core.js:3682 src/js/core.js:3717 src/js/core.js:3752 src/js/core.js:3803
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Esse padrão seria inválido sem as pastas, usá-lo irá forçar \"Flatten\" fora para todos os shows."
 
-#: src/js/core.js:3685 src/js/core.js:3720 src/js/core.js:3755 src/js/core.js:3807
+#: src/js/core.js:3686 src/js/core.js:3721 src/js/core.js:3756 src/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "Este padrão é válido."
 
-#: src/js/core.js:4131
+#: src/js/core.js:4132
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> confirmar autorização"
 
-#: src/js/core.js:4188 src/js/core.js:4242
+#: src/js/core.js:4189 src/js/core.js:4243
 msgid "Please fill in the Popcorn IP address"
 msgstr "Por favor, preencha o endereço de IP de pipoca"
 
-#: src/js/core.js:4425
+#: src/js/core.js:4426
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Verificar o nome de \"lista negra\"; o valor precisa ser uma lesma trakt"
 
-#: src/js/core.js:4457
+#: src/js/core.js:4458
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4460
+#: src/js/core.js:4461
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4462
+#: src/js/core.js:4463
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4468
+#: src/js/core.js:4469
 msgid "Enter an email address to send the test to:"
 msgstr "Digite um endereço de e-mail para enviar o teste:"
 
-#: src/js/core.js:4470
+#: src/js/core.js:4471
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4540
+#: src/js/core.js:4541
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Lista de dispositivos atualizada. Por favor, escolha um dispositivo para forçar."
 
-#: src/js/core.js:4601
+#: src/js/core.js:4602
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Você não fornecer uma chave de api Pushbullet"
 
-#: src/js/core.js:4631
+#: src/js/core.js:4632
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Não se esqueça de salvar as novas configurações de pushbullet."
 
-#: src/js/core.js:4703
+#: src/js/core.js:4704
 msgid "Select backup folder to save to"
 msgstr "Selecione a pasta de backup para salvar em"
 
-#: src/js/core.js:4708
+#: src/js/core.js:4709
 msgid "Select backup files to restore"
 msgstr "Selecione arquivos de backup para restaurar"
 
-#: src/js/core.js:5253
+#: src/js/core.js:5254
 msgid "No providers available to configure."
 msgstr "Não há provedores disponíveis para configurar."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5463
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5464
 msgid "Mass Delete"
 msgstr "Exclusão em massa"
 
-#: src/js/core.js:5464
+#: src/js/core.js:5465
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Você selecionou excluir show(s).  Tem certeza que deseja continuar? Todos os arquivos serão removidos do seu sistema."
 
-#: src/js/core.js:5541
+#: src/js/core.js:5542
 msgid "DELETED"
 msgstr ""
 
@@ -3571,7 +3571,7 @@ msgstr "Pelo menos um provedor é necessário, mas dois são recomendados."
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "Provedores de NZB/Torrent podem ser alternados em"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3972
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4736,7 +4736,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4820,7 +4820,7 @@ msgstr "Desconhecido"
 msgid "Retry Download"
 msgstr "Tente novamente baixar"
 
-#: sickrage/core/webserver/views.py:4981
+#: sickrage/core/webserver/views.py:4983
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Main"
@@ -4945,7 +4945,7 @@ msgstr "Use a ordem de DVD em vez da ordem de ar"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "Uma \"atualização completa de força\" é necessária, e se você tem episódios existentes precisa ordená-los manualmente."
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4867
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5263,7 +5263,7 @@ msgstr "Realizando a Restart"
 msgid "Daily Search"
 msgstr "Pesquisa diária"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Lista de pendências"
@@ -5288,7 +5288,7 @@ msgstr "Processo de post"
 msgid "Subtitles Finder"
 msgstr "Localizador de legendas"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4978
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt Checker"
@@ -5321,7 +5321,7 @@ msgstr "Não"
 msgid "True"
 msgstr "Verdade"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4973
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Mostrar a fila"
@@ -5707,28 +5707,28 @@ msgstr "Geral"
 msgid "Backup and Restore"
 msgstr "Backup e restauração"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4271
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4273
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "Provedores de pesquisa"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4779
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "Configurações de legendas"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Configurações de qualidade"
 
 #: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4076
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4078
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "Pós-processamento"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4433
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "Notificações"
@@ -5994,7 +5994,7 @@ msgstr "Busca de mensagens desabilitada"
 msgid "Post-Processor:"
 msgstr "Pós-processador:"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Fila de pesquisa"
@@ -6621,7 +6621,7 @@ msgstr "Já no ramo: "
 #: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
 #: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
 #: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4980
 msgid "Error"
 msgstr "Erro"
 
@@ -6989,7 +6989,7 @@ msgstr "História desmarcada"
 msgid "Removed history entries older than 30 days"
 msgstr "Entradas do histórico removido mais de 30 dias"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3914
 msgid "Backup/Restore"
 msgstr "Backup/restauração"
 
@@ -7009,186 +7009,186 @@ msgstr "Config - geral"
 msgid "General Configuration"
 msgstr "Configuração geral"
 
-#: sickrage/core/webserver/views.py:3894 sickrage/core/webserver/views.py:4058
-#: sickrage/core/webserver/views.py:4189 sickrage/core/webserver/views.py:4413
-#: sickrage/core/webserver/views.py:4759 sickrage/core/webserver/views.py:4847
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:3896 sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4191 sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4761 sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4888
 msgid "Error(s) Saving Configuration"
 msgstr "Erro (s) salvando a configuração"
 
-#: sickrage/core/webserver/views.py:3896
+#: sickrage/core/webserver/views.py:3898
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] de configuração salva"
 
-#: sickrage/core/webserver/views.py:3911
+#: sickrage/core/webserver/views.py:3913
 msgid "Config - Backup/Restore"
 msgstr "Config - Backup/restauração"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3926
 msgid "Backup SUCCESSFUL"
 msgstr "Backup de sucesso"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3928
 msgid "Backup FAILED!"
 msgstr "FALHA de backup!"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3930
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Você precisa escolher uma pasta para salvar seu backup primeiro!"
 
-#: sickrage/core/webserver/views.py:3947
+#: sickrage/core/webserver/views.py:3949
 msgid "Successfully extracted restore files to "
 msgstr "Arquivos de restauração extraído com sucesso para "
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3950
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage para concluir a restauração."
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3952
 msgid "Restore FAILED"
 msgstr "Restauração falhada"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3954
 msgid "You need to select a backup file to restore!"
 msgstr "Você precisa selecionar um arquivo de backup para restaurar!"
 
-#: sickrage/core/webserver/views.py:3971
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "Não é possível criar o diretório "
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr ", dir não mudada."
 
-#: sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4062
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:4077
 msgid "Config - Post Processing"
 msgstr "Config - pós-processamento"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4117
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Descompactação não suportado, desabilitando descompactar configuração"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Você já tentou salvar um anime inválido de nomeação de configuração, não salvar suas configurações de nomeação"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Você tentou salvar um inválido de nome config, não salvar suas configurações de nomeação"
 
-#: sickrage/core/webserver/views.py:4169
+#: sickrage/core/webserver/views.py:4171
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Você tentou salvar um inválido data-de-ar de nome config, não salvar as configurações de data-de-ar"
 
-#: sickrage/core/webserver/views.py:4175
+#: sickrage/core/webserver/views.py:4177
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Você já tentou salvar um inválido esportes de nomeação de configuração, não salvar suas configurações de esportes"
 
-#: sickrage/core/webserver/views.py:4191
+#: sickrage/core/webserver/views.py:4193
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:4272
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nenhum nome de provedor especificado"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4315
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Nenhum provedor de Url especificado"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Nenhuma chave de Api de provedor especificado"
 
-#: sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4417
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4430
+#: sickrage/core/webserver/views.py:4432
 msgid "Config - Notifications"
 msgstr "Config - notificações"
 
-#: sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:4763
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4776
+#: sickrage/core/webserver/views.py:4778
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4851
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4866
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:4890
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] de configuração salva"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4905
 msgid "Config - Quality Settings"
 msgstr "Config - configurações de qualidade"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4917
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[CONFIGURAÇÕES DE QUALIDADE] Configuração salvada"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4969
 msgid "Daily Searcher"
 msgstr "Buscador de diária"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4971
 msgid "Show Updater"
 msgstr "Mostrar Updater"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4972
 msgid "Check Version"
 msgstr "Verifique a versão"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4975
 msgid "Find Propers"
 msgstr "Encontrar mensagens"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4976
 msgid "Postprocessor"
 msgstr "Pós-processador"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4977
 msgid "Find Subtitles"
 msgstr "Encontrar legendas"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4979
 msgid "Event"
 msgstr "Evento"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4981
 msgid "Tornado"
 msgstr "Tornado"
 
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:4982
 msgid "Thread"
 msgstr "Segmento"
 

@@ -118,6 +118,7 @@ class Config(object):
         self.scene_default = False
         self.anime_default = False
         self.skip_downloaded_default = False
+        self.add_show_year_default = False
         self.naming_multi_ep = False
         self.naming_anime_multi_ep = False
         self.naming_pattern = ""
@@ -739,6 +740,7 @@ class Config(object):
                 'tv_download_dir': '',
                 'naming_custom_abd': False,
                 'skip_downloaded_default': False,
+                'add_show_year_default': False,
                 'naming_sports_pattern': '%SN - %A-D - %EN',
                 'create_missing_show_dirs': False,
                 'trash_rotate_logs': False,
@@ -1452,6 +1454,7 @@ class Config(object):
         self.anime_default = self.check_setting_bool('General', 'anime_default')
         self.scene_default = self.check_setting_bool('General', 'scene_default')
         self.skip_downloaded_default = self.check_setting_bool('General', 'skip_downloaded_default')
+        self.add_show_year_default = self.check_setting_bool('General', 'add_show_year_default')
         self.naming_pattern = self.check_setting_str('General', 'naming_pattern')
         self.naming_abd_pattern = self.check_setting_str('General', 'naming_abd_pattern')
         self.naming_custom_abd = self.check_setting_bool('General', 'naming_custom_abd')
@@ -1958,6 +1961,7 @@ class Config(object):
                 'anime_default': int(self.anime_default),
                 'scene_default': int(self.scene_default),
                 'skip_downloaded_default': int(self.skip_downloaded_default),
+                'add_show_year_default': int(self.add_show_year_default),
                 'enable_upnp': int(self.enable_upnp),
                 'version_notify': int(self.version_notify),
                 'auto_update': int(self.auto_update),

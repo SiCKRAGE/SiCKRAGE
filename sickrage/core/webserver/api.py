@@ -2005,7 +2005,8 @@ class CMD_ShowAddNew(ApiCall):
         self.skip_downloaded, args = self.check_params("skip_downloaded",
                                                        bool(sickrage.app.config.skip_downloaded_default), False, "bool",
                                                        [], *args, **kwargs)
-        self.add_show_year, args = self.check_params("add_show_year", False, False, "bool", [], *args, **kwargs)
+        self.add_show_year, args = self.check_params("add_show_year", bool(sickrage.app.config.add_show_year_default),
+                                                     False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """

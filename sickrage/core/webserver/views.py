@@ -3745,7 +3745,8 @@ class ConfigGeneral(Config):
 
     @staticmethod
     def saveAddShowDefaults(defaultStatus, anyQualities, bestQualities, defaultFlattenFolders, subtitles=False,
-                            anime=False, scene=False, defaultStatusAfter=WANTED, skip_downloaded=False):
+                            anime=False, scene=False, defaultStatusAfter=WANTED, skip_downloaded=False,
+                            add_show_year=False):
 
         if anyQualities:
             anyQualities = anyQualities.split(',')
@@ -3770,6 +3771,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.anime_default = checkbox_to_value(anime)
         sickrage.app.config.scene_default = checkbox_to_value(scene)
         sickrage.app.config.skip_downloaded_default = checkbox_to_value(skip_downloaded)
+        sickrage.app.config.add_show_year_default = checkbox_to_value(add_show_year)
 
         sickrage.app.config.save()
 

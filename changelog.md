@@ -1,6 +1,8 @@
 # Changelog
 
-- * 70c9691 - 2019-02-23: Release v9.4.70 
+- * ccafe85 - 2019-02-23: Release v9.4.71 
+- * 342b1de - 2019-02-23: Added ability to save &#x60;add_show_year&#x60; as a default option when adding new shows. 
+- * ea526d2 - 2019-02-23: Release v9.4.70 
 - * 2e4fa85 - 2019-02-23: Pre-Release v9.4.70.dev1 
 - * 4a8b635 - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
 - * 502eb01 - 2019-02-23: Release v9.4.69 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 21:23-0800\n"
-"PO-Revision-Date: 2019-02-24 05:26\n"
+"POT-Creation-Date: 2019-02-23 23:02-0800\n"
+"PO-Revision-Date: 2019-02-24 07:05\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Chinese Simplified\n"
 "MIME-Version: 1.0\n"
@@ -145,199 +145,199 @@ msgstr ""
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Saved Defaults"
 msgstr "保存的默认设置"
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "你\"添加节目\"的默认设置已设置为您当前的选择。"
 
-#: src/js/core.js:2980
+#: src/js/core.js:2981
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:3022
+#: src/js/core.js:3023
 msgid "Reset Config to Defaults"
 msgstr "将配置重置为默认值"
 
-#: src/js/core.js:3023
+#: src/js/core.js:3024
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "你确定你想要将配置重置为默认值？"
 
-#: src/js/core.js:3118
+#: src/js/core.js:3119
 msgid "Select path to pip"
 msgstr "选择 pip 路径"
 
-#: src/js/core.js:3126 src/js/core.js:3152 src/js/core.js:3943 src/js/core.js:3961
-#: src/js/core.js:3982 src/js/core.js:4004 src/js/core.js:4027 src/js/core.js:4049
-#: src/js/core.js:4077 src/js/core.js:4094 src/js/core.js:4138 src/js/core.js:4223
-#: src/js/core.js:4281 src/js/core.js:4298 src/js/core.js:4328 src/js/core.js:4358
-#: src/js/core.js:4415 src/js/core.js:4491 src/js/core.js:4510 src/js/core.js:4526
+#: src/js/core.js:3127 src/js/core.js:3153 src/js/core.js:3944 src/js/core.js:3962
+#: src/js/core.js:3983 src/js/core.js:4005 src/js/core.js:4028 src/js/core.js:4050
+#: src/js/core.js:4078 src/js/core.js:4095 src/js/core.js:4139 src/js/core.js:4224
+#: src/js/core.js:4282 src/js/core.js:4299 src/js/core.js:4329 src/js/core.js:4359
+#: src/js/core.js:4416 src/js/core.js:4492 src/js/core.js:4511 src/js/core.js:4527
 msgid "Please fill out the necessary fields above."
 msgstr "请填写必要的字段上面。"
 
-#: src/js/core.js:3144
+#: src/js/core.js:3145
 msgid "Select path to git"
 msgstr "选择 git 的路径"
 
-#: src/js/core.js:3191
+#: src/js/core.js:3192
 msgid "Select Subtitles Download Directory"
 msgstr "选择字幕下载目录"
 
-#: src/js/core.js:3307
+#: src/js/core.js:3308
 msgid "Select .nzb blackhole/watch location"
 msgstr "选择.nzb 黑洞/监视位置"
 
-#: src/js/core.js:3308
+#: src/js/core.js:3309
 msgid "Select .torrent blackhole/watch location"
 msgstr "选择.torrent 黑洞/监视位置"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3310
 msgid "Select .torrent download location"
 msgstr "选择.torrent 下载位置"
 
-#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3376
+#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3377
 msgid "Minimum seeding time is"
 msgstr "播种时间的最小值是"
 
-#: src/js/core.js:3378
+#: src/js/core.js:3379
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "您的 uTorrent 客户端 (例如 http://localhost:8000) 的 URL"
 
-#: src/js/core.js:3381
+#: src/js/core.js:3382
 msgid "Stop seeding when inactive for"
 msgstr "停播种时处于非活动状态"
 
-#: src/js/core.js:3387
+#: src/js/core.js:3388
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "你传输客户端 (例如 http://localhost:9091) 的 URL"
 
-#: src/js/core.js:3397
+#: src/js/core.js:3398
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "您的海量客户端 (例如 http://localhost:8112) 的 URL"
 
-#: src/js/core.js:3406
+#: src/js/core.js:3407
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP 或主机名的你泛滥的守护进程 (例如 scgi://localhost:58846)"
 
-#: src/js/core.js:3413
+#: src/js/core.js:3414
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "你 Synology DS 客户端 (例如 http://localhost:5000) 的 URL"
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3428
+#: src/js/core.js:3429
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "您的 qbittorrent 客户端 (例如 http://localhost:8080) 的 URL"
 
-#: src/js/core.js:3438
+#: src/js/core.js:3439
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "插件 (例如 http://localhost:4080) 的 URL"
 
-#: src/js/core.js:3449
+#: src/js/core.js:3450
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "您的 putio 客户端 (例如 http://localhost:8080) 的 URL"
 
-#: src/js/core.js:3618
+#: src/js/core.js:3619
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3619
+#: src/js/core.js:3620
 msgid "Select TV Download Directory"
 msgstr "选择电视下载目录"
 
-#: src/js/core.js:3620
+#: src/js/core.js:3621
 msgid "Select UNPACK Directory"
 msgstr "选择解包路径"
 
-#: src/js/core.js:3634
+#: src/js/core.js:3635
 msgid "Unrar Executable not found."
 msgstr "找不到下载的可执行文件。"
 
-#: src/js/core.js:3677 src/js/core.js:3712 src/js/core.js:3747 src/js/core.js:3798
+#: src/js/core.js:3678 src/js/core.js:3713 src/js/core.js:3748 src/js/core.js:3799
 msgid "This pattern is invalid."
 msgstr "这种模式是无效的。"
 
-#: src/js/core.js:3681 src/js/core.js:3716 src/js/core.js:3751 src/js/core.js:3802
+#: src/js/core.js:3682 src/js/core.js:3717 src/js/core.js:3752 src/js/core.js:3803
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "这种模式将无效没有文件夹，使用它将迫使\"扁平化\"关闭所有演出。"
 
-#: src/js/core.js:3685 src/js/core.js:3720 src/js/core.js:3755 src/js/core.js:3807
+#: src/js/core.js:3686 src/js/core.js:3721 src/js/core.js:3756 src/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "这种模式是有效的。"
 
-#: src/js/core.js:4131
+#: src/js/core.js:4132
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> 确认授权"
 
-#: src/js/core.js:4188 src/js/core.js:4242
+#: src/js/core.js:4189 src/js/core.js:4243
 msgid "Please fill in the Popcorn IP address"
 msgstr "请填写爆米花 IP 地址"
 
-#: src/js/core.js:4425
+#: src/js/core.js:4426
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "请检查名称黑名单;值必须要 trakt 蛞蝓"
 
-#: src/js/core.js:4457
+#: src/js/core.js:4458
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4460
+#: src/js/core.js:4461
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4462
+#: src/js/core.js:4463
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4468
+#: src/js/core.js:4469
 msgid "Enter an email address to send the test to:"
 msgstr "输入电子邮件地址发送到测试："
 
-#: src/js/core.js:4470
+#: src/js/core.js:4471
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4540
+#: src/js/core.js:4541
 msgid "Device list updated. Please choose a device to push to."
 msgstr "设备列表已更新。请选择一个设备将推到。"
 
-#: src/js/core.js:4601
+#: src/js/core.js:4602
 msgid "You didn't supply a Pushbullet api key"
 msgstr "你没有提供 Pushbullet api 密钥"
 
-#: src/js/core.js:4631
+#: src/js/core.js:4632
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "别忘了保存您新的 pushbullet 设置。"
 
-#: src/js/core.js:4703
+#: src/js/core.js:4704
 msgid "Select backup folder to save to"
 msgstr "选择要保存到备份文件夹"
 
-#: src/js/core.js:4708
+#: src/js/core.js:4709
 msgid "Select backup files to restore"
 msgstr "选择要还原的备份文件"
 
-#: src/js/core.js:5253
+#: src/js/core.js:5254
 msgid "No providers available to configure."
 msgstr "没有可用于配置的提供程序。"
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5463
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5464
 msgid "Mass Delete"
 msgstr "成批删除"
 
-#: src/js/core.js:5464
+#: src/js/core.js:5465
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "您已选择要删除的演出。 你确定要继续吗？所有文件将被都删除从您的系统。"
 
-#: src/js/core.js:5541
+#: src/js/core.js:5542
 msgid "DELETED"
 msgstr ""
 
@@ -3571,7 +3571,7 @@ msgstr "需要至少一个提供程序，但两个建议。"
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/洪流供应商可以在进行切换"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3972
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4736,7 +4736,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4820,7 +4820,7 @@ msgstr "未知"
 msgid "Retry Download"
 msgstr "重试下载"
 
-#: sickrage/core/webserver/views.py:4981
+#: sickrage/core/webserver/views.py:4983
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "主要"
@@ -4945,7 +4945,7 @@ msgstr "使用 DVD 顺序而不是空气顺序"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"力完全更新\"是必要的并且如果您拥有现有的插曲需要手动对它们进行排序。"
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4867
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5263,7 +5263,7 @@ msgstr "执行重新启动"
 msgid "Daily Search"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "积压"
@@ -5288,7 +5288,7 @@ msgstr "开机自检过程"
 msgid "Subtitles Finder"
 msgstr "字幕 Finder"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4978
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt 检查器"
@@ -5321,7 +5321,7 @@ msgstr "不"
 msgid "True"
 msgstr "真正"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4973
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "显示队列"
@@ -5707,28 +5707,28 @@ msgstr "一般"
 msgid "Backup and Restore"
 msgstr "备份和还原"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4271
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4273
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "搜索提供程序"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4779
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "字幕设置"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "质量设置"
 
 #: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4076
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4078
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "后置处理"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4433
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "通知"
@@ -5994,7 +5994,7 @@ msgstr "已禁用的国际音标搜索"
 msgid "Post-Processor:"
 msgstr "后处理器："
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "搜索队列"
@@ -6621,7 +6621,7 @@ msgstr "已经在分支："
 #: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
 #: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
 #: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4980
 msgid "Error"
 msgstr "错误"
 
@@ -6989,7 +6989,7 @@ msgstr "历史记录清除"
 msgid "Removed history entries older than 30 days"
 msgstr "删除的历史条目超过 30 天"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3914
 msgid "Backup/Restore"
 msgstr "备份/恢复"
 
@@ -7009,183 +7009,183 @@ msgstr "配置-一般"
 msgid "General Configuration"
 msgstr "常规配置"
 
-#: sickrage/core/webserver/views.py:3894 sickrage/core/webserver/views.py:4058
-#: sickrage/core/webserver/views.py:4189 sickrage/core/webserver/views.py:4413
-#: sickrage/core/webserver/views.py:4759 sickrage/core/webserver/views.py:4847
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:3896 sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4191 sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4761 sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4888
 msgid "Error(s) Saving Configuration"
 msgstr "保存配置错误"
 
-#: sickrage/core/webserver/views.py:3896
+#: sickrage/core/webserver/views.py:3898
 msgid "[GENERAL] Configuration Saved"
 msgstr "[GENERAL] 保存配置"
 
-#: sickrage/core/webserver/views.py:3911
+#: sickrage/core/webserver/views.py:3913
 msgid "Config - Backup/Restore"
 msgstr "配置-备份/恢复"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3926
 msgid "Backup SUCCESSFUL"
 msgstr "备份成功"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3928
 msgid "Backup FAILED!"
 msgstr "备份失败 ！"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3930
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "你需要选择一个文件夹以保存您的备份到第一 ！"
 
-#: sickrage/core/webserver/views.py:3947
+#: sickrage/core/webserver/views.py:3949
 msgid "Successfully extracted restore files to "
 msgstr "成功地提取的还原文件到"
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3950
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage 来完成恢复。"
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3952
 msgid "Restore FAILED"
 msgstr "恢复失败"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3954
 msgid "You need to select a backup file to restore!"
 msgstr "您需要选择要还原的备份文件 ！"
 
-#: sickrage/core/webserver/views.py:3971
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "无法创建目录"
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr "dir 没有改变。"
 
-#: sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4062
 msgid "[SEARCH] Configuration Saved"
 msgstr "[SEARCH] 保存配置"
 
-#: sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:4077
 msgid "Config - Post Processing"
 msgstr "配置-后置处理"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4117
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "拆包不支持，禁用解压缩设置"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "你试着保存无效的动漫命名配置，不保存设置命名"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "你试着保存无效的命名配置，不保存设置命名"
 
-#: sickrage/core/webserver/views.py:4169
+#: sickrage/core/webserver/views.py:4171
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "你试着保存无效的空气通过日期命名配置，不保存您的空气通过日期设置"
 
-#: sickrage/core/webserver/views.py:4175
+#: sickrage/core/webserver/views.py:4177
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "你试着保存无效的体育命名配置，不保存设置体育"
 
-#: sickrage/core/webserver/views.py:4191
+#: sickrage/core/webserver/views.py:4193
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "[POST-PROCESSING] 保存配置"
 
-#: sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:4272
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Name specified"
 msgstr "没有指定的提供程序名称"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4315
 msgid "\n"
 "No Provider Url specified"
 msgstr "没有指定的提供程序 Url"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Api key specified"
 msgstr "没有指定的提供程序 Api 键"
 
-#: sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4417
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "[PROVIDERS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4430
+#: sickrage/core/webserver/views.py:4432
 msgid "Config - Notifications"
 msgstr "配置-通知"
 
-#: sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:4763
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "[NOTIFICATIONS] 保存配置"
 
-#: sickrage/core/webserver/views.py:4776
+#: sickrage/core/webserver/views.py:4778
 msgid "Config - Subtitles Settings"
 msgstr "配置 - 字幕设置"
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4851
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "[SUBTITLES] 保存配置"
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4866
 msgid "Config - Anime"
 msgstr "配置-动漫"
 
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:4890
 msgid "[ANIME] Configuration Saved"
 msgstr "[ANIME] 保存配置"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4905
 msgid "Config - Quality Settings"
 msgstr "配置-质量设置"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4917
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[质量设置]保存配置"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4969
 msgid "Daily Searcher"
 msgstr "每日搜索"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4971
 msgid "Show Updater"
 msgstr "显示更新程序"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4972
 msgid "Check Version"
 msgstr "检查版本"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4975
 msgid "Find Propers"
 msgstr "找到国际音标"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4976
 msgid "Postprocessor"
 msgstr "后处理"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4977
 msgid "Find Subtitles"
 msgstr "找字幕"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4979
 msgid "Event"
 msgstr "事件"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4981
 msgid "Tornado"
 msgstr "龙卷风"
 
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:4982
 msgid "Thread"
 msgstr "线程"
 
