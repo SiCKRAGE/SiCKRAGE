@@ -1,6 +1,7 @@
 # Changelog
 
-- * a01e7a7 - 2019-02-24: Pre-Release v9.4.74.dev1 
+- * a182e55 - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
+- * 1ebefb4 - 2019-02-24: Pre-Release v9.4.74.dev1 
 - * c26e5b1 - 2019-02-24: Refactored AniDB code. 
 - * 41039e5 - 2019-02-24: Fixed KeyError for twitter notifier. 
 - * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 

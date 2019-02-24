@@ -85,3 +85,30 @@ def short_group_names(groups):
         short_group_list = groups
 
     return short_group_list
+
+
+def get_anime_episode(file_path):
+    """
+    Look up anidb properties for an episode
+
+    :param file_path: file to check
+    :return: episode object
+    """
+    ep = None
+
+    if set_up_anidb_connection():
+        ep = adba.aniDBAbstracter.Episode(sickrage.app.adba_connection, filePath=file_path,
+                                          paramsF=[
+                                              "quality",
+                                              "anidb_file_name",
+                                              "crc32"
+                                          ],
+                                          paramsA=[
+                                              "epno",
+                                              "english_name",
+                                              "short_name_list",
+                                              "other_name",
+                                              "synonym_list"
+                                          ])
+
+    return ep

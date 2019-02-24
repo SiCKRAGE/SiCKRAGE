@@ -26,7 +26,6 @@ import stat
 import subprocess
 
 import sickrage
-from adba import aniDBAbstracter
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
     NoFreeSpaceException
@@ -34,7 +33,7 @@ from sickrage.core.helpers import findCertainShow, show_names, replaceExtension,
     chmod_as_parent, move_file, copy_file, hardlink_file, move_and_symlink_file, remove_non_release_groups, \
     remove_extension, \
     isFileLocked, verify_freespace, delete_empty_folders, make_dirs, symlink, is_rar_file, glob_escape, touch_file
-from sickrage.core.helpers.anidb import set_up_anidb_connection
+from sickrage.core.helpers.anidb import get_anime_episode
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.tv.show.history import FailedHistory, History  # memory intensive
@@ -624,36 +623,22 @@ class PostProcessor(object):
         self._finalize(parse_result)
         return to_return
 
-    @staticmethod
-    def _build_anidb_episode(connection, filePath):
-        """
-        Look up anidb properties for an episode
-
-        :param connection: anidb connection handler
-        :param filePath: file to check
-        :return: episode object
-        """
-        ep = aniDBAbstracter.Episode(connection, filePath=filePath,
-                                     paramsF=["quality", "anidb_file_name", "crc32"],
-                                     paramsA=["epno", "english_name", "short_name_list", "other_name", "synonym_list"])
-
-        return ep
-
     def _add_to_anidb_mylist(self, filePath):
         """
         Adds an episode to anidb mylist
 
         :param filePath: file to add to mylist
         """
-        if set_up_anidb_connection():
-            if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
-                self.anidbEpisode = self._build_anidb_episode(sickrage.app.adba_connection, filePath)
+        if not self.anidbEpisode:  # seems like we could parse the name before, now lets build the anidb object
+            self.anidbEpisode = get_anime_episode(filePath)
+            if self.anidbEpisode:
+                self._log("Adding the file to the anidb mylist", sickrage.app.log.DEBUG)
 
-            self._log("Adding the file to the anidb mylist", sickrage.app.log.DEBUG)
-            try:
-                self.anidbEpisode.add_to_mylist(status=1)  # status = 1 sets the status of the file to "internal HDD"
-            except Exception as e:
-                self._log("exception msg: " + str(e))
+                try:
+                    # status of 1 sets the status of the file to "internal HDD"
+                    self.anidbEpisode.add_to_mylist(status=1)
+                except Exception as e:
+                    self._log("exception msg: " + str(e))
 
     def _find_info(self):
         """
