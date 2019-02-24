@@ -2612,7 +2612,7 @@ class HomeAddShows(Home):
                    quality_preset=None, anyQualities=None, bestQualities=None, flatten_folders=None, subtitles=None,
                    subtitles_sr_metadata=None, fullShowPath=None, other_shows=None, skipShow=None, providedIndexer=None,
                    anime=None, scene=None, blacklist=None, whitelist=None, defaultStatusAfter=None,
-                   skip_downloaded=None, providedName=None):
+                   skip_downloaded=None, providedName=None, add_show_year=None):
         """
         Receive tvdb id, dir, and other options and create a show from them. If extra show dirs are
         provided then it forwards back to newShow, if not it goes to /home.
@@ -2672,6 +2672,8 @@ class HomeAddShows(Home):
             show_dir = os.path.normpath(fullShowPath)
         else:
             show_dir = os.path.join(rootDir, sanitizeFileName(show_name))
+            if add_show_year and not re.match(r'.*\(\d+\)$', show_dir):
+                show_dir = "{} ({})".format(show_dir, re.search(r'\d{4}', series_pieces[5]).group(0))
 
         # blanket policy - if the dir exists you should have used "add existing show" numbnuts
         if os.path.isdir(show_dir) and not fullShowPath:

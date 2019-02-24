@@ -1120,6 +1120,7 @@ class TVEpisode(object):
             '%SQN': Quality.sceneQualityStrings[epQual] + encoder,
             '%SQ.N': dot(Quality.sceneQualityStrings[epQual] + encoder),
             '%SQ_N': us(Quality.sceneQualityStrings[epQual] + encoder),
+            '%SY': str(self.show.startyear),
             '%S': str(self.season),
             '%0S': '%02d' % self.season,
             '%E': str(self.episode),
@@ -1223,7 +1224,7 @@ class TVEpisode(object):
 
             season_ep_regex = r'''
                                 (?P<pre_sep>[ _.-]*)
-                                ((?:s(?:eason|eries)?\s*)?%0?S(?![._]?N))
+                                ((?:s(?:eason|eries)?\s*)?%0?S(?![._]?N|Y))
                                 (.*?)
                                 (%0?E(?![._]?N))
                                 (?P<post_sep>[ _.-]*)
@@ -1273,8 +1274,7 @@ class TVEpisode(object):
 
                 # for limited extend we only append the last ep
                 if multi in (NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED) and other_ep != \
-                        self.relatedEps[
-                            -1]:
+                        self.relatedEps[-1]:
                     continue
 
                 elif multi == NAMING_DUPLICATE:
@@ -1300,8 +1300,7 @@ class TVEpisode(object):
 
                 if self.season != 0:  # dont set absolute numbers if we are on specials !
                     if anime_type == 1:  # this crazy person wants both ! (note: +=)
-                        ep_string += sep + "%(#)03d" % {
-                            "#": curAbsolute_number}
+                        ep_string += sep + "%(#)03d" % {"#": curAbsolute_number}
                     elif anime_type == 2:  # total anime freak only need the absolute number ! (note: =)
                         ep_string = "%(#)03d" % {"#": curAbsolute_number}
 
