@@ -1894,8 +1894,8 @@ class CMD_ShowAddExisting(ApiCall):
         super(CMD_ShowAddExisting, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, True, "string", [], *args, **kwargs)
-        self.initial, args = self.check_params("initial", None, False, "list",any_quality_list, *args, **kwargs)
-        self.archive, args = self.check_params("archive", None, False, "list",best_quality_list, *args, **kwargs)
+        self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
+        self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
         self.skip_downloaded, args = self.check_params("skip_downloaded", None, False, "int", [], *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders",
                                                        bool(sickrage.app.config.flatten_folders_default), False,
@@ -1974,6 +1974,9 @@ class CMD_ShowAddNew(ApiCall):
             "skip_downloaded": {
                 "desc": "True if episodes should be archived when first match is downloaded, False otherwise"
             },
+            "add_show_year": {
+                "desc": "True if show year should be appended to show folder name, False otherwise"
+            },
         }
     }
 
@@ -1982,8 +1985,8 @@ class CMD_ShowAddNew(ApiCall):
         self.valid_languages = IndexerApi().indexer().languages
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         self.location, args = self.check_params("location", None, False, "string", [], *args, **kwargs)
-        self.initial, args = self.check_params("initial", None, False, "list",any_quality_list, *args, **kwargs)
-        self.archive, args = self.check_params("archive", None, False, "list",best_quality_list, *args, **kwargs)
+        self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
+        self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
         self.flatten_folders, args = self.check_params("flatten_folders",
                                                        bool(sickrage.app.config.flatten_folders_default), False,
                                                        "bool", [], *args, **kwargs)
@@ -2002,11 +2005,12 @@ class CMD_ShowAddNew(ApiCall):
         self.skip_downloaded, args = self.check_params("skip_downloaded",
                                                        bool(sickrage.app.config.skip_downloaded_default), False, "bool",
                                                        [], *args, **kwargs)
+        self.add_show_year, args = self.check_params("add_show_year", False, False, "bool", [], *args, **kwargs)
 
     def run(self):
         """ Add a new show to SiCKRAGE """
-        showObj = findCertainShow(int(self.indexerid))
-        if showObj:
+        show_obj = findCertainShow(int(self.indexerid))
+        if show_obj:
             return _responds(RESULT_FAILURE, msg="An existing indexerid already exists in database")
 
         if not self.location:
@@ -2022,22 +2026,22 @@ class CMD_ShowAddNew(ApiCall):
             return _responds(RESULT_FAILURE, msg="'" + self.location + "' is not a valid location")
 
         # use default quality as a failsafe
-        newQuality = int(sickrage.app.config.quality_default)
-        iqualityID = []
-        aqualityID = []
+        new_quality = int(sickrage.app.config.quality_default)
+        iquality_id = []
+        aquality_id = []
 
         if isinstance(self.initial, collections.Iterable):
             for quality in self.initial:
-                iqualityID.append(_get_quality_map()[quality])
+                iquality_id.append(_get_quality_map()[quality])
         if isinstance(self.archive, collections.Iterable):
             for quality in self.archive:
-                aqualityID.append(_get_quality_map()[quality])
+                aquality_id.append(_get_quality_map()[quality])
 
-        if iqualityID or aqualityID:
-            newQuality = Quality.combineQualities(iqualityID, aqualityID)
+        if iquality_id or aquality_id:
+            new_quality = Quality.combineQualities(iquality_id, aquality_id)
 
         # use default status as a failsafe
-        newStatus = sickrage.app.config.status_default
+        new_status = sickrage.app.config.status_default
         if self.status:
             # convert the string status to a int
             for status in statusStrings.statusStrings:
@@ -2051,7 +2055,7 @@ class CMD_ShowAddNew(ApiCall):
             # only allow the status options we want
             if int(self.status) not in (WANTED, SKIPPED, IGNORED):
                 return _responds(RESULT_FAILURE, msg="Status prohibited")
-            newStatus = self.status
+            new_status = self.status
 
         # use default status as a failsafe
         default_ep_status_after = sickrage.app.config.status_default_after
@@ -2070,45 +2074,48 @@ class CMD_ShowAddNew(ApiCall):
                 return _responds(RESULT_FAILURE, msg="Status prohibited")
             default_ep_status_after = self.future_status
 
-        indexerName = None
-        indexerResult = CMD_SiCKRAGESearchIndexers(self.application, self.request,
-                                                   **{indexer_ids[self.indexer]: self.indexerid}).run()
+        indexer_name = None
+        indexer_result = CMD_SiCKRAGESearchIndexers(self.application, self.request,
+                                                    **{indexer_ids[self.indexer]: self.indexerid}).run()
 
-        if indexerResult['result'] == result_type_map[RESULT_SUCCESS]:
-            if not indexerResult['data']['results']:
+        if indexer_result['result'] == result_type_map[RESULT_SUCCESS]:
+            if not indexer_result['data']['results']:
                 return _responds(RESULT_FAILURE, msg="Empty results returned, check indexerid and try again")
-            if len(indexerResult['data']['results']) == 1 and 'name' in indexerResult['data']['results'][0]:
-                indexerName = indexerResult['data']['results'][0]['name']
+            if len(indexer_result['data']['results']) == 1 and 'name' in indexer_result['data']['results'][0]:
+                indexer_name = indexer_result['data']['results'][0]['name']
 
-        if not indexerName:
+        if not indexer_name:
             return _responds(RESULT_FAILURE, msg="Unable to retrieve information from indexer")
 
         # set indexer for found show so we can pass it along
-        indexer = indexerResult['data']['results'][0]['indexer']
+        indexer = indexer_result['data']['results'][0]['indexer']
+        first_aired = indexer_result['data']['results'][0]['first_aired']
 
         # moved the logic check to the end in an attempt to eliminate empty directory being created from previous errors
-        showPath = os.path.join(self.location, sanitizeFileName(indexerName))
+        show_path = os.path.join(self.location, sanitizeFileName(indexer_name))
+        if self.add_show_year and not re.match(r'.*\(\d+\)$', show_path):
+            show_path = "{} ({})".format(show_path, re.search(r'\d{4}', first_aired).group(0))
 
         # don't create show dir if config says not to
         if sickrage.app.config.add_shows_wo_dir:
-            sickrage.app.log.info("Skipping initial creation of " + showPath + " due to config.ini setting")
+            sickrage.app.log.info("Skipping initial creation of " + show_path + " due to config.ini setting")
         else:
-            dir_exists = makeDir(showPath)
+            dir_exists = makeDir(show_path)
             if not dir_exists:
                 sickrage.app.log.warning(
-                    "Unable to create the folder " + showPath + ", can't add the show")
-                return _responds(RESULT_FAILURE, {"path": showPath},
-                                 "Unable to create the folder " + showPath + ", can't add the show")
+                    "Unable to create the folder " + show_path + ", can't add the show")
+                return _responds(RESULT_FAILURE, {"path": show_path},
+                                 "Unable to create the folder " + show_path + ", can't add the show")
             else:
-                chmod_as_parent(showPath)
+                chmod_as_parent(show_path)
 
         sickrage.app.show_queue.addShow(
-            int(indexer), int(self.indexerid), showPath, default_status=newStatus, quality=newQuality,
+            int(indexer), int(self.indexerid), show_path, default_status=new_status, quality=new_quality,
             flatten_folders=int(self.flatten_folders), lang=self.lang, subtitles=self.subtitles, anime=self.anime,
             scene=self.scene, default_status_after=default_ep_status_after, skip_downloaded=self.skip_downloaded
         )
 
-        return _responds(RESULT_SUCCESS, {"name": indexerName}, indexerName + " has been queued to be added")
+        return _responds(RESULT_SUCCESS, {"name": indexer_name}, indexer_name + " has been queued to be added")
 
 
 class CMD_ShowCache(ApiCall):
@@ -2499,8 +2506,8 @@ class CMD_ShowSetQuality(ApiCall):
         super(CMD_ShowSetQuality, self).__init__(application, request, *args, **kwargs)
         self.indexerid, args = self.check_params("indexerid", None, True, "int", [], *args, **kwargs)
         # self.archive, args = self.check_params("archive", None, False, "list", _getQualityMap().values()[1:], *args, **kwargs)
-        self.initial, args = self.check_params("initial", None, False, "list",any_quality_list, *args, **kwargs)
-        self.archive, args = self.check_params("archive", None, False, "list",best_quality_list, *args, **kwargs)
+        self.initial, args = self.check_params("initial", None, False, "list", any_quality_list, *args, **kwargs)
+        self.archive, args = self.check_params("archive", None, False, "list", best_quality_list, *args, **kwargs)
 
     def run(self):
         """ Set the quality setting of a show. If no quality is provided, the default user setting is used. """

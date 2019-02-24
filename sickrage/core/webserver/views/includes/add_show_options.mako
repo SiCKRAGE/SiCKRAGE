@@ -54,12 +54,23 @@
 </div>
 <div class="row field-pair">
     <div class="col-lg-3 col-md-4 col-sm-5">
-        <label class="component-title">${_('Skip downloaded')}</label>
+        <label class="component-title">${_('Skip Downloaded')}</label>
     </div>
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="skip_downloaded"
                    id="skip_downloaded" ${('', 'checked')[bool(sickrage.app.config.skip_downloaded_default)]} />
+        </label>
+    </div>
+</div>
+<div class="row field-pair">
+    <div class="col-lg-3 col-md-4 col-sm-5">
+        <label class="component-title">${_('Append Show Year to Show Folder')}</label>
+    </div>
+    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
+        <label>
+            <input type="checkbox" class="toggle color-primary is-material" name="add_show_year"
+                   id="add_show_year" />
         </label>
     </div>
 </div>

@@ -1,6 +1,10 @@
 # Changelog
 
-- * 7be7535 - 2019-02-23: Release v9.4.68 
+- * 9b3bf61 - 2019-02-23: Release v9.4.69 
+- * ffa69b5 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 
+- * 2f89453 - 2019-02-23: Pre-Release v9.4.69.dev1 
+- * 8324c57 - 2019-02-23: Added new release mapping %SY to allow appending the show year to episodes. Added new show option to append show year to show folder if needed. Added check for existing show year in show name, if found, do not append show year. 
+- * c3441ed - 2019-02-23: Release v9.4.68 
 - * 3f6df12 - 2019-02-23: Release v9.4.67 
 - * 83d1b88 - 2019-02-23: Moved RSS cache updates to separate background task that executes every 15 minutes. Parsed search results no longer grab their show id&#x27;s from TheTVDB or Trackt since we only care about shows existing in library. Search results returned for shows not existing in library are discarded. 
 - * 9c78d0b - 2019-02-23: Release v9.4.66 

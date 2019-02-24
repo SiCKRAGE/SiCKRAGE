@@ -56,9 +56,9 @@ class DailySearcher(object):
                 continue
 
             segments = self._get_segments(curShow, datetime.date.today())
-            sickrage.app.search_queue.put(DailySearchQueueItem(curShow, segments))
-
-            if not segments:
+            if segments:
+                sickrage.app.search_queue.put(DailySearchQueueItem(curShow, segments))
+            else:
                 sickrage.app.log.debug("Nothing needs to be downloaded for {}, skipping".format(curShow.name))
 
         self.amActive = False

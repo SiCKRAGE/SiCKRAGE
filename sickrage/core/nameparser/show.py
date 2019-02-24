@@ -25,6 +25,7 @@ class Show(object):
         self.genre = "Comedy"
         self.indexerid = 00001
         self.air_by_date = 0
+        self.startyear = 2011
         self.sports = 0
         self.anime = 0
         self.scene = 0
