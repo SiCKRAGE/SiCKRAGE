@@ -70,7 +70,7 @@
     <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
         <label>
             <input type="checkbox" class="toggle color-primary is-material" name="add_show_year"
-                   id="add_show_year" />
+                   id="add_show_year" ${('', 'checked')[bool(sickrage.app.config.add_show_year_default)]} />
         </label>
     </div>
 </div>
