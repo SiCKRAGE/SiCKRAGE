@@ -1,6 +1,7 @@
 # Changelog
 
-- * 7d25343 - 2019-02-24: Pre-Release v9.4.74.dev2 
+- * a9dcc2c - 2019-02-24: Fixed issue with default add show options and add show year feature. 
+- * 90fa33d - 2019-02-24: Pre-Release v9.4.74.dev2 
 - * b2896ad - 2019-02-24: Updated AniDB code for post-processor. Added get episode function to AniDB helper. 
 - * 1ebefb4 - 2019-02-24: Pre-Release v9.4.74.dev1 
 - * c26e5b1 - 2019-02-24: Refactored AniDB code. 

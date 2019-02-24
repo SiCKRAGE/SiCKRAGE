@@ -2810,7 +2810,7 @@ $(document).ready(function ($) {
                     SICKRAGE.notify('info', gt('Saved Defaults'), gt('Your "add show" defaults have been set to your current selections.'));
                 });
 
-                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #skip_downloaded', '#add_show_year').change(function () {
+                $('#statusSelect, #qualityPreset, #flatten_folders, #anyQualities, #bestQualities, #subtitles, #scene, #anime, #statusSelectAfter, #skip_downloaded, #add_show_year').change(function () {
                     $('#saveDefaultsButton').attr('disabled', false);
                 });
             },
