@@ -120,12 +120,12 @@ class TwitterNotifier(Notifiers):
         access_token_key = sickrage.app.config.twitter_username
         access_token_secret = sickrage.app.config.twitter_password
 
-        sickrage.app.log.debug("Sending tweet: " + message)
+        sickrage.app.log.debug("Sending tweet: {}".format(message))
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
-            api.PostUpdate(message.encode('utf8')[:139])
+            api.PostUpdate(message.encode('utf-8')[:279])
         except Exception as e:
             sickrage.app.log.error("Error Sending Tweet: {}".format(e))
             return False
@@ -140,12 +140,12 @@ class TwitterNotifier(Notifiers):
         access_token_key = sickrage.app.config.twitter_username
         access_token_secret = sickrage.app.config.twitter_password
 
-        sickrage.app.log.debug("Sending DM: " + dmdest + " " + message)
+        sickrage.app.log.debug("Sending DM: @{}: {}".format(dmdest, message))
 
         api = twitter.Api(username, password, access_token_key, access_token_secret)
 
         try:
-            api.PostDirectMessage(message.encode('utf8')[:139], dmdest)
+            api.PostDirectMessage(message.encode('utf-8'), screen_name=dmdest)
         except Exception as e:
             sickrage.app.log.error("Error Sending Tweet (DM): {}".format(e))
             return False

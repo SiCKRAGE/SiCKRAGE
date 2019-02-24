@@ -1,6 +1,7 @@
 # Changelog
 
-- * 98e7330 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
+- * 3a00fef - 2019-02-24: Fixed KeyError for twitter notifier. 
+- * 135d868 - 2019-02-24: Fixed AttributeError for gktorrent provider. Refactored log messages for rss cache updater to debug. 
 - * ffd8fa4 - 2019-02-24: Release v9.4.73 
 - * 47572b6 - 2019-02-24: Release v9.4.72 
 - * b86d9d2 - 2019-02-23: Release v9.4.71 
