@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 17:08-0800\n"
-"PO-Revision-Date: 2019-02-24 01:09\n"
+"POT-Creation-Date: 2019-02-23 20:28-0800\n"
+"PO-Revision-Date: 2019-02-24 04:30\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -6138,7 +6138,7 @@ msgstr "Aflevering griste"
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
 #: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
-#: sickrage/core/version_updater.py:742 sickrage/core/webserver/views.py:1085
+#: sickrage/core/version_updater.py:734 sickrage/core/webserver/views.py:1085
 #: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1097
 msgid "Updater"
 msgstr ""
@@ -6199,11 +6199,11 @@ msgstr "Er is een nieuwere versie beschikbaar, versie {} &mdash; <a href=\"{}\">
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:731
+#: sickrage/core/version_updater.py:723
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:742
+#: sickrage/core/version_updater.py:734
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
