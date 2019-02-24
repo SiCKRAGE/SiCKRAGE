@@ -30,6 +30,7 @@ from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_season
 
 class NameCache(object):
     def __init__(self, *args, **kwargs):
+        self.name = "NAMECACHE"
         self.min_time = 10
         self.last_update = {}
         self.cache = {}

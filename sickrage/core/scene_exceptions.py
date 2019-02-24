@@ -126,9 +126,6 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
         existing_exceptions = [x["show_name"] for x in
                                sickrage.app.cache_db.get_many('scene_exceptions', cur_indexer_id)]
 
-        if not len(existing_exceptions):
-            continue
-
         for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():
             if cur_exception not in existing_exceptions:
                 updated_exceptions = True
