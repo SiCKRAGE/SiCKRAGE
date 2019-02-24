@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 21:23-0800\n"
-"PO-Revision-Date: 2019-02-24 05:24\n"
+"POT-Creation-Date: 2019-02-23 23:02-0800\n"
+"PO-Revision-Date: 2019-02-24 07:03\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Czech\n"
 "MIME-Version: 1.0\n"
@@ -145,199 +145,199 @@ msgstr ""
 msgid " already exists in show library"
 msgstr ""
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Saved Defaults"
 msgstr "Uložené nastavení"
 
-#: src/js/core.js:2923
+#: src/js/core.js:2924
 msgid "Your \"add show\" defaults have been set to your current selections."
 msgstr "\"Přidat show\" výchozí byly nastaveny na aktuální výběr."
 
-#: src/js/core.js:2980
+#: src/js/core.js:2981
 msgid " Saving..."
 msgstr ""
 
-#: src/js/core.js:3022
+#: src/js/core.js:3023
 msgid "Reset Config to Defaults"
 msgstr "Obnovit výchozí hodnoty konfigurace"
 
-#: src/js/core.js:3023
+#: src/js/core.js:3024
 msgid "Are you sure you want to reset config to defaults?"
 msgstr "Jste si jistý, že chcete obnovit config na výchozí hodnoty?"
 
-#: src/js/core.js:3118
+#: src/js/core.js:3119
 msgid "Select path to pip"
 msgstr "Vyberte cestu k pip"
 
-#: src/js/core.js:3126 src/js/core.js:3152 src/js/core.js:3943 src/js/core.js:3961
-#: src/js/core.js:3982 src/js/core.js:4004 src/js/core.js:4027 src/js/core.js:4049
-#: src/js/core.js:4077 src/js/core.js:4094 src/js/core.js:4138 src/js/core.js:4223
-#: src/js/core.js:4281 src/js/core.js:4298 src/js/core.js:4328 src/js/core.js:4358
-#: src/js/core.js:4415 src/js/core.js:4491 src/js/core.js:4510 src/js/core.js:4526
+#: src/js/core.js:3127 src/js/core.js:3153 src/js/core.js:3944 src/js/core.js:3962
+#: src/js/core.js:3983 src/js/core.js:4005 src/js/core.js:4028 src/js/core.js:4050
+#: src/js/core.js:4078 src/js/core.js:4095 src/js/core.js:4139 src/js/core.js:4224
+#: src/js/core.js:4282 src/js/core.js:4299 src/js/core.js:4329 src/js/core.js:4359
+#: src/js/core.js:4416 src/js/core.js:4492 src/js/core.js:4511 src/js/core.js:4527
 msgid "Please fill out the necessary fields above."
 msgstr "Vyplňte potřebná pole výše."
 
-#: src/js/core.js:3144
+#: src/js/core.js:3145
 msgid "Select path to git"
 msgstr "Vyberte cestu k git"
 
-#: src/js/core.js:3191
+#: src/js/core.js:3192
 msgid "Select Subtitles Download Directory"
 msgstr "Adresář pro stahování vyberte titulky"
 
-#: src/js/core.js:3307
+#: src/js/core.js:3308
 msgid "Select .nzb blackhole/watch location"
 msgstr "Vyberte .nzb blackhole/sledované umístění"
 
-#: src/js/core.js:3308
+#: src/js/core.js:3309
 msgid "Select .torrent blackhole/watch location"
 msgstr "Vyberte umístění blackhole/sledování .torrent"
 
-#: src/js/core.js:3309
+#: src/js/core.js:3310
 msgid "Select .torrent download location"
 msgstr "Vyberte umístění pro stažení .torrent"
 
-#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3376
+#: sickrage/core/webserver/views/config/search.mako:974 src/js/core.js:3377
 msgid "Minimum seeding time is"
 msgstr "Minimální čas výsevu je"
 
-#: src/js/core.js:3378
+#: src/js/core.js:3379
 msgid "URL to your uTorrent client (e.g. http://localhost:8000)"
 msgstr "Adresa URL vašeho klienta uTorrent (například http://localhost: 8000)"
 
-#: src/js/core.js:3381
+#: src/js/core.js:3382
 msgid "Stop seeding when inactive for"
 msgstr "Zastavit, setí při neaktivní po dobu"
 
-#: src/js/core.js:3387
+#: src/js/core.js:3388
 msgid "URL to your Transmission client (e.g. http://localhost:9091)"
 msgstr "URL k přenosu klienta (např. http://localhost:9091)"
 
-#: src/js/core.js:3397
+#: src/js/core.js:3398
 msgid "URL to your Deluge client (e.g. http://localhost:8112)"
 msgstr "Adresa URL pro váš klient Deluge (např. http://localhost:8112)"
 
-#: src/js/core.js:3406
+#: src/js/core.js:3407
 msgid "IP or Hostname of your Deluge Daemon (e.g. scgi://localhost:58846)"
 msgstr "IP nebo název hostitele démon Potopa (např. scgi://localhost:58846)"
 
-#: src/js/core.js:3413
+#: src/js/core.js:3414
 msgid "URL to your Synology DS client (e.g. http://localhost:5000)"
 msgstr "Adresa URL vašeho Synology DS klienta (např. http://localhost:5000)"
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid "URL to your rTorrent client (e.g. scgi://localhost:5000"
 msgstr ""
 
-#: src/js/core.js:3418
+#: src/js/core.js:3419
 msgid " or https://localhost/rutorrent/plugins/httprpc/action.php)"
 msgstr ""
 
-#: src/js/core.js:3428
+#: src/js/core.js:3429
 msgid "URL to your qbittorrent client (e.g. http://localhost:8080)"
 msgstr "Adresa URL qbittorrent klientovi (například http://localhost: 8080)"
 
-#: src/js/core.js:3438
+#: src/js/core.js:3439
 msgid "URL to your MLDonkey (e.g. http://localhost:4080)"
 msgstr "Adresa URL vašeho MLDonkey (např. http://localhost:4080)"
 
-#: src/js/core.js:3449
+#: src/js/core.js:3450
 msgid "URL to your putio client (e.g. http://localhost:8080)"
 msgstr "Adresa URL pro putio klienta (například http://localhost: 8080)"
 
-#: src/js/core.js:3618
+#: src/js/core.js:3619
 msgid "validating..."
 msgstr ""
 
-#: src/js/core.js:3619
+#: src/js/core.js:3620
 msgid "Select TV Download Directory"
 msgstr "Vyberte adresář pro stahování TV"
 
-#: src/js/core.js:3620
+#: src/js/core.js:3621
 msgid "Select UNPACK Directory"
 msgstr ""
 
-#: src/js/core.js:3634
+#: src/js/core.js:3635
 msgid "Unrar Executable not found."
 msgstr "Program unrar nebyl nalezen."
 
-#: src/js/core.js:3677 src/js/core.js:3712 src/js/core.js:3747 src/js/core.js:3798
+#: src/js/core.js:3678 src/js/core.js:3713 src/js/core.js:3748 src/js/core.js:3799
 msgid "This pattern is invalid."
 msgstr "Tento vzorek je neplatný."
 
-#: src/js/core.js:3681 src/js/core.js:3716 src/js/core.js:3751 src/js/core.js:3802
+#: src/js/core.js:3682 src/js/core.js:3717 src/js/core.js:3752 src/js/core.js:3803
 msgid "This pattern would be invalid without the folders, using it will force \"Flatten\" off for all shows."
 msgstr "Tento model by bylo neplatné bez složek, používat to donutí \"Narovnat\" vypnuto pro všechny pořady."
 
-#: src/js/core.js:3685 src/js/core.js:3720 src/js/core.js:3755 src/js/core.js:3807
+#: src/js/core.js:3686 src/js/core.js:3721 src/js/core.js:3756 src/js/core.js:3808
 msgid "This pattern is valid."
 msgstr "Tento model je platný."
 
-#: src/js/core.js:4131
+#: src/js/core.js:4132
 msgid "<b>Step1:</b> Confirm Authorization"
 msgstr "<b>Step1:</b> potvrzení autorizace"
 
-#: src/js/core.js:4188 src/js/core.js:4242
+#: src/js/core.js:4189 src/js/core.js:4243
 msgid "Please fill in the Popcorn IP address"
 msgstr "Vyplňte prosím adresu Popcorn IP"
 
-#: src/js/core.js:4425
+#: src/js/core.js:4426
 msgid "Check blacklist name; the value need to be a trakt slug"
 msgstr "Kontrola blacklist název; hodnota musí být slimák trakt"
 
-#: src/js/core.js:4457
+#: src/js/core.js:4458
 msgid "You must specify an SMTP hostname!"
 msgstr ""
 
-#: src/js/core.js:4460
+#: src/js/core.js:4461
 msgid "You must specify an SMTP port!"
 msgstr ""
 
-#: src/js/core.js:4462
+#: src/js/core.js:4463
 msgid "SMTP port must be between 0 and 65535!"
 msgstr ""
 
-#: src/js/core.js:4468
+#: src/js/core.js:4469
 msgid "Enter an email address to send the test to:"
 msgstr "Zadejte e-mailovou adresu k odeslání testu:"
 
-#: src/js/core.js:4470
+#: src/js/core.js:4471
 msgid "You must provide a recipient email address!"
 msgstr ""
 
-#: src/js/core.js:4540
+#: src/js/core.js:4541
 msgid "Device list updated. Please choose a device to push to."
 msgstr "Aktualizován seznam zařízení. Vyberte prosím zařízení posunout."
 
-#: src/js/core.js:4601
+#: src/js/core.js:4602
 msgid "You didn't supply a Pushbullet api key"
 msgstr "Jste nedodal Pushbullet api klíč"
 
-#: src/js/core.js:4631
+#: src/js/core.js:4632
 msgid "Don't forget to save your new pushbullet settings."
 msgstr "Nezapomeňte uložit nové nastavení pushbullet."
 
-#: src/js/core.js:4703
+#: src/js/core.js:4704
 msgid "Select backup folder to save to"
 msgstr "Vyberte záložní složku pro uložení"
 
-#: src/js/core.js:4708
+#: src/js/core.js:4709
 msgid "Select backup files to restore"
 msgstr "Vyberte záložní soubory k obnovení"
 
-#: src/js/core.js:5253
+#: src/js/core.js:5254
 msgid "No providers available to configure."
 msgstr "K dispozici konfigurace žádní zprostředkovatelé."
 
-#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5463
+#: sickrage/core/webserver/views/manage/mass_update.mako:16 src/js/core.js:5464
 msgid "Mass Delete"
 msgstr "Hromadné odstranění"
 
-#: src/js/core.js:5464
+#: src/js/core.js:5465
 msgid "You have selected to delete  show(s).  Are you sure you wish to continue? All files will be removed from your system."
 msgstr "Rozhodli jste se odstranit show (y).  Opravdu že chcete pokračovat? Všechny soubory budou odstraněny ze systému."
 
-#: src/js/core.js:5541
+#: src/js/core.js:5542
 msgid "DELETED"
 msgstr ""
 
@@ -3571,7 +3571,7 @@ msgstr "Alespoň jeden zprostředkovatel je vyžadována, ale dva jsou doporučo
 msgid "NZB/Torrent providers can be toggled in"
 msgstr "NZB/Torrent poskytovatelé mohou být přepnuto do"
 
-#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3972
+#: sickrage/core/webserver/views.py:3693 sickrage/core/webserver/views.py:3974
 #: sickrage/core/webserver/views/config/providers.mako:76
 #: sickrage/core/webserver/views/layouts/main.mako:243
 msgid "Search Clients"
@@ -4736,7 +4736,7 @@ msgstr ""
 msgid "Select Episodes"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4928
+#: sickrage/core/webserver/views.py:4930
 #: sickrage/core/webserver/views/home/display_show.mako:440
 #: sickrage/core/webserver/views/manage/episode_statuses.mako:95
 msgid "Clear All"
@@ -4820,7 +4820,7 @@ msgstr "Neznámý"
 msgid "Retry Download"
 msgstr "Opakovat stahování"
 
-#: sickrage/core/webserver/views.py:4981
+#: sickrage/core/webserver/views.py:4983
 #: sickrage/core/webserver/views/home/edit_show.mako:25
 msgid "Main"
 msgstr "Hlavní"
@@ -4945,7 +4945,7 @@ msgstr "použití DVD pořadí místo pořadí vzduchu"
 msgid "A \"Force Full Update\" is necessary, and if you have existing episodes you need to sort them manually."
 msgstr "\"Síla úplná aktualizace\" je nutný, a máte existující epizody je seřadit ručně."
 
-#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4865
+#: sickrage/core/webserver/views.py:3699 sickrage/core/webserver/views.py:4867
 #: sickrage/core/webserver/views/home/edit_show.mako:250
 #: sickrage/core/webserver/views/includes/add_show_options.mako:34
 #: sickrage/core/webserver/views/layouts/main.mako:261
@@ -5263,7 +5263,7 @@ msgstr "Provedení restartu"
 msgid "Daily Search"
 msgstr "Denní hledání"
 
-#: sickrage/core/webserver/views.py:4968
+#: sickrage/core/webserver/views.py:4970
 #: sickrage/core/webserver/views/home/status.mako:13
 msgid "Backlog"
 msgstr "Nevyřízené položky"
@@ -5288,7 +5288,7 @@ msgstr "Zaúčtovat proces"
 msgid "Subtitles Finder"
 msgstr "Titulky Finder"
 
-#: sickrage/core/webserver/views.py:4976
+#: sickrage/core/webserver/views.py:4978
 #: sickrage/core/webserver/views/home/status.mako:26
 msgid "Trakt Checker"
 msgstr "Trakt kontrola"
@@ -5321,7 +5321,7 @@ msgstr "Ne"
 msgid "True"
 msgstr "Pravda"
 
-#: sickrage/core/webserver/views.py:4971
+#: sickrage/core/webserver/views.py:4973
 #: sickrage/core/webserver/views/home/status.mako:110
 msgid "Show Queue"
 msgstr "Zobrazit frontu"
@@ -5707,28 +5707,28 @@ msgstr "Obecné"
 msgid "Backup and Restore"
 msgstr "Zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4271
+#: sickrage/core/webserver/views.py:3694 sickrage/core/webserver/views.py:4273
 #: sickrage/core/webserver/views/layouts/main.mako:246
 msgid "Search Providers"
 msgstr "Poskytovatelé hledání"
 
-#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4777
+#: sickrage/core/webserver/views.py:3695 sickrage/core/webserver/views.py:4779
 #: sickrage/core/webserver/views/layouts/main.mako:249
 msgid "Subtitles Settings"
 msgstr "Nastavení titulků"
 
-#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4904
+#: sickrage/core/webserver/views.py:3696 sickrage/core/webserver/views.py:4906
 #: sickrage/core/webserver/views/layouts/main.mako:252
 msgid "Quality Settings"
 msgstr "Nastavení kvality"
 
 #: sickrage/core/webserver/views.py:2300 sickrage/core/webserver/views.py:2301
-#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4076
+#: sickrage/core/webserver/views.py:3697 sickrage/core/webserver/views.py:4078
 #: sickrage/core/webserver/views/layouts/main.mako:255
 msgid "Post Processing"
 msgstr "Zpracování po"
 
-#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4431
+#: sickrage/core/webserver/views.py:3698 sickrage/core/webserver/views.py:4433
 #: sickrage/core/webserver/views/layouts/main.mako:258
 msgid "Notifications"
 msgstr "Oznámení"
@@ -5994,7 +5994,7 @@ msgstr "Propers vyhledávání zakázáno"
 msgid "Post-Processor:"
 msgstr "Post-procesor:"
 
-#: sickrage/core/webserver/views.py:4972
+#: sickrage/core/webserver/views.py:4974
 #: sickrage/core/webserver/views/manage/queues.mako:88
 msgid "Search Queue"
 msgstr "Hledat fronty"
@@ -6621,7 +6621,7 @@ msgstr "Již na větvi: "
 #: sickrage/core/webserver/views.py:1932 sickrage/core/webserver/views.py:1937
 #: sickrage/core/webserver/views.py:1940 sickrage/core/webserver/views.py:1983
 #: sickrage/core/webserver/views.py:1989 sickrage/core/webserver/views.py:1992
-#: sickrage/core/webserver/views.py:4978
+#: sickrage/core/webserver/views.py:4980
 msgid "Error"
 msgstr "Chyba"
 
@@ -6989,7 +6989,7 @@ msgstr "Vymazání historie"
 msgid "Removed history entries older than 30 days"
 msgstr "Položky odstraněné historie starší než 30 dní"
 
-#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3912
+#: sickrage/core/webserver/views.py:3692 sickrage/core/webserver/views.py:3914
 msgid "Backup/Restore"
 msgstr "Zálohování a obnovení"
 
@@ -7009,186 +7009,186 @@ msgstr "Config - obecné"
 msgid "General Configuration"
 msgstr "Obecná konfigurace"
 
-#: sickrage/core/webserver/views.py:3894 sickrage/core/webserver/views.py:4058
-#: sickrage/core/webserver/views.py:4189 sickrage/core/webserver/views.py:4413
-#: sickrage/core/webserver/views.py:4759 sickrage/core/webserver/views.py:4847
-#: sickrage/core/webserver/views.py:4886
+#: sickrage/core/webserver/views.py:3896 sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4191 sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4761 sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4888
 msgid "Error(s) Saving Configuration"
 msgstr "Chyby konfigurace"
 
-#: sickrage/core/webserver/views.py:3896
+#: sickrage/core/webserver/views.py:3898
 msgid "[GENERAL] Configuration Saved"
 msgstr "Uloženo v [GENERAL] konfigurace"
 
-#: sickrage/core/webserver/views.py:3911
+#: sickrage/core/webserver/views.py:3913
 msgid "Config - Backup/Restore"
 msgstr "Config - zálohování a obnovení"
 
-#: sickrage/core/webserver/views.py:3924
+#: sickrage/core/webserver/views.py:3926
 msgid "Backup SUCCESSFUL"
 msgstr "Zálohování úspěšná"
 
-#: sickrage/core/webserver/views.py:3926
+#: sickrage/core/webserver/views.py:3928
 msgid "Backup FAILED!"
 msgstr "Zálohování selhalo!"
 
-#: sickrage/core/webserver/views.py:3928
+#: sickrage/core/webserver/views.py:3930
 msgid "You need to choose a folder to save your backup to first!"
 msgstr "Je třeba vybrat složku pro uložení zálohy do první!"
 
-#: sickrage/core/webserver/views.py:3947
+#: sickrage/core/webserver/views.py:3949
 msgid "Successfully extracted restore files to "
 msgstr "Úspěšně extrahován obnovených souborů "
 
-#: sickrage/core/webserver/views.py:3948
+#: sickrage/core/webserver/views.py:3950
 msgid "<br>Restart sickrage to complete the restore."
 msgstr "<br>Restart sickrage k dokončení obnovení."
 
-#: sickrage/core/webserver/views.py:3950
+#: sickrage/core/webserver/views.py:3952
 msgid "Restore FAILED"
 msgstr "Obnovení se nezdařilo"
 
-#: sickrage/core/webserver/views.py:3952
+#: sickrage/core/webserver/views.py:3954
 msgid "You need to select a backup file to restore!"
 msgstr "Je třeba vybrat záložní soubor pro obnovení!"
 
-#: sickrage/core/webserver/views.py:3971
+#: sickrage/core/webserver/views.py:3973
 msgid "Config - Search Clients"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid "Unable to create directory "
 msgstr "Nelze vytvořit adresář "
 
-#: sickrage/core/webserver/views.py:3997 sickrage/core/webserver/views.py:4000
-#: sickrage/core/webserver/views.py:4104
+#: sickrage/core/webserver/views.py:3999 sickrage/core/webserver/views.py:4002
+#: sickrage/core/webserver/views.py:4106
 msgid ", dir not changed."
 msgstr ", dir není změněna."
 
-#: sickrage/core/webserver/views.py:4060
+#: sickrage/core/webserver/views.py:4062
 msgid "[SEARCH] Configuration Saved"
 msgstr "Uloženo v [SEARCH] konfigurace"
 
-#: sickrage/core/webserver/views.py:4075
+#: sickrage/core/webserver/views.py:4077
 msgid "Config - Post Processing"
 msgstr "Config - Post zpracování"
 
-#: sickrage/core/webserver/views.py:4115
+#: sickrage/core/webserver/views.py:4117
 msgid "Unpacking Not Supported, disabling unpack setting"
 msgstr "Rozbalení není podporováno, zakázání rozbalit nastavení"
 
-#: sickrage/core/webserver/views.py:4150 sickrage/core/webserver/views.py:4161
+#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
 msgid "You tried saving an invalid anime naming config, not saving your naming settings"
 msgstr "Jste se pokusili, uložení neplatný anime pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4152 sickrage/core/webserver/views.py:4163
+#: sickrage/core/webserver/views.py:4154 sickrage/core/webserver/views.py:4165
 msgid "You tried saving an invalid naming config, not saving your naming settings"
 msgstr "Jste se pokusili uložit neplatný pojmenování config, neukládá nastavení pojmenování"
 
-#: sickrage/core/webserver/views.py:4169
+#: sickrage/core/webserver/views.py:4171
 msgid "You tried saving an invalid air-by-date naming config, not saving your air-by-date settings"
 msgstr "Jste se pokusili uložení neplatný vzduchu datum pojmenování config, neukládá nastavení vzduchu podle data"
 
-#: sickrage/core/webserver/views.py:4175
+#: sickrage/core/webserver/views.py:4177
 msgid "You tried saving an invalid sports naming config, not saving your sports settings"
 msgstr "Jste se pokusili, uložení neplatný sportovní pojmenování config, neukládá nastavení sportovní"
 
-#: sickrage/core/webserver/views.py:4191
+#: sickrage/core/webserver/views.py:4193
 msgid "[POST-PROCESSING] Configuration Saved"
 msgstr "Uloženo v [POST-PROCESSING] konfigurace"
 
-#: sickrage/core/webserver/views.py:4270
+#: sickrage/core/webserver/views.py:4272
 msgid "Config - Search Providers"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4311
+#: sickrage/core/webserver/views.py:4313
 msgid "\n"
 "No Provider Name specified"
 msgstr "\n"
 "Nebyl zadán žádný název poskytovatele"
 
-#: sickrage/core/webserver/views.py:4313
+#: sickrage/core/webserver/views.py:4315
 msgid "\n"
 "No Provider Url specified"
 msgstr "\n"
 "Zadána žádná adresa Url poskytovatele"
 
-#: sickrage/core/webserver/views.py:4315
+#: sickrage/core/webserver/views.py:4317
 msgid "\n"
 "No Provider Api key specified"
 msgstr "\n"
 "Žádný zprostředkovatel Api klíč zadán"
 
-#: sickrage/core/webserver/views.py:4415
+#: sickrage/core/webserver/views.py:4417
 msgid "[PROVIDERS] Configuration Saved"
 msgstr "Uloženo v [PROVIDERS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4430
+#: sickrage/core/webserver/views.py:4432
 msgid "Config - Notifications"
 msgstr "Config - oznámení"
 
-#: sickrage/core/webserver/views.py:4761
+#: sickrage/core/webserver/views.py:4763
 msgid "[NOTIFICATIONS] Configuration Saved"
 msgstr "Uloženo v [NOTIFICATIONS] konfigurace"
 
-#: sickrage/core/webserver/views.py:4776
+#: sickrage/core/webserver/views.py:4778
 msgid "Config - Subtitles Settings"
 msgstr ""
 
-#: sickrage/core/webserver/views.py:4849
+#: sickrage/core/webserver/views.py:4851
 msgid "[SUBTITLES] Configuration Saved"
 msgstr "Uloženo v [SUBTITLES] konfigurace"
 
-#: sickrage/core/webserver/views.py:4864
+#: sickrage/core/webserver/views.py:4866
 msgid "Config - Anime"
 msgstr "Config - Anime"
 
-#: sickrage/core/webserver/views.py:4888
+#: sickrage/core/webserver/views.py:4890
 msgid "[ANIME] Configuration Saved"
 msgstr "Uloženo v [ANIME] konfigurace"
 
-#: sickrage/core/webserver/views.py:4903
+#: sickrage/core/webserver/views.py:4905
 msgid "Config - Quality Settings"
 msgstr "Config - nastavení kvality"
 
-#: sickrage/core/webserver/views.py:4915
+#: sickrage/core/webserver/views.py:4917
 msgid "[QUALITY SETTINGS] Configuration Saved"
 msgstr "[NASTAVENÍ] Uložení konfigurace"
 
-#: sickrage/core/webserver/views.py:4967
+#: sickrage/core/webserver/views.py:4969
 msgid "Daily Searcher"
 msgstr "Denní Searcher"
 
-#: sickrage/core/webserver/views.py:4969
+#: sickrage/core/webserver/views.py:4971
 msgid "Show Updater"
 msgstr "Zobrazit Updater"
 
-#: sickrage/core/webserver/views.py:4970
+#: sickrage/core/webserver/views.py:4972
 msgid "Check Version"
 msgstr "Kontrola verze"
 
-#: sickrage/core/webserver/views.py:4973
+#: sickrage/core/webserver/views.py:4975
 msgid "Find Propers"
 msgstr "Najít Propers"
 
-#: sickrage/core/webserver/views.py:4974
+#: sickrage/core/webserver/views.py:4976
 msgid "Postprocessor"
 msgstr "Postprocesor"
 
-#: sickrage/core/webserver/views.py:4975
+#: sickrage/core/webserver/views.py:4977
 msgid "Find Subtitles"
 msgstr "Najít titulky"
 
-#: sickrage/core/webserver/views.py:4977
+#: sickrage/core/webserver/views.py:4979
 msgid "Event"
 msgstr "Událost"
 
-#: sickrage/core/webserver/views.py:4979
+#: sickrage/core/webserver/views.py:4981
 msgid "Tornado"
 msgstr "Tornádo"
 
-#: sickrage/core/webserver/views.py:4980
+#: sickrage/core/webserver/views.py:4982
 msgid "Thread"
 msgstr "Vlákno"
 

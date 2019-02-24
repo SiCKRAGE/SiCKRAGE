@@ -2801,7 +2801,7 @@ $(document).ready(function ($) {
                         anime: $('#anime').prop('checked'),
                         scene: $('#scene').prop('checked'),
                         defaultStatusAfter: $('#statusSelectAfter').val(),
-                        skip_downloaded: $('#skip_downloaded').prop('checked')
+                        skip_downloaded: $('#skip_downloaded').prop('checked'),
                         add_show_year: $('#add_show_year').prop('checked')
                     });
 
