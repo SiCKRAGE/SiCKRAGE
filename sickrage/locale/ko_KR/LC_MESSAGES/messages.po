@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 20:44-0800\n"
-"PO-Revision-Date: 2019-02-24 04:45\n"
+"POT-Creation-Date: 2019-02-23 21:23-0800\n"
+"PO-Revision-Date: 2019-02-24 05:25\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -6137,8 +6137,8 @@ msgstr "납치 하는 에피소드"
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
-#: sickrage/core/version_updater.py:734 sickrage/core/webserver/views.py:1085
+#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:494
+#: sickrage/core/version_updater.py:735 sickrage/core/webserver/views.py:1085
 #: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1097
 msgid "Updater"
 msgstr ""
@@ -6191,19 +6191,19 @@ msgstr "찾을 수 없습니다 당신의 핍 실행-설정 핍 경로 설정에
 msgid "Failed to update requirements"
 msgstr ""
 
-#: sickrage/core/version_updater.py:466 sickrage/core/version_updater.py:595
+#: sickrage/core/version_updater.py:467 sickrage/core/version_updater.py:596
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:494
+#: sickrage/core/version_updater.py:495
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:723
+#: sickrage/core/version_updater.py:724
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:734
+#: sickrage/core/version_updater.py:735
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 

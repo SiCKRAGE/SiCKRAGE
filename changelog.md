@@ -1,6 +1,7 @@
 # Changelog
 
-- * 95a485f - 2019-02-23: Pre-Release v9.4.70.dev1 
+- * 70c9691 - 2019-02-23: Release v9.4.70 
+- * 2e4fa85 - 2019-02-23: Pre-Release v9.4.70.dev1 
 - * 4a8b635 - 2019-02-23: Fixed issue with sending direct messages via twitter API. 
 - * 502eb01 - 2019-02-23: Release v9.4.69 
 - * ffa69b5 - 2019-02-23: Don&#x27;t attempt daily or backlog searches if nothing to search for. Version updater now moves entire folder at once instead of walking it for source updates. 

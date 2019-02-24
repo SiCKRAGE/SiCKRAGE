@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-02-23 20:44-0800\n"
-"PO-Revision-Date: 2019-02-24 04:45\n"
+"POT-Creation-Date: 2019-02-23 21:23-0800\n"
+"PO-Revision-Date: 2019-02-24 05:24\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Danish\n"
 "MIME-Version: 1.0\n"
@@ -6137,8 +6137,8 @@ msgstr "Episode snappede"
 #: sickrage/core/version_updater.py:100 sickrage/core/version_updater.py:108
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
-#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:493
-#: sickrage/core/version_updater.py:734 sickrage/core/webserver/views.py:1085
+#: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:494
+#: sickrage/core/version_updater.py:735 sickrage/core/webserver/views.py:1085
 #: sickrage/core/webserver/views.py:1089 sickrage/core/webserver/views.py:1097
 msgid "Updater"
 msgstr ""
@@ -6191,19 +6191,19 @@ msgstr "Stand til at finde din pip eksekverbare - sæt din pip sti fra indstilli
 msgid "Failed to update requirements"
 msgstr ""
 
-#: sickrage/core/version_updater.py:466 sickrage/core/version_updater.py:595
+#: sickrage/core/version_updater.py:467 sickrage/core/version_updater.py:596
 msgid "There is a newer version available, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr "Der er en nyere version til rådighed, version {} &mdash; <a href=\"{}\">Update Now</a>"
 
-#: sickrage/core/version_updater.py:494
+#: sickrage/core/version_updater.py:495
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:723
+#: sickrage/core/version_updater.py:724
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:734
+#: sickrage/core/version_updater.py:735
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
