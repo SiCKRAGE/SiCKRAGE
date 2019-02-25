@@ -549,6 +549,11 @@
                                 <td>${_('Episode_Name')}</td>
                             </tr>
                             <tr>
+                                <td class="align-right"><b>${_('Language:')}</b></td>
+                                <td>%L</td>
+                                <td>ITA</td>
+                            </tr>
+                            <tr>
                                 <td class="align-right"><b>${_('Quality:')}</b></td>
                                 <td>%QN</td>
                                 <td>720p BluRay</td>
@@ -802,6 +807,11 @@
                                     <td>${_('Episode_Name')}</td>
                                 </tr>
                                 <tr>
+                                    <td class="align-right"><b>${_('Language:')}</b></td>
+                                    <td>%L</td>
+                                    <td>ITA</td>
+                                </tr>
+                                <tr>
                                     <td class="align-right"><b>${_('Quality:')}</b></td>
                                     <td>%QN</td>
                                     <td>720p BluRay</td>
@@ -1013,6 +1023,11 @@
                                     <td>&nbsp;</td>
                                     <td>%E_N</td>
                                     <td>${_('Episode_Name')}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-right"><b>${_('Language:')}</b></td>
+                                    <td>%L</td>
+                                    <td>ITA</td>
                                 </tr>
                                 <tr>
                                     <td class="align-right"><b>${_('Quality:')}</b></td>
@@ -1253,6 +1268,11 @@
                                     <td>&nbsp;</td>
                                     <td>%E_N</td>
                                     <td>${_('Episode_Name')}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-right"><b>${_('Language:')}</b></td>
+                                    <td>%L</td>
+                                    <td>ITA</td>
                                 </tr>
                                 <tr>
                                     <td class="align-right"><b>${_('Quality:')}</b></td>
