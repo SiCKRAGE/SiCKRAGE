@@ -1114,7 +1114,7 @@ class TVEpisode(object):
             '%EN': ep_name,
             '%E.N': dot(ep_name),
             '%E_N': us(ep_name),
-            '%L': str(self.show.lang or 'NO_LANG'),
+            '%L': str(getattr(self.show, 'lang', sickrage.app.config.indexer_default_language)),
             '%QN': Quality.qualityStrings[epQual],
             '%Q.N': dot(Quality.qualityStrings[epQual]),
             '%Q_N': us(Quality.qualityStrings[epQual]),
