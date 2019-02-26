@@ -4,6 +4,10 @@
 /sickrage/libs/adba/anime-list.xml
 /sickrage/libs/adba/animetitles.xml
 
+# SR Tox Files #
+######################
+/.tox/
+
 # SR GitLab Files    #
 ######################
 /.gitlab/
@@ -54,7 +58,7 @@ sickrage.egg-info
 /.settings/*
 /build/
 pre-commit-hook.sh
-/venv/
+/venv-*/
 
 # OS Generated Files #
 ######################

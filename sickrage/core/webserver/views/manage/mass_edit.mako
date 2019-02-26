@@ -13,7 +13,7 @@
         else:
             initial_quality = SD
 
-        anyQualities, bestQualities = Quality.splitQuality(initial_quality)
+        anyQualities, bestQualities = Quality.split_quality(initial_quality)
     %>
 
     <div class="row">
@@ -112,7 +112,7 @@
                                         <div id="customQuality" style="padding-left: 0;">
                                             <div style="padding-right: 40px; text-align: left; float: left;">
                                                 <h5>Allowed</h5>
-                                                <% anyQualityList = filter(lambda x: x > Quality.NONE, Quality.qualityStrings) %>
+                                                <% anyQualityList = list(filter(lambda x: x > Quality.NONE, Quality.qualityStrings)) %>
                                                 <select id="anyQualities" name="anyQualities" multiple="multiple"
                                                         size="${len(anyQualityList)}"
                                                         class="form-control form-control-inline input-sm">
@@ -124,7 +124,7 @@
 
                                             <div style="text-align: left; float: left;">
                                                 <h5>Preferred</h5>
-                                                <% bestQualityList = filter(lambda x: x >= Quality.SDTV, Quality.qualityStrings) %>
+                                                <% bestQualityList = list(filter(lambda x: x >= Quality.SDTV, Quality.qualityStrings)) %>
                                                 <select id="bestQualities" name="bestQualities" multiple="multiple"
                                                         size="${len(bestQualityList)}"
                                                         class="form-control form-control-inline input-sm">

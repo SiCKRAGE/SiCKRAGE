@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from requests.utils import dict_from_cookiejar
 

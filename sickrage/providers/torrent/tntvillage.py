@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
 
@@ -135,7 +135,7 @@ class TNTVillageProvider(TorrentProvider):
                         if title != title1:
                             break
 
-                    if Quality.nameQuality(title) == Quality.UNKNOWN:
+                    if Quality.name_quality(title) == Quality.UNKNOWN:
                         title += filename_qt
 
                     if self._has_only_subs(title) and not self.subtitle:

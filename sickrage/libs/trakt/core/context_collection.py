@@ -4,7 +4,7 @@ import logging
 from threading import RLock
 
 from six.moves import _thread as thread
-from six.moves import xrange
+
 from trakt.core.helpers import synchronized
 
 log = logging.getLogger(__name__)
@@ -71,7 +71,7 @@ class ListCollection(object):
         if len(self) != len(other):
             return False
 
-        for x in xrange(len(self)):
+        for x in range(len(self)):
             if self[x] != other[x]:
                 return False
 

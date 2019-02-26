@@ -34,7 +34,7 @@ class ConfigurationManager(object):
         return Configuration(self).http(retry, max_retries, retry_sleep, timeout)
 
     def get(self, key, default=None):
-        for x in xrange(len(self.stack) - 1, -1, -1):
+        for x in range(len(self.stack) - 1, -1, -1):
             value = self.stack[x].get(key)
 
             if value is not None:

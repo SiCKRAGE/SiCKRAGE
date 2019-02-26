@@ -16,15 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import os
 import threading
 
+from sqlalchemy import or_, and_
+
 import sickrage
 import sickrage.subtitles
 from sickrage.core.common import dateTimeFormat
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow
 
 
@@ -66,23 +68,27 @@ class SubtitleSearcher(object):
 
         results = []
         for s in sickrage.app.showlist:
-            for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid)
-                      if s.subtitles == 1
-                         and e['location'] != ''
-                         and e['subtitles'] not in sickrage.subtitles.wanted_languages()
-                         and (e['subtitles_searchcount'] <= 2 or (
-                        e['subtitles_searchcount'] <= 7 and (today - e['airdate'])))):
+            if s.subtitles != 1:
+                continue
+
+            for e in MainDB.TVEpisode.query(showid=s.indexerid).filter(MainDB.TVEpisode.location != '',
+                                                                       ~MainDB.TVEpisode.subtitles.in_(
+                                                                           sickrage.subtitles.wanted_languages()),
+                                                                       or_(MainDB.TVEpisode.subtitles_searchcount <= 2,
+                                                                           and_(
+                                                                               MainDB.TVEpisode.subtitles_searchcount <= 7,
+                                                                               today - MainDB.TVEpisode.airdate))):
                 results += [{
                     'show_name': s.name,
-                    'showid': e['showid'],
-                    'season': e['season'],
-                    'episode': e['episode'],
-                    'status': e['status'],
-                    'subtitles': e['subtitles'],
-                    'searchcount': e['subtitles_searchcount'],
-                    'lastsearch': e['subtitles_lastsearch'],
-                    'location': e['location'],
-                    'airdate_daydiff': (today - e['airdate'])
+                    'showid': e.showid,
+                    'season': e.season,
+                    'episode': e.episode,
+                    'status': e.status,
+                    'subtitles': e.subtitles,
+                    'searchcount': e.subtitles_searchcount,
+                    'lastsearch': e.subtitles_lastsearch,
+                    'location': e.location,
+                    'airdate_daydiff': (today - e.airdate)
                 }]
 
         if len(results) == 0:

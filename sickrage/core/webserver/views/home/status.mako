@@ -154,7 +154,7 @@
                                     <td>${ShowQueueActions.names[sickrage.app.show_queue.current_item.action_id]}</td>
                                 </tr>
                             % endif
-                            % for __, __, item in sickrage.app.show_queue.queue:
+                            % for item in sickrage.app.show_queue.queue:
                                 <tr>
                                 % try:
                                     <% showindexerid = item.show.indexerid %>

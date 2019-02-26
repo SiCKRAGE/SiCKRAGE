@@ -81,17 +81,17 @@
                                             </tr>
 
                                         % for curResult in showResults[curShow.indexerid]:
-                                            <% whichStr = str(curResult['season']) + 'x' + str(curResult['episode']) %>
+                                            <% whichStr = '{}x{}'.format(curResult.season, curResult.episode) %>
                                             <% overview = showCats[curShow.indexerid][whichStr] %>
                                             % if overview in (Overview.QUAL, Overview.WANTED):
                                                 <tr class="seasonstyle ${Overview.overviewStrings[showCats[curShow.indexerid][whichStr]]}">
                                                     <td class="tableleft" align="center">${whichStr}</td>
                                                     <td class="tableright" align="center" class="text-nowrap">
-                                                        ${curResult["name"]}
+                                                        ${curResult.name}
                                                     </td>
                                                     <td>
-                                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(curResult['airdate'], curShow.airs, curShow.network), convert=True).dt %>
-                                                        % if int(curResult['airdate']) != 1:
+                                                        <% airDate = srdatetime.srDateTime(sickrage.app.tz_updater.parse_date_time(curResult.airdate, curShow.airs, curShow.network), convert=True).dt %>
+                                                        % if int(curResult.airdate) != 1:
                                                             <time datetime="${airDate.isoformat()}"
                                                                   class="date">${srdatetime.srDateTime(airDate).srfdatetime()}</time>
                                                         % else:

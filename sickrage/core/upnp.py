@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals, with_statement
 
-import time
-from urlparse import urlparse
 
 import ipaddress
+import time
+from urllib.parse import urlparse
 
 import sickrage
 import upnpclient
@@ -121,6 +120,6 @@ class UPNPClient(object):
         parsed_url = urlparse(upnp_dev.location)
         upnp_dev_net = ipaddress.ip_network(parsed_url.hostname + '/24', strict=False)
 
-        if ipaddress.ip_address(unicode(lan_ip)) in upnp_dev_net:
+        if ipaddress.ip_address(str(lan_ip)) in upnp_dev_net:
             return lan_ip
         return None

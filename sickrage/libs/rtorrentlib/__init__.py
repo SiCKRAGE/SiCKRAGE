@@ -17,10 +17,10 @@
 # LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-import io
 import os.path
 import time
 import urllib
+
 import xmlrpclib
 
 import rtorrentlib.rpc  # @UnresolvedImport
@@ -374,7 +374,7 @@ class RTorrent:
             # client, we have to read the file and send it to rT as raw
             assert os.path.isfile(new_torrent), \
                 "Invalid path: \"{0}\"".format(new_torrent)
-            new_torrent = io.open(new_torrent, "rb").read()
+            new_torrent = open(new_torrent, "rb").read()
 
         if file_type in ["raw", "file"]:
             finput = xmlrpclib.Binary(new_torrent)

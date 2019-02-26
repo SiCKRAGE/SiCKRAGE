@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import json
 
 import requests
-import six
 
 import sickrage
 from sickrage.notifiers import Notifiers
@@ -68,7 +67,7 @@ class DiscordNotifier(Notifiers):
         sickrage.app.log.info("Sending discord message: " + message)
         sickrage.app.log.info("Sending discord message  to url: " + discord_webhook)
 
-        if isinstance(message, six.text_type):
+        if isinstance(message, str):
             message = message.encode('utf-8')
 
         headers = {"Content-Type": "application/json"}

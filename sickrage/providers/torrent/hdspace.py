@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
-import urllib
+from urllib.parse import quote_plus
 
 from requests.utils import dict_from_cookiejar
 
@@ -98,7 +98,7 @@ class HDSpaceProvider(TorrentProvider):
 
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s" % search_string)
-                    searchURL = self.urls['search'] % (urllib.quote_plus(search_string.replace('.', ' ')),)
+                    searchURL = self.urls['search'] % (quote_plus(search_string.replace('.', ' ')),)
                 else:
                     searchURL = self.urls['search'] % ''
 

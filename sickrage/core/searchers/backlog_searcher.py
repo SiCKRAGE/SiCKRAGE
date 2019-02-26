@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import threading
 
+from sqlalchemy import orm
+
 import sickrage
 from sickrage.core.common import Quality, DOWNLOADED, SNATCHED, SNATCHED_PROPER, WANTED
+from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import BacklogQueueItem
 from sickrage.core.searchers import new_episode_finder
 
@@ -112,16 +114,16 @@ class BacklogSearcher(object):
 
     @staticmethod
     def _get_segments(show, from_date):
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(show.quality)
 
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
         # check through the list of statuses to see if we want any
         wanted = []
-        for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid) if
-                       x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] >= from_date.toordinal()):
+        for result in MainDB.TVEpisode.query(showid=show.indexerid).filter(MainDB.TVEpisode.season > 0,
+                                                                           datetime.date.today().toordinal() > MainDB.TVEpisode.airdate >= from_date.toordinal()):
 
-            curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
+            curStatus, curQuality = Quality.split_composite_status(int(result.status or -1))
 
             # if we need a better one then say yes
             if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:
@@ -143,7 +145,7 @@ class BacklogSearcher(object):
             if curStatus == DOWNLOADED and show.skip_downloaded:
                 continue
 
-            epObj = show.get_episode(int(result["season"]), int(result["episode"]))
+            epObj = show.get_episode(int(result.season), int(result.episode))
             wanted.append(epObj)
 
         return wanted
@@ -153,16 +155,18 @@ class BacklogSearcher(object):
         sickrage.app.log.debug("Retrieving the last check time from the DB")
 
         try:
-            dbData = sickrage.app.main_db.get('tv_shows', showid)
-            return int(dbData["last_backlog_search"])
-        except:
+            dbData = MainDB.TVShow.query(indexer_id=showid).one()
+            return int(dbData.last_backlog_search)
+        except orm.exc.NoResultFound:
             return 1
 
     @staticmethod
     def _set_last_backlog_search(showid, when):
         sickrage.app.log.debug("Setting the last backlog in the DB to {}".format(when))
 
-        dbData = sickrage.app.main_db.get('tv_shows', showid)
-        if dbData:
-            dbData['last_backlog_search'] = when
-            sickrage.app.main_db.update(dbData)
+        try:
+            dbData = MainDB.TVShow.query(indexer_id=showid).one()
+            dbData.last_backlog_search = when
+            MainDB.TVShow.update(**dbData.as_dict())
+        except orm.exc.NoResultFound:
+            pass

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -17,12 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-import io
 import os.path
 import sys
-from ConfigParser import RawConfigParser, NoOptionError
+from configparser import RawConfigParser, NoOptionError
 
 import requests
 
@@ -53,7 +51,7 @@ def processEpisode(dir_to_process, org_nzb_name=None, status=None):
         try:
             print ("Loading config from " + config_filename + "\n")
 
-            with io.open(config_filename, "r") as fp:
+            with open(config_filename, "r") as fp:
                 config.readfp(fp)
 
             # Replace default values with config_file values

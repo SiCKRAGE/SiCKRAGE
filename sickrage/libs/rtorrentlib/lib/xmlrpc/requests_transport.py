@@ -115,37 +115,37 @@ class RequestsTransport(xmlrpc_client.Transport):
             url = "http://{host}/{handler}".format(host=host, handler=handler)
 
         # TODO Construct kwargs query instead
-        try:
-            if self._authtype == "basic":
-                response = requests.post(
-                    url,
-                    data=request_body,
-                    headers=headers,
-                    verify=self._check_ssl_cert,
-                    auth=HTTPBasicAuth(
-                        self._username, self._password),
-                    proxies=self._proxies)
-            elif self._authtype == "digest":
-                response = requests.post(
-                    url,
-                    data=request_body,
-                    headers=headers,
-                    verify=self._check_ssl_cert,
-                    auth=HTTPDigestAuth(
-                        self._username, self._password),
-                    proxies=self._proxies)
-            else:
-                response = requests.post(
-                    url,
-                    data=request_body,
-                    headers=headers,
-                    verify=self._check_ssl_cert,
-                    proxies=self._proxies)
+        if self._authtype == "basic":
+            response = requests.post(
+                url,
+                data=request_body,
+                headers=headers,
+                verify=self._check_ssl_cert,
+                auth=HTTPBasicAuth(
+                    self._username, self._password),
+                proxies=self._proxies)
+        elif self._authtype == "digest":
+            response = requests.post(
+                url,
+                data=request_body,
+                headers=headers,
+                verify=self._check_ssl_cert,
+                auth=HTTPDigestAuth(
+                    self._username, self._password),
+                proxies=self._proxies)
+        else:
+            response = requests.post(
+                url,
+                data=request_body,
+                headers=headers,
+                verify=self._check_ssl_cert,
+                proxies=self._proxies)
 
+        try:
             response.raise_for_status()
         except RequestException as error:
             raise xmlrpc_client.ProtocolError(url,
-                                              error.message,
+                                              error,
                                               traceback.format_exc(),
                                               response.headers)
 

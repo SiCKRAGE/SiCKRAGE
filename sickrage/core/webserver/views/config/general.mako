@@ -598,7 +598,7 @@
                                     ${_('Use System Default')}
                                 </option>
                                 % for cur_preset in date_presets:
-                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.date_preset == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset).decode(sickrage.app.sys_encoding)}</option>
+                                    <option value="${cur_preset}" ${('', 'selected')[sickrage.app.config.date_preset == cur_preset]}>${datetime.datetime(datetime.datetime.now().year, 12, 31, 14, 30, 47).strftime(cur_preset)}</option>
                                 % endfor
                             </select>
                         </div>

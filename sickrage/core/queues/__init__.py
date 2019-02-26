@@ -17,16 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-try:
-    from Queue import PriorityQueue, Empty, Queue
-except ImportError:
-    from queue import PriorityQueue, Empty, Queue
-
-import time
 import datetime
 import threading
+import time
+
+from queue import PriorityQueue, Queue
 
 import sickrage
 
@@ -85,9 +81,9 @@ class srQueue(threading.Thread):
     @property
     def next_item_priority(self):
         try:
-            priority, __, __ = self._queue.queue[0]
+            priority = self._queue.queue[0].priority
         except IndexError:
-            priority = srQueuePriorities.LOW
+            priority = (srQueuePriorities.LOW, time.time())
 
         return priority
 
@@ -104,8 +100,7 @@ class srQueue(threading.Thread):
             del self._current_items[0]
 
     def get(self, *args, **kwargs):
-        __, __, item = self._queue.get(*args, **kwargs)
-        return item
+        return self._queue.get(*args, **kwargs)
 
     def put(self, item, *args, **kwargs):
         """
@@ -117,7 +112,7 @@ class srQueue(threading.Thread):
         item.added = datetime.datetime.now()
         item.name = "{}-{}".format(self.name, item.name)
         item.result_queue = self._result_queue
-        self._queue.put((item.priority, time.time(), item), *args, **kwargs)
+        self._queue.put(item, *args, **kwargs)
         return item
 
     @property
@@ -152,8 +147,19 @@ class srQueueItem(threading.Thread):
         self.daemon = True
         self.lock = threading.Lock()
         self.stop = threading.Event()
-        self.priority = srQueuePriorities.NORMAL
         self.action_id = action_id
         self.added = None
         self.result = None
         self.result_queue = None
+        self._priority = (srQueuePriorities.NORMAL, time.time())
+
+    @property
+    def priority(self):
+        return self._priority
+
+    @priority.setter
+    def priority(self, value):
+        self._priority = (value, time.time())
+
+    def __lt__(self, other):
+        return self.priority[0] < other.priority[0] and self.priority[1] < other.priority[1]

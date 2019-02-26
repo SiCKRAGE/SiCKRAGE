@@ -17,14 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import time
-import urllib2
 from xml.dom.minidom import parseString
 from xml.etree import ElementTree
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -60,21 +59,22 @@ class NMJv2Notifier(Notifiers):
         
         Returns: True if the settings were retrieved successfully, False otherwise
         """
+
+        url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
+        resp = WebSession().get(url_loc)
+
         try:
-            url_loc = "http://" + host + ":8008/file_operation?arg0=list_user_storage_file&arg1=&arg2=" + instance + "&arg3=20&arg4=true&arg5=true&arg6=true&arg7=all&arg8=name_asc&arg9=false&arg10=false"
-            req = urllib2.Request(url_loc)
-            handle1 = urllib2.urlopen(req)
-            response1 = handle1.read()
+            resp.raise_for_status()
+            response1 = resp.text
             xml = parseString(response1)
             time.sleep(300.0 / 1000.0)
             for node in xml.getElementsByTagName('path'):
                 xmlTag = node.toxml()
                 xmlData = xmlTag.replace('<path>', '').replace('</path>', '').replace('[=]', '')
                 url_db = "http://" + host + ":8008/metadata_database?arg0=check_database&arg1=" + xmlData
-                reqdb = urllib2.Request(url_db)
-                handledb = urllib2.urlopen(reqdb)
-                responsedb = handledb.read()
-                xmldb = parseString(responsedb)
+                respdb = WebSession().get(url_db)
+                respdb.raise_for_status()
+                xmldb = parseString(respdb.text)
                 returnvalue = xmldb.getElementsByTagName('returnValue')[0].toxml().replace('<returnValue>', '').replace(
                     '</returnValue>', '')
                 if returnvalue == "0":
@@ -90,7 +90,7 @@ class NMJv2Notifier(Notifiers):
                         sickrage.app.config.nmjv2_database = DB_path
                         return True
 
-        except IOError as e:
+        except Exception as e:
             sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
         return False
@@ -112,16 +112,17 @@ class NMJv2Notifier(Notifiers):
             sickrage.app.log.debug("NMJ scan update command sent to host: %s" % (host))
             url_updatedb = "http://" + host + ":8008/metadata_database?arg0=scanner_start&arg1=" + sickrage.app.config.nmjv2_database + "&arg2=background&arg3="
             sickrage.app.log.debug("Try to mount network drive via url: %s" % (host))
-            prereq = urllib2.Request(url_scandir)
-            req = urllib2.Request(url_updatedb)
-            handle1 = urllib2.urlopen(prereq)
-            response1 = handle1.read()
+            preresp = WebSession().get(url_scandir)
+            preresp.raise_for_status()
+            response1 = preresp.text
             time.sleep(300.0 / 1000.0)
-            handle2 = urllib2.urlopen(req)
-            response2 = handle2.read()
+            resp = WebSession().get(url_updatedb)
+            resp.raise_for_status()
+            response2 = resp.text
         except IOError as e:
             sickrage.app.log.warning("Warning: Couldn't contact popcorn hour on host %s: %s" % (host, e))
             return False
+
         try:
             et = ElementTree.fromstring(response1)
             result1 = et.findtext("returnValue")
@@ -129,6 +130,7 @@ class NMJv2Notifier(Notifiers):
             sickrage.app.log.error(
                 "Unable to parse XML returned from the Popcorn Hour: update_scandir, {}".format(e))
             return False
+
         try:
             et = ElementTree.fromstring(response2)
             result2 = et.findtext("returnValue")
@@ -146,6 +148,7 @@ class NMJv2Notifier(Notifiers):
                           "Database read error",
                           "Open fifo pipe failed",
                           "Read only file system"]
+
         if int(result1) > 0:
             index = error_codes.index(result1)
             sickrage.app.log.error("Popcorn Hour returned an error: %s" % (error_messages[index]))

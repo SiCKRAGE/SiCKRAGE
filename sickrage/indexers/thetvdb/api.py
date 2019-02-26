@@ -16,17 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
+
 
 import functools
 import json
 import re
 import time
-import urlparse
 from base64 import urlsafe_b64decode
 from collections import OrderedDict
 from datetime import datetime
 from operator import itemgetter
+from urllib.parse import urljoin
 
 from requests import RequestException
 from simplejson import JSONDecodeError
@@ -264,7 +264,7 @@ class Episode(dict):
             if isinstance(cur_value, dict) or key is None or cur_value is None:
                 continue
 
-            cur_key, cur_value = unicode(cur_key).lower(), unicode(cur_value).lower()
+            cur_key, cur_value = str(cur_key).lower(), str(cur_value).lower()
             if cur_key != key:
                 continue
             if cur_value.find(term.lower()) > -1:
@@ -428,7 +428,7 @@ class Tvdb:
         # get response from theTVDB
         try:
             resp = WebSession(cache=self.config['cache_enabled']).request(
-                method, urlparse.urljoin(self.config['api']['base'], url), headers=self.config['headers'],
+                method, urljoin(self.config['api']['base'], url), headers=self.config['headers'],
                 timeout=sickrage.app.config.indexer_timeout, **kwargs
             )
         except Exception as e:
@@ -489,7 +489,7 @@ class Tvdb:
         - Trailing whitespace
         """
 
-        return data.replace("&amp;", "&").strip() if isinstance(data, basestring) else data
+        return data.replace("&amp;", "&").strip() if isinstance(data, str) else data
 
     @login_required
     def search(self, series):
@@ -545,7 +545,7 @@ class Tvdb:
             if not self.config['language'] == self.config['api']['lang']:
                 series_info.update((k, v) for k, v in self._request('get',
                                                                     self.config['api']['series'].format(id=sid)
-                                                                    )['data'].iteritems() if v)
+                                                                    )['data'].items() if v)
         except Exception:
             sickrage.app.log.debug("[{}]: Series result returned zero".format(sid))
             raise tvdb_error("[{}]: Series result returned zero".format(sid))
@@ -587,7 +587,7 @@ class Tvdb:
                                                       params={'page': page})
 
                     for i, x in enumerate(episode_info):
-                        x.update((k, v) for k, v in intl_episode_info['data'][i].iteritems() if v)
+                        x.update((k, v) for k, v in intl_episode_info['data'][i].items() if v)
                         episode_info[i] = x
 
                 episodes += episode_info
@@ -706,7 +706,7 @@ class Tvdb:
         # return {l['abbreviation']: l['id'] for l in self._request('get', self.config['api']['languages'])}
 
     def __getitem__(self, key):
-        if isinstance(key, (int, long)):
+        if isinstance(key, int):
             if key in self.shows:
                 if self.config['cache_enabled']:
                     return self.shows[key]

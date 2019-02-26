@@ -18,7 +18,7 @@ def set_up_anidb_connection():
         try:
             sickrage.app.adba_connection = adba.Connection(keepAlive=True)
         except Exception as error:
-            sickrage.applog.warning('AniDB exception msg: {0!r}'.format(error))
+            sickrage.app.log.warning('AniDB exception msg: {0!r}'.format(error))
             return False
 
     try:
@@ -42,7 +42,7 @@ def get_release_groups_for_anime(series_name):
             anime = adba.Anime(sickrage.app.adba_connection, name=series_name)
             groups = anime.get_groups()
         except Exception as error:
-            sickrage.app.log.warning('Unable to retrieve Fansub Groups from AniDB. Error: {}'.format(error.message))
+            sickrage.app.log.warning('Unable to retrieve Fansub Groups from AniDB. Error: {}'.format(error))
             raise AnidbAdbaConnectionException(error)
 
     return groups

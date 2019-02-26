@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-from thetvdb.exceptions import tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, tvdb_exception, \
+
+from sickrage.indexers.thetvdb.exceptions import tvdb_attributenotfound, tvdb_episodenotfound, tvdb_error, tvdb_exception, \
     tvdb_seasonnotfound, tvdb_showincomplete, tvdb_shownotfound
 
 __author__ = "echel0n"

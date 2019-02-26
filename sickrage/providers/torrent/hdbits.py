@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import json
-import urllib
+from urllib.parse import urlencode
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache
@@ -67,7 +67,7 @@ class HDBitsProvider(TorrentProvider):
         if title:
             title = self._clean_title_from_provider(title)
 
-        url = self.urls['download'] + '?' + urllib.urlencode({'id': item['id'], 'passkey': self.passkey})
+        url = self.urls['download'] + '?' + urlencode({'id': item['id'], 'passkey': self.passkey})
 
         return title, url
 

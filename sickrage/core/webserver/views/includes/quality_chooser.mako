@@ -6,9 +6,9 @@
 <%def name="QualityChooser(anyQualities=None, bestQualities=None)">
     <%
         if not anyQualities and not bestQualities:
-            anyQualities, bestQualities = Quality.splitQuality(sickrage.app.config.quality_default)
+            anyQualities, bestQualities = Quality.split_quality(sickrage.app.config.quality_default)
 
-        overall_quality = Quality.combineQualities(anyQualities, bestQualities)
+        overall_quality = Quality.combine_qualities(anyQualities, bestQualities)
     %>
 
     <div class="row">
@@ -50,7 +50,7 @@
                                 <span class="fas fa-glasses"></span>
                             </span>
                         </div>
-                        <% anyQualityList = filter(lambda x: x > Quality.NONE, Quality.qualityStrings) %>
+                        <% anyQualityList = list(filter(lambda x: x > Quality.NONE, Quality.qualityStrings)) %>
                         <select id="anyQualities" name="anyQualities" multiple="multiple" size="${len(anyQualityList)}"
                                 class="form-control form-control-inline input-sm" title="anyQualities">
                             % for curQuality in sorted(anyQualityList):
@@ -68,7 +68,7 @@
                                 <span class="fas fa-glasses"></span>
                             </span>
                         </div>
-                        <% bestQualityList = filter(lambda x: Quality.SDTV <= x < Quality.UNKNOWN, Quality.qualityStrings) %>
+                        <% bestQualityList = list(filter(lambda x: Quality.SDTV <= x < Quality.UNKNOWN, Quality.qualityStrings)) %>
                         <select id="bestQualities" name="bestQualities" multiple="multiple"
                                 size="${len(bestQualityList)}" class="form-control form-control-inline"
                                 title="bestQualities">

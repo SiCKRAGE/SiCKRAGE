@@ -38,14 +38,8 @@
 
 import sys
 
-_py3 = sys.version_info[0] == 3
-
-if _py3:
-    _VALID_STRING_TYPES = (str,)
-    _VALID_INT_TYPES = (int,)
-else:
-    _VALID_STRING_TYPES = (str, unicode)  # @UndefinedVariable
-    _VALID_INT_TYPES = (int, long)  # @UndefinedVariable
+_VALID_STRING_TYPES = (str,)
+_VALID_INT_TYPES = (int,)
 
 _TYPE_INT = 1
 _TYPE_STRING = 2
@@ -53,6 +47,7 @@ _TYPE_LIST = 3
 _TYPE_DICTIONARY = 4
 _TYPE_END = 5
 _TYPE_INVALID = 6
+
 
 # Function to determine the type of he next value/item
 #   Arguments:
@@ -64,18 +59,19 @@ _TYPE_INVALID = 6
 def _gettype(char):
     if not isinstance(char, int):
         char = ord(char)
-    if char == 0x6C:						# 'l'
+    if char == 0x6C:  # 'l'
         return _TYPE_LIST
-    elif char == 0x64:					  # 'd'
+    elif char == 0x64:  # 'd'
         return _TYPE_DICTIONARY
-    elif char == 0x69:					  # 'i'
+    elif char == 0x69:  # 'i'
         return _TYPE_INT
-    elif char == 0x65:					  # 'e'
+    elif char == 0x65:  # 'e'
         return _TYPE_END
-    elif char >= 0x30 and char <= 0x39:	 # '0' '9'
+    elif char >= 0x30 and char <= 0x39:  # '0' '9'
         return _TYPE_STRING
     else:
         return _TYPE_INVALID
+
 
 # Function to parse a string from the bendcoded data
 #   Arguments:
@@ -88,17 +84,13 @@ def _gettype(char):
 
 def _decode_string(data):
     end = 1
-    # if py3, data[end] is going to be an int
-    # if py2, data[end] will be a string
-    if _py3:
-        char = 0x3A
-    else:
-        char = chr(0x3A)
+    char = 0x3A
 
     while data[end] != char:  # ':'
         end = end + 1
     strlen = int(data[:end])
     return (data[end + 1:strlen + end + 1], data[strlen + end + 1:])
+
 
 # Function to parse an integer from the bencoded data
 #   Arguments:
@@ -111,16 +103,12 @@ def _decode_string(data):
 
 def _decode_int(data):
     end = 1
-    # if py3, data[end] is going to be an int
-    # if py2, data[end] will be a string
-    if _py3:
-        char = 0x65
-    else:
-        char = chr(0x65)
+    char = 0x65
 
-    while data[end] != char:	 # 'e'
+    while data[end] != char:  # 'e'
         end = end + 1
     return (int(data[1:end]), data[end + 1:])
+
 
 # Function to parse a bencoded list
 #   Arguments:
@@ -134,14 +122,14 @@ def _decode_int(data):
 def _decode_list(data):
     x = []
     overflow = data[1:]
-    while True:										 # Loop over the data
-        if _gettype(overflow[0]) == _TYPE_END:		  # - Break if we reach the end of the list
+    while True:  # Loop over the data
+        if _gettype(overflow[0]) == _TYPE_END:  # - Break if we reach the end of the list
             return (x, overflow[1:])  # and return the list and overflow
 
-        value, overflow = _decode(overflow)			 #
-        if isinstance(value, bool) or overflow == '':   # - if we have a parse error
+        value, overflow = _decode(overflow)  #
+        if isinstance(value, bool) or overflow == '':  # - if we have a parse error
             return (False, False)  # Die with error
-        else:										   # - Otherwise
+        else:  # - Otherwise
             x.append(value)  # add the value to the list
 
 
@@ -155,14 +143,14 @@ def _decode_list(data):
 def _decode_dict(data):
     x = {}
     overflow = data[1:]
-    while True:										 # Loop over the data
-        if _gettype(overflow[0]) != _TYPE_STRING:	   # - If the key is not a string
+    while True:  # Loop over the data
+        if _gettype(overflow[0]) != _TYPE_STRING:  # - If the key is not a string
             return (False, False)  # Die with error
-        key, overflow = _decode(overflow)			   #
-        if key == False or overflow == '':			  # - If parse error
+        key, overflow = _decode(overflow)  #
+        if key == False or overflow == '':  # - If parse error
             return (False, False)  # Die with error
-        value, overflow = _decode(overflow)			 #
-        if isinstance(value, bool) or overflow == '':   # - If parse error
+        value, overflow = _decode(overflow)  #
+        if isinstance(value, bool) or overflow == '':  # - If parse error
             print("Error parsing value")
             print(value)
             print(overflow)
@@ -173,6 +161,7 @@ def _decode_dict(data):
             x[key] = value
         if _gettype(overflow[0]) == _TYPE_END:
             return (x, overflow[1:])
+
 
 #   Arguments:
 #	   data		bencoded data in bytes format
@@ -196,6 +185,7 @@ def _decode(data):
     else:
         return (False, False)
 
+
 # Function to decode bencoded data
 #   Arguments:
 #	   data		bencoded data, can be str or bytes
@@ -211,6 +201,7 @@ def decode(data):
     decoded, overflow = _decode(data)
     return decoded
 
+
 #   Args: data as integer
 # return: encoded byte string
 
@@ -218,12 +209,14 @@ def decode(data):
 def _encode_int(data):
     return b'i' + str(data).encode() + b'e'
 
+
 #   Args: data as string or bytes
 # Return: encoded byte string
 
 
 def _encode_string(data):
     return str(len(data)).encode() + b':' + data
+
 
 #   Args: data as list
 # Return: Encoded byte string, false on error
@@ -233,10 +226,11 @@ def _encode_list(data):
     elist = b'l'
     for item in data:
         eitem = encode(item)
-        if eitem == False:
+        if not eitem:
             return False
         elist += eitem
     return elist + b'e'
+
 
 #   Args: data as dict
 # Return: encoded byte string, false on error
@@ -257,6 +251,7 @@ def _encode_dict(data):
             return False
         edict += ekey + eitem
     return edict + b'e'
+
 
 # Function to encode a variable in bencoding
 #   Arguments:

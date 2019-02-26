@@ -72,7 +72,7 @@
                                             <label class="component-title">${_('Preferred Quality')}</label>
                                         </div>
                                         <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                                            ${QualityChooser(*Quality.splitQuality(int(show.quality)))}
+                                            ${QualityChooser(*Quality.split_quality(int(show.quality)))}
                                         </div>
                                     </div>
 

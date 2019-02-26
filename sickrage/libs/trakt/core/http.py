@@ -119,7 +119,7 @@ class HttpClient(object):
         # Send request
         response = None
 
-        for i in xrange(max_retries + 1):
+        for i in range(max_retries + 1):
             if i > 0:
                 log.warn('Retry # %s', i)
 

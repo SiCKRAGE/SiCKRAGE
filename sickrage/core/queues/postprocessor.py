@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import os
 import threading
@@ -53,7 +52,7 @@ class PostProcessorQueue(srQueue):
         :param proc_type: processing type, auto/manual
         :return: instance of PostProcessorItem or None
         """
-        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
+        for cur_item in self.queue + [self.current_item]:
             if isinstance(cur_item,
                           PostProcessorItem) and cur_item.dirName == dirName and cur_item.proc_type == proc_type:
                 return cur_item
@@ -61,7 +60,7 @@ class PostProcessorQueue(srQueue):
 
     @property
     def is_in_progress(self):
-        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
+        for cur_item in self.queue + [self.current_item]:
             if isinstance(cur_item, PostProcessorItem):
                 return True
         return False
@@ -74,7 +73,7 @@ class PostProcessorQueue(srQueue):
         """
         length = {'auto': 0, 'manual': 0}
 
-        for __, __, cur_item in self.queue + [(None, None, self.current_item)]:
+        for cur_item in self.queue + [self.current_item]:
             if isinstance(cur_item, PostProcessorItem):
                 if cur_item.proc_type == 'auto':
                     length['auto'] += 1
@@ -165,7 +164,7 @@ class PostProcessorItem(srQueueItem):
         try:
             sickrage.app.log.info("Started {} post-processing job for: {}".format(self.proc_type, self.dirName))
 
-            self.result = unicode(processDir(
+            self.result = str(processDir(
                 dirName=self.dirName,
                 nzbName=self.nzbName,
                 process_method=self.process_method,

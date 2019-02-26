@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import os
@@ -25,9 +24,12 @@ import threading
 from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
+from sqlalchemy import orm
+
 import sickrage
 from sickrage.core.common import Quality, UNKNOWN, UNAIRED, statusStrings, dateTimeFormat, SKIPPED, NAMING_EXTEND, \
     NAMING_LIMITED_EXTEND, NAMING_LIMITED_EXTEND_E_PREFIXED, NAMING_DUPLICATE, NAMING_SEPARATED_REPEAT
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import NoNFOException, \
     EpisodeNotFoundException, EpisodeDeletedException
 from sickrage.core.helpers import is_media_file, try_int, replaceExtension, \
@@ -406,56 +408,52 @@ class TVEpisode(object):
         sickrage.app.log.debug("%s: Loading episode details from DB for episode %s S%02dE%02d" % (
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
-                  if x['season'] == season and x['episode'] == episode]
-
-        if len(dbData) > 1:
-            for ep in dbData:
-                sickrage.app.main_db.delete(ep)
-            return False
-        elif len(dbData) == 0:
+        try:
+            dbData = MainDB.TVEpisode.query(showid=self.show.indexerid, season=season,
+                                            episode=episode).one()
+        except orm.exc.NoResultFound:
             sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
             return False
-        else:
-            self._season = season
-            self._episode = episode
-            self._name = dbData[0].get("name", self.name)
-            self._absolute_number = dbData[0].get("absolute_number", self.absolute_number)
-            self._description = dbData[0].get("description", self.description)
-            self._subtitles = dbData[0].get("subtitles", self.subtitles).split(",")
-            self._subtitles_searchcount = dbData[0].get("subtitles_searchcount", self.subtitles_searchcount)
-            self._subtitles_lastsearch = dbData[0].get("subtitles_lastsearch", self.subtitles_lastsearch)
-            self._airdate = datetime.date.fromordinal(int(dbData[0].get("airdate", self.airdate)))
-            self._status = try_int(dbData[0]["status"], self.status)
-            self.location = dbData[0].get("location", self.location)
-            self._file_size = try_int(dbData[0]["file_size"], self.file_size)
-            self._indexerid = try_int(dbData[0]["indexerid"], self.indexerid)
-            self._indexer = try_int(dbData[0]["indexer"], self.indexer)
-            self._release_name = dbData[0].get("release_name", self.release_name)
-            self._release_group = dbData[0].get("release_group", self.release_group)
-            self._is_proper = try_int(dbData[0]["is_proper"], self.is_proper)
-            self._version = try_int(dbData[0]["version"], self.version)
 
-            self._scene_season = try_int(dbData[0]["scene_season"], self.scene_season)
-            self._scene_episode = try_int(dbData[0]["scene_episode"], self.scene_episode)
-            self._scene_absolute_number = try_int(dbData[0]["scene_absolute_number"], self.scene_absolute_number)
+        self._season = season
+        self._episode = episode
+        self._name = dbData.name or self.name
+        self._absolute_number = dbData.absolute_number or self.absolute_number
+        self._description = dbData.description or self.description
+        self._subtitles = str(dbData.subtitles or self.subtitles).split(",")
+        self._subtitles_searchcount = dbData.subtitles_searchcount or self.subtitles_searchcount
+        self._subtitles_lastsearch = dbData.subtitles_lastsearch or self.subtitles_lastsearch
+        self._airdate = datetime.date.fromordinal(try_int(dbData.airdate, self.airdate))
+        self._status = try_int(dbData.status, self.status)
+        self._file_size = try_int(dbData.file_size, self.file_size)
+        self._indexerid = try_int(dbData.indexerid, self.indexerid)
+        self._indexer = try_int(dbData.indexer, self.indexer)
+        self._release_name = dbData.release_name or self.release_name
+        self._release_group = dbData.release_group or self.release_group
+        self._is_proper = try_int(dbData.is_proper, self.is_proper)
+        self._version = try_int(dbData.version, self.version)
+        self.location = dbData.location or self.location
 
-            if self._scene_absolute_number == 0:
-                self._scene_absolute_number = get_scene_absolute_numbering(
-                    self.show.indexerid,
-                    self.show.indexer,
-                    self.absolute_number
-                )
+        self._scene_season = try_int(dbData.scene_season, self.scene_season)
+        self._scene_episode = try_int(dbData.scene_episode, self.scene_episode)
+        self._scene_absolute_number = try_int(dbData.scene_absolute_number, self.scene_absolute_number)
 
-            if self._scene_season == 0 or self._scene_episode == 0:
-                self._scene_season, self._scene_episode = get_scene_numbering(
-                    self.show.indexerid,
-                    self.show.indexer,
-                    self.season, self.episode
-                )
+        if self._scene_absolute_number == 0:
+            self._scene_absolute_number = get_scene_absolute_numbering(
+                self.show.indexerid,
+                self.show.indexer,
+                self.absolute_number
+            )
 
-            return True
+        if self._scene_season == 0 or self._scene_episode == 0:
+            self._scene_season, self._scene_episode = get_scene_numbering(
+                self.show.indexerid,
+                self.show.indexer,
+                self.season, self.episode
+            )
+
+        return True
 
     def load_from_indexer(self, season=None, episode=None, cache=True, tvapi=None, cachedSeason=None):
         indexer_name = IndexerApi(self.indexer).name
@@ -594,8 +592,8 @@ class TVEpisode(object):
             if self.status not in Quality.SNATCHED_PROPER + Quality.DOWNLOADED + Quality.SNATCHED + Quality.ARCHIVED:
                 sickrage.app.log.debug(
                     "5 Status changes from " + str(self.status) + " to " + str(
-                        Quality.statusFromName(self.location)))
-                self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)
+                        Quality.status_from_name(self.location)))
+                self.status = Quality.status_from_name(self.location, anime=self.show.is_anime)
 
         # shouldn't get here probably
         else:
@@ -618,8 +616,8 @@ class TVEpisode(object):
             if self.status == UNKNOWN:
                 if is_media_file(self.location):
                     sickrage.app.log.debug("7 Status changes from " + str(self.status) + " to " + str(
-                        Quality.statusFromName(self.location, anime=self.show.is_anime)))
-                    self.status = Quality.statusFromName(self.location, anime=self.show.is_anime)
+                        Quality.status_from_name(self.location, anime=self.show.is_anime)))
+                    self.status = Quality.status_from_name(self.location, anime=self.show.is_anime)
 
             nfoFile = replaceExtension(self.location, "nfo")
             sickrage.app.log.debug(str(self.show.indexerid) + ": Using NFO name " + nfoFile)
@@ -742,9 +740,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [sickrage.app.main_db.delete(x) for x in
-         sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
-         if x['season'] == self.season and x['episode'] == self.episode]
+        [MainDB.TVEpisode.delete(x) for x in
+         MainDB.TVEpisode.query(showid=self.show.indexerid, season=self.season, episode=self.episode)]
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -774,7 +771,6 @@ class TVEpisode(object):
         sickrage.app.log.debug("%i: Saving episode to database: %s" % (self.show.indexerid, self.name))
 
         tv_episode = {
-            '_t': 'tv_episodes',
             "showid": self.show.indexerid,
             "season": self.season,
             "episode": self.episode,
@@ -801,13 +797,13 @@ class TVEpisode(object):
             "release_group": self.release_group
         }
 
-        for x in sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid):
-            if x['indexerid'] == self.indexerid:
-                x.update(tv_episode)
-                sickrage.app.main_db.update(x)
-                break
-        else:
-            sickrage.app.main_db.insert(tv_episode)
+        try:
+            dbData = MainDB.TVEpisode.query(indexer=self.indexer, indexerid=self.indexerid,
+                                            showid=self.show.indexerid).one()
+            dbData.__dict__.update(tv_episode)
+            MainDB.TVEpisode.update(**dbData.as_dict())
+        except orm.exc.NoResultFound:
+            MainDB.TVEpisode.add(**tv_episode)
 
     def fullPath(self):
         if self.location is None or self.location == "":
@@ -1070,7 +1066,7 @@ class TVEpisode(object):
 
             return ''
 
-        __, epQual = Quality.splitCompositeStatus(self.status)
+        __, epQual = Quality.split_composite_status(self.status)
 
         if sickrage.app.config.naming_strip_year:
             show_name = re.sub(r"\(\d+\)$", "", self.show.name).rstrip()
@@ -1103,7 +1099,7 @@ class TVEpisode(object):
             relgrp = 'SiCKRAGE'
 
         # try to get the release encoder to comply with scene naming standards
-        encoder = Quality.sceneQualityFromName(self.release_name.replace(rel_grp[relgrp], ""), epQual)
+        encoder = Quality.scene_quality_from_name(self.release_name.replace(rel_grp[relgrp], ""), epQual)
         if encoder:
             sickrage.app.log.debug("Found codec for '" + show_name + ": " + ep_name + "'.")
 

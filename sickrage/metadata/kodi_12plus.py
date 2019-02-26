@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 from xml.etree.ElementTree import Element, ElementTree, SubElement
@@ -164,7 +164,7 @@ class KODI_12PlusMetadata(GenericMetadata):
             indexerid = SubElement(tv_node, "id")
             indexerid.text = str(myShow["id"])
 
-        if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], basestring):
+        if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], str):
             genre = SubElement(tv_node, "genre")
             genre.text = " / ".join(x.strip() for x in myShow["genre"].split('|') if x.strip())
 
@@ -316,7 +316,7 @@ class KODI_12PlusMetadata(GenericMetadata):
                 rating = SubElement(episode, "rating")
                 rating.text = myEp['rating']
 
-            if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], basestring):
+            if getattr(myEp, 'gueststars', None) and isinstance(myEp['gueststars'], str):
                 for actor in (x.strip() for x in myEp['gueststars'].split('|') if x.strip()):
                     cur_actor = SubElement(episode, "actor")
                     cur_actor_name = SubElement(cur_actor, "name")

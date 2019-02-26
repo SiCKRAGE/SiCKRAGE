@@ -17,12 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-import httplib
-import xmlrpclib
 from base64 import standard_b64encode
 from datetime import date, timedelta
+from http import client
+from xmlrpc.client import ServerProxy, ProtocolError
 
 import sickrage
 from sickrage.core.common import Quality
@@ -60,18 +59,18 @@ class NZBGet(object):
             "password": sickrage.app.config.nzbget_password
         }
 
-        nzbGetRPC = xmlrpclib.ServerProxy(url)
+        nzbGetRPC = ServerProxy(url)
 
         try:
             if nzbGetRPC.writelog("INFO", "SiCKRAGE connected to drop of %s any moment now." % (nzb.name + ".nzb")):
                 sickrage.app.log.debug("Successful connected to NZBget")
             else:
                 sickrage.app.log.warning("Successful connected to NZBget, but unable to send a message")
-        except httplib.socket.error:
+        except client.socket.error:
             sickrage.app.log.warning("Please check your NZBget host and port (if it is running). NZBget is not "
                                      "responding to this combination")
             return False
-        except xmlrpclib.ProtocolError as e:
+        except ProtocolError as e:
             if e.errmsg == "Unauthorized":
                 sickrage.app.log.warning("NZBget username or password is incorrect.")
             else:
@@ -108,7 +107,8 @@ class NZBGet(object):
         sickrage.app.log.debug("URL: " + url)
 
         try:
-            # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old command
+            # Find out if nzbget supports priority (Version 9.0+), old versions beginning with a 0.x will use the old
+            # command
             nzbget_version_str = nzbGetRPC.version()
             nzbget_version = try_int(nzbget_version_str[:nzbget_version_str.find(".")])
             if nzbget_version == 0:

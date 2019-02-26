@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
-
 import sickrage
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.databases.main import MainDB
 from sickrage.core.media.util import showImage
 
 
@@ -30,11 +30,10 @@ class QuicksearchCache(object):
         }
 
     def load(self):
-        for x in sickrage.app.cache_db.all('quicksearch'):
-            if x['category'] == 'shows':
-                self.cache['shows'][x['showid']] = x
-            elif x['category'] == 'episodes':
-                self.cache['episodes'][x['episodeid']] = x
+        for x in CacheDB.QuickSearchShow.query():
+            self.cache['shows'][x.showid] = x.as_dict()
+        for x in CacheDB.QuickSearchEpisode.query():
+            self.cache['episodes'][x.episodeid] = x.as_dict()
 
         sickrage.app.log.debug("Loaded {} shows to QuickSearch cache".format(len(self.cache['shows'])))
         sickrage.app.log.debug("Loaded {} episodes to QuickSearch cache".format(len(self.cache['episodes'])))
@@ -50,50 +49,54 @@ class QuicksearchCache(object):
         self.add_show(indexerid)
 
     def add_show(self, indexerid):
-        show_name = sickrage.app.main_db.get('tv_shows', indexerid)['show_name']
+        show = MainDB.TVShow.query(indexer_id=indexerid).one()
 
         if indexerid not in self.cache['shows']:
-            sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show_name))
+            sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.show_name))
 
             qsData = {
-                '_t': 'quicksearch',
                 'category': 'shows',
                 'showid': indexerid,
-                'seasons': len(set([e['season'] for e in sickrage.app.main_db.get_many('tv_episodes', indexerid) if e['season'] != 0])),
-                'name': show_name,
+                'seasons': len(set([e.season for e in show.episodes if e.season != 0])),
+                'name': show.show_name,
                 'img': sickrage.app.config.web_root + showImage(indexerid, 'poster_thumb').url
             }
 
             self.cache['shows'][indexerid] = qsData
-            sickrage.app.cache_db.insert(qsData)
+            CacheDB.QuickSearchShow.add(**qsData)
 
-            for e in sickrage.app.main_db.get_many('tv_episodes', indexerid):
+            sql_l = []
+            for e in show.episodes:
                 qsData = {
-                    '_t': 'quicksearch',
                     'category': 'episodes',
-                    'showid': e['showid'],
-                    'episodeid': e['indexerid'],
-                    'season': e['season'],
-                    'episode': e['episode'],
-                    'name': e['name'],
-                    'showname': show_name,
-                    'img': sickrage.app.config.web_root + showImage(e['showid'], 'poster_thumb').url
+                    'showid': e.showid,
+                    'episodeid': e.indexerid,
+                    'season': e.season,
+                    'episode': e.episode,
+                    'name': e.name,
+                    'showname': show.show_name,
+                    'img': sickrage.app.config.web_root + showImage(e.showid, 'poster_thumb').url
                 }
 
-                self.cache['episodes'][e['indexerid']] = qsData
-                sickrage.app.cache_db.insert(qsData)
+                self.cache['episodes'][e.indexerid] = qsData
+                sql_l += [qsData]
+
+            if len(sql_l):
+                CacheDB.QuickSearchEpisode.bulk_add(sql_l)
+                del sql_l
 
     def del_show(self, indexerid):
-        show_name = sickrage.app.main_db.get('tv_shows', indexerid)['show_name']
+        show = MainDB.TVShow.query(indexer_id=indexerid).one()
 
-        sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show_name))
+        sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.show_name))
 
-        if indexerid in self.cache['shows']:
+        if indexerid in self.cache['shows'].copy():
             del self.cache['shows'][indexerid]
 
-        for k, v in self.cache['episodes'].items():
+        for k, v in self.cache['episodes'].copy().items():
             if v['showid'] == indexerid:
                 del self.cache['episodes'][k]
 
         # remove from database
-        [sickrage.app.cache_db.delete(x) for x in sickrage.app.cache_db.get_many('quicksearch', indexerid)]
+        [CacheDB.QuickSearchShow.delete(x) for x in CacheDB.QuickSearchShow.query(showid=indexerid)]
+        [CacheDB.QuickSearchEpisode.delete(x) for x in CacheDB.QuickSearchEpisode.query(showid=indexerid)]

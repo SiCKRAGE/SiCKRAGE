@@ -14,8 +14,8 @@
                     </p>
                     <hr>
                     <a href="#mako-error" class="btn" data-toggle="collapse">${_('Show/Hide Error')}</a>
+                    <br><br>
                     <div id="mako-error" class="collapse">
-                        <br>
                         <div class="text-left">
                             <% filename, lineno, function, line = backtrace.traceback[-1] %>
 

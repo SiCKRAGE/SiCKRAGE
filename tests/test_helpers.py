@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import unittest
 
@@ -83,9 +83,9 @@ for name, test_data in test_cases.items():
     setattr(HelpersTests, 'test_%s' % name, test_generator(test_data))
 
 if __name__ == '__main__':
-    print "=================="
-    print "STARTING - Helpers TESTS"
-    print "=================="
-    print "######################################################################"
+    print("==================")
+    print("STARTING - Helpers TESTS")
+    print("==================")
+    print("######################################################################")
 
     unittest.main()

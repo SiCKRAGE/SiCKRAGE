@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import importlib
-import io
+import inspect
 import os
 import re
 from xml.etree.ElementTree import ElementTree
@@ -27,9 +26,9 @@ from xml.etree.ElementTree import ElementTree
 import fanart
 import sickrage
 from sickrage.core.helpers import chmod_as_parent, replaceExtension, try_int
+from sickrage.core.websession import WebSession
 from sickrage.indexers import IndexerApi
 from sickrage.indexers.exceptions import indexer_error, indexer_episodenotfound, indexer_seasonnotfound
-from sickrage.metadata.helpers import getShowImage
 
 
 class GenericMetadata(object):
@@ -378,7 +377,7 @@ class GenericMetadata(object):
 
             sickrage.app.log.debug("Writing show nfo file to " + nfo_file_path)
 
-            with io.open(nfo_file_path, 'wb') as nfo_file:
+            with open(nfo_file_path, 'wb') as nfo_file:
                 data.write(nfo_file, encoding='utf-8')
 
             chmod_as_parent(nfo_file_path)
@@ -422,7 +421,7 @@ class GenericMetadata(object):
 
             sickrage.app.log.debug("Writing episode nfo file to " + nfo_file_path)
 
-            with io.open(nfo_file_path, 'wb') as nfo_file:
+            with open(nfo_file_path, 'wb') as nfo_file:
                 data.write(nfo_file, encoding='utf-8')
 
             chmod_as_parent(nfo_file_path)
@@ -455,7 +454,7 @@ class GenericMetadata(object):
             sickrage.app.log.debug("No thumb is available for this episode, not creating a thumb")
             return False
 
-        thumb_data = getShowImage(thumb_url)
+        thumb_data = self.get_show_image(thumb_url)
 
         result = self._write_image(thumb_data, file_path)
 
@@ -533,7 +532,7 @@ class GenericMetadata(object):
                 "Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
-        seasonData = getShowImage(season_url)
+        seasonData = self.get_show_image(season_url)
         if not seasonData:
             sickrage.app.log.debug("No season poster data available, skipping this season")
             return False
@@ -548,7 +547,7 @@ class GenericMetadata(object):
             sickrage.app.log.debug("Path for season " + str(season) + " came back blank, skipping this season")
             return False
 
-        seasonData = getShowImage(season_url)
+        seasonData = self.get_show_image(season_url)
         if not seasonData:
             sickrage.app.log.debug("No season banner data available, skipping this season")
             return False
@@ -605,7 +604,7 @@ class GenericMetadata(object):
                 os.makedirs(image_dir)
                 chmod_as_parent(image_dir)
 
-            with io.open(image_path, 'wb') as outFile:
+            with open(image_path, 'wb') as outFile:
                 outFile.write(image_data)
 
             chmod_as_parent(image_path)
@@ -672,7 +671,7 @@ class GenericMetadata(object):
                 image_url = self._retrieve_show_images_from_fanart(show_obj, image_type)
 
         if image_url:
-            image_data = getShowImage(image_url)
+            image_data = self.get_show_image(image_url)
 
         return image_data
 
@@ -759,7 +758,7 @@ class GenericMetadata(object):
             pass
 
         try:
-            with io.open(metadata_path, 'rb') as xmlFileObj:
+            with open(metadata_path, 'rb') as xmlFileObj:
                 showXML = ElementTree(file=xmlFileObj)
 
             if showXML.findtext('title') is None or (
@@ -862,30 +861,38 @@ class GenericMetadata(object):
         except (indexer_episodenotfound, indexer_seasonnotfound):
             pass
 
+    @staticmethod
+    def get_show_image(url):
+        if url is None:
+            return None
+
+        sickrage.app.log.debug("Fetching image from " + url)
+
+        try:
+            return WebSession().get(url).content
+        except Exception:
+            sickrage.app.log.warning("There was an error trying to retrieve the image, aborting")
+
 
 class MetadataProviders(dict):
     def __init__(self):
         super(MetadataProviders, self).__init__()
+
         pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
+        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
 
         for name in names:
-            try:
-                klass = self._get_klass(name.group(1))
-                self[klass().id] = klass()
-            except:
-                continue
+            klass = self._get_klass(name.group(1))
+            self[klass().id] = klass()
 
     @staticmethod
     def _get_klass(name):
-        import inspect
-
         try:
-            return dict(
+            return list(dict(
                 inspect.getmembers(
                     importlib.import_module('.{}'.format(name), 'sickrage.metadata'),
                     predicate=lambda o: inspect.isclass(o) and issubclass(o,
                                                                           GenericMetadata) and o is not GenericMetadata)
-            ).values()[0]
-        except:
+            ).values())[0]
+        except IndexError:
             pass

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import logging
 import os
@@ -88,8 +88,8 @@ class Logger(logging.getLoggerClass()):
         self.handlers = []
 
         # sentry log handler
-        sentry_client = raven.Client('https://3d25da5bd0b34990b282e7112a6113ab:d585806dc45540a891dda0c3418fb8d5'
-                                     '@sentry.sickrage.ca/4?verify_ssl=0', release=sickrage.version(),
+        sentry_client = raven.Client('https://9061827ac34f42d8a6aa2c063fb63ad3:dbc8a94282b4444da60f2f7734b7ec49'
+                                     '@sentry.sickrage.ca/5?verify_ssl=0', release=sickrage.version(),
                                      repos={'sickrage': {'name': 'sickrage/sickrage'}})
 
         sentry_handler = SentryHandler(client=sentry_client, tags={'platform': platform.platform()})
@@ -140,9 +140,9 @@ class Logger(logging.getLoggerClass()):
             rfh_errors.setLevel(self.logLevels['ERROR'])
             self.addHandler(rfh_errors)
 
-    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None):
+    def makeRecord(self, name, level, fn, lno, msg, args, exc_info, func=None, extra=None, sinfo=None):
         if (False, True)[name in self.loggers]:
-            record = super(Logger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra)
+            record = super(Logger, self).makeRecord(name, level, fn, lno, msg, args, exc_info, func, extra, sinfo)
 
             try:
                 record.msg = re.sub(

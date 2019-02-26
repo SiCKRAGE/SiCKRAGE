@@ -16,16 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import time
 
 import feedparser
+from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.api.cache import ProviderCacheAPI
 from sickrage.core.common import Quality
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.exceptions import AuthException, EpisodeNotFoundException
 from sickrage.core.helpers import findCertainShow, show_names, validate_url, is_ip_private, try_int
 from sickrage.core.nameparser import InvalidNameException, NameParser, InvalidShowException
@@ -41,8 +42,7 @@ class TVCache(object):
 
     def clear(self):
         if self.shouldClearCache():
-            [sickrage.app.cache_db.delete(x) for x in
-             sickrage.app.cache_db.get_many('providers', self.providerID)]
+            [CacheDB.Provider.delete(x) for x in CacheDB.Provider.query(provider=self.providerID)]
 
     def _get_title_and_url(self, item):
         return self.provider._get_title_and_url(item)
@@ -119,50 +119,48 @@ class TVCache(object):
 
     @property
     def last_update(self):
-        dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
-        if dbData:
-            lastTime = int(dbData["time"])
+        try:
+            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
+            lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
-        else:
+        except orm.exc.NoResultFound:
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_update.setter
     def last_update(self, toDate):
-        dbData = sickrage.app.cache_db.get('lastUpdate', self.providerID)
-        if dbData:
-            dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.update(dbData)
-        else:
-            sickrage.app.cache_db.insert({
-                '_t': 'lastUpdate',
+        try:
+            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
+            dbData.time = int(time.mktime(toDate.timetuple()))
+            CacheDB.LastUpdate.update(**dbData.as_dict())
+        except orm.exc.NoResultFound:
+            CacheDB.LastUpdate.add(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             })
 
     @property
     def last_search(self):
-        dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
-        if dbData:
-            lastTime = int(dbData["time"])
+        try:
+            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
+            lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
-        else:
+        except orm.exc.NoResultFound:
             lastTime = 0
 
         return datetime.datetime.fromtimestamp(lastTime)
 
     @last_search.setter
     def last_search(self, toDate):
-        dbData = sickrage.app.cache_db.get('lastSearch', self.providerID)
-        if dbData:
-            dbData['time'] = int(time.mktime(toDate.timetuple()))
-            sickrage.app.cache_db.update(dbData)
-        else:
-            sickrage.app.cache_db.insert({
-                '_t': 'lastUpdate',
+        try:
+            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
+            dbData.time = int(time.mktime(toDate.timetuple()))
+            CacheDB.LastSearch.update(**dbData.as_dict())
+        except orm.exc.NoResultFound:
+            CacheDB.LastSearch.add(**{
                 'provider': self.providerID,
                 'time': int(time.mktime(toDate.timetuple()))
             })
@@ -184,7 +182,9 @@ class TVCache(object):
 
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
-        if len([x for x in sickrage.app.cache_db.get_many('providers', self.providerID) if x.get('url') == url]):
+        try:
+            CacheDB.Provider.query(provider=self.providerID, url=url).one()
+        except orm.exc.NoResultFound:
             return
 
         # ignore invalid and private IP address urls
@@ -215,7 +215,6 @@ class TVCache(object):
                     version = parse_result.version
 
                     dbData = {
-                        '_t': 'providers',
                         'provider': self.providerID,
                         'name': name,
                         'season': season,
@@ -232,7 +231,7 @@ class TVCache(object):
                     }
 
                     # add to internal database
-                    sickrage.app.cache_db.insert(dbData)
+                    CacheDB.Provider.add(**dbData)
 
                     # add to external provider cache database
                     if sickrage.app.config.enable_api_providers_cache and not self.provider.private:
@@ -241,7 +240,7 @@ class TVCache(object):
                         except Exception:
                             pass
 
-                    sickrage.app.log.debug("SEARCH RESULT:[%s] ADDED TO CACHE!", name)
+                    sickrage.app.log.debug("SEARCH RESULT:[{}] ADDED TO CACHE!".format(name))
         except (InvalidShowException, InvalidNameException):
             pass
 
@@ -260,12 +259,12 @@ class TVCache(object):
                 pass
 
         # get data from internal database
-        dbData += [x for x in sickrage.app.cache_db.get_many('providers', self.providerID)]
+        dbData += [x.as_dict() for x in
+                   CacheDB.Provider.query(provider=self.providerID, indexerid=ep_obj.show.indexerid, season=season) if
+                   "|{}|".format(episode) in x.episodes]
 
         # for each cache entry
-        for curResult in (x for x in dbData if
-                          x.get('indexerid') == ep_obj.show.indexerid and x.get('season') == season and "|{}|".format(
-                              episode) in x.get('episodes', [])):
+        for curResult in dbData:
             result = self.provider.getResult()
 
             # ignore invalid and private IP address urls

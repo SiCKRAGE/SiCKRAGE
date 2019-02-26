@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import fnmatch
 import glob
@@ -25,8 +24,11 @@ import re
 import stat
 import subprocess
 
+from sqlalchemy import orm
+
 import sickrage
 from sickrage.core.common import Quality, ARCHIVED, DOWNLOADED
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException, EpisodePostProcessingFailedException, \
     NoFreeSpaceException
 from sickrage.core.helpers import findCertainShow, show_names, replaceExtension, makeDir, \
@@ -527,8 +529,9 @@ class PostProcessor(object):
 
         # search the database for a possible match and return immediately if we find one
         for curName in names:
-            dbData = [x for x in sickrage.app.main_db.all('history') if curName in x['resource']]
-            if len(dbData) == 0:
+            try:
+                dbData = MainDB.History.query().filter(MainDB.History.resource.contains(curName)).one()
+            except orm.exc.NoResultFound:
                 continue
 
             indexer_id = int(dbData[0]["showid"])
@@ -638,7 +641,7 @@ class PostProcessor(object):
                     # state of 1 sets the state of the file to "internal HDD"
                     self.anidbEpisode.add_to_mylist(state=1)
                 except Exception as e:
-                    self.log('Exception message: {0!r}'.format(e))
+                    sickrage.app.log.debug('Exception message: {0!r}'.format(e))
 
     def _find_info(self):
         """
@@ -703,36 +706,36 @@ class PostProcessor(object):
                     sickrage.app.log.DEBUG)
                 airdate = episodes[0].toordinal()
 
-                # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                          if x['indexer'] == show.indexer and x['airdate'] == airdate and x['season'] != 0]
-
-                if dbData:
-                    season = int(dbData[0]['season'])
-                    episodes = [int(dbData[0]['episode'])]
-                else:
+                # Ignore season 0 when searching for episode(Conflict between special and regular episode,
+                # same air date)
+                try:
+                    dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                                                    airdate=airdate).filter(MainDB.TVEpisode.season != 0).one()
+                    season = int(dbData.season)
+                    episodes = [int(dbData.episode)]
+                except orm.exc.NoResultFound:
                     # Found no result, try with season 0
-                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                              if x['indexer'] == show.indexer and x['airdate'] == airdate]
-
-                    if dbData:
-                        season = int(dbData[0]['season'])
-                        episodes = [int(dbData[0]['episode'])]
-                    else:
+                    try:
+                        dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                                                        airdate=airdate).one()
+                        season = int(dbData.season)
+                        episodes = [int(dbData.episode)]
+                    except orm.exc.NoResultFound:
                         self._log(
                             "Unable to find episode with date " +
                             str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
                             sickrage.app.log.DEBUG
                         )
 
-                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
+                        # we don't want to leave dates in the episode list if we couldn't convert them to real
+                        # episode numbers
                         episodes = []
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                        if x['season'] != 0 and x['indexer'] == show.indexer}) == 1:
+                if len({x.season for x in MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer).filter(
+                        MainDB.TVEpisode.season != 0)}) == 1:
                     self._log("Don't have a season number, but this show appears to only have 1 season, setting "
                               "season number to 1...", sickrage.app.log.DEBUG)
                     season = 1
@@ -786,7 +789,7 @@ class PostProcessor(object):
 
         # if there is a quality available in the status then we don't need to bother guessing from the filename
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+            __, ep_quality = Quality.split_composite_status(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -803,7 +806,7 @@ class PostProcessor(object):
             if not cur_name:
                 continue
 
-            ep_quality = Quality.nameQuality(cur_name, ep_obj.show.is_anime)
+            ep_quality = Quality.name_quality(cur_name, ep_obj.show.is_anime)
             self._log(
                 "Looking up quality for name " + cur_name + ", got " + Quality.qualityStrings[ep_quality],
                 sickrage.app.log.DEBUG)
@@ -816,7 +819,7 @@ class PostProcessor(object):
 
         # Try getting quality from the episode (snatched) status
         if ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
-            __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+            __, ep_quality = Quality.split_composite_status(ep_obj.status)
             if ep_quality != Quality.UNKNOWN:
                 self._log(
                     "The old status had a quality in it, using that: " + Quality.qualityStrings[ep_quality],
@@ -824,7 +827,7 @@ class PostProcessor(object):
                 return ep_quality
 
         # Try guessing quality from the file name
-        ep_quality = Quality.nameQuality(self.file_path)
+        ep_quality = Quality.name_quality(self.file_path)
         self._log(
             "Guessing quality for name " + self.file_name + ", got " + Quality.qualityStrings[ep_quality],
             sickrage.app.log.DEBUG)
@@ -878,7 +881,7 @@ class PostProcessor(object):
         if self.is_priority:
             return True
 
-        __, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, old_ep_quality = Quality.split_composite_status(ep_obj.status)
 
         # if SR downloaded this on purpose we likely have a priority download
         if self.in_history or ep_obj.status in Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST:
@@ -959,7 +962,7 @@ class PostProcessor(object):
 
         # retrieve/create the corresponding TVEpisode objects
         ep_obj = self._get_ep_obj(show, season, episodes)
-        __, old_ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, old_ep_quality = Quality.split_composite_status(ep_obj.status)
 
         # get the quality of the episode we're processing
         if quality and not Quality.qualityStrings[quality] == 'Unknown':
@@ -1061,9 +1064,9 @@ class PostProcessor(object):
                     cur_ep.release_name = ""
 
                 if ep_obj.status in Quality.SNATCHED_BEST:
-                    cur_ep.status = Quality.compositeStatus(ARCHIVED, new_ep_quality)
+                    cur_ep.status = Quality.composite_status(ARCHIVED, new_ep_quality)
                 else:
-                    cur_ep.status = Quality.compositeStatus(DOWNLOADED, new_ep_quality)
+                    cur_ep.status = Quality.composite_status(DOWNLOADED, new_ep_quality)
 
                 cur_ep.subtitles = ''
 
@@ -1107,7 +1110,7 @@ class PostProcessor(object):
         if sickrage.app.config.rename_episodes:
             orig_extension = self.file_name.rpartition('.')[-1]
             new_base_name = os.path.basename(proper_path)
-            new_file_name = new_base_name + '.' + orig_extension
+            new_file_name = "{}.{}".format(new_base_name, orig_extension)
         else:
             # if we're not renaming then there's no new base name, we'll just use the existing name
             new_base_name = None

@@ -16,16 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import os
 import shutil
 import stat
 
 import rarfile
+from sqlalchemy import or_, literal
 
 import sickrage
 from sickrage.core.common import Quality
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodePostProcessingFailedException, \
     FailedPostProcessingFailedException, NoFreeSpaceException
 from sickrage.core.helpers import is_media_file, is_rar_file, is_hidden_folder, real_path, is_torrent_or_nzb_file, \
@@ -42,7 +43,7 @@ class ProcessResult(object):
         self.missed_files = []
         self.agg_result = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.output
 
 
@@ -114,20 +115,17 @@ def delete_files(processPath, notwantedFiles, result, force=False):
         file_attribute = os.stat(cur_file_path)[0]
         if not file_attribute & stat.S_IWRITE:
             # File is read-only, so make it writeable
-            result.output += logHelper("Changing ReadOnly Flag for file %s" % cur_file, sickrage.app.log.DEBUG)
+            result.output += logHelper("Changing ReadOnly Flag for file {}".format(cur_file), sickrage.app.log.DEBUG)
             try:
                 os.chmod(cur_file_path, stat.S_IWRITE)
             except OSError as e:
-                result.output += logHelper(
-                    "Cannot change permissions of %s: %s" % (
-                        cur_file, str(e.strerror).decode(sickrage.app.sys_encoding)),
-                    sickrage.app.log.DEBUG)
+                result.output += logHelper("Cannot change permissions of {}: {}".format(cur_file, e.strerror),
+                                           sickrage.app.log.DEBUG)
         try:
             os.remove(cur_file_path)
         except OSError as e:
-            result.output += logHelper(
-                "Unable to delete file %s: %s" % (cur_file, str(e.strerror).decode(sickrage.app.sys_encoding)),
-                sickrage.app.log.DEBUG)
+            result.output += logHelper("Unable to delete file {}: {}".format(cur_file, e.strerror),
+                                       sickrage.app.log.DEBUG)
 
 
 def logHelper(logMessage, logLevel=None):
@@ -203,7 +201,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
         if not validateDir(current_directory, nzbName, failed, result):
             continue
 
-        video_files = filter(is_media_file, file_names)
+        video_files = list(filter(is_media_file, file_names))
         if video_files:
             try:
                 process_media(current_directory, video_files, nzbName, process_method, force, is_priority, result)
@@ -217,7 +215,7 @@ def processDir(dirName, nzbName=None, process_method=None, force=False, is_prior
             continue
 
         # Check for unwanted files
-        unwanted_files = filter(lambda x: x in video_files + rar_files, file_names)
+        unwanted_files = list(filter(lambda x: x in video_files + rar_files, file_names))
         if unwanted_files:
             result.output += logHelper("Found unwanted files: {0}".format(unwanted_files), sickrage.app.log.DEBUG)
 
@@ -315,7 +313,7 @@ def validateDir(process_path, release_name, failed, result):
 
     for current_directory, directory_names, file_names in os.walk(process_path, topdown=False,
                                                                   followlinks=sickrage.app.config.processor_follow_symlinks):
-        sync_files = filter(is_sync_file, file_names)
+        sync_files = list(filter(is_sync_file, file_names))
         if sync_files and sickrage.app.config.postpone_if_sync_files:
             result.output += logHelper("Found temporary sync files: {0} in path: {1}".format(sync_files,
                                                                                              os.path.join(process_path,
@@ -325,9 +323,9 @@ def validateDir(process_path, release_name, failed, result):
             result.missed_files.append("{0} : Sync files found".format(os.path.join(process_path, sync_files[0])))
             continue
 
-        found_files = filter(is_media_file, file_names)
+        found_files = list(filter(is_media_file, file_names))
         if sickrage.app.config.unpack == 1:
-            found_files += filter(is_rar_file, file_names)
+            found_files += list(filter(is_rar_file, file_names))
 
         if current_directory != sickrage.app.config.tv_download_dir and found_files:
             found_files.append(os.path.basename(current_directory))
@@ -382,7 +380,7 @@ def unrar(path, rar_files, force, result):
                     continue
 
                 # If there are no video files in the rar, don't extract it
-                rar_media_files = filter(is_media_file, rar_handle.namelist())
+                rar_media_files = list(filter(is_media_file, rar_handle.namelist()))
                 if not rar_media_files:
                     continue
 
@@ -465,8 +463,8 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if [x for x in sickrage.app.main_db.all('tv_episodes') if
-        x['release_name'] and (x['release_name'] in dirName or x['release_name'] in videofile)]:
+    if MainDB.TVEpisode.query().filter(or_(literal(dirName).contains(MainDB.TVEpisode.release_name),
+                                           literal(videofile).contains(MainDB.TVEpisode.release_name))):
         return True
 
     # Needed if we have downloaded the same episode @ different quality
@@ -477,19 +475,16 @@ def already_postprocessed(dirName, videofile, force, result):
     except:
         parse_result = False
 
-    for h in (h for h in sickrage.app.main_db.all('history') if h['resource'].endswith(videofile)):
-        for e in (e for e in sickrage.app.main_db.get_many('tv_episodes', h['showid'])
-                  if h['season'] == e['season'] and h['episode'] == e['episode']
-                     and e['status'] in Quality.DOWNLOADED):
-
+    for h in MainDB.History.query().filter(MainDB.History.resource.endswith(videofile)):
+        for e in MainDB.TVEpisode.query(showid=h.showid, season=h.season, episode=h.episode).filter(
+                MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
             # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
             # query
-            if parse_result and (parse_result.indexerid and
-                                 parse_result.episode_numbers and
+            if parse_result and (parse_result.indexerid and parse_result.episode_numbers and
                                  parse_result.season_number):
-                if e['showid'] == int(parse_result.indexerid) and \
-                        e['season'] == int(parse_result.season_number and
-                                           e['episode']) == int(parse_result.episode_numbers[0]):
+                if e.showid == int(parse_result.indexerid) and \
+                        e.season == int(parse_result.season_number and
+                                        e.episode) == int(parse_result.episode_numbers[0]):
                     return True
             else:
                 return True

@@ -70,13 +70,6 @@
                             <br/>
                         % endif
                         <div class="form-row">
-                            <div class="col-lg-3 col-md-3 col-sm-3"><i
-                                    class="sickrage-core sickrage-core-locale"></i> ${_('SR Locale:')}
-                            </div>
-                            <div class="col-lg-9 col-md-9 col-sm-9">${sickrage.app.sys_encoding}</div>
-                        </div>
-                        <br/>
-                        <div class="form-row">
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <i class="sickrage-core sickrage-core-cfg"></i> ${_('SR Config File:')}
                             </div>

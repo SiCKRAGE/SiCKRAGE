@@ -17,10 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.websession import WebSession
@@ -104,9 +104,6 @@ class SabNZBd(object):
         """
         Find out how we should connect to SAB
         :param host: hostname where SAB lives
-        :param username: username to use
-        :param password: password to use
-        :param apikey: apikey to use
         :return: (boolean, string) with True if method was successful
         """
         params = {'mode': 'auth', 'output': 'json'}

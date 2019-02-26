@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import importlib
+import inspect
 import os
 import re
 
@@ -101,24 +101,19 @@ class NotifierProviders(dict):
         super(NotifierProviders, self).__init__()
 
         pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__))]
+        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
 
         for name in names:
-            try:
-                klass = self._get_klass(name.group(1))
-                self[klass().id] = klass()
-            except:
-                continue
+            klass = self._get_klass(name.group(1))
+            self[klass().id] = klass()
 
     @staticmethod
     def _get_klass(name):
-        import inspect
-
         try:
-            return dict(
+            return list(dict(
                 inspect.getmembers(
                     importlib.import_module('.{}'.format(name), 'sickrage.notifiers'),
                     predicate=lambda o: inspect.isclass(o) and issubclass(o, Notifiers) and o is not Notifiers)
-            ).values()[0]
-        except:
+            ).values())[0]
+        except IndexError:
             pass

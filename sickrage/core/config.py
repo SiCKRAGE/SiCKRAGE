@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with   If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import base64
 import datetime
@@ -29,7 +28,7 @@ import re
 import sys
 import uuid
 from ast import literal_eval
-from itertools import izip, cycle
+from itertools import cycle
 
 import rarfile
 from apscheduler.triggers.interval import IntervalTrigger
@@ -955,7 +954,7 @@ class Config(object):
             gt.install(unicode=True, names=["ngettext"])
         else:
             # System default language
-            gettext.install('messages', sickrage.LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+            gettext.install('messages', sickrage.LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
         self.gui_lang = lang
 
@@ -1270,7 +1269,7 @@ class Config(object):
 
         try:
             my_val = self.config_obj.get(section, {section: key}).as_int(key)
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if str(my_val).lower() == "true":
@@ -1291,7 +1290,7 @@ class Config(object):
 
         try:
             my_val = self.config_obj.get(section, {section: key}).as_float(key)
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if not silent:
@@ -1307,7 +1306,7 @@ class Config(object):
 
         try:
             my_val = self.config_obj.get(section, {section: key}).get(key, def_val)
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if censor or (section, key) in sickrage.app.log.CENSORED_ITEMS:
@@ -1326,7 +1325,7 @@ class Config(object):
 
         try:
             my_val = list(self.config_obj.get(section, {section: key}).get(key, def_val))
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if not silent:
@@ -1342,7 +1341,7 @@ class Config(object):
 
         try:
             my_val = dict(literal_eval(self.config_obj.get(section, {section: key}).get(key, def_val)))
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if not silent:
@@ -1358,7 +1357,7 @@ class Config(object):
 
         try:
             my_val = self.config_obj.get(section, {section: key}).as_bool(key)
-        except StandardError:
+        except Exception:
             my_val = def_val
 
         if not silent:
@@ -2361,8 +2360,10 @@ class Config(object):
             'Providers': dict({
                 'providers_order': sickrage.app.search_providers.provider_order,
                 'custom_providers': self.custom_providers,
-            }, **{providerID: dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)]) for
-                  providerID, providerObj in sickrage.app.search_providers.all().items()}),
+            }, **{providerID: dict([(x, int(getattr(providerObj, x)) if isinstance(getattr(providerObj, x),
+                                                                                   bool) else getattr(providerObj, x))
+                                    for x in provider_keys if hasattr(providerObj, x)]) for providerID, providerObj in
+                  sickrage.app.search_providers.all().items()}),
             'MetadataProviders': {metadataProviderID: metadataProviderObj.get_config() for
                                   metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items()}
         })
@@ -2376,31 +2377,30 @@ class Config(object):
         :rtype: basestring
         """
 
+        # DO NOT ENCRYPT THESE
         if key in ['config_version', 'encryption_version', 'encryption_secret']:
-            pass
-        else:
-            try:
-                if self.encryption_version == 1:
-                    unique_key1 = hex(uuid.getnode() ** 2)
+            return
 
-                    if _decrypt:
-                        section[key] = ''.join(
-                            chr(ord(x) ^ ord(y)) for (x, y) in
-                            izip(base64.decodestring(section[key]), cycle(unique_key1)))
-                    else:
-                        section[key] = base64.encodestring(
-                            ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(unique_key1)))).strip()
-                elif self.encryption_version == 2:
-                    if _decrypt:
-                        section[key] = ''.join(chr(ord(x) ^ ord(y)) for (x, y) in
-                                               izip(base64.decodestring(section[key]),
-                                                    cycle(sickrage.app.config.encryption_secret)))
-                    else:
-                        section[key] = base64.encodestring(
-                            ''.join(chr(ord(x) ^ ord(y)) for (x, y) in izip(section[key], cycle(
-                                sickrage.app.config.encryption_secret)))).strip()
-            except:
-                pass
+        try:
+            if self.encryption_version == 1:
+                unique_key1 = hex(uuid.getnode() ** 2)
+
+                if _decrypt:
+                    section[key] = ''.join(
+                        chr(ord(x) ^ ord(y)) for (x, y) in
+                        zip(base64.decodestring(section[key]), cycle(unique_key1)))
+                else:
+                    section[key] = base64.encodestring(
+                        ''.join(chr(ord(x) ^ ord(y)) for (x, y) in zip(section[key], cycle(unique_key1)))).strip()
+            elif self.encryption_version == 2:
+                if _decrypt:
+                    section[key] = ''.join(chr(x ^ y) for x, y in zip(base64.b64decode(section[key]), cycle(
+                        map(ord, sickrage.app.config.encryption_secret))))
+                else:
+                    section[key] = base64.b64encode(''.join(chr(x ^ y) for (x, y) in zip(map(ord, section[key]), cycle(
+                        map(ord, sickrage.app.config.encryption_secret)))).encode()).decode().strip()
+        except Exception as e:
+            return
 
     def decrypt(self, section, key):
         return self.encrypt(section, key, _decrypt=True)
@@ -2428,10 +2428,10 @@ class ConfigMigrator(Config):
 
         if current_version > expected_version:
             sickrage.app.log.warning("Your config version (%i) has been incremented past what this version of supports "
-                                   "(%i). If you have used other forks or a newer version of  your config file may be "
-                                   "unusable due to their modifications." % (current_version,
-                                                                             expected_version)
-                                   )
+                                     "(%i). If you have used other forks or a newer version of  your config file may be "
+                                     "unusable due to their modifications." % (current_version,
+                                                                               expected_version)
+                                     )
             sys.exit(1)
 
         while current_version < expected_version:

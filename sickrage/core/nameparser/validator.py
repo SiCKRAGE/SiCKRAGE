@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import os
 from datetime import date
@@ -179,7 +179,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
     # make a fake episode object
     ep = Episode(2, 3, 3, "Ep Name")
 
-    ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+    ep._status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
     ep._airdate = date(2011, 3, 9)
 
     if abd:
@@ -204,7 +204,7 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
             ep._release_name = 'Show.Name.003-004.HDTV.XviD-RLSGROUP'
 
             second_ep = Episode(2, 4, 4, "Ep Name (2)")
-            second_ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            second_ep._status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
             second_ep._release_name = ep.release_name
 
             ep.relatedEps.append(second_ep)
@@ -212,11 +212,11 @@ def generate_sample_ep(multi=None, abd=False, sports=False, anime_type=None):
             ep._release_name = 'Show.Name.S02E03E04E05.HDTV.XviD-RLSGROUP'
 
             second_ep = Episode(2, 4, 4, "Ep Name (2)")
-            second_ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            second_ep._status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
             second_ep._release_name = ep.release_name
 
             third_ep = Episode(2, 5, 5, "Ep Name (3)")
-            third_ep._status = Quality.compositeStatus(DOWNLOADED, Quality.HDTV)
+            third_ep._status = Quality.composite_status(DOWNLOADED, Quality.HDTV)
             third_ep._release_name = ep.release_name
 
             ep.relatedEps.append(second_ep)

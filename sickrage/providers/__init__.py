@@ -16,11 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import importlib
-import io
 import itertools
 import os
 import random
@@ -28,18 +26,20 @@ import re
 from base64 import b16encode, b32decode, b64decode
 from collections import OrderedDict, defaultdict
 from time import sleep
-from urlparse import urljoin
+from urllib.parse import urljoin
 from xml.sax import SAXParseException
 
-import bencode
+from bencode3 import bdecode, bencode
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
+from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
@@ -136,7 +136,7 @@ class GenericProvider(object):
         Returns a Quality value obtained from the node's data
         """
         (title, url) = self._get_title_and_url(item)
-        quality = Quality.sceneQuality(title, anime)
+        quality = Quality.scene_quality(title, anime)
         return quality
 
     def search(self, search_strings, age=0, ep_obj=None, **kwargs):
@@ -377,21 +377,19 @@ class GenericProvider(object):
                 actual_episodes = parse_result.episode_numbers
             else:
                 if not parse_result.is_air_by_date:
-                    sickrage.app.log.debug(
-                        "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
+                    sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as "
+                                           "one, skipping it".format(result.name))
                     continue
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', result.show.indexerid)
-                              if x['airdate'] == airdate]
-
-                    if len(dbData) != 1:
-                        sickrage.app.log.warning(
-                            "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
+                    try:
+                        dbData = MainDB.TVEpisode.query(showid=result.show.indexerid, airdate=airdate).one()
+                        actual_season = int(dbData.season)
+                        actual_episodes = [int(dbData.episode)]
+                    except orm.exc.NoResultFound:
+                        sickrage.app.log.warning("Tried to look up the date for the episode {} but the database "
+                                                 "didn't give proper results, skipping it".format(result.name))
                         continue
-
-                    actual_season = int(dbData[0]["season"])
-                    actual_episodes = [int(dbData[0]["episode"])]
 
             # make sure we want the episode
             wantEp = False
@@ -641,7 +639,7 @@ class TorrentProvider(GenericProvider):
 
         def verify_torrent(content):
             try:
-                if bencode.bdecode(content).get('info'):
+                if bdecode(content).get('info'):
                     return content
             except Exception:
                 pass
@@ -705,7 +703,7 @@ class TorrentProvider(GenericProvider):
         sickrage.app.log.info("Saving TORRENT to " + filename)
 
         # write content to torrent file
-        with io.open(filename, 'wb') as f:
+        with open(filename, 'wb') as f:
             f.write(result.content)
 
         return True
@@ -738,14 +736,14 @@ class TorrentProvider(GenericProvider):
 
             # adds public torrent trackers to content
             if result.content:
-                decoded_data = bencode.bdecode(result.content)
+                decoded_data = bdecode(result.content)
                 if not decoded_data.get('announce-list'):
                     decoded_data[b'announce-list'] = []
 
                 for tracker in trackers_list:
                     if tracker not in decoded_data['announce-list']:
                         decoded_data['announce-list'].append([str(tracker)])
-                result.content = bencode.bencode(decoded_data)
+                result.content = bencode(decoded_data)
 
         return result
 
@@ -798,13 +796,13 @@ class NZBProvider(GenericProvider):
 
         # Support for Jackett/TorzNab
         if (result.url.endswith('torrent') or result.url.startswith('magnet')) and self.type in ['nzb', 'newznab']:
-            filename = filename.rsplit('.', 1)[0] + '.' + 'torrent'
+            filename = "{}.torrent".format(filename.rsplit('.', 1)[0])
 
         if result.resultType == "nzb":
             sickrage.app.log.info("Saving NZB to " + filename)
 
             # write content to torrent file
-            with io.open(filename, 'wb') as f:
+            with open(filename, 'wb') as f:
                 f.write(result.content)
 
             return True
@@ -815,7 +813,7 @@ class NZBProvider(GenericProvider):
 
             # save the data to disk
             try:
-                with io.open(filename, 'w') as fileOut:
+                with open(filename, 'w') as fileOut:
                     fileOut.write(result.extraInfo[0])
 
                 chmod_as_parent(filename)
@@ -912,7 +910,7 @@ class TorrentRssProvider(TorrentProvider):
             else:
                 try:
                     torrent_file = self.session.get(url).content
-                    bencode.bdecode(torrent_file)
+                    bdecode(torrent_file)
                 except Exception as e:
                     if data:
                         self.dumpHTML(torrent_file)
@@ -931,7 +929,7 @@ class TorrentRssProvider(TorrentProvider):
         dumpName = os.path.join(sickrage.app.cache_dir, 'custom_torrent.html')
 
         try:
-            with io.open(dumpName, 'wb') as fileOut:
+            with open(dumpName, 'wb') as fileOut:
                 fileOut.write(data)
 
             chmod_as_parent(dumpName)
@@ -1335,13 +1333,13 @@ class SearchProviders(dict):
         return dict([(pID, pObj) for pID, pObj in self.all().items() if not pObj.isEnabled])
 
     def all(self):
-        return dict(self.nzb().items() + self.torrent().items() + self.newznab().items() + self.torrentrss().items())
+        return {**self.nzb(), **self.torrent(), **self.newznab(), **self.torrentrss()}
 
     def all_nzb(self):
-        return dict(self.nzb().items() + self.newznab().items())
+        return {**self.nzb(), **self.newznab()}
 
     def all_torrent(self):
-        return dict(self.torrent().items() + self.torrentrss().items())
+        return {**self.torrent(), **self.torrentrss()}
 
     def nzb(self):
         return self[NZBProvider.type]

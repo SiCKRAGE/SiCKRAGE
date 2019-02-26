@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import glob
@@ -26,9 +25,10 @@ import shutil
 import stat
 import threading
 import traceback
+from collections import namedtuple
 
 import send2trash
-from CodernityDB.database import RevConflict
+from sqlalchemy import orm, desc
 from unidecode import unidecode
 
 import sickrage
@@ -38,6 +38,7 @@ from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
     UNAIRED, ARCHIVED, statusStrings, Overview
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException, MultipleShowObjectsException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, findCertainShow
@@ -86,7 +87,7 @@ class TVShow(object):
         self.dirty = True
 
         self._location = ""
-        self._next_aired = ""
+        self._next_aired = 0
         self.episodes = {}
         self.release_groups = None
 
@@ -193,7 +194,7 @@ class TVShow(object):
     def imdb_info(self, value):
         if self._imdb_info != value:
             self.dirty = True
-        self._imdb_info = value
+        self._imdb_info = namedtuple("imdb_info", value.keys())(*value.values())
 
     @property
     def quality(self):
@@ -437,18 +438,21 @@ class TVShow(object):
             curDate = datetime.date.today()
 
             if not self._next_aired or self._next_aired and curDate.toordinal() > self._next_aired:
-                dbData = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                                 if x['airdate'] >= curDate.toordinal()
-                                 and x['status'] in (UNAIRED, WANTED)], key=lambda d: d['airdate'])
+                dbData = MainDB.TVEpisode.query(showid=self.indexerid).filter(
+                    MainDB.TVEpisode.airdate >= curDate.toordinal(),
+                    MainDB.TVEpisode.status.in_([UNAIRED, WANTED])).order_by(MainDB.TVEpisode.airdate).first()
 
-                self._next_aired = dbData[0]['airdate'] if dbData else ''
+                self._next_aired = 0
+                if dbData:
+                    self._next_aired = dbData.airdate
+
         return self._next_aired
 
     @property
     def show_size(self):
         total_size = 0
-        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            total_size += x['file_size']
+        for x in MainDB.TVEpisode.query(showid=self.indexerid):
+            total_size += x.file_size
         return total_size
 
     @property
@@ -472,16 +476,17 @@ class TVShow(object):
 
     def get_all_episodes(self, season=None, has_location=False):
         results = []
-        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            if season and x['season'] != season:
+
+        for x in MainDB.TVEpisode.query(showid=self.indexerid):
+            if season and x.season != season:
                 continue
-            if has_location and x['location'] == '':
+            if has_location and x.location == '':
                 continue
             results += [x]
 
         ep_list = []
-        for cur_result in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            cur_ep = self.get_episode(int(cur_result["season"]), int(cur_result["episode"]))
+        for cur_result in MainDB.TVEpisode.query(showid=self.indexerid):
+            cur_ep = self.get_episode(int(cur_result.season), int(cur_result.episode))
             if not cur_ep:
                 continue
 
@@ -489,18 +494,18 @@ class TVShow(object):
             if cur_ep.location:
                 # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
                 if len([r for r in results
-                            if r['showid'] == cur_result['showid']
-                               and r['season'] == cur_result['season']
-                               and r['location'] != '' and r['location'] == cur_result['location']
-                               and r['episode'] != cur_result['episode']]) > 0:
+                        if r.showid == cur_result.showid and
+                           r.season == cur_result.season and
+                           r.location != '' and
+                           r.location == cur_result.location and
+                           r.episode != cur_result.episode]) > 0:
 
-                    related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                                                 if x['season'] == cur_ep.season
-                                                 and x['location'] == cur_ep.location
-                                                 and x['episode'] != cur_ep.episode], key=lambda d: d['episode'])
+                    related_eps_result = MainDB.TVEpisode.query(showid=self.indexerid, season=cur_ep.season,
+                                                                location=cur_ep.location).filter(
+                        MainDB.TVEpisode.episode != cur_ep.episode).order_by(MainDB.TVEpisode.episode)
 
                     for cur_related_ep in related_eps_result:
-                        related_ep = self.get_episode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
+                        related_ep = self.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                         if related_ep and related_ep not in cur_ep.relatedEps:
                             cur_ep.relatedEps.append(related_ep)
 
@@ -511,20 +516,19 @@ class TVShow(object):
     def get_episode(self, season=None, episode=None, file=None, noCreate=False, absolute_number=None):
         # if we get an anime get the real season and episode
         if self.is_anime and all([absolute_number is not None, season is None, episode is None]):
-            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                      if x['absolute_number'] == absolute_number and x['season'] != 0]
-
-            if len(dbData) == 1:
-                episode = int(dbData[0]["episode"])
-                season = int(dbData[0]["season"])
+            try:
+                dbData = MainDB.TVEpisode.query(showid=self.indexerid, absolute_number=absolute_number).filter(
+                    MainDB.TVEpisode.season != 0).one()
+                episode = int(dbData.episode)
+                season = int(dbData.season)
                 sickrage.app.log.debug(
                     "Found episode by absolute_number %s which is S%02dE%02d" % (
                         absolute_number, season or 0, episode or 0))
-            elif len(dbData) > 1:
+            except orm.exc.MultipleResultsFound:
                 sickrage.app.log.warning("Multiple entries for absolute number: " + str(
                     absolute_number) + " in show: " + self.name + " found ")
                 return None
-            else:
+            except orm.exc.NoResultFound:
                 sickrage.app.log.debug(
                     "No entries for absolute number: " + str(absolute_number) + " in show: " + self.name + " found.")
                 return None
@@ -558,23 +562,25 @@ class TVShow(object):
         last_airdate = datetime.date.fromordinal(1)
 
         # get latest aired episode to compare against today - graceperiod and today + graceperiod
-        dbData = sorted((x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                         if x['season'] > 0 and x['airdate'] > 1 and x['status'] == 1),
-                        key=lambda d: d['airdate'], reverse=True)
-
-        if dbData:
-            last_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
+        try:
+            dbData = MainDB.TVEpisode.query(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
+                                                                                    MainDB.TVEpisode.airdate > 1).order_by(
+                desc(MainDB.TVEpisode.airdate)).one()
+            last_airdate = datetime.date.fromordinal(dbData.airdate)
             if (update_date - graceperiod) <= last_airdate <= (update_date + graceperiod):
                 return True
+        except orm.exc.NoResultFound:
+            pass
 
-        # get next upcoming UNAIRED episode to compare against today + graceperiod
-        dbData = sorted((x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                         if x['season'] > 0 and x['airdate'] > 1 and x['status'] == 1), key=lambda d: d['airdate'])
-
-        if dbData:
-            next_airdate = datetime.date.fromordinal(dbData[0]['airdate'])
+        try:
+            dbData = MainDB.TVEpisode.query(showid=self.indexerid, status=1).filter(MainDB.TVEpisode.season > 0,
+                                                                                    MainDB.TVEpisode.airdate > 1).order_by(
+                MainDB.TVEpisode.airdate).one()
+            next_airdate = datetime.date.fromordinal(dbData.airdate)
             if next_airdate <= (update_date + graceperiod):
                 return True
+        except orm.exc.NoResultFound:
+            pass
 
         # in the first year after ended (last airdate), update every 30 days
         if (update_date - last_airdate) < datetime.timedelta(days=450) and (
@@ -618,14 +624,11 @@ class TVShow(object):
 
         sickrage.app.log.debug(str(self.indexerid) + ": Writing NFOs for all episodes")
 
-        for dbData in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            if dbData['location'] == '':
-                continue
-
+        for dbData in MainDB.TVEpisode.query(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
             sickrage.app.log.debug(str(self.indexerid) + ": Retrieving/creating episode S%02dE%02d" % (
-                dbData["season"] or 0, dbData["episode"] or 0))
+                dbData.season or 0, dbData.episode or 0))
 
-            self.get_episode(dbData["season"], dbData["episode"]).createMetaFiles(force)
+            self.get_episode(dbData.season, dbData.episode).createMetaFiles(force)
 
     # find all media files in the show folder and create episodes for as many as possible
     def load_episodes_from_dir(self):
@@ -685,11 +688,11 @@ class TVShow(object):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+        for dbData in MainDB.TVEpisode.query(showid=self.indexerid):
             deleteEp = False
 
-            curSeason = int(dbData["season"])
-            curEpisode = int(dbData["episode"])
+            curSeason = int(dbData.season)
+            curEpisode = int(dbData.episode)
 
             if curSeason not in scannedEps:
                 scannedEps[curSeason] = {}
@@ -817,7 +820,8 @@ class TVShow(object):
                 try:
                     curEp = self.get_episode(season, episode, filename)
                 except EpisodeNotFoundException:
-                    sickrage.app.log.error("{}: Unable to figure out what this file is, skipping".format(self.indexerid))
+                    sickrage.app.log.error(
+                        "{}: Unable to figure out what this file is, skipping".format(self.indexerid))
                     continue
 
             else:
@@ -848,17 +852,17 @@ class TVShow(object):
 
             # if they replace a file on me I'll make some attempt at re-checking the quality unless I know it's the same file
             if checkQualityAgain and not same_file:
-                newQuality = Quality.nameQuality(filename, self.is_anime)
+                newQuality = Quality.name_quality(filename, self.is_anime)
                 sickrage.app.log.debug("Since this file has been renamed")
 
                 with curEp.lock:
-                    curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
+                    curEp.status = Quality.composite_status(DOWNLOADED, newQuality)
 
             # check for status/quality changes as long as it's a new file
             elif not same_file and is_media_file(
                     filename) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
-                oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                newQuality = Quality.nameQuality(filename, self.is_anime)
+                oldStatus, oldQuality = Quality.split_composite_status(curEp.status)
+                newQuality = Quality.name_quality(filename, self.is_anime)
 
                 newStatus = None
 
@@ -888,8 +892,8 @@ class TVShow(object):
                         sickrage.app.log.debug(
                             "STATUS: we have an associated file, so setting the status from " + str(
                                 curEp.status) + " to DOWNLOADED/" + str(
-                                Quality.statusFromName(filename, anime=self.is_anime)))
-                        curEp.status = Quality.compositeStatus(newStatus, newQuality)
+                                Quality.status_from_name(filename, anime=self.is_anime)))
+                        curEp.status = Quality.composite_status(newStatus, newQuality)
 
             with curEp.lock:
                 curEp.save_to_db()
@@ -904,54 +908,56 @@ class TVShow(object):
     def load_from_db(self, skipNFO=False):
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
-
-        if len(dbData) > 1:
+        try:
+            dbData = MainDB.TVShow.query(indexer_id=self.indexerid, indexer=self.indexer).one()
+        except orm.exc.MultipleResultsFound:
             raise MultipleShowsInDatabaseException()
-        elif len(dbData) == 0:
+        except orm.exc.NoResultFound:
             return ShowNotFoundException()
 
-        self._indexer = try_int(dbData[0]["indexer"], self.indexer)
-        self._name = dbData[0].get("show_name", self.name)
-        self._network = dbData[0].get("network", self.network)
-        self._genre = dbData[0].get("genre", self.genre)
-        self._overview = dbData[0].get("overview", self.overview)
-        self._classification = dbData[0].get("classification", self.classification)
-        self._runtime = dbData[0].get("runtime", self.runtime)
-        self._status = dbData[0].get("status", self.status)
-        self._airs = dbData[0].get("airs", self.airs)
-        self._startyear = try_int(dbData[0]["startyear"], self.startyear)
-        self._air_by_date = try_int(dbData[0]["air_by_date"], self.air_by_date)
-        self._anime = try_int(dbData[0]["anime"], self.anime)
-        self._sports = try_int(dbData[0]["sports"], self.sports)
-        self._scene = try_int(dbData[0]["scene"], self.scene)
-        self._subtitles = try_int(dbData[0]["subtitles"], self.subtitles)
-        self._subtitles_sr_metadata = dbData[0].get("subtitles_sr_metadata", self.subtitles_sr_metadata)
-        self._dvdorder = try_int(dbData[0]["dvdorder"], self.dvdorder)
-        self._skip_downloaded = try_int(dbData[0]["skip_downloaded"], self.skip_downloaded)
-        self._quality = try_int(dbData[0]["quality"], self.quality)
-        self._flatten_folders = try_int(dbData[0]["flatten_folders"], self.flatten_folders)
-        self._paused = try_int(dbData[0]["paused"], self.paused)
-        self._lang = dbData[0].get("lang", self.lang)
-        self._last_update = dbData[0].get("last_update", self.last_update)
-        self._last_refresh = dbData[0].get("last_refresh", self.last_refresh)
-        self._rls_ignore_words = dbData[0].get("rls_ignore_words", self.rls_ignore_words)
-        self._rls_require_words = dbData[0].get("rls_require_words", self.rls_require_words)
-        self._default_ep_status = try_int(dbData[0]["default_ep_status"], self.default_ep_status)
-        self._notify_list = dbData[0].get("notify_list", self.notify_list)
-        self._search_delay = dbData[0].get("search_delay", self.search_delay)
-        self._imdbid = dbData[0].get("imdb_id", self.imdbid)
-        self._location = dbData[0].get("location", self.location)
+        self._indexer = try_int(dbData.indexer, self.indexer)
+        self._name = dbData.show_name or self.name
+        self._network = dbData.network or self.network
+        self._genre = dbData.genre or self.genre
+        self._overview = dbData.overview or self.overview
+        self._classification = dbData.classification or self.classification
+        self._runtime = dbData.runtime or self.runtime
+        self._status = dbData.status or self.status
+        self._airs = dbData.airs or self.airs
+        self._startyear = dbData.startyear or self.startyear
+        self._air_by_date = dbData.air_by_date or self.air_by_date
+        self._anime = dbData.anime or self.anime
+        self._sports = dbData.sports or self.sports
+        self._scene = dbData.scene or self.scene
+        self._subtitles = dbData.subtitles or self.subtitles
+        self._subtitles_sr_metadata = dbData.sub_use_sr_metadata or self.subtitles_sr_metadata
+        self._dvdorder = dbData.dvdorder or self.dvdorder
+        self._skip_downloaded = dbData.skip_downloaded or self.skip_downloaded
+        self._quality = dbData.quality or self.quality
+        self._flatten_folders = dbData.flatten_folders or self.flatten_folders
+        self._paused = dbData.paused or self.paused
+        self._lang = dbData.lang or self.lang
+        self._last_update = dbData.last_update or self.last_update
+        self._last_refresh = dbData.last_refresh or self.last_refresh
+        self._rls_ignore_words = dbData.rls_ignore_words or self.rls_ignore_words
+        self._rls_require_words = dbData.rls_require_words or self.rls_require_words
+        self._default_ep_status = dbData.default_ep_status or self.default_ep_status
+        self._notify_list = dbData.notify_list or self.notify_list
+        self._search_delay = dbData.search_delay or self.search_delay
+        self._imdbid = dbData.imdb_id or self.imdbid
+        self._location = dbData.location or self.location
 
         if self.is_anime:
             self.release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
             # Get IMDb_info from database
-            self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
+            try:
+                self._imdb_info = MainDB.IMDbInfo.query(indexer_id=self.indexerid).one()
+            except orm.exc.NoResultFound:
+                self._imdb_info = self.imdb_info
 
     def load_from_indexer(self, cache=True, tvapi=None):
-
         if self.indexer is not INDEXER_TVRAGE:
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Loading show info from " + IndexerApi(self.indexer).name)
@@ -1023,54 +1029,50 @@ class TVShow(object):
                 sickrage.app.log.debug(str(self.indexerid) + ': Unable to obtain IMDb info')
                 return
 
+            for column in self.imdb_info.copy():
+                if column not in MainDB.IMDbInfo.__table__.columns.keys():
+                    del self.imdb_info[column]
+
             sickrage.app.log.debug(
                 str(self.indexerid) + ": Obtained IMDb info ->" + str(self.imdb_info))
 
             # save imdb info to database
             imdb_info = {
-                '_t': 'imdb_info',
                 'indexer_id': self.indexerid,
                 'last_update': datetime.date.today().toordinal()
             }
 
             try:
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                if dbData:
-                    dbData.update(self.imdb_info)
-                    sickrage.app.main_db.update(dbData)
-                else:
-                    imdb_info.update(self.imdb_info)
-                    sickrage.app.main_db.insert(imdb_info)
-            except RevConflict:
-                dbData = sickrage.app.main_db.get('imdb_info', self.indexerid)
-                if dbData:
-                    sickrage.app.main_db.delete(dbData)
+                dbData = MainDB.IMDbInfo.query(indexer_id=self.indexerid).one()
+                dbData.__dict__.update(self.imdb_info)
+                MainDB.IMDbInfo.update(**dbData.as_dict())
+            except orm.exc.NoResultFound:
                 imdb_info.update(self.imdb_info)
-                sickrage.app.main_db.insert(imdb_info)
+                MainDB.IMDbInfo.add(**imdb_info)
 
     def delete_show(self, full=False):
         # choose delete or trash action
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove from tv episodes table
-        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            sickrage.app.main_db.delete(x)
+        for x in MainDB.TVEpisode.query(showid=self.indexerid):
+            MainDB.TVEpisode.delete(x)
 
         # remove from tv shows table
-        for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid):
-            sickrage.app.main_db.delete(x)
+        for x in MainDB.TVShow.query(indexer_id=self.indexerid):
+            MainDB.TVShow.delete(x)
 
         # remove from imdb info table
-        for x in sickrage.app.main_db.get_many('imdb_info', self.indexerid):
-            sickrage.app.main_db.delete(x)
+        for x in MainDB.IMDbInfo.query(indexer_id=self.indexerid):
+            MainDB.IMDbInfo.delete(x)
 
         # remove from xem scene table
-        for x in sickrage.app.main_db.get_many('xem_refresh', self.indexerid):
-            sickrage.app.main_db.delete(x)
+        for x in MainDB.XEMRefresh.query(indexer_id=self.indexerid):
+            MainDB.XEMRefresh.delete(x)
 
         # remove from scene numbering table
-        for x in sickrage.app.main_db.get_many('scene_numbering', self.indexerid):
-            sickrage.app.main_db.delete(x)
+        for x in MainDB.SceneNumbering.query(indexer_id=self.indexerid):
+            MainDB.SceneNumbering.delete(x)
 
         # remove self from show list
         sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]
@@ -1139,19 +1141,15 @@ class TVShow(object):
         # run through all locations from DB, check that they exist
         sickrage.app.log.debug(str(self.indexerid) + ": Loading all episodes with a location from the database")
 
-        for ep in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            if ep['location'] == '':
-                continue
-
-            curLoc = os.path.normpath(ep["location"])
-            season = int(ep["season"])
-            episode = int(ep["episode"])
+        for ep in MainDB.TVEpisode.query(showid=self.indexerid).filter(MainDB.TVEpisode.location != ''):
+            curLoc = os.path.normpath(ep.location)
+            season = int(ep.season)
+            episode = int(ep.episode)
 
             try:
                 curEp = self.get_episode(season, episode)
             except EpisodeDeletedException:
-                sickrage.app.log.debug(
-                    "The episode was deleted while we were refreshing it, moving on to the next one")
+                sickrage.app.log.debug("The episode was deleted while we were refreshing it, moving on to the next one")
                 continue
 
             # if the path doesn't exist or if it's not in our show dir
@@ -1161,12 +1159,12 @@ class TVShow(object):
                 # check if downloaded files still exist, update our data if this has changed
                 if not sickrage.app.config.skip_removed_files:
                     with curEp.lock:
-                        # if it used to have a file associated with it and it doesn't anymore then set it to sickrage.EP_DEFAULT_DELETED_STATUS
+                        # if it used to have a file associated with it and it doesn't anymore then set it to
+                        # EP_DEFAULT_DELETED_STATUS
                         if curEp.location and curEp.status in Quality.DOWNLOADED:
-
                             if sickrage.app.config.ep_default_deleted_status == ARCHIVED:
-                                __, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                                new_status = Quality.compositeStatus(ARCHIVED, oldQuality)
+                                __, oldQuality = Quality.split_composite_status(curEp.status)
+                                new_status = Quality.composite_status(ARCHIVED, oldQuality)
                             else:
                                 new_status = sickrage.app.config.ep_default_deleted_status
 
@@ -1219,7 +1217,6 @@ class TVShow(object):
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexerid, self.name))
 
         tv_show = {
-            '_t': 'tv_shows',
             'indexer_id': self.indexerid,
             "indexer": self.indexer,
             "show_name": self.name,
@@ -1254,12 +1251,12 @@ class TVShow(object):
             "search_delay": self.search_delay,
         }
 
-        dbData = sickrage.app.main_db.get('tv_shows', self.indexerid)
-        if dbData:
-            dbData.update(tv_show)
-            sickrage.app.main_db.update(dbData)
-        else:
-            sickrage.app.main_db.insert(tv_show)
+        try:
+            dbData = MainDB.TVShow.query(indexer_id=self.indexerid).one()
+            dbData.__dict__.update(tv_show)
+            MainDB.TVShow.update(**dbData.as_dict())
+        except orm.exc.NoResultFound:
+            MainDB.TVShow.add(**tv_show)
 
     def __str__(self):
         toReturn = ""
@@ -1290,7 +1287,7 @@ class TVShow(object):
 
         result = ''
         for quality in qualities:
-            if Quality.qualityStrings.has_key(quality):
+            if quality in Quality.qualityStrings:
                 result += Quality.qualityStrings[quality] + ', '
             else:
                 sickrage.app.log.info("Bad quality value: " + str(quality))
@@ -1307,7 +1304,7 @@ class TVShow(object):
             self.name, season or 0, episode or 0, Quality.qualityStrings[quality]))
 
         # if the quality isn't one we want under any circumstances then just say no
-        anyQualities, bestQualities = Quality.splitQuality(self.quality)
+        anyQualities, bestQualities = Quality.split_quality(self.quality)
         sickrage.app.log.debug("Any, Best = [{}] [{}] Found = [{}]".format(
             self.qualitiesToString(anyQualities),
             self.qualitiesToString(bestQualities),
@@ -1318,14 +1315,14 @@ class TVShow(object):
             sickrage.app.log.debug("Don't want this quality, ignoring found episode")
             return False
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                  if x['season'] == season and x['episode'] == episode]
-
-        if not dbData or not len(dbData):
+        try:
+            dbData = MainDB.TVEpisode.query(showid=self.indexerid, season=season,
+                                            episode=episode).one()
+        except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
 
-        epStatus = int(dbData[0]["status"])
+        epStatus = int(dbData.status)
         epStatus_text = statusStrings[epStatus]
 
         sickrage.app.log.debug("Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")")
@@ -1336,7 +1333,7 @@ class TVShow(object):
                 "Existing episode status is unaired/skipped/ignored/archived, ignoring found episode")
             return False
 
-        curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
+        curStatus, curQuality = Quality.split_composite_status(epStatus)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
         if epStatus == WANTED:
@@ -1385,8 +1382,8 @@ class TVShow(object):
         elif epStatus in Quality.SNATCHED_BEST:
             return Overview.SNATCHED_BEST
         elif epStatus in Quality.DOWNLOADED:
-            anyQualities, bestQualities = Quality.splitQuality(self.quality)
-            epStatus, curQuality = Quality.splitCompositeStatus(epStatus)
+            anyQualities, bestQualities = Quality.split_quality(self.quality)
+            epStatus, curQuality = Quality.split_composite_status(epStatus)
 
             if bestQualities:
                 maxBestQuality = max(bestQualities)
@@ -1423,13 +1420,11 @@ class TVShow(object):
             mapped[indexer] = self.indexerid if int(indexer) == int(self.indexer) else 0
 
         # for each mapped entry
-        for dbData in (x for x in sickrage.app.main_db.get_many('indexer_mapping', self.indexerid)
-                       if x['indexer'] == self.indexer):
-
+        for dbData in MainDB.IndexerMapping.query(indexer_id=self.indexerid, indexer=self.indexer):
             # Check if its mapped with both tvdb and tvrage.
             if len([i for i in dbData if i is not None]) >= 4:
                 sickrage.app.log.debug("Found indexer mapping in cache for show: " + self.name)
-                mapped[int(dbData['mindexer'])] = int(dbData['mindexer_id'])
+                mapped[int(dbData.mindexer)] = int(dbData.mindexer_id)
                 return mapped
         else:
             for indexer in IndexerApi().indexers:
@@ -1458,12 +1453,11 @@ class TVShow(object):
 
                     sickrage.app.log.debug("Adding indexer mapping to DB for show: " + self.name)
 
-                    dbData = [x for x in sickrage.app.main_db.get_many('indexer_mapping', self.indexerid)
-                              if x['indexer'] == self.indexer and x['mindexer_id'] == int(mapped_show['id'])]
-
-                    if not len(dbData):
-                        sickrage.app.main_db.insert({
-                            '_t': 'indexer_mapping',
+                    try:
+                        MainDB.IndexerMapping.query(indexer_id=self.indexerid, indexer=self.indexer,
+                                                    mindexer_id=int(mapped_show['id'])).one()
+                    except orm.exc.NoResultFound:
+                        MainDB.IndexerMapping.add(**{
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,
                             'mindexer_id': int(mapped_show['id']),

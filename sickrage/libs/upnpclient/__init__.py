@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals, with_statement
+
 
 from upnpclient import const, errors, marshal, soap, ssdp, upnp, util  # noqa: F401
 from .ssdp import discover

@@ -16,18 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import base64
-import httplib
 import json
 import socket
 import time
-import urllib
-import urllib2
+from urllib import parse
+from urllib.parse import unquote_plus, urlencode, unquote
 from xml.etree import ElementTree
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -75,7 +74,7 @@ class KODINotifier(Notifiers):
         # revert back to default socket timeout
         socket.setdefaulttimeout(sickrage.app.config.socket_timeout)
 
-        if not result:
+        if not result or result is False:
             # fallback to legacy HTTPAPI method
             testCommand = {'command': 'Help'}
             request = self._send_to_kodi(testCommand, host, username, password)
@@ -128,18 +127,17 @@ class KODINotifier(Notifiers):
                 if kodiapi <= 4:
                     sickrage.app.log.debug("Detected KODI version <= 11, using KODI HTTP API")
                     command = {'command': 'ExecBuiltIn',
-                               'parameter': 'Notification(' + title.encode("utf-8") + ',' + message.encode(
-                                   "utf-8") + ')'}
+                               'parameter': 'Notification({},{})'.format(title.encode("utf-8"), message.encode("utf-8"))}
                     notifyResult = self._send_to_kodi(command, curHost, username, password)
                     if notifyResult:
                         result += curHost + ':' + str(notifyResult)
                 else:
                     sickrage.app.log.debug("Detected KODI version >= 12, using KODI JSON API")
-                    command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s","message":"%s", "image": "%s"},"id":1}' % (
-                        title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
+                    command = '{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"%s",' \
+                              '"message":"%s", "image": "%s"},"id":1}' % (title.encode("utf-8"), message.encode("utf-8"), self.sr_logo_url)
                     notifyResult = self._send_to_kodi_json(command, curHost, username, password)
                     if notifyResult and notifyResult.get('result'):
-                        result += curHost + ':' + notifyResult["result"].decode(sickrage.app.sys_encoding)
+                        result += curHost + ':' + notifyResult["result"]
             else:
                 if sickrage.app.config.kodi_always_on or force:
                     sickrage.app.log.warning(
@@ -215,40 +213,33 @@ class KODINotifier(Notifiers):
             sickrage.app.log.warning('No KODI host passed, aborting update')
             return False
 
-        for key in command:
-            if isinstance(command[key], unicode):
-                command[key] = command[key].encode('utf-8')
-
-        enc_command = urllib.urlencode(command)
+        enc_command = urlencode(command)
         sickrage.app.log.debug("KODI encoded API command: " + enc_command)
 
         url = 'http://%s/kodiCmds/kodiHttp/?%s' % (host, enc_command)
+
+        headers = {}
+
+        # if we have a password, use authentication
+        if password:
+            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            authheader = "Basic %s" % base64string
+            headers["Authorization"] = authheader
+            sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
+        else:
+            sickrage.app.log.debug("Contacting KODI via url: " + url)
+
+        resp = WebSession().get(url, headers=headers)
+
         try:
-            req = urllib2.Request(url)
-            # if we have a password, use authentication
-            if password:
-                base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
-                authheader = "Basic %s" % base64string
-                req.add_header("Authorization", authheader)
-                sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
-            else:
-                sickrage.app.log.debug("Contacting KODI via url: " + url)
-
-            try:
-                response = urllib2.urlopen(req)
-            except (httplib.BadStatusLine, urllib2.URLError) as e:
-                sickrage.app.log.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
-                return False
-
-            result = response.read().decode(sickrage.app.sys_encoding)
-            response.close()
-
-            sickrage.app.log.debug("KODI HTTP response: " + result.replace('\n', ''))
-            return result
-
+            resp.raise_for_status()
         except Exception as e:
             sickrage.app.log.debug("Couldn't contact KODI HTTP at %r : %r" % (url, e))
             return False
+
+        result = resp.text
+        sickrage.app.log.debug("KODI HTTP response: " + result.replace('\n', ''))
+        return result
 
     def _update_library(self, host=None, showName=None):
         """Handles updating KODI host via HTTP API
@@ -299,7 +290,7 @@ class KODINotifier(Notifiers):
                 sickrage.app.log.debug("Invalid response for " + showName + " on " + host)
                 return False
 
-            encSqlXML = urllib.quote(sqlXML, ':\\/<>')
+            encSqlXML = parse.quote(sqlXML, ':\\/<>')
             try:
                 et = ElementTree.fromstring(encSqlXML)
             except SyntaxError as e:
@@ -314,7 +305,7 @@ class KODINotifier(Notifiers):
 
             for path in paths:
                 # we do not need it double-encoded, gawd this is dumb
-                unEncPath = urllib.unquote(path.text).decode(sickrage.app.sys_encoding)
+                unEncPath = unquote(path.text)
                 sickrage.app.log.debug("KODI Updating " + showName + " on " + host + " at " + unEncPath)
                 updateCommand = {'command': 'ExecBuiltIn', 'parameter': 'KODI.updatelibrary(video, %s)' % (unEncPath)}
                 request = self._send_to_kodi(updateCommand, host)
@@ -365,45 +356,34 @@ class KODINotifier(Notifiers):
             sickrage.app.log.warning('No KODI host passed, aborting update')
             return False
 
-        command = command.encode('utf-8')
         sickrage.app.log.debug("KODI JSON command: " + command)
 
         url = 'http://%s/jsonrpc' % (host)
+
+        headers = {"Content-type": "application/json"}
+
+        # if we have a password, use authentication
+        if password:
+            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            authheader = "Basic %s" % base64string
+            headers["Authorization"] = authheader
+            sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
+        else:
+            sickrage.app.log.debug("Contacting KODI via url: " + url)
+
+        resp = WebSession().get(url, data=command, headers=headers)
+
         try:
-            req = urllib2.Request(url, command)
-            req.add_header("Content-type", "application/json")
-            # if we have a password, use authentication
-            if password:
-                base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
-                authheader = "Basic %s" % base64string
-                req.add_header("Authorization", authheader)
-                sickrage.app.log.debug("Contacting KODI (with auth header) via url: " + url)
-            else:
-                sickrage.app.log.debug("Contacting KODI via url: " + url)
-
-            try:
-                response = urllib2.urlopen(req)
-            except (httplib.BadStatusLine, urllib2.URLError) as e:
-                if sickrage.app.config.kodi_always_on:
-                    sickrage.app.log.warning(
-                        "Error while trying to retrieve KODI API version for " + host + ": {}".format(e))
-                return False
-
-            # parse the json result
-            try:
-                result = json.load(response)
-                response.close()
-                sickrage.app.log.debug("KODI JSON response: " + str(result))
-                return result  # need to return response for parsing
-            except ValueError as e:
-                sickrage.app.log.warning("Unable to decode JSON: " + str(response.read()))
-                return False
-
-        except IOError as e:
+            resp.raise_for_status()
+            result = resp.json()
+            sickrage.app.log.debug("KODI JSON response: " + str(result))
+            return result
+        except Exception as e:
             if sickrage.app.config.kodi_always_on:
                 sickrage.app.log.warning(
                     "Warning: Couldn't contact KODI JSON API at " + url + " {}".format(e))
-            return False
+
+        return False
 
     def _update_library_json(self, host=None, showName=None):
         """Handles updating KODI host via HTTP JSON-RPC
@@ -428,7 +408,7 @@ class KODINotifier(Notifiers):
 
         # if we're doing per-show
         if showName:
-            showName = urllib.unquote_plus(showName)
+            showName = unquote_plus(showName)
             tvshowid = -1
             path = ''
 
@@ -490,7 +470,7 @@ class KODINotifier(Notifiers):
             updateCommand = '{"jsonrpc":"2.0","method":"VideoLibrary.Scan","params":{"directory":%s},"id":1}' % (
                 json.dumps(path))
             request = self._send_to_kodi_json(updateCommand, host)
-            if not request:
+            if request is False:
                 sickrage.app.log.warning(
                     "Update of show directory failed on " + showName + " on " + host + " at " + path)
                 return False

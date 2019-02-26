@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 from base64 import b64encode
 
@@ -170,7 +170,6 @@ class DelugeRPC(object):
         return torrent_id
 
     def add_torrent_file(self, filename, torrent, options, torrent_hash):
-        torrent_id = False
         try:
             self.connect()
             torrent_id = self.client.core.add_torrent_file(filename, b64encode(torrent), options).get()
@@ -212,7 +211,7 @@ class DelugeRPC(object):
             self.connect()
             if priority:
                 self.client.core.queue_top([torrent_ids]).get()
-        except Exception, err:
+        except Exception as err:
             return False
         finally:
             if self.client:
@@ -224,7 +223,7 @@ class DelugeRPC(object):
             self.connect()
             self.client.core.set_torrent_stop_at_ratio(torrent_ids, True).get()
             self.client.core.set_torrent_stop_ratio(torrent_ids, ratio).get()
-        except Exception, err:
+        except Exception as err:
             return False
         finally:
             if self.client:
