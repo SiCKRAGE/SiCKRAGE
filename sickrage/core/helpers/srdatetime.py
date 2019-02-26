@@ -17,12 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import locale
 
 import sickrage
-from sickrage.core.helpers import encoding
 
 date_presets = (
     '%Y-%m-%d',
@@ -140,7 +139,7 @@ class srDateTime(object):
             except Exception:
                 self.has_locale = False
 
-        return encoding.to_unicode(strt)
+        return strt
 
     # display Date in SickRage Format
     def srfdate(self, d_preset=None):
@@ -179,7 +178,7 @@ class srDateTime(object):
             except Exception:
                 pass
 
-        return encoding.to_unicode(strd)
+        return strd
 
     # display Datetime in SickRage Format
     def srfdatetime(self, show_seconds=False, d_preset=None, t_preset=None):
@@ -228,4 +227,4 @@ class srDateTime(object):
             except Exception:
                 self.has_locale = False
 
-        return encoding.to_unicode(strd)
+        return strd

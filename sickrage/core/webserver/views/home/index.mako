@@ -3,6 +3,7 @@
     import re
     import calendar
     import unidecode
+    from functools import cmp_to_key
 
     import sickrage
     from sickrage.core.helpers import srdatetime, pretty_filesize
@@ -129,7 +130,7 @@
                         % endif
                     % endfor
 
-                    % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
+                    % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                     <%
                         cur_airs_next = ''
                         cur_snatched = 0
@@ -319,7 +320,7 @@
                             % endif
 
                             <tbody class="">
-                                % for curShow in sorted(curShowlist, lambda x, y: cmp(x.name, y.name)):
+                                % for curShow in sorted(curShowlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                                     <%
                                         cur_airs_next = ''
                                         cur_airs_prev = ''

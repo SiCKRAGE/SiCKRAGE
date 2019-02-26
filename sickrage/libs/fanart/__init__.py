@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import requests
 
@@ -24,7 +24,7 @@ from .errors import RequestFanartError, ResponseFanartError
 
 
 def values(obj):
-    return [v for k, v in obj.__dict__.iteritems() if not k.startswith('_')]
+    return [v for k, v in obj.__dict__.items() if not k.startswith('_')]
 
 
 BASEURL = 'http://webservice.fanart.tv/v3'

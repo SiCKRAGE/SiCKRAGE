@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
+
 
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST
@@ -79,7 +79,7 @@ class FailedProcessor(object):
         for episode in parsed.episode_numbers:
             segment = parsed.show.get_episode(parsed.season_number, episode)
 
-            curStatus, curQuality = Quality.splitCompositeStatus(segment.status)
+            curStatus, curQuality = Quality.split_composite_status(segment.status)
             if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                 continue
 

@@ -16,15 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import re
 import telnetlib
-import urllib
-import urllib2
+from urllib.parse import urlencode
 from xml.etree import ElementTree
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -44,6 +43,7 @@ class NMJNotifier(Notifiers):
 
         # establish a terminal session to the PC
         terminal = False
+
         try:
             terminal = telnetlib.Telnet(host)
         except Exception:
@@ -70,7 +70,7 @@ class NMJNotifier(Notifiers):
             sickrage.app.config.nmj_database = database
         else:
             sickrage.app.log.warning(
-                "Could not get current NMJ database on %s, NMJ is probably not running!" % (host))
+                "Could not get current NMJ database on %s, NMJ is probably not running!" % host)
             return False
 
         # if the device is a remote host then try to parse the mounting URL and save it to the config
@@ -79,7 +79,7 @@ class NMJNotifier(Notifiers):
 
             if match:
                 mount = match.group().replace("127.0.0.1", host)
-                sickrage.app.log.debug("Found mounting url on the Popcorn Hour in configuration: %s" % (mount))
+                sickrage.app.log.debug("Found mounting url on the Popcorn Hour in configuration: %s" % mount)
                 sickrage.app.config.nmj_mount = mount
             else:
                 sickrage.app.log.warning(
@@ -120,19 +120,13 @@ class NMJNotifier(Notifiers):
 
         # if a mount URL is provided then attempt to open a handle to that URL
         if mount:
+            sickrage.app.log.debug("Try to mount network drive via url: %s" % mount)
+            resp = WebSession().get(mount)
+
             try:
-                req = urllib2.Request(mount)
-                sickrage.app.log.debug("Try to mount network drive via url: %s" % (mount))
-                handle = urllib2.urlopen(req)
-            except IOError as e:
-                if hasattr(e, 'reason'):
-                    sickrage.app.log.warning(
-                        "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
-                elif hasattr(e, 'code'):
-                    sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
-                return False
-            except Exception as e:
-                sickrage.app.log.error("NMJ: Unknown exception: {}".format(e))
+                resp.raise_for_status()
+            except Exception:
+                sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, resp.status_code))
                 return False
 
         # build up the request URL and parameters
@@ -143,29 +137,22 @@ class NMJNotifier(Notifiers):
             "arg2": "background",
             "arg3": ""
         }
-        params = urllib.urlencode(params)
+        params = urlencode(params)
         updateUrl = UPDATE_URL % {"host": host, "params": params}
 
         # send the request to the server
+        sickrage.app.log.debug("Sending NMJ scan update command via url: %s" % updateUrl)
+        resp = WebSession().get(updateUrl)
+
         try:
-            req = urllib2.Request(updateUrl)
-            sickrage.app.log.debug("Sending NMJ scan update command via url: %s" % (updateUrl))
-            handle = urllib2.urlopen(req)
-            response = handle.read()
-        except IOError as e:
-            if hasattr(e, 'reason'):
-                sickrage.app.log.warning(
-                    "NMJ: Could not contact Popcorn Hour on host %s: %s" % (host, e.reason))
-            elif hasattr(e, 'code'):
-                sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, e.code))
-            return False
-        except Exception as e:
-            sickrage.app.log.error("NMJ: Unknown exception: {}".format(e))
+            resp.raise_for_status()
+        except Exception:
+            sickrage.app.log.warning("NMJ: Problem with Popcorn Hour on host %s: %s" % (host, resp.status_code))
             return False
 
         # try to parse the resulting XML
         try:
-            et = ElementTree.fromstring(response)
+            et = ElementTree.fromstring(resp.text)
             result = et.findtext("returnValue")
         except SyntaxError as e:
             sickrage.app.log.error("Unable to parse XML returned from the Popcorn Hour: {}".format(e))

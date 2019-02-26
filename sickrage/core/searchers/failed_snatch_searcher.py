@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import threading
@@ -79,7 +79,7 @@ class FailedSnatchSearcher(object):
 
             ep_obj = show.get_episode(int(episode['season']), int(episode['episode']))
             if isinstance(ep_obj, TVEpisode):
-                curStatus, curQuality = Quality.splitCompositeStatus(ep_obj.status)
+                curStatus, curQuality = Quality.split_composite_status(ep_obj.status)
                 if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:
                     continue
 

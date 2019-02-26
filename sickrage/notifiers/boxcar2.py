@@ -15,13 +15,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+from urllib.parse import urlencode
 
-from __future__ import unicode_literals
-
-import urllib
-import urllib2
+from requests import RequestException
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 API_URL = "https://new.boxcar.io/api/notifications"
@@ -46,12 +45,11 @@ class Boxcar2Notifier(Notifiers):
         returns: True if the message succeeded, False otherwise
         """
 
-        # build up the URL and parameters
-        # more info goes here - https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
+        # build up the URL and parameters more info goes here -
+        # https://boxcar.uservoice.com/knowledgebase/articles/306788-how-to-send-your-boxcar-account-a-notification
         msg = msg.strip()
-        curUrl = API_URL
 
-        data = urllib.urlencode({
+        data = urlencode({
             'user_credentials': accesstoken,
             'notification[title]': "SiCKRAGE : " + title + ' : ' + msg,
             'notification[long_message]': msg,
@@ -59,26 +57,21 @@ class Boxcar2Notifier(Notifiers):
         })
 
         # send the request to boxcar2
-        try:
-            req = urllib2.Request(curUrl)
-            handle = urllib2.urlopen(req, data, timeout=60)
-            handle.close()
+        resp = WebSession().get(API_URL, data=data, timeout=60)
 
-        except urllib2.HTTPError as e:
+        try:
+            resp.raise_for_status()
+        except RequestException as e:
             # if we get an error back that doesn't have an error code then who knows what's really happening
-            if not hasattr(e, 'code'):
-                sickrage.app.log.error("Boxcar2 notification failed.{}".format(e))
-                return False
-            else:
-                sickrage.app.log.warning("Boxcar2 notification failed. Error code: " + str(e.code))
+            sickrage.app.log.warning("Boxcar2 notification failed. Error code: {}".format(resp.status_code))
 
             # HTTP status 404
-            if e.code == 404:
+            if resp.status_code == 404:
                 sickrage.app.log.warning("Access token is invalid. Check it.")
                 return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
-            elif e.code == 400:
+            elif resp.status_code == 400:
                 sickrage.app.log.error("Wrong data send to boxcar2")
                 return False
 

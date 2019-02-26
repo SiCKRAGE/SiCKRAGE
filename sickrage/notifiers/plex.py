@@ -16,15 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import base64
 import re
-import urllib
-import urllib2
+from urllib.parse import urlencode
 from xml.etree import ElementTree
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -57,36 +56,33 @@ class PLEXNotifier(Notifiers):
             sickrage.app.log.warning('PLEX: No host specified, check your settings')
             return False
 
-        for key in command:
-            if type(command[key]) == unicode:
-                command[key] = command[key].encode('utf-8')
-
-        enc_command = urllib.urlencode(command)
+        enc_command = urlencode(command)
         sickrage.app.log.debug('PLEX: Encoded API command: ' + enc_command)
 
         url = 'http://%s/xbmcCmds/xbmcHttp/?%s' % (host, enc_command)
+
+        headers = {}
+
+        # if we have a password, use authentication
+        if password:
+            base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
+            authheader = 'Basic %s' % base64string
+            headers['Authorization'] = authheader
+            sickrage.app.log.debug('PLEX: Contacting (with auth header) via url: ' + url)
+        else:
+            sickrage.app.log.debug('PLEX: Contacting via url: ' + url)
+
+        resp = WebSession().get(url, headers=headers)
+
         try:
-            req = urllib2.Request(url)
-            # if we have a password, use authentication
-            if password:
-                base64string = base64.encodestring('%s:%s' % (username, password))[:-1]
-                authheader = 'Basic %s' % base64string
-                req.add_header('Authorization', authheader)
-                sickrage.app.log.debug('PLEX: Contacting (with auth header) via url: ' + url)
-            else:
-                sickrage.app.log.debug('PLEX: Contacting via url: ' + url)
-
-            response = urllib2.urlopen(req)
-
-            result = response.read().decode(sickrage.app.sys_encoding)
-            response.close()
+            resp.raise_for_status()
+            result = resp.text
 
             sickrage.app.log.debug('PLEX: HTTP response: ' + result.replace('\n', ''))
             # could return result response = re.compile('<html><li>(.+\w)</html>').findall(result)
             return 'OK'
-
-        except (urllib2.URLError, IOError) as e:
-            sickrage.app.log.warning('PLEX: Warning: Couldn\'t contact Plex at ' + url + ' ' + e)
+        except Exception as e:
+            sickrage.app.log.warning('PLEX: Warning: Couldn\'t contact Plex at {}: {}'.format(url, e))
             return False
 
     def _notify_pmc(self, message, title='SiCKRAGE', host=None, username=None, password=None, force=False):
@@ -193,21 +189,23 @@ class PLEXNotifier(Notifiers):
                 token_arg = '?X-Plex-Token=' + plex_server_token
             elif username and password:
                 sickrage.app.log.debug('PLEX: fetching plex.tv credentials for user: ' + username)
-                req = urllib2.Request('https://plex.tv/users/sign_in.xml', data='')
-                authheader = 'Basic %s' % base64.encodestring('%s:%s' % (username, password))[:-1]
-                req.add_header('Authorization', authheader)
-                req.add_header('X-Plex-Device-Name', 'SiCKRAGE')
-                req.add_header('X-Plex-Product', 'SiCKRAGE Notifier')
-                req.add_header('X-Plex-Client-Identifier', sickrage.app.user_agent)
-                req.add_header('X-Plex-Version', '1.0')
+
+                headers = {
+                    'Authorization': 'Basic %s' % base64.encodestring('%s:%s' % (username, password))[:-1],
+                    'X-Plex-Device-Name': 'SiCKRAGE',
+                    'X-Plex-Product': 'SiCKRAGE Notifier',
+                    'X-Plex-Client-Identifier': sickrage.app.user_agent,
+                    'X-Plex-Version': '1.0'
+                }
+
+                resp = WebSession().get('https://plex.tv/users/sign_in.xml', headers=headers)
 
                 try:
-                    response = urllib2.urlopen(req)
-                    auth_tree = ElementTree.parse(response)
+                    resp.raise_for_status()
+                    auth_tree = ElementTree.parse(resp.text)
                     token = auth_tree.findall('.//authentication-token')[0].text
                     token_arg = '?X-Plex-Token=' + token
-
-                except urllib2.URLError as e:
+                except Exception as e:
                     sickrage.app.log.debug(
                         'PLEX: Error fetching credentials from from plex.tv for user %s: %s' % (username, e))
 
@@ -220,10 +218,11 @@ class PLEXNotifier(Notifiers):
             hosts_match = {}
             hosts_failed = []
             for cur_host in host_list:
-
-                url = 'http://%s/library/sections%s' % (cur_host, token_arg)
                 try:
-                    xml_tree = ElementTree.parse(urllib.urlopen(url))
+                    url = 'http://%s/library/sections%s' % (cur_host, token_arg)
+                    resp = WebSession().get(url)
+                    resp.raise_for_status()
+                    xml_tree = ElementTree.parse(resp.text)
                     media_container = xml_tree.getroot()
                 except IOError as e:
                     sickrage.app.log.warning(
@@ -264,10 +263,9 @@ class PLEXNotifier(Notifiers):
             hosts_try = (hosts_all.copy(), hosts_match.copy())[bool(hosts_match)]
             host_list = []
             for section_key, cur_host in hosts_try.items():
-
-                url = 'http://%s/library/sections/%s/refresh%s' % (cur_host, section_key, token_arg)
                 try:
-                    force and urllib.urlopen(url)
+                    url = 'http://%s/library/sections/%s/refresh%s' % (cur_host, section_key, token_arg)
+                    force and WebSession().get(url)
                     host_list.append(cur_host)
                 except Exception as e:
                     sickrage.app.log.warning(

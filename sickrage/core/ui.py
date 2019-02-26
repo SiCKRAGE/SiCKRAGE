@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 
@@ -84,11 +84,7 @@ class Notification(object):
 
     def __init__(self, title, message='', type=None, timeout=None):
         self.title = title
-
-        self.message = message
-        if isinstance(self.message, Exception):
-            self.message = self.message.message
-
+        self.message = str(message) if isinstance(message, Exception) else message
         self._when = datetime.datetime.now()
         self._seen = []
         self._type = type or MESSAGE

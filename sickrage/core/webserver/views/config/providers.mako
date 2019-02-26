@@ -120,7 +120,7 @@
                     % endfor
                 </div>
                 <input type="hidden" name="provider_order" id="provider_order"
-                       value="${"!!!".join([providerID+':'+str(int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
+                       value="${"!!!".join(["{}:{}".format(providerID, int(providerObj.isEnabled)) for providerID, providerObj in sickrage.app.search_providers.all().items()])}"/>
                 <input type="submit" class="btn config_submitter" value="${_('Save Changes')}"/>
             </fieldset>
         </div>

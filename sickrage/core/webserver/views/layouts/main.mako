@@ -271,7 +271,7 @@
                                 </span>
                                 <span class="d-sm-none d-md-block">
                                     <img class="rounded-circle shadow"
-                                         src="https://gravatar.com/avatar/${md5(current_user['email']).hexdigest()}?d=mm&s=40"/>
+                                         src="https://gravatar.com/avatar/${md5(current_user['email'].encode('utf-8')).hexdigest()}?d=mm&s=40"/>
                                     ${toolsBadge}
                                 </span>
                             </a>

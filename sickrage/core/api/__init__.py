@@ -1,8 +1,8 @@
-from __future__ import unicode_literals
+
 
 import json
 import time
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from oauthlib.oauth2 import MissingTokenError, InvalidClientIdError, TokenExpiredError, InvalidGrantError
 from requests_oauthlib import OAuth2Session

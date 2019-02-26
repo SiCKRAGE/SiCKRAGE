@@ -17,14 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import time
 from datetime import datetime, timedelta
 
+from sqlalchemy import orm
+
 import sickrage
-from sickrage.core.helpers import full_sanitizeSceneName
-from sickrage.core.helpers.encoding import strip_accents
+from sickrage.core.databases.cache import CacheDB
+from sickrage.core.helpers import full_sanitizeSceneName, strip_accents
 from sickrage.core.scene_exceptions import retrieve_exceptions, get_scene_seasons, get_scene_exceptions
 
 
@@ -54,11 +55,10 @@ class NameCache(object):
 
         self.cache[name] = int(indexer_id)
 
-        dbData = [x for x in sickrage.app.cache_db.get_many('scene_names', name) if x['indexer_id'] == indexer_id]
-        if not len(dbData):
-            # insert name into cache
-            sickrage.app.cache_db.insert({
-                '_t': 'scene_names',
+        try:
+            CacheDB.SceneName.query(name=name, indexer_id=indexer_id).one()
+        except orm.exc.NoResultFound:
+            CacheDB.SceneName.add(**{
                 'indexer_id': indexer_id,
                 'name': name
             })
@@ -79,30 +79,27 @@ class NameCache(object):
         Deletes all entries from the cache matching the indexerid or name.
         """
         if any([indexerid, name]):
-            for x in sickrage.app.cache_db.all('scene_names'):
-                if x['indexer_id'] == indexerid or x['name'] == name:
-                    sickrage.app.cache_db.delete(x)
+            for x in CacheDB.SceneName.query():
+                if x.indexer_id == indexerid or x.name == name:
+                    CacheDB.SceneName.delete(x)
 
-            for key, value in self.cache.items():
+            for key, value in self.cache.copy().items():
                 if value == indexerid or key == name:
                     del self.cache[key]
 
     def load(self):
-        self.cache = dict([(x['name'], x['indexer_id']) for x in sickrage.app.cache_db.all('scene_names')])
+        self.cache = dict([(x.name, x.indexer_id) for x in CacheDB.SceneName.query()])
 
     def save(self):
         """Commit cache to database file"""
         for name, indexer_id in self.cache.items():
-            dbData = [x for x in sickrage.app.cache_db.get_many('scene_names', name) if x['indexer_id'] == indexer_id]
-            if len(dbData):
-                continue
-
-            # insert name into cache
-            sickrage.app.cache_db.insert({
-                '_t': 'scene_names',
-                'indexer_id': indexer_id,
-                'name': name
-            })
+            try:
+                CacheDB.SceneName.query(name=name, indexer_id=indexer_id).one()
+            except orm.exc.NoResultFound:
+                CacheDB.SceneName.add(**{
+                    'indexer_id': indexer_id,
+                    'name': name
+                })
 
     def build(self, show):
         """Build internal name cache

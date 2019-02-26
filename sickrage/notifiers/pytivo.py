@@ -16,13 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import os
-from urllib import urlencode
-from urllib2 import HTTPError, Request, urlopen
+from urllib.parse import urlencode
+
+from requests import HTTPError
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -51,7 +52,7 @@ class pyTivoNotifier(Notifiers):
             return False
 
         host = sickrage.app.config.pytivo_host
-        shareName = sickrage.app.config.pytivo_share_name
+        share_name = sickrage.app.config.pytivo_share_name
         tsn = sickrage.app.config.pytivo_tivo_name
 
         # There are two more values required, the container and file.
@@ -66,35 +67,34 @@ class pyTivoNotifier(Notifiers):
         # come up with.
         #
 
-
         # Calculated values
 
-        showPath = ep_obj.show.location
-        showName = ep_obj.show.name
-        rootShowAndSeason = os.path.dirname(ep_obj.location)
-        absPath = ep_obj.location
+        show_path = ep_obj.show.location
+        show_name = ep_obj.show.name
+        root_show_and_season = os.path.dirname(ep_obj.location)
+        abs_path = ep_obj.location
 
         # Some show names have colons in them which are illegal in a path location, so strip them out.
         # (Are there other characters?)
-        showName = showName.replace(":", "")
+        show_name = show_name.replace(":", "")
 
-        root = showPath.replace(showName, "")
-        showAndSeason = rootShowAndSeason.replace(root, "")
+        root = show_path.replace(show_name, "")
+        show_and_season = root_show_and_season.replace(root, "")
 
-        container = shareName + "/" + showAndSeason
-        file = "/" + absPath.replace(root, "")
+        container = share_name + "/" + show_and_season
+        file = "/" + abs_path.replace(root, "")
 
         # Finally create the url and make request
-        requestUrl = "http://" + host + "/TiVoConnect?" + urlencode(
-            {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn})
+        request_url = "http://{}/TiVoConnect?{}".format(host, urlencode(
+            {'Command': 'Push', 'Container': container, 'File': file, 'tsn': tsn}))
 
-        sickrage.app.log.debug("pyTivo notification: Requesting " + requestUrl)
+        sickrage.app.log.debug("pyTivo notification: Requesting " + request_url)
 
-        request = Request(requestUrl)
+        resp = WebSession().get(request_url)
 
         try:
-            response = urlopen(request)
-        except HTTPError  as e:
+            resp.raise_for_status()
+        except HTTPError as e:
             if hasattr(e, 'reason'):
                 sickrage.app.log.error("pyTivo notification: Error, failed to reach a server - " + e.reason)
                 return False

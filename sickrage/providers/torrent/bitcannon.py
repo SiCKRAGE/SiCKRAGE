@@ -16,10 +16,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
-from __future__ import unicode_literals
-
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import sickrage
 from sickrage.core.caches.tv_cache import TVCache

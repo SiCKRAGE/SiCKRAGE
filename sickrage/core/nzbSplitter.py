@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-import io
 import re
 from xml.etree import ElementTree
 
-import classes
 import sickrage
+from sickrage.core.classes import NZBDataSearchResult
 from sickrage.core.common import Quality
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -66,7 +64,7 @@ def getSeasonNZBs(name, urlData, season):
     xmlns = None
 
     for curFile in nzbElement.getchildren():
-        xmlnsMatch = re.match("\{(http://[A-Za-z0-9_\./]+/nzb)\}file", curFile.tag)
+        xmlnsMatch = re.match("{(http://[A-Za-z0-9_./]+/nzb)\}file", curFile.tag)
         if not xmlnsMatch:
             continue
         else:
@@ -103,7 +101,7 @@ def saveNZB(nzbName, nzbString):
     :param nzbString: Content to write in file
     """
     try:
-        with io.open(nzbName + ".nzb", 'w') as nzb_fh:
+        with open(nzbName + ".nzb", 'w') as nzb_fh:
             nzb_fh.write(nzbString)
 
     except EnvironmentError as e:
@@ -165,7 +163,7 @@ def splitNZBResult(result):
 
         # make sure the result is sane
         if (parse_result.season_number is not None and parse_result.season_number != season) or (
-                        parse_result.season_number is None and season != 1):
+                parse_result.season_number is None and season != 1):
             sickrage.app.log.warning(
                 "Found " + newNZB + " inside " + result.name + " but it doesn't seem to belong to the same season, ignoring it")
             continue
@@ -191,7 +189,7 @@ def splitNZBResult(result):
             epObjList.append(result.extraInfo[0].get_episode(season, curEp))
 
         # make a result
-        curResult = classes.NZBDataSearchResult(epObjList)
+        curResult = NZBDataSearchResult(epObjList)
         curResult.name = newNZB
         curResult.provider = result.provider
         curResult.quality = result.quality

@@ -17,18 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
 
 import operator
 import os.path
 import re
+from collections import UserDict
+from functools import reduce
 
-from sickrage.core.helpers.metadata import getFileMetadata, getResolution
-
-try:
-    from UserDict import UserDict
-except:
-    from collections import UserDict
+from sickrage.core.helpers.metadata import get_file_metadata, get_resolution
 
 ### CPU Presets for sleep timers
 cpu_presets = {
@@ -183,10 +179,10 @@ class Quality(object):
                       SNATCHED_BEST: _("Snatched (Best)"),
                       ARCHIVED: _("Archived"),
                       FAILED: _("Failed"),
-                      MISSED: _("Missed"),}
+                      MISSED: _("Missed"), }
 
     @staticmethod
-    def _getStatusStrings(status):
+    def _get_status_strings(status):
         """
         Returns string values associated with Status prefix
 
@@ -195,12 +191,12 @@ class Quality(object):
         """
         toReturn = {}
         for q in Quality.qualityStrings.keys():
-            toReturn[Quality.compositeStatus(status, q)] = Quality.statusPrefixes[status] + " (" + \
-                                                           Quality.qualityStrings[q] + ")"
+            toReturn[Quality.composite_status(status, q)] = Quality.statusPrefixes[status] + " (" + \
+                                                            Quality.qualityStrings[q] + ")"
         return toReturn
 
     @staticmethod
-    def combineQualities(anyQualities, bestQualities):
+    def combine_qualities(anyQualities, bestQualities):
         anyQuality = 0
         bestQuality = 0
         if anyQualities:
@@ -210,7 +206,7 @@ class Quality(object):
         return anyQuality | (bestQuality << 16)
 
     @staticmethod
-    def splitQuality(quality):
+    def split_quality(quality):
         anyQualities = []
         bestQualities = []
 
@@ -223,7 +219,7 @@ class Quality(object):
         return sorted(anyQualities), sorted(bestQualities)
 
     @staticmethod
-    def nameQuality(name, anime=False):
+    def name_quality(name, anime=False):
         """
         Return The quality from an episode File renamed by SiCKRAGE
         If no quality is achieved it will try sceneQuality regex
@@ -233,11 +229,11 @@ class Quality(object):
         """
 
         # Try Scene names first
-        quality = Quality.sceneQuality(name, anime)
+        quality = Quality.scene_quality(name, anime)
         if quality != Quality.UNKNOWN:
             return quality
 
-        quality = Quality.qualityFromFileMeta(name)
+        quality = Quality.quality_from_file_meta(name)
         if quality != Quality.UNKNOWN:
             return quality
 
@@ -247,7 +243,7 @@ class Quality(object):
         return Quality.UNKNOWN
 
     @staticmethod
-    def sceneQuality(name, anime=False):
+    def scene_quality(name, anime=False):
         """
         Return The quality from the scene episode File
 
@@ -338,15 +334,15 @@ class Quality(object):
         return ret
 
     @staticmethod
-    def compositeStatus(status, quality):
+    def composite_status(status, quality):
         return status + 100 * quality
 
     @staticmethod
-    def qualityDownloaded(status):
+    def quality_downloaded(status):
         return (status - DOWNLOADED) / 100
 
     @staticmethod
-    def splitCompositeStatus(status):
+    def split_composite_status(status):
         """Returns a tuple containing (status, quality)"""
         if status == UNKNOWN:
             return UNKNOWN, Quality.UNKNOWN
@@ -358,17 +354,17 @@ class Quality(object):
         return status, Quality.NONE
 
     @staticmethod
-    def statusFromCompositeStatus(status):
-        status, quality = Quality.splitCompositeStatus(status)
+    def status_from_composite_status(status):
+        status, quality = Quality.split_composite_status(status)
         return status
 
     @staticmethod
-    def qualityFromCompositeStatus(status):
-        status, quality = Quality.splitCompositeStatus(status)
+    def quality_from_composite_status(status):
+        status, quality = Quality.split_composite_status(status)
         return quality
 
     @staticmethod
-    def qualityFromFileMeta(filename):
+    def quality_from_file_meta(filename):
         """
         Get quality from file metadata
 
@@ -380,15 +376,15 @@ class Quality(object):
         quality = Quality.UNKNOWN
 
         if os.path.isfile(filename):
-            meta = getFileMetadata(filename)
+            meta = get_file_metadata(filename)
 
             try:
-                if meta.get('resolution_width'):
+                if meta.get('resolution_width') and meta.get('resolution_height'):
                     data['resolution_width'] = meta.get('resolution_width')
                     data['resolution_height'] = meta.get('resolution_height')
                     data['aspect'] = round(float(meta.get('resolution_width')) / meta.get('resolution_height', 1), 2)
                 else:
-                    data.update(getResolution(filename))
+                    data.update(get_resolution(filename))
             except:
                 return quality
 
@@ -397,9 +393,9 @@ class Quality(object):
             webdl = re.search(r"\bweb\b|web.?dl|web(rip|mux|hd)", base_filename, re.I) is not None
 
             if 3240 < data['resolution_height']:
-                ret = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
+                quality = ((Quality.UHD_8K_TV, Quality.UHD_8K_BLURAY)[bluray], Quality.UHD_8K_WEBDL)[webdl]
             if 1620 < data['resolution_height'] <= 3240:
-                ret = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
+                quality = ((Quality.UHD_4K_TV, Quality.UHD_4K_BLURAY)[bluray], Quality.UHD_4K_WEBDL)[webdl]
             elif 800 < data['resolution_height'] <= 1620:
                 quality = ((Quality.FULLHDTV, Quality.FULLHDBLURAY)[bluray], Quality.FULLHDWEBDL)[webdl]
             elif 680 < data['resolution_height'] < 800:
@@ -411,7 +407,7 @@ class Quality(object):
         return quality
 
     @staticmethod
-    def sceneQualityFromName(name, quality):
+    def scene_quality_from_name(name, quality):
         """
         Get scene naming parameters from filename and quality
 
@@ -471,7 +467,7 @@ class Quality(object):
             return ""
 
     @staticmethod
-    def statusFromName(name, assume=True, anime=False):
+    def status_from_name(name, assume=True, anime=False):
         """
         Get a status object from filename
 
@@ -480,8 +476,8 @@ class Quality(object):
         :param anime: boolean to enable anime parsing
         :return: Composite status/quality object
         """
-        quality = Quality.nameQuality(name, anime)
-        return Quality.compositeStatus(DOWNLOADED, quality)
+        quality = Quality.name_quality(name, anime)
+        return Quality.composite_status(DOWNLOADED, quality)
 
     DOWNLOADED = None
     SNATCHED = None
@@ -492,13 +488,13 @@ class Quality(object):
     IGNORED = None
 
 
-Quality.DOWNLOADED = [Quality.compositeStatus(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED = [Quality.compositeStatus(SNATCHED, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_PROPER = [Quality.compositeStatus(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
-Quality.SNATCHED_BEST = [Quality.compositeStatus(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
-Quality.ARCHIVED = [Quality.compositeStatus(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
-Quality.FAILED = [Quality.compositeStatus(FAILED, x) for x in Quality.qualityStrings.keys()]
-Quality.IGNORED = [Quality.compositeStatus(IGNORED, x) for x in Quality.qualityStrings.keys()]
+Quality.DOWNLOADED = [Quality.composite_status(DOWNLOADED, x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED = [Quality.composite_status(SNATCHED, x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED_PROPER = [Quality.composite_status(SNATCHED_PROPER, x) for x in Quality.qualityStrings.keys()]
+Quality.SNATCHED_BEST = [Quality.composite_status(SNATCHED_BEST, x) for x in Quality.qualityStrings.keys()]
+Quality.ARCHIVED = [Quality.composite_status(ARCHIVED, x) for x in Quality.qualityStrings.keys()]
+Quality.FAILED = [Quality.composite_status(FAILED, x) for x in Quality.qualityStrings.keys()]
+Quality.IGNORED = [Quality.composite_status(IGNORED, x) for x in Quality.qualityStrings.keys()]
 
 Quality.DOWNLOADED.sort()
 Quality.SNATCHED.sort()
@@ -507,19 +503,19 @@ Quality.SNATCHED_PROPER.sort()
 Quality.FAILED.sort()
 Quality.ARCHIVED.sort()
 
-HD720p = Quality.combineQualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
-HD1080p = Quality.combineQualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
-UHD_4K = Quality.combineQualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Quality.UHD_4K_BLURAY], [])
-UHD_8K = Quality.combineQualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Quality.UHD_8K_BLURAY], [])
+HD720p = Quality.combine_qualities([Quality.HDTV, Quality.HDWEBDL, Quality.HDBLURAY], [])
+HD1080p = Quality.combine_qualities([Quality.FULLHDTV, Quality.FULLHDWEBDL, Quality.FULLHDBLURAY], [])
+UHD_4K = Quality.combine_qualities([Quality.UHD_4K_TV, Quality.UHD_4K_WEBDL, Quality.UHD_4K_BLURAY], [])
+UHD_8K = Quality.combine_qualities([Quality.UHD_8K_TV, Quality.UHD_8K_WEBDL, Quality.UHD_8K_BLURAY], [])
 
-SD = Quality.combineQualities([Quality.SDTV, Quality.SDDVD], [])
-HD = Quality.combineQualities([HD720p, HD1080p], [])
-UHD = Quality.combineQualities([UHD_4K, UHD_8K], [])
-ANY = Quality.combineQualities([SD, HD, UHD], [])
-ANY_PLUS_UNKNOWN = Quality.combineQualities([Quality.UNKNOWN, SD, HD, UHD], [])
+SD = Quality.combine_qualities([Quality.SDTV, Quality.SDDVD], [])
+HD = Quality.combine_qualities([HD720p, HD1080p], [])
+UHD = Quality.combine_qualities([UHD_4K, UHD_8K], [])
+ANY = Quality.combine_qualities([SD, HD, UHD], [])
+ANY_PLUS_UNKNOWN = Quality.combine_qualities([Quality.UNKNOWN, SD, HD, UHD], [])
 
 # legacy template, cant remove due to reference in mainDB upgrade?
-BEST = Quality.combineQualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
+BEST = Quality.combine_qualities([Quality.SDTV, Quality.HDTV, Quality.HDWEBDL], [Quality.HDTV])
 
 qualityPresets = (SD,
                   HD,
@@ -552,14 +548,14 @@ class StatusStrings(UserDict):
     Membership checks using __contains__ (i.e. 'x in y') do not raise a ValueError to match expected dict functionality
     """
 
-    # todo: Deprecate StatusStrings().statusStrings and use StatusStrings() directly
+    # todo: Deprecate StatusStrings().status_strings and use StatusStrings() directly
     # todo: Deprecate .has_key and switch to 'x in y'
     # todo: Switch from raising ValueError to a saner KeyError
     # todo: Raise KeyError when unable to resolve a missing key instead of returning ''
     # todo: Make key of None match dict() functionality
 
     @property
-    def statusStrings(self):  # for backwards compatibility
+    def status_strings(self):  # for backwards compatibility
         return self.data
 
     def __setitem__(self, key, value):
@@ -573,8 +569,9 @@ class StatusStrings(UserDict):
         the old StatusStrings is fully deprecated, then we will raise a KeyError instead, where appropriate.
         """
         if isinstance(key, int):  # if the key is already an int...
-            if key in self.keys() + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED:
-                status, quality = Quality.splitCompositeStatus(key)
+            if key in list(
+                    self.keys()) + Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED:
+                status, quality = Quality.split_composite_status(key)
                 if quality == Quality.NONE:  # If a Quality is not listed... (shouldn't this be 'if not quality:'?)
                     return self[status]  # ...return the status...
                 else:
@@ -605,7 +602,8 @@ class StatusStrings(UserDict):
         try:
             # This will raise a ValueError if we can't convert the key to int
             return ((int(key) in self.data) or
-                    (int(key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED))
+                    (int(
+                        key) in Quality.DOWNLOADED + Quality.SNATCHED + Quality.SNATCHED_PROPER + Quality.SNATCHED_BEST + Quality.ARCHIVED + Quality.FAILED))
         except ValueError:  # The key is not numeric and since we only want numeric keys...
             # ...and we don't want this function to fail...
             pass  # ...suppress the ValueError and do nothing, the key does not exist

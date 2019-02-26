@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage. If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import bisect
 import io
@@ -39,7 +38,7 @@ from subliminal.video import Episode, Movie
 
 logger = logging.getLogger(__name__)
 
-language_converters.register(b'subscene = sickrage.subtitles.converters.subscene:SubsceneConverter')
+language_converters.register('subscene = sickrage.subtitles.converters.subscene:SubsceneConverter')
 
 
 class SubsceneSubtitle(Subtitle):

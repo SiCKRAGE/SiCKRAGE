@@ -16,15 +16,17 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import re
-import urllib
 from datetime import datetime
 from datetime import timedelta
+from urllib.parse import unquote
+
+from sqlalchemy import desc
 
 import sickrage
 from sickrage.core.common import Quality, SNATCHED, SUBTITLED, FAILED, WANTED
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import EpisodeNotFoundException
 
 
@@ -60,31 +62,33 @@ class History:
         for show in sickrage.app.showlist:
             if limit == 0:
                 if len(actions) > 0:
-                    dbData = (x for x in sickrage.app.main_db.get_many('history', show.indexerid)
-                              if x['action'] in actions)
+                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).filter(
+                        sickrage.app.main_db.History.action in actions).order_by(desc('date'))
                 else:
-                    dbData = (x for x in sickrage.app.main_db.get_many('history', show.indexerid))
+                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).order_by(
+                        desc('date'))
             else:
                 if len(actions) > 0:
-                    dbData = (x for x in sickrage.app.main_db.get_many('history', show.indexerid, limit)
-                              if x['action'] in actions)
+                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).filter(
+                        sickrage.app.main_db.History.action in actions).order_by(desc('date')).limit(limit)
                 else:
-                    dbData = (x for x in sickrage.app.main_db.get_many('history', show.indexerid, limit))
+                    dbData = MainDB.History.query().filter_by(showid=show.indexerid).order_by(
+                        desc('date')).limit(limit)
 
             for result in dbData:
                 data.append({
-                    'action': result['action'],
-                    'date': result['date'],
-                    'episode': result['episode'],
-                    'provider': result['provider'],
-                    'quality': result['quality'],
-                    'resource': result['resource'],
-                    'season': result['season'],
-                    'show_id': result['showid'],
+                    'action': result.action,
+                    'date': int(result.date),
+                    'episode': result.episode,
+                    'provider': result.provider,
+                    'quality': result.quality,
+                    'resource': result.resource,
+                    'season': result.season,
+                    'show_id': result.showid,
                     'show_name': show.name
                 })
 
-        return sorted(data, key=lambda d: d['date'], reverse=True)
+        return data
 
     def trim(self):
         """
@@ -113,7 +117,6 @@ class History:
         resource = resource
 
         sickrage.app.main_db.insert({
-            '_t': 'history',
             'action': action,
             'date': logDate,
             'showid': showid,
@@ -146,7 +149,7 @@ class History:
             else:
                 provider = "unknown"
 
-            action = Quality.compositeStatus(SNATCHED, searchResult.quality)
+            action = Quality.composite_status(SNATCHED, searchResult.quality)
 
             resource = searchResult.name
 
@@ -193,8 +196,8 @@ class History:
         resource = subtitleResult.language.opensubtitles
         provider = subtitleResult.provider_name
 
-        status, quality = Quality.splitCompositeStatus(status)
-        action = Quality.compositeStatus(SUBTITLED, quality)
+        status, quality = Quality.split_composite_status(status)
+        action = Quality.composite_status(SUBTITLED, quality)
 
         History._logHistoryItem(action, showid, season, episode, quality, resource, provider)
 
@@ -210,8 +213,8 @@ class History:
         showid = int(epObj.show.indexerid)
         season = int(epObj.season)
         epNum = int(epObj.episode)
-        status, quality = Quality.splitCompositeStatus(epObj.status)
-        action = Quality.compositeStatus(FAILED, quality)
+        status, quality = Quality.split_composite_status(epObj.status)
+        action = Quality.composite_status(FAILED, quality)
 
         History._logHistoryItem(action, showid, season, epNum, quality, release, provider)
 
@@ -221,11 +224,11 @@ class FailedHistory(object):
     def prepareFailedName(release):
         """Standardizes release name for failed DB"""
 
-        fixed = urllib.unquote(release)
+        fixed = unquote(release)
         if fixed.endswith(".nzb"):
             fixed = fixed.rpartition(".")[0]
 
-        fixed = re.sub("[\.\-\+\ ]", "_", fixed)
+        fixed = re.sub(r"[\.\-\+\ ]", "_", fixed)
         fixed = fixed
 
         return fixed
@@ -264,7 +267,6 @@ class FailedHistory(object):
 
         if not FailedHistory.hasFailed(release, size, provider):
             sickrage.app.main_db.insert({
-                '_t': 'failed_snatches',
                 'release': release,
                 'size': size,
                 'provider': provider
@@ -277,8 +279,7 @@ class FailedHistory(object):
     @staticmethod
     def logSuccess(release):
         release = FailedHistory.prepareFailedName(release)
-        for dbData in (x for x in sickrage.app.main_db.all('failed_snatch_history') if x['release'] == release):
-            sickrage.app.main_db.delete(dbData)
+        [MainDB.FailedSnatchHistory.delete(x) for x in MainDB.FailedSnatchHistory.query(release=release)]
 
     @staticmethod
     def hasFailed(release, size, provider="%"):
@@ -296,17 +297,15 @@ class FailedHistory(object):
         """
 
         release = FailedHistory.prepareFailedName(release)
-        dbData = [x for x in sickrage.app.main_db.get_many('failed_snatches', release)
-                  if all([x['size'] == size, x['provider'] == provider])]
-
-        return len(dbData) > 0
+        return MainDB.FailedSnatch.query(release=release, size=size, provider=provider).count() > 0
 
     @staticmethod
     def revertFailedEpisode(epObj):
         """Restore the episodes of a failed download to their original state"""
-        history_eps = dict([(res["episode"], res) for res in (x for x in sickrage.app.main_db.all('failed_snatch_history')
-                                                              if x['showid'] == epObj.show.indexerid
-                                                              and x['season'] == epObj.season)])
+        history_eps = dict(
+            [(res["episode"], res) for res in (x for x in sickrage.app.main_db.all('failed_snatch_history')
+                                               if x['showid'] == epObj.show.indexerid
+                                               and x['season'] == epObj.season)])
 
         try:
             sickrage.app.log.info("Reverting episode (%s, %s): %s" % (epObj.season, epObj.episode, epObj.name))
@@ -335,8 +334,8 @@ class FailedHistory(object):
 
         try:
             with epObj.lock:
-                quality = Quality.splitCompositeStatus(epObj.status)[1]
-                epObj.status = Quality.compositeStatus(FAILED, quality)
+                quality = Quality.split_composite_status(epObj.status)[1]
+                epObj.status = Quality.composite_status(FAILED, quality)
                 epObj.save_to_db()
 
         except EpisodeNotFoundException as e:
@@ -365,7 +364,6 @@ class FailedHistory(object):
 
         for episode in searchResult.episodes:
             sickrage.app.main_db.insert({
-                '_t': 'failed_snatch_history',
                 'date': logDate,
                 'size': searchResult.size,
                 'release': release,

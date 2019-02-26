@@ -1,17 +1,16 @@
 import glob
-import io
 import os
 import shutil
 
 from setuptools import setup, Command
 
 # Get the version number
-with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'sickrage', 'version.txt'))) as f:
     version = f.read()
 
 
 def requires():
-    with io.open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
+    with open(os.path.abspath(os.path.join(os.path.dirname(__file__), 'requirements.txt'))) as f:
         return f.read().splitlines()
 
 

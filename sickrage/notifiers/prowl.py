@@ -16,15 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-import socket
-from httplib import HTTPException, HTTPSConnection
-from urllib import urlencode
-
-from requests.exceptions import SSLError
+from urllib.parse import urlencode
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -76,31 +72,28 @@ class ProwlNotifier(Notifiers):
             "PROWL: Sending notice with details: event=\"%s\", message=\"%s\", priority=%s, api=%s" % (
                 event, message, prowl_priority, prowl_api))
 
-        http_handler = HTTPSConnection("api.prowlapp.com")
-
         data = {'apikey': prowl_api,
                 'application': title,
                 'event': event,
                 'description': message.encode('utf-8'),
                 'priority': prowl_priority}
 
-        try:
-            http_handler.request("POST",
-                                 "/publicapi/add",
+        resp = WebSession().post("https://api.prowlapp.com/publicapi/add",
                                  headers={'Content-type': "application/x-www-form-urlencoded"},
-                                 body=urlencode(data))
-        except (SSLError, HTTPException, socket.error):
-            sickrage.app.log.error("Prowl notification failed.")
-            return False
-        response = http_handler.getresponse()
-        request_status = response.status
+                                 data=urlencode(data))
+        try:
+            resp.raise_for_status()
 
-        if request_status == 200:
-            sickrage.app.log.info("Prowl notifications sent.")
-            return True
-        elif request_status == 401:
-            sickrage.app.log.error("Prowl auth failed: %s" % response.reason)
-            return False
-        else:
+            request_status = resp.status_code
+            if request_status == 200:
+                sickrage.app.log.info("Prowl notifications sent.")
+                return True
+            elif request_status == 401:
+                sickrage.app.log.error("Prowl auth failed: %s" % resp.reason)
+                return False
+            else:
+                sickrage.app.log.error("Prowl notification failed.")
+                return False
+        except Exception:
             sickrage.app.log.error("Prowl notification failed.")
             return False

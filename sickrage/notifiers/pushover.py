@@ -18,14 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
-import httplib
 import time
-import urllib
-import urllib2
+from urllib.parse import urlencode
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 API_URL = "https://api.pushover.net/1/messages.json"
@@ -67,51 +65,47 @@ class PushoverNotifier(Notifiers):
         msg = msg.strip()
 
         # send the request to pushover
+        if sickrage.app.config.pushover_sound != "default":
+            args = {"token": apiKey,
+                    "user": userKey,
+                    "title": title.encode('utf-8'),
+                    "message": msg.encode('utf-8'),
+                    "timestamp": int(time.time()),
+                    "retry": 60,
+                    "expire": 3600,
+                    "sound": sound,
+                    }
+        else:
+            # sound is default, so don't send it
+            args = {"token": apiKey,
+                    "user": userKey,
+                    "title": title.encode('utf-8'),
+                    "message": msg.encode('utf-8'),
+                    "timestamp": int(time.time()),
+                    "retry": 60,
+                    "expire": 3600,
+                    }
+
+        if sickrage.app.config.pushover_device:
+            args["device"] = sickrage.app.config.pushover_device
+
+        resp = WebSession().post("https://api.pushover.net/1/messages.json", data=urlencode(args),
+                                 headers={"Content-type": "application/x-www-form-urlencoded"})
+
         try:
-            if sickrage.app.config.pushover_sound != "default":
-                args = {"token": apiKey,
-                        "user": userKey,
-                        "title": title.encode('utf-8'),
-                        "message": msg.encode('utf-8'),
-                        "timestamp": int(time.time()),
-                        "retry": 60,
-                        "expire": 3600,
-                        "sound": sound,
-                        }
-            else:
-                # sound is default, so don't send it
-                args = {"token": apiKey,
-                        "user": userKey,
-                        "title": title.encode('utf-8'),
-                        "message": msg.encode('utf-8'),
-                        "timestamp": int(time.time()),
-                        "retry": 60,
-                        "expire": 3600,
-                        }
-
-            if sickrage.app.config.pushover_device:
-                args["device"] = sickrage.app.config.pushover_device
-
-            conn = httplib.HTTPSConnection("api.pushover.net:443")
-            conn.request("POST", "/1/messages.json",
-                         urllib.urlencode(args), {"Content-type": "application/x-www-form-urlencoded"})
-
-        except urllib2.HTTPError as e:
-            # if we get an error back that doesn't have an error code then who knows what's really happening
-            if not hasattr(e, 'code'):
-                sickrage.app.log.error("Pushover notification failed.{}".format(e))
-                return False
-            else:
-                sickrage.app.log.error("Pushover notification failed. Error code: " + str(e.code))
+            resp.raise_for_status()
+        except Exception as e:
+            sickrage.app.log.error("Pushover notification failed. Error code: " + str(resp.status_code))
 
             # HTTP status 404 if the provided email address isn't a Pushover user.
-            if e.code == 404:
+            if resp.status_code == 404:
                 sickrage.app.log.warning(
                     "Username is wrong/not a pushover email. Pushover will send an email to it")
                 return False
 
-            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has not added your service.
-            elif e.code == 401:
+            # For HTTP status code 401's, it is because you are passing in either an invalid token, or the user has
+            # not added your service.
+            elif resp.status_code == 401:
 
                 # HTTP status 401 if the user doesn't have the service added
                 subscribeNote = self._sendPushover(msg, title, sound=sound, userKey=userKey, apiKey=apiKey)
@@ -123,12 +117,13 @@ class PushoverNotifier(Notifiers):
                     return False
 
             # If you receive an HTTP status code of 400, it is because you failed to send the proper parameters
-            elif e.code == 400:
+            elif resp.status_code == 400:
                 sickrage.app.log.error("Wrong data sent to pushover")
                 return False
 
-            # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit is 7,500)
-            elif e.code == 429:
+            # If you receive a HTTP status code of 429, it is because the message limit has been reached (free limit
+            # is 7,500)
+            elif resp.status_code == 429:
                 sickrage.app.log.error("Pushover API message limit reached - try a different API key")
                 return False
 

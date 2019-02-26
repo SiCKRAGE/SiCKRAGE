@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import os
@@ -348,7 +348,7 @@ class MediaBrowserMetadata(GenericMetadata):
             Zap2ItId = SubElement(tv_node, "Zap2ItId")
             Zap2ItId.text = myShow['zap2itid']
 
-        if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], basestring):
+        if getattr(myShow, 'genre', None) and isinstance(myShow["genre"], str):
             Genres = SubElement(tv_node, "Genres")
             for genre in myShow['genre'].split('|'):
                 if genre.strip():

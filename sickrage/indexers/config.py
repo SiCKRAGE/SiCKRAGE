@@ -15,10 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
-from __future__ import unicode_literals
-
-from thetvdb.api import Tvdb
+from sickrage.indexers.thetvdb.api import Tvdb
 
 INDEXER_TVDB = 1
 INDEXER_TVRAGE = 2  # Must keep

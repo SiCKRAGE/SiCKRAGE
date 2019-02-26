@@ -1,4 +1,4 @@
-FROM python:2.7.15-alpine3.8
+FROM python:3.7.2-alpine3.8
 MAINTAINER echel0n <echel0n@sickrage.ca>
 
 ENV TZ 'Canada/Pacific'

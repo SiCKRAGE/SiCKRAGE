@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -17,14 +17,13 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import sys
 
-import autoProcessTV
+from sickrage.autoProcessTV import autoProcessTV
 
 if len(sys.argv) < 2:
-    print "No folder supplied - is this being called from SABnzbd?"
+    print("No folder supplied - is this being called from SABnzbd?")
     sys.exit()
 elif len(sys.argv) >= 8:
     autoProcessTV.processEpisode(sys.argv[1], sys.argv[2], sys.argv[7])

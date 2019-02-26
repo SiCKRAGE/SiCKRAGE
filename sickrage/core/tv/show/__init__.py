@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
 import glob
@@ -28,7 +27,7 @@ import threading
 import traceback
 
 import send2trash
-from CodernityDB.database import RevConflict
+from sqlalchemy import orm
 from unidecode import unidecode
 
 import sickrage
@@ -38,6 +37,7 @@ from sickrage.core.caches import image_cache
 from sickrage.core.classes import ShowListUI
 from sickrage.core.common import Quality, SKIPPED, WANTED, UNKNOWN, DOWNLOADED, IGNORED, SNATCHED, SNATCHED_PROPER, \
     UNAIRED, ARCHIVED, statusStrings, Overview
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import ShowNotFoundException, \
     EpisodeNotFoundException, EpisodeDeletedException, MultipleShowsInDatabaseException, MultipleShowObjectsException
 from sickrage.core.helpers import list_media_files, is_media_file, try_int, safe_getattr, findCertainShow
@@ -447,8 +447,8 @@ class TVShow(object):
     @property
     def show_size(self):
         total_size = 0
-        for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            total_size += x['file_size']
+        for x in MainDB.TVEpisode.query().filter_by(showid=self.indexerid):
+            total_size += x.file_size
         return total_size
 
     @property
@@ -489,10 +489,10 @@ class TVShow(object):
             if cur_ep.location:
                 # if there is a location, check if it's a multi-episode (share_location > 0) and put them in relatedEps
                 if len([r for r in results
-                            if r['showid'] == cur_result['showid']
-                               and r['season'] == cur_result['season']
-                               and r['location'] != '' and r['location'] == cur_result['location']
-                               and r['episode'] != cur_result['episode']]) > 0:
+                        if r['showid'] == cur_result['showid']
+                           and r['season'] == cur_result['season']
+                           and r['location'] != '' and r['location'] == cur_result['location']
+                           and r['episode'] != cur_result['episode']]) > 0:
 
                     related_eps_result = sorted([x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
                                                  if x['season'] == cur_ep.season
@@ -685,11 +685,11 @@ class TVShow(object):
 
         sickrage.app.log.debug("{}: Loading all episodes for show from DB".format(self.indexerid))
 
-        for dbData in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
+        for dbData in MainDB.TVEpisode.query(showid=self.indexerid):
             deleteEp = False
 
-            curSeason = int(dbData["season"])
-            curEpisode = int(dbData["episode"])
+            curSeason = int(dbData.season)
+            curEpisode = int(dbData.episode)
 
             if curSeason not in scannedEps:
                 scannedEps[curSeason] = {}
@@ -817,7 +817,8 @@ class TVShow(object):
                 try:
                     curEp = self.get_episode(season, episode, filename)
                 except EpisodeNotFoundException:
-                    sickrage.app.log.error("{}: Unable to figure out what this file is, skipping".format(self.indexerid))
+                    sickrage.app.log.error(
+                        "{}: Unable to figure out what this file is, skipping".format(self.indexerid))
                     continue
 
             else:
@@ -848,17 +849,17 @@ class TVShow(object):
 
             # if they replace a file on me I'll make some attempt at re-checking the quality unless I know it's the same file
             if checkQualityAgain and not same_file:
-                newQuality = Quality.nameQuality(filename, self.is_anime)
+                newQuality = Quality.name_quality(filename, self.is_anime)
                 sickrage.app.log.debug("Since this file has been renamed")
 
                 with curEp.lock:
-                    curEp.status = Quality.compositeStatus(DOWNLOADED, newQuality)
+                    curEp.status = Quality.composite_status(DOWNLOADED, newQuality)
 
             # check for status/quality changes as long as it's a new file
             elif not same_file and is_media_file(
                     filename) and curEp.status not in Quality.DOWNLOADED + Quality.ARCHIVED + [IGNORED]:
-                oldStatus, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                newQuality = Quality.nameQuality(filename, self.is_anime)
+                oldStatus, oldQuality = Quality.split_composite_status(curEp.status)
+                newQuality = Quality.name_quality(filename, self.is_anime)
 
                 newStatus = None
 
@@ -888,8 +889,8 @@ class TVShow(object):
                         sickrage.app.log.debug(
                             "STATUS: we have an associated file, so setting the status from " + str(
                                 curEp.status) + " to DOWNLOADED/" + str(
-                                Quality.statusFromName(filename, anime=self.is_anime)))
-                        curEp.status = Quality.compositeStatus(newStatus, newQuality)
+                                Quality.status_from_name(filename, anime=self.is_anime)))
+                        curEp.status = Quality.composite_status(newStatus, newQuality)
 
             with curEp.lock:
                 curEp.save_to_db()
@@ -904,51 +905,54 @@ class TVShow(object):
     def load_from_db(self, skipNFO=False):
         sickrage.app.log.debug(str(self.indexerid) + ": Loading show info from database")
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_shows', self.indexerid)]
-
-        if len(dbData) > 1:
+        try:
+            dbData = MainDB.TVShow.query(indexer_id=self.indexerid, indexer=self.indexer).one()
+        except orm.exc.MultipleResultsFound:
             raise MultipleShowsInDatabaseException()
-        elif len(dbData) == 0:
-            return ShowNotFoundException()
+        except orm.exc.NoResultFound:
+            raise ShowNotFoundException()
 
-        self._indexer = try_int(dbData[0]["indexer"], self.indexer)
-        self._name = dbData[0].get("show_name", self.name)
-        self._network = dbData[0].get("network", self.network)
-        self._genre = dbData[0].get("genre", self.genre)
-        self._overview = dbData[0].get("overview", self.overview)
-        self._classification = dbData[0].get("classification", self.classification)
-        self._runtime = dbData[0].get("runtime", self.runtime)
-        self._status = dbData[0].get("status", self.status)
-        self._airs = dbData[0].get("airs", self.airs)
-        self._startyear = try_int(dbData[0]["startyear"], self.startyear)
-        self._air_by_date = try_int(dbData[0]["air_by_date"], self.air_by_date)
-        self._anime = try_int(dbData[0]["anime"], self.anime)
-        self._sports = try_int(dbData[0]["sports"], self.sports)
-        self._scene = try_int(dbData[0]["scene"], self.scene)
-        self._subtitles = try_int(dbData[0]["subtitles"], self.subtitles)
-        self._subtitles_sr_metadata = dbData[0].get("subtitles_sr_metadata", self.subtitles_sr_metadata)
-        self._dvdorder = try_int(dbData[0]["dvdorder"], self.dvdorder)
-        self._skip_downloaded = try_int(dbData[0]["skip_downloaded"], self.skip_downloaded)
-        self._quality = try_int(dbData[0]["quality"], self.quality)
-        self._flatten_folders = try_int(dbData[0]["flatten_folders"], self.flatten_folders)
-        self._paused = try_int(dbData[0]["paused"], self.paused)
-        self._lang = dbData[0].get("lang", self.lang)
-        self._last_update = dbData[0].get("last_update", self.last_update)
-        self._last_refresh = dbData[0].get("last_refresh", self.last_refresh)
-        self._rls_ignore_words = dbData[0].get("rls_ignore_words", self.rls_ignore_words)
-        self._rls_require_words = dbData[0].get("rls_require_words", self.rls_require_words)
-        self._default_ep_status = try_int(dbData[0]["default_ep_status"], self.default_ep_status)
-        self._notify_list = dbData[0].get("notify_list", self.notify_list)
-        self._search_delay = dbData[0].get("search_delay", self.search_delay)
-        self._imdbid = dbData[0].get("imdb_id", self.imdbid)
-        self._location = dbData[0].get("location", self.location)
+        self._indexer = try_int(dbData.indexer, self.indexer)
+        self._name = dbData.show_name or self.name
+        self._network = dbData.network or self.network
+        self._genre = dbData.genre or self.genre
+        self._overview = dbData.overview or self.overview
+        self._classification = dbData.classification or self.classification
+        self._runtime = dbData.runtime or self.runtime
+        self._status = dbData.status or self.status
+        self._airs = dbData.airs or self.airs
+        self._startyear = dbData.startyear or self.startyear
+        self._air_by_date = dbData.air_by_date or self.air_by_date
+        self._anime = dbData.anime or self.anime
+        self._sports = dbData.sports or self.sports
+        self._scene = dbData.scene or self.scene
+        self._subtitles = dbData.subtitles or self.subtitles
+        self._subtitles_sr_metadata = dbData.sub_use_sr_metadata or self.subtitles_sr_metadata
+        self._dvdorder = dbData.dvdorder or self.dvdorder
+        self._skip_downloaded = dbData.skip_downloaded or self.skip_downloaded
+        self._quality = dbData.quality or self.quality
+        self._flatten_folders = dbData.flatten_folders or self.flatten_folders
+        self._paused = dbData.paused or self.paused
+        self._lang = dbData.lang or self.lang
+        self._last_update = dbData.last_update or self.last_update
+        self._last_refresh = dbData.last_refresh or self.last_refresh
+        self._rls_ignore_words = dbData.rls_ignore_words or self.rls_ignore_words
+        self._rls_require_words = dbData.rls_require_words or self.rls_require_words
+        self._default_ep_status = dbData.default_ep_status or self.default_ep_status
+        self._notify_list = dbData.notify_list or self.notify_list
+        self._search_delay = dbData.search_delay or self.search_delay
+        self._imdbid = dbData.imdb_id or self.imdbid
+        self._location = dbData.location or self.location
 
         if self.is_anime:
             self.release_groups = BlackAndWhiteList(self.indexerid)
 
         if not skipNFO:
             # Get IMDb_info from database
-            self._imdb_info = sickrage.app.main_db.get('imdb_info', self.indexerid)
+            try:
+                self._imdb_info = MainDB.IMDbInfo.query(indexer_id=self.indexerid).one()
+            except orm.exc.NoResultFound:
+                self._imdb_info = self.imdb_info
 
     def load_from_indexer(self, cache=True, tvapi=None):
 
@@ -1028,7 +1032,6 @@ class TVShow(object):
 
             # save imdb info to database
             imdb_info = {
-                '_t': 'imdb_info',
                 'indexer_id': self.indexerid,
                 'last_update': datetime.date.today().toordinal()
             }
@@ -1165,8 +1168,8 @@ class TVShow(object):
                         if curEp.location and curEp.status in Quality.DOWNLOADED:
 
                             if sickrage.app.config.ep_default_deleted_status == ARCHIVED:
-                                __, oldQuality = Quality.splitCompositeStatus(curEp.status)
-                                new_status = Quality.compositeStatus(ARCHIVED, oldQuality)
+                                __, oldQuality = Quality.split_composite_status(curEp.status)
+                                new_status = Quality.composite_status(ARCHIVED, oldQuality)
                             else:
                                 new_status = sickrage.app.config.ep_default_deleted_status
 
@@ -1219,7 +1222,6 @@ class TVShow(object):
         sickrage.app.log.debug("%i: Saving show to database: %s" % (self.indexerid, self.name))
 
         tv_show = {
-            '_t': 'tv_shows',
             'indexer_id': self.indexerid,
             "indexer": self.indexer,
             "show_name": self.name,
@@ -1254,12 +1256,13 @@ class TVShow(object):
             "search_delay": self.search_delay,
         }
 
-        dbData = sickrage.app.main_db.get('tv_shows', self.indexerid)
-        if dbData:
-            dbData.update(tv_show)
-            sickrage.app.main_db.update(dbData)
-        else:
-            sickrage.app.main_db.insert(tv_show)
+        try:
+            dbData = MainDB.TVShow.query(indexer_id=self.indexerid).one()
+            [setattr(dbData, key, value) for key, value in tv_show.items()]
+            MainDB.TVShow.query().update(dbData.as_dict())
+            MainDB.TVShow.commit()
+        except orm.exc.NoResultFound:
+            MainDB.TVShow.add(**tv_show)
 
     def __str__(self):
         toReturn = ""
@@ -1290,7 +1293,7 @@ class TVShow(object):
 
         result = ''
         for quality in qualities:
-            if Quality.qualityStrings.has_key(quality):
+            if quality in Quality.qualityStrings:
                 result += Quality.qualityStrings[quality] + ', '
             else:
                 sickrage.app.log.info("Bad quality value: " + str(quality))
@@ -1307,7 +1310,7 @@ class TVShow(object):
             self.name, season or 0, episode or 0, Quality.qualityStrings[quality]))
 
         # if the quality isn't one we want under any circumstances then just say no
-        anyQualities, bestQualities = Quality.splitQuality(self.quality)
+        anyQualities, bestQualities = Quality.split_quality(self.quality)
         sickrage.app.log.debug("Any, Best = [{}] [{}] Found = [{}]".format(
             self.qualitiesToString(anyQualities),
             self.qualitiesToString(bestQualities),
@@ -1318,14 +1321,14 @@ class TVShow(object):
             sickrage.app.log.debug("Don't want this quality, ignoring found episode")
             return False
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                  if x['season'] == season and x['episode'] == episode]
-
-        if not dbData or not len(dbData):
+        try:
+            dbData = MainDB.TVEpisode.query().filter_by(showid=self.indexerid, season=season,
+                                                                         episode=episode).one()
+        except orm.exc.NoResultFound:
             sickrage.app.log.debug("Unable to find a matching episode in database, ignoring found episode")
             return False
 
-        epStatus = int(dbData[0]["status"])
+        epStatus = int(dbData.status)
         epStatus_text = statusStrings[epStatus]
 
         sickrage.app.log.debug("Existing episode status: " + str(epStatus) + " (" + epStatus_text + ")")
@@ -1336,7 +1339,7 @@ class TVShow(object):
                 "Existing episode status is unaired/skipped/ignored/archived, ignoring found episode")
             return False
 
-        curStatus, curQuality = Quality.splitCompositeStatus(epStatus)
+        curStatus, curQuality = Quality.split_composite_status(epStatus)
 
         # if it's one of these then we want it as long as it's in our allowed initial qualities
         if epStatus == WANTED:
@@ -1385,8 +1388,8 @@ class TVShow(object):
         elif epStatus in Quality.SNATCHED_BEST:
             return Overview.SNATCHED_BEST
         elif epStatus in Quality.DOWNLOADED:
-            anyQualities, bestQualities = Quality.splitQuality(self.quality)
-            epStatus, curQuality = Quality.splitCompositeStatus(epStatus)
+            anyQualities, bestQualities = Quality.split_quality(self.quality)
+            epStatus, curQuality = Quality.split_composite_status(epStatus)
 
             if bestQualities:
                 maxBestQuality = max(bestQualities)
@@ -1463,7 +1466,6 @@ class TVShow(object):
 
                     if not len(dbData):
                         sickrage.app.main_db.insert({
-                            '_t': 'indexer_mapping',
                             'indexer_id': self.indexerid,
                             'indexer': self.indexer,
                             'mindexer_id': int(mapped_show['id']),

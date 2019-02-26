@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import operator
@@ -170,7 +170,7 @@ class ProperSearcher(object):
             curProper.episode = parse_result.episode_numbers[0]
             curProper.release_group = parse_result.release_group
             curProper.version = parse_result.version
-            curProper.quality = Quality.nameQuality(curProper.name, parse_result.is_anime)
+            curProper.quality = Quality.name_quality(curProper.name, parse_result.is_anime)
             curProper.content = None
 
             # filter release
@@ -194,7 +194,7 @@ class ProperSearcher(object):
                 continue
 
             # only keep the proper if we have already retrieved the same quality ep (don't get better/worse ones)
-            oldStatus, oldQuality = Quality.splitCompositeStatus(int(dbData[0]["status"]))
+            oldStatus, oldQuality = Quality.split_composite_status(int(dbData[0]["status"]))
             if oldStatus not in (DOWNLOADED, SNATCHED) or oldQuality != bestResult.quality:
                 continue
 

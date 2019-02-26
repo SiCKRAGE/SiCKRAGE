@@ -1,5 +1,7 @@
 <%inherit file="../layouts/main.mako"/>
 <%!
+    from functools import cmp_to_key
+
     import sickrage
     from sickrage.core.common import SKIPPED, WANTED, UNAIRED, ARCHIVED, IGNORED, SNATCHED, SNATCHED_PROPER, SNATCHED_BEST, FAILED
     from sickrage.core.common import statusStrings
@@ -79,7 +81,7 @@
                                 </thead>
 
                                 <tbody>
-                                    % for curShow in sorted(sickrage.app.showlist, lambda x, y: cmp(x.name, y.name)):
+                                    % for curShow in sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: x.name < y.name)):
                                         <% curEp = curShow.next_aired %>
 
                                         <tr class="${curShow.status}" id="${curShow.indexerid}">

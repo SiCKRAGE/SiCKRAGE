@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -18,18 +18,14 @@
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
-from __future__ import unicode_literals
 
 import os.path
 import unittest
 from datetime import date
 
-import sickrage
 import tests
 from sickrage.core.nameparser import ParseResult, NameParser, InvalidNameException, InvalidShowException
 from sickrage.core.tv.show import TVShow
-
-sickrage.app.sys_encoding = 'UTF-8'
 
 DEBUG = VERBOSE = False
 
@@ -266,8 +262,10 @@ class ComboTests(tests.SiCKRAGETestDBCase):
             print(result, which_regexes)
 
         self.assertEqual(test_result, result)
+
         for cur_regex in which_regexes:
             self.assertTrue(cur_regex in test_result.which_regex)
+
         self.assertEqual(len(which_regexes), len(test_result.which_regex))
 
     def test_combos(self):
@@ -323,7 +321,9 @@ class AnimeTests(tests.SiCKRAGETestDBCase):
 
             self.assertEqual(test_result.which_regex, {section},
                              '{} : {} != {}'.format(cur_test, test_result.which_regex, {section}))
-            self.assertEqual(test_result, result, '{} : {} != {}'.format(cur_test, test_result, result))
+
+            self.assertEqual(test_result, result,
+                             '{} : {} != {}'.format(cur_test, test_result, result))
 
     def test_anime_sxxexx_file_names(self):
         """

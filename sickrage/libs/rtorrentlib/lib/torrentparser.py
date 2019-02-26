@@ -19,18 +19,12 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import hashlib
-import io
 import os.path
 import re
 
 import rtorrentlib.lib.bencode as bencode
-from rtorrentlib.compat import is_py3
 
-if is_py3():
-    from urllib.request import urlopen  # @UnresolvedImport @UnusedImport
-else:
-    from urllib2 import urlopen  # @UnresolvedImport @Reimport
-
+from urllib.request import urlopen
 
 class TorrentParser():
     def __init__(self, torrent):
@@ -77,7 +71,7 @@ class TorrentParser():
         # local file?
         if os.path.isfile(self.torrent):
             self.file_type = "file"
-            self._raw_torrent = io.open(self.torrent, "rb").read()
+            self._raw_torrent = open(self.torrent, "rb").read()
         # url?
         elif re.search("^(http|ftp):\/\/", self.torrent, re.I):
             self.file_type = "url"
@@ -130,7 +124,7 @@ class NewTorrentParser(object):
         if isinstance(self.input, (str, bytes)):
             # path to file?
             if os.path.isfile(self.input):
-                self._raw_torrent = self._read_file(io.open(self.input, "rb"))
+                self._raw_torrent = self._read_file(open(self.input, "rb"))
             else:
                 # assume input was the raw torrent data (do we really want
                 # this?)

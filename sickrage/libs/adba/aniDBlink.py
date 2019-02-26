@@ -21,9 +21,8 @@ import socket
 import sys
 import threading
 import zlib
-from time import time, sleep
-
 from builtins import bytes
+from time import time, sleep
 
 from .aniDBerrors import *
 from .aniDBresponses import ResponseResolver
@@ -214,7 +213,7 @@ class AniDBLink(threading.Thread):
         command.started = time()
         data = command.raw_data()
 
-        self.sock.sendto(bytes(data, b"ASCII"), self.target)
+        self.sock.sendto(bytes(data, "ASCII"), self.target)
         if command.command == b'AUTH':
             logger.debug("NetIO > sensitive data is not logged!")
 

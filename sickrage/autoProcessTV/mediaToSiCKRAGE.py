@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
 
-import ConfigParser
-import io
 import logging
 import os
 import sys
 import time
+from configparser import ConfigParser
 
 import requests
 
@@ -32,10 +30,10 @@ sickragePath = os.path.split(os.path.split(sys.argv[0])[0])[0]
 sys.path.append(sickragePath)
 configFilename = os.path.join(sickragePath, "config.ini")
 
-config = ConfigParser.ConfigParser()
+config = ConfigParser()
 
 try:
-    with io.open(configFilename, "r") as fp:
+    with open(configFilename, "r") as fp:
         config.readfp(fp)
 except IOError as e:
     print("Could not find/read SiCKRAGE config.ini: " + str(e))
@@ -83,7 +81,7 @@ def transmission():
     dirName = os.getenv('TR_TORRENT_DIR')
     nzbName = os.getenv('TR_TORRENT_NAME')
 
-    return (dirName, nzbName)
+    return dirName, nzbName
 
 
 def deluge():
@@ -96,7 +94,7 @@ def deluge():
     dirName = sys.argv[3]
     nzbName = sys.argv[2]
 
-    return (dirName, nzbName)
+    return dirName, nzbName
 
 
 def blackhole():
@@ -117,7 +115,7 @@ def blackhole():
         dirName = sys.argv[1]
         nzbName = sys.argv[2]
 
-    return (dirName, nzbName)
+    return dirName, nzbName
 
 
 def main():

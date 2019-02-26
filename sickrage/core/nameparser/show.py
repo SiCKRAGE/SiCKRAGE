@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 
 class Show(object):
     def __init__(self):
         self.name = "Show Name"
         self.genre = "Comedy"
-        self.indexerid = 00001
+        self.indexerid = 0o00001
         self.air_by_date = 0
         self.startyear = 2011
         self.sports = 0

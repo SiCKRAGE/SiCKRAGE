@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import os
 import platform
@@ -264,7 +264,7 @@ class UpdateManager(object):
 
         # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
         if platform.system().lower() == 'darwin':
-            alternative_pip.append('/usr/local/python2.7/bin/pip2')
+            alternative_pip.append('/usr/local/python3.7/bin/pip3')
 
         if platform.system().lower() == 'windows':
             if main_pip != main_pip.lower():
@@ -306,7 +306,7 @@ class UpdateManager(object):
             exit_status = p.returncode
 
             if output:
-                output = output.strip()
+                output = output.decode().strip()
 
         except OSError:
             sickrage.app.log.info("Command " + ' '.join(cmd) + " didn't work")
@@ -606,7 +606,7 @@ class SourceUpdateManager(UpdateManager):
 
         try:
             # prepare the update dir
-            sr_update_dir = os.path.join(sickrage.app.data_dir, 'sr-update')
+            sr_update_dir = os.path.join(sickrage.MAIN_DIR, 'sr-update')
 
             if os.path.isdir(sr_update_dir):
                 sickrage.app.log.info("Clearing out update folder " + sr_update_dir + " before extracting")
@@ -663,7 +663,11 @@ class SourceUpdateManager(UpdateManager):
                     if os.path.isfile(new_path) and os.path.exists(new_path):
                         os.remove(new_path)
 
-                    shutil.move(old_path, new_path)
+                    try:
+                        shutil.move(old_path, new_path)
+                    except IOError:
+                        os.makedirs(os.path.dirname(new_path))
+                        shutil.move(old_path, new_path)
 
             # install requirements
             if not self.install_requirements():

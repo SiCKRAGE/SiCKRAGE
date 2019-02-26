@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import threading
@@ -74,7 +74,7 @@ class DailySearcher(object):
 
         wanted = []
 
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(show.quality)
         allQualities = list(set(anyQualities + bestQualities))
 
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
@@ -82,7 +82,7 @@ class DailySearcher(object):
         # check through the list of statuses to see if we want any
         for dbData in sickrage.app.main_db.get_many('tv_episodes', show.indexerid):
             if dbData['season'] > 0 and dbData['airdate'] >= fromDate.toordinal():
-                curStatus, curQuality = Quality.splitCompositeStatus(int(dbData["status"] or -1))
+                curStatus, curQuality = Quality.split_composite_status(int(dbData["status"] or -1))
 
                 # if we need a better one then say yes
                 if curStatus not in (WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER):

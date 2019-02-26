@@ -16,162 +16,236 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
-
-import os
+from sqlalchemy import Column, Integer, Text, Boolean, Index, ForeignKeyConstraint, orm
+from sqlalchemy.ext.declarative import as_declarative
+from sqlalchemy.orm import relationship
 
 import sickrage
-from sickrage.core.databases import srDatabase
-from sickrage.core.databases.main.index import MainTVShowsIndex, MainTVEpisodesIndex, MainIMDBInfoIndex, \
-    MainXEMRefreshIndex, MainSceneNumberingIndex, MainIndexerMappingIndex, MainHistoryIndex, \
-    MainBlacklistIndex, MainWhitelistIndex, MainFailedSnatchHistoryIndex, MainFailedSnatchesIndex, MainVersionIndex
+from sickrage.core.databases import srDatabase, BaseActions
+
+
+@as_declarative()
+class MainDBBase(object): pass
 
 
 class MainDB(srDatabase):
-    _version = 2
-
-    _indexes = {
-        'version': MainVersionIndex,
-        'tv_shows': MainTVShowsIndex,
-        'tv_episodes': MainTVEpisodesIndex,
-        'imdb_info': MainIMDBInfoIndex,
-        'xem_refresh': MainXEMRefreshIndex,
-        'scene_numbering': MainSceneNumberingIndex,
-        'indexer_mapping': MainIndexerMappingIndex,
-        'blacklist': MainBlacklistIndex,
-        'whitelist': MainWhitelistIndex,
-        'history': MainHistoryIndex,
-        'failed_snatch_history': MainFailedSnatchHistoryIndex,
-        'failed_snatches': MainFailedSnatchesIndex,
-    }
-
-    _migrate_list = {
-        'tv_shows': ['indexer_id', 'indexer', 'show_name', 'location', 'network', 'genre',
-                     'classification', 'runtime', 'quality', 'airs', 'status', 'flatten_folders', 'paused',
-                     'startyear', 'air_by_date', 'lang', 'subtitles', 'notify_list', 'imdb_id',
-                     'dvdorder', 'archive_firstmatch', 'rls_require_words', 'rls_ignore_words', 'sports', 'anime',
-                     'scene', 'default_ep_status'],
-        'tv_episodes': ['showid', 'indexerid', 'indexer', 'name', 'season', 'episode', 'scene_season', 'scene_episode',
-                        'description', 'airdate', 'hasnfo', 'hastbn', 'status', 'location', 'file_size', 'release_name',
-                        'subtitles', 'subtitles_searchcount', 'subtitles_lastsearch', 'is_proper', 'absolute_number',
-                        'scene_absolute_number', 'version', 'release_group'],
-        'history': ['action', 'date', 'showid', 'season', 'episode', 'quality', 'resource', 'provider', 'version'],
-        'imdb_info': ['indexer_id', 'imdb_id', 'title', 'year', 'akas', 'runtimes', 'genres', 'countries',
-                      'country_codes', 'certificates', 'rating', 'votes', 'last_update'],
-        'scene_numbering': ['indexer', 'indexer_id', 'season', 'episode', 'scene_season', 'scene_episode',
-                            'absolute_number', 'scene_absolute_number'],
-        'blacklist': ['show_id', 'range', 'keyword'],
-        'whitelist': ['show_id', 'range', 'keyword'],
-        'xem_refresh': ['indexer', 'indexer_id', 'last_refreshed'],
-        'indexer_mapping': ['indexer_id', 'indexer', 'mindexer_id', 'mindexer'],
-    }
+    _version = 1
 
     def __init__(self, name='main'):
         super(MainDB, self).__init__(name)
-        self.old_db_path = os.path.join(sickrage.app.data_dir, 'sickrage.db')
+        MainDBBase.engine = self.engine
+        MainDBBase.metadata.create_all(self.engine)
+        for model in MainDBBase._decl_class_registry.values():
+            if hasattr(model, '__tablename__'):
+                self.tables[model.__tablename__] = model
+
+    @property
+    def version(self):
+        try:
+            dbData = MainDB.Version.query().one()
+        except orm.exc.NoResultFound:
+            dbData = MainDB.Version.add(**{'database_version': 1})
+
+        return dbData.database_version
 
     def upgrade(self):
         current_version = self.version
 
         while current_version < self._version:
-            dbData = list(self.all('version'))[-1]
-
+            dbData = MainDB.Version.query().one()
             new_version = current_version + 1
-            dbData['database_version'] = new_version
+            dbData.database_version = new_version
 
             upgrade_func = getattr(self, '_upgrade_v' + str(new_version), None)
             if upgrade_func:
                 sickrage.app.log.info("Upgrading main database to version {}".format(new_version))
                 upgrade_func()
 
-            self.update(dbData)
+            dbData.commit()
             current_version = new_version
 
-    def _upgrade_v2(self):
-        # convert archive_firstmatch to skip_downloaded
-        for show in self.all('tv_shows'):
-            if 'archive_firstmatch' in show:
-                show['skip_downloaded'] = show['archive_firstmatch']
-                del show['archive_firstmatch']
-                self.update(show)
+    class Version(BaseActions, MainDBBase):
+        __tablename__ = 'version'
 
-    def cleanup(self):
-        self.fix_show_none_types()
-        self.fix_episode_none_types()
-        self.fix_dupe_shows()
-        self.fix_dupe_episodes()
-        self.fix_orphaned_episodes()
+        database_version = Column(Integer, primary_key=True)
 
-    def fix_show_none_types(self):
-        checked = []
+    class TVShow(BaseActions, MainDBBase):
+        __tablename__ = 'tv_shows'
 
-        for show in self.all('tv_shows'):
-            if show['indexer_id'] in checked:
-                continue
+        indexer_id = Column(Integer, index=True, primary_key=True)
+        indexer = Column(Integer, index=True, primary_key=True)
+        show_name = Column(Text)
+        location = Column(Text)
+        network = Column(Text)
+        genre = Column(Text)
+        overview = Column(Text)
+        classification = Column(Text)
+        runtime = Column(Integer)
+        quality = Column(Integer)
+        airs = Column(Text)
+        status = Column(Integer)
+        flatten_folders = Column(Boolean)
+        paused = Column(Boolean)
+        air_by_date = Column(Boolean)
+        anime = Column(Boolean)
+        scene = Column(Boolean)
+        sports = Column(Boolean)
+        subtitles = Column(Boolean)
+        dvdorder = Column(Boolean)
+        skip_downloaded = Column(Boolean)
+        startyear = Column(Integer)
+        lang = Column(Text)
+        imdb_id = Column(Text)
+        rls_ignore_words = Column(Text)
+        rls_require_words = Column(Text)
+        default_ep_status = Column(Integer, default=-1)
+        sub_use_sr_metadata = Column(Boolean)
+        notify_list = Column(Text)
+        search_delay = Column(Boolean)
+        last_update = Column(Integer)
+        last_refresh = Column(Integer)
 
-            dirty = False
-            for k, v in show.items():
-                if v is None:
-                    try:
-                        show[k] = ""
-                        dirty = True
-                    except Exception:
-                        pass
+        episodes = relationship('TVEpisode', back_populates='show', lazy='select')
 
-            if dirty:
-                self.update(show)
+    class TVEpisode(BaseActions, MainDBBase):
+        __tablename__ = 'tv_episodes'
+        __table_args__ = (
+            ForeignKeyConstraint(['showid', 'indexer'], ['tv_shows.indexer_id', 'tv_shows.indexer']),
+            Index('idx_showid_indexer', 'showid', 'indexer'),
+            Index('idx_sta_epi_air', 'status', 'episode', 'airdate'),
+            Index('idx_sta_epi_sta_air', 'season', 'episode', 'status', 'airdate'),
+            Index('idx_status ', 'status', 'season', 'episode', 'airdate'),
+            Index('idx_tv_episodes_showid_airdate', 'indexerid', 'airdate'),
+        )
 
-            checked += [show['indexer_id']]
+        showid = Column(Integer, index=True, primary_key=True)
+        indexerid = Column(Integer, index=True, primary_key=True)
+        indexer = Column(Integer, index=True, primary_key=True)
+        season = Column(Integer)
+        episode = Column(Integer)
+        scene_season = Column(Integer)
+        scene_episode = Column(Integer)
+        name = Column(Text)
+        description = Column(Text)
+        subtitles = Column(Text)
+        subtitles_searchcount = Column(Integer)
+        subtitles_lastsearch = Column(Integer)
+        airdate = Column(Integer)
+        hasnfo = Column(Boolean)
+        hastbn = Column(Boolean)
+        status = Column(Integer)
+        location = Column(Text)
+        file_size = Column(Integer)
+        release_name = Column(Text)
+        is_proper = Column(Boolean)
+        absolute_number = Column(Integer)
+        scene_absolute_number = Column(Integer)
+        version = Column(Integer, default=-1)
+        release_group = Column(Text)
 
-        del checked
+        show = relationship('TVShow', back_populates='episodes', lazy='select')
 
-    def fix_episode_none_types(self):
-        checked = []
+    class IMDbInfo(BaseActions, MainDBBase):
+        __tablename__ = 'imdb_info'
 
-        for ep in self.all('tv_episodes'):
-            if ep['showid'] in checked:
-                continue
+        indexer_id = Column(Integer, primary_key=True)
+        Rated = Column(Text)
+        Title = Column(Text)
+        DVD = Column(Text)
+        Production = Column(Text)
+        Website = Column(Text)
+        Writer = Column(Text)
+        Actors = Column(Text)
+        Type = Column(Text)
+        imdbVotes = Column(Text)
+        totalSeasons = Column(Integer)
+        Poster = Column(Text)
+        Director = Column(Text)
+        Released = Column(Text)
+        Awards = Column(Text)
+        Genre = Column(Text)
+        imdbRating = Column(Text)
+        Language = Column(Text)
+        Country = Column(Text)
+        Runtime = Column(Text)
+        imdbID = Column(Text, index=True, unique=True)
+        Metascore = Column(Text)
+        Year = Column(Integer)
+        Plot = Column(Text)
+        last_update = Column(Integer)
 
-            dirty = False
-            for k, v in ep.items():
-                if v is None:
-                    try:
-                        ep[k] = ""
-                        dirty = True
-                    except Exception:
-                        pass
+    class XEMRefresh(BaseActions, MainDBBase):
+        __tablename__ = 'xem_refresh'
 
-            if dirty:
-                self.update(ep)
+        indexer_id = Column(Integer, primary_key=True)
+        indexer = Column(Integer, primary_key=True)
+        last_refreshed = Column(Integer)
 
-            checked += [ep['showid']]
+    class SceneNumbering(BaseActions, MainDBBase):
+        __tablename__ = 'scene_numbering'
 
-        del checked
+        indexer = Column(Integer, primary_key=True)
+        indexer_id = Column(Integer, primary_key=True)
+        season = Column(Integer, primary_key=True)
+        episode = Column(Integer, primary_key=True)
+        scene_season = Column(Integer)
+        scene_episode = Column(Integer)
+        absolute_number = Column(Integer)
+        scene_absolute_number = Column(Integer)
 
-    def fix_dupe_shows(self):
-        found = []
+    class IndexerMapping(BaseActions, MainDBBase):
+        __tablename__ = 'indexer_mapping'
 
-        for show in self.all('tv_shows'):
-            if show['indexer_id'] in found:
-                sickrage.app.log.info("Deleting duplicate show with id: {}".format(show["indexer_id"]))
-                self.delete(show)
-            found += [show['indexer_id']]
+        indexer_id = Column(Integer, primary_key=True)
+        indexer = Column(Integer, primary_key=True)
+        mindexer_id = Column(Integer)
+        mindexer = Column(Integer, primary_key=True)
 
-        del found
+    class Blacklist(BaseActions, MainDBBase):
+        __tablename__ = 'blacklist'
 
-    def fix_dupe_episodes(self):
-        found = []
+        id = Column(Integer, primary_key=True)
+        show_id = Column(Integer)
+        keyword = Column(Text)
 
-        for ep in self.all('tv_episodes'):
-            if ep['indexerid'] in found:
-                sickrage.app.log.info("Deleting duplicate episode with id: {}".format(ep["indexerid"]))
-                self.delete(ep)
-            found += [ep['indexerid']]
+    class Whitelist(BaseActions, MainDBBase):
+        __tablename__ = 'whitelist'
 
-        del found
+        id = Column(Integer, primary_key=True)
+        show_id = Column(Integer)
+        keyword = Column(Text)
 
-    def fix_orphaned_episodes(self):
-        for ep in self.all('tv_episodes'):
-            if not self.get('tv_shows', ep['showid']):
-                sickrage.app.log.info("Deleting orphan episode with id: {}".format(ep["indexerid"]))
-                self.delete(ep)
+    class History(BaseActions, MainDBBase):
+        __tablename__ = 'history'
+
+        id = Column(Integer, primary_key=True)
+        showid = Column(Integer)
+        resource = Column(Text)
+        season = Column(Integer)
+        episode = Column(Integer)
+        action = Column(Integer)
+        version = Column(Integer, default=-1)
+        provider = Column(Text)
+        date = Column(Integer)
+        quality = Column(Integer)
+
+    class FailedSnatchHistory(BaseActions, MainDBBase):
+        __tablename__ = 'failed_snatch_history'
+
+        id = Column(Integer, primary_key=True)
+        date = Column(Integer)
+        size = Column(Integer)
+        release = Column(Text)
+        provider = Column(Text)
+        showid = Column(Integer)
+        season = Column(Integer)
+        episode = Column(Integer)
+        old_status = Column(Integer)
+
+    class FailedSnatch(BaseActions, MainDBBase):
+        __tablename__ = 'failed_snatches'
+
+        id = Column(Integer, primary_key=True)
+        release = Column(Text)
+        size = Column(Integer)
+        provider = Column(Text)

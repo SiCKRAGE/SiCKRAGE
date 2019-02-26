@@ -3,13 +3,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import collections
 import inspect
 
-import six
-import trakt  # noqa: I902
 from docutils import nodes
 from docutils.parsers import rst
 from docutils.parsers.rst import directives
 from docutils.statemachine import ViewList
 from sphinx.util.nodes import nested_parse_with_titles
+
+import trakt  # noqa: I902
 from trakt import interfaces
 
 
@@ -28,8 +28,8 @@ def _format_apis(apis):
     def make_path(path_dict, api_path):
 
         sorted_paths = collections.OrderedDict(
-            sorted(six.iteritems(path_dict)))
-        for k, v in six.iteritems(sorted_paths):
+            sorted(path_dict.items()))
+        for k, v in sorted_paths.items():
             if k is None:
                 k = ''
             api_path.append(k)

@@ -17,10 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import os
-import string
 from operator import itemgetter
 
 import sickrage
@@ -33,7 +32,7 @@ def getWinDrives():
 
     drives = []
     bitmask = windll.kernel32.GetLogicalDrives()
-    for letter in string.uppercase:
+    for letter in map(chr, range(ord('A'), ord('Z')+1)):
         if bitmask & 1:
             drives.append(letter)
         bitmask >>= 1

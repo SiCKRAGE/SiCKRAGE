@@ -1,6 +1,7 @@
 # Changelog
 
-- * 8f00c06 - 2019-02-24: Release v9.4.77 
+- * 3bad5d0 - 2019-02-25: Migration from Python 2 to Python 3.7.x 
+- * a72ca25 - 2019-02-24: Release v9.4.77 
 - * b09d78a - 2019-02-24: Added Anime regex for Erai-raws 
 - * e0f2db6 - 2019-02-24: Release v9.4.76 
 - * ed84483 - 2019-02-24: Fixed IndexerErrors for TV cache. Added files to .gitignore related to AniDB. 

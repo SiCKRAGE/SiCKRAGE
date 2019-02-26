@@ -112,7 +112,7 @@
                                 </div>
                                 <select id="failed_snatch_age" name="failed_snatch_age" class="form-control"
                                         title="minimum allowed time ${sickrage.app.config.min_failed_snatch_age} hours">
-                                    % for hour in xrange(1,25):
+                                    % for hour in range(1,25):
                                         <option value="${hour}" ${('', 'selected')[sickrage.app.config.failed_snatch_age == hour]}>${hour}</option>
                                     % endfor
                                 </select>

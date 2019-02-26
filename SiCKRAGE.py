@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -22,9 +22,9 @@ import os
 if __name__ == '__main__':
     # removes stale .pyc files
     for root, dirs, files in os.walk(os.path.dirname(__file__)):
-        pyc_files = filter(lambda filename: filename.endswith(".pyc"), files)
+        pyc_files = list(filter(lambda filename: filename.endswith(".pyc"), files))
         py_files = set(filter(lambda filename: filename.endswith(".py"), files))
-        excess_pyc_files = filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files)
+        excess_pyc_files = list(filter(lambda pyc_filename: pyc_filename[:-1] not in py_files, pyc_files))
         for excess_pyc_file in excess_pyc_files:
             full_path = os.path.join(root, excess_pyc_file)
             os.remove(full_path)

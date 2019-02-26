@@ -16,51 +16,105 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+from sqlalchemy import Column, Integer, Text
+from sqlalchemy.ext.declarative import as_declarative
 
-import os
+from sickrage.core.databases import srDatabase, BaseActions
 
-import sickrage
-from sickrage.core.common import Quality
-from sickrage.core.databases import srDatabase
-from sickrage.core.databases.cache.index import CacheLastUpdateIndex, CacheLastSearchIndex, CacheSceneExceptionsIndex, \
-    CacheSceneNamesIndex, CacheNetworkTimezonesIndex, CacheSceneExceptionsRefreshIndex, CacheProvidersIndex, \
-    CacheQuicksearchIndex
-from sickrage.core.helpers import validate_url, is_ip_private
+
+@as_declarative()
+class CacheDBBase(object): pass
 
 
 class CacheDB(srDatabase):
-    _indexes = {
-        'lastUpdate': CacheLastUpdateIndex,
-        'lastSearch': CacheLastSearchIndex,
-        'scene_exceptions': CacheSceneExceptionsIndex,
-        'scene_names': CacheSceneNamesIndex,
-        'network_timezones': CacheNetworkTimezonesIndex,
-        'scene_exceptions_refresh': CacheSceneExceptionsRefreshIndex,
-        'providers': CacheProvidersIndex,
-        'quicksearch': CacheQuicksearchIndex
-    }
-
-    _migrate_list = {
-        'lastUpdate': ['provider', 'time'],
-        'lastSearch': ['provider', 'time'],
-        'scene_exceptions': ['exception_id', 'indexer_id', 'show_name', 'season', 'custom'],
-        'scene_names': ['indexer_id', 'name'],
-        'network_timezones': ['network_name', 'timezone'],
-        'scene_exceptions_refresh': ['list', 'last_refreshed'],
-    }
+    _version = 1
 
     def __init__(self, name='cache'):
         super(CacheDB, self).__init__(name)
-        self.old_db_path = os.path.join(sickrage.app.data_dir, 'cache.db')
+        CacheDBBase.engine = self.engine
+        CacheDBBase.metadata.create_all(self.engine)
+        for model in CacheDBBase._decl_class_registry.values():
+            if hasattr(model, '__tablename__'):
+                self.tables[model.__tablename__] = model
 
-    def cleanup(self):
-        self.cleanup_provider_cache()
+    class LastUpdate(BaseActions, CacheDBBase):
+        __tablename__ = 'last_update'
 
-    def cleanup_provider_cache(self):
-        for item in self.all('providers'):
-            if int(item["quality"]) == Quality.UNKNOWN:
-                self.delete(item)
-            elif not validate_url(item["url"]) and not item["url"].startswith("magnet") \
-                    or is_ip_private(item["url"].split(r'//')[-1].split(r'/')[0]):
-                self.delete(item)
+        id = Column(Integer, primary_key=True)
+        provider = Column(Text)
+        time = Column(Integer)
+
+    class LastSearch(BaseActions, CacheDBBase):
+        __tablename__ = 'last_search'
+
+        id = Column(Integer, primary_key=True)
+        provider = Column(Text)
+        time = Column(Integer)
+
+    class SceneException(BaseActions, CacheDBBase):
+        __tablename__ = 'scene_exceptions'
+
+        id = Column(Integer, primary_key=True)
+        indexer_id = Column(Integer)
+        show_name = Column(Text)
+        season = Column(Integer)
+
+    class SceneName(BaseActions, CacheDBBase):
+        __tablename__ = 'scene_names'
+
+        id = Column(Integer, primary_key=True)
+        indexer_id = Column(Integer)
+        name = Column(Text)
+
+    class NetworkTimezone(BaseActions, CacheDBBase):
+        __tablename__ = 'network_timezones'
+
+        id = Column(Integer, primary_key=True)
+        network_name = Column(Text)
+        timezone = Column(Text)
+
+    class SceneExceptionRefresh(BaseActions, CacheDBBase):
+        __tablename__ = 'scene_exceptions_refresh'
+
+        id = Column(Integer, primary_key=True)
+        exception_list = Column(Text)
+        last_refreshed = Column(Integer)
+
+    class Provider(BaseActions, CacheDBBase):
+        __tablename__ = 'providers'
+
+        id = Column(Integer, primary_key=True)
+        provider = Column(Text)
+        name = Column(Text)
+        season = Column(Integer)
+        episodes = Column(Text)
+        indexerid = Column(Integer)
+        url = Column(Text, index=True, unique=True)
+        time = Column(Integer)
+        quality = Column(Integer)
+        release_group = Column(Text)
+        version = Column(Integer, default=-1)
+        seeders = Column(Integer)
+        leechers = Column(Integer)
+        size = Column(Integer)
+
+    class QuickSearchShow(BaseActions, CacheDBBase):
+        __tablename__ = 'quicksearch_shows'
+
+        category = Column(Text)
+        showid = Column(Integer, primary_key=True)
+        seasons = Column(Integer)
+        name = Column(Text)
+        img = Column(Text)
+
+    class QuickSearchEpisode(BaseActions, CacheDBBase):
+        __tablename__ = 'quicksearch_episodes'
+
+        category = Column(Text)
+        showid = Column(Integer, primary_key=True)
+        episodeid = Column(Integer, primary_key=True)
+        season = Column(Integer)
+        episode = Column(Integer)
+        name = Column(Text)
+        showname = Column(Text)
+        img = Column(Text)

@@ -99,7 +99,7 @@ def decode_int(x, f):
     try:
         n = int(x[f:newf])
     except (OverflowError, ValueError):
-        n = long(x[f:newf])
+        n = int(x[f:newf])
     if x[f] == '-':
         if x[f + 1] == '0':
             raise ValueError
@@ -138,7 +138,7 @@ def decode_string(x, f):
     try:
         n = int(x[f:colon])
     except (OverflowError, ValueError):
-        n = long(x[f:colon])
+        n = int(x[f:colon])
     if x[f] == '0' and colon != f+1:
         raise ValueError
     colon += 1

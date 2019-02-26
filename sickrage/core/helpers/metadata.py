@@ -15,8 +15,9 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+import re
 
-from __future__ import unicode_literals
+import knowit
 
 import sickrage
 
@@ -52,72 +53,40 @@ resolutions = {
     'default': {'resolution_width': 0, 'resolution_height': 0, 'aspect': 1},
 }
 
-audio_codec_map = {
-    0x2000: 'AC3',
-    0x2001: 'DTS',
-    0x0055: 'MP3',
-    0x0050: 'MP2',
-    0x0001: 'PCM',
-    0x003: 'WAV',
-    0x77a1: 'TTA1',
-    0x5756: 'WAV',
-    0x6750: 'Vorbis',
-    0xF1AC: 'FLAC',
-    0x00ff: 'AAC',
-}
 
-
-def getResolution(filename):
-    try:
-        for key in resolutions:
-            if key in filename.lower() and key != 'default':
-                return resolutions[key]
-    except:
-        pass
-
+def get_resolution(filename):
+    for key in resolutions:
+        if key in filename.lower() and key != 'default':
+            return resolutions[key]
     return resolutions['default']
 
 
-def getFileMetadata(filename):
+def get_file_metadata(filename):
     try:
-        import enzyme
-        p = enzyme.parse(filename)
+        p = knowit.know(filename)
 
         # Video codec
-        vc = ('H264' if p.video[0].codec == 'AVC1' else 'x265' if p.video[0].codec == 'HEVC' else p.video[0].codec)
+        vc = ('H264' if p['video'][0]['codec'] == 'AVC1' else 'x265' if p['video'][0]['codec'] == 'HEVC' else
+        p['video'][0]['codec'])
 
         # Audio codec
-        ac = p.audio[0].codec
-        try:
-            ac = audio_codec_map.get(p.audio[0].codec)
-        except:
-            pass
+        ac = p['audio'][0]['codec']
 
-        # Find title in video headers
-        titles = []
-
-        try:
-            if hasattr(p, 'title') and p.title:
-                titles.append(p.title)
-        except:
-            sickrage.app.log.error('Failed getting title from meta')
-
-        for video in p.video:
-            try:
-                if video.title:
-                    titles.append(video.title)
-            except:
-                sickrage.app.log.error('Failed getting title from meta')
+        # Resolution
+        width = re.match(r'(\d+)', str(p['video'][0]['width']))
+        height = re.match(r'(\d+)', str(p['video'][0]['height']))
 
         return {
-            'titles': list(set(titles)),
+            'title': p.get('title', ""),
             'video': vc,
             'audio': ac,
-            'resolution_width': int(p.video[0].width or 0),
-            'resolution_height': int(p.video[0].height or 0),
-            'audio_channels': p.audio[0].channels,
+            'resolution_width': int(width.group(1)) if width else 0,
+            'resolution_height': int(height.group(1)) if height else 0,
+            'audio_channels': p['audio'][0]['channels'],
         }
     except Exception:
-        sickrage.app.log.debug('Failed to parse meta for %s', filename)
+        sickrage.app.log.debug('Failed to parse meta for {}'.format(filename))
 
     return {}
+
+

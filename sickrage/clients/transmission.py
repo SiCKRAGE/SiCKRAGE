@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import json
 import os
@@ -101,7 +101,7 @@ class TransmissionAPI(GenericClient):
 
     def _set_torrent_ratio(self, result):
         ratio = None
-        if isinstance(result.ratio, (int, long)):
+        if isinstance(result.ratio, int):
             ratio = result.ratio
 
         mode = 0

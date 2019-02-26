@@ -61,7 +61,7 @@
 
                                 <tbody>
                                     % for hItem in historyResults:
-                                        <% curStatus, curQuality = Quality.splitCompositeStatus(int(hItem["action"])) %>
+                                        <% curStatus, curQuality = Quality.split_composite_status(int(hItem["action"])) %>
                                         <tr>
                                             <td class="table-fit">
                                                 <% airDate = srdatetime.srDateTime(datetime.datetime.strptime(str(hItem["date"]), History.date_format)).srfdatetime(show_seconds=True) %>
@@ -83,11 +83,11 @@
                                             </td>
                                             <td class="table-fit">
                                                 % if curStatus in [DOWNLOADED, ARCHIVED]:
-                                                    % if hItem["provider"] != "-1":
+                                                    % if hItem["provider"] != -1:
                                                         <span style="vertical-align:middle;"><i>${hItem["provider"]}</i></span>
                                                     % endif
                                                 % else:
-                                                    % if hItem["provider"] > 0:
+                                                    % if hItem["provider"]:
                                                         % if curStatus in [SNATCHED, FAILED]:
                                                             % if hItem["provider"].lower() in sickrage.app.search_providers.all():
                                                             <% provider = sickrage.app.search_providers.all()[hItem["provider"].lower()] %>
@@ -143,9 +143,9 @@
                                                                 </span>
                                             </td>
                                             <td class="table-fit"
-                                                data-provider="${str(sorted(hItem["actions"])[0]["provider"])}">
-                                                % for action in sorted(hItem["actions"]):
-                                                    <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
+                                                data-provider="${sorted(hItem["actions"], key=lambda x:sorted(x.keys()))[0]["provider"]}">
+                                                % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
+                                                    <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
                                                     % if curStatus in [SNATCHED, FAILED]:
                                                         % if action["provider"].lower() in sickrage.app.search_providers.all():
                                                         <% provider = sickrage.app.search_providers.all()[action["provider"].lower()] %>
@@ -161,8 +161,8 @@
                                                 % endfor
                                             </td>
                                             <td class="table-fit">
-                                                % for action in sorted(hItem["actions"]):
-                                                    <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
+                                                % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
+                                                    <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
                                                     % if curStatus in [DOWNLOADED, ARCHIVED]:
                                                         % if action["provider"] != "-1":
                                                             <span style="cursor: help;"
@@ -176,8 +176,8 @@
                                             </td>
                                             % if sickrage.app.config.use_subtitles:
                                                 <td class="table-fit">
-                                                    % for action in sorted(hItem["actions"]):
-                                                        <% curStatus, curQuality = Quality.splitCompositeStatus(int(action["action"])) %>
+                                                    % for action in sorted(hItem["actions"], key=lambda x:sorted(x.keys())):
+                                                        <% curStatus, curQuality = Quality.split_composite_status(int(action["action"])) %>
                                                         % if curStatus == SUBTITLED:
                                                             <i class="sickrage-subtitles sickrage-subtitles-${action['provider']}"
                                                                style="vertical-align:middle;"

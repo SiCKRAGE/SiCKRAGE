@@ -7,7 +7,7 @@
     <%
         # Build a string of quality names to use as title attribute
         if showTitle:
-            iQuality, pQuality = Quality.splitQuality(quality)
+            iQuality, pQuality = Quality.split_quality(quality)
             title = _('Initial Quality:') + '\n'
             if iQuality:
                 for curQual in iQuality:

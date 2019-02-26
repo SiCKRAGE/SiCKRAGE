@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import os
@@ -48,7 +48,7 @@ class ShowQueue(srQueue):
         return self._get_loading_show_list()
 
     def _is_in_queue(self, show, actions):
-        return show.indexerid in [x.show.indexerid if x.show else 0 for __, __, x in self.queue if
+        return show.indexerid in [x.show.indexerid if x.show else 0 for x in self.queue if
                                   x.action_id in actions] if show else False
 
     def _is_being(self, show, actions):
@@ -85,7 +85,7 @@ class ShowQueue(srQueue):
         return self._is_being(show, (ShowQueueActions.SUBTITLE,))
 
     def _get_queue_items(self):
-        return [x for __, __, x in self.queue + [(None, None, self.current_item)] if x]
+        return [x for x in self.queue + [self.current_item] if x]
 
     def _get_loading_show_list(self):
         return [x for x in self._get_queue_items() if x.is_loading]
@@ -158,7 +158,7 @@ class ShowQueue(srQueue):
             raise CantRemoveShowException("{} is already queued to be removed".format(show))
 
         # remove other queued actions for this show.
-        for __, __, x in self.queue:
+        for x in self.queue:
             if x and x.show and x != self.current_item and show.indexerid == x.show.indexerid:
                 self.queue.remove(x)
 

@@ -16,10 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
 
 import gettext
-import io
 import os
 import os.path
 import shutil
@@ -41,7 +39,7 @@ if not (LIBS_DIR in sys.path):
     sys.path.extend(remainder)
 
 LOCALE_DIR = os.path.join(PROG_DIR, 'locale')
-gettext.install('messages', LOCALE_DIR, unicode=1, codeset='UTF-8', names=["ngettext"])
+gettext.install('messages', LOCALE_DIR, codeset='UTF-8', names=["ngettext"])
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -101,7 +99,7 @@ class SiCKRAGETestCase(unittest.TestCase):
             os.makedirs(self.SHOWDIR)
 
         try:
-            with io.open(self.FILEPATH, 'wb') as f:
+            with open(self.FILEPATH, 'wb') as f:
                 f.write(b"foo bar")
         except Exception:
             print("Unable to set up test episode")
@@ -128,8 +126,6 @@ class SiCKRAGETestDBCase(SiCKRAGETestCase):
         super(SiCKRAGETestDBCase, self).setUp()
         sickrage.app.main_db = MainDB()
         sickrage.app.cache_db = CacheDB()
-        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-            db.initialize()
 
     def tearDown(self):
         super(SiCKRAGETestDBCase, self).tearDown()

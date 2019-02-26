@@ -16,14 +16,14 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
 import time
 from base64 import b16encode, b32decode
 from hashlib import sha1
 
-from bencode import BTFailure, bdecode, bencode
+from bencode3 import bdecode, bencode, BencodeError
 
 import sickrage
 from sickrage.core.websession import WebSession
@@ -293,7 +293,7 @@ class GenericClient(object):
 
             try:
                 torrent_bdecode = bdecode(result.content)
-            except BTFailure:
+            except BencodeError:
                 sickrage.app.log.error('Unable to bdecode torrent')
                 sickrage.app.log.debug('Torrent bencoded data: %r' % result.content)
                 raise
@@ -314,11 +314,11 @@ class GenericClient(object):
 
         sickrage.app.log.debug('Calling ' + self.name + ' Client')
 
-        if not self._get_auth():
-            sickrage.app.log.warning(self.name + ': Authentication Failed')
-            return r_code
-
         try:
+            if not self._get_auth():
+                sickrage.app.log.warning(self.name + ': Authentication Failed')
+                return r_code
+
             # Sets per provider seed ratio
             result.ratio = result.provider.seed_ratio
 
@@ -359,7 +359,7 @@ class GenericClient(object):
         except Exception as e:
             sickrage.app.log.warning(self.name + ': Failed Sending Torrent')
             sickrage.app.log.debug(
-                self.name + ': Exception raised when sending torrent: ' + str(result) + '. Error: ' + str(e))
+                self.name + ': Exception raised when sending torrent: {}. Error: {}'.format(result, e))
             return r_code
 
         return r_code

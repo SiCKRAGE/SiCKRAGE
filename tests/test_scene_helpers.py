@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function, unicode_literals
 
 import unittest
 
@@ -25,6 +24,7 @@ import sickrage
 import tests
 from sickrage.core import scene_exceptions
 from sickrage.core.common import countryList
+from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import show_names
 from sickrage.core.scene_exceptions import exceptionsCache, get_scene_exceptions, \
     get_scene_exception_by_name
@@ -55,25 +55,6 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         result = show_names.filterBadReleases(name)
         self.assertEqual(result, expected)
 
-    def _test_isGoodName(self, name, show):
-        self.assertTrue(show_names.isGoodResult(name, show))
-
-    def test_isGoodName(self):
-        list_of_cases = [('Show.Name.S01E02.Test-Test', 'Show/Name'),
-                         ('Show.Name.S01E02.Test-Test', 'Show. Name'),
-                         ('Show.Name.S01E02.Test-Test', 'Show- Name'),
-                         ('Show.Name.Part.IV.Test-Test', 'Show Name'),
-                         ('Show.Name.S01.Test-Test', 'Show Name'),
-                         ('Show.Name.E02.Test-Test', 'Show: Name'),
-                         ('Show Name Season 2 Test', 'Show: Name')]
-
-        for testCase in list_of_cases:
-            scene_name, show_name = testCase
-            s = TVShow(1, 0)
-            s.name = show_name
-            s.save_to_db()
-            self._test_isGoodName(scene_name, s)
-
     def test_sceneToNormalShowNames(self):
         self._test_sceneToNormalShowNames('Show Name 2010', ['Show Name 2010', 'Show Name (2010)'])
         self._test_sceneToNormalShowNames('Show Name US', ['Show Name US', 'Show Name (US)'])
@@ -91,8 +72,7 @@ class SceneTests(tests.SiCKRAGETestDBCase):
         self._test_sceneToNormalShowNames('Show Name YA', ['Show Name YA'])
 
     def test_allPossibleShowNames(self):
-        sickrage.app.cache_db.insert({
-            '_t': 'scene_exceptions',
+        CacheDB.SceneException.add(**{
             'indexer_id': 1,
             'show_name': 'Exception Test',
             'season': -1
@@ -139,7 +119,7 @@ class SceneExceptionTestCase(tests.SiCKRAGETestDBCase):
 
     def test_sceneExceptionsResetNameCache(self):
         # clear the exceptions
-        [sickrage.app.cache_db.delete(x) for x in sickrage.app.cache_db.all('scene_exceptions')]
+        [CacheDB.SceneException.delete(x) for x in CacheDB.SceneException.query()]
 
         # put something in the cache
         sickrage.app.name_cache.put('Cached Name', 0)

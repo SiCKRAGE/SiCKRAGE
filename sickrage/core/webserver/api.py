@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import collections
 import datetime
@@ -26,12 +26,13 @@ import re
 import threading
 import time
 import traceback
-import urllib
+from urllib.parse import unquote_plus
 
 from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage.subtitles
+from sickrage.core.databases.cache import CacheDB
 
 try:
     from futures import ThreadPoolExecutor
@@ -533,7 +534,7 @@ def _map_quality(showObj):
     anyQualities = []
     bestQualities = []
 
-    iqualityID, aqualityID = Quality.splitQuality(int(showObj))
+    iqualityID, aqualityID = Quality.split_quality(int(showObj))
     for quality in iqualityID:
         anyQualities.append(_get_quality_map()[quality])
     for quality in aqualityID:
@@ -609,7 +610,7 @@ def _get_root_dirs():
         return {}
 
     # clean up the list - replace %xx escapes by their single-character equivalent
-    root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
+    root_dirs = [unquote_plus(x) for x in root_dirs]
 
     default_dir = root_dirs[default_index]
 
@@ -802,7 +803,7 @@ class CMD_Episode(ApiCall):
         else:
             episode['airdate'] = 'Never'
 
-        status, quality = Quality.splitCompositeStatus(int(episode["status"]))
+        status, quality = Quality.split_composite_status(int(episode["status"]))
         episode["status"] = _get_status_strings(status)
         episode["quality"] = get_quality_string(quality)
         episode["file_size_human"] = pretty_filesize(episode["file_size"])
@@ -851,7 +852,7 @@ class CMD_EpisodeSearch(ApiCall):
 
         # return the correct json value
         if ep_queue_item.success:
-            status, quality = Quality.splitCompositeStatus(epObj.status)
+            status, quality = Quality.split_composite_status(epObj.status)
             # TODO: split quality and status?
             return _responds(RESULT_SUCCESS, {"quality": get_quality_string(quality)},
                              "Snatched (" + get_quality_string(quality) + ")")
@@ -891,7 +892,7 @@ class CMD_EpisodeSetStatus(ApiCall):
             return _responds(RESULT_FAILURE, msg="Show not found")
 
         # convert the string status to a int
-        for status in statusStrings.statusStrings:
+        for status in statusStrings.status_strings:
             if str(statusStrings[status]).lower() == str(self.status).lower():
                 self.status = status
                 break
@@ -1038,20 +1039,19 @@ class CMD_Exceptions(ApiCall):
 
         if self.indexerid is None:
             scene_exceptions = {}
-            for dbData in sickrage.app.cache_db.all('scene_exceptions'):
-                indexerid = dbData['indexer_id']
+            for dbData in CacheDB.SceneException.query():
+                indexerid = dbData.indexer_id
                 if indexerid not in scene_exceptions:
                     scene_exceptions[indexerid] = []
-                scene_exceptions[indexerid].append(dbData['show_name'])
+                scene_exceptions[indexerid].append(dbData.show_name)
         else:
             showObj = findCertainShow(int(self.indexerid))
             if not showObj:
                 return _responds(RESULT_FAILURE, msg="Show not found")
 
             scene_exceptions = []
-            for dbData in (x for x in sickrage.app.cache_db.all('scene_exceptions', self.indexerid)
-                           if x['indexer_id'] == self.indexerid):
-                scene_exceptions.append(dbData['show_name'])
+            for dbData in CacheDB.SceneException.query(indexer_id=self.indexerid):
+                scene_exceptions.append(dbData.show_name)
 
         return _responds(RESULT_SUCCESS, scene_exceptions)
 
@@ -1078,7 +1078,7 @@ class CMD_History(ApiCall):
         results = []
 
         for row in data:
-            status, quality = Quality.splitCompositeStatus(int(row["action"]))
+            status, quality = Quality.split_composite_status(int(row["action"]))
             status = _get_status_strings(status)
 
             if self.type and not status.lower() == self.type:
@@ -1323,7 +1323,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
     def run(self):
         """ Add a new root (parent) directory to SiCKRAGE """
 
-        self.location = urllib.unquote_plus(self.location)
+        self.location = unquote_plus(self.location)
         location_matched = 0
         index = 0
 
@@ -1340,7 +1340,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
             index = int(sickrage.app.config.root_dirs.split('|')[0])
             root_dirs.pop(0)
             # clean up the list - replace %xx escapes by their single-character equivalent
-            root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
+            root_dirs = [unquote_plus(x) for x in root_dirs]
             for x in root_dirs:
                 if x == self.location:
                     location_matched = 1
@@ -1354,7 +1354,7 @@ class CMD_SiCKRAGEAddRootDir(ApiCall):
             else:
                 root_dirs.append(self.location)
 
-        root_dirs_new = [urllib.unquote_plus(x) for x in root_dirs]
+        root_dirs_new = [unquote_plus(x) for x in root_dirs]
         root_dirs_new.insert(0, index)
         root_dirs_new = '|'.join(x for x in root_dirs_new)
 
@@ -1398,8 +1398,7 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
 
         backlogPaused = sickrage.app.search_queue.is_backlog_searcher_paused()
         backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()
-        nextBacklog = sickrage.app.backlog_searcher.next_run().strftime(dateFormat).decode(
-            sickrage.app.sys_encoding)
+        nextBacklog = sickrage.app.backlog_searcher.next_run().strftime(dateFormat)
 
         data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
                 "last_backlog": _ordinal_to_date_form(last_backlog),
@@ -1429,7 +1428,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
         index = int(root_dirs[0])
         root_dirs.pop(0)
         # clean up the list - replace %xx escapes by their single-character equivalent
-        root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
+        root_dirs = [unquote_plus(x) for x in root_dirs]
         old_root_dir = root_dirs[index]
         for curRootDir in root_dirs:
             if not curRootDir == self.location:
@@ -1442,7 +1441,7 @@ class CMD_SiCKRAGEDeleteRootDir(ApiCall):
                 newIndex = curIndex
                 break
 
-        root_dirs_new = [urllib.unquote_plus(x) for x in root_dirs_new]
+        root_dirs_new = [unquote_plus(x) for x in root_dirs_new]
         if len(root_dirs_new) > 0:
             root_dirs_new.insert(0, newIndex)
         root_dirs_new = "|".join(x for x in root_dirs_new)
@@ -1727,16 +1726,16 @@ class CMD_SiCKRAGESetDefaults(ApiCall):
                 aqualityID.append(_get_quality_map()[quality])
 
         if iqualityID or aqualityID:
-            sickrage.app.config.quality_default = Quality.combineQualities(iqualityID, aqualityID)
+            sickrage.app.config.quality_default = Quality.combine_qualities(iqualityID, aqualityID)
 
         if self.status:
             # convert the string status to a int
-            for status in statusStrings.statusStrings:
+            for status in statusStrings.status_strings:
                 if statusStrings[status].lower() == str(self.status).lower():
                     self.status = status
                     break
             # this should be obsolete bcause of the above
-            if not self.status in statusStrings.statusStrings:
+            if not self.status in statusStrings.status_strings:
                 raise ApiError("Invalid Status")
             # only allow the status options we want
             if int(self.status) not in (3, 5, 6, 7):
@@ -1941,7 +1940,7 @@ class CMD_ShowAddExisting(ApiCall):
                 aqualityID.append(_get_quality_map()[quality])
 
         if iqualityID or aqualityID:
-            newQuality = Quality.combineQualities(iqualityID, aqualityID)
+            newQuality = Quality.combine_qualities(iqualityID, aqualityID)
 
         sickrage.app.show_queue.addShow(
             int(indexer), int(self.indexerid), self.location, default_status=sickrage.app.config.status_default,
@@ -2039,18 +2038,18 @@ class CMD_ShowAddNew(ApiCall):
                 aquality_id.append(_get_quality_map()[quality])
 
         if iquality_id or aquality_id:
-            new_quality = Quality.combineQualities(iquality_id, aquality_id)
+            new_quality = Quality.combine_qualities(iquality_id, aquality_id)
 
         # use default status as a failsafe
         new_status = sickrage.app.config.status_default
         if self.status:
             # convert the string status to a int
-            for status in statusStrings.statusStrings:
+            for status in statusStrings.status_strings:
                 if statusStrings[status].lower() == str(self.status).lower():
                     self.status = status
                     break
 
-            if self.status not in statusStrings.statusStrings:
+            if self.status not in statusStrings.status_strings:
                 raise ApiError("Invalid Status")
 
             # only allow the status options we want
@@ -2062,12 +2061,12 @@ class CMD_ShowAddNew(ApiCall):
         default_ep_status_after = sickrage.app.config.status_default_after
         if self.future_status:
             # convert the string status to a int
-            for status in statusStrings.statusStrings:
+            for status in statusStrings.status_strings:
                 if statusStrings[status].lower() == str(self.future_status).lower():
                     self.future_status = status
                     break
 
-            if self.future_status not in statusStrings.statusStrings:
+            if self.future_status not in statusStrings.status_strings:
                 raise ApiError("Invalid Status")
 
             # only allow the status options we want
@@ -2186,7 +2185,7 @@ class CMD_ShowDelete(ApiCall):
         try:
             sickrage.app.show_queue.removeShow(showObj, bool(self.removefiles))
         except CantRemoveShowException as exception:
-            return _responds(RESULT_FAILURE, msg=exception.message)
+            return _responds(RESULT_FAILURE, msg=str(exception))
 
         return _responds(RESULT_SUCCESS, msg='%s has been queued to be deleted' % showObj.name)
 
@@ -2438,7 +2437,7 @@ class CMD_ShowSeasons(ApiCall):
             seasons = {}
 
             for row in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.split_composite_status(int(row["status"]))
                 row["status"] = _get_status_strings(status)
                 row["quality"] = get_quality_string(quality)
 
@@ -2472,7 +2471,7 @@ class CMD_ShowSeasons(ApiCall):
             for row in dbData:
                 curEpisode = int(row["episode"])
                 del row["episode"]
-                status, quality = Quality.splitCompositeStatus(int(row["status"]))
+                status, quality = Quality.split_composite_status(int(row["status"]))
                 row["status"] = _get_status_strings(status)
                 row["quality"] = get_quality_string(quality)
                 if try_int(row['airdate'], 1) > 693595:  # 1900
@@ -2529,7 +2528,7 @@ class CMD_ShowSetQuality(ApiCall):
                 aqualityID.append(_get_quality_map()[quality])
 
         if iqualityID or aqualityID:
-            newQuality = Quality.combineQualities(iqualityID, aqualityID)
+            newQuality = Quality.combine_qualities(iqualityID, aqualityID)
         showObj.quality = newQuality
 
         return _responds(RESULT_SUCCESS,
@@ -2560,7 +2559,7 @@ class CMD_ShowStats(ApiCall):
 
         # show stats
         episode_status_counts_total = {"total": 0}
-        for status in statusStrings.statusStrings.keys():
+        for status in statusStrings.status_strings.keys():
             if status in [UNKNOWN, DOWNLOADED, SNATCHED, SNATCHED_PROPER, ARCHIVED]:
                 continue
             episode_status_counts_total[status] = 0
@@ -2568,7 +2567,7 @@ class CMD_ShowStats(ApiCall):
         # add all the downloaded qualities
         episode_qualities_counts_download = {"total": 0}
         for statusCode in Quality.DOWNLOADED + Quality.ARCHIVED:
-            __, quality = Quality.splitCompositeStatus(statusCode)
+            __, quality = Quality.split_composite_status(statusCode)
             if quality in [Quality.NONE]:
                 continue
             episode_qualities_counts_download[statusCode] = 0
@@ -2576,7 +2575,7 @@ class CMD_ShowStats(ApiCall):
         # add all snatched qualities
         episode_qualities_counts_snatch = {"total": 0}
         for statusCode in Quality.SNATCHED + Quality.SNATCHED_PROPER:
-            __, quality = Quality.splitCompositeStatus(statusCode)
+            __, quality = Quality.split_composite_status(statusCode)
             if quality in [Quality.NONE]:
                 continue
             episode_qualities_counts_snatch[statusCode] = 0
@@ -2586,7 +2585,7 @@ class CMD_ShowStats(ApiCall):
             if row['season'] == 0:
                 continue
 
-            status, quality = Quality.splitCompositeStatus(int(row["status"]))
+            status, quality = Quality.split_composite_status(int(row["status"]))
             if quality in [Quality.NONE]:
                 continue
             episode_status_counts_total["total"] += 1
@@ -2613,7 +2612,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["downloaded"]["total"] = episode_qualities_counts_download[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
+            status, quality = Quality.split_composite_status(int(statusCode))
             statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats["downloaded"][statusString] = episode_qualities_counts_download[statusCode]
 
@@ -2621,7 +2620,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["snatched"]["total"] = episode_qualities_counts_snatch[statusCode]
                 continue
-            status, quality = Quality.splitCompositeStatus(int(statusCode))
+            status, quality = Quality.split_composite_status(int(statusCode))
             statusString = Quality.qualityStrings[quality].lower().replace(" ", "_").replace("(", "").replace(")", "")
             if Quality.qualityStrings[quality] in episodes_stats["snatched"]:
                 episodes_stats["snatched"][statusString] += episode_qualities_counts_snatch[statusCode]
@@ -2632,7 +2631,7 @@ class CMD_ShowStats(ApiCall):
             if statusCode == "total":
                 episodes_stats["total"] = episode_status_counts_total[statusCode]
                 continue
-            statusString = statusStrings.statusStrings[statusCode]
+            statusString = statusStrings.status_strings[statusCode]
             statusString = statusString.lower().replace(" ", "_").replace("(", "").replace(")", "")
             episodes_stats[statusString] = episode_status_counts_total[statusCode]
 

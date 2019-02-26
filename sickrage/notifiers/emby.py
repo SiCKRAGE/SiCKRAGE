@@ -16,13 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import json
-import urllib
-import urllib2
+from urllib.parse import urlencode
 
 import sickrage
+from sickrage.core.websession import WebSession
 from sickrage.notifiers import Notifiers
 
 
@@ -67,21 +66,22 @@ class EMBYNotifier(Notifiers):
         values = {'Name': 'SiCKRAGE', 'Description': message,
                   'ImageUrl': 'https://www.sickrage.ca/favicon.ico'}
         data = json.dumps(values)
+
+        headers = {
+            'X-MediaBrowser-Token': emby_apikey,
+            'Content-Type': 'application/json'
+        }
+
+        resp = WebSession().get(url, data=data, headers=headers)
+
         try:
-            req = urllib2.Request(url, data)
-            req.add_header('X-MediaBrowser-Token', emby_apikey)
-            req.add_header('Content-Type', 'application/json')
-
-            response = urllib2.urlopen(req)
-            result = response.read()
-            response.close()
-
-            sickrage.app.log.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
-            return True
-
-        except (urllib2.URLError, IOError) as e:
-            sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+            resp.raise_for_status()
+            sickrage.app.log.debug('EMBY: HTTP response: {}'.format(resp.text.replace('\n', '')))
+        except Exception as e:
+            sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at {}: {}'.format(url, e))
             return False
+
+        return True
 
     def test_notify(self, host, emby_apikey):
         return self._notify_emby('This is a test notification from SiCKRAGE', host, emby_apikey)
@@ -117,18 +117,20 @@ class EMBYNotifier(Notifiers):
 
             url = 'http://%s/emby/Library/Series/Updated%s' % (sickrage.app.config.emby_host, query)
             values = {}
-            data = urllib.urlencode(values)
+            data = urlencode(values)
+
+            headers = {
+                'X-MediaBrowser-Token': sickrage.app.config.emby_apikey,
+                'Content-Type': 'application/json'
+            }
+
+            resp = WebSession().get(url, data=data, headers=headers)
+
             try:
-                req = urllib2.Request(url, data)
-                req.add_header('X-MediaBrowser-Token', sickrage.app.config.emby_apikey)
-
-                response = urllib2.urlopen(req)
-                result = response.read()
-                response.close()
-
-                sickrage.app.log.debug('EMBY: HTTP response: ' + result.replace('\n', ''))
-                return True
-
-            except (urllib2.URLError, IOError) as e:
-                sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at ' + url + ' ' + e)
+                resp.raise_for_status()
+                sickrage.app.log.debug('EMBY: HTTP response: ' + resp.text.replace('\n', ''))
+            except Exception as e:
+                sickrage.app.log.warning('EMBY: Warning: Couldn\'t contact Emby at {}: {}'.format(url, e))
                 return False
+
+            return True

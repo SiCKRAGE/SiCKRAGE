@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import fnmatch
 import os
@@ -27,8 +26,7 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
-from sickrage.core.helpers import sanitizeSceneName
-from sickrage.core.helpers.encoding import strip_accents
+from sickrage.core.helpers import sanitizeSceneName, strip_accents
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
 from sickrage.core.scene_exceptions import get_scene_exceptions
@@ -59,7 +57,7 @@ def containsAtLeastOneWord(name, words):
     :return:
     :rtype: unicode
     """
-    if isinstance(words, basestring):
+    if isinstance(words, str):
         words = words.split(',')
     items = [(re.compile('(^|[\W_])%s($|[\W_])' % re.escape(word.strip()), re.I), word.strip()) for word in words]
     for regexp, word in items:
@@ -173,7 +171,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
         seasonEps = show.get_all_episodes(ep_obj.season)
 
         # get show qualities
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(show.quality)
 
         # compile a list of all the episode numbers we need in this 'season'
         seasonStrings = []
@@ -181,7 +179,7 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 
             # get quality of the episode
             curCompositeStatus = episode.status
-            curStatus, curQuality = Quality.splitCompositeStatus(curCompositeStatus)
+            curStatus, curQuality = Quality.split_composite_status(curCompositeStatus)
 
             if bestQualities:
                 highestBestQuality = max(bestQualities)
@@ -266,39 +264,6 @@ def makeSceneSearchString(show, ep_obj):
     return toReturn
 
 
-def isGoodResult(name, show, log=True, season=-1):
-    """
-    Use an automatically-created regex to make sure the result actually is the show it claims to be
-    """
-
-    all_show_names = allPossibleShowNames(show, season=season)
-    showNames = map(sanitizeSceneName, all_show_names) + all_show_names
-
-    for curName in set(showNames):
-        if not show.is_anime:
-            escaped_name = re.sub('\\\\[\\s.-]', '\W+', re.escape(curName))
-            if show.startyear:
-                escaped_name += "(?:\W+" + str(show.startyear) + ")?"
-            curRegex = '^' + escaped_name + '\W+(?:(?:S\d[\dE._ -])|(?:\d\d?x)|(?:\d{4}\W\d\d\W\d\d)|(?:(?:part|pt)[\._ -]?(\d|[ivx]))|Season\W+\d+\W+|E\d+\W+|(?:\d{1,3}.+\d{1,}[a-zA-Z]{2}\W+[a-zA-Z]{3,}\W+\d{4}.+))'
-        else:
-            escaped_name = re.sub('\\\\[\\s.-]', '[\W_]+', re.escape(curName))
-            # FIXME: find a "automatically-created" regex for anime releases # test at http://regexr.com?2uon3
-            curRegex = '^((\[.*?\])|(\d+[\.-]))*[ _\.]*' + escaped_name + '(([ ._-]+\d+)|([ ._-]+s\d{2})).*'
-
-        if log:
-            sickrage.app.log.debug("Checking if show " + name + " matches " + curRegex)
-
-        match = re.search(curRegex, name, re.I)
-        if match:
-            sickrage.app.log.debug("Matched " + curRegex + " to " + name)
-            return True
-
-    if log:
-        sickrage.app.log.info(
-            "Provider gave result " + name + " but that doesn't seem like a valid result for " + show.name + " so I'm ignoring it")
-    return False
-
-
 def allPossibleShowNames(show, season=-1):
     """
     Figures out every possible variation of the name for a particular show. Includes TVDB name, TVRage name,
@@ -336,7 +301,8 @@ def allPossibleShowNames(show, season=-1):
                 if curName.endswith(' ' + curCountry):
                     new_show_names.append(curName.replace(' ' + curCountry, ' (' + country_list[curCountry] + ')'))
                 elif curName.endswith(' (' + curCountry + ')'):
-                    new_show_names.append(curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
+                    new_show_names.append(
+                        curName.replace(' (' + curCountry + ')', ' (' + country_list[curCountry] + ')'))
 
                     # # if we have "Show Name (2013)" this will strip the (2013) show year from the show name
                     # new_show_names.append(re.sub('\(\d{4}\)', '', curName))
@@ -368,14 +334,14 @@ def determineReleaseName(dir_name=None, nzb_name=None):
         reg_expr = re.compile(fnmatch.translate(search), re.IGNORECASE)
         files = [file_name for file_name in os.listdir(dir_name) if
                  os.path.isfile(os.path.join(dir_name, file_name))]
-        results = filter(reg_expr.search, files)
 
+        results = list(filter(reg_expr.search, files))
         if len(results) == 1:
             found_file = os.path.basename(results[0])
             found_file = found_file.rpartition('.')[0]
             if filterBadReleases(found_file):
-                sickrage.app.log.info("Release name (" + found_file + ") found from file (" + results[0] + ")")
-                return found_file.rpartition('.')[0]
+                sickrage.app.log.info("Release name ({}) found from file ({})".format(found_file, results[0]))
+                return found_file.rpartition(b'.')[0]
 
     # If that fails, we try the folder
     folder = os.path.basename(dir_name)

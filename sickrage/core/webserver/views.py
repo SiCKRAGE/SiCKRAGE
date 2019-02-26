@@ -16,17 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
 
 import datetime
-import io
 import os
 import re
 import time
 import traceback
-import urllib
 from collections import OrderedDict
-from urlparse import urlparse, urljoin
+from functools import cmp_to_key
+from urllib.parse import urljoin, urlparse, unquote_plus, quote_plus
 
 import dateutil.tz
 import markdown2
@@ -36,6 +34,7 @@ from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
+from sqlalchemy import desc
 from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler, authenticated
 
@@ -49,6 +48,7 @@ from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
 from sickrage.core.common import FAILED, IGNORED, Overview, Quality, SKIPPED, \
     SNATCHED, UNAIRED, WANTED, cpu_presets, statusStrings
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import CantRefreshShowException, \
     CantUpdateShowException, EpisodeDeletedException, \
     NoNFOException, CantRemoveShowException, AnidbAdbaConnectionException
@@ -59,7 +59,6 @@ from sickrage.core.helpers import argToBool, backupSR, chmod_as_parent, findCert
     clean_hosts, app_statistics
 from sickrage.core.helpers.anidb import short_group_names, get_release_groups_for_anime
 from sickrage.core.helpers.browser import foldersAtPath
-from sickrage.core.helpers.compat import cmp
 from sickrage.core.helpers.srdatetime import srDateTime
 from sickrage.core.imdb_popular import imdbPopular
 from sickrage.core.nameparser import validator
@@ -120,6 +119,8 @@ class BaseHandler(RequestHandler):
             request_info = ''.join(["<strong>%s</strong>: %s<br>" % (k, self.request.__dict__[k]) for k in
                                     self.request.__dict__.keys()])
             error = exc_info[1]
+
+            sickrage.app.log.error(error)
 
             self.set_header('Content-Type', 'text/html')
             self.write("""<html>
@@ -192,6 +193,10 @@ class BaseHandler(RequestHandler):
             kwargs['header'] = _('HTTP Error 500')
             kwargs['backtrace'] = RichTraceback()
             template_kwargs.update(kwargs)
+
+            sickrage.app.log.error(
+                "%s: %s" % (str(kwargs['backtrace'].error.__class__.__name__), kwargs['backtrace'].error))
+
             return self.mako_lookup.get_template('/errors/500.mako').render_unicode(**template_kwargs)
 
     def render(self, template_name, **kwargs):
@@ -416,7 +421,7 @@ class WebRoot(WebHandler):
         if sickrage.app.config.gui_lang:
             locale_file = os.path.join(sickrage.LOCALE_DIR, sickrage.app.config.gui_lang, 'LC_MESSAGES/messages.po')
             if os.path.isfile(locale_file):
-                with io.open(locale_file, 'r', encoding='utf8') as f:
+                with open(locale_file, 'r', encoding='utf8') as f:
                     return f.read()
 
     def apibuilder(self):
@@ -445,7 +450,7 @@ class WebRoot(WebHandler):
             'api_builder.mako',
             title=_('API Builder'),
             header=_('API Builder'),
-            shows=sorted(sickrage.app.showlist, lambda x, y: cmp(titler(x.name), titler(y.name))),
+            shows=sorted(sickrage.app.showlist, key=cmp_to_key(lambda x, y: titler(x.name) < titler(y.name))),
             episodes=episodes,
             apikey=apikey,
             commands=ApiHandler(self.application, self.request).api_calls,
@@ -572,7 +577,7 @@ class WebRoot(WebHandler):
                 'seasons': 0,
             }]
 
-        return json_encode(shows + episodes)
+        return json_encode(str(shows + episodes))
 
 
 @Route('/browser(/?.*)')
@@ -628,7 +633,7 @@ class Home(WebHandler):
         if sickrage.app.config.anime_split_home:
             for show in sickrage.app.showlist:
                 if show.is_anime:
-                    if not showlists.has_key('Anime'):
+                    if 'Anime' not in list(showlists.keys()):
                         showlists['Anime'] = []
                     showlists['Anime'] += [show]
                 else:
@@ -746,9 +751,9 @@ class Home(WebHandler):
             pw_append = _(' with password: ') + password
 
         if result:
-            return _('Registered and Tested growl successfully ') + urllib.unquote_plus(host) + pw_append
+            return _('Registered and Tested growl successfully ') + unquote_plus(host) + pw_append
         else:
-            return _('Registration and Testing of growl failed ') + urllib.unquote_plus(host) + pw_append
+            return _('Registration and Testing of growl failed ') + unquote_plus(host) + pw_append
 
     @staticmethod
     def testProwl(prowl_api=None, prowl_priority=0):
@@ -842,12 +847,12 @@ class Home(WebHandler):
         host = clean_hosts(host)
         finalResult = ''
         for curHost in [x.strip() for x in host.split(",")]:
-            curResult = sickrage.app.notifier_providers['kodi'].test_notify(urllib.unquote_plus(curHost), username,
+            curResult = sickrage.app.notifier_providers['kodi'].test_notify(unquote_plus(curHost), username,
                                                                             password)
             if len(curResult.split(":")) > 2 and 'OK' in curResult.split(":")[2]:
-                finalResult += _('Test KODI notice sent successfully to ') + urllib.unquote_plus(curHost)
+                finalResult += _('Test KODI notice sent successfully to ') + unquote_plus(curHost)
             else:
-                finalResult += _('Test KODI notice failed to ') + urllib.unquote_plus(curHost)
+                finalResult += _('Test KODI notice failed to ') + unquote_plus(curHost)
             finalResult += "<br>\n"
 
         return finalResult
@@ -858,17 +863,17 @@ class Home(WebHandler):
 
         finalResult = ''
         for curHost in [x.strip() for x in host.split(',')]:
-            curResult = sickrage.app.notifier_providers['plex'].test_notify_pmc(urllib.unquote_plus(curHost),
+            curResult = sickrage.app.notifier_providers['plex'].test_notify_pmc(unquote_plus(curHost),
                                                                                 username,
                                                                                 password)
             if len(curResult.split(':')) > 2 and 'OK' in curResult.split(':')[2]:
-                finalResult += _('Successful test notice sent to Plex client ... ') + urllib.unquote_plus(curHost)
+                finalResult += _('Successful test notice sent to Plex client ... ') + unquote_plus(curHost)
             else:
-                finalResult += _('Test failed for Plex client ... ') + urllib.unquote_plus(curHost)
+                finalResult += _('Test failed for Plex client ... ') + unquote_plus(curHost)
             finalResult += '<br>' + '\n'
 
         sickrage.app.alerts.message(_('Tested Plex client(s): '),
-                                    urllib.unquote_plus(host.replace(',', ', ')))
+                                    unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -878,21 +883,21 @@ class Home(WebHandler):
 
         finalResult = ''
 
-        curResult = sickrage.app.notifier_providers['plex'].test_notify_pms(urllib.unquote_plus(host), username,
+        curResult = sickrage.app.notifier_providers['plex'].test_notify_pms(unquote_plus(host), username,
                                                                             password,
                                                                             plex_server_token)
         if curResult is None:
             finalResult += _('Successful test of Plex server(s) ... ') + \
-                           urllib.unquote_plus(host.replace(',', ', '))
+                           unquote_plus(host.replace(',', ', '))
         elif curResult is False:
             finalResult += _('Test failed, No Plex Media Server host specified')
         else:
             finalResult += _('Test failed for Plex server(s) ... ') + \
-                           urllib.unquote_plus(str(curResult).replace(',', ', '))
+                           unquote_plus(str(curResult).replace(',', ', '))
         finalResult += '<br>' + '\n'
 
         sickrage.app.alerts.message(_('Tested Plex Media Server host(s): '),
-                                    urllib.unquote_plus(host.replace(',', ', ')))
+                                    unquote_plus(host.replace(',', ', ')))
 
         return finalResult
 
@@ -906,16 +911,16 @@ class Home(WebHandler):
     @staticmethod
     def testEMBY(host=None, emby_apikey=None):
         host = clean_host(host)
-        result = sickrage.app.notifier_providers['emby'].test_notify(urllib.unquote_plus(host), emby_apikey)
+        result = sickrage.app.notifier_providers['emby'].test_notify(unquote_plus(host), emby_apikey)
         if result:
-            return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
+            return _('Test notice sent successfully to ') + unquote_plus(host)
         else:
-            return _('Test notice failed to ') + urllib.unquote_plus(host)
+            return _('Test notice failed to ') + unquote_plus(host)
 
     @staticmethod
     def testNMJ(host=None, database=None, mount=None):
         host = clean_host(host)
-        result = sickrage.app.notifier_providers['nmj'].test_notify(urllib.unquote_plus(host), database, mount)
+        result = sickrage.app.notifier_providers['nmj'].test_notify(unquote_plus(host), database, mount)
         if result:
             return _('Successfully started the scan update')
         else:
@@ -924,7 +929,7 @@ class Home(WebHandler):
     @staticmethod
     def settingsNMJ(host=None):
         host = clean_host(host)
-        result = sickrage.app.notifier_providers['nmj'].notify_settings(urllib.unquote_plus(host))
+        result = sickrage.app.notifier_providers['nmj'].notify_settings(unquote_plus(host))
         if result:
             return '{"message": "%(message)s %(host)s", "database": "%(database)s", "mount": "%(mount)s"}' % {
                 "message": _('Got settings from'),
@@ -939,16 +944,16 @@ class Home(WebHandler):
     @staticmethod
     def testNMJv2(host=None):
         host = clean_host(host)
-        result = sickrage.app.notifier_providers['nmjv2'].test_notify(urllib.unquote_plus(host))
+        result = sickrage.app.notifier_providers['nmjv2'].test_notify(unquote_plus(host))
         if result:
-            return _('Test notice sent successfully to ') + urllib.unquote_plus(host)
+            return _('Test notice sent successfully to ') + unquote_plus(host)
         else:
-            return _('Test notice failed to ') + urllib.unquote_plus(host)
+            return _('Test notice failed to ') + unquote_plus(host)
 
     @staticmethod
     def settingsNMJv2(host=None, dbloc=None, instance=None):
         host = clean_host(host)
-        result = sickrage.app.notifier_providers['nmjv2'].notify_settings(urllib.unquote_plus(host), dbloc,
+        result = sickrage.app.notifier_providers['nmjv2'].notify_settings(unquote_plus(host), dbloc,
                                                                           instance)
         if result:
             return '{"message": "NMJ Database found at: %(host)s", "database": "%(database)s"}' % {"host": host,
@@ -1136,10 +1141,9 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        episodeResults = sorted((x for x in sickrage.app.main_db.get_many('tv_episodes', showObj.indexerid)),
-                                key=lambda d: (d['season'], d['episode']), reverse=True)
+        episodeResults = MainDB.TVEpisode.query(showid=showObj.indexerid).order_by(desc('season'), desc('episode'))
 
-        seasonResults = list({x['season'] for x in episodeResults})
+        seasonResults = list({x.season for x in episodeResults})
 
         submenu.append({
             'title': _('Edit'),
@@ -1249,21 +1253,21 @@ class Home(WebHandler):
         }
 
         for curEp in episodeResults:
-            curEpCat = showObj.get_overview(int(curEp['status'] or -1))
+            curEpCat = showObj.get_overview(int(curEp.status or -1))
 
-            if curEp['airdate'] != 1:
+            if curEp.airdate != 1:
                 today = datetime.datetime.now().replace(tzinfo=sickrage.app.tz)
-                airDate = datetime.datetime.fromordinal(curEp['airdate'])
+                airDate = datetime.datetime.fromordinal(curEp.airdate)
                 if airDate.year >= 1970 or showObj.network:
                     airDate = srDateTime(
-                        sickrage.app.tz_updater.parse_date_time(curEp['airdate'], showObj.airs, showObj.network),
+                        sickrage.app.tz_updater.parse_date_time(curEp.airdate, showObj.airs, showObj.network),
                         convert=True).dt
 
                 if curEpCat == Overview.WANTED and airDate < today:
                     curEpCat = Overview.MISSED
 
             if curEpCat:
-                epCats[str(curEp['season']) + "x" + str(curEp['episode'])] = curEpCat
+                epCats[str(curEp.season) + "x" + str(curEp.episode)] = curEpCat
                 epCounts[curEpCat] += 1
 
         def titler(x):
@@ -1278,13 +1282,13 @@ class Home(WebHandler):
                 else:
                     shows.append(show)
 
-            sortedShowLists = [["Shows", sorted(shows,
-                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))],
-                               ["Anime", sorted(anime,
-                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
+            sortedShowLists = {"Shows": sorted(shows, key=cmp_to_key(
+                lambda x, y: titler(x.name).lower() < titler(y.name).lower())),
+                               "Anime": sorted(anime, key=cmp_to_key(
+                                   lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
         else:
-            sortedShowLists = [["Shows", sorted(sickrage.app.showlist,
-                                                lambda x, y: cmp(titler(x.name).lower(), titler(y.name).lower()))]]
+            sortedShowLists = {"Shows": sorted(sickrage.app.showlist, key=cmp_to_key(
+                lambda x, y: titler(x.name).lower() < titler(y.name).lower()))}
 
         bwl = None
         if showObj.is_anime:
@@ -1469,7 +1473,7 @@ class Home(WebHandler):
         with showObj.lock:
             newQuality = try_int(quality_preset, None)
             if not newQuality:
-                newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
+                newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
 
             showObj.quality = newQuality
             showObj.skip_downloaded = skip_downloaded
@@ -1671,7 +1675,7 @@ class Home(WebHandler):
         if show:
             showObj = findCertainShow(int(show))
             if showObj:
-                showName = urllib.quote_plus(showObj.name.encode('utf-8'))
+                showName = quote_plus(showObj.name.encode())
 
         if sickrage.app.config.kodi_update_onlyfirst:
             host = sickrage.app.config.kodi_host.split(",")[0].strip()
@@ -1782,7 +1786,7 @@ class Home(WebHandler):
             else:
                 return self._genericMessage(_("Error"), errMsg)
 
-        if not statusStrings.has_key(int(status)):
+        if int(status) not in statusStrings:
             errMsg = _("Invalid status")
             if direct:
                 sickrage.app.alerts.error(_('Error'), errMsg)
@@ -2099,7 +2103,7 @@ class Home(WebHandler):
         # return the correct json value
 
         # Find the quality class for the episode
-        __, ep_quality = Quality.splitCompositeStatus(ep_obj.status)
+        __, ep_quality = Quality.split_composite_status(ep_obj.status)
         if ep_quality in Quality.cssClassStrings:
             quality_class = Quality.cssClassStrings[ep_quality]
         else:
@@ -2384,7 +2388,7 @@ class HomeAddShows(Home):
         else:
             root_dirs = rootDir
 
-        root_dirs = [urllib.unquote_plus(x) for x in root_dirs]
+        root_dirs = [unquote_plus(x) for x in root_dirs]
 
         if sickrage.app.config.root_dirs:
             default_index = int(sickrage.app.config.root_dirs.split('|')[0])
@@ -2410,50 +2414,48 @@ class HomeAddShows(Home):
                     cur_path = os.path.normpath(os.path.join(root_dir, cur_file))
                     if not os.path.isdir(cur_path):
                         continue
+
                     # ignore Synology folders
                     if cur_file.lower() in ['#recycle', '@eadir']:
                         continue
-                except Exception:
-                    continue
 
-                try:
                     cur_dir = {
                         'dir': cur_path,
-                        'display_dir': '<b>{}{}</b>{}'
-                            .format(os.path.dirname(cur_path), os.sep, os.path.basename(cur_path)),
+                        'display_dir': '<b>{}{}</b>{}'.format(os.path.dirname(cur_path), os.sep,
+                                                              os.path.basename(cur_path)),
                     }
-                except Exception as e:
+
+                    # see if the folder is in database already
+                    if [x for x in sickrage.app.showlist if x.location == cur_path]:
+                        cur_dir['added_already'] = True
+                    else:
+                        cur_dir['added_already'] = False
+
+                    dir_list.append(cur_dir)
+
+                    showid = show_name = indexer = None
+                    for cur_provider in sickrage.app.metadata_providers.values():
+                        if all([showid, show_name, indexer]):
+                            continue
+
+                        (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
+
+                        # default to TVDB if indexer was not detected
+                        if show_name and not (indexer or showid):
+                            (sn, idxr, i) = IndexerApi(indexer).searchForShowID(show_name, showid)
+
+                            # set indexer and indexer_id from found info
+                            if not indexer and idxr:
+                                indexer = idxr
+
+                            if not showid and i:
+                                showid = i
+
+                    cur_dir['existing_info'] = (showid, show_name, indexer)
+                    if showid and findCertainShow(showid):
+                        cur_dir['added_already'] = True
+                except Exception:
                     pass
-
-                # see if the folder is in database already
-                if [x for x in sickrage.app.showlist if x.location == cur_path]:
-                    cur_dir['added_already'] = True
-                else:
-                    cur_dir['added_already'] = False
-
-                dir_list.append(cur_dir)
-
-                showid = show_name = indexer = None
-                for cur_provider in sickrage.app.metadata_providers.values():
-                    if all([showid, show_name, indexer]):
-                        continue
-
-                    (showid, show_name, indexer) = cur_provider.retrieveShowMetadata(cur_path)
-
-                    # default to TVDB if indexer was not detected
-                    if show_name and not (indexer or showid):
-                        (sn, idxr, i) = IndexerApi(indexer).searchForShowID(show_name, showid)
-
-                        # set indexer and indexer_id from found info
-                        if not indexer and idxr:
-                            indexer = idxr
-
-                        if not showid and i:
-                            showid = i
-
-                cur_dir['existing_info'] = (showid, show_name, indexer)
-                if showid and findCertainShow(showid):
-                    cur_dir['added_already'] = True
 
         return self.render(
             "/home/mass_add_table.mako",
@@ -2718,7 +2720,7 @@ class HomeAddShows(Home):
 
         newQuality = try_int(quality_preset, None)
         if not newQuality:
-            newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
+            newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
 
         # add the show
         sickrage.app.show_queue.addShow(indexer=indexer,
@@ -2769,7 +2771,7 @@ class HomeAddShows(Home):
         elif not isinstance(shows_to_add, list):
             shows_to_add = [shows_to_add]
 
-        shows_to_add = [urllib.unquote_plus(x) for x in shows_to_add]
+        shows_to_add = [unquote_plus(x) for x in shows_to_add]
 
         promptForSettings = checkbox_to_value(promptForSettings)
 
@@ -3327,7 +3329,7 @@ class Manage(Home, WebRoot):
             new_subtitles = 'on' if new_subtitles else 'off'
 
             if quality_preset == 'keep':
-                anyQualities, bestQualities = Quality.splitQuality(showObj.quality)
+                anyQualities, bestQualities = Quality.split_quality(showObj.quality)
             elif try_int(quality_preset, None):
                 bestQualities = []
 
@@ -3754,7 +3756,7 @@ class ConfigGeneral(Config):
         else:
             bestQualities = []
 
-        newQuality = Quality.combineQualities(map(int, anyQualities), map(int, bestQualities))
+        newQuality = Quality.combine_qualities(map(int, anyQualities), map(int, bestQualities))
 
         sickrage.app.config.status_default = int(defaultStatus)
         sickrage.app.config.status_default_after = int(defaultStatusAfter)
@@ -4782,7 +4784,7 @@ class ConfigSubtitles(Config):
         codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 
-        codes = filter(lambda code: q.lower() in code['name'].lower(), codes)
+        codes = list(filter(lambda code: q.lower() in code['name'].lower(), codes))
 
         return json_encode(codes)
 
@@ -4790,7 +4792,7 @@ class ConfigSubtitles(Config):
         codes = [{"id": code, "name": sickrage.subtitles.name_from_code(code)} for code in
                  sickrage.subtitles.subtitle_code_filter()]
 
-        codes = filter(lambda code: code['id'] in sickrage.subtitles.wanted_languages(), codes)
+        codes = list(filter(lambda code: code['id'] in sickrage.subtitles.wanted_languages(), codes))
 
         return json_encode(codes)
 
@@ -4983,9 +4985,9 @@ class Logs(WebHandler):
 
         logFiles = [sickrage.app.log.logFile] + \
                    ["{}.{}".format(sickrage.app.log.logFile, x) for x in
-                    xrange(int(sickrage.app.log.logNr))]
+                    range(int(sickrage.app.log.logNr))]
 
-        levelsFiltered = b'|'.join(
+        levelsFiltered = '|'.join(
             [x for x in sickrage.app.log.logLevels.keys() if
              sickrage.app.log.logLevels[x] >= int(minLevel)])
 

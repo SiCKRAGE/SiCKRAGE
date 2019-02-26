@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
 import threading
@@ -105,9 +105,9 @@ def snatchEpisode(result, endStatus=SNATCHED):
     for curEpObj in result.episodes:
         with curEpObj.lock:
             if isFirstBestMatch(result):
-                curEpObj.status = Quality.compositeStatus(SNATCHED_BEST, result.quality)
+                curEpObj.status = Quality.composite_status(SNATCHED_BEST, result.quality)
             else:
-                curEpObj.status = Quality.compositeStatus(endStatus, result.quality)
+                curEpObj.status = Quality.composite_status(endStatus, result.quality)
 
             # save episode to DB
             curEpObj.save_to_db()
@@ -160,7 +160,7 @@ def pickBestResult(results, show):
         sickrage.app.log.info(
             "Quality of " + cur_result.name + " is " + Quality.qualityStrings[cur_result.quality])
 
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(show.quality)
 
         if cur_result.quality not in anyQualities + bestQualities:
             sickrage.app.log.debug(cur_result.name + " is a quality we know we don't want, rejecting it")
@@ -263,7 +263,7 @@ def isFinalResult(result):
 
     show_obj = result.episodes[0].show
 
-    any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
+    any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
     # if there is a redownload that's higher than this then we definitely need to keep looking
     if best_qualities and result.quality < max(best_qualities):
@@ -295,7 +295,7 @@ def isFirstBestMatch(result):
 
     show_obj = result.episodes[0].show
 
-    any_qualities, best_qualities = Quality.splitQuality(show_obj.quality)
+    any_qualities, best_qualities = Quality.split_quality(show_obj.quality)
 
     # if there is a re-download that's a match to one of our best qualities and we want to skip downloaded then we
     # are done

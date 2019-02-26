@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import datetime
 import threading
@@ -112,7 +112,7 @@ class BacklogSearcher(object):
 
     @staticmethod
     def _get_segments(show, from_date):
-        anyQualities, bestQualities = Quality.splitQuality(show.quality)
+        anyQualities, bestQualities = Quality.split_quality(show.quality)
 
         sickrage.app.log.debug("Seeing if we need anything from {}".format(show.name))
 
@@ -121,7 +121,7 @@ class BacklogSearcher(object):
         for result in (x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid) if
                        x['season'] > 0 and datetime.date.today().toordinal() > x['airdate'] >= from_date.toordinal()):
 
-            curStatus, curQuality = Quality.splitCompositeStatus(int(result["status"] or -1))
+            curStatus, curQuality = Quality.split_composite_status(int(result["status"] or -1))
 
             # if we need a better one then say yes
             if curStatus not in {WANTED, DOWNLOADED, SNATCHED, SNATCHED_PROPER}:

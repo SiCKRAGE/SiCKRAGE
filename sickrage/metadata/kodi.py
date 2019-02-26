@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import os
 
-from kodi_12plus import KODI_12PlusMetadata
 from sickrage.core.helpers import replaceExtension
+from sickrage.metadata.kodi_12plus import KODI_12PlusMetadata
 
 
 class KODIMetadata(KODI_12PlusMetadata):

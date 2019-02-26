@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import unicode_literals
+
 
 import re
-import urllib
+from urllib import parse
 
 from requests.utils import dict_from_cookiejar
 
@@ -93,7 +93,7 @@ class PretomeProvider(TorrentProvider):
                 if mode != 'RSS':
                     sickrage.app.log.debug("Search string: %s " % search_string)
 
-                searchURL = self.urls['search'] % (urllib.quote(search_string.encode('utf-8')), self.categories)
+                searchURL = self.urls['search'] % (parse.quote(search_string.encode('utf-8')), self.categories)
 
                 try:
                     data = self.session.get(searchURL).text
@@ -135,7 +135,7 @@ class PretomeProvider(TorrentProvider):
                 torrent_id = link['href'].replace('details.php?id=', '')
 
                 try:
-                    if link.has_key('title'):
+                    if 'title' in link:
                         title = link['title']
                     else:
                         title = link.contents[0]
