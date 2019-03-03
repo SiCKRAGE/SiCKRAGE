@@ -1147,8 +1147,9 @@ class PostProcessor(object):
         except (OSError, IOError):
             raise EpisodePostProcessingFailedException("Unable to move the files to their new home")
 
-        # add processed marker file
-        self._add_processed_marker_file(self.file_path)
+        if self.process_method != self.PROCESS_METHOD_MOVE:
+            # add processed marker file
+            self._add_processed_marker_file(self.file_path)
 
         # download subtitles
         if sickrage.app.config.use_subtitles and ep_obj.show.subtitles:
