@@ -1,6 +1,7 @@
 # Changelog
 
-- * 682b983 - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
+- * 491da55 - 2019-03-04: Release v9.4.78 
+- * 3c0d05a - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
 - * 3151280 - 2019-03-04: Cleaned up backup and restore functions for database. Bumped keycloak requirement to v0.2.2 
 - * fe70b17 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
 - * a72ca25 - 2019-02-24: Release v9.4.77 
