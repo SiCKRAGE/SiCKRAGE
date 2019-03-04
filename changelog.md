@@ -1,6 +1,7 @@
 # Changelog
 
-- * d2e85f8 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
+- * db4354e - 2019-03-04: Cleaned up backup and restore functions for database. Bumped keycloak requirement to v0.2.2 
+- * fe70b17 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
 - * a72ca25 - 2019-02-24: Release v9.4.77 
 - * b09d78a - 2019-02-24: Added Anime regex for Erai-raws 
 - * e0f2db6 - 2019-02-24: Release v9.4.76 

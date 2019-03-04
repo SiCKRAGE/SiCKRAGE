@@ -60,12 +60,14 @@ class srDatabase(object):
     def initialize(self):
         # Remove database folder if both exists
         if self.db.exists() and os.path.isfile(self.old_db_path):
-            self.db.open()
+            if not self.opened:
+                self.db.open()
             self.db.destroy()
 
         if self.db.exists():
             # self.backup()
-            self.db.open()
+            if not self.opened:
+                self.db.open()
         else:
             self.db.create()
 
@@ -402,7 +404,6 @@ class srDatabase(object):
                     continue
 
     def backup(self, backup_file=None):
-        backup_file = backup_file or os.path.join(sickrage.app.data_dir, '{}_db.pickle'.format(self.name))
         sickrage.app.log.info('Backing up {} database to {}'.format(self.name, backup_file))
         with io.open(backup_file, 'wb') as f:
             rows = []
@@ -420,8 +421,7 @@ class srDatabase(object):
 
         return backup_file
 
-    def restore(self):
-        restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}_db.pickle'.format(self.name))
+    def restore(self, restore_file=None):
         backup_file = os.path.join(sickrage.app.data_dir, '{}_db.pickle.bak-{}'.format(self.name,
                                                                                        datetime.datetime.now().strftime(
                                                                                            '%Y%m%d_%H%M%S')))
@@ -430,6 +430,9 @@ class srDatabase(object):
             sickrage.app.log.info('Restoring database file {}'.format(restore_file))
             with io.open(restore_file, 'rb') as f:
                 rows = pickle.load(f)
+
+            if not self.opened:
+                self.db.open()
 
             self.db.destroy()
             self.db.create()
