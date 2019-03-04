@@ -18,7 +18,10 @@
 
 from __future__ import unicode_literals
 
+import datetime
+import io
 import os
+import pickle
 import re
 import shutil
 import tarfile
@@ -57,19 +60,21 @@ class srDatabase(object):
     def initialize(self):
         # Remove database folder if both exists
         if self.db.exists() and os.path.isfile(self.old_db_path):
-            self.db.open()
+            if not self.opened:
+                self.db.open()
             self.db.destroy()
 
         if self.db.exists():
-            self.backup()
-            self.db.open()
+            # self.backup()
+            if not self.opened:
+                self.db.open()
         else:
             self.db.create()
 
         # setup database indexes
         self.setup_indexes()
 
-    def backup(self):
+    def old_backup(self):
         # Backup before start and cleanup old backups
         backup_path = os.path.join(sickrage.app.data_dir, 'db_backup', self.name)
         backup_count = 5
@@ -196,6 +201,9 @@ class srDatabase(object):
             self.db.destroy_index(self.db.indexes_names[index_name])
             self.db.add_index(self._indexes[index_name](self.db.path, index_name))
             self.db.reindex_index(index_name)
+
+    def open(self):
+        self.db.open()
 
     def close(self):
         self.db.close()
@@ -346,7 +354,7 @@ class srDatabase(object):
     def all(self, *args, **kwargs):
         with_doc = kwargs.pop('with_doc', True)
         for data in self.db.all(*args, **kwargs):
-            if with_doc :
+            if with_doc:
                 try:
                     doc = self.db.get('id', data['_id'])
                     yield doc
@@ -386,6 +394,50 @@ class srDatabase(object):
 
     def insert(self, *args):
         return self.db.insert(*args)
+
+    def delete_all(self):
+        for index_name in self.db.indexes_names.keys():
+            for x in self.all(index_name):
+                try:
+                    self.delete(x)
+                except:
+                    continue
+
+    def backup(self, backup_file=None):
+        sickrage.app.log.info('Backing up {} database to {}'.format(self.name, backup_file))
+        with io.open(backup_file, 'wb') as f:
+            rows = []
+            for index_name in self.db.indexes_names.keys():
+                if index_name in ['id']:
+                    continue
+
+                for row in self.all(index_name):
+                    for x in ['_rev', '_id']:
+                        del row[x]
+                    rows += [row]
+
+            pickle.dump(rows, f)
+            del rows
+
+        return backup_file
+
+    def restore(self, restore_file=None):
+        backup_file = os.path.join(sickrage.app.data_dir, '{}_db.pickle.bak-{}'.format(self.name,
+                                                                                       datetime.datetime.now().strftime(
+                                                                                           '%Y%m%d_%H%M%S')))
+        if os.path.exists(restore_file):
+            self.backup(backup_file)
+            sickrage.app.log.info('Restoring database file {}'.format(restore_file))
+            with io.open(restore_file, 'rb') as f:
+                rows = pickle.load(f)
+
+            if not self.opened:
+                self.db.open()
+
+            self.db.destroy()
+            self.db.create()
+            [self.insert(row) for row in rows]
+            del rows
 
 
 # Monkey-Patch storage to suppress logging messages

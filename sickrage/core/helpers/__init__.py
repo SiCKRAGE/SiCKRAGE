@@ -985,7 +985,7 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
 
         with zipfile.ZipFile(archive, 'r', allowZip64=True) as zip_file:
             for member in zip_file.namelist():
-                if not restore_database and member.split('/')[0] == 'database':
+                if not restore_database and member.split('/')[0] in ['database', 'main_db.pickle', 'cache_db.pickle']:
                     continue
 
                 if not restore_config and member.split('/')[0] == 'config.ini':
@@ -1002,13 +1002,11 @@ def restoreConfigZip(archive, targetDir, restore_database=True, restore_config=T
         shutil.rmtree(targetDir)
 
 
-def backupSR(backupDir, keep_latest=False):
+def backupSR(backupDir, keep_latest=False, migrate=True):
     source = []
 
-    filesList = ['sickrage.db',
-                 'failed.db',
-                 'cache.db',
-                 os.path.basename(sickrage.app.config_file)]
+    file_list = [os.path.basename(sickrage.app.config_file)]
+    file_list += ['sickrage.db', 'failed.db', 'cache.db']
 
     def _keep_latest_backup():
         import glob
@@ -1023,15 +1021,15 @@ def backupSR(backupDir, keep_latest=False):
         _keep_latest_backup()
 
     # individual files
-    for f in filesList:
+    for f in file_list:
         fp = os.path.join(sickrage.app.data_dir, f)
         if os.path.exists(fp):
             source += [fp]
 
-    # database folder
-    for (path, __, files) in os.walk(os.path.join(sickrage.app.data_dir, 'database'), topdown=True):
-        for filename in files:
-            source += [os.path.join(path, filename)]
+    # database
+    for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+        backup_file = db.backup(os.path.join(sickrage.app.data_dir, '{}_db.pickle'.format(db.name)))
+        source += [backup_file]
 
     # cache folder
     if sickrage.app.cache_dir:
@@ -1051,13 +1049,13 @@ def backupSR(backupDir, keep_latest=False):
 
 def restoreSR(srcDir, dstDir):
     try:
-        filesList = ['sickrage.db',
-                     'sickbeard.db',
-                     'failed.db',
-                     'cache.db',
-                     os.path.basename(sickrage.app.config_file)]
+        files_list = ['sickrage.db',
+                      'sickbeard.db',
+                      'failed.db',
+                      'cache.db',
+                      os.path.basename(sickrage.app.config_file)]
 
-        for filename in filesList:
+        for filename in files_list:
             srcFile = os.path.join(srcDir, filename)
             dstFile = os.path.join(dstDir, filename)
             bakFile = os.path.join(dstDir, '{}.bak-{}'
@@ -1068,14 +1066,11 @@ def restoreSR(srcDir, dstDir):
                     move_file(dstFile, bakFile)
                 move_file(srcFile, dstFile)
 
-        # databse
-        if os.path.exists(os.path.join(srcDir, 'database')):
-            if os.path.exists(os.path.join(dstDir, 'database')):
-                move_file(os.path.join(dstDir, 'database'), os.path.join(dstDir, '{}.bak-{}'
-                                                                         .format('database',
-                                                                                 datetime.datetime.now().strftime(
-                                                                                     '%Y%m%d_%H%M%S'))))
-            move_file(os.path.join(srcDir, 'database'), dstDir)
+        # database
+        for db in [sickrage.app.main_db, sickrage.app.cache_db]:
+            restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}_db.pickle'.format(db.name))
+            if os.path.exists(restore_file):
+                db.restore(restore_file)
 
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
