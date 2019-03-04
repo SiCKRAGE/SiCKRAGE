@@ -431,10 +431,11 @@ class srDatabase(object):
             with io.open(restore_file, 'rb') as f:
                 rows = pickle.load(f)
 
-            if not self.opened:
-                self.db.open()
-
-            self.db.destroy()
+            if self.db.exists():
+                if not self.opened:
+                    self.db.open()
+                self.db.destroy()
+                
             self.db.create()
             [self.insert(row) for row in rows]
             del rows

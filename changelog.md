@@ -1,6 +1,7 @@
 # Changelog
 
-- * 491da55 - 2019-03-04: Release v9.4.78 
+- * 4cc3cdf - 2019-03-04: Added code for database restore function to check if db exists then destroy before creating new 
+- * 74f6d46 - 2019-03-04: Release v9.4.78 
 - * 3c0d05a - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
 - * 3151280 - 2019-03-04: Cleaned up backup and restore functions for database. Bumped keycloak requirement to v0.2.2 
 - * fe70b17 - 2019-03-03: Added backup and restore functions to database class. Refactored backup and restore system for app to accommodate for migration to python 3. 
