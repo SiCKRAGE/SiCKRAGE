@@ -48,7 +48,7 @@ from sickrage.core.config import Config
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
-    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
+    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, move_file
 from sickrage.core.helpers.encoding import get_sys_encoding, ek, patch_modules
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
@@ -202,7 +202,7 @@ class Core(object):
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
             success = restoreSR(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
-            print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+            self.log.info("Restoring SiCKRAGE backup: {}!".format(("FAILED", "SUCCESSFUL")[success]))
             if success:
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
