@@ -2361,8 +2361,10 @@ class Config(object):
             'Providers': dict({
                 'providers_order': sickrage.app.search_providers.provider_order,
                 'custom_providers': self.custom_providers,
-            }, **{providerID: dict([(x, getattr(providerObj, x)) for x in provider_keys if hasattr(providerObj, x)]) for
-                  providerID, providerObj in sickrage.app.search_providers.all().items()}),
+            }, **{providerID: dict([(x, int(getattr(providerObj, x)) if isinstance(getattr(providerObj, x),
+                                                                                   bool) else getattr(providerObj, x))
+                                    for x in provider_keys if hasattr(providerObj, x)]) for providerID, providerObj in
+                  sickrage.app.search_providers.all().items()}),
             'MetadataProviders': {metadataProviderID: metadataProviderObj.get_config() for
                                   metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items()}
         })
@@ -2428,10 +2430,10 @@ class ConfigMigrator(Config):
 
         if current_version > expected_version:
             sickrage.app.log.warning("Your config version (%i) has been incremented past what this version of supports "
-                                   "(%i). If you have used other forks or a newer version of  your config file may be "
-                                   "unusable due to their modifications." % (current_version,
-                                                                             expected_version)
-                                   )
+                                     "(%i). If you have used other forks or a newer version of  your config file may be "
+                                     "unusable due to their modifications." % (current_version,
+                                                                               expected_version)
+                                     )
             sys.exit(1)
 
         while current_version < expected_version:
