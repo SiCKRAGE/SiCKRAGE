@@ -1,6 +1,8 @@
 # Changelog
 
-- * 12bdfa7 - 2019-03-04: Release v9.4.79 
+- * 29ae520 - 2019-03-05: Release v9.4.80 
+- * 43baedf - 2019-03-05: Fixed saving of provider settings so that booleans are saved as integers 
+- * 4f0d739 - 2019-03-04: Release v9.4.79 
 - * 1ff280d - 2019-03-04: Added code for database restore function to check if db exists then destroy before creating new 
 - * 74f6d46 - 2019-03-04: Release v9.4.78 
 - * 3c0d05a - 2019-03-04: Source updates now download and unpack to main program folder to resolve update issues. 
