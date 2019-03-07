@@ -422,9 +422,9 @@ class srDatabase(object):
         return backup_file
 
     def restore(self, restore_file=None):
-        backup_file = os.path.join(sickrage.app.data_dir, '{}_db.codernitydb.bak-{}'.format(self.name,
-                                                                                            datetime.datetime.now().strftime(
-                                                                                                '%Y%m%d_%H%M%S')))
+        backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
+                                                                                         datetime.datetime.now().strftime(
+                                                                                             '%Y%m%d_%H%M%S')))
         if os.path.exists(restore_file):
             self.backup(backup_file)
             sickrage.app.log.info('Restoring database file {}'.format(restore_file))

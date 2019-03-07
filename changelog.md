@@ -1,6 +1,7 @@
 # Changelog
 
-- * 662882cb - 2019-03-06: Release v9.4.81 
+- * 63dc190 - 2019-03-06: Release v9.4.82 
+- * 8a67674 - 2019-03-06: Release v9.4.81 
 - * 6de5fa5 - 2019-03-05: Release v9.4.80 
 - * 43baedf - 2019-03-05: Fixed saving of provider settings so that booleans are saved as integers 
 - * 4f0d739 - 2019-03-04: Release v9.4.79 
