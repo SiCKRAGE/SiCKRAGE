@@ -1028,7 +1028,7 @@ def backupSR(backupDir, keep_latest=False, migrate=True):
 
     # database
     for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-        backup_file = db.backup(os.path.join(sickrage.app.data_dir, '{}_db.codernitydb'.format(db.name)))
+        backup_file = db.backup(os.path.join(sickrage.app.data_dir, '{}.codernitydb'.format(db.name)))
         source += [backup_file]
 
     # cache folder
@@ -1058,7 +1058,7 @@ def restoreSR(srcDir, dstDir):
         for filename in files_list:
             srcFile = os.path.join(srcDir, filename)
             dstFile = os.path.join(dstDir, filename)
-            bakFile = os.path.join(dstDir, '{}.bak-{}'
+            bakFile = os.path.join(dstDir, '{}_{}.bak'
                                    .format(filename, datetime.datetime.now().strftime('%Y%m%d_%H%M%S')))
 
             if os.path.exists(srcFile):
@@ -1068,14 +1068,14 @@ def restoreSR(srcDir, dstDir):
 
         # database
         for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-            restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}_db.codernitydb'.format(db.name))
+            restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}.codernitydb'.format(db.name))
             if os.path.exists(restore_file):
                 db.restore(restore_file)
 
         # cache
         if os.path.exists(os.path.join(srcDir, 'cache')):
             if os.path.exists(os.path.join(dstDir, 'cache')):
-                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}.bak-{}'
+                move_file(os.path.join(dstDir, 'cache'), os.path.join(dstDir, '{}_{}.bak'
                                                                       .format('cache',
                                                                               datetime.datetime.now().strftime(
                                                                                   '%Y%m%d_%H%M%S'))))
