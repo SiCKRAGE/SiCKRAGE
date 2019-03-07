@@ -1028,7 +1028,7 @@ def backupSR(backupDir, keep_latest=False, migrate=True):
 
     # database
     for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-        backup_file = db.backup(os.path.join(sickrage.app.data_dir, '{}_db.pickle'.format(db.name)))
+        backup_file = db.backup(os.path.join(sickrage.app.data_dir, '{}_db.codernitydb'.format(db.name)))
         source += [backup_file]
 
     # cache folder
@@ -1068,7 +1068,7 @@ def restoreSR(srcDir, dstDir):
 
         # database
         for db in [sickrage.app.main_db, sickrage.app.cache_db]:
-            restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}_db.pickle'.format(db.name))
+            restore_file = os.path.join(sickrage.app.data_dir, 'restore', '{}_db.codernitydb'.format(db.name))
             if os.path.exists(restore_file):
                 db.restore(restore_file)
 
