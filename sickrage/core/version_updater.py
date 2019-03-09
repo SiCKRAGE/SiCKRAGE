@@ -606,7 +606,7 @@ class SourceUpdateManager(UpdateManager):
 
         try:
             # prepare the update dir
-            sr_update_dir = os.path.join(sickrage.PROG_DIR, 'sr-update')
+            sr_update_dir = os.path.join(sickrage.MAIN_DIR, 'sr-update')
 
             if os.path.isdir(sr_update_dir):
                 sickrage.app.log.info("Clearing out update folder " + sr_update_dir + " before extracting")
@@ -653,17 +653,21 @@ class SourceUpdateManager(UpdateManager):
 
             # walk temp folder and move files to main folder
             content_dir = os.path.join(sr_update_dir, update_dir_contents[0])
-            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.PROG_DIR)
+            sickrage.app.log.info("Moving files from " + content_dir + " to " + sickrage.MAIN_DIR)
             for dirname, __, filenames in os.walk(content_dir):
                 dirname = dirname[len(content_dir) + 1:]
                 for curfile in filenames:
                     old_path = os.path.join(content_dir, dirname, curfile)
-                    new_path = os.path.join(sickrage.PROG_DIR, dirname, curfile)
+                    new_path = os.path.join(sickrage.MAIN_DIR, dirname, curfile)
 
                     if os.path.isfile(new_path) and os.path.exists(new_path):
                         os.remove(new_path)
 
-                    shutil.move(old_path, new_path)
+                    try:
+                        shutil.move(old_path, new_path)
+                    except IOError:
+                        os.makedirs(os.path.dirname(new_path))
+                        shutil.move(old_path, new_path)
 
             # install requirements
             if not self.install_requirements():
