@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sickragetv\n"
 "Report-Msgid-Bugs-To: support@sickrage.ca\n"
-"POT-Creation-Date: 2019-03-06 17:39-0800\n"
-"PO-Revision-Date: 2019-03-07 01:41\n"
+"POT-Creation-Date: 2019-03-09 07:50-0800\n"
+"PO-Revision-Date: 2019-03-09 15:52\n"
 "Last-Translator: echel0n <echel0n@sickrage.ca>\n"
 "Language-Team: Korean\n"
 "MIME-Version: 1.0\n"
@@ -6138,7 +6138,7 @@ msgstr "납치 하는 에피소드"
 #: sickrage/core/version_updater.py:114 sickrage/core/version_updater.py:192
 #: sickrage/core/version_updater.py:248 sickrage/core/version_updater.py:286
 #: sickrage/core/version_updater.py:390 sickrage/core/version_updater.py:494
-#: sickrage/core/version_updater.py:744 sickrage/core/webserver/views.py:1084
+#: sickrage/core/version_updater.py:748 sickrage/core/webserver/views.py:1084
 #: sickrage/core/webserver/views.py:1088 sickrage/core/webserver/views.py:1096
 msgid "Updater"
 msgstr ""
@@ -6199,11 +6199,11 @@ msgstr "사용 가능한 최신 버전, 버전 {&mdash; <a href=\"{}\">Update No
 msgid "Updating SiCKRAGE from GIT servers"
 msgstr ""
 
-#: sickrage/core/version_updater.py:733
+#: sickrage/core/version_updater.py:737
 msgid "New SiCKRAGE update found on PyPi servers, version {} &mdash; <a href=\"{}\">Update Now</a>"
 msgstr ""
 
-#: sickrage/core/version_updater.py:744
+#: sickrage/core/version_updater.py:748
 msgid "Updating SiCKRAGE from PyPi servers"
 msgstr ""
 
