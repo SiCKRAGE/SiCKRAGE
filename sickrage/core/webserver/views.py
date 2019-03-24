@@ -42,7 +42,7 @@ import sickrage
 import sickrage.subtitles
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core import API, google_drive
+from sickrage.core.api import API
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
@@ -3768,7 +3768,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.save()
 
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
-                    encryption_version=None, web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
+                    web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
                     update_frequency=None, skip_removed_files=None, indexerDefaultLang='en',
                     ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
@@ -3836,7 +3836,6 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
-        sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
 
         sickrage.app.config.filter_row = checkbox_to_value(filter_row)
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)

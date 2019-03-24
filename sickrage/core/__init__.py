@@ -38,13 +38,12 @@ from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
-    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
+    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, encryption
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -85,6 +84,7 @@ class Core(object):
         except Exception:
             self.tz = tz.tzlocal()
 
+        self.private_key = None
         self.config_file = None
         self.data_dir = None
         self.cache_dir = None
@@ -207,6 +207,12 @@ class Core(object):
 
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
+
+        # init private key
+        self.private_key = encryption.load_key()
+        if not self.private_key:
+            self.private_key = encryption.generate_key()
+            encryption.save_key(self.private_key)
 
         # load config
         self.config.load()

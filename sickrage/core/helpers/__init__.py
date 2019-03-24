@@ -49,6 +49,7 @@ import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.helpers import encryption
 
 
 def safe_getattr(object, name, default=None):
@@ -1385,7 +1386,7 @@ def restoreVersionedFile(backup_file, version):
     return True
 
 
-def backupVersionedFile(old_file, version):
+def backup_versioned_file(old_file, version):
     """
     Back up an old version of a file
 
@@ -1406,6 +1407,7 @@ def backupVersionedFile(old_file, version):
         try:
             sickrage.app.log.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
+            encryption.encrypt_file(new_file, sickrage.app.private_key.public_key())
             sickrage.app.log.debug("Backup done")
             break
         except Exception as e:
