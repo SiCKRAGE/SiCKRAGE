@@ -2,7 +2,7 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
 # SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage. If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE. If not, see <http://www.gnu.org/licenses/>.
 
 
 import os.path
