@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 from sqlalchemy import Column, Integer, Text
 from sqlalchemy.ext.declarative import as_declarative
@@ -40,8 +40,7 @@ class CacheDB(srDatabase):
     class LastUpdate(BaseActions, CacheDBBase):
         __tablename__ = 'last_update'
 
-        id = Column(Integer, primary_key=True)
-        provider = Column(Text)
+        provider = Column(Text, primary_key=True)
         time = Column(Integer)
 
     class LastSearch(BaseActions, CacheDBBase):
@@ -69,15 +68,13 @@ class CacheDB(srDatabase):
     class NetworkTimezone(BaseActions, CacheDBBase):
         __tablename__ = 'network_timezones'
 
-        id = Column(Integer, primary_key=True)
-        network_name = Column(Text)
+        network_name = Column(Text, primary_key=True)
         timezone = Column(Text)
 
     class SceneExceptionRefresh(BaseActions, CacheDBBase):
         __tablename__ = 'scene_exceptions_refresh'
 
-        id = Column(Integer, primary_key=True)
-        exception_list = Column(Text)
+        exception_list = Column(Text, primary_key=True)
         last_refreshed = Column(Integer)
 
     class Provider(BaseActions, CacheDBBase):

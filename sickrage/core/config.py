@@ -21,6 +21,7 @@
 import base64
 import datetime
 import gettext
+import json
 import os
 import os.path
 import random
@@ -37,7 +38,7 @@ from configobj import ConfigObj
 import sickrage
 from sickrage.core.common import SD, WANTED, SKIPPED, Quality
 from sickrage.core.helpers import makeDir, generate_secret, auto_type, get_lan_ip, \
-    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backupVersionedFile
+    extract_zipfile, try_int, checkbox_to_value, generateApiKey, backup_versioned_file, encryption
 from sickrage.core.websession import WebSession
 
 
@@ -46,13 +47,9 @@ class Config(object):
         self.loaded = False
 
         self.config_obj = None
-        self.config_version = 11
-
-        self.encryption_secret = ""
-        self.encryption_version = 2
+        self.config_version = 12
 
         self.app_sub = ""
-        self.app_oauth_token = ""
 
         self.debug = False
 
@@ -703,7 +700,6 @@ class Config(object):
             },
             'General': {
                 'app_sub': self.app_sub,
-                'app_oauth_token': '',
                 'enable_api_providers_cache': True,
                 'log_size': 1048576,
                 'calendar_unprotected': False,
@@ -720,7 +716,6 @@ class Config(object):
                 'nzb_method': 'blackhole',
                 'web_cookie_secret': self.web_cookie_secret or generate_secret(),
                 'ssl_verify': True,
-                'encryption_secret': self.encryption_secret or generate_secret(),
                 'enable_upnp': True,
                 'version_notify': True,
                 'web_root': '',
@@ -761,7 +756,6 @@ class Config(object):
                 'default_page': 'home',
                 'update_frequency': 1,
                 'download_url': '',
-                'encryption_version': self.encryption_version,
                 'showupdate_hour': 3,
                 'enable_rss_cache': True,
                 'torrent_file_to_magnet': False,
@@ -1377,17 +1371,21 @@ class Config(object):
                 raise SystemExit(
                     "Config file root dir '" + os.path.dirname(sickrage.app.config_file) + "' must be writeable.")
 
-        # load config
+        # decrypt config
+        if os.path.exists(sickrage.app.config_file):
+            try:
+                encryption.decrypt_file(sickrage.app.config_file, sickrage.app.private_key)
+            except ValueError:
+                # old encryption from python 2
+                self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
+                self.config_obj.walk(self.decrypt)
+                self.config_obj.write()
+
         self.config_obj = ConfigObj(sickrage.app.config_file, encoding='utf8')
 
         # use defaults
         if defaults:
             self.config_obj.clear()
-
-        # decrypt settings
-        self.encryption_version = self.check_setting_int('General', 'encryption_version')
-        self.encryption_secret = self.check_setting_str('General', 'encryption_secret', censor=True)
-        self.config_obj.walk(self.decrypt)
 
         # migrate config
         self.config_obj = ConfigMigrator(self.config_obj).migrate_config(
@@ -1398,7 +1396,6 @@ class Config(object):
         # GENERAL SETTINGS
         self.config_version = self.check_setting_int('General', 'config_version')
         self.app_sub = self.check_setting_str('General', 'app_sub')
-        self.app_oauth_token = self.check_setting_str('General', 'app_oauth_token')
         self.enable_api_providers_cache = self.check_setting_bool('General', 'enable_api_providers_cache')
         self.debug = sickrage.app.debug or self.check_setting_bool('General', 'debug')
         self.last_db_compact = self.check_setting_int('General', 'last_db_compact')
@@ -1899,11 +1896,8 @@ class Config(object):
         new_config.update({
             'General': {
                 'config_version': self.config_version,
-                'encryption_version': int(self.encryption_version),
-                'encryption_secret': self.encryption_secret,
                 'last_db_compact': self.last_db_compact,
                 'app_sub': self.app_sub,
-                'app_oauth_token': self.app_oauth_token,
                 'enable_api_providers_cache': int(self.enable_api_providers_cache),
                 'git_autoissues': int(self.git_autoissues),
                 'git_username': self.git_username,
@@ -2368,9 +2362,10 @@ class Config(object):
                                   metadataProviderID, metadataProviderObj in sickrage.app.metadata_providers.items()}
         })
 
-        # encrypt settings
-        new_config.walk(self.encrypt)
-        new_config.write()
+        # encrypt config
+        if sickrage.app.private_key:
+            new_config.write()
+            encryption.encrypt_file(sickrage.app.config_file, sickrage.app.private_key.public_key())
 
     def encrypt(self, section, key, _decrypt=False):
         """
@@ -2382,7 +2377,10 @@ class Config(object):
             return
 
         try:
-            if self.encryption_version == 1:
+            encryption_version = self.check_setting_int('General', 'encryption_version', 2)
+            encryption_secret = self.check_setting_str('General', 'encryption_secret', '', censor=True)
+
+            if encryption_version == 1:
                 unique_key1 = hex(uuid.getnode() ** 2)
 
                 if _decrypt:
@@ -2392,13 +2390,13 @@ class Config(object):
                 else:
                     section[key] = base64.encodestring(
                         ''.join(chr(ord(x) ^ ord(y)) for (x, y) in zip(section[key], cycle(unique_key1)))).strip()
-            elif self.encryption_version == 2:
+            elif encryption_version == 2:
                 if _decrypt:
                     section[key] = ''.join(chr(x ^ y) for x, y in zip(base64.b64decode(section[key]), cycle(
-                        map(ord, sickrage.app.config.encryption_secret))))
+                        map(ord, encryption_secret))))
                 else:
                     section[key] = base64.b64encode(''.join(chr(x ^ y) for (x, y) in zip(map(ord, section[key]), cycle(
-                        map(ord, sickrage.app.config.encryption_secret)))).encode()).decode().strip()
+                        map(ord, encryption_secret)))).encode()).decode().strip()
         except Exception as e:
             return
 
@@ -2419,6 +2417,7 @@ class ConfigMigrator(Config):
             9: 'Update config encryption level to 2',
             10: 'Update all metadata settings to new config format',
             11: 'Update all provider settings to new config format',
+            12: 'Migrate external API token to its own file',
         }
 
     def migrate_config(self, current_version=0, expected_version=0):
@@ -2427,11 +2426,10 @@ class ConfigMigrator(Config):
         """
 
         if current_version > expected_version:
-            sickrage.app.log.warning("Your config version (%i) has been incremented past what this version of supports "
-                                     "(%i). If you have used other forks or a newer version of  your config file may be "
-                                     "unusable due to their modifications." % (current_version,
-                                                                               expected_version)
-                                     )
+            sickrage.app.log.warning("Your config version (%i) has been incremented past what this version of "
+                                     "supports (%i). If you have used other forks or a newer version of  your config "
+                                     "file may be unusable due to their modifications." % (current_version,
+                                                                                           expected_version))
             sys.exit(1)
 
         while current_version < expected_version:
@@ -2443,7 +2441,7 @@ class ConfigMigrator(Config):
                 migration_name = ''
 
             sickrage.app.log.info("Backing up config before upgrade")
-            if not backupVersionedFile(sickrage.app.config_file, current_version):
+            if not backup_versioned_file(sickrage.app.config_file, current_version):
                 sickrage.app.log.exit("Config backup failed, abort upgrading config")
                 sys.exit(1)
             else:
@@ -2540,4 +2538,13 @@ class ConfigMigrator(Config):
 
             self.config_obj['Providers'][providerID] = provider_settings
 
+        return self.config_obj
+
+    def _migrate_v12(self):
+        app_oauth_token = self.check_setting_str('General', 'app_oauth_token', '')
+        if app_oauth_token:
+            from sickrage.core.api import API
+            with open(API().token_file, 'w') as fd:
+                json.dump(json.loads(app_oauth_token), fd)
+            del self.config_obj['General']['app_oauth_token']
         return self.config_obj

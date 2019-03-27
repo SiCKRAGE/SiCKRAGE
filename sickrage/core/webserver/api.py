@@ -2,21 +2,20 @@
 # Author: Jonathon Saine <thezoggy@gmail.com>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import collections
@@ -28,11 +27,13 @@ import time
 import traceback
 from urllib.parse import unquote_plus
 
+from sqlalchemy import orm
 from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler
 
 import sickrage.subtitles
 from sickrage.core.databases.cache import CacheDB
+from sickrage.core.databases.main import MainDB
 
 try:
     from futures import ThreadPoolExecutor
@@ -774,41 +775,38 @@ class CMD_Episode(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                  if x['season'] == self.s and x['episode'] == self.e]
+        try:
+            episode = MainDB.TVEpisode.query(showid=self.indexerid, season=self.s, episode=self.e).one()
 
-        if not len(dbData) == 1:
+            showPath = showObj.location
+
+            # handle path options
+            # absolute vs relative vs broken
+            if bool(self.fullPath) is True and os.path.isdir(showPath):
+                pass
+            elif bool(self.fullPath) is False and os.path.isdir(showPath):
+                # using the length because lstrip removes to much
+                showPathLength = len(showPath) + 1  # the / or \ yeah not that nice i know
+                episode.location = episode.location[showPathLength:]
+            elif not os.path.isdir(showPath):  # show dir is broken ... episode path will be empty
+                episode.location = ""
+
+            # convert stuff to human form
+            if try_int(episode.airdate, 1) > 693595:  # 1900
+                episode.airdate = srdatetime.srDateTime(srdatetime.srDateTime(
+                    sickrage.app.tz_updater.parse_date_time(int(episode.airdate), showObj.airs, showObj.network),
+                    convert=True).dt).srfdate(d_preset=dateFormat)
+            else:
+                episode.airdate = 'Never'
+
+            status, quality = Quality.split_composite_status(int(episode.status))
+            episode.status = _get_status_strings(status)
+            episode.quality = get_quality_string(quality)
+            episode.file_size_human = pretty_filesize(episode.file_size)
+
+            return _responds(RESULT_SUCCESS, episode)
+        except orm.exc.NoResultFound:
             raise ApiError("Episode not found")
-
-        episode = dbData[0]
-
-        showPath = showObj.location
-
-        # handle path options
-        # absolute vs relative vs broken
-        if bool(self.fullPath) is True and os.path.isdir(showPath):
-            pass
-        elif bool(self.fullPath) is False and os.path.isdir(showPath):
-            # using the length because lstrip removes to much
-            showPathLength = len(showPath) + 1  # the / or \ yeah not that nice i know
-            episode["location"] = episode["location"][showPathLength:]
-        elif not os.path.isdir(showPath):  # show dir is broken ... episode path will be empty
-            episode["location"] = ""
-
-        # convert stuff to human form
-        if try_int(episode['airdate'], 1) > 693595:  # 1900
-            episode['airdate'] = srdatetime.srDateTime(srdatetime.srDateTime(
-                sickrage.app.tz_updater.parse_date_time(int(episode['airdate']), showObj.airs, showObj.network),
-                convert=True).dt).srfdate(d_preset=dateFormat)
-        else:
-            episode['airdate'] = 'Never'
-
-        status, quality = Quality.split_composite_status(int(episode["status"]))
-        episode["status"] = _get_status_strings(status)
-        episode["quality"] = get_quality_string(quality)
-        episode["file_size_human"] = pretty_filesize(episode["file_size"])
-
-        return _responds(RESULT_SUCCESS, episode)
 
 
 class CMD_EpisodeSearch(ApiCall):
@@ -1147,9 +1145,9 @@ class CMD_Failed(ApiCall):
 
         ulimit = min(int(self.limit), 100)
         if ulimit == 0:
-            dbData = [x for x in sickrage.app.main_db.all('failed_snatches')]
+            dbData = MainDB.FailedSnatch.query().all()
         else:
-            dbData = [x for x in sickrage.app.main_db.all('failed_snatches', ulimit)]
+            dbData = MainDB.FailedSnatch.query().limit(ulimit)
 
         return _responds(RESULT_SUCCESS, dbData)
 
@@ -1167,11 +1165,13 @@ class CMD_Backlog(ApiCall):
         shows = []
 
         for s in sickrage.app.showlist:
-            showEps = []
-            for e in sorted((e for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid) if s.paused == 0),
-                            key=lambda d: (d['season'], d['episode']), reverse=True):
+            if s.paused:
+                continue
 
-                curEpCat = s.get_overview(int(e["status"] or -1))
+            showEps = []
+            for e in MainDB.TVEpisode.query(showid=s.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+                                                                         MainDB.TVEpisode.episode.desc()):
+                curEpCat = s.get_overview(int(e.status or -1))
                 if curEpCat and curEpCat in (Overview.WANTED, Overview.QUAL):
                     showEps += [e]
 
@@ -1391,17 +1391,12 @@ class CMD_SiCKRAGECheckScheduler(ApiCall):
     def run(self):
         """ Get information about the scheduler """
 
-        try:
-            last_backlog = [x for x in sickrage.app.main_db.all('info')][0]["last_backlog"]
-        except:
-            last_backlog = 1
-
         backlogPaused = sickrage.app.search_queue.is_backlog_searcher_paused()
         backlogRunning = sickrage.app.search_queue.is_backlog_in_progress()
         nextBacklog = sickrage.app.backlog_searcher.next_run().strftime(dateFormat)
 
-        data = {"backlog_is_paused": int(backlogPaused), "backlog_is_running": int(backlogRunning),
-                "last_backlog": _ordinal_to_date_form(last_backlog),
+        data = {"backlog_is_paused": int(backlogPaused),
+                "backlog_is_running": int(backlogRunning),
                 "next_backlog": nextBacklog}
 
         return _responds(RESULT_SUCCESS, data)
@@ -2403,8 +2398,8 @@ class CMD_ShowSeasonList(ApiCall):
         if not showObj:
             return _responds(RESULT_FAILURE, msg="Show not found")
 
-        seasonList = sorted(set(x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)),
-                            key=lambda d: d, reverse=not self.sort == "asc")
+        seasonList = set(x.season for x in MainDB.TVEpisode.query(showid=self.indexerid).order_by(
+            MainDB.TVEpisode.season if not self.sort == 'desc' else MainDB.TVEpisode.season.desc()))
 
         return _responds(RESULT_SUCCESS, seasonList)
 
@@ -2436,54 +2431,49 @@ class CMD_ShowSeasons(ApiCall):
         if self.season is None:
             seasons = {}
 
-            for row in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-                status, quality = Quality.split_composite_status(int(row["status"]))
-                row["status"] = _get_status_strings(status)
-                row["quality"] = get_quality_string(quality)
+            for row in MainDB.TVEpisode.query(showid=self.indexerid):
+                status, quality = Quality.split_composite_status(int(row.status))
+                row.status = _get_status_strings(status)
+                row.quality = get_quality_string(quality)
 
-                if try_int(row['airdate'], 1) > 693595:  # 1900
+                if try_int(row.airdate, 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network),
+                        sickrage.app.tz_updater.parse_date_time(row.airdate, showObj.airs, showObj.network),
                         convert=True).dt
-                    row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+                    row.airdate = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
-                    row['airdate'] = 'Never'
+                    row.airdate = 'Never'
 
-                curSeason = int(row["season"])
-                curEpisode = int(row["episode"])
+                curSeason = int(row.season)
+                curEpisode = int(row.episode)
 
-                del row["season"]
-                del row["episode"]
-
-                if not curSeason in seasons:
+                if curSeason not in seasons:
                     seasons[curSeason] = {}
 
                 seasons[curSeason][curEpisode] = row
 
         else:
-            dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', self.indexerid)
-                      if x['season'] == self.season]
-
-            if len(dbData) is 0:
-                return _responds(RESULT_FAILURE, msg="Season not found")
-
             seasons = {}
-            for row in dbData:
-                curEpisode = int(row["episode"])
-                del row["episode"]
-                status, quality = Quality.split_composite_status(int(row["status"]))
-                row["status"] = _get_status_strings(status)
-                row["quality"] = get_quality_string(quality)
-                if try_int(row['airdate'], 1) > 693595:  # 1900
+
+            row = None
+            for row in MainDB.TVEpisode.query(showid=self.indexerid, season=self.season):
+                curEpisode = int(row.episode)
+                status, quality = Quality.split_composite_status(int(row.status))
+                row.status = _get_status_strings(status)
+                row.quality = get_quality_string(quality)
+                if try_int(row.airdate, 1) > 693595:  # 1900
                     dtEpisodeAirs = srdatetime.srDateTime(
-                        sickrage.app.tz_updater.parse_date_time(row['airdate'], showObj.airs, showObj.network),
+                        sickrage.app.tz_updater.parse_date_time(row.airdate, showObj.airs, showObj.network),
                         convert=True).dt
-                    row['airdate'] = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
+                    row.airdate = srdatetime.srDateTime(dtEpisodeAirs).srfdate(d_preset=dateFormat)
                 else:
-                    row['airdate'] = 'Never'
-                if not curEpisode in seasons:
+                    row.airdate = 'Never'
+                if curEpisode not in seasons:
                     seasons[curEpisode] = {}
                 seasons[curEpisode] = row
+
+            if row is None:
+                return _responds(RESULT_FAILURE, msg="Season not found")
 
         return _responds(RESULT_SUCCESS, seasons)
 
@@ -2581,21 +2571,18 @@ class CMD_ShowStats(ApiCall):
             episode_qualities_counts_snatch[statusCode] = 0
 
         # the main loop that goes through all episodes
-        for row in sickrage.app.main_db.get_many('tv_episodes', self.indexerid):
-            if row['season'] == 0:
-                continue
-
-            status, quality = Quality.split_composite_status(int(row["status"]))
+        for row in MainDB.TVEpisode.query(showid=self.indexerid).filter(MainDB.TVEpisode.season != 0):
+            status, quality = Quality.split_composite_status(int(row.status))
             if quality in [Quality.NONE]:
                 continue
             episode_status_counts_total["total"] += 1
 
             if status in Quality.DOWNLOADED + Quality.ARCHIVED:
                 episode_qualities_counts_download["total"] += 1
-                episode_qualities_counts_download[int(row["status"])] += 1
+                episode_qualities_counts_download[int(row.status)] += 1
             elif status in Quality.SNATCHED + Quality.SNATCHED_PROPER:
                 episode_qualities_counts_snatch["total"] += 1
-                episode_qualities_counts_snatch[int(row["status"])] += 1
+                episode_qualities_counts_snatch[int(row.status)] += 1
             elif status == 0:  # we dont count NONE = 0 = N/A
                 pass
             else:

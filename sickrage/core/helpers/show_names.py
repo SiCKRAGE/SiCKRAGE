@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import fnmatch
@@ -26,6 +26,7 @@ from functools import partial
 import sickrage
 from sickrage.core.common import DOWNLOADED, Quality, SNATCHED, WANTED, \
     countryList
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import sanitizeSceneName, strip_accents
 from sickrage.core.nameparser import InvalidNameException, InvalidShowException, \
     NameParser
@@ -195,8 +196,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
                     seasonStrings.append("%02d" % ab_number)
 
     else:
-        numseasons = len({x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                          if x['season'] != 0})
+        numseasons = len(
+            {x.season for x in MainDB.TVEpisode.query(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
 
         seasonStrings = ["S%02d" % int(ep_obj.scene_season)]
 
@@ -228,8 +229,8 @@ def makeSceneSeasonSearchString(show, ep_obj, extraSearchType=None):
 def makeSceneSearchString(show, ep_obj):
     toReturn = []
 
-    numseasons = len({x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                      if x['season'] != 0})
+    numseasons = len(
+        {x.season for x in MainDB.TVEpisode.query(showid=show.indexerid).filter(MainDB.TVEpisode.season != 0)})
 
     # see if we should use dates instead of episodes
     if (show.air_by_date or show.sports) and ep_obj.airdate != date.fromordinal(1):

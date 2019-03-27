@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -49,7 +49,7 @@ class QuicksearchCache(object):
         self.add_show(indexerid)
 
     def add_show(self, indexerid):
-        show = MainDB.TVShow.query().filter_by(indexer_id=indexerid).one()
+        show = MainDB.TVShow.query(indexer_id=indexerid).one()
 
         if indexerid not in self.cache['shows']:
             sickrage.app.log.debug("Adding show {} to QuickSearch cache".format(show.show_name))
@@ -86,7 +86,7 @@ class QuicksearchCache(object):
                 del sql_l
 
     def del_show(self, indexerid):
-        show = MainDB.TVShow.query().filter_by(indexer_id=indexerid).one()
+        show = MainDB.TVShow.query(indexer_id=indexerid).one()
 
         sickrage.app.log.debug("Deleting show {} from QuickSearch cache".format(show.show_name))
 
@@ -99,4 +99,4 @@ class QuicksearchCache(object):
 
         # remove from database
         [CacheDB.QuickSearchShow.delete(x) for x in CacheDB.QuickSearchShow.query(showid=indexerid)]
-        [CacheDB.QuickSearchEpisodex.delete(x) for x in CacheDB.QuickSearchEpisode.query(showid=indexerid)]
+        [CacheDB.QuickSearchEpisode.delete(x) for x in CacheDB.QuickSearchEpisode.query(showid=indexerid)]

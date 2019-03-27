@@ -1,4 +1,4 @@
-from sickrage.core import API
+from sickrage.core.api import API
 
 
 class IMDbAPI(API):

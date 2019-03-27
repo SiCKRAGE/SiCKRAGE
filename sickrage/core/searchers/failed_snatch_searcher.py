@@ -2,21 +2,20 @@
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -25,6 +24,7 @@ import threading
 import sickrage
 from sickrage.core import findCertainShow
 from sickrage.core.common import Quality, SNATCHED, SNATCHED_BEST, SNATCHED_PROPER
+from sickrage.core.databases.main import MainDB
 from sickrage.core.queues.search import FailedQueueItem
 from sickrage.core.tv.episode import TVEpisode
 from sickrage.core.tv.show.history import FailedHistory, History
@@ -57,27 +57,29 @@ class FailedSnatchSearcher(object):
         show = None
         failed_snatches = False
 
-        snatched_episodes = (x for x in sickrage.app.main_db.all('history')
-                             if x['action'] in Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER
-                             and 24 >= int((datetime.datetime.now() - datetime.datetime.strptime(x['date'],
-                                                                                                 History.date_format)).total_seconds() / 3600) >= sickrage.app.config.failed_snatch_age)
+        snatched_episodes = (x for x in MainDB.History.query().filter(
+            MainDB.History.action.in_(Quality.SNATCHED + Quality.SNATCHED_BEST + Quality.SNATCHED_PROPER),
+            24 >= int((datetime.datetime.now() -
+                       datetime.datetime.strptime(
+                           MainDB.History.date,
+                           History.date_format)).total_seconds() / 3600
+                      ) >= sickrage.app.config.failed_snatch_age))
 
-        downloaded_releases = ((x['showid'], x['season'], x['episode']) for x in
-                               sickrage.app.main_db.all('history')
-                               if x['action'] in Quality.DOWNLOADED)
+        downloaded_releases = ((x.showid, x.season, x.episode) for x in
+                               MainDB.History.query().filter(MainDB.History.action.in_(Quality.DOWNLOADED)))
 
-        episodes = [x for x in snatched_episodes if (x['showid'], x['season'], x['episode']) not in downloaded_releases]
+        episodes = [x for x in snatched_episodes if (x.showid, x.season, x.episode) not in downloaded_releases]
 
         for episode in episodes:
             failed_snatches = True
-            if not show or int(episode["showid"]) != show.indexerid:
-                show = findCertainShow(int(episode["showid"]))
+            if not show or int(episode.showid) != show.indexerid:
+                show = findCertainShow(int(episode.showid))
 
             # for when there is orphaned series in the database but not loaded into our showlist
             if not show or show.paused:
                 continue
 
-            ep_obj = show.get_episode(int(episode['season']), int(episode['episode']))
+            ep_obj = show.get_episode(int(episode.season), int(episode.episode))
             if isinstance(ep_obj, TVEpisode):
                 curStatus, curQuality = Quality.split_composite_status(ep_obj.status)
                 if curStatus not in {SNATCHED, SNATCHED_BEST, SNATCHED_PROPER}:

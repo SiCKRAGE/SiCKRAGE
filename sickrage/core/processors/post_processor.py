@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import fnmatch
@@ -530,8 +530,7 @@ class PostProcessor(object):
         # search the database for a possible match and return immediately if we find one
         for curName in names:
             try:
-                dbData = MainDB.History.query().filter(
-                    sickrage.app.main_db.History.resource.contains(curName)).one()
+                dbData = MainDB.History.query().filter(MainDB.History.resource.contains(curName)).one()
             except orm.exc.NoResultFound:
                 continue
 
@@ -707,36 +706,36 @@ class PostProcessor(object):
                     sickrage.app.log.DEBUG)
                 airdate = episodes[0].toordinal()
 
-                # Ignore season 0 when searching for episode(Conflict between special and regular episode, same air date)
-                dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                          if x['indexer'] == show.indexer and x['airdate'] == airdate and x['season'] != 0]
-
-                if dbData:
-                    season = int(dbData[0]['season'])
-                    episodes = [int(dbData[0]['episode'])]
-                else:
+                # Ignore season 0 when searching for episode(Conflict between special and regular episode,
+                # same air date)
+                try:
+                    dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                                                    airdate=airdate).filter(MainDB.TVEpisode.season != 0).one()
+                    season = int(dbData.season)
+                    episodes = [int(dbData.episode)]
+                except orm.exc.NoResultFound:
                     # Found no result, try with season 0
-                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                              if x['indexer'] == show.indexer and x['airdate'] == airdate]
-
-                    if dbData:
-                        season = int(dbData[0]['season'])
-                        episodes = [int(dbData[0]['episode'])]
-                    else:
+                    try:
+                        dbData = MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer,
+                                                        airdate=airdate).one()
+                        season = int(dbData.season)
+                        episodes = [int(dbData.episode)]
+                    except orm.exc.NoResultFound:
                         self._log(
                             "Unable to find episode with date " +
                             str(episodes[0]) + " for show " + str(show.indexerid) + ", skipping",
                             sickrage.app.log.DEBUG
                         )
 
-                        # we don't want to leave dates in the episode list if we couldn't convert them to real episode numbers
+                        # we don't want to leave dates in the episode list if we couldn't convert them to real
+                        # episode numbers
                         episodes = []
                         continue
 
             # if there's no season then we can hopefully just use 1 automatically
             elif season is None and show:
-                if len({x['season'] for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                        if x['season'] != 0 and x['indexer'] == show.indexer}) == 1:
+                if len({x.season for x in MainDB.TVEpisode.query(showid=show.indexerid, indexer=show.indexer).filter(
+                        MainDB.TVEpisode.season != 0)}) == 1:
                     self._log("Don't have a season number, but this show appears to only have 1 season, setting "
                               "season number to 1...", sickrage.app.log.DEBUG)
                     season = 1

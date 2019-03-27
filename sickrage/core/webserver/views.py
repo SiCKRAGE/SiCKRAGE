@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -34,7 +34,7 @@ from keycloak.exceptions import KeycloakClientError
 from mako.exceptions import RichTraceback
 from mako.lookup import TemplateLookup
 from requests import HTTPError
-from sqlalchemy import desc
+from sqlalchemy import orm, or_
 from tornado.escape import json_encode, recursive_unicode
 from tornado.web import RequestHandler, authenticated
 
@@ -42,7 +42,7 @@ import sickrage
 import sickrage.subtitles
 from sickrage.clients import getClientIstance
 from sickrage.clients.sabnzbd import SabNZBd
-from sickrage.core import API, google_drive
+from sickrage.core.api import API
 from sickrage.core.blackandwhitelist import BlackAndWhiteList
 from sickrage.core.classes import ErrorViewer, AllShowsUI
 from sickrage.core.classes import WarningViewer
@@ -365,10 +365,9 @@ class CalendarHandler(BaseHandler):
         # Get all the shows that are not paused and are currently on air (from kjoconnor Fork)
         for show in [x for x in sickrage.app.showlist if
                      x.status.lower() in ['continuing', 'returning series'] and x.paused != 1]:
-            for episode in (x for x in sickrage.app.main_db.get_many('tv_episodes', int(show.indexerid))
-                            if past_date <= x['airdate'] < future_date):
-
-                air_date_time = sickrage.app.tz_updater.parse_date_time(episode['airdate'], show.airs,
+            for dbData in MainDB.TVEpisode.query(showid=int(show.indexerid)).filter(
+                    past_date <= MainDB.TVEpisode.airdate < future_date):
+                air_date_time = sickrage.app.tz_updater.parse_date_time(dbData.airdate, show.airs,
                                                                         show.network).astimezone(utc)
                 air_date_time_end = air_date_time + datetime.timedelta(minutes=try_int(show.runtime, 60))
 
@@ -380,17 +379,15 @@ class CalendarHandler(BaseHandler):
                 if sickrage.app.config.calendar_icons:
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-ICON:https://www.sickrage.ca/favicon.ico\r\n'
                     ical += 'X-GOOGLE-CALENDAR-CONTENT-DISPLAY:CHIP\r\n'
-                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(
-                    show.name, episode['season'], episode['episode'], episode['name']
-                )
+                ical += 'SUMMARY: {0} - {1}x{2} - {3}\r\n'.format(show.name, dbData.season, dbData.episode, dbData.name)
                 ical += 'UID:SiCKRAGE-' + str(datetime.date.today().isoformat()) + '-' + \
-                        show.name.replace(" ", "-") + '-E' + str(episode['episode']) + \
-                        'S' + str(episode['season']) + '\r\n'
-                if episode['description']:
+                        show.name.replace(" ", "-") + '-E' + str(dbData.episode) + \
+                        'S' + str(dbData.season) + '\r\n'
+                if dbData.description:
                     ical += 'DESCRIPTION: {0} on {1} \\n\\n {2}\r\n'.format(
                         (show.airs or '(Unknown airs)'),
                         (show.network or 'Unknown network'),
-                        episode['description'].splitlines()[0])
+                        dbData.description.splitlines()[0])
                 else:
                     ical += 'DESCRIPTION:' + (show.airs or '(Unknown airs)') + ' on ' + (
                             show.network or 'Unknown network') + '\r\n'
@@ -430,8 +427,7 @@ class WebRoot(WebHandler):
 
         episodes = {}
 
-        for result in sorted((x for x in sickrage.app.main_db.all('tv_episodes')),
-                             key=lambda d: (d['season'], d['episode'])):
+        for result in MainDB.TVEpisode.query().order_by(MainDB.TVEpisode.season, MainDB.TVEpisode.episode):
 
             if result['showid'] not in episodes:
                 episodes[result['showid']] = {}
@@ -1141,7 +1137,8 @@ class Home(WebHandler):
             if showObj is None:
                 return self._genericMessage(_("Error"), _("Show not in show list"))
 
-        episodeResults = MainDB.TVEpisode.query(showid=showObj.indexerid).order_by(desc('season'), desc('episode'))
+        episodeResults = MainDB.TVEpisode.query(showid=showObj.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+                                                                                   MainDB.TVEpisode.episode.desc())
 
         seasonResults = list({x.season for x in episodeResults})
 
@@ -1994,19 +1991,19 @@ class Home(WebHandler):
         for curEp in eps.split('|'):
             epInfo = curEp.split('x')
 
-            ep_result = [x for x in sickrage.app.main_db.get_many('tv_episodes', int(show))
-                         if x['season'] == int(epInfo[0]) and x['episode'] == int(epInfo[1])]
-
-            if not ep_result:
+            try:
+                ep_result = MainDB.TVEpisode.query(showid=int(show), season=int(epInfo[0]),
+                                                   episode=int(epInfo[1])).one()
+            except orm.exc.NoResultFound:
                 sickrage.app.log.warning("Unable to find an episode for " + curEp + ", skipping")
                 continue
 
             root_ep_obj = show_obj.get_episode(int(epInfo[0]), int(epInfo[1]))
             root_ep_obj.relatedEps = []
 
-            for cur_related_ep in (x for x in sickrage.app.main_db.all('tv_episodes')
-                                   if x['location'] == ep_result[0]['location'] and x['episode'] != int(epInfo[1])):
-                related_ep_obj = show_obj.get_episode(int(cur_related_ep["season"]), int(cur_related_ep["episode"]))
+            for cur_related_ep in MainDB.TVEpisode.query(location=ep_result.location).filter(
+                    MainDB.TVEpisode.episode != int(epInfo[1])):
+                related_ep_obj = show_obj.get_episode(int(cur_related_ep.season), int(cur_related_ep.episode))
                 if related_ep_obj not in root_ep_obj.relatedEps:
                     root_ep_obj.relatedEps.append(related_ep_obj)
 
@@ -2842,16 +2839,15 @@ class Manage(Home, WebRoot):
             status_list = Quality.SNATCHED + Quality.SNATCHED_PROPER
 
         result = {}
-        for dbData in (x for x in sickrage.app.main_db.get_many('tv_episodes', int(indexer_id))
-                       if x['season'] != 0 and x['status'] in status_list):
-
-            cur_season = int(dbData["season"])
-            cur_episode = int(dbData["episode"])
+        for dbData in MainDB.TVEpisode.query(showid=int(indexer_id)).filter(MainDB.TVEpisode.season != 0,
+                                                                            MainDB.TVEpisode.status.in_(status_list)):
+            cur_season = int(dbData.season)
+            cur_episode = int(dbData.episode)
 
             if cur_season not in result:
                 result[cur_season] = {}
 
-            result[cur_season][cur_episode] = dbData["name"]
+            result[cur_season][cur_episode] = dbData.name
 
         return json_encode(result)
 
@@ -2868,10 +2864,10 @@ class Manage(Home, WebRoot):
 
         # if we have no status then this is as far as we need to go
         if len(status_list):
-            for cur_status_result in sorted((s for s in sickrage.app.showlist for e in
-                                             sickrage.app.main_db.get_many('tv_episodes', s.indexerid)
-                                             if e['status'] in status_list and e['season'] != 0),
-                                            key=lambda d: d.name):
+            for cur_status_result in sorted((s for s in sickrage.app.showlist for __ in
+                                             MainDB.TVEpisode.query(showid=s.indexerid).filter(
+                                                 MainDB.TVEpisode.status.in_(status_list),
+                                                 MainDB.TVEpisode.season != 0)), key=lambda d: d.name):
                 cur_indexer_id = int(cur_status_result.indexerid)
                 if cur_indexer_id not in ep_counts:
                     ep_counts[cur_indexer_id] = 1
@@ -2918,10 +2914,9 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_change:
             # get a list of all the eps we want to change if they just said "all"
             if 'all' in to_change[cur_indexer_id]:
-                all_eps = [str(x["season"]) + 'x' + str(x["episode"]) for x in
-                           (x for x in sickrage.app.main_db.get_many('tv_episodes', int(cur_indexer_id))
-                            if x['status'] in status_list and x['season'] != 0)]
-
+                all_eps = ['{}x{}'.format(x.season, x.episode) for x in
+                           MainDB.TVEpisode.query(showid=int(cur_indexer_id)).filter(
+                               MainDB.TVEpisode.status.in_(status_list), MainDB.TVEpisode.season != 0)]
                 to_change[cur_indexer_id] = all_eps
 
             self.setStatus(cur_indexer_id, '|'.join(to_change[cur_indexer_id]), newStatus, direct=True)
@@ -2931,9 +2926,8 @@ class Manage(Home, WebRoot):
     @staticmethod
     def showSubtitleMissed(indexer_id, whichSubs):
         result = {}
-        for dbData in (x for x in sickrage.app.main_db.get_many('tv_episodes', int(indexer_id))
-                       if str(x['status']).endswith('4') and x['season'] != 0):
-
+        for dbData in MainDB.TVEpisode.query(showid=int(indexer_id)).filter(MainDB.TVEpisode.status.endswith(4),
+                                                                            MainDB.TVEpisode.season != 0):
             if whichSubs == 'all':
                 if not frozenset(sickrage.subtitles.wanted_languages()).difference(dbData["subtitles"].split(',')):
                     continue
@@ -2965,17 +2959,17 @@ class Manage(Home, WebRoot):
             for s in sickrage.app.showlist:
                 if not s.subtitles == 1:
                     continue
-                for e in sickrage.app.main_db.get_many('tv_episodes', s.indexerid):
-                    if (str(e['status']).endswith('4') or str(e['status']).endswith('6')) and e['season'] != 0:
-                        status_results += [{
-                            'show_name': s.name,
-                            'indexer_id': s.indexerid,
-                            'subtitles': e['subtitles']
-                        }]
 
-            status_results = sorted(status_results, key=lambda k: k['show_name'])
+                for e in MainDB.TVEpisode.query(showid=s.indexerid).filter(
+                        or_(MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.status.endswith(6)),
+                        MainDB.TVEpisode.season != 0):
+                    status_results += [{
+                        'show_name': s.name,
+                        'indexer_id': s.indexerid,
+                        'subtitles': e.subtitles
+                    }]
 
-            for cur_status_result in status_results:
+            for cur_status_result in sorted(status_results, key=lambda k: k['show_name']):
                 if whichSubs == 'all':
                     if not frozenset(sickrage.subtitles.wanted_languages()).difference(
                             cur_status_result["subtitles"].split(',')):
@@ -3025,11 +3019,9 @@ class Manage(Home, WebRoot):
         for cur_indexer_id in to_download:
             # get a list of all the eps we want to download subtitles if they just said "all"
             if 'all' in to_download[cur_indexer_id]:
-                to_download[cur_indexer_id] = [
-                    str(x["season"]) + 'x' + str(x["episode"]) for x in
-                    (x for x in sickrage.app.main_db.get_many('tv_episodes', int(cur_indexer_id))
-                     if str(x['status']).endswith('4') and x['season'] != 0)
-                ]
+                to_download[cur_indexer_id] = ['{}x{}'.format(x.season, x.episode) for x in
+                                               MainDB.TVEpisode.query(showid=int(cur_indexer_id)).filter(
+                                                   MainDB.TVEpisode.status.endswith(4), MainDB.TVEpisode.season != 0)]
 
             for epResult in to_download[cur_indexer_id]:
                 season, episode = epResult.split('x')
@@ -3053,6 +3045,9 @@ class Manage(Home, WebRoot):
         showResults = {}
 
         for curShow in sickrage.app.showlist:
+            if curShow.paused:
+                continue
+
             epCats = {}
             epCounts = {
                 Overview.SKIPPED: 0,
@@ -3068,11 +3063,11 @@ class Manage(Home, WebRoot):
 
             showResults[curShow.indexerid] = []
 
-            for curResult in sorted((e for e in sickrage.app.main_db.get_many('tv_episodes', curShow.indexerid)
-                                     if curShow.paused == 0), key=lambda d: (d['season'], d['episode']), reverse=True):
-                curEpCat = curShow.get_overview(int(curResult["status"] or -1))
+            for curResult in MainDB.TVEpisode.query(showid=curShow.indexerid).order_by(MainDB.TVEpisode.season.desc(),
+                                                                                       MainDB.TVEpisode.episode.desc()):
+                curEpCat = curShow.get_overview(int(curResult.status or -1))
                 if curEpCat:
-                    epCats[str(curResult["season"]) + "x" + str(curResult["episode"])] = curEpCat
+                    epCats["{}x{}".format(curResult.season, curResult.episode)] = curEpCat
                     epCounts[curEpCat] += 1
 
                 showResults[curShow.indexerid] += [curResult]
@@ -3486,14 +3481,13 @@ class Manage(Home, WebRoot):
 
     def failedDownloads(self, limit=100, toRemove=None):
         if int(limit) == 0:
-            dbData = [x for x in sickrage.app.main_db.all('failed_snatches')]
+            dbData = MainDB.FailedSnatch.query().all()
         else:
-            dbData = [x for x in sickrage.app.main_db.all('failed_snatches', int(limit))]
+            dbData = MainDB.FailedSnatch.query().limit(int(limit))
 
         toRemove = toRemove.split("|") if toRemove is not None else []
 
-        for release in toRemove:
-            [sickrage.app.main_db.delete(x) for x in sickrage.app.main_db.get_many('failed_snatches', release)]
+        [MainDB.FailedSnatch.delete(x) for release in toRemove for x in MainDB.FailedSnatch.query(release=release)]
 
         if toRemove:
             return self.redirect('/manage/failedDownloads/')
@@ -3774,7 +3768,7 @@ class ConfigGeneral(Config):
         sickrage.app.config.save()
 
     def saveGeneral(self, log_dir=None, log_nr=5, log_size=1048576, web_port=None, web_log=None,
-                    encryption_version=None, web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
+                    web_ipv6=None, trash_remove_show=None, trash_rotate_logs=None,
                     update_frequency=None, skip_removed_files=None, indexerDefaultLang='en',
                     ep_default_deleted_status=None, launch_browser=None, showupdate_hour=3,
                     api_key=None, indexer_default=None, timezone_display=None, cpu_preset='NORMAL',
@@ -3842,7 +3836,6 @@ class ConfigGeneral(Config):
 
         sickrage.app.config.web_port = try_int(web_port)
         sickrage.app.config.web_ipv6 = checkbox_to_value(web_ipv6)
-        sickrage.app.config.encryption_version = (0, 2)[checkbox_to_value(encryption_version) == 1]
 
         sickrage.app.config.filter_row = checkbox_to_value(filter_row)
         sickrage.app.config.fuzzy_dating = checkbox_to_value(fuzzy_dating)

@@ -1,21 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -33,12 +32,14 @@ from xml.sax import SAXParseException
 from bencode3 import bdecode, bencode
 from feedparser import FeedParserDict
 from requests.utils import add_dict_to_cookiejar, dict_from_cookiejar
+from sqlalchemy import orm
 
 import sickrage
 from sickrage.core.api.cache import TorrentCacheAPI
 from sickrage.core.caches.tv_cache import TVCache
 from sickrage.core.classes import NZBSearchResult, SearchResult, TorrentSearchResult
 from sickrage.core.common import MULTI_EP_RESULT, Quality, SEASON_RESULT, cpu_presets
+from sickrage.core.databases.main import MainDB
 from sickrage.core.helpers import chmod_as_parent, findCertainShow, sanitizeFileName, clean_url, bs4_parser, \
     validate_url, try_int, convert_size
 from sickrage.core.helpers.show_names import allPossibleShowNames
@@ -376,21 +377,19 @@ class GenericProvider(object):
                 actual_episodes = parse_result.episode_numbers
             else:
                 if not parse_result.is_air_by_date:
-                    sickrage.app.log.debug(
-                        "This is supposed to be a date search but the result " + result.name + " didn't parse as one, skipping it")
+                    sickrage.app.log.debug("This is supposed to be a date search but the result {} didn't parse as "
+                                           "one, skipping it".format(result.name))
                     continue
                 else:
                     airdate = parse_result.air_date.toordinal()
-                    dbData = [x for x in sickrage.app.main_db.get_many('tv_episodes', result.show.indexerid)
-                              if x['airdate'] == airdate]
-
-                    if len(dbData) != 1:
-                        sickrage.app.log.warning(
-                            "Tried to look up the date for the episode " + result.name + " but the database didn't give proper results, skipping it")
+                    try:
+                        dbData = MainDB.TVEpisode.query(showid=result.show.indexerid, airdate=airdate).one()
+                        actual_season = int(dbData.season)
+                        actual_episodes = [int(dbData.episode)]
+                    except orm.exc.NoResultFound:
+                        sickrage.app.log.warning("Tried to look up the date for the episode {} but the database "
+                                                 "didn't give proper results, skipping it".format(result.name))
                         continue
-
-                    actual_season = int(dbData[0]["season"])
-                    actual_episodes = [int(dbData[0]["episode"])]
 
             # make sure we want the episode
             wantEp = False

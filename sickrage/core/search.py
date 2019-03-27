@@ -2,21 +2,20 @@
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import re
@@ -29,6 +28,7 @@ from sickrage.clients.nzbget import NZBGet
 from sickrage.clients.sabnzbd import SabNZBd
 from sickrage.core.common import Quality, SEASON_RESULT, SNATCHED_BEST, \
     SNATCHED_PROPER, SNATCHED, MULTI_EP_RESULT
+from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import AuthException
 from sickrage.core.helpers import show_names
 from sickrage.core.nzbSplitter import splitNZBResult
@@ -433,8 +433,8 @@ def searchProviders(show, episodes, manualSearch=False, downCurQuality=False, ca
                     Quality.qualityStrings[
                         seasonQual])
 
-                allEps = [int(x["episode"]) for x in sickrage.app.main_db.get_many('tv_episodes', show.indexerid)
-                          if x['season'] in searchedSeasons]
+                allEps = [int(x.episode) for x in MainDB.TVEpisode.query(showid=show.indexerid).filter(
+                    MainDB.TVEpisode.season.in_(searchedSeasons))]
 
                 sickrage.app.log.debug("Episode list: " + str(allEps))
 

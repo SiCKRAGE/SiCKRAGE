@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -409,8 +409,8 @@ class TVEpisode(object):
             self.show.indexerid, self.show.name, season or 0, episode or 0))
 
         try:
-            dbData = MainDB.TVEpisode.query().filter_by(showid=self.show.indexerid, season=season,
-                                                                         episode=episode).one()
+            dbData = MainDB.TVEpisode.query(showid=self.show.indexerid, season=season,
+                                            episode=episode).one()
         except orm.exc.NoResultFound:
             sickrage.app.log.debug("%s: Episode S%02dE%02d not found in the database" % (
                 self.show.indexerid, self.season or 0, self.episode or 0))
@@ -740,9 +740,8 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [sickrage.app.main_db.delete(x) for x in
-         sickrage.app.main_db.get_many('tv_episodes', self.show.indexerid)
-         if x['season'] == self.season and x['episode'] == self.episode]
+        [MainDB.TVEpisode.delete(x) for x in
+         MainDB.TVEpisode.query(showid=self.show.indexerid, season=self.season, episode=self.episode)]
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:
@@ -799,10 +798,10 @@ class TVEpisode(object):
         }
 
         try:
-            dbData = MainDB.TVEpisode.query().filter_by(indexer=self.indexer, indexerid=self.indexerid,
-                                                                         showid=self.show.indexerid).one()
-            dbData.update(**tv_episode)
-            dbData.commit()
+            dbData = MainDB.TVEpisode.query(indexer=self.indexer, indexerid=self.indexerid,
+                                            showid=self.show.indexerid).one()
+            dbData.__dict__.update(tv_episode)
+            MainDB.TVEpisode.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             MainDB.TVEpisode.add(**tv_episode)
 

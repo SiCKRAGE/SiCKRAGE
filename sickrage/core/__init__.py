@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -38,13 +38,12 @@ from keycloak.realm import KeycloakRealm
 from tornado.ioloop import IOLoop
 
 import sickrage
-from sickrage.core.api import API
 from sickrage.core.caches.name_cache import NameCache
 from sickrage.core.caches.quicksearch_cache import QuicksearchCache
 from sickrage.core.common import SD, SKIPPED, WANTED
 from sickrage.core.config import Config
 from sickrage.core.helpers import findCertainShow, generate_secret, makeDir, get_lan_ip, restoreSR, \
-    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url
+    getDiskSpaceUsage, getFreeSpace, launch_browser, torrent_webui_url, encryption
 from sickrage.core.logger import Logger
 from sickrage.core.nameparser.validator import check_force_season_folders
 from sickrage.core.processors import auto_postprocessor
@@ -85,6 +84,7 @@ class Core(object):
         except Exception:
             self.tz = tz.tzlocal()
 
+        self.private_key = None
         self.config_file = None
         self.data_dir = None
         self.cache_dir = None
@@ -208,6 +208,12 @@ class Core(object):
             helpers.move_file(os.path.abspath(os.path.join(self.data_dir, 'sickbeard.db')),
                               os.path.abspath(os.path.join(self.data_dir, 'sickrage.db')))
 
+        # init private key
+        self.private_key = encryption.load_key()
+        if not self.private_key:
+            self.private_key = encryption.generate_key()
+            encryption.save_key(self.private_key)
+
         # load config
         self.config.load()
 
@@ -250,12 +256,12 @@ class Core(object):
         # perform database startup actions
         from sickrage.core.databases.main import MainDB
         from sickrage.core.databases.cache import CacheDB
-        for db in [MainDB, CacheDB]:
+        for db in [MainDB(), CacheDB()]:
             # migrate database
-            db().migrate()
+            db.migrate()
 
             # upgrade database
-            db().upgrade()
+            db.upgrade()
 
         # load name cache
         self.name_cache.load()

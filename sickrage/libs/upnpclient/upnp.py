@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
@@ -27,7 +27,6 @@ from decimal import Decimal
 from functools import partial
 
 import requests
-import six
 from dateutil.parser import parse as parse_date
 from lxml import etree
 from requests.compat import urljoin, urlparse
@@ -503,11 +502,11 @@ class Action(object):
                     assert Decimal('4.94065645841247E-324') <= v <= Decimal('1.79769313486232E308')
 
             elif datatype == 'char':
-                v = arg.decode('utf8') if six.PY2 or isinstance(arg, bytes) else arg
+                v = arg.decode('utf8') if isinstance(arg, bytes) else arg
                 assert len(v) == 1
 
             elif datatype == 'string':
-                v = arg.decode("utf8") if six.PY2 or isinstance(arg, bytes) else arg
+                v = arg.decode("utf8") if isinstance(arg, bytes) else arg
                 if argdef['allowed_values'] and v not in argdef['allowed_values']:
                     reasons.add('Value %r not in allowed values list' % arg)
 

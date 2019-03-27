@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import os
@@ -22,6 +22,7 @@ import shutil
 import stat
 
 import rarfile
+from sqlalchemy import or_, literal
 
 import sickrage
 from sickrage.core.common import Quality
@@ -462,8 +463,8 @@ def already_postprocessed(dirName, videofile, force, result):
         return False
 
     # Avoid processing the same dir again if we use a process method <> move
-    if MainDB.TVEpisode.query().filter(
-            MainDB.TVEpisode.release_name in dirName or MainDB.TVEpisode.release_name in videofile):
+    if MainDB.TVEpisode.query().filter(or_(literal(dirName).contains(MainDB.TVEpisode.release_name),
+                                           literal(videofile).contains(MainDB.TVEpisode.release_name))):
         return True
 
     # Needed if we have downloaded the same episode @ different quality
@@ -474,9 +475,9 @@ def already_postprocessed(dirName, videofile, force, result):
     except:
         parse_result = False
 
-    for h in MainDB.History.query().filter(sickrage.app.main_db.History.resource.endswith(videofile)):
+    for h in MainDB.History.query().filter(MainDB.History.resource.endswith(videofile)):
         for e in MainDB.TVEpisode.query(showid=h.showid, season=h.season, episode=h.episode).filter(
-                MainDB.TVEpisode.status in Quality.DOWNLOADED):
+                MainDB.TVEpisode.status.in_(Quality.DOWNLOADED)):
             # If we find a showid, a season number, and one or more episode numbers then we need to use those in the
             # query
             if parse_result and (parse_result.indexerid and parse_result.episode_numbers and

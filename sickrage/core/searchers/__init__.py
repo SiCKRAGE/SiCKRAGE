@@ -2,21 +2,20 @@
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
-
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -24,6 +23,7 @@ import datetime
 import sickrage
 from sickrage.core import helpers
 from sickrage.core.common import UNAIRED, SKIPPED, statusStrings
+from sickrage.core.databases.main import MainDB
 
 
 def new_episode_finder():
@@ -33,26 +33,25 @@ def new_episode_finder():
 
     show = None
 
-    for episode in sickrage.app.main_db.all('tv_episodes'):
-        if not all([episode['status'] == UNAIRED, episode['season'] > 0, episode['airdate'] > 1]):
-            continue
+    for episode in MainDB.TVEpisode.query(status=UNAIRED).filter(MainDB.TVEpisode.season > 0,
+                                                                 MainDB.TVEpisode.airdate > 1):
 
-        if not show or int(episode["showid"]) != show.indexerid:
-            show = helpers.findCertainShow(int(episode["showid"]))
+        if not show or int(episode.showid) != show.indexerid:
+            show = helpers.findCertainShow(int(episode.showid))
 
         # for when there is orphaned series in the database but not loaded into our showlist
         if not show or show.paused:
             continue
 
-        air_date = datetime.date.fromordinal(episode['airdate'])
+        air_date = datetime.date.fromordinal(episode.airdate)
         air_date += datetime.timedelta(days=show.search_delay)
         if not curDate.toordinal() >= air_date.toordinal():
             continue
 
         if show.airs and show.network:
             # This is how you assure it is always converted to local time
-            air_time = sickrage.app.tz_updater.parse_date_time(episode['airdate'],
-                                                  show.airs, show.network).astimezone(sickrage.app.tz)
+            air_time = sickrage.app.tz_updater.parse_date_time(episode.airdate,
+                                                               show.airs, show.network).astimezone(sickrage.app.tz)
 
             # filter out any episodes that haven't started airing yet,
             # but set them to the default status while they are airing
@@ -60,7 +59,7 @@ def new_episode_finder():
             if air_time > curTime:
                 continue
 
-        ep_obj = show.get_episode(int(episode['season']), int(episode['episode']))
+        ep_obj = show.get_episode(int(episode.season), int(episode.episode))
         with ep_obj.lock:
             ep_obj.status = show.default_ep_status if ep_obj.season else SKIPPED
             sickrage.app.log.info('Setting status ({status}) for show airing today: {name} {special}'.format(

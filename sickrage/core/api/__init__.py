@@ -1,6 +1,6 @@
-
-
+import base64
 import json
+import os
 import time
 from urllib.parse import urljoin
 
@@ -17,6 +17,7 @@ class API(object):
         self.client_id = sickrage.app.oidc_client._client_id
         self.client_secret = sickrage.app.oidc_client._client_secret
         self.token_url = sickrage.app.oidc_client.well_known['token_endpoint']
+        self.token_file = os.path.abspath(os.path.join(sickrage.app.data_dir, 'token.json'))
         self.token_refreshed = False
 
     @property
@@ -25,14 +26,15 @@ class API(object):
 
     @property
     def token(self):
-        if sickrage.app.config.app_oauth_token:
-            return json.loads(sickrage.app.config.app_oauth_token)
+        if os.path.exists(self.token_file):
+            with open(self.token_file, 'r') as fd:
+                return json.load(fd)
         return {}
 
     @token.setter
     def token(self, value):
-        sickrage.app.config.app_oauth_token = json.dumps(value)
-        sickrage.app.config.save()
+        with open(self.token_file, 'w') as fd:
+            json.dump(value, fd)
 
     @property
     def userinfo(self):
@@ -40,6 +42,12 @@ class API(object):
 
     def allowed_usernames(self):
         return self._request('GET', 'allowed-usernames')
+
+    def download_privatekey(self):
+        return self._request('GET', 'account/private-key')
+
+    def upload_privatekey(self, privatekey):
+        return self._request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def _request(self, method, url, **kwargs):
         try:

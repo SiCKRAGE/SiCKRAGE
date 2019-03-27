@@ -2,20 +2,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Test Provider Result Parsing
@@ -30,7 +30,6 @@ import re
 import unittest
 from functools import wraps
 
-import six
 from vcr_unittest import VCRMixin
 
 import sickrage
@@ -196,11 +195,11 @@ class ProviderTests(type):
                 self.assertIsInstance(result, dict)
                 self.assertEqual(sorted(result.keys()), ['leechers', 'link', 'seeders', 'size', 'title'])
 
-                self.assertIsInstance(result['title'], six.text_type)
-                self.assertIsInstance(result['link'], six.text_type)
-                self.assertIsInstance(result['seeders'], six.integer_types)
-                self.assertIsInstance(result['leechers'], six.integer_types)
-                self.assertIsInstance(result['size'], six.integer_types)
+                self.assertIsInstance(result['title'], str)
+                self.assertIsInstance(result['link'], str)
+                self.assertIsInstance(result['seeders'], int)
+                self.assertIsInstance(result['leechers'], int)
+                self.assertIsInstance(result['size'], int)
 
                 self.assertTrue(len(result['title']))
                 self.assertTrue(len(result['link']))
@@ -213,7 +212,7 @@ class ProviderTests(type):
                 else:
                     self.assertTrue(validate_url(result['link']))
 
-                self.assertIsInstance(self.provider._get_size(result), six.integer_types)
+                self.assertIsInstance(self.provider._get_size(result), int)
                 self.assertTrue(all(self.provider._get_title_and_url(result)))
                 self.assertTrue(self.provider._get_size(result))
 

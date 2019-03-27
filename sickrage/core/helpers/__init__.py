@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import base64
@@ -43,13 +43,13 @@ from urllib.parse import uses_netloc, urlsplit, urlunsplit, urljoin
 
 import rarfile
 import requests
-import six
 from bs4 import BeautifulSoup
 
 import sickrage
 from sickrage.core.common import Quality, SKIPPED, WANTED, FAILED, UNAIRED
 from sickrage.core.databases.main import MainDB
 from sickrage.core.exceptions import MultipleShowObjectsException
+from sickrage.core.helpers import encryption
 
 
 def safe_getattr(object, name, default=None):
@@ -94,7 +94,7 @@ def argToBool(x):
     convert argument of unknown type to a bool:
     """
 
-    if isinstance(x, six.string_types):
+    if isinstance(x, str):
         if x.lower() in ("0", "false", "f", "no", "n", "off"):
             return False
         elif x.lower() in ("1", "true", "t", "yes", "y", "on"):
@@ -262,7 +262,7 @@ def is_torrent_or_nzb_file(filename):
     :return: ``True`` if the ``filename`` is a NZB file or a torrent file, ``False`` otherwise
     """
 
-    if not isinstance(filename, six.string_types):
+    if not isinstance(filename, str):
         return False
 
     return filename.rpartition('.')[2].lower() in ['nzb', 'torrent']
@@ -1386,7 +1386,7 @@ def restoreVersionedFile(backup_file, version):
     return True
 
 
-def backupVersionedFile(old_file, version):
+def backup_versioned_file(old_file, version):
     """
     Back up an old version of a file
 
@@ -1407,6 +1407,7 @@ def backupVersionedFile(old_file, version):
         try:
             sickrage.app.log.debug("Trying to back up %s to %s" % (old_file, new_file))
             shutil.copyfile(old_file, new_file)
+            encryption.encrypt_file(new_file, sickrage.app.private_key.public_key())
             sickrage.app.log.debug("Backup done")
             break
         except Exception as e:
@@ -1548,7 +1549,7 @@ def app_statistics():
         if sickrage.app.show_queue.is_being_added(show) or sickrage.app.show_queue.is_being_removed(show):
             continue
 
-        for epData in MainDB.TVEpisode.query().filter_by(showid=show.indexerid):
+        for epData in MainDB.TVEpisode.query(showid=show.indexerid):
             if show.indexerid not in show_stat:
                 show_stat[show.indexerid] = {}
                 show_stat[show.indexerid]['ep_snatched'] = 0
@@ -1671,8 +1672,8 @@ def checkbox_to_value(option, value_on=True, value_off=False):
 
     if isinstance(option, list):
         option = option[-1]
-    if isinstance(option, six.string_types):
-        option = six.text_type(option).strip().lower()
+    if isinstance(option, str):
+        option = str(option).strip().lower()
 
     if option in (True, 'on', 'true', value_on) or try_int(option) > 0:
         return value_on

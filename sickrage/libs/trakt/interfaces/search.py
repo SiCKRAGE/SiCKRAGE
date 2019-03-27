@@ -1,9 +1,6 @@
-from __future__ import absolute_import, division, print_function
-
 import warnings
 
 import requests
-import six
 from trakt.interfaces.base import Interface
 from trakt.mapper.search import SearchMapper
 
@@ -70,7 +67,7 @@ class SearchInterface(Interface):
         # Build query
         query = {}
 
-        if isinstance(media, six.string_types):
+        if isinstance(media, str):
             query['type'] = media
         elif isinstance(media, list):
             query['type'] = ','.join(media)

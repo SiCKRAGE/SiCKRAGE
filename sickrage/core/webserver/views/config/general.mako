@@ -1049,21 +1049,6 @@
                 </div>
 
                 <div class="form-row form-group">
-
-                    <div class="col-lg-3 col-md-4 col-sm-5">
-                        <label class="component-title">${_('Encrypt settings')}</label>
-                    </div>
-                    <div class="col-lg-9 col-md-8 col-sm-7 component-desc">
-                        <label for="encryption_version">
-                            <input type="checkbox" class="toggle color-primary is-material" name="encryption_version"
-                                   id="encryption_version" ${('', 'checked')[bool(sickrage.app.config.encryption_version)]}/>
-                            ${_('in the')} <code>${sickrage.app.config_file}</code> ${_('file.')}
-                        </label>
-                    </div>
-
-                </div>
-
-                <div class="form-row form-group">
                     <div class="col-lg-3 col-md-4 col-sm-5">
                         <label class="component-title">${_('Unprotected calendar')}</label>
                     </div>

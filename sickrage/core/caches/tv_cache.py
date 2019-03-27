@@ -1,20 +1,20 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -120,7 +120,7 @@ class TVCache(object):
     @property
     def last_update(self):
         try:
-            dbData = CacheDB.LastUpdate.query().filter_by(provider=self.providerID).one()
+            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
@@ -132,9 +132,9 @@ class TVCache(object):
     @last_update.setter
     def last_update(self, toDate):
         try:
-            dbData = CacheDB.LastUpdate.query().filter_by(provider=self.providerID).one()
+            dbData = CacheDB.LastUpdate.query(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            dbData.commit()
+            CacheDB.LastUpdate.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             CacheDB.LastUpdate.add(**{
                 'provider': self.providerID,
@@ -144,7 +144,7 @@ class TVCache(object):
     @property
     def last_search(self):
         try:
-            dbData = CacheDB.LastSearch.query().filter_by(provider=self.providerID).one()
+            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
             lastTime = int(dbData.time)
             if lastTime > int(time.mktime(datetime.datetime.today().timetuple())):
                 lastTime = 0
@@ -156,9 +156,9 @@ class TVCache(object):
     @last_search.setter
     def last_search(self, toDate):
         try:
-            dbData = CacheDB.LastSearch.query().filter_by(provider=self.providerID).one()
+            dbData = CacheDB.LastSearch.query(provider=self.providerID).one()
             dbData.time = int(time.mktime(toDate.timetuple()))
-            dbData.commit()
+            CacheDB.LastSearch.update(**dbData.as_dict())
         except orm.exc.NoResultFound:
             CacheDB.LastSearch.add(**{
                 'provider': self.providerID,
@@ -183,7 +183,7 @@ class TVCache(object):
     def addCacheEntry(self, name, url, seeders, leechers, size):
         # check for existing entry in cache
         try:
-            CacheDB.Provider.query().filter_by(provider=self.providerID, url=url).one()
+            CacheDB.Provider.query(provider=self.providerID, url=url).one()
         except orm.exc.NoResultFound:
             return
 

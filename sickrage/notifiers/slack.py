@@ -1,27 +1,26 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
 import json
 
 import requests
-import six
 
 import sickrage
 from sickrage.notifiers import Notifiers
@@ -63,7 +62,7 @@ class SlackNotifier(Notifiers):
         sickrage.app.log.info("Sending slack message: " + message)
         sickrage.app.log.info("Sending slack message  to url: " + sickrage.app.config.slack_webhook)
 
-        if isinstance(message, six.text_type):
+        if isinstance(message, str):
             message = message.encode('utf-8')
 
         headers = {"Content-Type": "application/json"}

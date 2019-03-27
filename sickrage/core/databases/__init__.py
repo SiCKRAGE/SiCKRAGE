@@ -1,27 +1,27 @@
 # Author: echel0n <echel0n@sickrage.ca>
 # URL: https://sickrage.ca
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 import datetime
 import os
 import pickle
 import shutil
 from contextlib import contextmanager
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, scoped_session
 
 import sickrage
@@ -60,14 +60,17 @@ class BaseActions(object):
     @classmethod
     def add(cls, **kwargs):
         with cls.session() as session:
-            obj = cls(**kwargs)
-            session.add(obj)
-            return obj
+            session.add(cls(**kwargs))
 
     @classmethod
-    def update(cls, value):
+    def update(cls, **kwargs):
+        primary_keys = {}
+        for key in inspect(cls).primary_key:
+            if key.name in kwargs:
+                primary_keys[key.name] = kwargs.pop(key.name)
+
         with cls.session() as session:
-            cls.query().update(session.merge(value))
+            session.query(cls).filter_by(**primary_keys).update(kwargs)
             cls.commit()
 
     @classmethod
@@ -93,7 +96,7 @@ class srDatabase(object):
         self.tables = {}
 
         self.db_path = os.path.join(sickrage.app.data_dir, '{}.db'.format(self.name))
-        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=True)
+        self.engine = create_engine('sqlite:///{}'.format(self.db_path), echo=False)
 
     @property
     def version(self):
@@ -123,9 +126,8 @@ class srDatabase(object):
                 if table not in migrate_tables:
                     migrate_tables[table] = []
 
-                table_columns = [column.key for column in self.tables[table].__table__.columns]
                 for column in row.copy():
-                    if column not in table_columns:
+                    if column not in self.tables[table].__table__.columns.keys():
                         del row[column]
 
                 migrate_tables[table] += [row]

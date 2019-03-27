@@ -2,20 +2,20 @@
 # URL: https://sickrage.ca
 # Git: https://git.sickrage.ca/SiCKRAGE/sickrage.git
 #
-# This file is part of SickRage.
+# This file is part of SiCKRAGE.
 #
-# SickRage is free software: you can redistribute it and/or modify
+# SiCKRAGE is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
-# SickRage is distributed in the hope that it will be useful,
+# SiCKRAGE is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with SickRage.  If not, see <http://www.gnu.org/licenses/>.
+# along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
 import datetime
@@ -23,10 +23,10 @@ import re
 import threading
 import time
 
+from adba.aniDBAbstracter import Anime
 from sqlalchemy import orm
 
 import sickrage
-from adba.aniDBAbstracter import Anime
 from sickrage.core.databases.cache import CacheDB
 from sickrage.core.helpers import full_sanitizeSceneName, sanitizeSceneName
 from sickrage.core.websession import WebSession
@@ -69,7 +69,7 @@ def setLastRefresh(exList):
     try:
         dbData = CacheDB.SceneExceptionRefresh.query(exception_list=exList).one()
         dbData.last_refreshed = int(time.mktime(datetime.datetime.today().timetuple()))
-        CacheDB.SceneExceptionRefresh.update(dbData.as_dict())
+        CacheDB.SceneExceptionRefresh.update(**dbData.as_dict())
     except orm.exc.NoResultFound:
         CacheDB.SceneExceptionRefresh.add(**{
             'last_refreshed': int(time.mktime(datetime.datetime.today().timetuple())),
@@ -126,7 +126,7 @@ def retrieve_exceptions(get_xem=True, get_anidb=True):
             continue
 
         existing_exceptions = [x.show_name for x in
-                               CacheDB.SceneException.query().filter_by(indexer_id=cur_indexer_id)]
+                               CacheDB.SceneException.query(indexer_id=cur_indexer_id)]
 
         for cur_exception, curSeason in dict([(key, d[key]) for d in cur_exception_dict for key in d]).items():
             if cur_exception not in existing_exceptions:
@@ -156,8 +156,7 @@ def get_scene_exceptions(indexer_id, season=-1):
     if indexer_id not in exceptionsCache or season not in exceptionsCache[indexer_id]:
         try:
             exceptionsList = list(set([cur_exception.show_name for cur_exception in
-                                       CacheDB.SceneException.query().filter_by(indexer_id=indexer_id,
-                                                                                                 season=season)]))
+                                       CacheDB.SceneException.query(indexer_id=indexer_id, season=season)]))
 
             if indexer_id not in exceptionsCache:
                 exceptionsCache[indexer_id] = {}
@@ -183,7 +182,7 @@ def get_all_scene_exceptions(indexer_id):
     """
     exceptionsDict = {}
 
-    for cur_exception in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id):
+    for cur_exception in CacheDB.SceneException.query(indexer_id=indexer_id):
         if not cur_exception.season in exceptionsDict:
             exceptionsDict[cur_exception.season] = []
         exceptionsDict[cur_exception.season].append(cur_exception.show_name)
@@ -199,7 +198,7 @@ def get_scene_seasons(indexer_id):
 
     if indexer_id not in exceptionsSeasonCache:
         exceptions_season_list = list(set(
-            [int(x.season) for x in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id)]))
+            [int(x.season) for x in CacheDB.SceneException.query(indexer_id=indexer_id)]))
 
         if indexer_id not in exceptionsSeasonCache:
             exceptionsSeasonCache[indexer_id] = {}
@@ -224,11 +223,13 @@ def get_scene_exception_by_name_multiple(show_name):
     out = []
 
     # try the obvious case first
-    exception_result = CacheDB.SceneException.query().filter_by(show_name=show_name.lower()).order_by('season')
+    exception_result = CacheDB.SceneException.query(show_name=show_name.lower()).order_by(
+        CacheDB.SceneException.season)
+
     if exception_result.count():
         return [(int(x.indexer_id), int(x.season)) for x in exception_result]
 
-    for cur_exception in CacheDB.SceneException.query().order_by('season'):
+    for cur_exception in CacheDB.SceneException.query().order_by(CacheDB.SceneException.season):
         cur_exception_name = cur_exception.show_name
         cur_indexer_id = int(cur_exception.indexer_id)
         cur_season = int(cur_exception.season)
@@ -328,7 +329,7 @@ def _xem_exceptions_fetcher():
 
 def getSceneSeasons(indexer_id):
     """get a list of season numbers that have scene exceptions"""
-    return (x.season for x in CacheDB.SceneException.query().filter_by(indexer_id=indexer_id))
+    return (x.season for x in CacheDB.SceneException.query(indexer_id=indexer_id))
 
 
 def check_against_names(name_in_question, show, season=-1):
