@@ -22,11 +22,12 @@ def generate_key():
 
 
 def load_key():
-    result = API().download_privatekey()
-    if 'privatekey' in result:
-        pem = result['privatekey']
-        private_key = load_pem_private_key(pem, None, default_backend())
+    try:
+        result = API().download_privatekey()
+        private_key = load_pem_private_key(base64.b64decode(result['pem']), None, default_backend())
         return private_key
+    except Exception:
+        return
 
 
 def save_key(private_key):

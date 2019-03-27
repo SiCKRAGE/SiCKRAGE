@@ -44,10 +44,10 @@ class API(object):
         return self._request('GET', 'allowed-usernames')
 
     def download_privatekey(self):
-        return self._request('GET', 'app/private-key')
+        return self._request('GET', 'account/private-key')
 
     def upload_privatekey(self, privatekey):
-        return self._request('POST', 'app/private-key', data=dict({'privatekey': privatekey}))
+        return self._request('POST', 'account/private-key', data=dict({'privatekey': privatekey}))
 
     def _request(self, method, url, **kwargs):
         try:
