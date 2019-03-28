@@ -965,7 +965,7 @@ class Config(object):
                                                                                                        e.strerror))
 
         try:
-            rarfile.custom_check(unrar_tool)
+            rarfile.custom_check(unrar_tool, True)
         except (rarfile.RarCannotExec, rarfile.RarExecError, OSError, IOError):
             # Let's just return right now if the defaults work
             try:
@@ -2365,6 +2365,7 @@ class Config(object):
         # encrypt config
         if sickrage.app.private_key:
             new_config.write()
+            encryption.save_key(sickrage.app.private_key)
             encryption.encrypt_file(sickrage.app.config_file, sickrage.app.private_key.public_key())
 
     def encrypt(self, section, key, _decrypt=False):
