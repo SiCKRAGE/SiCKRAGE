@@ -1040,7 +1040,11 @@ def backupSR(backupDir, keep_latest=False):
 
 def restoreSR(srcDir, dstDir):
     try:
-        files_list = ['main.db', 'cache.db', os.path.basename(sickrage.app.config_file)]
+        files_list = ['main.db',
+                      'cache.db',
+                      'main.db.codernitydb',
+                      'cache.db.codernitydb',
+                      os.path.basename(sickrage.app.config_file)]
 
         for filename in files_list:
             srcFile = os.path.join(srcDir, filename)

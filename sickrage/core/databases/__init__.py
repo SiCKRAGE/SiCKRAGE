@@ -106,11 +106,11 @@ class srDatabase(object):
         pass
 
     def migrate(self):
-        backup_file = os.path.join(sickrage.app.data_dir, 'migrate', '{}_{}.codernitydb.bak'.format(self.name,
+        backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
                                                                                                     datetime.datetime.now().strftime(
                                                                                                         '%Y%m%d_%H%M%S')))
 
-        migrate_file = os.path.join(sickrage.app.data_dir, 'migrate', '{}.codernitydb'.format(self.name))
+        migrate_file = os.path.join(sickrage.app.data_dir, '{}.codernitydb'.format(self.name))
         if os.path.exists(migrate_file):
             # self.backup(backup_file)
             sickrage.app.log.info('Migrating {} database using {}'.format(self.name, migrate_file))
@@ -135,6 +135,7 @@ class srDatabase(object):
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
                 try:
+                    self.tables[table].query().delete()
                     self.tables[table].bulk_add(rows)
                 except:
                     pass
