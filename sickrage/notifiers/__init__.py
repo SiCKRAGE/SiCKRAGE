@@ -101,7 +101,7 @@ class NotifierProviders(dict):
         super(NotifierProviders, self).__init__()
 
         pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
+        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m and m is not None]
 
         for name in names:
             klass = self._get_klass(name.group(1))
