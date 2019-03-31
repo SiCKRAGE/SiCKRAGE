@@ -17,7 +17,6 @@
 # along with SiCKRAGE.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
 import os
 import platform
 import re
@@ -26,6 +25,7 @@ import subprocess
 import sys
 import tarfile
 import threading
+from tempfile import NamedTemporaryFile
 from time import sleep
 
 import sickrage
@@ -251,7 +251,7 @@ class UpdateManager(object):
     def _pip_path(self):
         test_cmd = '-V'
 
-        main_pip = sickrage.app.config.pip_path or 'pip2'
+        main_pip = sickrage.app.config.pip_path or 'pip3'
 
         # sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
         __, __, exit_status = self._pip_cmd(main_pip, test_cmd, silent=True)
@@ -375,27 +375,39 @@ class UpdateManager(object):
     def get_update_url():
         return "{}/home/update/?pid={}".format(sickrage.app.config.web_root, sickrage.app.pid)
 
-    def install_requirements(self):
-        for req_file in ['requirements.txt', sickrage.REQS_FILE]:
-            output, __, exit_status = self._pip_cmd(self._pip_path,
-                                                    'install --no-cache-dir -r {}'.format(req_file))
+    def install_requirements(self, branch):
+        requirements_url = "https://git.sickrage.ca/SiCKRAGE/sickrage/raw/{}/requirements.txt".format(branch)
+        requirements_file = NamedTemporaryFile(delete=False)
 
-            if exit_status != 0:
-                __, __, exit_status = self._pip_cmd(self._pip_path,
-                                                    'install --no-cache-dir --user -r {}'.format(req_file))
+        try:
+            requirements_file.write(WebSession().get(requirements_url).text)
+        except Exception:
+            requirements_file.close()
+            os.unlink(requirements_file.name)
+            return False
 
-            if exit_status == 0:
-                return True
+        output, __, exit_status = self._pip_cmd(self._pip_path,
+                                                'install --no-cache-dir -r {}'.format(requirements_file.name))
+
+        if exit_status != 0:
+            __, __, exit_status = self._pip_cmd(self._pip_path,
+                                                'install --no-cache-dir --user -r {}'.format(requirements_file.name))
+
+        if exit_status == 0:
+            requirements_file.close()
+            os.unlink(requirements_file.name)
+            return True
 
         sickrage.app.alerts.error(_('Updater'),
                                   _('Failed to update requirements'))
 
-        sickrage.app.log.warning('Unable to update requirements using {req_file}'.format(**{
-            'req_file': sickrage.REQS_FILE
-        }))
+        sickrage.app.log.warning('Unable to update requirements')
 
         if output:
             sickrage.app.log.debug("PIP CMD OUTPUT: {}".format(output.strip()))
+
+        requirements_file.close()
+        os.unlink(requirements_file.name)
 
         return False
 
@@ -482,6 +494,9 @@ class GitUpdateManager(UpdateManager):
         on the call's success.
         """
 
+        if not self.install_requirements(self.current_branch):
+            return False
+
         # remove untracked files and performs a hard reset on git branch to avoid update issues
         if sickrage.app.config.git_reset:
             # self.clean() # This is removing user data and backups
@@ -494,7 +509,7 @@ class GitUpdateManager(UpdateManager):
             sickrage.app.alerts.message(_('Updater'),
                                         _('Updating SiCKRAGE from GIT servers'))
             Notifiers.mass_notify_version_update(self.get_newest_version)
-            return self.install_requirements()
+            return True
 
         return False
 
@@ -529,6 +544,9 @@ class GitUpdateManager(UpdateManager):
         if branch in self.remote_branches:
             sickrage.app.log.debug("Branch checkout: " + self._find_installed_version() + "->" + branch)
 
+            if not self.install_requirements(self.current_branch):
+                return False
+
             # remove untracked files and performs a hard reset on git branch to avoid update issues
             if sickrage.app.config.git_reset:
                 self.reset()
@@ -538,7 +556,7 @@ class GitUpdateManager(UpdateManager):
 
             __, __, exit_status = self._git_cmd(self._git_path, 'checkout -f ' + branch)
             if exit_status == 0:
-                return self.install_requirements()
+                return True
 
         return False
 
@@ -605,6 +623,9 @@ class SourceUpdateManager(UpdateManager):
         tar_download_url = 'https://git.sickrage.ca/SiCKRAGE/sickrage/repository/archive.tar?ref=master'
 
         try:
+            if not self.install_requirements(self.current_branch):
+                return False
+
             # prepare the update dir
             sr_update_dir = os.path.join(sickrage.MAIN_DIR, 'sr-update')
 
@@ -668,10 +689,6 @@ class SourceUpdateManager(UpdateManager):
                     except IOError:
                         os.makedirs(os.path.dirname(new_path))
                         shutil.move(old_path, new_path)
-
-            # install requirements
-            if not self.install_requirements():
-                return False
         except Exception as e:
             sickrage.app.log.error("Error while trying to update: {}".format(e))
             return False

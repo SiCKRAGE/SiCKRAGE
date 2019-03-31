@@ -726,7 +726,7 @@ class Config(object):
                 'display_all_seasons': True,
                 'usenet_retention': 500,
                 'download_propers': True,
-                'pip_path': 'pip2',
+                'pip_path': 'pip3',
                 'del_rar_contents': False,
                 'process_method': 'copy',
                 'file_timestamp_timezone': 'network',
