@@ -256,10 +256,10 @@ class UpdateManager(object):
         sickrage.app.alerts.error(_('Updater'), error_message)
 
     @property
-    def _pip_path(self):
+    def _pip2_path(self):
         test_cmd = '-V'
 
-        main_pip = sickrage.app.config.pip_path or 'pip2'
+        main_pip = sickrage.app.config.pip2_path or 'pip2'
 
         # sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
         __, __, exit_status = self._pip_cmd(main_pip, test_cmd, silent=True)
@@ -289,7 +289,45 @@ class UpdateManager(object):
                     return cur_pip
 
         # Still haven't found a working git
-        error_message = _('Unable to find your pip executable - Set your pip path from Settings->General->Advanced')
+        error_message = _('Unable to find your pip2 executable - Set your pip2 path from Settings->General->Advanced')
+
+        sickrage.app.alerts.error(_('Updater'), error_message)
+
+    @property
+    def _pip3_path(self):
+        test_cmd = '-V'
+
+        main_pip = sickrage.app.config.pip3_path or 'pip3'
+
+        # sickrage.app.log.debug("Checking if we can use pip commands: " + main_pip + ' ' + test_cmd)
+        __, __, exit_status = self._pip_cmd(main_pip, test_cmd, silent=True)
+        if exit_status == 0:
+            # sickrage.app.log.debug("Using: " + main_pip)
+            return main_pip
+
+        # trying alternatives
+        alternative_pip = []
+
+        # osx people who start sr from launchd have a broken path, so try a hail-mary attempt for them
+        if platform.system().lower() == 'darwin':
+            alternative_pip.append('/usr/local/python3.7/bin/pip3')
+
+        if platform.system().lower() == 'windows':
+            if main_pip != main_pip.lower():
+                alternative_pip.append(main_pip.lower())
+
+        if alternative_pip:
+            sickrage.app.log.debug("Trying known alternative pip locations")
+
+            for cur_pip in alternative_pip:
+                # sickrage.app.log.debug("Checking if we can use pip commands: " + cur_pip + ' ' + test_cmd)
+                __, __, exit_status = self._pip_cmd(cur_pip, test_cmd)
+                if exit_status == 0:
+                    # sickrage.app.log.debug("Using: " + cur_pip)
+                    return cur_pip
+
+        # Still haven't found a working git
+        error_message = _('Unable to find your pip3 executable - Set your pip3 path from Settings->General->Advanced')
 
         sickrage.app.alerts.error(_('Updater'), error_message)
 
