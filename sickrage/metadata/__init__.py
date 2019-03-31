@@ -879,9 +879,11 @@ class MetadataProviders(dict):
         super(MetadataProviders, self).__init__()
 
         pregex = re.compile('^(.*)\.py$', re.IGNORECASE)
-        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m and m is not None]
+        names = [pregex.match(m) for m in os.listdir(os.path.dirname(__file__)) if "__" not in m]
 
         for name in names:
+            if not name:
+                continue
             klass = self._get_klass(name.group(1))
             self[klass().id] = klass()
 
