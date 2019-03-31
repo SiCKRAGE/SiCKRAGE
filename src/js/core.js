@@ -3024,32 +3024,6 @@ $(document).ready(function ($) {
                     });
                 }
 
-                if ($('#pip3_path').length) {
-                    $('#pip3_path').fileBrowser({
-                        title: gt('Select path to pip3'),
-                        key: 'pip3_path',
-                        includeFiles: 1
-                    });
-
-                    $('#verifyPip3Path').click(function () {
-                        var pip3_path = $.trim($('#pip3_path').val());
-                        if (!pip3_path) {
-                            $('#testPIP3-result').html(gt('Please fill out the necessary fields above.'));
-                            $('#pip3_path').addClass('warning');
-                            return;
-                        }
-                        $('#pip3_path').removeClass('warning');
-                        $(this).prop('disabled', true);
-                        $('#testPIP3-result').html(SICKRAGE.loadingHTML);
-                        $.get(SICKRAGE.srWebRoot + '/home/verifyPath', {
-                            'path': pip3_path
-                        }).done(function (data) {
-                            $('#testPIP3-result').html(data);
-                            $('#verifyPip3Path').prop('disabled', false);
-                        });
-                    });
-                }
-
                 if ($('#git_path').length) {
                     $('#git_path').fileBrowser({
                         title: gt('Select path to git'),

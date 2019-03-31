@@ -1105,16 +1105,6 @@ class Home(WebHandler):
         else:
             return _('Failed to find {path}'.format(path=path))
 
-    def installRequirements(self):
-        sickrage.app.alerts.message(_('Installing SiCKRAGE requirements'))
-        if not sickrage.app.version_updater.updater.install_requirements(
-                sickrage.app.version_updater.updater.current_branch):
-            sickrage.app.alerts.message(_('Failed to install SiCKRAGE requirements'))
-        else:
-            sickrage.app.alerts.message(_('Installed SiCKRAGE requirements successfully!'))
-
-        return self.redirect(self.previous_url())
-
     def branchCheckout(self, branch):
         if branch and sickrage.app.version_updater.updater.current_branch != branch:
             sickrage.app.alerts.message(_('Checking out branch: '), branch)
@@ -3786,7 +3776,7 @@ class ConfigGeneral(Config):
                     git_reset=None, git_username=None, git_password=None, git_autoissues=None, gui_language=None,
                     display_all_seasons=None, showupdate_stale=None, notify_on_login=None, allowed_video_file_exts=None,
                     enable_api_providers_cache=None, enable_upnp=None, web_external_port=None,
-                    strip_special_file_bits=None, pip2_path=None, pip3_path=None, **kwargs):
+                    strip_special_file_bits=None, pip2_path=None, **kwargs):
 
         results = []
 
@@ -3831,7 +3821,6 @@ class ConfigGeneral(Config):
         sickrage.app.config.git_autoissues = checkbox_to_value(git_autoissues)
         sickrage.app.config.git_path = git_path
         sickrage.app.config.pip2_path = pip2_path
-        sickrage.app.config.pip3_path = pip3_path
         sickrage.app.config.calendar_unprotected = checkbox_to_value(calendar_unprotected)
         sickrage.app.config.calendar_icons = checkbox_to_value(calendar_icons)
         sickrage.app.config.no_restart = checkbox_to_value(no_restart)

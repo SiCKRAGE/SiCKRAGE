@@ -70,7 +70,6 @@ class Config(object):
         self.notify_on_update = True
         self.notify_on_login = False
         self.pip2_path = ""
-        self.pip3_path = ""
         self.git_reset = True
         self.git_username = ""
         self.git_password = ""
@@ -734,7 +733,6 @@ class Config(object):
                 'usenet_retention': 500,
                 'download_propers': True,
                 'pip2_path': 'pip2',
-                'pip3_path': 'pip3',
                 'del_rar_contents': False,
                 'process_method': 'copy',
                 'file_timestamp_timezone': 'network',
@@ -1410,7 +1408,6 @@ class Config(object):
         self.socket_timeout = self.check_setting_int('General', 'socket_timeout')
         self.default_page = self.check_setting_str('General', 'default_page')
         self.pip2_path = self.check_setting_str('General', 'pip2_path')
-        self.pip3_path = self.check_setting_str('General', 'pip3_path')
         self.git_path = self.check_setting_str('General', 'git_path')
         self.git_autoissues = self.check_setting_bool('General', 'git_autoissues')
         self.git_username = self.check_setting_str('General', 'git_username', censor=True)
@@ -2011,7 +2008,6 @@ class Config(object):
                 'add_shows_wo_dir': int(self.add_shows_wo_dir),
                 'extra_scripts': '|'.join(self.extra_scripts),
                 'pip2_path': self.pip2_path,
-                'pip3_path': self.pip3_path,
                 'git_path': self.git_path,
                 'ignore_words': self.ignore_words,
                 'require_words': self.require_words,
