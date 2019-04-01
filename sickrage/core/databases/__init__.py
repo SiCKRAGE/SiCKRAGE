@@ -137,7 +137,7 @@ class srDatabase(object):
                 try:
                     self.tables[table].query().delete()
                     self.tables[table].bulk_add(rows)
-                except:
+                except Exception as e:
                     pass
 
             shutil.move(migrate_file, backup_file)

@@ -1042,8 +1042,8 @@ def restoreSR(srcDir, dstDir):
     try:
         files_list = ['main.db',
                       'cache.db',
-                      'main.db.codernitydb',
-                      'cache.db.codernitydb',
+                      'main.codernitydb',
+                      'cache.codernitydb',
                       os.path.basename(sickrage.app.config_file)]
 
         for filename in files_list:
