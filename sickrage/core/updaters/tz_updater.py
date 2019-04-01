@@ -66,7 +66,7 @@ class TimeZoneUpdater(object):
 
         for x in CacheDB.NetworkTimezone.query():
             if x.network_name not in network_timezones:
-                CacheDB.NetworkTimezone.delete(x)
+                CacheDB.NetworkTimezone.delete(network_name=x.network_name)
 
         for network, timezone in network_timezones.items():
             try:

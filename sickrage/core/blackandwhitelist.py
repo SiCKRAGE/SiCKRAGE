@@ -82,7 +82,8 @@ class BlackAndWhiteList(object):
 
         :param table: database table remove keywords from
         """
-        [table.delete(x) for x in table]
+        table.delete()
+        table.commit()
 
     def _load_list(self, table):
         """

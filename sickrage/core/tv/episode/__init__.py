@@ -740,8 +740,7 @@ class TVEpisode(object):
         # delete myself from the DB
         sickrage.app.log.debug("Deleting myself from the database")
 
-        [MainDB.TVEpisode.delete(x) for x in
-         MainDB.TVEpisode.query(showid=self.show.indexerid, season=self.season, episode=self.episode)]
+        MainDB.TVEpisode.delete(showid=self.show.indexerid, season=self.season, episode=self.episode)
 
         data = sickrage.app.notifier_providers['trakt'].trakt_episode_data_generate([(self.season, self.episode)])
         if sickrage.app.config.use_trakt and sickrage.app.config.trakt_sync_watchlist and data:

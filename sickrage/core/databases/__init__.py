@@ -63,6 +63,11 @@ class BaseActions(object):
             session.add(cls(**kwargs))
 
     @classmethod
+    def delete(cls, *args, **kwargs):
+        with cls.session() as session:
+            return session.query(cls).filter_by(**kwargs).filter(*args).delete()
+
+    @classmethod
     def update(cls, **kwargs):
         primary_keys = {}
         for key in inspect(cls).primary_key:
@@ -72,11 +77,6 @@ class BaseActions(object):
         with cls.session() as session:
             session.query(cls).filter_by(**primary_keys).update(kwargs)
             cls.commit()
-
-    @classmethod
-    def delete(cls, obj):
-        with cls.session() as session:
-            session.delete(session.merge(obj))
 
     @classmethod
     def commit(cls):
@@ -107,8 +107,8 @@ class srDatabase(object):
 
     def migrate(self):
         backup_file = os.path.join(sickrage.app.data_dir, '{}_{}.codernitydb.bak'.format(self.name,
-                                                                                                    datetime.datetime.now().strftime(
-                                                                                                        '%Y%m%d_%H%M%S')))
+                                                                                         datetime.datetime.now().strftime(
+                                                                                             '%Y%m%d_%H%M%S')))
 
         migrate_file = os.path.join(sickrage.app.data_dir, '{}.codernitydb'.format(self.name))
         if os.path.exists(migrate_file):
@@ -135,7 +135,8 @@ class srDatabase(object):
             for table, rows in migrate_tables.items():
                 sickrage.app.log.info('Migrating {} database table {}'.format(self.name, table))
                 try:
-                    self.tables[table].query().delete()
+                    self.tables[table].delete()
+                    self.tables[table].commit()
                     self.tables[table].bulk_add(rows)
                 except Exception as e:
                     pass

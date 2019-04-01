@@ -1055,24 +1055,19 @@ class TVShow(object):
         action = ('delete', 'trash')[sickrage.app.config.trash_remove_show]
 
         # remove from tv episodes table
-        for x in MainDB.TVEpisode.query(showid=self.indexerid):
-            MainDB.TVEpisode.delete(x)
+        MainDB.TVEpisode.delete(showid=self.indexerid)
 
         # remove from tv shows table
-        for x in MainDB.TVShow.query(indexer_id=self.indexerid):
-            MainDB.TVShow.delete(x)
+        MainDB.TVShow.delete(indexer_id=self.indexerid)
 
         # remove from imdb info table
-        for x in MainDB.IMDbInfo.query(indexer_id=self.indexerid):
-            MainDB.IMDbInfo.delete(x)
+        MainDB.IMDbInfo.delete(indexer_id=self.indexerid)
 
         # remove from xem scene table
-        for x in MainDB.XEMRefresh.query(indexer_id=self.indexerid):
-            MainDB.XEMRefresh.delete(x)
+        MainDB.XEMRefresh.delete(indexer_id=self.indexerid)
 
         # remove from scene numbering table
-        for x in MainDB.SceneNumbering.query(indexer_id=self.indexerid):
-            MainDB.SceneNumbering.delete(x)
+        MainDB.SceneNumbering.delete(indexer_id=self.indexerid)
 
         # remove self from show list
         sickrage.app.showlist = [x for x in sickrage.app.showlist if int(x.indexerid) != self.indexerid]

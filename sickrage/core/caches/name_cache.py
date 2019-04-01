@@ -21,7 +21,7 @@
 import time
 from datetime import datetime, timedelta
 
-from sqlalchemy import orm
+from sqlalchemy import orm, or_
 
 import sickrage
 from sickrage.core.databases.cache import CacheDB
@@ -79,9 +79,7 @@ class NameCache(object):
         Deletes all entries from the cache matching the indexerid or name.
         """
         if any([indexerid, name]):
-            for x in CacheDB.SceneName.query():
-                if x.indexer_id == indexerid or x.name == name:
-                    CacheDB.SceneName.delete(x)
+            CacheDB.SceneName.delete(or_(CacheDB.SceneName.indexer_id == indexerid, CacheDB.SceneName.name == name))
 
             for key, value in self.cache.copy().items():
                 if value == indexerid or key == name:

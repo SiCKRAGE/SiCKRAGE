@@ -153,9 +153,6 @@ class Core(object):
         # thread name
         threading.currentThread().setName('CORE')
 
-        # patch modules with encoding kludge
-        # patch_modules()
-
         # init core classes
         self.notifier_providers = NotifierProviders()
         self.metadata_providers = MetadataProviders()
@@ -192,7 +189,7 @@ class Core(object):
         # Check if we need to perform a restore first
         if os.path.exists(os.path.abspath(os.path.join(self.data_dir, 'restore'))):
             success = restoreSR(os.path.abspath(os.path.join(self.data_dir, 'restore')), self.data_dir)
-            print("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
+            self.log.info("Restoring SiCKRAGE backup: %s!\n" % ("FAILED", "SUCCESSFUL")[success])
             if success:
                 shutil.rmtree(os.path.abspath(os.path.join(self.data_dir, 'restore')), ignore_errors=True)
 
